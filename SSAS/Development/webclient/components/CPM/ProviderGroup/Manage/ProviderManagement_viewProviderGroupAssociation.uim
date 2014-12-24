@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2007, 2009-2011 Curam Software Ltd.                             -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- in accordance with the terms of the license agreement you entered into     -->
+<!-- Software.                                                                  -->
+<!-- Description                                                                -->
+<!-- ===========                                                                -->
+<!--  This page allows to view provider and provider group association.         -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewProviderGroupAssociation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="providerGroupAssociateID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ProviderGroupAssociate"
+    NAME="DISPLAY"
+    OPERATION="viewProviderGroupAssociateDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00152684, RD -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupAssociatePaymentConfiguration"
+    NAME="DISPLAY1"
+    OPERATION="listPGAPaymentConfiguration"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00152684, RD -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerGroupAssociateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerGroupAssociateKey$providerGroupAssociateID"
+    />
+
+
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerGroupAssociateID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$providerGroupAssociateID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00152684, RD -->
+  <LIST TITLE="List.Title.PaymentConfigurations">
+    <!-- BEGIN, CR00198612, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditPGAssociatePaymentConfiguration">
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyProviderGroupAssociatePaymentConfiguration"
+          WINDOW_OPTIONS="width=320"
+        >
+          <!-- END, CR00197352 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerGroupConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="pgAssociatePaymentConfigID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociatePaymentConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00207959, SS -->
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteProviderGroupAssociatePaymentConfiguration"
+          WINDOW_OPTIONS="width=340"
+        >
+          <!-- END, CR00197352 -->
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerGroupConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="pgAssociatePaymentConfigID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociatePaymentConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00198612 -->
+
+
+    <!-- BEGIN, CR00208276, PS -->
+    <!-- BEGIN, CR00178886, ASN -->
+    <FIELD LABEL="Field.Label.GroupToReceivePayments">
+      <!-- END, CR00208276 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="groupToReceivePayments"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00208276, PS -->
+    <FIELD LABEL="Field.Label.EffectiveDate">
+      <!-- END, CR00178886 -->
+      <!-- END, CR00208276 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00208276, PS -->
+    <FIELD
+      LABEL="Field.Label.RecordStatus"
+      WIDTH="10"
+    >
+      <!-- END, CR00208276 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00152684, RD -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Comments"
+  >
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

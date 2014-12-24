@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+
+-->
+<project
+  default="encrypt.password"
+  name="rep_encrypt"
+>
+
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_properties.xml"/>
+  
+  <property name="crypto.prop.file.location" value="${prop.file.location}"/>
+  <property name="crypto.prop.file"          value="CryptoConfig.properties"/>
+  <property name="crypto.jar.file" value="CryptoConfig.jar"/> 
+  <property name="crypto.ks.file" value="CuramSample.keystore"/>
+  <property name="crypto.ext.dir" value="${sysenv.JAVA_HOME}/jre/lib/ext"/>
+  <mkdir dir="${dir.bld}"/>
+
+ 
+  <target name="cipher.init">
+			  
+    <jar destfile="${dir.bld}/jar/${crypto.jar.file}" update="true" 
+                   filesonly="true" level="0">
+              <fileset dir="${crypto.prop.file.location}" includes="${crypto.prop.file}"/>
+              <fileset dir="${crypto.prop.file.location}" includes="${crypto.ks.file}"/>
+    </jar>
+ 
+    <copy file="${dir.bld}/jar/${crypto.jar.file}"
+              toFile="${crypto.ext.dir}/${crypto.jar.file}" overwrite="false"/>
+     
+  </target>
+  
+  <target name="cipher.clean" description="Revert to old crypto, it not recommended but allowed.">
+			
+    <input
+    message="Are you sure you want to revert to old crypto (y/n)?"
+    validargs="y,n"
+    addproperty="do.delete"
+    />
+    <condition property="do.abort">
+    <equals arg1="n" arg2="${do.delete}"/>
+    </condition>
+    <fail if="do.abort">Build aborted by user (not recommended).</fail>
+
+    <delete file="${dir.bld}/jar/${crypto.jar.file}" />
+    <delete file="${crypto.prop.file.location}/${crypto.ks.file}" />
+    <delete file="${crypto.prop.file.location}/${crypto.prop.file}" />
+  </target>
+
+
+
+
+
+   <target name="encrypt.validate">
+    <!-- Check to see if the password to be encrypted is set -->
+    <condition property="encrypt.password.isvalid">
+      <isset property="password"/>
+    </condition>
+    <antcall target="check.password.isvalid"/>
+  </target>
+
+
+  <!-- Fail if password property is missing. -->
+  <target
+    name="check.password.isvalid"
+    unless="encrypt.password.isvalid"
+  >
+    <fail message="Please set password property -Dpassword="/>
+  </target>
+  
+  <target
+    depends="encrypt.validate, cipher.init"
+    description="Encrypts a given password, -Dpassword="
+    name="encrypt.password"
+  >
+
+    <taskdef
+      classname="curam.util.reporting.internal.tasks.AntEncrypt"
+      classpath="${jar.reporting.buildenv}"
+      name="EncryptPassword"
+    />
+
+    <echo message="crypto.prop.file.location=${crypto.prop.file.location}"/>
+    <EncryptPassword password="${password}"/>
+  </target>
+
+
+  <target name="decrypt.password" depends="cipher.init">
+
+    <!-- for eaxmple, use appbuild decrypt.password -Dpassword="V692UhDKYWc="-->
+    <taskdef
+      classname="curam.util.reporting.internal.tasks.AntEncrypt"
+      classpath="${jar.reporting.buildenv}"
+      name="EncryptPassword"
+    />
+   
+    <EncryptPassword
+      password="${password}"
+      to="decrypted.db.password"
+    />
+	
+  </target>
+
+
+</project>

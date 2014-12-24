@@ -1,0 +1,129 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>WorkflowHistory</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Workflow History
+:</b>
+<i> An audit log of actions taken by an administrator that change the status of an executing <a href=ProcessInstance.html>Process Instance</a>.
+</i>
+
+<P>A new Workflow History row is created each time an administrator changes the status of a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>system prints out a letter (automatic);</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual); and</LI>
+
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+
+</UL>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>. As soon as the <a href=ProcessInstance.html>Process Instance</a> is started, administrator Ronan Rooney realizes that the printer is not working.  He suspends the process before it executes the 'system prints out a letter' activity. A Workflow History record is added to indicate that the process has been suspended.
+
+    </P>
+
+<P>
+
+      At a later time the problems with the printer are resolved and administrator Ronan Rooney resumes the <a href=ProcessDefinition.html>Process Definition</a>.  A Workflow History record is added to indicate that the process has been resumed.
+
+    </P>
+
+<p><b>Technical Notes</b></p>
+<P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">workflowHistoryID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of the workflow history record.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">processInstanceID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of the associated process instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">userID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The user name of the user associated with the workflow history entry.</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">event</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The type of event describing the status change for this process instance.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">eventTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The timestamp for this event.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">WorkflowHistory.processInstanceID</td><td class="dataLast"><a href="ProcessInstance.html#processInstanceID">ProcessInstance.processInstanceID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

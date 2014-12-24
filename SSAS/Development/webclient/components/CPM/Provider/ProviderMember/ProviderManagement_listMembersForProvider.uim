@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a list of members belonging to a provider.  -->
+<PAGE
+  PAGE_ID="ProviderManagement_listMembersForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00199961, SS -->
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="DISPLAY"
+    OPERATION="listMembersForConcernRole"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00199961 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00187976, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createMemberForProvider"
+        WINDOW_OPTIONS="width=700"
+      >
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00198612, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00187976, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyProviderMemberRelationship"
+          SAVE_LINK="true"
+          WINDOW_OPTIONS="width=600"
+        >
+          <!-- END, CR00187976 -->
+          <CONNECT>
+            <!-- BEGIN, CR00199961, SS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$detailsList$versionDetails$providerMemberID"
+            />
+            <!-- END, CR00199961 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerMemberConcernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199961, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00207959, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelMemberFromProvider"
+        >
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$detailsList$versionDetails$providerMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$detailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00199961 -->
+    </ACTION_SET>
+    <!-- END, CR00198612 -->
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="25"
+    >
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$versionDetails$memberName"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+      <!-- BEGIN, CR00206671, SS -->
+      <LINK PAGE_ID="ProviderManagement_viewProviderMember">
+        <CONNECT>
+          <!-- BEGIN, CR00199961, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$versionDetails$providerMemberID"
+          />
+          <!-- END, CR00199961 -->
+          <!-- BEGIN, CR00117630, ASB -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <!-- END, CR00117630-->
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00233746, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$versionDetails$providerMemberID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerMemberID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$versionDetails$memberConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="partyConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00233746 -->
+        <!-- BEGIN, CR00229065, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$versionDetails$providerMemberID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerMemberConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$detailsList$versionDetails$providerMemberID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="memberConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00229065 -->
+      </LINK>
+      <!-- END, CR00206671 -->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.FromDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$versionDetails$fromDate"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$versionDetails$toDate"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Role"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$versionDetails$role"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="18"
+    >
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$versionDetails$recordStatus"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

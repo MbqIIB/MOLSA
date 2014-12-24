@@ -1,0 +1,846 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+  
+-->
+<project> 
+
+
+  <!--  *******************************  -->
+  <!--  ***  Load from Environment  ***  -->
+  <!--  *******************************  -->
+
+
+  <property environment="sysenv."/>
+
+
+  <!-- ============================================================ -->
+  <!--
+    ! REPORTING PROPERTIES AND PATHS
+    !
+    ! Property name conventions
+    !   dir.xxx - directory
+    !   jar.xxx - jar file
+    !   pgm.xxx - executable program or script
+    !   fil.xxx - other files
+    !   prp.xxx - other properties
+    !   prm.xxx - parameters to antcall task
+    !-->
+  <property
+    name="prp.time.format"
+    value="HH:mm:ss 'on' dd MMM yyyy"
+  />
+
+  <property
+    name="prop.platform.ora"
+    value="${sysenv.REPORTING_ENV}/platform.ora"
+  />
+  
+  <property
+    name="curam.db.bi.ssl"
+    value="false"
+	
+	/>
+  
+  <property
+    name="prop.platform.db2"
+    value="${sysenv.REPORTING_ENV}/platform.db2"
+	/>
+  <property
+    name="DEV_scripts"
+    value="${sysenv.REPORTING_ENV}${file.separator}scripts"
+  />
+  <property
+    name="DEV_jar"
+    value="${sysenv.REPORTING_ENV}${file.separator}jar"
+  />
+  <property
+    name="DEV_lib"
+    value="${sysenv.REPORTING_ENV}${file.separator}lib"
+  />
+    <property
+      name="DEV_lib-ext"
+      value="${sysenv.REPORTING_ENV}${file.separator}lib-ext"
+  />
+  <property
+    name="DEV_src"
+    value="${sysenv.REPORTING_ENV}${file.separator}source"
+  />
+  <property
+    name="DEV_generator"
+    value="${sysenv.REPORTING_ENV}${file.separator}generator"
+  />
+
+    <property
+    name="dir.testresults"
+    value="${sysenv.REPORTING_DIR}${file.separator}build/testresults"
+  />
+  
+    <property
+      name="DEV_src_custom"
+      value="${sysenv.REPORTING_ENV}${file.separator}custom${file.separator}source"
+  />
+  <property
+    name="DEV_tests"
+    value="${sysenv.REPORTING_ENV}${file.separator}tests"
+  />
+  <property
+    name="DEV_drivers"
+    value="${sysenv.REPORTING_ENV}${file.separator}drivers"
+  />
+
+
+  <property
+    name="CUSTOM_DIR"
+    value="custom"
+  />
+
+
+
+  <property
+    name="prop.file.location"
+    value="${REPORTING_DIR}${file.separator}project${file.separator}properties"
+  />
+  <property
+    name="classpath.file.locations"
+    value="${sysenv.REPORTING_ENV}${file.separator}generator;${prop.file.location}"
+  />
+  
+  <property
+    name="prop.file"
+    value="${prop.file.location}${file.separator}BIBootstrap.properties"
+  />
+  
+  <property file="${sysenv.REPORTING_ENV}${file.separator}scripts/third_party_version.properties"/>
+  <property file="${sysenv.REPORTING_ENV}${file.separator}scripts/third_party_tools_version.properties"/>
+
+  <property file="${prop.file}"/>
+
+  <property
+    name="default.bootstrap.properties"
+    value="${sysenv.REPORTING_DIR}/BuilderScripts/BIBuildconfiguration/smoke/BIBootstrap.properties"
+  />
+  
+  <property
+    name="default.application.properties"
+    value="${sysenv.REPORTING_DIR}/BuilderScripts/BIBuildconfiguration/smoke/BIApplication.properties"
+  />
+  
+  <property
+    name="release.bootstrap.properties"
+    value="${sysenv.REPORTING_DIR}/BuilderScripts/BIBuildconfiguration/release/BIBootstrap.properties"
+  />
+  
+  <property
+    name="release.application.properties"
+    value="${sysenv.REPORTING_DIR}/BuilderScripts/BIBuildconfiguration/release/BIApplication.properties"
+  />
+  
+  <!-- *************************************************-->
+  <!-- version controlled thrid party jar files and tools-->
+  <!-- *************************************************-->
+  
+
+  <path id="RDBMSDrivers.path">
+    <fileset dir="${DEV_drivers}">
+      <include name="db2jcc.jar"/>
+      <include name="db2jcc_license_*.jar"/>	 	  
+      <include name="h2.jar"/>
+      <include name="ojdbc*.jar"/>
+      <include name="runtime12.jar"/>
+      <include name="sqlj.zip"/>
+      <include name="translator.jar"/>
+    </fileset>
+  </path>
+  <property
+    name="environment.jdbc.jars"
+    refid="RDBMSDrivers.path"
+  />
+
+  
+  <path id="approvedant.path">
+    <fileset dir="${sysenv.ANT_HOME}/lib">
+      <include name="ant.jar"/>
+    </fileset>
+    <fileset dir="${sysenv.ANT_HOME}/lib">
+      <include name="ant-contrib-0.6.jar"/>
+    </fileset>   
+  </path>  
+  
+  <property
+    name="prop.approvedant.path"
+    refid="approvedant.path"
+  />  
+  
+  
+  <!-- *************************************************-->
+  <!-- version controlled thrid party jar files and tools-->
+  <!-- *************************************************-->
+
+
+  <!--<property name="owb.import.donotexecute" value="false" />-->
+  <property name="owb.created.postfix" value="_11_2" />
+
+ 
+  <property file="${DEV_scripts}/third_party_tools_version.properties"/>
+  <!-- default values, configured through the BIAppliction.properties file-->
+  <property name="environment.owbconfig.static.location" value="STATIC_LOCATION"/>
+  <property name="environment.owbconfig.source.location" value="SOURCE_LOCATION"/>
+  <property name="environment.owbconfig.staging.location" value="STAGING_LOCATION"/>
+  <property name="environment.owbconfig.warehouse.location" value="CDW_LOCATION"/>
+  <property name="environment.owbconfig.datamarts.location" value="DATAMARTS_LOCATION"/>
+  <property name="environment.owbconfig.system.params" value="','"/>
+  <property name="environment.owbconfig.custom.params" value="','"/>
+  <property name="environment.owbconfig.jobtype" value="PLSQL"/>
+  
+  <property
+    name="jar.junit"
+    value="${DEV_lib}/junit-${version-junit}.jar"
+  />
+
+
+  <property
+    name="jar.ant.contrib"
+    value="${DEV_lib-ext}/ant-contrib-${version-ant-contrib}.jar"
+  />
+  <property
+    name="jar.commons.collections"
+    value="${DEV_lib}/commons-collections-${version-commons-collections}.jar"
+  />
+
+  <property
+    name="jar.log4j.collections"
+    value="${DEV_lib}/log4j-${version-log4j}.jar"
+  />
+  
+  <!-- ensure the directory exists-->  
+  <mkdir dir="${sysenv.REPORTING_ENV}/lib"/>
+  <mkdir dir="${DEV_lib-ext}"/>
+
+  
+  <path id="ThirdPartyCompile.path">
+
+    <fileset dir="${DEV_lib}">
+      <include name="commons-beanutils-${version-commons-beanutils}.jar"/>
+      <include name="commons-collections-${version-commons-collections}.jar"/>
+      <include name="commons-digester-${version-commons-digester}.jar"/>
+      <include name="commons-logging-${version-commons-logging}.jar"/>
+      <include name="log4j-${version-log4j}.jar"/>
+	  <include name="log4j-${version-log4j-higher}.jar"/>	  
+    </fileset>	
+    <fileset dir="${DEV_lib}">
+      <include name="*.jar"/>
+    </fileset>	
+  </path>
+  <property
+    name="prop.thirdPartyCompile.jars"
+    refid="ThirdPartyCompile.path"
+  />
+  
+
+  <path id="ExternalCompile.path">
+    <fileset dir="${DEV_lib-ext}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+  <property
+    name="prop.externalCompile.jars"
+    refid="ExternalCompile.path"
+  />  
+
+  <path id="JavaComponents.path">
+    <fileset dir="${sysenv.REPORTING_DIR}/components">
+      <include name="**/jar/*.jar"/>
+      <exclude name="**/tests/jar/*.jar"/>
+      
+    </fileset>
+  </path>
+  <property
+    name="prop.javacomponents.path"
+    refid="JavaComponents.path"
+  /> 
+  
+    <path id="CustomJavaComponents.path">
+      <fileset dir="${sysenv.REPORTING_DIR}/components">
+        <include name="**/jar/*.jar"/>
+        <exclude name="**/tests/jar/*.jar"/>
+        
+      </fileset>
+  </path>
+  
+  
+  <property
+    name="prop.file.bootstrap"
+    value="${prop.file.location}${file.separator}BIApplication.properties"
+  />
+  <property file="${prop.file.bootstrap}"/>
+
+
+  <condition property="launch.test.results">
+    <contains
+      casesensitive="No"
+      string="${environment.launch.testresults}"
+      substring="true"
+    />
+  </condition>
+
+
+  <!-- the directory name for the component, change this for each component -->
+
+
+  <property
+    name="dir.components"
+    value="${REPORTING_DIR}${file.separator}components"
+  />
+  
+  
+
+  <property
+    name="dir.iweproject"
+    value="${dir.components}${file.separator}core${file.separator}etl${file.separator}CuramBIWarehouse${file.separator}"
+  />
+  
+
+  <property
+    name="dir.iweproject.misc"
+    value="${dir.iweproject}/package-misc"
+  />
+  <property
+    name="dir.iweproject.misc.datafiles.pattern"
+    value="**/*.*"
+  />
+  
+  <property
+    name="dir.oracle"
+    value="${sysenv.ORACLE_HOME}"
+  />
+
+
+  <property
+    name="dir.bld"
+    value="${REPORTING_DIR}${file.separator}build"
+  />
+  <property
+    name="dir.bld.source.rdbms"
+    value="${dir.bld}${file.separator}source${file.separator}rdbms"
+  />
+  <property
+    name="dir.bld.source.tasks"
+    value="${dir.bld}${file.separator}source${file.separator}tasks"
+  />
+
+
+  <property
+    name="dir.bicontent"
+    value="${REPORTING_DIR}${file.separator}BIContent"
+  />
+  <property
+    name="dir.bld.cognos"
+    value="${dir.bld}${file.separator}cognos"
+  />
+  <property
+    name="dir.bld.cognos.deployment"
+    value="${dir.bld.cognos}${file.separator}deployment"
+  />
+  <property
+    name="dir.bld.cognos.images"
+    value="${dir.bld.cognos}${file.separator}images"
+  />
+  <property
+    name="dir.bld.cognos.maps"
+    value="${dir.bld.cognos}${file.separator}maps"
+  />
+  <property
+    name="dir.bld.cognos.metadata"
+    value="${dir.bld.cognos}${file.separator}metadata"
+  />
+
+
+  <property
+    name="dir.bld.jar"
+    value="${dir.bld}${file.separator}jar"
+  />
+  <property
+    name="dir.bld.scripts"
+    value="${dir.bld}${file.separator}scripts"
+  />
+  <property
+    name="dir.bld.misc"
+    value="${dir.bld}${file.separator}misc"
+  />
+  <property
+    name="dir.bin"
+    value="${REPORTING_DIR}${file.separator}bin"
+  />
+  <property
+    name="dir.bin.ddl"
+    value="${dir.bin}${file.separator}ddl"
+  />
+
+
+  <property
+    name="file.source.generated.lastwritten"
+    value="curam_updateLastWritten.sql"
+  />
+  <property
+    name="dir.bin.sourceupdate"
+    value="${dir.bin}${file.separator}sourceupdate${file.separator}"
+  />
+  <property
+    name="dir.bin.run"
+    value="${dir.bin}${file.separator}run${file.separator}"
+  />
+  <property
+    name="dir.bin.grant"
+    value="${dir.bin}${file.separator}grant${file.separator}"
+  />
+
+
+  <property
+    name="file.grant.curam"
+    value="curam_grant.sql"
+  />
+  <property
+    name="file.grant.staging"
+    value="s_grant.sql"
+  />
+  <property
+    name="file.grant.dw"
+    value="dw_grant.sql"
+  />
+  <property
+    name="file.grant.dm"
+    value="dm_grant.sql"
+  />
+
+
+  <property
+    name="dir.bin.datamanager"
+    value="${dir.bin}${file.separator}data_manager${file.separator}"
+  />
+  <property
+    name="dir.bin.datamanager.demodata"
+    value="${dir.bin}${file.separator}data_manager${file.separator}demodata"
+  />
+  <property
+    name="dir.bin.datamanager.initialdata"
+    value="${dir.bin}${file.separator}data_manager${file.separator}initialdata"
+  />
+
+
+  <property
+    name="dir.bin.run.basedir"
+    value="${dir.bin}${file.separator}run"
+  />
+  <property
+    name="dir.bin.etl"
+    value="${dir.bin}${file.separator}etl"
+  />
+  <property
+    name="dir.logs"
+    value="${REPORTING_DIR}${file.separator}logs"
+  />
+  <property
+    name="dir.logs.bilogfile"
+    value="${REPORTING_DIR}${file.separator}logs${file.separator}BILogs.txt"
+  />
+  
+  <property
+    name="dir.logs.validate"
+    value="${dir.logs}${file.separator}validate"
+  />
+  <property
+    name="dir.owb"
+    value="${sysenv.OWB_HOME}"
+  />
+  <property
+    name="prop.owbconfig.remotedatamanagerdir"
+    value="owbconfig.remotedatamanagerdir"
+  />
+
+
+  <property
+    name="dir.owb.win32"
+    value="${dir.owb}${file.separator}bin${file.separator}win32"
+  />
+  <property
+    name="dir.owb.unix"
+    value="${dir.owb}${file.separator}bin${file.separator}unix"
+  />
+
+  <path id="logdirref">
+    <pathelement path="${dir.logs.validate}"/>
+  </path>
+  <pathconvert
+    property="validatelogdir"
+    refid="logdirref"
+    targetos="unix"
+  >
+    <map
+      from="${file.separator}"
+      to="/"
+    />
+  </pathconvert>
+
+
+  <property
+    name="file.central.etlcontrol"
+    value="DW_ETLCONTROL.csv"
+  />
+  <property
+    name="file.staging.etlcontrol"
+    value="S_ETLCONTROL.csv"
+  />
+  <property
+    name="file.datamarts.etlcontrol"
+    value="DM_ETLCONTROL.csv"
+  />
+
+
+  <!-- Staging DDL file names and locations -->
+  <property
+    name="file.staging.schema"
+    value="CreateStagingTables.sql"
+  />
+  <property
+    name="file.staging.schema.drop"
+    value="DropStagingTables.sql"
+  />
+  <property
+    name="file.staging.schema.tranforms"
+    value="CreateStagingTransformations.sql"
+  />
+  <property
+    name="file.staging.schema.tranforms.drop"
+    value="DropStagingTransformations.sql"
+  />
+
+
+  <!-- central DDL file names and locations -->
+  <property
+    name="file.central.schema"
+    value="CreateCentralTables.sql"
+  />
+  <property
+    name="file.central.schema.drop"
+    value="DropCentralTables.sql"
+  />
+  <property
+    name="file.central.schema.tranforms"
+    value="CreateCentralTransformations.sql"
+  />
+  <property
+    name="file.central.schema.tranforms.drop"
+    value="DropCentralTransformations.sql"
+  />
+
+
+  <!-- datamart DDL file names and locations -->
+  <property
+    name="file.datamarts.schema"
+    value="CreateCentraldmTables.sql"
+  />
+  <property
+    name="file.datamarts.schema.drop"
+    value="DropCentraldmTables.sql"
+  />
+  <property
+    name="file.datamarts.schema.tranforms"
+    value="CreateCentraldmTransformations.sql"
+  />
+  <property
+    name="file.datamarts.schema.tranforms.drop"
+    value="DropCentraldmTransformations.sql"
+  />
+
+
+  <property
+    name="file.prepost.schema"
+    value="preAndPostETLProcesses.sql"
+  />
+  <property
+    name="file.transforms.schema"
+    value="transformations.sql"
+  />
+  <property
+    name="file.central.drop.schema"
+    value="central/DropAppTables.sql"
+  />
+  <property
+    name="file.staging.drop.schema"
+    value="staging/DropAppTables.sql"
+  />
+  <property
+    name="file.datamarts.drop.schema"
+    value="datamarts/DropAppTables.sql"
+  />
+  <property
+    name="file.owbsetupdesign"
+    value="${environment.owbconfig.version}owbdesignsetup.tcl"
+  />
+  <property
+    name="file.owbsetup"
+    value="${environment.owbconfig.version}owbsetup.tcl"
+  />
+  <property
+    name="file.registerlocations"
+    value="${environment.owbconfig.version}registerlocations.tcl"
+  />
+  <property
+    name="file.deploy"
+    value="${environment.owbconfig.version}deploy.tcl"
+  />
+  
+  
+  
+  <property
+    name="environment.owbconfig.maxnumberoferrors"
+    value="0"
+  />  
+  
+  <property
+    name="file.deployruntimeconfig.get"
+    value="${environment.owbconfig.version}GetRuntimeProperties.tcl"
+  /> 
+  
+  <property
+    name="file.deployruntimeconfig"
+    value="${environment.owbconfig.version}SetRuntimeProperties.tcl"
+  />  
+  <property
+    name="file.owbconfigtest"
+    value="${environment.owbconfig.version}owbconfigtest.tcl"
+  />
+  <property
+    name="file.owbvalidate"
+    value="${environment.owbconfig.version}owbvalidate.tcl"
+  />
+  <property
+    name="file.owbdropproject"
+    value="${environment.owbconfig.version}owbdropreporting.tcl"
+  />
+
+
+  <!-- jars for the build environment-->
+  <property
+    name="jar.reporting.buildtasks"
+    value="${DEV_jar}${file.separator}BIBuildTools.jar"
+  />
+  <path id="jar.reporting.buildtasks.refid">
+      <pathelement path="${DEV_jar}${file.separator}BIBuildTools.jar"/>
+  </path>
+  
+  
+  <!-- jars for the ETL transforms - loaded into RDBMS -->
+  <property
+    name="jar.reporting.helpersinternaluse"
+    value="${DEV_jar}${file.separator}BIBuildToolsTransformsInf.jar"
+  />
+
+  <!-- jars for the ETL transforms - loaded into RDBMS -->
+  <property
+    name="jar.reporting.defaulttransforms"
+    value="${DEV_jar}${file.separator}BIBuildToolsTransforms.jar"
+  />
+  
+    <!-- jars for the ETL transforms - loaded into RDBMS -->
+
+
+  <property
+    name="jar.reporting.helpersexternaluse"
+    value="${jar.reporting.helpersinternaluse}"
+  />
+
+  <property
+    name="jar.reporting.internaltestinfra"
+    value="${DEV_jar}${file.separator}BIBuildToolsTestInf.jar"
+  />
+  
+  
+  <property
+    name="jar.reporting.crypto.name"
+    value="BISecurityBase.jar"
+  />
+  
+  <property
+    name="jar.reporting.security"
+    value="${DEV_jar}${file.separator}${jar.reporting.crypto.name}"
+  />
+  
+
+  <property
+    name="jar.reporting.customtasks"
+    value="${dir.bld.jar}${file.separator}CustomTasks.jar"
+  />
+
+  <property
+    name="jar.reporting.etltransformsforinternaluse"
+    value="${dir.bld.jar}${file.separator}CustomTransforms.jar"
+  />
+
+
+  <property
+    name="jar.reporting.etltransformsexternaluse"
+    value="${jar.reporting.etltransformsforinternaluse}"
+  />
+
+
+  <property
+    name="jar.reporting.nightlybuilderhelpers"
+    value="${DEV_jar}${file.separator}BIBuildErrorChecker.jar"
+  />
+
+
+  <property
+    name="jar.reporting.nightlybuilderhelpers2"
+    value="${DEV_jar}${file.separator}BIBuildErrorCheckerSuppliment.jar"
+  />
+
+  <property
+    name="jar.reporting.doctasks"
+    value="${DEV_jar}${file.separator}BIBuildAPIDoc.jar"
+  />
+  
+  <path id="jar.reporting.doctasks.refid">
+	  <pathelement path="${jar.reporting.doctasks}"/>
+  </path>
+  
+  <!-- jars for the build environment - placeholder for all jars to be loaded into RDBMS-->
+  <property
+    name="jar.reporting.buildtransforms"
+    value="${jar.reporting.etltransformsforinternaluse}${path.separator}${jar.reporting.helpersinternaluse}"
+  />
+
+
+  <property
+    name="jar.reporting.thirdpartyjars"
+    value="${dir.devenv.lib}${file.separator}att.jar"
+  />
+ <!-- jars for the build environment - placeholder for all build environment jars-->
+  <property
+    name="jar.reporting.buildenv"
+    value="${jar.reporting.doctasks}${path.separator} ${jar.reporting.nightlybuilderhelpers}${path.separator}${jar.reporting.internaltestinfra}${path.separator}${jar.reporting.buildtasks}${path.separator}${jar.reporting.helpersexternaluse}${path.separator}${path.separator}${environment.jdbc.jars}${path.separator}${prop.thirdPartyCompile.jars}${path.separator}${classpath.file.locations}${path.separator}${jar.reporting.security}${path.separator}${dir.bld}/jar/${crypto.jar.file}${path.separator}${dir.builderscripts}/BIBuildErrorChecker.jar"/>
+
+
+	
+  <property
+    name="jar.reporting.externaljars"
+    value="${prop.externalCompile.jars}${file.separator}"
+  />
+
+  <property
+    name="db2cmd"
+    value="db2cmd.exe"
+  />
+    <property
+    name="unixshell"
+    value="sh"
+  />
+  
+  <property
+    name="oracle"
+    value="oracle"
+  />
+  <property
+    name="db2"
+    value="db2"
+  />
+
+
+  <!-- build environment configuration points-->
+  <!-- continue, stop, abort-->
+  <property
+    name="demodata.failonerror.action"
+    value="abort"
+  />
+  <property
+    name="grant.failonerror.action"
+    value="abort"
+  />
+  <property
+    name="updatenulls.failonerror.action"
+    value="abort"
+  />
+  <property
+    name="database.failonerror.action"
+    value="abort"
+  />
+  
+
+  <!-- leaving this property here as documentation for the owb.import target
+        configuartion options
+  -->
+
+
+  <!-- *************************************************-->
+  <!-- java build and packaging control                 -->
+  <!-- *************************************************-->
+
+ <property name="rdbms.java.infa.excludes"  value="curam/util/reporting/internal/apidoc/**/*.java curam/util/reporting/internal/transformations/**/*.java curam/util/reporting/testcases/**/*.java curam/util/reporting/internal/datamanager/**/*.java curam/util/reporting/internal/tasks/**/*.java curam/util/reporting/internal/security/*.java"/>
+ <property name="rdbms.java.infa.includes"  value="curam/**/*.java"/> 
+ 
+ <property name="rdbms.class.infa.excludes" value="curam/util/reporting/internal/apidoc/**/*.class curam/util/reporting/internal/transformations/**/*.class curam/util/reporting/testcases/**/*.class curam/util/reporting/internal/datamanager/**/*.class curam/util/reporting/internal/tasks/**/*.class curam/util/reporting/internal/security/*.class"/>
+ 
+ <property name="rdbms.class.infa.includes" value="curam/**/*.class"/>
+
+ <property name="rdbms.class.security.includes" value="curam/util/reporting/internal/security/*.class"/>
+ <property name="rdbms.java.security.includes" value="curam/util/reporting/internal/security/*.java"/>
+
+
+
+ <property name="apidoc.java.includes" value="curam/util/reporting/internal/apidoc/*.java curam/util/reporting/internal/apidoc/**/*.java"/>
+ <property name="apidoc.class.includes" value="curam/util/reporting/internal/apidoc/*.class curam/util/reporting/internal/apidoc/**/*.class"/>
+
+
+ <property name="tasks.java.includes" value="curam/util/reporting/internal/tasks/**/*.java"/>
+ <property name="tasks.class.includes" value="curam/util/reporting/internal/tasks/**/*.class "/>
+ <property name="tasks.java.excludes" value="curam/util/reporting/internal/security/*.java"/>
+ <property name="tasks.class.excludes" value="curam/util/reporting/internal/security/*.class"/>
+
+                
+ <property name="transforms.java.includes" value="curam/util/reporting/transformations/**/*.java curam/util/reporting/internal/transformations/**/*.java"/>
+ <property name="transforms.java.excludes"  value=" curam/util/reporting/testcases/**/*.java"/>
+ 
+ <property name="transforms.class.includes" value="curam/util/reporting/transformations/**/*.class curam/util/reporting/internal/transformations/**/*.class"/>
+ <property name="transforms.class.excludes"  value="curam/util/reporting/testcases/**/*.class"/>
+
+ <property name="custom.transforms.java.includes" value="curam/util/reporting/transformations/**/*.java curam/util/reporting/internal/transformations/**/*.java"/>
+ <property name="custom.transforms.java.excludes"  value=" curam/util/reporting/testcases/**/*.java"/>
+ <property name="custom.transforms.class.includes" value="curam/util/reporting/transformations/**/*.class curam/util/reporting/internal/transformations/**/*.class"/>
+ <property name="custom.transforms.class.excludes"  value="curam/util/reporting/testcases/**/*.class"/>
+
+ <property name="custom.tasks.java.includes" value="curam/util/reporting/tasks/**/*.java curam/util/reporting/internal/tasks/**/*.java"/>
+ <property name="custom.tasks.java.excludes"  value=" curam/util/reporting/testcases/**/*.java"/>
+ <property name="custom.tasks.class.includes" value="curam/util/reporting/tasks/**/*.class curam/util/reporting/internal/tasks/**/*.class"/>
+ <property name="custom.tasks.class.excludes"  value=" curam/util/reporting/testcases/**/*.class"/>
+
+  <!-- Compile properties -->
+  <!-- A setting is necessary on Unix platforms rather than an empty string -->
+  <property name="compile.fork" value="true"/>
+  
+  <property name="compile.debug" value="on"/>
+  <property name="compile.maxmemory" value="1024m"/>
+  <property name="compile.nowarn" value="off"/>
+  <property name="compile.optimize" value="off"/>
+  <property name="compile.deprecation" value="false"/>
+  <property name="compile.verbose" value="false"/>
+  <property name="compile.includeAntRuntime" value="yes"/>
+  <property name="compile.includeJavaRuntime" value="no"/>
+  <property name="compile.failonerror" value="true"/>
+  <property name="compile.listfiles" value="no"/>
+  <property name="compile.maxwarnings" value="10000"/>
+  <property name="jar.compression" value="0"/>
+  <property name="compile.sourceversion" value="1.5"/>
+  <property name="compile.targetversion" value="1.5"/>
+  <property name="compile.compress" value="false"/>
+
+  
+  <condition property="java.console.encoding" value="Cp1047">
+      <os family="z/os"/>
+  </condition>
+  <property name="java.console.encoding" value="UTF-8"/>
+  <property name="java.file.encoding" value="UTF-8"/>
+
+  
+</project>

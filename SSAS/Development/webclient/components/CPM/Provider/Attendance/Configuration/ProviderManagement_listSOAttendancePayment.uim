@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                    -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- in accordance with the terms of the license agreement you entered into     -->
+<!-- Software.                                                                  -->
+<!-- Description                                                                -->
+<!-- ===========                                                                -->
+<!-- This page allows the user to lists all the service offering attendance     -->
+<!-- payment configuration.                                                     -->
+<PAGE
+  PAGE_ID="ProviderManagement_listSOAttendancePayment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listSOAttendancePayment"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00199976, PS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createSOAttendancePayment"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$live$dtls$soAttendancePaymentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soAttendancePaymentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContext"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContext"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00199976 -->
+
+
+  <LIST>
+    <!-- BEGIN, CR00199435, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199435 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00199755, SSK -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$dtlsList$derivedStatus$isSupersededInd"
+          />
+        </CONDITION>
+        <!-- END, CR00199755 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifySOAttendancePayment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$soAttendancePaymentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendancePaymentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00200160, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteSOAttendancePayment"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00205580, SSK -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$soAttendancePaymentID"
+            />
+            <!-- END, CR00205580 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendancePaymentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtlsList$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00200160 -->
+      <!-- BEGIN, CR00199435, PS -->
+    </ACTION_SET>
+    <!-- END, CR00199435 -->
+
+
+    <FIELD LABEL="Field.Label.EffectiveDates">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$dtls$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$derivedStatus$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00199435, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewSOAttendancePayment">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtlsList$dtls$soAttendancePaymentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soAttendancePaymentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContext"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContext"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199435 -->
+  </LIST>
+
+
+</PAGE>

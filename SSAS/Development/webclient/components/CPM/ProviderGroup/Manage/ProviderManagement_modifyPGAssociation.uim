@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                                     -->
+<!-- All rights reserved.                                                                                       -->
+<!-- This software is the confidential and proprietary information of Curam       -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose              -->
+<!-- such Confidential Information and shall use it only in accordance with         -->
+<!-- in accordance with the terms of the license agreement you entered into     -->
+<!-- Software.                                                                                                       -->
+<!-- Description                                                                                                      -->
+<!-- ===========                                                                                          -->
+<!--  This page allows you to modify a provider and its group association record.  -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyPGAssociation"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="providerGroupAssociateID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroupAssociate"
+    NAME="ACTION"
+    OPERATION="modifyProviderGroupAssociate"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroupAssociate"
+    NAME="DISPLAY"
+    OPERATION="viewProviderGroupAssociateDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerGroupAssociateDtls$versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerGroupAssociateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerGroupAssociateKey$providerGroupAssociateID"
+    />
+
+
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerGroupAssociateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerGroupAssociateDtls$providerGroupAssociateID"
+    />
+
+
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$providerConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerGroupAssociateDtls$providerConcernRoleID"
+    />
+
+
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$providerGroupConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerGroupAssociateDtls$providerGroupConcernRoleID"
+    />
+
+
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <FIELD
+      ALIGNMENT="LEFT"
+      EDITABLE="NONEDITABLE"
+      LABEL="Field.Label.Name"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerName"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.StartDate"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerGroupAssociateDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.EndDate"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerGroupAssociateDtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerGroupAssociateDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

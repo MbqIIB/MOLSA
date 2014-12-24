@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to list payaments for a provider.            -->
+<PAGE
+  PAGE_ID="PME_listPaymentsForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ExternalProviderFinancial"
+    NAME="DISPLAY"
+    OPERATION="listPaymentsForProvider"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00235318, GP -->
+  <LIST>
+    <FIELD
+      LABEL="Field.Label.CreationDate"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PaymentType"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$paymentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Currency"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$currency"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235318 -->
+    <!-- BEGIN, CR00235784, GP -->
+    <FIELD
+      LABEL="Field.Label.Amount"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235784 -->
+
+
+    <!-- BEGIN, CR00227646, GP -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="PME_resolvePaymentTypesForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$paymentHistoryDetails$paymentType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="PaymentType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$paymentHistoryDetails$pmtInstrumentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pmtInstrumentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00227646 -->
+  </LIST>
+</PAGE>

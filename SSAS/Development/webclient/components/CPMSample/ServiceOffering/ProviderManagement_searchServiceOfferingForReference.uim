@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search service offering details for a reference. -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchServiceOfferingForReference"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSampleServiceOffering"
+    NAME="ACTION"
+    OPERATION="retrieveServiceOfferingByReference"
+    PHASE="ACTION"
+  />
+  <CLUSTER TITLE="Cluster.Title.SearchCriteria">
+    <FIELD LABEL="Field.Label.Reference">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceUpper"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+      <LINK PAGE_ID="ProviderManagement_searchServiceOfferingForReference"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CLUSTER TITLE="Cluster.Title.SearchResults">
+    <FIELD LABEL="Field.Label.ServiceOfferingName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Reference">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$reference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitOfMeasure">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="unitOfMeasure"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="unitFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is used to list the Evaluation Criteria for service offering.-->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listEvaluationCriterionForServiceOffering"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOfferingEvaluationCriterion"
+    NAME="DISPLAY"
+    OPERATION="listEvaluationCriterionForServiceOffering"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewCriterion">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createEvaluationCriterionForServiceOffering"
+        WINDOW_OPTIONS="width=450"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddExistingCriterion">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_searchByCriterion"
+        WINDOW_OPTIONS="width=350"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <LIST SORTABLE="true">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- BEGIN, CR00237603, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="canceledInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyServiceEvaluationCriterionFromView"
+          WINDOW_OPTIONS="width=450"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceEvaluationCriterionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceEvaluationCriterionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddScores">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="canceledInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addResponseScore"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceEvaluationCriterionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceEvaluationCriterionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00237603 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="canceledInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteServiceOfferingEvaluationCriterion"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soEvaluationCriterionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soEvaluationCriterionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.EvaluationCriterion">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="criterion"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ResponseType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="responseType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CriterionStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewServiceEvaluationCriterion">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceEvaluationCriterionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceEvaluationCriterionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+</PAGE>

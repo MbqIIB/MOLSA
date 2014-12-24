@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant database build file for Curam projects.
+  It includes tasks for compiling message files and codetables.
+
+-->
+<project name="app_iegdatamanager" default="iegdatamanager">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  *************************  -->
+  <!--  ***  D A T A B A S E  ***  -->
+  <!--  *************************  -->
+  <!-- run the data manager -->
+  <target name="iegdatamanager" description="Execute the IEG datamanager" 
+           depends="importiegsubdirs">
+  </target>
+
+  <target name="importiegsubdirs"
+    description="Import IEG components from specified directory to database">
+    <ant
+      antfile="${dir.sde.bin}/app_iegimportexport.xml"
+      target="importiegsubdirs"
+      inheritall="false">
+      <property name="directory" value="${dir.base.components}"/>
+    </ant>
+    
+    <echo>The IEG scripts and question groups have been imported into the database.
+    </echo>
+  </target>
+
+  <!--  *****************  -->
+  <!--  ***  THE END  ***  -->
+  <!--  *****************  -->
+
+</project>
+
+

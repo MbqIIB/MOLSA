@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process
+  category="PC21"
+  id="15"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/Workflow.xsd"
+>
+  <!--END, CR00235681-->
+  <name>SERVICEINVOICELINEITEMAPPROVAL</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Service Invoice line item approval</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00248687, NS -->
+  <description>
+    <localized-text>
+      <locale language="en">This process creates a task for a work queue when a service invoice line item requires manual approval and has reached a status of 'Pending Approval'. Any user who has subscribed to this work queue can view and reserve the task.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00248687 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="serviceInvoiceLineItemID"
+        struct-name="curam.cpm.workflowprocesses.financial.struct.ServiceInvoiceLineItemApprovalDescriptor"
+      />
+      <target-attribute
+        name="serviceInvoiceLineItemID"
+        wdo-name="SILIApprovalDescriptor"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="referenceNumber"
+        struct-name="curam.cpm.workflowprocesses.financial.struct.ServiceInvoiceLineItemApprovalDescriptor"
+      />
+      <target-attribute
+        name="referenceNumber"
+        wdo-name="SILIApprovalDescriptor"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>SILIApprovalDescriptor</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">SILI Exception Processing Descriptor</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>serviceInvoiceLineItemID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Service Invoice Line Item ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>referenceNumber</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Reference Number of the Service Invoice Line Item</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity
+      category="AC1"
+      id="3"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Choose to approve or deny Service Invoice Line Item</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="2"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">The Service invoice line item with reference number. %1s, has been submitted for approval.</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute
+              name="referenceNumber"
+              wdo-name="SILIApprovalDescriptor"
+            />
+          </message-parameters>
+        </message>
+        <actions>
+          <action
+            page-id="ProviderManagement_approveordenySILI"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Service Invoice Line Item Approval: Proceed to indicate that the service invoice line item should is approved or denied.</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="serviceInvoiceLineItemID">
+              <wdo-attribute
+                name="serviceInvoiceLineItemID"
+                wdo-name="SILIApprovalDescriptor"
+              />
+            </link-parameter>
+          </action>
+          <action
+            page-id="ProviderManagement_viewServiceInvoiceLineItem"
+            principal-action="false"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Service Invoice Line Item Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="serviceInvoiceLineItemID">
+              <wdo-attribute
+                name="serviceInvoiceLineItemID"
+                wdo-name="SILIApprovalDescriptor"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+      </task>
+      <!--BEGIN, CR00138066, RPB -->
+      <allocation-strategy
+        identifier="Invoice Approval Work Queue"
+        type="target"
+      />
+      <!--END, CR00138066 -->
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="PROVIDERMANAGEMENT"
+            event-type="SILIAPPROVED"
+            identifier="3"
+          >
+            <event-match-attribute
+              name="serviceInvoiceLineItemID"
+              wdo-name="SILIApprovalDescriptor"
+            />
+          </event>
+          <event
+            event-class="PROVIDERMANAGEMENT"
+            event-type="SILIDENIED"
+            identifier="4"
+          >
+            <event-match-attribute
+              name="serviceInvoiceLineItemID"
+              wdo-name="SILIApprovalDescriptor"
+            />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="3"
+      id="2"
+      to-activity-idref="2"
+    />
+  </transitions>
+</workflow-process>

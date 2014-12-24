@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to edit Service Offering Page details for a Service Offering.           -->
+<PAGE PAGE_ID="ProviderManagement_editServiceOfferingPage" WINDOW_OPTIONS="width=500" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText" />
+        </CONNECT>
+    </PAGE_TITLE>
+    <PAGE_PARAMETER NAME="serviceOfferingPageID" />
+    <SERVER_INTERFACE CLASS="ServiceOffering" NAME="ACTION" OPERATION="editServiceOfferingPage" PHASE="ACTION" />
+    <SERVER_INTERFACE CLASS="ServiceOffering" NAME="DISPLAY" OPERATION="viewServiceOfferingPage" PHASE="DISPLAY" />
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="serviceOfferingPageID" />
+        <TARGET NAME="ACTION" PROPERTY="serviceOfferingPageID" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="versionNo" />
+        <TARGET NAME="ACTION" PROPERTY="versionNo" />
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="serviceOfferingPageID" />
+        <TARGET NAME="DISPLAY" PROPERTY="key$serviceOfferingPageID" />
+    </CONNECT>
+    <CLUSTER LABEL_WIDTH="25">
+        <FIELD LABEL="Field.PageReference.Label">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="soPageRef" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="soPageRef" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.PageType.Label" WIDTH="50">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="soPageType" />
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="soPageType" />
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    <ACTION_SET ALIGNMENT="CENTER">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel" />
+    </ACTION_SET>
+</PAGE>

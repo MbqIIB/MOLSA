@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search for a provider group.              -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchProviderGroups"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="ACTION"
+    OPERATION="searchAllProviderGroup"
+    PHASE="ACTION"
+  />
+  <!-- BEGIN, CR00235795, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- END, CR00235795 -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchProviderGroups"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Street1">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$street1"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$city"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title">
+
+
+    <!-- BEGIN, CR00282506, MR -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_providerGroupHomeTabDetailsPreview">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="35"
+    >
+      <!-- END, CR00205479 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$nameReferenceNumberOpt"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_providerGroupHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$details$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$details$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerGroupID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD
+      LABEL="Field.Title.Street1"
+      WIDTH="30"
+    >
+      <!-- END, CR00205479 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$street1"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD
+      LABEL="Field.Title.City"
+      WIDTH="20"
+    >
+      <!-- END, CR00205479 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="53"
+    >
+      <!-- END, CR00282506 -->
+      <!-- END, CR00205479 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

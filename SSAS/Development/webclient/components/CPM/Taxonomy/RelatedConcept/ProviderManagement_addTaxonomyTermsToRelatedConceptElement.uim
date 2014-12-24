@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description  -->
+<!-- ============ -->
+<!-- This page allows the user to search taxonomy terms by keyword and code  -->
+<!-- and allows to add the taxonomy terms to a related concept.              -->
+<PAGE
+  PAGE_ID="ProviderManagement_addTaxonomyTermsToRelatedConceptElement"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="relatedConceptElementID"/>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$actionString"
+    CLASS="MaintainRelatedConceptElement"
+    NAME="ACTION"
+    OPERATION="searchAddInEditTermsToRelatedConceptElement"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedConceptElementID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$relatedConceptID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Title.SearchCriteria.Description"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.Keyword">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$details$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$details$code"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Search"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_addTaxonomyTermsToRelatedConcept">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="relatedConceptElementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedConceptElementID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="Cluster.Title.SearchResults">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$code"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$taxonomyTermTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_listInEditRelatedConcepts"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listInEditRelatedConcepts"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

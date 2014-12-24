@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This is the create training program for provider member page           -->
+<PAGE
+  PAGE_ID="ProviderManagement_createTrainingProgramForProviderMember"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="DISPLAY"
+    OPERATION="viewPerson"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="partyConcernRoleID"/>
+  <PAGE_PARAMETER NAME="providerMemberID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="partyConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="personKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="Field.StaticText.SearchByTrainingType">
+        <!-- BEGIN, CR00236219, PS -->
+        <!-- BEGIN, CR00246412, GP -->
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_searchTrainingByTrainingTypeForProviderMember"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00246412 -->
+          <!-- END, CR00236219 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <!-- BEGIN CR0121969, NBR-->
+      <ACTION_CONTROL LABEL="Field.StaticText.SearchByTrainingName">
+        <!-- END CR0121969 -->
+        <!-- BEGIN, CR00236219, PS -->
+        <!-- BEGIN, CR00246412, GP -->
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_searchTrainingByTrainingNameUnitMeasureForProviderMember"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00246412 -->
+          <!-- END, CR00236219 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER>
+      <ACTION_CONTROL LABEL="Field.StaticText.SearchByTrainingRequirement">
+        <!-- BEGIN, CR00236219, PS -->
+        <!-- BEGIN, CR00246412, GP -->
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_selectTrainingForProviderMember"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00246412 -->
+          <!-- END, CR00236219 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  <!-- BEGIN, CR00236219, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- END, CR00236219 -->
+</PAGE>

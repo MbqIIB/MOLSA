@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view service invoice request.    -->
+<PAGE
+  PAGE_ID="PME_viewServiceInvoiceRequest"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="requestID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="requestID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$requestID"
+    />
+  </CONNECT>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalServiceInvoiceRequest"
+    NAME="DISPLAY"
+    OPERATION="readServiceInvoiceRequest"
+  />
+
+
+  <!-- BEGIN, CR00184463, SS -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <!-- BEGIN, CR00228977, GP -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewServiceInvoiceRequest"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="PME_viewServiceInvoiceRequest">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="requestID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="requestID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ListServiceInvoiceLineItems"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+
+
+      <LINK PAGE_ID="PME_listServiceInvoiceRequestLineItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="requestID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="requestID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00184463 -->
+
+
+  <CLUSTER
+    LABEL_WIDTH="60"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExternalReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="externalRefNum"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <INCLUDE FILE_NAME="PME_viewRequestDetailsForServiceInvoice.vim"/>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$requestDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- END, CR00228977 -->
+</PAGE>

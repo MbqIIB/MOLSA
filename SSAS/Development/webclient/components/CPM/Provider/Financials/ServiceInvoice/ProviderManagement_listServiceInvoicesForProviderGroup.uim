@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010, 2012 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the home study details-->
+<PAGE
+  PAGE_ID="ProviderManagement_listServiceInvoicesForProviderGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYPROVIDERDETAILS"
+        PROPERTY="result$pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAYPROVIDERDETAILS"
+    OPERATION="readProviderGroupSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROVIDERDETAILS"
+      PROPERTY="key$providerGroupConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00304623, SS -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="retrieveServiceInvoicesDetailsForProvider"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00304623 -->
+
+
+  <LIST>
+    <CONTAINER LABEL="Container.Label.Action">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="ACTION"
+      >
+        <LINK PAGE_ID="ProviderManagement_viewServiceInvoiceForProviderGroup">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$summaryDetailsList$serviceInvoiceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceInvoiceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$summaryDetailsList$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$summaryDetailsList$receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00090250, GD -->
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$summaryDetailsList$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00090250 -->
+    <FIELD LABEL="Field.Label.AmountInvoiced">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$summaryDetailsList$amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AmountPaid">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$summaryDetailsList$amountPaid"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$summaryDetailsList$serviceInvoiceDerivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

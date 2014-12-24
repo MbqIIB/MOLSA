@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to a select concern role supervisor page.-->
+<!-- if selected user is not subordinate user of current concern role supervisor.-->
+<PAGE
+  PAGE_ID="Provider_resolveOwnerRole"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String concernRoleID = request.getParameter("concernRoleID");
+      String managerName = request.getParameter("managerName");
+      String userName = request.getParameter("userName");
+      String pageDescription = request.getParameter("pageDescription");
+      
+      String url = "";
+      
+      if (concernRoleID == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "concernRoleID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      if (managerName == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "managerName");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      if (userName == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "userName");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      
+      if (userName.length() == 0) {
+        userName = managerName;
+      }
+      
+      curam.interfaces.UserAdminPkg.UserAdmin_isSubordinateUserForConcernRoleSupervisor_TH
+        th = new curam.interfaces.UserAdminPkg.UserAdmin_isSubordinateUserForConcernRoleSupervisor_TH();
+        
+      th.setFieldValue(th.details$concernRoleID_idx,concernRoleID);
+      th.setFieldValue(th.details$userName_idx,userName);
+
+      th.callServer();
+      
+      boolean isSubordinateUerInd = new Boolean(th.getFieldValue(
+        th.result$booleanInd_idx)).booleanValue();
+      
+
+      if (isSubordinateUerInd) {
+
+      // BEGIN, CR00260515, GP 
+      url = context + "ProviderManagement_dismissResolverPage.do?pageParameter=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      // END, CR00260515
+      
+      } else {
+
+        url = context + "Provider_createOwnerSupervisorRolePage.do"
+            + "?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) 
+            + "&amp;userName=" + curam.omega3.request.RequestUtils.escapeURL(userName)
+            + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription);
+      }
+      
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+      
+  </JSP_SCRIPTLET>
+</PAGE>

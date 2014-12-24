@@ -1,0 +1,1600 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright © 2003-2006 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose such
+Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<project
+  default="usage"
+  name="docmaker"
+>
+
+
+  <!--
+  The "basedir" is assumed to be the folder containing the documentation.
+  The "docmaker.dir" property must be passed to this script. The "out.dir"
+  may be passed to this script to override the default value. The "marker.dir"
+  is used to ensure that only directories matching the name of "out.dir" that
+  were created by DocMaker are deleted by the clean target. The "docmaker.dir"
+  property is copied to "home.dir" and expanded if it is a relative path.
+  
+  Online Help Multiple Locale Support - Internal Notes:
+  
+  Multiple locales are currently supported for online help by performaing 
+  a separate docmaker build for each locale. DocMaker now supports localizing
+  (or customizing) all text resources by allowing the resources to be overrideen
+  in a separate folder outside of the DocMaker installation. Two new properties
+  are used for this type of build:
+  
+  docmaker.help.l10n: This is an indicator to tell DocMaker search for resources
+                      in the override folder instead of its defaults.
+  docmaker.help.l10n.dir: This is the path to the override folder.
+  
+  Both of these properties have to be set by the caller to the DocMaker scripts.
+  -->
+  <property
+    location="${docmaker.dir}"
+    name="home.dir"
+  />
+
+
+  <property
+    name="out.dir"
+    value="doc"
+  />
+
+
+  <property
+    name="marker.dir"
+    value="${out.dir}/dm-mark"
+  />
+  <property
+    name="tmp.dir"
+    value="${out.dir}/tmp"
+  />
+  <property
+    name="online.dir"
+    value="${out.dir}/online-only"
+  />
+  <property
+    name="print.dir"
+    value="${out.dir}/print-only"
+  />
+  <property
+    name="help.dir"
+    value="${out.dir}/help"
+  />
+  <property
+    name="help.tmp.dir"
+    value="${out.dir}/helptmp"
+  />
+  <property
+    name="fo.dir"
+    value="${out.dir}/fo"
+  />
+  <property
+    name="pdf.dir"
+    value="${out.dir}/pdf"
+  />
+  <property
+    name="chk.dir"
+    value="${out.dir}/check"
+  />
+  <property
+    name="pre.dir"
+    value="${out.dir}/pre"
+  />
+  <property
+    name="dep.dir"
+    value="${out.dir}/dep"
+  />
+
+
+  <property
+    name="lib.dir"
+    value="${home.dir}/lib"
+  />
+  <property
+    name="bin.dir"
+    value="${home.dir}/bin"
+  />
+  <property
+    name="tmpl.dir"
+    value="${home.dir}/templates"
+  />
+  <property
+    name="xsl.dir"
+    value="${lib.dir}/xsl-custom"
+  />
+  <property
+    name="db.xsl.dir"
+    value="${lib.dir}/docbook-xsl"
+  />
+  <property
+    name="db.dtd.dir"
+    value="${lib.dir}/docbook-xml"
+  />
+  <property
+    name="dtd.dir"
+    value="${lib.dir}/dtd-custom"
+  />
+  <property
+    name="xalan.dir"
+    value="${lib.dir}/xalan-j"
+  />
+  <property
+    name="fop.dir"
+    value="${lib.dir}/fop"
+  />
+  <property
+    name="antc.dir"
+    value="${lib.dir}/ant-contrib"
+  />
+  <property
+    name="ant.dir"
+    value="${lib.dir}/apache-ant"
+  />
+
+
+  <property
+    name="assemble.xsl"
+    value="${lib.dir}/assemble.xsl"
+  />
+  <property
+    name="depend.xsl"
+    value="${lib.dir}/depend.xsl"
+  />
+  <property
+    name="rules.xsl"
+    value="${lib.dir}/book-rules.xsl"
+  />
+  <property
+    name="errors.xsl"
+    value="${lib.dir}/errors.xsl"
+  />
+  <property
+    name="xref.xsl"
+    value="${lib.dir}/resolve-xref.xsl"
+  />
+  <property
+    name="filter.xsl"
+    value="${lib.dir}/filter-cond.xsl"
+  />
+  <property
+    name="index.xsl"
+    value="${lib.dir}/filter-index.xsl"
+  />
+
+
+  <property
+    name="fo.xsl"
+    value="${xsl.dir}/fo/docbook.xsl"
+  />
+  <property
+    name="help.xsl"
+    value="${xsl.dir}/help/docbook.xsl"
+  />
+
+
+  <property
+    name="help.l10n.default.dir"
+    value="${docmaker.help.l10n.dir}/docbook/default"
+  />
+  <property
+    name="help.l10n.curam.dir"
+    value="${docmaker.help.l10n.dir}/docbook/curam"
+  />
+  <property
+    name="help.l10n.prop.dir"
+    value="${docmaker.help.l10n.dir}/properties"
+  />
+  <property
+    name="help.l10n.web.dir"
+    value="${docmaker.help.l10n.dir}/web"
+  />
+
+
+  <!--
+  Load the properties configured for this release of DocMaker. The properties
+  are as follows:
+  
+  docmaker.version     The current version number of DocMaker.
+  docmaker.copyright   The copyright years for this version of DocMaker.
+  docmaker.locale      The locale used for spell-checking.
+  docmaker.help.locale The locale used for online help generation.
+  -->
+  <property file="${bin.dir}/docmaker.properties"/>
+
+
+  <property
+    name="wordlist"
+    value="${basedir}/wordlist.txt"
+  />
+  <property
+    name="aspell.args"
+    value="--lang=${docmaker.locale} --dont-backup -H -p &quot;${wordlist}&quot;"
+  />
+
+
+  <!-- The pattern sets for all top-level book files. -->
+  <patternset id="ps.books">
+    <include name="**/book.xml"/>
+  </patternset>
+
+
+  <patternset id="ps.not.books">
+    <exclude name="**/book.xml"/>
+  </patternset>
+
+
+  <!-- The pattern sets for all document files. -->
+  <patternset id="ps.documents">
+    <patternset refid="ps.books"/>
+    <include name="**/c_*.xml"/>
+    <include name="**/a_*.xml"/>
+    <include name="**/s_*.xml"/>
+  </patternset>
+
+
+  <patternset id="ps.not.documents">
+    <patternset refid="ps.not.books"/>
+    <exclude name="**/c_*.xml"/>
+    <exclude name="**/a_*.xml"/>
+    <exclude name="**/s_*.xml"/>
+  </patternset>
+
+
+  <!--
+  A pattern that matches files that may be included into documents.
+  These can be images, sample source code, text, etc.
+  -->
+  <patternset id="ps.resources">
+    <include name="**/*.gif"/>
+    <include name="**/*.GIF"/>
+    <include name="**/*.svg"/>
+    <include name="**/*.SVG"/>
+    <include name="**/*.png"/>
+    <include name="**/*.PNG"/>
+    <include name="**/*.jpg"/>
+    <include name="**/*.JPG"/>
+    <include name="**/*.jpeg"/>
+    <include name="**/*.JPEG"/>
+    <include name="**/*.tif"/>
+    <include name="**/*.TIF"/>
+    <include name="**/*.tiff"/>
+    <include name="**/*.TIFF"/>
+    <include name="**/*.eps"/>
+    <include name="**/*.EPS"/>
+    <include name="**/*.txt"/>
+    <include name="**/*.TXT"/>
+    <include name="**/*.java"/>
+    <include name="**/*.JAVA"/>
+    <include name="**/*.xml"/>
+    <include name="**/*.XML"/>
+    <exclude name="**/conman_build.xml"/>
+    <exclude name="**/conman_build.bat"/>
+    <exclude name="**/wordlist.txt"/>
+    <patternset refid="ps.not.documents"/>
+  </patternset>
+
+
+  <!--
+  The file-sets to all top-level book files, all document files, and all
+  resource files.
+  -->
+  <fileset
+    dir="${basedir}"
+    id="fs.books"
+  >
+    <patternset refid="ps.books"/>
+    <exclude name="${out.dir}/**"/>
+  </fileset>
+
+
+  <fileset
+    dir="${basedir}"
+    id="fs.documents"
+  >
+    <patternset refid="ps.documents"/>
+    <exclude name="${out.dir}/**"/>
+  </fileset>
+
+
+  <fileset
+    dir="${basedir}"
+    id="fs.resources"
+  >
+    <patternset refid="ps.resources"/>
+    <exclude name="${out.dir}/**"/>
+  </fileset>
+
+
+  <!--
+  Ant 1.6 introduced a bug (Apache Bugzilla #23913) into the way the
+  "location" attribute is resolved. The "file:///" prefix must be used
+  until this bug is fixed or the DTD will be loaded from the system ID
+  in the DOCTYPE (probably off the Internet).
+  -->
+  <!-- XML catalog to resolve DocBook DTD references. -->
+  <xmlcatalog id="cat.docbook">
+    <dtd
+      location="file:///${db.dtd.dir}/docbookx.dtd"
+      publicid="-//OASIS//DTD DocBook XML V4.2//EN"
+    />
+  </xmlcatalog>
+
+
+  <!-- XML catalog to resolve DocBook DTD references. -->
+  <xmlcatalog id="cat.docbook.xi">
+    <dtd
+      location="file:///${dtd.dir}/docbookx-xi.dtd"
+      publicid="-//OASIS//DTD DocBook XML V4.2//EN"
+    />
+  </xmlcatalog>
+
+
+  <!--
+  Classpath used by the custom "transform" task to load Xalan, Xerces,
+  and extension functions without conflicting with the versions included
+  in Java 1.4.
+  -->
+  <path id="cp.transform">
+    <fileset dir="${lib.dir}">
+      <include name="jde-commons-ext.jar"/>
+      <!--include name="profile.jar" /-->
+    </fileset>
+    <fileset dir="${db.xsl.dir}/extensions">
+      <include name="xalan2.jar"/>
+    </fileset>
+    <fileset dir="${xalan.dir}/bin">
+      <include name="xalan.jar"/>
+    </fileset>
+    <fileset dir="${ant.dir}/lib">
+      <include name="xercesImpl.jar"/>
+    </fileset>
+  </path>
+
+
+  <!--
+  Custom tasks. The classpath includes the custom DocMaker tasks, the
+  Ant Contrib tasks, and the FOP libraries and dependencies.
+  -->
+  <path id="cp.tasks">
+    <fileset dir="${lib.dir}">
+      <include name="jde-commons-ext.jar"/>
+      <include name="docmaker.jar"/>
+      <include name="lucene/lucene.jar"/>
+    </fileset>
+    <fileset dir="${antc.dir}">
+      <include name="lib/*.jar"/>
+    </fileset>
+    <fileset dir="${fop.dir}">
+      <include name="lib/*.jar"/>
+      <include name="build/*.jar"/>
+    </fileset>
+  </path>
+
+
+  <taskdef
+    classname="curam.docmaker.tools.anttasks.Transform"
+    classpathref="cp.tasks"
+    name="transform"
+  />
+  <taskdef
+    classname="curam.docmaker.tools.anttasks.Index"
+    classpathref="cp.tasks"
+    name="index"
+  />
+  <taskdef
+    classname="curam.docmaker.tools.anttasks.MergeIndex"
+    classpathref="cp.tasks"
+    name="mergeindex"
+  />
+  <taskdef
+    classname="curam.docmaker.tools.anttasks.Fop"
+    classpathref="cp.tasks"
+    name="fop"
+  />
+  <taskdef
+    classname="net.sf.antcontrib.logic.ForEach"
+    classpathref="cp.tasks"
+    name="foreach"
+  />
+  <taskdef
+    classname="net.sf.antcontrib.logic.IfTask"
+    classpathref="cp.tasks"
+    name="if"
+  />
+
+
+  <!-- Include the internal, unsupported targets if they are available. -->
+  <import
+    file="dm-internal.xml"
+    optional="true"
+  />
+
+
+  <!-- =================================================================== -->
+  <!-- ==================== B A S I C   T A R G E T S ==================== -->
+  <!-- =================================================================== -->
+  <target
+    description="Displays the usage information for DocMaker"
+    name="usage"
+  >
+    <echo>
+DocMaker v. ${docmaker.version}
+------------------
+Copyright ${docmaker.copyright} Curam Software Limited. All Rights Reserved.
+
+Usage:
+
+  docmaker [ &lt;targets&gt; ]
+
+For a list of targets run:
+
+  docmaker -projecthelp
+
+Documentation will be generated in a sub-folder of the ${out.dir}
+folder named for each generated document format. This folder will
+be deleted when the "clean" target is called.
+    </echo>
+  </target>
+
+
+  <target
+    description="Opens the DocMaker on-line HTML help"
+    name="help"
+  >
+    <echo message="Opening DocMaker HTML help...."/>
+    <exec
+      dir="${home.dir}"
+      executable="cmd.exe"
+      failonerror="true"
+      taskname="help"
+    >
+      <arg line="/c start &quot;DocMaker Help&quot; doc\help\manual\index.html"/>
+    </exec>
+    <echo message="Done."/>
+  </target>
+
+
+  <target
+    depends="generate-pdf,generate-help"
+    description="Generates documentation in all supported formats"
+    name="generate-all"
+  />
+
+
+  <target
+    description="Displays the version information"
+    name="version"
+  >
+    <echo message="DocMaker version: ${docmaker.version}"/>
+    <echo message="DocMaker locale:  ${docmaker.locale}"/>
+    <echo message="DocMaker home:    ${home.dir}"/>
+    <echo message="Ant version:      ${ant.version}"/>
+    <echo message="Java version:     ${java.version}"/>
+    <echo message="Java home:        ${java.home}"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ============================ C L E A N ============================ -->
+  <!-- =================================================================== -->
+  <!--
+  Cleans the output folder, but only if it a recognizable output folder,
+  just in case the command is run from the wrong directory and there is
+  another folder with the same name present that is not safe to delete.
+  Remember, just because you're paranoid doesn't mean they aren't out to
+  get you. Bitter experience has shown that the default output folder
+  "doc" is relatively common.
+  -->
+  <target
+    depends="-check-safe-to-clean,force-clean"
+    description="Safely deletes the output folder"
+    name="clean"
+  />
+
+
+  <target name="-check-safe-to-clean">
+    <condition property="not.safe.to.clean">
+      <and>
+        <available
+          file="${out.dir}"
+          type="dir"
+        />
+        <not>
+          <available
+            file="${marker.dir}"
+            type="dir"
+          />
+        </not>
+      </and>
+    </condition>
+
+
+    <fail if="not.safe.to.clean">
+The output folder ${out.dir} exists but may not be a DocMaker
+output folder, so it was not deleted. If you are sure that you
+want to delete this folder, run "docmaker force-clean".
+    </fail>
+  </target>
+
+
+  <!--
+  The contents of the output folder is cleaned first, but not the marker
+  folder. If there is a problem cleaning the folders (a PDF file might be
+  open and locked), this ensures that the marker folder is not deleted
+  prematurely.
+  -->
+  <target
+    description="Deletes the output folder"
+    name="force-clean"
+  >
+    <echo message="Removing all generated output in ${out.dir}...."/>
+    <delete>
+      <fileset dir="${basedir}">
+        <include name="${out.dir}/**/*"/>
+        <exclude name="${marker.dir}"/>
+      </fileset>
+    </delete>
+    <!--
+    A problem deleting the files above will cause a failure and this task will
+    not be executed. The marker folder will remain, so there is less chance
+    that the "force-clean" target will need to be invoked.
+    -->
+    <delete dir="${out.dir}"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ============================== P D F ============================== -->
+  <!-- =================================================================== -->
+  <target
+    depends="generate-fo,-mkdirs-pdf"
+    description="Generates PDF documentation"
+    name="generate-pdf"
+  >
+    <fop
+      format="application/pdf"
+      outdir="${pdf.dir}"
+      sourcefilebasedir="true"
+      taskname="pdf-gen"
+      userconfig="${lib.dir}/fonts/userconfig.xml"
+    >
+      <fileset dir="${fo.dir}">
+        <include name="**/*.fo"/>
+      </fileset>
+    </fop>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- =========================== X S L   F O =========================== -->
+  <!-- =================================================================== -->
+  <target
+    depends="-print-only-filter,-gen-templates-fo,-mkdirs-fo"
+    description="Generates XSL-FO documentation"
+    name="generate-fo"
+  >
+    <parallel>
+      <!--
+      Transform the filtered "print-only" content.
+      -->
+      <transform
+        basedir="${print.dir}"
+        classpathref="cp.transform"
+        destdir="${fo.dir}"
+        extension=".fo"
+        style="${fo.xsl}"
+        taskname="fo-gen"
+        xmlcatalogref="cat.docbook"
+      >
+        <include name="**/book.xml"/>
+      </transform>
+      <!--
+      Copy the resources files.
+      -->
+      <copy todir="${fo.dir}">
+        <fileset dir="${tmp.dir}">
+          <patternset refid="ps.resources"/>
+        </fileset>
+      </copy>
+    </parallel>
+  </target>
+
+
+  <!--
+  Generate the DocBook XSL title page templates for XSLFO using the supplied
+  stylesheet. These are used by the customisation layer when generating
+  XSLFO output.
+  -->
+  <target name="-gen-templates-fo">
+    <transform
+      basedir="${xsl.dir}/fo"
+      classpathref="cp.transform"
+      destdir="${xsl.dir}/fo"
+      extension=".xsl"
+      style="${db.xsl.dir}/template/titlepage.xsl"
+      taskname="template-gen"
+    >
+      <include name="title-pages.xml"/>
+    </transform>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ======================== H T M L   H E L P ======================== -->
+  <!-- =================================================================== -->
+  <target
+    depends="-install-top-level-help"
+    description="Generates HTML-Help documentation"
+    name="generate-help"
+  />
+
+
+  <target
+    depends="-help-filter-and-index,-gen-templates-help,-mkdirs-help"
+    name="-generate-help"
+  >
+    <parallel>
+      <!--
+      Transform the filtered "online-only" content.
+      -->
+      <transform
+        basedir="${online.dir}"
+        classpathref="cp.transform"
+        destdir="${help.dir}"
+        extension=".html"
+        style="${help.xsl}"
+        taskname="help-gen"
+        xmlcatalogref="cat.docbook"
+      >
+        <include name="**/book.xml"/>
+        <param
+          expression="${docmaker.help.locale}"
+          name="l10n.gentext.language"
+        />
+
+
+        <!-- 
+        If this is a "localized" build use the custom resources instead of 
+        DocMaker defaults.
+        -->
+        <param
+          expression="${help.l10n.default.dir}/l10n.xml"
+          if="docmaker.help.l10n"
+          name="l10n.docbook.default"
+        />
+        <param
+          expression="${help.l10n.curam.dir}/l10n.xml"
+          if="docmaker.help.l10n"
+          name="l10n.docbook.curam"
+        />
+
+
+      </transform>
+      <!--
+      Copy the resources files and the search index files.
+      -->
+      <copy todir="${help.dir}">
+        <fileset dir="${tmp.dir}">
+          <patternset refid="ps.resources"/>
+        </fileset>
+        <fileset dir="${online.dir}">
+          <include name="**/dm-index.zip"/>
+        </fileset>
+      </copy>
+    </parallel>
+  </target>
+
+
+  <!--
+  Configures the help applet at the top level and creates a WAR file for
+  deploying applet and servlet help. Unlike applet help, servlet help only
+  exists at the top level and is not configured for individual books.
+  -->
+  <target
+    depends="-install-help-files"
+    name="-install-top-level-help"
+  >
+    <!--
+    Copy the applet JAR file and insert the meta-data files for the top-level
+    help applet. These files were generated for each book. The top-level merged
+    index is also added to the JAR file.
+    -->
+    <copy todir="${help.dir}">
+      <fileset dir="${lib.dir}">
+        <include name="help-applet.jar"/>
+        <include name="jde-commons-ext.jar"/>
+        <include name="help-style.css"/>
+        <include name="help-util.js"/>
+      </fileset>
+      <fileset dir="${lib.dir}/lucene">
+        <include name="lucene.jar"/>
+      </fileset>
+    </copy>
+    <!-- 
+    The data files defining the tables of contents and the topic markers for
+    each book, the list of book sub-directories, and the merged search index.
+    -->
+    <fileset
+      dir="${help.dir}"
+      id="help.data.files"
+    >
+      <include name="*/toc.hhc"/>
+      <include name="*/alias.h"/>
+      <include name="books.lst"/>
+      <include name="dm-index.zip"/>
+    </fileset>
+    <!--
+    Create a JAR file for the applet help.
+    -->
+    <jar
+      destfile="${help.dir}/help-applet.jar"
+      update="true"
+    >
+      <fileset refid="help.data.files"/>
+    </jar>
+    <!-- Update JAR with custom l10n resources if necessary -->
+    <if>
+      <isset property="docmaker.help.l10n"/>
+      <then>
+        <jar
+          destfile="${help.dir}/help-applet.jar"
+          update="true"
+        >
+          <fileset dir="${help.l10n.prop.dir}">
+            <include name="**/*"/>
+          </fileset>
+        </jar>
+      </then>
+    </if>
+
+
+    <!--
+    Delete some redundant files. Although redundant, the empty "book.html"
+    file is not deleted as it is the basis for dependency checking. Some of
+    the metadata files may be required again if the JAR is rebuilt without
+    regenerating all of the help.
+    -->
+    <delete>
+      <fileset dir="${help.dir}">
+        <include name="*/context.h"/>
+        <include name="*/*.hhk"/>
+        <include name="*/*.hhp"/>
+      </fileset>
+    </delete>
+    <!--
+    The applet.html file is almost generic and can be copied from the generated
+    output. It is hard to pick just one using Ant, so they are all copied and
+    flattened and overwritten; the last one standing is sufficient. A small
+    correction is then made to the image paths.
+    -->
+    <copy
+      flatten="true"
+      overwrite="true"
+      todir="${help.dir}"
+    >
+      <fileset dir="${help.dir}">
+        <include name="*/applet.html"/>
+      </fileset>
+    </copy>
+    <replace
+      encoding="UTF-8"
+      file="${help.dir}/applet.html"
+      token="../images/"
+      value="images/"
+    />
+    <!--
+    The splash page and the frameset are generic and boilerplate versions are
+    copied from the installation folder. The frameset file is renamed.
+    -->
+    <copy
+      encoding="UTF-8"
+      file="${lib.dir}/help-splash.html"
+      todir="${help.dir}"
+    >
+      <filterset>
+        <filter
+          token="LOCALE"
+          value="${docmaker.help.locale}"
+        />
+      </filterset>
+    </copy>
+    <replace
+      encoding="UTF-8"
+      file="${help.dir}/help-splash.html"
+      token="_"
+      value="-"
+    />
+
+
+    <copy
+      encoding="UTF-8"
+      file="${lib.dir}/help-logo.html"
+      todir="${help.dir}"
+    >
+      <filterset>
+        <filter
+          token="LOCALE"
+          value="${docmaker.help.locale}"
+        />
+      </filterset>
+    </copy>
+    <replace
+      encoding="UTF-8"
+      file="${help.dir}/help-logo.html"
+      token="_"
+      value="-"
+    />
+
+
+    <copy
+      encoding="UTF-8"
+      file="${lib.dir}/help-frames.jsp"
+      tofile="${help.dir}/index.jsp"
+    >
+      <filterset>
+        <filter
+          token="LOCALE"
+          value="${docmaker.help.locale}"
+        />
+      </filterset>
+    </copy>
+    <replace
+      encoding="UTF-8"
+      file="${help.dir}/index.jsp"
+      token="_"
+      value="-"
+    />
+
+
+    <copy
+      encoding="UTF-8"
+      file="${lib.dir}/help-frames.html"
+      tofile="${help.dir}/index.html"
+    >
+      <filterset>
+        <filter
+          token="LOCALE"
+          value="${docmaker.help.locale}"
+        />
+      </filterset>
+    </copy>
+    <replace
+      encoding="UTF-8"
+      file="${help.dir}/index.html"
+      token="_"
+      value="-"
+    />
+
+
+    <antcall target="-top-level-help-files-l10n"/>
+
+
+    <!--
+    The servlets used in online help require locale as an initialization 
+    parameter. The filterset below sets this.
+    -->
+    <copy
+      file="${lib.dir}/web.xml"
+      todir="${help.tmp.dir}"
+      verbose="true"
+    >
+      <filterset>
+        <filter
+          token="LOCALE"
+          value="${docmaker.help.locale}"
+        />
+      </filterset>
+    </copy>
+
+
+    <copy
+      file="${lib.dir}/ibm-web-bnd.xmi"
+      todir="${help.tmp.dir}/WEB-INF"
+    />
+
+
+    <!--
+    Create a WAR file for servlet help. Applet help will also be included, so
+    both types can be deployed together in a web container.
+    -->
+    <war
+      destfile="${help.dir}/help.war"
+      update="true"
+      webxml="${help.tmp.dir}/web.xml"
+    >
+      <!-- Exclude some of the metadata files and the WAR itself. -->
+      <fileset dir="${help.dir}">
+        <exclude name="**/*.war"/>
+        <exclude name="**/*.hhc"/>
+        <exclude name="**/alias.h"/>
+        <exclude name="**/books.lst"/>
+        <exclude name="**/dm-index.zip"/>
+      </fileset>
+      <fileset dir="${help.tmp.dir}">
+        <exclude name="web.xml"/>
+      </fileset>
+      <!--
+      The data files in the applet JAR file are picked off the classpath by
+      the servlet. This is a second copy of the JAR, the first is served from
+      the root directory when applet help is being used.
+      -->
+      <lib dir="${help.dir}">
+        <include name="help-applet.jar"/>
+        <include name="lucene.jar"/>
+        <include name="jde-commons-ext.jar"/>
+      </lib>
+      <lib dir="${lib.dir}">
+        <include name="help-server.jar"/>
+      </lib>
+    </war>
+  </target>
+
+
+  <!-- 
+  The following files are installed at the top level of the online help web
+  application by the "-install-top-level-help" above:
+  ${lib.dir}/help-splash.html"
+  ${lib.dir}/help-logo.html"
+  ${lib.dir}/help-frames.jsp"
+  ${lib.dir}/help-frames.html"
+  
+  This target localizes those files if necessary.
+  -->
+  <target
+    if="docmaker.help.l10n"
+    name="-top-level-help-files-l10n"
+  >
+
+
+    <!--
+    help-frames.html
+    This file is copied to "index.html". This target uses a duplicate of
+    help-frames.html called help-frames-l10n.html which has placeholders.
+    The locale specific properties file is loaded and the placeholders
+    substituted.
+    -->
+    <property file="${help.l10n.prop.dir}/curam/docmaker/tools/help/HelpUI_${docmaker.help.locale}.properties"/>
+    <echo message="Localizing ${help.dir}/index.html using ${help.l10n.prop.dir}/curam/docmaker/tools/help/HelpUI_${docmaker.help.locale}.properties"/>
+    <copy
+      encoding="UTF-8"
+      file="${lib.dir}/help-frames-l10n.html"
+      overwrite="true"
+      tofile="${help.dir}/index.html"
+    >
+      <filterset>
+        <filter
+          token="LOCALE"
+          value="${docmaker.help.locale}"
+        />
+        <filter
+          token="PAGE_TITLE"
+          value="${Help.Name.Main.Page}"
+        />
+        <filter
+          token="APPLET_FRAME_TITLE"
+          value="${HelpApplet.Name.Applet.Frame}"
+        />
+        <filter
+          token="MAIN_FRAME_TITLE"
+          value="${HelpApplet.Name.Main.Frame}"
+        />
+        <filter
+          token="NOFRAMES_MSG"
+          value="${Help.Msg.NoFrames}"
+        />
+      </filterset>
+    </copy>
+    <!-- Replace the _ in the locale with a -. -->
+    <replace
+      encoding="UTF-8"
+      file="${help.dir}/index.html"
+      token="_"
+      value="-"
+    />
+
+
+    <!--
+    The files below are localized by getting the developer to provide overrides
+    in the "help.l10n.web.dir" directory.
+    -->
+    <echo message="Copying localized web (HTML + images) resources"/>
+    <copy
+      overwrite="true"
+      todir="${help.dir}"
+    >
+      <fileset dir="${help.l10n.web.dir}/${docmaker.help.locale}">
+        <include name="help-splash.html"/>
+        <include name="help-logo.html"/>
+        <include name="images/help-splash.gif"/>
+        <include name="images/green-logo.gif"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!--
+  Installs the help applet and CSS stylesheet in each generated book folder.
+  -->
+  <target
+    depends="-generate-help"
+    name="-install-help-files"
+  >
+    <!-- Delete the books list file first, so it can be updated. -->
+    <delete file="${help.dir}/books.lst"/>
+    <foreach
+      param="target.dir"
+      target="-install-help-files-one"
+    >
+      <path>
+        <dirset dir="${help.dir}">
+          <include name="*"/>
+          <exclude name="images"/>
+        </dirset>
+      </path>
+    </foreach>
+  </target>
+
+
+  <!--
+  Install the help applet JAR file and add the help meta-data files to it.
+  Also adds the name of the folder to the top-level "books.lst" file and
+  copies in the CSS stylesheet and JavaScript utilities files.
+  -->
+  <target name="-install-help-files-one">
+    <echo message="Installing help applet in ${target.dir}"/>
+    <!--
+    Copy the applet JAR file, CSS stylesheet, and JavaScript utilities, and
+    insert the meta-data files and the index ZIP file.
+    -->
+    <copy todir="${target.dir}">
+      <fileset dir="${lib.dir}">
+        <include name="help-applet.jar"/>
+        <include name="jde-commons-ext.jar"/>
+        <include name="help-style.css"/>
+        <include name="help-util.js"/>
+      </fileset>
+      <fileset dir="${lib.dir}/lucene">
+        <include name="lucene.jar"/>
+      </fileset>
+    </copy>
+
+
+    <jar
+      destfile="${target.dir}/help-applet.jar"
+      update="true"
+    >
+      <fileset dir="${target.dir}">
+        <include name="toc.hhc"/>
+        <include name="alias.h"/>
+        <include name="dm-index.zip"/>
+      </fileset>
+    </jar>
+    <!-- Update JAR with custom l10n resources if necessary -->
+    <if>
+      <isset property="docmaker.help.l10n"/>
+      <then>
+        <jar
+          destfile="${target.dir}/help-applet.jar"
+          update="true"
+        >
+          <fileset dir="${help.l10n.prop.dir}">
+            <include name="**/*"/>
+          </fileset>
+        </jar>
+      </then>
+    </if>
+
+
+    <!-- Record the folder name in the "books.lst" file. -->
+    <basename
+      file="${target.dir}"
+      property="target.dir.name"
+    />
+    <echo
+      append="true"
+      file="${help.dir}/books.lst"
+      message="${target.dir.name}&#x0A;"
+    />
+  </target>
+
+
+  <!--
+  Generate the DocBook XSL title page templates for HTML Help using the
+  supplied stylesheet. These are used by the customisation layer when
+  generating HTML output.
+  -->
+  <target name="-gen-templates-help">
+    <transform
+      basedir="${xsl.dir}/help"
+      classpathref="cp.transform"
+      destdir="${xsl.dir}/help"
+      extension=".xsl"
+      style="${db.xsl.dir}/template/titlepage.xsl"
+      taskname="template-gen"
+    >
+      <include name="titlepage.templates.xml"/>
+    </transform>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ==================== F I L E   C R E A T I O N ==================== -->
+  <!-- =================================================================== -->
+  <target
+    description="Creates a new multiple file book in the current folder"
+    name="new-book"
+  >
+    <copy todir="${basedir}">
+      <fileset dir="${tmpl.dir}/book/compound">
+        <include name="*.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <target
+    description="Creates a new single file book in the current folder"
+    name="new-simple-book"
+  >
+    <copy todir="${basedir}">
+      <fileset dir="${tmpl.dir}/book/simple">
+        <include name="*.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <target
+    description="Creates a new chapter file in the current folder"
+    name="new-chapter"
+  >
+    <copy todir="${basedir}">
+      <fileset dir="${tmpl.dir}/chapter">
+        <include name="*.xml"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- =================== R U L E S   C H E C K I N G =================== -->
+  <!-- =================================================================== -->
+  <!--
+  Processes the book file using a stylesheet that writes errors and warnings
+  to the console but also writes the errors to a file called "failed.txt". If
+  this file exists after processing, then the check failed (there may be one
+  per book).
+  -->
+  <target
+    depends="-validate,-assemble,-clean-chk,-mkdirs-chk"
+    description="Checks conformance with the style guidelines"
+    name="check"
+  >
+    <transform
+      basedir="${tmp.dir}"
+      classpathref="cp.transform"
+      destdir="${chk.dir}"
+      extension=".txt"
+      style="${rules.xsl}"
+      taskname="check"
+      xmlcatalogref="cat.docbook"
+    >
+      <include name="**/book.xml"/>
+    </transform>
+    <!--
+    If a book is not located in a folder below the one from which this target
+    is executed, it is possible that the "failed.txt" file will be directly in
+    the "check" folder and not in a sub-folder.
+    -->
+    <available
+      file="failed.txt"
+      property="check.failed"
+    >
+      <filepath>
+        <dirset dir="${chk.dir}">
+          <include name="**"/>
+        </dirset>
+      </filepath>
+    </available>
+    <fail
+      if="check.failed"
+      message="ERROR: Document check failed."
+    />
+  </target>
+
+
+  <!--
+  Validate the documentation against the DocBook DTD. The XInclude references
+  are not followed, so all documents are validated separately. A different
+  XML catalog is used so that the "xi:include" element is declared within
+  the DTD and is recognised as valid.
+  -->
+  <target name="-validate">
+    <xmlvalidate taskname="validate">
+      <fileset refid="fs.documents"/>
+      <xmlcatalog refid="cat.docbook.xi"/>
+      <attribute
+        name="http://apache.org/xml/features/validation/dynamic"
+        value="true"
+      />
+    </xmlvalidate>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ==================== P R E P R O C E S S I N G ==================== -->
+  <!-- =================================================================== -->
+  <!--
+  Process the book files to include all the external general entities and
+  to add the cross-reference information.
+  -->
+  <target
+    depends="-build-dependencies"
+    name="-assemble"
+  >
+    <parallel>
+      <sequential>
+        <transform
+          classpathref="cp.transform"
+          dependdir="${dep.dir}"
+          dependextension=".d"
+          destdir="${pre.dir}"
+          style="${assemble.xsl}"
+          taskname="assemble"
+          xinclude="true"
+          xmlcatalogref="cat.docbook"
+        >
+          <include name="**/book.xml"/>
+          <exclude name="${out.dir}/**"/>
+        </transform>
+        <transform
+          basedir="${pre.dir}"
+          classpathref="cp.transform"
+          dependdir="${dep.dir}"
+          dependextension=".d"
+          destdir="${tmp.dir}"
+          style="${xref.xsl}"
+          taskname="xref-gen"
+          xmlcatalogref="cat.docbook"
+        >
+          <include name="**/book.xml"/>
+        </transform>
+      </sequential>
+      <sequential>
+        <copy todir="${tmp.dir}">
+          <fileset refid="fs.resources"/>
+          <!--
+          Copy the stylesheet graphics (admonitions, navigation, etc.) to
+          the tmp folder. There is an assumption that books are contained
+          one directly level below the doc root directory so that the path
+          to the images is common to all books.
+          -->
+          <fileset dir="${db.xsl.dir}">
+            <include name="images/**"/>
+          </fileset>
+        </copy>
+        <copy
+          overwrite="true"
+          todir="${tmp.dir}"
+        >
+          <!--
+          Merge the Curam-specific images. Some of these override the stock
+          images that come with the DocBook XSL stylesheets (copied above).
+          -->
+          <fileset dir="${lib.dir}">
+            <include name="images/**"/>
+          </fileset>
+        </copy>
+      </sequential>
+    </parallel>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- =========== C O N D I T I O N A L   P R O C E S S I N G =========== -->
+  <!-- =================================================================== -->
+  <!--
+  Process the assembled books to filter out conditional content not
+  appropriate for online (HTML or HTML Help) content. The resource files
+  will remain in the temporary folder.
+  -->
+  <target
+    depends="-assemble,-mkdirs-online"
+    name="-online-only-filter"
+  >
+    <transform
+      basedir="${tmp.dir}"
+      classpathref="cp.transform"
+      destdir="${online.dir}"
+      style="${filter.xsl}"
+      taskname="online-filter"
+      xmlcatalogref="cat.docbook"
+    >
+      <include name="**/book.xml"/>
+      <param
+        expression="online-only"
+        name="condition"
+      />
+    </transform>
+  </target>
+
+
+  <!--
+  Process the assembled books to filter out conditional content not
+  appropriate for print (FO or PDF) content. The resource files will remain
+  in the temporary folder.
+  -->
+  <target
+    depends="-assemble,-mkdirs-print"
+    name="-print-only-filter"
+  >
+    <transform
+      basedir="${tmp.dir}"
+      classpathref="cp.transform"
+      destdir="${print.dir}"
+      style="${filter.xsl}"
+      taskname="print-filter"
+      xmlcatalogref="cat.docbook"
+    >
+      <include name="**/book.xml"/>
+      <param
+        expression="print-only"
+        name="condition"
+      />
+    </transform>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ========================= I N D E X I N G ========================= -->
+  <!-- =================================================================== -->
+  <!--
+  Indexes the content for the HTML Help output.
+  -->
+  <target
+    depends="-online-only-filter"
+    name="-help-filter-and-index"
+  >
+    <transform
+      basedir="${online.dir}"
+      classpathref="cp.transform"
+      destdir="${online.dir}"
+      extension="idx"
+      style="${index.xsl}"
+      taskname="index-filter"
+      xmlcatalogref="cat.docbook"
+    >
+      <include name="**/book.xml"/>
+    </transform>
+    <!-- Create an index for each book. -->
+    <index basedir="${online.dir}">
+      <include name="**/book.idx"/>
+    </index>
+    <!-- Merge all of the book indexes. -->
+    <mergeindex
+      basedir="${online.dir}"
+      destdir="${online.dir}/dm-index-merged"
+    >
+      <include name="**/dm-index"/>
+    </mergeindex>
+    <!-- ZIP all of the indexes. -->
+    <foreach
+      param="index.dir"
+      target="-zip-help-index"
+    >
+      <path>
+        <dirset dir="${online.dir}">
+          <include name="**/dm-index*"/>
+        </dirset>
+      </path>
+    </foreach>
+  </target>
+
+
+  <target name="-zip-help-index">
+    <zip
+      basedir="${index.dir}"
+      compress="false"
+      destfile="${index.dir}/../dm-index.zip"
+    />
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ============== D E P E N D E N C Y   C H E C K I N G ============== -->
+  <!-- =================================================================== -->
+  <!--
+  Creates dependency files, with the same relative path and name as the book
+  files but a ".d" extension, containing a list of file included by the book.
+  This can be used as an extra input to the "transform" task.
+  -->
+  <target
+    depends="-mkdirs-dep"
+    name="-build-dependencies"
+  >
+    <transform
+      classpathref="cp.transform"
+      destdir="${dep.dir}"
+      extension=".d"
+      style="${depend.xsl}"
+      taskname="depend-check"
+      xmlcatalogref="cat.docbook.xi"
+    >
+      <include name="**/book.xml"/>
+      <exclude name="${out.dir}/**"/>
+      <outputproperty
+        name="method"
+        value="text"
+      />
+      <outputproperty
+        name="encoding"
+        value="${file.encoding}"
+      />
+    </transform>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- =================== S P E L L   C H E C K I N G =================== -->
+  <!-- =================================================================== -->
+  <target
+    description="Starts interactive spell-checking"
+    name="spell"
+  >
+    <echo message="Checking spelling for locale '${docmaker.locale}'."/>
+    <foreach
+      param="document"
+      target="-spell-one"
+    >
+      <path>
+        <fileset refid="fs.documents"/>
+      </path>
+    </foreach>
+  </target>
+
+
+  <target name="-spell-one">
+    <!-- A new window is required for terminal interaction. -->
+    <echo message="Checking ${document}...."/>
+    <exec
+      dir="${basedir}"
+      executable="cmd.exe"
+      failonerror="true"
+      taskname="spell"
+    >
+      <arg line="/c start &quot;${document} - Check Spelling&quot; /WAIT         aspell ${aspell.args} check &quot;${document}&quot;"/>
+    </exec>
+    <echo message="Done."/>
+  </target>
+
+
+  <target
+    description="Performs non-interactive spell-checking"
+    name="autospell"
+  >
+    <echo message="Checking spelling for locale '${docmaker.locale}'."/>
+    <foreach
+      param="document"
+      target="-autospell-one"
+    >
+      <path>
+        <fileset refid="fs.documents"/>
+      </path>
+    </foreach>
+  </target>
+
+
+  <target name="-autospell-one">
+    <echo message="Checking ${document}...."/>
+    <exec
+      dir="${basedir}"
+      executable="aspell.exe"
+      failonerror="true"
+      input="${document}"
+      outputproperty="unknown.words"
+      taskname="autospell"
+    >
+      <arg line="${aspell.args} list"/>
+    </exec>
+    <condition property="spelling.errors">
+      <not>
+        <equals
+          arg1="${unknown.words}"
+          arg2=""
+          trim="true"
+        />
+      </not>
+    </condition>
+    <fail if="spelling.errors">
+ERROR: Unknown or misspelled words in ${document}
+------------------------
+${unknown.words}
+------------------------
+    </fail>
+    <echo message="Done."/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ================== U T I L I T Y   T A R G E T S ================== -->
+  <!-- =================================================================== -->
+  <target name="-mkdirs-out">
+    <mkdir dir="${out.dir}"/>
+    <mkdir dir="${marker.dir}"/>
+    <mkdir dir="${tmp.dir}"/>
+    <mkdir dir="${pre.dir}"/>
+  </target>
+
+
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-online"
+  >
+    <mkdir dir="${online.dir}"/>
+  </target>
+
+
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-print"
+  >
+    <mkdir dir="${print.dir}"/>
+  </target>
+
+
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-fo"
+  >
+    <mkdir dir="${fo.dir}"/>
+  </target>
+
+
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-help"
+  >
+    <mkdir dir="${help.dir}"/>
+    <mkdir dir="${help.tmp.dir}"/>
+    <mkdir dir="${help.tmp.dir}/WEB-INF"/>
+  </target>
+
+
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-pdf"
+  >
+    <mkdir dir="${pdf.dir}"/>
+  </target>
+
+
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-chk"
+  >
+    <mkdir dir="${chk.dir}"/>
+  </target>
+
+
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-dep"
+  >
+    <mkdir dir="${dep.dir}"/>
+  </target>
+
+
+  <target name="-clean-chk">
+    <delete dir="${chk.dir}"/>
+  </target>
+
+
+</project>

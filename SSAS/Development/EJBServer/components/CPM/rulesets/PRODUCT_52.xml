@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/ruleset.xsd"
+>
+  <Product
+    comment=""
+    id="PRODUCT_52"
+    legislationbase=""
+    producttype="RT2"
+  >
+    <Label
+      highlightonfailure="true"
+      legislationlink=""
+    >
+      <RuleName>
+        <Text
+          locale="en_US"
+          value="Provider Placement"
+        />
+      </RuleName>
+      <SuccessText>
+        <Text
+          locale="en_US"
+          value="Provider Placement succeeded"
+        />
+      </SuccessText>
+      <FailureText>
+        <Text
+          locale="en_US"
+          value="Provider Placement failed"
+        />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation"/>
+      <DataItem name="deliveryFrequency"/>
+      <DataItem name="personReferenceNumber"/>
+      <DataItem name="claimReferenceNumber"/>
+      <DataItem name="assessmentReferenceNumber"/>
+    </DataAccess>
+    <DataAccess name="ProviderPlacementEvidenceRDO">
+      <DataItem name="paymentAmount"/>
+      <DataItem name="placementID"/>
+    </DataAccess>
+    <DataAccess name="ProviderPlacementEvidenceConstants">
+      <DataItem name="paymentAmount"/>
+      <DataItem name="totalCount"/>
+    </DataAccess>
+    <RuleGroup
+      executionmode="stoponresult"
+      id="1"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Placement Evidence"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Placement Evidence Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Placement Evidence Failed"
+          />
+        </FailureText>
+      </Label>
+      <RuleListGroup
+        executionmode="executeall"
+        id="2"
+        listgroup="ProviderPlacementEvidenceRDO"
+        operation="and"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="RuleListGroup for Placement Evidence"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="RuleListGroup for Placement Evidence Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="RuleListGroup for Placement Evidence Failed"
+            />
+          </FailureText>
+        </Label>
+        <DataItemAssignment
+          dataitem="ProviderPlacementEvidenceConstants.totalCount"
+          id="3"
+          value="ProviderPlacementEvidenceConstants.totalCount + 1"
+        />
+        <DataItemAssignment
+          dataitem="ProviderPlacementEvidenceConstants.paymentAmount"
+          id="4"
+          value="ProviderPlacementEvidenceConstants.paymentAmount + ProviderPlacementEvidenceRDO.current.paymentAmount"
+        />
+      </RuleListGroup>
+      <RuleGroup
+        executionmode="stoponresult"
+        id="5"
+        operation="and"
+        summaryitem="false"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="RuleGroup for Placement Evidence"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="RuleGroup for Placement Evidence Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="RuleGroup for Placement Evidence Failed"
+            />
+          </FailureText>
+        </Label>
+        <Rule id="6">
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Placement Evidence"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Placement Evidence Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Placement Evidence Failed"
+              />
+            </FailureText>
+          </Label>
+          <Condition
+            closingbrackets="0"
+            dataitemlhs="ProviderPlacementEvidenceConstants.totalCount"
+            dataitemrhs="0"
+            id="7"
+            openingbrackets="0"
+            operation="&gt;"
+          />
+        </Rule>
+        <Rule id="8">
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Placement Evidence"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Placement Evidence Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Placement Evidence Failed"
+              />
+            </FailureText>
+          </Label>
+          <Condition
+            closingbrackets="0"
+            dataitemlhs="ProviderPlacementEvidenceConstants.paymentAmount"
+            dataitemrhs="0"
+            id="9"
+            openingbrackets="0"
+            operation="&gt;"
+          />
+        </Rule>
+      </RuleGroup>
+    </RuleGroup>
+    <ObjectiveGroup
+      id="10"
+      priority="0"
+    >
+      <Label highlightonfailure="true">
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Provider Placement Objective Group"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Provider Placement Objective Group Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Provider Placement Objective Group Failed"
+          />
+        </FailureText>
+      </Label>
+      <ObjectiveListGroup
+        conjunction="all"
+        id="11"
+        listgroup="ProviderPlacementEvidenceRDO"
+      >
+        <Label highlightonfailure="true">
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Placement Objective List Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Placement Objective List Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Placement Objective List Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="12"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="RuleGroup for Provider Placement"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="RuleGroup for Provider Placement Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="RuleGroup for Provider Placement Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="13">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Placement"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Placement Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Placement Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="ProviderPlacementEvidenceRDO.current.paymentAmount"
+              dataitemrhs="0"
+              id="14"
+              openingbrackets="0"
+              operation="&gt;"
+            />
+          </Rule>
+        </RuleGroup>
+
+
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="15"
+          priority="0"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC502"
+          recordid="10"
+          relatedreference="ProviderPlacementEvidenceRDO.current.placementID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Placement Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Placement Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Placement Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="16"
+            name="Provider Placement Payment"
+            pattern="000100000"
+            recordid="120"
+            type="RTT3"
+            value="ProviderPlacementEvidenceRDO.current.paymentAmount"
+          />
+
+
+        </Objective>
+      </ObjectiveListGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>

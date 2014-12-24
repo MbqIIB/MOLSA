@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the baseline planned item details    -->
+<!-- item.                                                                  -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_viewBaselinePlanItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderServicePlanDelivery"
+    NAME="DISPLAY"
+    OPERATION="viewBaselineProviderPlannedItemDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="baselinePlanItemID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="baselinePlanItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="baselinePlanItemKey$baselinePlanItemID"
+    />
+  </CONNECT>
+
+
+  <!-- Cluster displaying the details of a Planned Item-->
+  <CLUSTER NUM_COLS="2">
+    <!--BEGIN, CR00249267, MR-->
+    <FIELD LABEL="Field.Label.ConcerningName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concerningName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolveConcernRoleTypeHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concerningID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpectedStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActualStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpectedOutcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.GoodCause">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="goodCauseName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EstimatedCost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="estimatedCost"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Owner">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFullName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00200487, GP -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <!-- END, CR00200487 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="ownerUserName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SubGoal">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="subGoalName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpectedEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActualEndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcomeAchieved"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ActualCost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualCost"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Responsibility">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="planItemRespUserFullName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ServicePlanDelivery_resolveResponsibilityHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="responsibilityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="respSetToClientInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respSetToClientInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="respSetToParticipant"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respSetToParticipant"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="respUserName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="respUserName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.NomineeName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nomineeName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!--END, CR00249267 -->
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.ProviderDetails"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="displayCustomDetails"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.ServiceOffering">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceOfferingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Provider">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitsAuthorized">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="authorizedUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RateAuthorized">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rateAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TotalUnitsAuthorized">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalUnitsAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerTypeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitOfMeasure">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitOfMeasure"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitsDelivered">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitsDelivered"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Frequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="frequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Sensitivity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- Cluster for displaying Reason For Referral -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.ReasonForReferral"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="displayCustomDetails"
+      />
+    </CONDITION>
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="referralReason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!--  Cluster for displaying comments-->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Comments"
+  >
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

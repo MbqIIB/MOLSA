@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the modify reservation page which modifies the reservation period and service  -->
+<!-- BEGIN, CR00260666, ASN -->
+<!-- BEGIN, CR00260871, ASN -->
+<?curam-deprecated Since Curam 6.0 SP1, replaced with 
+  ProviderManagement_modifyReservation.
+  Edit reservation page is merged to display and update the information as a part of single page. 
+  It requires all the page paramters and should accept it from the calling page as a page parameter. Hence this
+  page has been deprecated as it does not have date related page parameters. 
+  A new uim, ProviderManagement_modifyReservation,
+  which accepts all the required page parameter is introduced. See release note: CR00260666 ?>
+<!-- END, CR00260871 -->
+<!-- END, CR00260666 -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyReservationPeriodAndServiceFromList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00249481, PS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="ACTION"
+    OPERATION="retrieveReservationPeriod"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00249481 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="DISPLAY"
+    OPERATION="viewReservation"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="PROVIDEROFFERING"
+    OPERATION="listApprovedProviderOffering"
+  />
+
+
+  <PAGE_PARAMETER NAME="reservationID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_modifyReservationPeriodAndServiceView.vim"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00236219, PS -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_modifyPlaceForReservationFromList"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00236219 -->
+        <!-- BEGIN, CR00249481, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$fromDateString"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$toDateString"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+        </CONNECT>
+        <!-- END, CR00249481 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

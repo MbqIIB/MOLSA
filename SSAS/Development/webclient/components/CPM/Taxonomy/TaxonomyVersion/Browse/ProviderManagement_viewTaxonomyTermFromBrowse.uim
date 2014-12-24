@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description        -->
+<!-- ===========        -->
+<!-- This page allows the user to view a  taxonomy term.                     -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_viewTaxonomyTermFromBrowse"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_viewTaxonomyTermFromBrowseView.vim"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY1"
+    OPERATION="listUseReferencesForTaxonomyTerm"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY2"
+    OPERATION="listRelatedConceptsForTaxonomyTerm"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY3"
+    OPERATION="listRelatedTermsForTaxonomyTerm"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyTermID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="taxonomyTermKey$taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyTermID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="taxonomyTermKey$taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyTermID"
+    />
+    <TARGET
+      NAME="DISPLAY3"
+      PROPERTY="taxonomyTermKey$taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER TITLE="Cluster.Title.UseReferences">
+    <LIST>
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.DeleteUseReference">
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY1"
+              PROPERTY="inEditVersionExists"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_removeUseReferenceFromPublishedTerm"
+            WINDOW_OPTIONS="width=300"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY1"
+                PROPERTY="useReferenceID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="useReferenceID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD
+        LABEL="Field.Label.UseReferences"
+        WIDTH="100"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="useReferenceName"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.RelatedConcept">
+
+
+    <LIST>
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.RemoveRelatedConcept">
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY2"
+              PROPERTY="inEditVersionExists"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_removeRelatedConceptFromTaxonomyTerm"
+            WINDOW_OPTIONS="width=320"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY2"
+                PROPERTY="taxonomyTermRelatedConceptID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="taxonomyTermRelatedConceptID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD
+        LABEL="Field.Label.RelatedConcepts"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="relatedConceptName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.RelatedConceptsCode"
+        WIDTH="50"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="relatedConceptCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.SeeAlsoReferences">
+    <LIST>
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.DeleteSeeAlsoReference">
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY3"
+              PROPERTY="inEditVersionExists"
+            />
+          </CONDITION>
+
+
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_removeSeeAlsoReferenceFromPublisedTerm"
+            WINDOW_OPTIONS="width=320"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="taxonomyTermID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="taxonomyTermID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY3"
+                PROPERTY="relatedTermID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="relatedTermID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD
+        LABEL="Field.Label.SeeAlsoReferences"
+        WIDTH="100"
+      >
+        <!-- BEGIN, CR00270595, RPB -->
+        <LINK PAGE_ID="ProviderManagement_viewTaxonomyTermFromBrowse">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY3"
+              PROPERTY="relatedTermID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyTermID"
+            />
+          </CONNECT>
+        </LINK>
+        <!-- END, CR00270595 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY3"
+            PROPERTY="nameAndCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.EditTerm">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="inEditVersionExists"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_updateTaxonomyTerm"
+        WINDOW_OPTIONS="width=750"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddUseReference">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="inEditVersionExists"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_addUseReferenceToPublishedTerm"
+        WINDOW_OPTIONS="width=350"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddRelatedConcept">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="inEditVersionExists"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_addRelatedConceptsToTermFromView"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddSeeAlsoReference">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="inEditVersionExists"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_addSeeAlsoReferenceToPublisedTerm"
+        WINDOW_OPTIONS="width=350"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.DeleteTerm">
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_removeTaxonomyTerm"
+        WINDOW_OPTIONS="width=350"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

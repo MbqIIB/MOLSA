@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2002-2008, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is listing all group member certification -->
+<PAGE
+  PAGE_ID="ProviderManagement_listGroupMemberCertification"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="providerPartyID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00246961 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainMemberCertification"
+    NAME="DISPLAY"
+    OPERATION="listMemberCertification"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="PROVIDERMEMBER"
+    OPERATION="viewMember"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerPartyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerPartyID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerPartyID"
+    />
+    <TARGET
+      NAME="PROVIDERMEMBER"
+      PROPERTY="memberKey$providerPartyID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.GroupMemberCertification"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listGroupMemberCertification">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.GroupMemberTraining"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listTrainingProgramForProviderGroupMember">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerGroupID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.GroupMemberEmploymentHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewEmploymentHistoryForProviderGroupMember">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00246961 -->
+
+
+  <LIST>
+
+
+    <!-- BEGIN, CR00246961, GP -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00246961 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyGroupMemberCertification"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$memberCertificationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="memberCertificationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerPartyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerPartyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ViewChangeHistory"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_listMemberCertificationChangeHistory"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="memberCertificationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="memberCertificationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteMemberCertification"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="memberCertificationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="memberCertificationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00246961, GP -->
+    </ACTION_SET>
+    <!-- END, CR00246961 -->
+    <!-- BEGIN, CR00246961, GP -->
+    <FIELD
+      LABEL="Field.Label.CertificationType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificationType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Issuer"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$issuer"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.DateOfIssue"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$dateofIssue"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.DateOfExpiry"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateofExpiry"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00246961 -->
+      <!--BEGIN CR00128519 KR -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$derivedStatus"
+        />
+        <!--END CR00128519-->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00246961, GP -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewGroupMemberCertification">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtlsList$memberCertificationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="memberCertificationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contextdescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextdescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00246961 -->
+
+
+  </LIST>
+</PAGE>

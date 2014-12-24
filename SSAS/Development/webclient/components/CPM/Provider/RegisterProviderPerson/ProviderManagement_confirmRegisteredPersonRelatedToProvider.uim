@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page ask for the confirmation before Person related to Provider.  -->
+<!-- BEGIN, CR00103858, AK -->
+<?curam-deprecated Since Curam 6.0, This page is not used in v6 
+  as part of provider enrollment process. This is replaced by Enroll Provider wizard.?>
+<PAGE
+  PAGE_ID="ProviderManagement_confirmRegisteredPersonRelatedToProvider"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00103858 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="addRegPersonAsProvider"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="Key$key$concernRoleID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="Key$key$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.Confirm"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00187142, SS -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+    <!-- BEGIN, CR00235784, GP -->
+    <!-- BEGIN, CR00103858, AK -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_registeredProviderPersonSearch"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00235784 -->
+    </ACTION_CONTROL>
+    <!-- END, CR00103858 -->
+  </ACTION_SET>
+  <!-- END, CR00187142 -->
+</PAGE>

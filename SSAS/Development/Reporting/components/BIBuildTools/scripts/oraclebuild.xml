@@ -1,0 +1,2439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+default="configtest"
+name="PlatformSpecificBuild"
+>
+	
+	
+	<!--  *******************************  -->
+	<!--  ***  Import initialization  ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_init.xml"/>
+	
+	
+	<import file="${REPORTING_ENV}/scripts/rep_cognos.xml"/>
+	<!--  *******************************  -->
+	<!--  ***  Import tasks definitions**  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_tasks.xml"/>
+	
+	
+	<!--  ***************************  -->
+	<!--  ***  Import Properties  ***  -->
+	<!--  ***************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_resetetl.xml"/>
+	
+	
+	<!--  *******************************  -->
+	<!--  ***  Import common targets  ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_utilities.xml"/>
+	
+	
+	<!--  *******************************  -->
+	<!--  *** Import database targets ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_database.xml"/>
+	
+	
+	<!--  *******************************  -->
+	<!--  *** Import database targets ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_configtest.xml"/>
+	
+	
+	<!--  *******************************  -->
+	<!--  *** Import grant targets ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_grant.xml"/>
+	
+	
+	
+	<!--  *******************************  -->
+	<!--  *** Import test targets     ***  -->
+	<!--  *******************************  -->
+	
+	
+	<import
+    file="${REPORTING_ENV}/scripts/rep_testutils.xml"
+    optional="true"
+	/>
+	
+	
+	<!--  *******************************  -->
+	<!--  *** optional imports        ***  -->
+	<!--  *******************************  -->
+	
+	
+	<import
+    file="${REPORTING_ENV}/scripts/rep_oraschemas.xml"
+    optional="true"
+	/>
+	
+	
+	<!--  ************************************  -->
+	<!--  ***  OMB COMMANDS                ***  -->
+	<!--  ************************************  -->
+	<property
+    name="omb.connect"
+    value="OMBCONNECT "
+	/>
+	<property
+    name="omb.cc"
+    value="OMBCC "
+	/>
+	<property
+    name="omb.commit"
+    value="OMBCOMMIT "
+	/>
+	<property
+    name="omb.import"
+    value="OMBIMPORT "
+	/>
+	<!--  ************************************  -->
+	<!--  ***  OWB PROJECT STRUCTURE       ***  -->
+	<!--  ************************************  -->
+	<property
+    name="owb.name.project"
+    value="REPORTING"
+	/>
+	<property
+    name="owb.name.source_module"
+    value="SOURCE"
+	/>
+	<property
+    name="owb.name.staging_module"
+    value="STAGING"
+	/>
+	
+	
+	<property
+    name="owb.warninglabel"
+    value="Warning"
+	/>
+	<property
+    name="owb.name.central_module"
+    value="CENTRAL"
+	/>
+	<property
+    name="owb.name.dm_module"
+    value="DATAMARTS"
+	/>
+	<property
+    name="omb.cc.source"
+    value="${omb.cc}         '/${owb.name.project}/${owb.name.source_module}'"
+	/>
+	<!--  ************************************  -->
+	<!--  ***  build all         ***  -->
+	<!--  ************************************  -->
+	<target
+    depends=""
+    description="init jar  database owb.import.all"
+    name="all"
+	>
+		<antcall target="database.all"/>
+		<antcall target="owb.import.all"/>
+		<antcall target="owb.deploy.all"/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Imports all schema files, ETL files      ***  -->
+	<!--  ***  for the datamarts                        ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="check.db.type, set.database.ora, set.db.design,declareTasks"
+    description="Imports source,staging, central and datamart metadata -Dowb.import.donotexecute=true"
+    name="owb.import.all"
+	>
+		
+		<AntGenerateOMBImportStatements
+		central="true"
+		common="true"
+		datamart="true"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="true"
+		staging="true"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		/>
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${dir.bin.etl}${file.separator}owbimport.tcl"
+			/>
+		</antcall>
+		
+		
+		<antcall target="owb.validate"/>
+		
+		<!-- only call after validate,as validate creates the runtime proeprteis-->
+		<antcall target="owb.etl.runtime.set"/>
+		
+		<!-- ensure the max errors are set to zero-->
+		<antcall target="owb.etl.runtime.check"/>
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Imports all schema files, ETL files      ***  -->
+	<!--  ***  for the datamarts                        ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="check.db.type, set.database.ora, set.db.design,declareTasks"
+    description="Imports schema only meta data for source,staging, central and datamarts -Dowb.import.donotexecute=true"
+    name="owb.import.all.schemas"
+	>
+		
+		
+		<AntGenerateOMBImportStatements
+		central="true"
+		common="true"
+		datamart="true"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		schemaOnly="true"
+		source="true"
+		staging="true"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		/>
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${dir.bin.etl}${file.separator}owbimport.tcl"
+			/>
+		</antcall>
+		
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  validates the ETL meta data               *** -->
+	<!--  *************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Validates all the imported source, staging, central and datamart metadata"
+    name="owb.validate"
+    unless="prop.environment.owb.validateafterimport"
+	>
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.source_module}"
+			/>
+		</antcall>
+		
+		
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.staging_module}"
+			/>
+		</antcall>
+		
+		
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.central_module}"
+			/>
+			
+			
+		</antcall>
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.dm_module}"
+			/>
+		</antcall>
+		
+		<!-- check for errors  - leave the module attribute blank to check everything -->
+		<CheckForOMBValidateError
+		dir="${validatelogdir}"
+		level="${environment.owbconfig.validate.failonwarnings}"
+		module=""
+		/>
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  validates the source oracle module       *** -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Validates all the source oracle module"
+    name="owb.validate.source"
+	>
+		
+		
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.source_module}"
+			/>
+		</antcall>
+		<!-- check for errors  - only check validate issues for a given module-->
+		<CheckForOMBValidateError
+		dir="${validatelogdir}"
+		level="${environment.owbconfig.validate.failonwarnings}"
+		module="${owb.name.source_module}"
+		/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  validates the staging oracle module       *** -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Validates all the staging oracle module"
+    name="owb.validate.staging"
+	>
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.staging_module}"
+			/>
+		</antcall>
+		
+		
+		<!-- check for errors  - only check validate issues for a given module-->
+		<CheckForOMBValidateError
+		dir="${validatelogdir}"
+		level="warning"
+		module="${owb.name.staging_module}"
+		/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  validates the central oracle module       *** -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Validates all the central  oracle module"
+    name="owb.validate.central"
+	>
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.central_module}"
+			/>
+		</antcall>
+		<!-- check for errors  - only check validate issues for a given module-->
+		<CheckForOMBValidateError
+		dir="${validatelogdir}"
+		level="${environment.owbconfig.validate.failonwarnings}"
+		module="${owb.name.central_module}"
+		/>
+		
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  validates the central oracle module       *** -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Validates all the data mart oracle module"
+    name="owb.validate.datamarts"
+	>
+		<antcall target="owb.validate.oracle">
+			<param
+			name="prm.oraclemodule"
+			value="${owb.name.dm_module}"
+			/>
+		</antcall>
+		
+		
+		<!-- check for errors  - only check validate issues for a given module-->
+		<CheckForOMBValidateError
+		dir="${validatelogdir}"
+		level="${environment.owbconfig.validate.failonwarnings}"
+		module="${owb.name.dm_module}"
+		/>
+		
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Imports all schema files, ETL files      ***  -->
+	<!--  ***  for the datamarts                        ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora,  set.db.design, jar"
+    description="Imports datamart(s) metadata"
+    name="owb.import.datamarts"
+	>
+		<AntGenerateOMBImportStatements
+		central="false"
+		common="false"
+		datamart="true"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="false"
+		staging="false"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		/>
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${dir.bin.etl}${file.separator}owbimport.tcl"
+			/>
+		</antcall>
+		<!-- ensure the max errors are set to zero-->
+		<antcall target="owb.etlconfig.set"/>
+		
+	</target>
+	<!--  *************************************************  -->
+	<!--  ***  Imports all schema files, ETL files      ***  -->
+	<!--  ***  for the central data warehouse           ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora,  set.db.design, jar"
+    description="Imports central data warehouse metadata"
+    name="owb.import.central"
+	>
+		<AntGenerateOMBImportStatements
+		central="true"
+		common="false"
+		datamart="false"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="false"
+		staging="false"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		/>
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${dir.bin.etl}${file.separator}owbimport.tcl"
+			/>
+		</antcall>
+		<!-- ensure the max errors are set to zero-->
+		<antcall target="owb.etlconfig.set"/>	
+	</target>
+	
+	
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Imports all schema files for the staging ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="declareTasks,check.db.type, set.database.ora,  set.db.design, jar"
+    description="Imports staging metadata"
+    name="owb.import.staging"
+	>
+		<AntGenerateOMBImportStatements
+		central="false"
+		common="false"
+		datamart="false"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="false"
+		staging="true"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		/>
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${dir.bin.etl}${file.separator}owbimport.tcl"
+			/>
+		</antcall>
+		<!-- ensure the max errors are set to zero-->
+		<antcall target="owb.etlconfig.set"/>	
+	</target>
+	
+	<!--  *************************************************  -->
+	<!--  ***  Imports all schema files for the source  ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora,  set.db.design, jar"
+    description="Imports source metadata"
+    name="owb.import.source"
+	>
+		<AntGenerateOMBImportStatements
+		central="false"
+		common="false"
+		datamart="false"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="true"
+		staging="false"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		/>
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${dir.bin.etl}${file.separator}owbimport.tcl"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Imports oracle locations                 ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends=" check.db.type, set.database.ora,  set.db.design, jar"
+    description="Imports location metadata"
+    name="owb.import.common"
+	>
+		
+		
+		<AntGenerateOMBImportStatements
+		central="false"
+		common="true"
+		datamart="false"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="false"
+		staging="false"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		/>
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${dir.bin.etl}${file.separator}owbimport.tcl"
+			/>
+		</antcall>
+		
+		
+	</target>
+	
+	
+	<!--  *********************************************  -->
+	<!--  ***  Validate and OWB project             ***  -->
+	<!--  *********************************************  -->
+	<target
+    depends="init, declareTasks, check.db.type, set.database.ora, set.db.design"
+    if="usingoracle"
+    name="owb.validate.oracle"
+	>
+		
+		
+		<delete>
+			<fileset
+			dir="${dir.logs.validate}"
+			includes="**/${prm.oraclemodule}*.result"
+			/>
+		</delete>
+		
+		
+		<tstamp>
+			<format
+			pattern="MMddyyyy-hhmmss"
+			property="time.now"
+			/>
+		</tstamp>
+		
+		
+		<property
+		name="owbvalidate.tcl"
+		value="${dir.bld.scripts}${file.separator}${time.now}${file.owbvalidate}"
+		/>
+		
+		
+		<echo message="${owbvalidate.tcl}"/>
+		
+		
+		<copy
+		file="${REPORTING_ENV}${file.separator}scripts${file.separator}${file.separator}${file.owbvalidate}"
+		filtering="true"
+		tofile="${owbvalidate.tcl}"
+		verbose="false"
+		>
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="CONNECT"
+				value="${db.owb.url}"
+				/>
+				
+				
+				<filter
+				token="CURAM_WORKSPACE"
+				value="${db.owb.workspacename}"
+				/>
+				
+				
+				<filter
+				token="VAILDATE_LOG_DIR"
+				value="${validatelogdir}"
+				/>
+				<filter
+				token="REPORTING_NAME"
+				value="${owb.name.project}"
+				/>
+				<filter
+				token="OWB_MODULE_NAME"
+				value="${prm.oraclemodule}"
+				/>
+			</filterset>
+			
+			
+		</copy>
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${owbvalidate.tcl}"
+			/>
+		</antcall>
+	</target>
+	<!--  *********************************************  -->
+	<!--  ***  Validate a OMBplus command script    ***  -->
+	<!--  *********************************************  -->
+	<target
+    depends="declareTasks"
+    name="exec.omb.command"
+	>
+		
+		<antcall target="exec.omb.command.wrapper">
+			<param
+			name="prm.command.file.name"
+			value="${prm.command.file}"
+			/>
+		</antcall>
+		<!--
+			<delete file="${prm.command.file}" failonerror="false" quiet="true" /> 
+		-->
+	</target>
+	
+	<target
+    depends="declareTasks"
+    name="exec.omb.command.wrapper"
+    unless="owb.import.donotexecute"
+	>
+		<!-- "MMddyyyy-hhmmss"-->
+		<tstamp>
+			<format
+			pattern="MMMddyyyy"
+			property="logtime.now"
+			/>
+		</tstamp>
+		
+		<echo message="to generate the OMBPLUS statments only use -Dowb.import.donotexecute=true"/>
+              <echo message="if you terminate this target by Ctrl C, you must ensure no orphan cmd processes exist(with task manager)"/>
+		<echo message="executing command(s)..."/>
+		
+		<sequential>
+			<condition property="os.windows">
+				<os family="windows"/>
+			</condition>
+			<exec
+			dir="${dir.owb.win32}"
+			executable="${sysenv.SystemRoot}${file.separator}system32${file.separator}cmd"
+			failonerror="false"
+			resolveExecutable="true"
+			vmlauncher="false"
+			osfamily="windows"
+			>
+			    <!-- was /k -->
+				<arg value="/c"/>
+				<arg value="ombplus"/>
+				<arg value="${prm.command.file.name}"/>
+				<redirector errorproperty="redirector.err">
+					<errormapper
+					to="${dir.logs}${file.separator}${logtime.now}error.log"
+					type="merge"
+					/>
+				</redirector>
+			</exec>			
+
+			<exec
+			dir="${dir.owb.unix}"
+			executable="${unixshell}"
+			failonerror="false"
+			resolveExecutable="true"
+			vmlauncher="false"
+			osfamily="unix"	
+			>
+
+
+				<arg value="OMBPlus.sh"/>
+				<arg value="${prm.command.file.name}"/>
+				<redirector errorproperty="redirector.err">
+					<errormapper
+					to="${dir.logs}${file.separator}${logtime.now}error.log"
+					type="merge"
+					/>
+				</redirector>
+			</exec>
+		    <delete file="${prm.command.file.name}" failonerror="false" quiet="true" verbose="false"/> 
+		</sequential>
+		
+		<errorsfound logFile="${dir.logs}${file.separator}${logtime.now}error.log">
+			<Ignore
+			name="filter"
+			value="OWB Message"
+			/>
+			<Error
+			name="error"
+			value="OWB Error"
+			/>
+		</errorsfound>
+		
+		<echo message="to manually import run this file inside ombplus ${prm.command.file.name} "/>
+		<echo>**Any errors are below*******************</echo>
+		<echo message="see also the log files here ${dir.logs}${file.separator}${logtime.now}error.log"/>
+		<echo>*****************************************</echo>
+		<!-- check for errors  - only check validate issues for a given module-->
+		<CheckForOMBImportError file="${dir.logs}${file.separator}${logtime.now}error.log"/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Staging Control ETLs             ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, check.db.type, set.db.staging, set.database.ora"
+    description="Runs staging control ETLs"
+    name="run.staging.control"
+	>
+		<echo message=""/>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="s_control.bat"
+			/>
+			<param
+			name="prm.owb.location"
+			value="s_control.bat"
+			/>	  
+		</antcall>
+		<echo/>
+		
+		
+	</target>
+	
+	
+	<target
+    depends="init"
+    name="run.etl"
+	>
+		<AntUtilities
+		operation="etlowner"
+		propertyName="TEST_etlowner"
+		value="${design.db.workspacename}"
+		/>
+		
+		
+		<echo message="to generate the run statments only use -Dowb.run.donotexecute=true"/>
+		<property
+		name="templateName"
+		value="${dir.bld.scripts}${file.separator}${environment.owbconfig.version}${environment.owbconfig.exectemplate}"
+		/>
+		
+		<AntGenerateRunScripts
+		template="${templateName}"
+		owner="${TEST_etlowner}"
+		reportingDir="${REPORTING_DIR}"
+		runDirectory="${dir.bin.run}"
+		/>
+		<antcall target="run.etl.execute">
+			<param
+			name="prm.runfile"
+			value="${prm.runfile}"
+			/>
+			
+			
+		</antcall>
+		
+		
+	</target>
+	
+	
+	<target
+    depends="check.db.type, set.database.ora, get.decrypted.db.password.owb,init"
+    name="run.etl.execute"
+    unless="owb.run.donotexecute"
+	>
+		
+		
+		<exec
+		dir="${dir.oracle}${file.separator}bin"
+		executable="cmd"
+		spawn="false"
+		osfamily="windows"
+		>
+			<arg line="/c sqlplus ${runtime.db.username}/${decrypted.runtime.db.password}@${runtime.db.server}:${runtime.db.port}/${runtime.db.servicename} @${dir.bin.run}/${prm.runfile}"/>
+		</exec>
+		<echo message="Check the control log file appbuild export.control"/>
+		<echo message="To run this command manually: ${dir.oracle}${file.separator}bin"/>
+		<echo message="To run this command manually: sqlplus ${runtime.db.username}/?????????@${runtime.db.server}:${runtime.db.port}/${runtime.db.servicename} @${dir.bin.run}/${prm.runfile}"/>
+
+
+		<exec
+		dir="${dir.oracle}${file.separator}bin"
+		executable="sqlplus"
+		osfamily="unix"
+		>
+
+                   <arg line=" ${runtime.db.username}/${decrypted.runtime.db.password}@${runtime.db.server}:${runtime.db.port}/${runtime.db.servicename} @${dir.bin.run}/${prm.runfile}"/>
+
+             </exec>
+
+
+
+		
+
+
+		<echo message="Check the control log file appbuild export.control"/>
+		<echo message="To run this command manually: ${dir.oracle}${file.separator}bin"/>
+		<echo message="To run this command manually: sqlplus ${runtime.db.username}/?????????@${runtime.db.server}:${runtime.db.port}/${runtime.db.servicename} @${dir.bin.run}/${prm.runfile}"/>		
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Runs all the Config Test ETLs                 ***  -->
+	<!--  *************************************************  -->
+	
+	
+	<target
+    depends="init"
+    description="Runs all the staging ETLs"
+    name="run.configtest.all"
+	>
+		
+		
+		<antcall target="run.configtest.staging"/>
+		
+		
+		<antcall target="run.configtest.central"/>
+		<antcall target="run.configtest.datamarts"/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Runs the Staging Config Test ETLs        ***  -->
+	<!-- *************************************************  -->
+	
+	
+	<target
+    depends="init, check.db.type, set.db.staging, set.database.ora,jar"
+    description="Runs Staging configtest ETLs"
+    name="run.configtest.staging"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="s_configtest.bat"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Runs the Central Config Test ETLs        ***  -->
+	<!-- *************************************************  -->
+	
+	
+	<target
+    depends="init, check.db.type, set.db.central, set.database.ora,jar"
+    description="Runs Central configtest ETLs"
+    name="run.configtest.central"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="dw_configtest.bat"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Runs the Datamart Config Test ETLs        ***  -->
+	<!-- *************************************************  -->
+	
+	
+	<target
+    depends="init, check.db.type, set.db.centraldm, set.database.ora,jar"
+    description="Runs Datamart configtest ETLs"
+    name="run.configtest.datamarts"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="dm_configtest.bat"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Staging Operational ETLs         ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, check.db.type, set.db.staging, set.database.ora,jar"
+    description="Runs Staging operational ETLs"
+    name="run.staging.operational"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="s_operational.bat"
+			/>
+		</antcall>
+		<echo/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Staging ETLs                     ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init"
+    description="Runs all the staging ETLs"
+    name="run.staging.all"
+	>
+		<antcall target="run.staging.control"/>
+		<antcall target="run.staging.operational"/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Central Control ETLs             ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, check.db.type, set.db.central, set.database.ora,jar"
+    description="Runs central control ETLs"
+    name="run.central.control"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="dw_control.bat"
+			/>
+		</antcall>
+		<echo/>
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Central Operational ETLs         ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, check.db.type, set.db.central, set.database.ora,jar"
+    description="Runs central operational ETLs"
+    name="run.central.operational"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="dw_operational.bat"
+			/>
+		</antcall>
+		<echo/>
+		
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the All  ETLs                     ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init"
+    description="Runs all the ETLs -Dowb.run.donotexecute=true"
+    name="run.all"
+	>
+		<echo message="Executing ETL processes."/>
+		<antcall target="run.staging.all"/>
+		<antcall target="run.central.all"/>
+		<antcall target="run.datamarts.all"/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Central ETLs                     ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init"
+    description="Runs all the central ETLs"
+    name="run.central.all"
+	>
+		<antcall target="run.central.control"/>
+		<antcall target="run.central.operational"/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Central datamarts ETLs           ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, check.db.type, set.db.centraldm, set.database.ora,jar"
+    description="Runs datamarts control ETLs"
+    name="run.datamarts.control"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="dm_control.bat"
+			/>
+		</antcall>
+		<echo/>
+		
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Datamarts Operational ETLs       ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init, check.db.type, set.db.centraldm, set.database.ora,jar"
+    description="Runs datamarts operational ETLs"
+    name="run.datamarts.operational"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="dm_operational.bat"
+			/>
+		</antcall>
+		<echo/>
+		
+		
+	</target>
+	
+	
+	<target
+    depends="init, check.db.type, set.db.centraldm, set.database.ora,jar"
+    description="Runs datamart aggregate ETLs"
+    name="run.datamarts.operational.aggregates"
+	>
+		<antcall target="run.etl">
+			<param
+			name="prm.runfile"
+			value="dm_operationalaggregates.bat"
+			/>
+		</antcall>
+		
+		
+		<echo/>
+		<echo message="Check the control log file build export.control.datamarts"/>
+		<echo message="Remember to update system date to be current date or for debug purposes try appbuild transform.aggmonth"/>
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  Run the Datamart ETLs                    ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init"
+    description="Runs all the datamarts ETLs"
+    name="run.datamarts.all"
+	>
+		<antcall target="run.datamarts.control"/>
+		<antcall target="run.datamarts.operational"/>
+	</target>
+	
+	
+	<!--  *******************************************************  -->
+	<!--  ***  Deploys locations, connectors, external tables ***  -->
+	<!--  *******************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora, set.db.design, get.decrypted.db.password.owb"
+    if="usingoracle"
+    name="owb.deploy.setup"
+	>
+		<tstamp>
+			<format
+			pattern="MMddyyyy-hhmmss"
+			property="time.now"
+			/>
+		</tstamp>
+		
+		
+		<property
+		name="command.file"
+		value="${dir.logs}${file.separator}${time.now}command.log"
+		/>
+		<property
+		name="deploy.tcl"
+		value="${dir.bld.scripts}/${time.now}${file.deploy}"
+		/>
+		<property
+		name="registerlocations.tcl"
+		value="${dir.bld.scripts}${file.separator}${time.now}${file.registerlocations}"
+		/>
+
+		<AntUtilities
+		operation="datamanagerdir"
+		propertyName="DATADIR_OWB_TEMP"
+		value="${owbconfig.remotedatamanagerdir}"
+		/>
+
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="DATADIR_OWB"
+		value="${DATADIR_OWB_TEMP}"
+		/>
+		
+		
+		<AntUtilities
+		operation="toupper"
+		propertyName="staging.db.username.upper"
+		value="${staging.db.username}"
+		/>
+		<AntUtilities
+		operation="toupper"
+		propertyName="central.db.username.upper"
+		value="${central.db.username}"
+		/>
+		<AntUtilities
+		operation="toupper"
+		propertyName="centraldm.db.username.upper"
+		value="${centraldm.db.username}"
+		/>
+		
+		
+		<!-- register the locations for reporting
+		i.e. source, data, staging,central and datamart-->
+		<copy
+		file="${REPORTING_ENV}${file.separator}scripts${file.separator}${file.registerlocations}"
+		filtering="true"
+		tofile="${registerlocations.tcl}"
+		verbose="false"
+		>
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="Remove_Dup_Locations"
+				value="${gen_remove}"
+				/>
+				<filter
+				token="PROJECT"
+				value="${owb.name.project}"
+				/>
+				<filter
+				token="MODULE"
+				value="${prm.module_name}"
+				/>
+				<filter
+				token="CONNECT"
+				value="${db.owb.url}"
+				/>
+				<filter
+				token="CURAM_WORKSPACE"
+				value="${db.owb.workspacename}"
+				/>
+				<filter
+				token="SERVER"
+				value="${db.server}"
+				/>
+				<filter
+				token="PORT"
+				value="${db.port}"
+				/>
+				<!--Source connection details-->
+				<filter
+				token="CURAMSOURCE"
+				value="${curamsource.db.username}"
+				/>
+				<filter
+				token="CURAMSOURCE_P"
+				value="${decrypted.curamsource.db.password}"
+				/>
+				<filter
+				token="SOURCE_SERVER"
+				value="${curamsource.db.server}"
+				/>
+				<filter
+				token="SOURCE_NETSERVICENAME"
+				value="${curamsource.db.name}"
+				/>
+				<filter
+				token="SOURCE_PORT"
+				value="${curamsource.db.port}"
+				/>
+				<!--Staging connection details-->
+				<filter
+				token="STAGING"
+				value="${staging.db.username.upper}"
+				/>
+				<filter
+				token="STAGING_P"
+				value="${decrypted.staging.db.password}"
+				/>
+				<filter
+				token="STAGING_NETSERVICENAME"
+				value="${staging.db.name}"
+				/>
+				<filter
+				token="STAGING_PORT"
+				value="${staging.db.port}"
+				/>
+				<filter
+				token="STAGING_SERVER"
+				value="${staging.db.server}"
+				/>
+				<!--Central connection details-->
+				<filter
+				token="CENTRAL"
+				value="${central.db.username.upper}"
+				/>
+				<filter
+				token="CENTRAL_P"
+				value="${decrypted.central.db.password}"
+				/>
+				<filter
+				token="CENTRAL_NETSERVICENAME"
+				value="${central.db.name}"
+				/>
+				<filter
+				token="CENTRAL_PORT"
+				value="${central.db.port}"
+				/>
+				<filter
+				token="CENTRAL_SERVER"
+				value="${central.db.server}"
+				/>
+				<!--Datamart connection details-->
+				<filter
+				token="DATAMART"
+				value="${centraldm.db.username.upper}"
+				/>
+				<filter
+				token="DATAMART_P"
+				value="${decrypted.centraldm.db.password}"
+				/>
+				<filter
+				token="DATAMARTS_NETSERVICENAME"
+				value="${centraldm.db.name}"
+				/>
+				<filter
+				token="DATAMARTS_PORT"
+				value="${centraldm.db.port}"
+				/>
+				<filter
+				token="DATAMARTS_SERVER"
+				value="${centraldm.db.server}"
+				/>
+				<!--Runtime connection details-->
+				<filter
+				token="RUNTIMEPASSWORD"
+				value="${decrypted.runtime.db.password}"
+				/>
+				<!--StaticData connection details-->
+				<filter
+				token="STATIC_DATA"
+				value="${DATADIR_OWB}"
+				/>
+								
+			</filterset>
+		</copy>
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="registerlocations.tcl.part1"
+		value="${registerlocations.tcl}"
+		/>
+		
+		<!-- create the command file which will run against ombplus -->
+		<concat destfile="${registerlocations.tcl}1"> source ${registerlocations.tcl.part1}
+			deploy_PreAccessRights 
+		</concat>
+        
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${registerlocations.tcl}1"
+			/>
+		</antcall>
+		
+		<antcall target="grant.postdeploy" />
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="registerlocations.tcl.part2"
+		value="${registerlocations.tcl}"
+		/>
+		<!-- create the command file which will run against ombplus -->
+		<concat destfile="${registerlocations.tcl}2"> source ${registerlocations.tcl.part2}
+			deploy_AllExternalTables 
+		</concat>
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${registerlocations.tcl}2"
+			/>
+		</antcall>
+		
+	</target>
+	
+	<!--  ****************************************************  -->
+	<!--  ***  Deploys ETL files for a given oracle module ***  -->
+	<!--  ***  prm.module_name contains the module name    ***  -->
+	<!--  ****************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora, set.db.design"
+    if="usingoracle"
+    name="owb.deploy"
+	>
+		<antcall target="init"/>
+		<tstamp>
+			<format
+			pattern="MMddyyyy-hhmmss"
+			property="time.now"
+			/>
+		</tstamp>
+		<property
+		name="command.file"
+		value="${dir.logs}/${time.now}command.log"
+		/>
+		<property
+		name="deploy.tcl"
+		value="${dir.bld.scripts}/${time.now}${file.deploy}"
+		/>
+		
+		<echo/>
+		<echo message="Deploying ${prm.module_name} ETL's"/>
+		<!-- set the project and target module for deployment-->
+		<copy
+		file="${dir.bld.scripts}/${file.deploy}"
+		filtering="true"
+		tofile="${deploy.tcl}"
+		verbose="false"
+		>
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="PROJECT"
+				value="${owb.name.project}"
+				/>
+				<filter
+				token="MODULE"
+				value="${prm.module_name}"
+				/>
+				<filter
+				token="CONNECT"
+				value="${db.owb.url}"
+				/>
+				<filter
+				token="CURAM_WORKSPACE"
+				value="${db.owb.workspacename}"
+				/>
+				<filter
+				token="RUNTIMEPASSWORD"
+				value="${decrypted.runtime.db.password}"
+				/>
+				<filter
+				token="PROJECT2"
+				value="${owb.name.project}"
+				/>
+			</filterset>
+		</copy>
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="deploy.tcl.command"
+		value="${deploy.tcl}"
+		/>
+		
+		<!-- create the command file which will run against ombplus -->
+		<concat destfile="${command.file}"> source ${deploy.tcl.command}
+		deploy_AllETL </concat>
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${command.file}"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  ****************************************  -->
+	<!--  ***  Deploys all ETL for a component ***  -->
+	<!-- description="deploys staging, central and datamart(s) ETL's"-->
+	<!--  ****************************************  -->
+	<target
+    description="Deploys staging, central and datamart(s) ETL's"
+    name="owb.deploy.all"
+	>
+		
+		
+		<antcall target="owb.deploy.runtimesetup"/>
+		<antcall target="owb.deploy.staging"/>
+		<antcall target="owb.deploy.central"/>
+		<antcall target="owb.deploy.datamarts"/>
+		<!-- ensure the max errors are set to zero-->
+		<antcall target="owb.etl.runtime.check"/>
+		
+	</target>
+	
+	
+	<!--  ***************************************  -->
+	<!--  ***  Register locations, connectors ***  -->
+	<!--  ***  external tables                ***
+	description="Register locations, connectors, external tables"-->
+	<!--  ***************************************  -->
+	<target
+    description="Register locations, connectors, external tables"
+    name="owb.deploy.runtimesetup"
+	>
+		<antcall target="owb.deploy.setup">
+		</antcall>
+	</target>
+	
+	
+	<!--  ***************************************  -->
+	<!--  ***  Deploys staging ETL            ***
+	description="deploys staging ETL's"-->
+	<!--  ***************************************  -->
+	<target
+    description="Deploys staging ETL's"
+    name="owb.deploy.staging"
+	>
+		
+		
+		<antcall target="owb.deploy">
+			<param
+			name="prm.module_name"
+			value="${owb.name.staging_module}"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  **********************************  -->
+	<!--  ***  Deploys CDW ETL           ***
+	description="deploys central data warehouse ETL's"-->
+	<!--  **********************************  -->
+	<target
+    description="Deploys central data warehouse ETL's"
+    name="owb.deploy.central"
+	>
+		
+		
+		<antcall target="owb.deploy">
+			<param
+			name="prm.module_name"
+			value="${owb.name.central_module}"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  ***************************************  -->
+	<!--  ***  Deploys staging ETL            ***
+	description="deploys ETL's for all datamarts"-->
+	<!--  ***************************************  -->
+	<target
+    description="Deploys datamarts ETL's"
+    name="owb.deploy.datamarts"
+	>
+		
+		
+		<antcall target="owb.deploy">
+			<param
+			name="prm.module_name"
+			value="${owb.name.dm_module}"
+			/>
+		</antcall>
+	</target>
+	
+	
+	<!--  ***********************************************************  -->
+	<!--  ***  loads java transformation code into Oracle         ***  -->
+	<!--  ***********************************************************  -->
+	<target unless="database.override.transforms.donotload"
+    name="loadjava" 
+	>
+		<available file="${param.jar.fullpath}" property="file.jar.present.create"/> 
+		
+		<antcall target="debug.message">
+			<param name="prm.msg" value=" ${dir.oracle}${file.separator}bin${file.separator}loadjava.bat -force -user ${db.username}/???@${db.server}:${db.port}/${db.name} -verbose -resolve ${param.jar.fullpath}"/>
+		</antcall>
+		
+		<antcall target="load-java" />
+		
+	</target>
+	
+	<target name="load-java" if="file.jar.present.create">    
+		<exec
+		executable="${dir.oracle}${file.separator}bin${file.separator}loadjava.bat"
+		failonerror="true"
+		vmlauncher="false"
+		osfamily="windows"
+		>
+			<!-- Java Arguments -->
+			<arg value="-force"/>
+			
+			<arg value="-user"/>
+			<arg value="${db.username}/${db.password}@${db.server}:${db.port}/${db.name}"/>
+			<arg value="-verbose"/>
+			<arg value="-resolve"/>
+			<arg value="${param.jar.fullpath}"/>
+			
+		</exec>
+		<exec
+		executable="${dir.oracle}${file.separator}bin${file.separator}loadjava"
+		failonerror="true"
+		vmlauncher="false"
+		osfamily="unix"
+		>
+			<!-- Java Arguments -->
+			<arg value="-force"/>
+			
+			<arg value="-user"/>
+			<arg value="${db.username}/${db.password}@${db.server}:${db.port}/${db.name}"/>
+			<arg value="-verbose"/>
+			<arg value="-resolve"/>
+			<arg value="${param.jar.fullpath}"/>
+			
+		</exec>		
+	</target> 
+	
+	
+	<!--  ***********************************************************  -->
+	<!--  ***  drops java transformation code into Oracle         ***  -->
+	<!--  ***********************************************************  -->
+	<target name="dropjava" unless="database.override.transforms.donotload">
+		<available file="${param.jar.fullpath}" property="file.jar.present.drop"/> 
+		
+		<!-- comment in when debugging-->
+		<antcall target="debug.message">
+			<param name="prm.msg" value=" ${dir.oracle}${file.separator}bin${file.separator}dropjava.bat -force -user ${db.username}/???@${db.server}:${db.port}/${db.name} ${param.jar.fullpath}"/>
+		</antcall>    
+		
+		<antcall target="drop-java" />
+		
+	</target>
+	
+	<target name="drop-java" if="file.jar.present.drop">    
+		<exec
+        executable="${dir.oracle}${file.separator}bin${file.separator}dropjava.bat"
+        failonerror="true"
+        vmlauncher="false"
+		osfamily="windows"
+		>
+			<!-- Java Arguments -->
+			<arg value="-force"/>
+			
+			<arg value="-user"/>
+			<arg value="${db.username}/${db.password}@${db.server}:${db.port}/${db.name}"/>
+			<!--<arg value="-verbose"/>-->
+			<arg value="-resolve"/>
+			
+			<arg value="${param.jar.fullpath}"/>
+		</exec>
+
+				<exec
+        executable="${dir.oracle}${file.separator}bin${file.separator}dropjava"
+        failonerror="true"
+        vmlauncher="false"
+		osfamily="unix"		
+		>
+			<!-- Java Arguments -->
+			<arg value="-force"/>
+			
+			<arg value="-user"/>
+			<arg value="${db.username}/${db.password}@${db.server}:${db.port}/${db.name}"/>
+			<!--<arg value="-verbose"/>-->
+			<arg value="-resolve"/>
+			
+			<arg value="${param.jar.fullpath}"/>
+		</exec>
+		
+	</target> 
+	
+	<!--  *************************************************************** -->
+	<!--  ***  Configtest - database, deploy and run test ETL         *** -->
+	<!--  ***************************************************************  -->
+	<target
+    description="Builds the database, deploys and runs the test ETL processes, unless -Dprop.environment.owb.tests.run.builddatabase.not=false"
+    name="database.all.rebuild"
+    unless="prop.environment.owb.tests.run.builddatabase.not"
+	>
+		<!--<antcall target="configtest"/> -->
+		<echo message="Building the Reporting entities"/>
+		<antcall target="database.all"/>
+		
+		
+	</target>
+	
+	
+	<target
+    depends="check.db.type"
+    description="Builds the database, deploys and runs the test ETL processes"
+    name="owb.environment.tests.run"
+	>
+			
+		<echo message="${prop.environment.owb.tests.run.builddatabase.not}"/>
+		<antcall target="database.all.rebuild"/>
+			
+		<delete
+		dir="${dir.logs.validate}"
+		failonerror="false"
+		/>
+		<mkdir dir="${dir.logs.validate}"/>
+		<antcall target="owb.deploy.all"/>
+		<antcall target="run.configtest.all"/>
+		
+		
+		<echo message="Please verify that the 6 tables (listed in Developer Guide) have data."/>
+		<antcall target="owb.environment.tests.results"/>
+		
+		
+	</target>
+	
+	
+	<target
+    description="Collects,renames,copies upgraded OWB meta data, to override use e.g. -Dowb.created.postfix=_11_2"
+    name="owb.upgrade.11gR2.collectfiles"
+	>
+		<echo message="-----------------------------"/>
+		<echo message="This process moves upgraded meta data files (and log files) to the Reporting logs directory"/>
+		<echo message="${dir.logs}"/>
+		<echo message="The upgraded files are renamed during the move to match the Curam Reporting naming convention"/>
+		<echo message="-----------------------------"/>
+		
+		
+		<echo message="  "/>
+		<echo message="You will be prompted twice, once to verify you want to move and rename the upgrade meta data files to the logs directory"/>
+		<echo message="                            secondly before the renamed files are copied back overwriting the originals"/>
+		
+		
+		<input
+		addproperty="do.move"
+		message="Move and rename the upgraded OWB meta data files to the logs directory?"
+		validargs="y,n"
+		/>
+		<condition property="do.abort">
+			<equals
+			arg1="n"
+			arg2="${do.move}"
+			/>
+		</condition>
+		
+		
+		<fail if="do.abort">Build aborted by user.</fail>
+		<move force="true"
+		includeemptydirs="false"
+		todir="${dir.logs}"
+		>
+			<fileset dir="${REPORTING_DIR}${file.separator}components">
+				<include name="**${file.separator}etl${file.separator}oracle${file.separator}**${file.separator}*.mdo"/>
+			</fileset>
+			<mapper
+			from="(.*)${owb.created.postfix}(.*)"
+			to="\1\2"
+			type="regexp"
+			/>
+		</move>
+		
+		
+		<move force="true"
+		includeemptydirs="false"
+		todir="${dir.logs}"
+		>
+			<fileset dir="${REPORTING_DIR}${file.separator}components">
+				<include name="**${file.separator}etl${file.separator}oracle${file.separator}**${file.separator}*.log"/>
+			</fileset>
+		</move>
+		
+		
+		<input
+		addproperty="do.replace"
+		message="Overwrite the origional OWB meta data files with the upgraded versions from the logs directory?"
+		validargs="y,n"
+		/>
+		<condition property="do.abortagain">
+			<equals
+			arg1="n"
+			arg2="${do.replace}"
+			/>
+		</condition>
+		<fail if="do.abortagain">Build aborted by user.</fail>
+		
+		
+		<move force="true"
+		includeemptydirs="false"
+		todir="${REPORTING_DIR}${file.separator}components"
+		>
+			<fileset dir="${dir.logs}">
+				<include name="**${file.separator}etl${file.separator}oracle${file.separator}**${file.separator}*.mdo"/>
+			</fileset>
+		</move>
+		
+		
+	</target>
+	
+	
+	<!--  *******************************************************  -->
+	<!--  ***  Creates OWB Repository Owner and target schema ***  -->
+	<!--  *******************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Creates OWB Repository Owner and target schemas"
+    name="owb.environment.tests.import"
+	>
+		
+		
+		<echo message="Ensure the application.properties file contains the schema names that match your local naming conventions."/>
+		<echo message="and configtest succeeds."/>
+		<echo message="This task generates the ombplus commands to create the OWB repository owner, and "/>
+		<echo message="target schemas for staging, central and datamarts."/>
+		
+		
+		<tstamp>
+			<format
+			pattern="MMddyyyy-hhmmss"
+			property="time.now"
+			/>
+		</tstamp>
+		
+		
+		<property
+		name="owbconfigtest.tcl"
+		value="${dir.bld.scripts}${file.separator}${time.now}${file.owbconfigtest}"
+		/>
+		
+		<echo message="${owbconfigtest.tcl}"/>
+		
+		
+		<AntUtilities
+		operation="toupper"
+		propertyName="staging.db.username.upper"
+		value="${staging.db.username}"
+		/>
+		<AntUtilities
+		operation="toupper"
+		propertyName="central.db.username.upper"
+		value="${central.db.username}"
+		/>
+		<AntUtilities
+		operation="toupper"
+		propertyName="centraldm.db.username.upper"
+		value="${centraldm.db.username}"
+		/>
+		
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="locations.mdo.path"
+		value="${REPORTING_DIR}${file.separator}components${file.separator}core${file.separator}etl${file.separator}oracle${file.separator}versions${file.separator}${environment.owbconfig.version}BILocations.mdo"
+		/>
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="sourcelocations.mdo.path"
+		value="${REPORTING_DIR}${file.separator}components${file.separator}core${file.separator}etl${file.separator}oracle${file.separator}versions${file.separator}${environment.owbconfig.version}SourceLocation.mdo"
+		/>
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="staticlocations.mdo.path"
+		value="${REPORTING_DIR}${file.separator}components${file.separator}core${file.separator}etl${file.separator}oracle${file.separator}versions${file.separator}${environment.owbconfig.version}BIStaticLocations.mdo"
+		/>
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="configtest.mdo.path"
+		value="${REPORTING_DIR}${file.separator}components${file.separator}core${file.separator}etl${file.separator}oracle${file.separator}configtest${file.separator}configtest.mdo"
+		/>
+		
+		
+		<copy
+		file="${REPORTING_ENV}${file.separator}scripts${file.separator}${file.owbconfigtest}"
+		filtering="true"
+		tofile="${owbconfigtest.tcl}"
+		verbose="false"
+		>
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="CONNECT"
+				value="${db.owb.url}"
+				/>
+				<filter
+				token="CURAM_WORKSPACE"
+				value="${db.owb.workspacename}"
+				/>
+				<filter
+				token="STATIC_LOCATIONS_MDO"
+				value="${staticlocations.mdo.path}"
+				/>
+				<filter
+				token="SOURCE_LOCATIONS_MDO"
+				value="${sourcelocations.mdo.path}"
+				/>
+				<filter
+				token="LOCATIONS_MDO"
+				value="${locations.mdo.path}"
+				/>
+				<filter
+				token="CONFIGTEST_MDO"
+				value="${configtest.mdo.path}"
+				/>
+				<filter
+				token="DESIGN_USER"
+				value="${design.db.username}"
+				/>
+				<filter
+				token="DESIGN_PASSWORD"
+				value="${decrypted.design.db.password}"
+				/>
+				
+				
+				<filter
+				token="SERVER"
+				value="${db.server}"
+				/>
+				<filter
+				token="PORT"
+				value="${db.port}"
+				/>
+				<filter
+				token="SERVICENAME"
+				value="${runtime.db.servicename}"
+				/>
+				<filter
+				token="STAGING"
+				value="${staging.db.username.upper}"
+				/>
+				<filter
+				token="CENTRAL"
+				value="${central.db.username.upper}"
+				/>
+				<filter
+				token="DATAMART"
+				value="${centraldm.db.username.upper}"
+				/>
+				<filter
+				token="STAGING_P"
+				value="${decrypted.staging.db.password}"
+				/>
+				<filter
+				token="CENTRAL_P"
+				value="${decrypted.central.db.password}"
+				/>
+				<filter
+				token="DATAMART_P"
+				value="${decrypted.centraldm.db.password}"
+				/>
+			</filterset>
+		</copy>
+		
+		
+		<echo message="Ensure the application.properties file contains the schema names that match your local naming conventions."/>
+		<echo message="This task generates the ombplus commands to create the OWB repository owner, and "/>
+		<echo message="target schemas for staging, central and datamarts."/>
+		<echo message="${owbconfigtest.tcl}"/>
+		<!-- create the command file which will run against ombplus -->
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${owbconfigtest.tcl}"
+			/>
+		</antcall>
+		
+		<antcall target="owb.validate"/>
+		
+		<!-- only call after validate,as validate creates the runtime proeprteis-->
+		<antcall target="owb.etl.runtime.set"/>
+		
+		<!-- ensure the max errors are set to zero-->
+		<antcall target="owb.etl.runtime.check"/>
+		
+		
+	</target>
+	
+	
+	<!--  *******************************************************  -->
+	<!--  ***  Creates OWB Repository Owner and target schema ***  -->
+	<!--  *******************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Creates the OWB target schemas (staging,central,datamarts)"
+    name="owb.environment.createschemas.beforecreatetest"
+	>
+		
+		
+		<echo message="This task does the following:"/>
+		<echo message="-----------------------------"/>
+		
+		
+		<echo message="  1. Ensures the owb design schema exists."/>
+		<echo message="  2. Ensure the 3 reporting schemas exist"/>
+		<echo message="-----------------------------"/>
+		<echo message="-----------------------------"/>
+		
+		
+		<echo message="Ensure the application.properties file contains the schema names that match your local naming conventions."/>
+		<echo message="This task generates the ombplus commands to create the OWB repository owner, and "/>
+		<echo message="target schemas for staging, central and datamarts."/>
+		
+		
+		<echo message="-&gt;    "/>
+		
+		
+		<CheckConfig
+		connectOWBTargetSchemas="true"
+		file="${prop.file}"
+		reportingDirectory="${REPORTING_DIR}"
+		/>
+		
+		
+	</target>
+	
+	
+	<!--  *******************************************************  -->
+	<!--  ***  Creates OWB Repository Owner and target schema ***  -->
+	<!--  *******************************************************  -->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora, set.db.design"
+    description="Creates the OWB target schemas (staging,central,datamarts)(-Dowb.import.donotexecute=true)"
+    name="owb.environment.createschemas"
+	>
+		
+		
+		<echo message="This task does the following:"/>
+		<echo message="-----------------------------"/>
+		
+		
+		<echo message="  1. Ensures the owb design schema exists."/>
+		<echo message="  2. Ensure the 3 reporting schemas exist"/>
+		<echo message="-----------------------------"/>
+		
+		
+		<echo message="Ensure the application.properties file contains the schema names that match your local naming conventions."/>
+		<echo message="This task ensure the user is prompted to create the OWB repository owner, and "/>
+		<echo message="target schemas for staging, central and datamarts."/>
+		
+		
+		<echo message="-&gt;    "/>
+		
+		
+		<tstamp>
+			<format
+			pattern="MMddyyyy-hhmmss"
+			property="time.now"
+			/>
+		</tstamp>
+		
+		
+		<property
+		name="command.file"
+		value="${dir.logs}${file.separator}${time.now}command.log"
+		/>
+		<property
+		name="owbsetup.tcl"
+		value="${dir.bld.scripts}${file.separator}${time.now}${file.owbsetup}"
+		/>
+		
+		
+		<echo message="${owbsetup.tcl}"/>
+		
+		
+		<!-- owbpretest="true"   -->
+		
+		
+		<CheckConfig
+		connectOWBTargetSchemas="true"
+		file="${prop.file}"
+		reportingDirectory="${REPORTING_DIR}"
+		/>
+		
+		
+		<AntUtilities
+		operation="toupper"
+		propertyName="staging.db.username.upper"
+		value="${staging.db.username}"
+		/>
+		<AntUtilities
+		operation="toupper"
+		propertyName="central.db.username.upper"
+		value="${central.db.username}"
+		/>
+		<AntUtilities
+		operation="toupper"
+		propertyName="centraldm.db.username.upper"
+		value="${centraldm.db.username}"
+		/>
+		
+		
+		<copy
+		file="${REPORTING_ENV}${file.separator}scripts${file.separator}${file.separator}${file.owbsetup}"
+		filtering="true"
+		tofile="${owbsetup.tcl}"
+		verbose="false"
+		>
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="DESIGN_USER"
+				value="${design.db.username}"
+				/>
+				<filter
+				token="DESIGN_PASSWORD"
+				value="${decrypted.design.db.password}"
+				/>
+				<filter
+				token="SYS_P"
+				value="${sys.password}"
+				/>
+				<filter
+				token="SERVER"
+				value="${db.server}"
+				/>
+				<filter
+				token="PORT"
+				value="${db.port}"
+				/>
+				<filter
+				token="SERVICENAME"
+				value="${runtime.db.servicename}"
+				/>
+				<filter
+				token="STAGING"
+				value="${staging.db.username}"
+				/>
+				<filter
+				token="CENTRAL"
+				value="${central.db.username}"
+				/>
+				<filter
+				token="DATAMART"
+				value="${centraldm.db.username}"
+				/>
+				<filter
+				token="STAGING_P"
+				value="${decrypted.staging.db.password}"
+				/>
+				<filter
+				token="CENTRAL_P"
+				value="${decrypted.central.db.password}"
+				/>
+				<filter
+				token="DATAMART_P"
+				value="${decrypted.centraldm.db.password}"
+				/>
+			</filterset>
+			
+			
+		</copy>
+		
+		
+		<echo message="Ensure the application.properties file contains the schema names that match your local naming conventions."/>
+		<echo message="This task generates the ombplus commands to create the OWB repository owner, and "/>
+		<echo message="target schemas for staging, central and datamarts."/>
+		<echo message="${owbconfigtest.tcl}"/>
+		<echo message="${owbsetup.tcl}"/>
+		<!-- create the command file which will run against ombplus -->
+		
+		
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${owbsetup.tcl}"
+			/>
+		</antcall>
+		
+		
+	</target>
+	
+	
+	<target
+    depends="init, check.db.type, set.db.central, set.database.ora"
+    description="Returns the database "
+    name="database.utilities.sid"
+	>
+		
+		
+		<echo message="Using ${environment.jdbc.jars}"/>
+		<delete file="${dir.logs}/oracleSIDs.txt" failonerror="false" quiet="true"/> 
+		
+		<sql encoding="UTF-8" 
+		classpath="${environment.jdbc.jars}"
+		driver="${db.driver}"
+		onerror="continue"
+		password="${decrypted.staging.db.password}"
+		print="true"
+		url="${db.url}"
+		userid="${staging.db.username}"
+		output="${dir.logs}/oracleSIDs.txt"
+		append="true"   
+		showheaders="true"
+		showtrailers="false"      
+		>
+			<transaction>
+				select '${staging.db.username}' as schemaname, instance_name AS ORACLE_SID from v$instance ;
+			</transaction>
+		</sql>    
+		<sql encoding="UTF-8" 
+		classpath="${environment.jdbc.jars}"
+		driver="${db.driver}"
+		onerror="continue"
+		password="${decrypted.centraldm.db.password}"
+		print="true"
+		url="${db.url}"
+		userid="${central.db.username}"
+		showheaders="false"
+		showtrailers="false"
+		output="${dir.logs}/oracleSIDs.txt"
+		append="true"
+		>
+			<transaction>
+				select '${db.username}' as schemaname, instance_name AS ORACLE_SID from v$instance ;
+			</transaction>
+		</sql>
+		
+		<sql encoding="UTF-8" 
+		classpath="${environment.jdbc.jars}"
+		driver="${db.driver}"
+		onerror="continue"
+		password="${decrypted.centraldm.db.password}"
+		print="true"
+		url="${db.url}"
+		userid="${centraldm.db.username}"
+		output="${dir.logs}/oracleSIDs.txt"
+		append="true" 
+		showheaders="false"
+		showtrailers="false"      
+		>
+			<transaction>
+				select '${centraldm.db.username}' as schemaname, instance_name AS ORACLE_SID from v$instance ;
+			</transaction>
+		</sql>  
+		
+		<loadfile property="SIDRESULTSET" srcFile="${dir.logs}/oracleSIDs.txt"/>     
+		
+		<echo message="############################################" /> 
+		<echo>${SIDRESULTSET}</echo> 
+		<echo message="############################################" /> 
+		
+		
+	</target>
+	
+	<!--  *************************************************  -->
+	<!--  ***  generates a sample script to export all ETL on the file system ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="declareTasks,check.db.type, set.database.ora,  set.db.design, jar"
+    description="Sets runtime configuration properties"
+    name="owb.generate.etlexport"
+	>
+		<AntGenerateOMBImportStatements
+		central="false"
+		common="false"
+		datamart="false"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="false"
+		staging="flase"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		setExportETL="true"
+		/>
+		
+	</target>
+	
+	
+	<!--  *************************************************  -->
+	<!--  ***  generates a sample script to export all ETL on the file system ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="declareTasks,check.db.type, set.database.ora,  set.db.design"
+    description="Utility method to help generate an export script for all ETL processes, authentication info must be added by the user."
+    name="owb.etl.export.all"
+	>
+		<AntGenerateOMBImportStatements
+		central="true"
+		common="true"
+		datamart="true"
+		logDir="${dir.logs}"
+		owbURL="${db.owb.url}"
+		reportingDir="${REPORTING_DIR}"
+		source="false"
+		staging="true"
+		targetDirectory="${dir.bin.etl}"
+		workSpaceName="'${db.owb.workspacename}'"
+		export="true"
+		/>
+		
+	</target>
+	
+	<!--  ****************************************************  -->
+	<!--  ***  Sets run time configuration properties      ***  -->
+	<!--  ****************************************************  -->
+	<!-- ENT-6150 start-->
+	<target
+    depends="declareTasks, check.db.type, set.database.ora, set.db.design"
+    unless="environment.owbconfig.maxnumberoferrors.disable"
+    name="owb.etl.runtime.set" description="Sets the runtime error value set to zero, override with -Denvironment.owbconfig.maxnumberoferrors=X"
+	>
+		<antcall target="init"/>
+		<tstamp>
+			<format
+			pattern="MMddyyyy-hhmmss"
+			property="time.now"
+			/>
+		</tstamp>
+		<property
+		name="command.file"
+		value="${dir.logs}/${time.now}command.log"
+		/>
+		<property
+		name="nowdeployruntimesettings.tcl"
+		value="${dir.bld.scripts}/${time.now}${file.deployruntimeconfig}"
+		/>
+		<property
+		name="nowgetruntimesettings.log"
+		value="${time.now}GetETLRuntimeSettings.log"
+		/>
+		
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="deploy.tcl.command.logfile"
+		value="${dir.logs}/${nowgetruntimesettings.log}"
+		/>
+		
+		<echo message="${deploy.tcl.command.logfile}" file="${deploy.tcl.command.logfile}"/>
+		
+		<echo/>
+		<!-- set the project and target module for deployment-->
+		<copy
+		file="${dir.bld.scripts}/${file.deployruntimeconfig}"
+		filtering="true"
+		tofile="${nowdeployruntimesettings.tcl}"
+		verbose="false"
+		>
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="MAX_NUMBER_OF_ERRORS_PARAM"
+				value="${environment.owbconfig.maxnumberoferrors}"
+				/>	  
+				<filter
+				token="PROJECT"
+				value="${owb.name.project}"
+				/>
+				<filter
+				token="MODULE"
+				value="${prm.module_name}"
+				/>
+				<filter
+				token="CONNECT"
+				value="${db.owb.url}"
+				/>
+				<filter
+				token="CURAM_WORKSPACE"
+				value="${db.owb.workspacename}"
+				/>
+				<filter
+				token="RUNTIMEPASSWORD"
+				value="${decrypted.runtime.db.password}"
+				/>
+				<filter
+				token="LOG_FILE"
+				value="${deploy.tcl.command.logfile}"
+				/>		
+				<filter
+				token="PROJECT2"
+				value="${owb.name.project}"
+				/>
+			</filterset>
+		</copy>
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="deploy.tcl.command"
+		value="${nowdeployruntimesettings.tcl}"
+		/>
+		
+		<!-- create the command file which will run against ombplus -->
+		<concat destfile="${command.file}"> source ${deploy.tcl.command}
+		configureRunTimeProperties </concat>
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${command.file}"
+			/>
+		</antcall>
+	    <errorsfound logFile="${dir.logs}/${nowgetruntimesettings.log}">
+			<Ignore
+			name="filter"
+			value="OWB"
+			/>
+			<Error
+			name="error"
+			value="Error:"
+			/>
+			<Error
+			name="error"
+			value="Warning:"
+			/>      
+		</errorsfound>
+	</target>
+	
+	
+	<!--  ****************************************************  -->
+	<!--  ***  Gets run time configuration properties      ***  -->
+	<!--  ****************************************************  -->
+	<target
+    depends="check.db.type, set.database.ora, set.db.design"
+    unless="environment.owbconfig.maxnumberoferrors.disable" description="checks that the runtime error value is set to zero"
+    name="owb.etl.runtime.check"
+	>
+		<antcall target="init"/>
+		<tstamp>
+			<format
+			pattern="MMddyyyy-hhmmss"
+			property="time.now"
+			/>
+		</tstamp>
+		<property
+		name="command.file"
+		value="${dir.logs}/${time.now}command.log"
+		/>
+		<property
+		name="nowgetruntimesettings.tcl"
+		value="${dir.bld.scripts}/${time.now}${file.deployruntimeconfig.get}"
+		/>
+		<property
+		name="nowgetruntimesettings.log"
+		value="${time.now}GetETLRuntimeSettings.log"
+		/>
+		
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="deploy.tcl.command.logfile"
+		value="${dir.logs}/${nowgetruntimesettings.log}"
+		/>
+		
+		<echo message="${deploy.tcl.command.logfile}" file="${deploy.tcl.command.logfile}"/>
+		
+		<echo/>
+		
+		<!-- set the project and target module for deployment-->
+		<copy
+		file="${dir.bld.scripts}/${file.deployruntimeconfig.get}"
+		filtering="true"
+		tofile="${nowgetruntimesettings.tcl}"
+		verbose="false"
+		>
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="MAX_NUMBER_OF_ERRORS_PARAM"
+				value="${environment.owbconfig.maxnumberoferrors}"
+				/>	  
+				<filter
+				token="PROJECT"
+				value="${owb.name.project}"
+				/>
+				
+				<filter
+				token="LOG_FILE"
+				value="${deploy.tcl.command.logfile}"
+				/>
+				<filter
+				token="CONNECT"
+				value="${db.owb.url}"
+				/>
+				<filter
+				token="CURAM_WORKSPACE"
+				value="${db.owb.workspacename}"
+				/>
+				<filter
+				token="RUNTIMEPASSWORD"
+				value="${decrypted.runtime.db.password}"
+				/>
+				<filter
+				token="PROJECT2"
+				value="${owb.name.project}"
+				/>
+			</filterset>
+		</copy>
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="deploy.tcl.command"
+		value="${nowgetruntimesettings.tcl}"
+		/>
+		
+		<!-- create the command file which will run against ombplus -->
+		<concat destfile="${command.file}"> source ${deploy.tcl.command}
+		configureRunTimeProperties </concat>
+		<antcall target="exec.omb.command">
+			<param
+			name="prm.command.file"
+			value="${command.file}"
+			/>
+		</antcall>
+		
+		<errorsfound logFile="${dir.logs}/${nowgetruntimesettings.log}">
+			<Ignore
+			name="filter"
+			value="OWB"
+			/>
+			<Error
+			name="error"
+			value="Error:"
+			/>
+			<Error
+			name="error"
+			value="Warning:"
+			/>      
+		</errorsfound>	
+	</target>  
+	<!-- ENT-6150 end-->
+</project>

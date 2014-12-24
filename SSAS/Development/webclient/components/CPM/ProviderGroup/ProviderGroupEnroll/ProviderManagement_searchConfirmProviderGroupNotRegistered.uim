@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to search for a provider group.              -->
+<!-- BEGIN, CR00235318, GP -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchConfirmProviderGroupNotRegistered"
+  WINDOW_OPTIONS="width=750,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00235318 -->
+
+
+  <!-- BEGIN, CR00235784, GP -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00235784 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="ACTION"
+    OPERATION="searchAllProviderGroup"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00234082, GP -->
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAY"
+    OPERATION="getProviderGroupWizardMenuDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+  <!-- END, CR00234082 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="PageTitle.Description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- BEGIN, CR00234082, GP -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <!-- BEGIN, CR00343519, GA -->
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_searchConfirmProviderGroupNotRegistered"
+          SAVE_LINK="false"
+        />
+        <!-- END, CR00343519 -->
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00234082 -->
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Street1">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$street1"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$city"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00248418, PS -->
+  <LIST
+    SCROLL_HEIGHT="200"
+    TITLE="List.Title"
+  >
+    <!-- END, CR00248418 -->
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Street1"
+      WIDTH="45"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$street1"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.City"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- BEGIN, CR00234082, GP -->
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <!-- BEGIN, CR00236233, GP -->
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Next">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_enrollProviderGroup"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=750"
+      />
+    </ACTION_CONTROL>
+    <!-- END, CR00236233 -->
+  </ACTION_SET>
+  <!-- END, CR00234082 -->
+</PAGE>

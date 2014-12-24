@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the facility manager to list the service offerings covered by a license. -->
+<PAGE
+  PAGE_ID="ProviderManagement_listLicenseServiceOfferingsForFacilityManager"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="DISPLAY"
+    OPERATION="listLicenseServiceOfferings"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="licenseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="licenseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$licenseID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewLicense"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewLicenseForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ServiceOfferings"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_listLicenseServiceOfferingsForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Attachments"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_listAttachmentsByLicenseForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_viewServiceForResourceMgr"
+        WINDOW_OPTIONS="width=650"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Licensed Materials - Property of IBM
+	
+	Copyright IBM Corporation 2012. All Rights Reserved.
+	
+	US Government Users Restricted Rights - Use, duplication or disclosure 
+	restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="page-schema.xsd"
+	isPopup="true">
+	<identifier name="ReferMe"/>
+	<server alias="DISPLAY" class="Triage" method="getProviderModalDetails">
+		<param name="key$serviceID" path="serviceID" />
+		<param name="key$hasMultipleLocations" path="hasMultipleLocations" />
+	</server>
+	<content>
+		<forward source="/PAGE/serviceID" target="/ans/serviceID" name="serviceID"/>
+		<forward source="/PAGE/hasMultipleLocations" target="/ans/hasMultipleLocations" name="hasMultipleLocations"/>
+		<forward source="/DISPLAY/xmlData/email/" name="providerEmail" target="/ans/providerEmail"/>
+		<container style="referral-field">
+			<param name="isHeader" value="true" />
+			<title id="Page.Title" />
+			<description id="Page.Description" />
+		</container>
+		<container style="referral-details">
+			<container >
+				<param name="css-class" value="createReferralProvider"/>
+				<container style="referral-field">
+					<title id="Provider.Title"/>
+					<field source="/DISPLAY/xmlData/provider-name/" style="rich-text">
+					</field>
+					<field source="/DISPLAY/xmlData/address/" style="rich-text">
+					</field>
+				</container>
+			</container>
+			<container>
+				<param name="css-class" value="createReferralReferredFor"/>
+				<container style="referral-field">
+					<title id="ReferredFor.Title"/>
+					<field source="/DISPLAY/xmlData/service-name/" style="rich-text">
+					</field>
+				</container>
+			</container>
+		</container>
+		<container style="referral-details">
+			<container >
+			<param name="css-class" value="contactDetails"/>
+			<container >
+				<title id="Contact.Title" />
+				<description id="Contact.Description" />
+				<container style="referral-details">
+					<container style="referral-field">
+						<param name="hasMandatory" value="true"/>
+						<field id="name" type="PAGE_PLAYER_STRING_50" mandatory="true" width="96">
+							<title id="Name.Label" />
+							<param name="isMandatory" value="true"/>
+						</field>
+						<field id="address" type="PAGE_PLAYER_STRING_50" mandatory="false" width="94">
+							<title id="Address.Label" />
+							<param name="isAddress" value="true"/>
+						</field>
+					</container>
+					<container style="referral-field">
+						<field id="homePhone" type="PAGE_PLAYER_STRING_50" mandatory="false" width="96">
+							<title id="Home.Phone.Label" />
+						</field>
+						<field id="workPhone" type="PAGE_PLAYER_STRING_50" mandatory="false" width="96">
+							<title id="Work.Phone.Label" />
+						</field>
+						<field id="cellPhone" type="PAGE_PLAYER_STRING_50" mandatory="false" width="96">
+							<title id="Cell.Phone.Label" />
+						</field>
+						<field id="emailAddress" type="PAGE_PLAYER_STRING_50" mandatory="false" width="96">
+							<title id="Email.Address.Label" />
+						</field>
+					</container>
+				</container>
+			</container>
+		</container>
+		</container>		
+		<container >
+			<param name="css-class" value="referMessage"/>
+			<container style="referral-field">
+				<title id="Message.Title" />
+				<field id="message" type="PAGE_PLAYER_STRING_50" mandatory="false" width="98">
+					<param name="isCommentsField" value="true"/>
+				</field>
+			</container>		
+		</container>
+		<navigation align="centre">
+			<nav-button name="submit" type="action"/>
+			<nav-button name="cancel" page="DismissNoRefresh"/>
+		</navigation>
+	</content>
+</page>
+

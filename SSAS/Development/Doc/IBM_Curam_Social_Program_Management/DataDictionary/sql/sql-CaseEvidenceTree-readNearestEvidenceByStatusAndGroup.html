@@ -1,0 +1,133 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>CaseEvidenceTree.readNearestEvidenceByStatusAndGroup</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">This operation is used to read the nearest evidence record in the past to the input date, for a given Case, which has an associated Case Evidence Group record of the specified evidence group.
+
+The first step is to calculate the maximum effective from date for the required caseID and statusCode before a specified cut-off date - where no date is available null is used.  The results are restricted to only those that match the evidence group name code from the case evidence group table.
+
+Once this is done the resulting date is used to select all data from the corresponding case evidence tree.  As many groups may apply to the resultant date, the results must be restricted again to the group name code.
+
+
+</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">ns</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  allitems.caseEvidenceTreeID,
+  allitems.caseID,
+  allitems.effectiveFrom,
+  allitems.statusCode,
+  allitems.previousEvidenceID,
+  allitems.versionNo,
+  ceg.caseEvidenceGroupID,
+  ceg.evidenceGroupInfoID,
+  ceg.versionNo
+INTO
+  :caseEvidenceTreeID,
+  :caseID,
+  :effectiveFrom,
+  :statusCode,
+  :previousEvidenceID,
+  :versionNo,
+  :caseEvidenceGroupID,
+  :evidenceGroupInfoID,
+  :caseEvidenceGroupVersionNo 
+FROM
+  
+  ( 
+  SELECT
+    MAX(effectiveFrom) AS maxeffectivefrom 
+  FROM
+    
+    ( 
+    SELECT
+      * 
+    FROM
+      CaseEvidenceTree 
+    WHERE effectiveFrom IS NOT NULL 
+      AND effectiveFrom < :effectiveFrom 
+      AND caseID = :caseID 
+      AND statusCode = :statusCode 
+    
+    UNION
+      
+    SELECT
+      * 
+    FROM
+      CaseEvidenceTree 
+    WHERE effectiveFrom IS NULL 
+      AND caseID = :caseID 
+      AND statusCode = :statusCode 
+    ) c1,
+    CaseEvidenceGroup ceg 
+  WHERE ceg.evidenceGroupNameCode = :evidenceGroupNameCode 
+    AND ceg.caseEvidenceTreeID = c1.caseEvidenceTreeID 
+  ) maxitems,
+  CaseEvidenceTree allitems,
+  CaseEvidenceGroup ceg 
+WHERE 
+  (
+    
+    (
+      maxeffectivefrom IS NOT NULL 
+      AND maxeffectivefrom = allitems.effectiveFrom 
+    ) 
+    OR 
+    (
+      maxeffectivefrom IS NULL 
+      AND allitems.effectiveFrom IS NULL 
+    ) 
+  ) 
+  AND allitems.caseID = :caseID 
+  AND allitems.statusCode = :statusCode 
+  AND ceg.caseEvidenceTreeID = allitems.caseEvidenceTreeID 
+  AND ceg.evidenceGroupNameCode = :evidenceGroupNameCode
+
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

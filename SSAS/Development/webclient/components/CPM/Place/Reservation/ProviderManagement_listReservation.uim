@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to view the list of  reservation              -->
+<!-- for provider page.                                                      -->
+<PAGE
+  PAGE_ID="ProviderManagement_listReservation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00205476, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="DISPLAY"
+    OPERATION="listReservationDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00205476 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00199327, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00199327 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Search">
+      <!-- BEGIN, CR00235795, PS -->
+      <LINK PAGE_ID="ProviderManagement_searchByReservationStatusProviderAndClient">
+        <!-- END, CR00235795 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00199327, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199327-->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00228688, PS -->
+        <!-- BEGIN, CR00260871, ASN -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyReservation"
+        >
+          <!-- END, CR00260871 -->
+          <!-- END, CR00228688 -->
+          <!-- BEGIN, CR00205476, GP -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reservationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="reservationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <!-- END, CR00205476 -->
+          <!-- BEGIN, CR00260871, ASN -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="from"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="from"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="to"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="to"
+            />
+          </CONNECT>
+          <!-- END, CR00260871 -->
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00205476, GP -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Confirm">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isFulfilled"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00228688, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyResPeriodDuringConfirmation"
+        >
+          <!-- END, CR00228688 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reservationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="reservationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.RelatedPlacement">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isFulfilled"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="ProviderManagement_viewPlacementDetails">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00199327, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelReservation"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reservationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="reservationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00199327 -->
+
+
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Person_homePagePDC"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.From">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="from"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.To">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="to"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="placeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235795 -->
+
+
+    <!-- BEGIN, CR00199327, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewReservation">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reservationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00136546, SB -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleClientID"
+          />
+        </CONNECT>
+        <!-- END, CR00205476 -->
+        <!-- END, CR00136546 -->
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199327 -->
+  </LIST>
+</PAGE>

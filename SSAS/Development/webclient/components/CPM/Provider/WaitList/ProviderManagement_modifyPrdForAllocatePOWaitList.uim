@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This page allows the user to update the from date time and 
+  to date time during allocation              -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyPrdForAllocatePOWaitList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="waitListEntryID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListEntryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$keyVersionDtls$id"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$keyVersionDtls$version"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="ACTION"
+    OPERATION="retrieveAllocateDetailsPassedByClient"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00248344, GP -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248344 -->
+
+
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD LABEL="Field.Label.WaitListEntry.FromDate">
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$fromDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.ToDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$toDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00248344, GP -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_modifyPlaceProviderOfferingAllocate"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00248344 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$fromDateTime"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$toDateTime"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$keyVersionDtls$id"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$keyVersionDtls$version"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$waitListTypeInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListTypeInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

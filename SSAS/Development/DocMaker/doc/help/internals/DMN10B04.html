@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Books</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN10A8F.html" title="The Document Hierarchy"><link rel="previous" href="DMN10AA1.html" title="Hierarchy Elements"><link rel="next" href="DMN10C8C.html" title="Parts"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN10AA1.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN10C8C.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN10B04"></a>Books</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN10B09"></a>Book Structure</h3></div></div><div></div></div><p>A book is a group of parts, chapters, and appendices that together
+      form a document. While there are other types of document in DocBook XML
+      such as an <tt class="sgmltag-element">article</tt>, C&uacute;ram documentation uses the
+      <tt class="sgmltag-element">book</tt> element exclusively.</p><div class="informalexample"><pre class="programlisting">&lt;book&gt;
+  &lt;title&gt;My First Book&lt;/title&gt;
+  &lt;bookinfo&gt;
+    ...
+  &lt;/bookinfo&gt;
+  &lt;chapter&gt;
+    ...
+  &lt;/chapter&gt;
+  &lt;chapter&gt;
+    ...
+  &lt;/chapter&gt;
+&lt;/book&gt;</pre></div><p>In the above example, the book has a title, some information about
+      the book element, and two chapters. The <tt class="sgmltag-element">title</tt> element
+      should appear first, followed by the <tt class="sgmltag-element">bookinfo</tt>
+      element, and then the other hierarchy elements.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN10B28"></a>Book Information</h3></div></div><div></div></div><p>The <tt class="sgmltag-element">bookinfo</tt> element is used to hold important
+      information about the book. This information includes the author
+      information, legal notices, copyright statements, and the printing
+      history. There are many different elements that can be included here,
+      but in C&uacute;ram documents the contents are quite formulaic. The example
+      below shows the standard information for a C&uacute;ram product guide.</p><div class="informalexample"><pre class="programlisting">&lt;bookinfo&gt;
+
+  &lt;copyright&gt;
+    &lt;year&gt;2005&lt;/year&gt;
+    &lt;holder&gt;C&uacute;ram Software Limited&lt;/holder&gt;
+  &lt;/copyright&gt;
+
+  &lt;productname&gt;
+    &lt;trademark class="registered"&gt;C&uacute;ram&lt;/trademark&gt; 4.0
+  &lt;/productname&gt;
+
+  &lt;abstract&gt;
+    &lt;para&gt;
+      A short description of the contents of this book.
+    &lt;para&gt;
+  &lt;/abstract&gt;
+
+  &lt;legalnotice&gt;
+    &lt;para&gt;
+      No part of this publication may be stored in a retrieval
+      system, transmitted, or reproduced in any way, including
+      but not limited to photocopy, photograph, magnetic or
+      other record, without the prior agreement and written
+      permission of C&uacute;ram Software Ltd.
+    &lt;/para&gt;
+    &lt;para&gt;
+      The information in this book is distributed on an
+      &lt;quote&gt;as is&lt;/quote&gt; basis, without warranty. While every
+      precaution has been taken in the preparation of this book,
+      neither the authors nor C&uacute;ram Software Ltd. shall have any
+      liability to any person or entity with respect to any
+      liability, loss or damage caused or alleged to be caused
+      directly or indirectly by instructions contained in this
+      book or by the computer software or hardware products
+      described herein.
+    &lt;/para&gt;
+    &lt;para&gt;
+      C&uacute;ram is a registered trademark of C&uacute;ram Software Ltd.
+      All C&uacute;ram products and service names are trademarks and
+      property of C&uacute;ram Software Ltd. All Rights Reserved. All
+      third-party logos, products and service names are
+      property of their respective owners.
+    &lt;/para&gt;
+  &lt;/legalnotice&gt;
+
+&lt;/bookinfo&gt;</pre></div><p>In general, you will use the <tt class="sgmltag-element">bookinfo</tt> element
+      as shown changing only the copyright year as appropriate.</p><p>The <tt class="sgmltag-element">abstract</tt> element is optional and allows a
+      short description of the book to be included. This will not be rendered
+      in the PDF output, but the HTML Help output will display the abstract on
+      the cover page for the book.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN10B47"></a>Book Categories</h3></div></div><div></div></div><p>C&uacute;ram books usually fall into one of a number of categories.
+      DocMaker recognizes several categories and will customize the cover page
+      of the book as appropriate when generating <span class="acronym">PDF</span>
+      output. To indicate the category to which a book belongs, you need to
+      set the <tt class="sgmltag-attribute">role</tt> attribute of the book
+      element as described in the table below.</p><div class="informaltable"><table border="1"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th><p>Category of Book</p></th><th><p>Value of <tt class="sgmltag-attribute">role</tt>
+              Attribute</p></th></tr></thead><tbody><tr><td><p>User Guides</p></td><td><p>user</p></td></tr><tr><td><p>Developer Guides</p></td><td><p>developer</p></td></tr><tr><td><p>Administrator Guides</p></td><td><p>administrator</p></td></tr><tr><td><p>Business Analyst Guides</p></td><td><p>analyst</p></td></tr><tr><td><p>Business Guides</p></td><td><p>business</p></td></tr><tr><td><p>Functional Specifications</p></td><td><p>functional</p></td></tr><tr><td><p>Design Specifications</p></td><td><p>design</p></td></tr></tbody></table></div><p>If you do not specify a <tt class="sgmltag-attribute">role</tt>
+      attribute for a book, then a plain cover page will be generated.The
+      example below shows how to indicate that a book is in the &ldquo;<span class="quote">User
+      Guides</span>&rdquo; category.</p><div class="informalexample"><pre class="programlisting">&lt;book role="user"&gt;
+  &lt;title&gt;How to Read a Manual&lt;/title&gt;
+  ...
+&lt;/book&gt;</pre></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN10BF7"></a>Revision Histories</h3></div></div><div></div></div><p>A revision history is a record of the changes made to a document
+      over time. While most documents do not need a detailed revision history,
+      DocBook XML defines elements for revision histories and DocMaker
+      supports these conditionally. DocMaker will render a revision history as
+      a table of revisions in the front matter of a book. The revision history
+      will only be rendered in the PDF output and only when the
+      <tt class="sgmltag-element">book</tt> element has its <tt class="sgmltag-attribute">status</tt> attribute set to <tt class="sgmltag-attvalue">draft</tt>. When the <tt class="sgmltag-attribute">status</tt> attribute is set to another value, or
+      is not present, the revision history will not be included in the
+      output.</p><p>The revision history is included by adding a
+      <tt class="sgmltag-element">revhistory</tt> element to the book's
+      <tt class="sgmltag-element">bookinfo</tt> element; revision histories for elements
+      other than the <tt class="sgmltag-element">book</tt> element are not supported by
+      DocMaker. The <tt class="sgmltag-element">revhistory</tt> element can contain one or
+      more <tt class="sgmltag-element">revision</tt> elements, each describing the details
+      of a change to the document. When authors make changes, they should add
+      a new <tt class="sgmltag-element">revision</tt> element to the
+      <tt class="sgmltag-element">revhistory</tt>.</p><p>A <tt class="sgmltag-element">revision</tt> element describes a change using a
+      number of child elements; the order of these elements is important. The
+      first is the <tt class="sgmltag-element">revnumber</tt> element that defines the
+      revision number; next is the <tt class="sgmltag-element">date</tt> element for the
+      revision date; this is followed by any number of optional
+      <tt class="sgmltag-element">author</tt> or <tt class="sgmltag-element">authorinitials</tt> elements;
+      and, finally, a single optional <tt class="sgmltag-element">revremark</tt> or
+      <tt class="sgmltag-element">revdescription</tt> element can be used to provide a short
+      or long description of the change.</p><p>Here is an example:</p><div class="informalexample"><pre class="programlisting">&lt;book role="user" status="draft"&gt;
+  &lt;title&gt;How to Read a Manual&lt;/title&gt;
+
+  &lt;bookinfo&gt;
+
+    &lt;copyright&gt;
+      &lt;year&gt;2004&lt;/year&gt;
+      &lt;holder&gt;C&uacute;ram Software Limited&lt;/holder&gt;
+    &lt;/copyright&gt;
+
+    &lt;revhistory&gt;
+      &lt;revision&gt;
+        &lt;revnumber&gt;1.0&lt;/revnumber&gt;
+        &lt;date&gt;01-Nov-2004&lt;/date&gt;
+        &lt;authorinitials&gt;XY&lt;/authorinitials&gt;
+        &lt;revremark&gt;
+          First draft of the book.
+        &lt;/revremark&gt;
+      &lt;/revision&gt;
+
+      &lt;revision&gt;
+        &lt;revnumber&gt;1.1&lt;/revnumber&gt;
+        &lt;date&gt;04-Nov-2004&lt;/date&gt;
+        &lt;authorinitials&gt;YZ&lt;/authorinitials&gt;
+        &lt;authorinitials&gt;WX&lt;/authorinitials&gt;
+        &lt;author&gt;
+          &lt;firstname&gt;John&lt;/firstname&gt;
+          &lt;surname&gt;Smith&lt;/surname&gt;
+        &lt;/author&gt;
+        &lt;revremark&gt;
+          Changes applied by review committee.
+        &lt;/revremark&gt;
+      &lt;/revision&gt;
+    &lt;/revhistory&gt;
+
+    ...
+  &lt;/bookinfo&gt;
+
+&lt;/book&gt;</pre></div><p>Note that the <tt class="sgmltag-attribute">status</tt>
+      attribute of the <tt class="sgmltag-element">book</tt> element must be set to <tt class="sgmltag-attvalue">draft</tt> for the revision history to be
+      rendered. If you want to render a copy of the document without the
+      revision history, you can leave the revision history details in the
+      content and just change the value of the <tt class="sgmltag-attribute">status</tt> attribute to <tt class="sgmltag-attvalue">final</tt>, or delete the attribute completely.
+      Regardless of the value of the <tt class="sgmltag-attribute">status</tt> attribute, the revision history will
+      never appear in the HTML Help output.</p><p>When writing revision history entries, the
+      <tt class="sgmltag-element">revremark</tt> element allows you to enter a simple
+      comment; you can include plain text and use the
+      <tt class="sgmltag-element">emphasis</tt> element, if required. For more elaborate
+      comments, you can use the <tt class="sgmltag-element">revdescription</tt> element.
+      This element allows you to include most of the block elements described
+      in the next chapter; you can use lists, tables, figures, paragraphs, and
+      other element, though it is unlikely that they will be required.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN10C6F"></a>Books with Long Titles</h3></div></div><div></div></div><p>Sometimes, the formal title of a book may be so long that it may
+      cause some formatting problems during rendering. When generating
+      <span class="acronym">PDF</span> output, for example, DocMaker uses the book title
+      in the page header, so a long title can cause the text in the header to
+      wrap onto a new line and look unsightly. While a long formal title may
+      be unavoidable, DocBook XML allows you to define an abbreviated title
+      for a book for use when the title may cause formatting problems. This
+      abbreviated title is defined using the <tt class="sgmltag-element">titleabbrev</tt>
+      element. The element is placed immediately after the book's
+      <tt class="sgmltag-element">title</tt> element. If DocMaker finds a
+      <tt class="sgmltag-element">titleabbrev</tt> element, it will use it in the page
+      header during rendering, but it will still use the full title on the
+      cover page. Here is an example:</p><div class="informalexample"><pre class="programlisting">&lt;book role="user"&gt;
+  &lt;title&gt;
+    C&uacute;ram Deployment Guide for IBM WebSphere
+    Application Server on Microsoft Windows 2000
+  &lt;/title&gt;
+  &lt;titleabbrev&gt;
+    Deployment Guide for WAS on Windows 2000
+  &lt;/titleabbrev&gt;
+  ...
+&lt;/book&gt;</pre></div></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN10AA1.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN10C8C.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

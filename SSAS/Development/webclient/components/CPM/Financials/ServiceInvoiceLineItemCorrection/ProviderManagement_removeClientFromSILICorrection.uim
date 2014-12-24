@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the remove client from service invoice line item  correction   -->
+<!--  page                                                                  -->
+<PAGE
+  PAGE_ID="ProviderManagement_removeClientFromSILICorrection"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="SILICorrection"
+    NAME="ACTION"
+    OPERATION="removeClientFromSILICorrection"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="siliCorrectionClientID"/>
+  <PAGE_PARAMETER NAME="siliCorrectionID"/>
+  <PAGE_PARAMETER NAME="clientReferenceNo"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="siliCorrectionClientID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$siliCorrectionClientID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="siliCorrectionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$siliCorrectionID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.ApproveText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSILICorrection">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="siliCorrectionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="SILICorrectionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No"/>
+  </ACTION_SET>
+
+
+</PAGE>

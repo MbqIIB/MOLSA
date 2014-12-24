@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+-->
+<project>
+
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="rep_properties.xml"/>
+
+  <!--  *******************************  -->
+  <!--  ***  Import tasks definitions**  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_tasks.xml"/>
+  
+    <!--  *******************************  -->
+    <!--  ***  Import tasks definitions**  -->
+    <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_init.xml"/>
+
+      <!--  ***************************  -->
+      <!--  ***  Import Properties  ***  -->
+      <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_encrypt.xml"/>
+  
+  <!--  ***************************  -->
+  <!--  ***  CHECK   DB   TYPE  ***  -->
+  <!--  ***************************  -->
+  <target name="check.db.type">
+
+    <condition property="usingoracle">
+      <contains casesensitive="No" string="${db.type}" substring="ora"/>
+    </condition>
+
+    <condition property="usingdb2">
+      <contains casesensitive="No" string="${db.type}" substring="DB2"/>
+    </condition>
+
+    <condition property="prop.environment.owb.tests.run.builddatabase.not" value="configured to not build BI Schemas for configtest">
+             <and>
+                <isset property="environment.owb.tests.run.builddatabase"/>
+                <isfalse value="${environment.owb.tests.run.builddatabase}"/>
+             </and>
+    </condition>
+    
+  </target>
+
+  <!--  *****************************************  -->
+  <!--  ***  GET.DECRYPTED.DB.PASSWORD  ***  -->
+  <!--  *****************************************  -->
+
+  <target name="get.decrypted.db.password">
+
+ 
+    <taskdef
+      classname="curam.util.reporting.internal.tasks.AntEncrypt"
+      classpath="${jar.reporting.buildenv}"
+      name="EncryptPassword"
+    />
+	
+    <EncryptPassword
+      password="${curamsource.db.password}"
+      to="decrypted.curamsource.db.password"
+    />
+
+    <EncryptPassword
+      password="${staging.db.password}"
+      to="decrypted.staging.db.password"
+    />
+  
+    <EncryptPassword
+      password="${central.db.password}"
+      to="decrypted.central.db.password"
+    />
+
+    <EncryptPassword
+      password="${centraldm.db.password}"
+      to="decrypted.centraldm.db.password"
+    />
+
+    <EncryptPassword
+      password="${dmdemodata.db.password}"
+      to="decrypted.dmdemodata.db.password"
+    />
+
+
+    <EncryptPassword
+      password="${design.db.password}"
+      to="decrypted.design.db.password"
+    />
+	
+	
+	
+  </target>
+ <!--  **********************************  -->
+  <!--  ***  CHECK   DB2 ZOS or UDB    ***  -->
+  <!--  **********************************  -->
+  <target name="get.decrypted.db.password.owb" if="usingoracle">
+    <EncryptPassword
+      password="${runtime.db.password}"
+      to="decrypted.runtime.db.password"
+    />
+	
+  </target>
+  
+  <!--  **********************************  -->
+  <!--  ***  CHECK   DB2 ZOS or UDB    ***  -->
+  <!--  **********************************  -->
+  <target name="check.db2.type">
+
+    <condition property="usingudb">
+      <contains casesensitive="No" string="${db2.source.type}" substring="UDB"/>
+    </condition>
+
+    <condition property="usingzos">
+      <contains casesensitive="No" string="${db2.source.type}" substring="390"/>
+    </condition>
+
+  </target>
+
+
+  <!--  *******************************  -->
+  <!--  ***  SET DB TO SOURCE     ***  -->
+  <!--  *******************************  -->
+
+
+  <target name="set.db.source" depends="get.decrypted.db.password">
+
+    <property name="owb.location" value="SOURCE_LOCATION"/>
+
+    <property name="db.name" value="${curamsource.db.name}"/>
+    <property name="db.username" value="${curamsource.db.username}"/>
+    <property name="db.password" value="${decrypted.curamsource.db.password}"/>
+    <property name="db.server" value="${curamsource.db.server}"/>
+    <property name="db.port" value="${curamsource.db.port}"/>
+  </target>
+
+
+  <!--  *******************************  -->
+  <!--  ***  SET DB TO STAGING      ***  -->
+  <!--  *******************************  -->
+
+
+  <target name="set.db.staging" depends="get.decrypted.db.password">
+
+
+    <property name="owb.location" value="STAGING_LOCATION"/>
+
+    <property name="db.name" value="${staging.db.name}"/>
+    <property name="db.username" value="${staging.db.username}"/>
+    <property name="db.password" value="${decrypted.staging.db.password}"/>
+    <property name="db.server" value="${staging.db.server}"/>
+    <property name="db.port" value="${staging.db.port}"/>
+  </target>
+
+
+  <!--  ***************************************  -->
+  <!--  ***  set DB to central datamart     ***  -->
+  <!--  ***************************************  -->
+
+
+  <target name="set.db.centraldm" depends="get.decrypted.db.password">
+
+
+    <property name="owb.location" value="DATAMARTS_LOCATION"/>
+
+    <property name="db.name" value="${centraldm.db.name}"/>
+    <property name="db.username" value="${centraldm.db.username}"/>
+    <property name="db.password" value="${decrypted.centraldm.db.password}"/>
+    <property name="db.server" value="${centraldm.db.server}"/>
+    <property name="db.port" value="${centraldm.db.port}"/>
+  </target>
+  
+  <target name="set.db.dmdemodata" depends="get.decrypted.db.password">
+    
+    <property name="db.name" value="${dmdemodata.db.name}"/>
+    <property name="db.username" value="${dmdemodata.db.username}"/>
+    <property name="db.password" value="${decrypted.dmdemodata.db.password}"/>
+    <property name="db.server" value="${dmdemodata.db.server}"/>
+    <property name="db.port" value="${dmdemodata.db.port}"/>
+  </target>
+
+  <!--  ***************************  -->
+  <!--  ***  SET  DB TO CDW     ***  -->
+  <!--  ***************************  -->
+
+
+  <target name="set.db.central" depends="get.decrypted.db.password">
+
+    <property name="owb.location" value="CDW_LOCATION"/>
+
+    <property name="db.name" value="${central.db.name}"/>
+    <property name="db.username" value="${central.db.username}"/>
+    <property name="db.password" value="${decrypted.central.db.password}"/>
+    <property name="db.server" value="${central.db.server}"/>
+    <property name="db.port" value="${central.db.port}"/>
+
+  </target>
+
+
+  <!--  *******************************  -->
+  <!--  ***  SET  DB TO DESIGN      ***  -->
+  <!--  *******************************  -->
+
+
+  <target name="set.db.design" depends="get.decrypted.db.password">
+
+    <property name="db.name" value="${design.db.name}"/>
+    <property name="db.username" value="${design.db.username}"/>
+    <property name="db.password" value="${decrypted.design.db.password}"/>
+    <property name="db.server" value="${design.db.server}"/>
+    <property name="db.port" value="${design.db.port}"/>
+
+    <property name="db.owb.url" value="${db.username}/${db.password}@${db.server}:${db.port}:${db.name}"/>
+
+  </target>
+
+
+  <!--  *******************************  -->
+  <!--  ***  SET  DB TO RUNTIME     ***  -->
+  <!--  *******************************  -->
+
+
+  <target if="usingoracle" name="set.db.runtime" depends="get.decrypted.db.password">
+
+    <property name="db.name" value="${runtime.db.name}"/>
+    <property name="db.username" value="${runtime.db.username}"/>
+    <property name="db.password" value="${decrypted.runtime.db.password}"/>
+    <property name="db.server" value="${runtime.db.server}"/>
+    <property name="db.port" value="${runtime.db.port}"/>
+
+   
+    <property name="db.owb.url" value="${db.username}/${db.password}@${db.server}:${db.port}:${db.name}"/>
+
+  </target>
+
+
+  <!--  *********************************************  -->
+  <!--  ***  SET  DB2    CONFIG                   ***  -->
+  <!--  ***  one of the targets set.db.*          ***  -->
+  <!--  ***  must be called prior to this target  ***  -->
+  <!--  ***  for the db.url property to be valid  ***  -->
+  <!--  *********************************************  -->
+
+
+  <target if="usingdb2" name="set.database.db2">
+    <echo message="Database set to DB2"/>
+
+    <property name="db.platform" value="${db2}"/>
+    <property name="db.driver" value="com.ibm.db2.jcc.DB2Driver"/>
+
+    <!-- the url format for 8.2.x was jdbc:db2://servername:port/dbname -->
+    <property name="db.url" value="jdbc:db2://${db.server}:${db.port}/${db.name}"/>
+ 
+     <!-- the url format for 8.2.x was jdbc:db2://servername:port/dbname -->
+    <property name="db.url" value="jdbc:db2://${db.server}:${db.port}/${db.name}"/>
+       <condition property="execute.updatenulls.curam">
+          <and>
+             <isset property="environment.databases.curam.updatenulls.autorun"/>
+             <istrue value="${environment.databases.curam.updatenulls.autorun}"/>
+          </and>
+    </condition>
+	
+  </target>
+
+
+  <!--  *********************************************  -->
+  <!--  ***  SET  ORACLE CONFIG                   ***  -->
+  <!--  ***  one of the targets set.db.*          ***  -->
+  <!--  ***  must be called prior to this target  ***  -->
+  <!--  ***  for the db.url property to be valid  ***  -->
+  <!--  *********************************************  -->
+
+
+  <target unless="properties.set.true" if="usingoracle" depends="declareTasks" name="set.database.ora">
+  
+    <property name="db.platform" value="${oracle}"/>
+    <property name="db.driver" value="oracle.jdbc.OracleDriver"/>
+    <property name="db.url" value="jdbc:oracle:thin:@${db.server}:${db.port}/${db.name}"/>
+    
+    <AntUtilities verbose="false" propertyName="curam.workspace.name"   operation="workspacename" value="${design.db.workspacename}" sourceproperty="design.db.workspacename"/>
+
+     <!-- the workspace name for OWB 11g-->
+    <property name="db.owb.workspacename" value="${curam.workspace.name}"/>
+    <property name="db.owb.workspacename" value="${curam.workspace.name}"/>
+    <AntUtilities verbose="false" propertyName="${prop.owbconfig.remotedatamanagerdir}"   operation="datamanagerdir" value="${environment.owbconfig.remotedatamanagerdir}" sourceproperty="environment.owbconfig.remotedatamanagerdir"/>
+         
+    <AntUtilities verbose="false" propertyName="TEST_workspacename" operation="component.order"
+            value="components" sourceproperty="REPORTING_DIR"/> 
+            
+    <condition property="execute.grants.bi">
+          <and>
+            <isset property="environment.databases.bi.privilages.autogrant"/>
+            <istrue value="${environment.databases.bi.privilages.autogrant}"/>
+          </and>
+    </condition>   
+    
+    <condition property="execute.grants.curam">
+          <and>
+             <isset property="environment.databases.curam.privilages.autogrant"/>
+             <istrue value="${environment.databases.curam.privilages.autogrant}"/>
+          </and>
+    </condition>
+        
+    <condition property="execute.updatenulls.curam">
+          <and>
+             <isset property="environment.databases.curam.updatenulls.autorun"/>
+             <istrue value="${environment.databases.curam.updatenulls.autorun}"/>
+          </and>
+    </condition>
+
+    <condition property="prop.environment.owb.validateafterimport">
+          <and>
+             <isset property="environment.owb.validateafterimport"/>
+             <isfalse value="${environment.owb.validateafterimport}"/>
+          </and>
+    </condition>
+    
+
+
+  </target>
+
+ 
+
+  <target name="debug.message" if="debug.message">
+    <tstamp>
+      <format
+        pattern="HH:mm:ss"
+        property="time.now"
+      />
+    </tstamp>
+    <echo message="${time.now} ${prm.msg}"/>
+  </target>  
+
+  
+
+  <!--  *************************************************  -->
+  <!--  ***  copies static data files                 ***  -->
+  <!--  *************************************************  -->
+  <target description="Copies/merges the static data files and control files" name="staticdata" depends="init, declareTasks, check.db.type">
+    
+	
+    <AntGenerateStaticData dataManagerDirectory="${dir.bin.datamanager}" reportingDir="${REPORTING_DIR}" />	
+    <antcall target="staticdata.infosphere"/>
+	
+  </target>
+  
+    <target  name="staticdata.infosphere" if="usingdb2">
+    
+    <AntGenerateStaticData dataManagerDirectory="${dir.bin.datamanager}" reportingDir="${REPORTING_DIR}" />
+
+	<delete verbose="false" >
+      <fileset dir="${dir.iweproject.misc}">
+        <include name="${dir.iweproject.misc.datafiles.pattern}"/>
+      </fileset>
+    </delete>
+	
+    <copy overwrite="true"  verbose="false" todir="${dir.iweproject.misc}">
+      <fileset dir="${dir.bin.datamanager}">
+        <include name="${dir.iweproject.misc.datafiles.pattern}"/>
+      </fileset>
+    </copy>
+	
+  </target>
+  
+  <target name="copy.and.rename" description="copy and rename files, use -Dcopyto.directory=e:${file.separator}scratch -Dsource.directory=e:${file.separator}scratch -Dtarget.pattern=*.cflowxmi -Dsource.pattern=*M2.cflowxmi">
+  
+    <echo message="Ensure you do specifiy parameter that cause files to be overwritten in error"/>
+    <echo message="Checking copy and rename parameters..."/>
+    <fail message="use -Dtarget.pattern=" unless="target.pattern"/>
+	<fail message="use -Dsource.pattern=" unless="source.pattern"/>
+	<fail message="use -Dcopyto.directory=" unless="copyto.directory"/>
+	<fail message="use -Dsource.directory=" unless="source.directory"/>
+	<echo message="${copyto.directory} ${source.directory} ${source.pattern} ${target.pattern}"/>
+    <copy todir="${copyto.directory}" verbose="true" overwrite="false">
+        <fileset dir="${source.directory}"/>
+        <globmapper from="${source.pattern}" to="${target.pattern}"/>		
+    </copy> 
+  </target>
+  
+  <target name="copyright.add" description="prepends a copyright notice to files, copies files to a temp location and back again">
+  
+    <property name="dir.files.source" value="${REPORTING_DIR}/components"/>
+    <property name="dir.files.pattern" value="**/*.java"/>
+	<property name="dir.files.pattern" value="**/*.properties"/>
+    <property name="dir.files.copyrightnotice" value="${REPORTING_DIR}/components/bibuildtools/scripts/ibmjava.copyright"/>
+    <property name="dir.files.copyrightnotice" value="${REPORTING_DIR}/components/bibuildtools/scripts/ibmproperties.copyright"/>
+	
+	<echo message="Override the properties as required:" />
+    <echo message="dir.files.source=${dir.files.source}"/>
+    <echo message="dir.files.pattern=${dir.files.pattern}"/>
+    <echo message="dir.files.copyrightnotice=${dir.files.copyrightnotice}"/>
+  
+    <input
+      message="Copy files and prepend ${dir.files.copyrightnotice} copyright file  (y/n)?"
+      validargs="y,n"
+      addproperty="do.delete1"
+    />
+    <condition property="do.abort1">
+      <equals arg1="n" arg2="${do.delete1}"/>
+    </condition>
+    <fail if="do.abort1">Build aborted by user.</fail>
+  
+    <property name="temp" value="${REPORTING_DIR}/build/copyright"/>
+  
+    <delete dir="${temp}" verbose="false" />
+    <mkdir dir="${temp}"  />
+  
+    <copy overwrite="true" force="true" verbose="false" todir="${temp}">
+      <fileset dir="${dir.files.source}">
+        <include name="${dir.files.pattern}"/>
+      </fileset>
+      <filterchain>
+        <concatfilter prepend="${dir.files.copyrightnotice}"/>
+      </filterchain>
+    </copy>
+ 
+ 	<echo message="Files copied and copyright has bee prepended!" />
+ 	<echo message="Files about to be copied back to their original location" />
+
+
+    <copy overwrite="true" force="true" verbose="true" todir="${dir.files.source}">
+        <fileset dir="${temp}">
+          <include name="${dir.files.pattern}"/>
+        </fileset>
+    </copy>
+  <echo message="Files copied back to their original location" />
+  </target>
+
+ 
+
+</project>

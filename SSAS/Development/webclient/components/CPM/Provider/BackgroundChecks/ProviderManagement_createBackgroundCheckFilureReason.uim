@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the view provider category page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_createBackgroundCheckFilureReason"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="providerBackgroundCheckID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <SERVER_INTERFACE
+    CLASS="ProviderBackgroundCheck"
+    NAME="ACTION"
+    OPERATION="createBackgroundCheckFailureReason"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerBackgroundCheckID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="backgroundCheckFailureReaseonDtls$providerBackgroundCheckID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00207959, SS -->
+  <CLUSTER
+    LABEL_WIDTH="37"
+    NUM_COLS="1"
+  >
+    <!-- END, CR00207959 -->
+    <!-- BEGIN, CR00228688, PS -->
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="40"
+    >
+      <!-- END, CR00228688 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="backgroundCheckFailureReaseonDtls$occurrenceDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.FailureReason"
+      WIDTH="94"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="backgroundCheckFailureReaseonDtls$failureReason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

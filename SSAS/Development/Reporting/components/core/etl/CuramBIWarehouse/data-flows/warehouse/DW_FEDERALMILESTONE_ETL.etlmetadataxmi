@@ -1,0 +1,2047 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:LUW="http:///com/ibm/db/models/db2/luw.ecore" xmlns:SQLDataTypes="http:///org/eclipse/datatools/modelbase/sql/datatypes.ecore" xmlns:com.ibm.datatools.etl.coretypes="http:///com/ibm/datatools/etl/coretypes.ecore" xmlns:com.ibm.datatools.etl.dataflow.baselib.srctgt="http:///com/ibm/datatools/etl/dataflow/baselib/srctgt.ecore" xmlns:com.ibm.datatools.etl.dataflow.view="http:///com/ibm/datatools/etl/dataflow/view.ecore" xmlns:dynOpr="dyn:///com/ibm/datatools/etl/core.oplib" xsi:schemaLocation="http:///com/ibm/db/models/db2/luw.ecore http:///com/ibm/db/models/db2/db2.ecore#//luw">
+  <dynOpr:DefaultDataFlow iD="0" definitionID="DefaultDataFlow" itemName="DW_FEDERALMILESTONE_ETL" itemTag="" itemComments="@curam.logicalname DW_FEDERALMILESTONE_ETL&#xD;&#xA;@curam.definition This data flow extracts all data from DW_MILESTONEDURATION.csv file into {curam.primarytarget.DW_MILESTONEDURATION}&#xD;&#xA;@curam.loadstrategy MERGE" version="2.3.0" lastAssignedID="48" externalReferences="/0/@operatorMap.0/@value/@tempFilesPath /0/@operatorMap.0/@value/@messages /0/@operatorMap.0/@value/@file /0/@operatorMap.0/@value/@XMLPath /0/@operatorMap.2/@value/@rdbTable /0/@operatorMap.3/@value/@rdbTable" etlFlow="/1">
+    <changeParamTable key="com.ibm.datatools.sqw.dataflow.db2.luw,flowCodeGenerator">
+      <value paramID="com.ibm.datatools.sqw.dataflow.db2.luw" paramName="com.ibm.datatools.sqw.dataflow.db2.luw" paramUsage="flowCodeGenerator" subParamID="com.ibm.datatools.sqw.dataflow.db2.luw.FlowCodeGenerator" sortIdx="-1"/>
+    </changeParamTable>
+    <changeParamTable key="etlmetadataxmi,flowFileExtension">
+      <value paramID="etlmetadataxmi" paramName="etlmetadataxmi" paramUsage="flowFileExtension"/>
+    </changeParamTable>
+    <changeParamTable key="Debugger,debugging">
+      <value paramID="Debugger" paramName="Debugger" paramUsage="debugging" subParamID="com.ibm.datatools.etl.epg.debug.DefaultVirtualTableDebugger" sortIdx="1"/>
+    </changeParamTable>
+    <changeParamTable key="DebugDataStation,debugging">
+      <value paramID="DebugDataStation" paramName="DebugDataStation" paramUsage="debugging" subParamID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/ExternalDataStation" sortIdx="2"/>
+    </changeParamTable>
+    <changeParamTable key="CanvasTracer,executing">
+      <value paramID="CanvasTracer" paramName="CanvasTracer" paramUsage="executing" subParamID="com.ibm.datatools.etl.dataflow.ui.DataFlowExecutionListener" sortIdx="3"/>
+    </changeParamTable>
+    <changeParamTable key="ExecViewTracer,executing">
+      <value paramID="ExecViewTracer" paramName="ExecViewTracer" paramUsage="executing" subParamID="com.ibm.datatools.etl.dataflow.ui.DataFlowExecutionViewListener" sortIdx="4"/>
+    </changeParamTable>
+    <changeParamTable key="DB2 UDB,dbVendor">
+      <value paramID="DB2 UDB" paramName="DB2 UDB" paramUsage="dbVendor" subParamID="DB2 UDB" sortIdx="5"/>
+    </changeParamTable>
+    <changeParamTable key="dataflowxmi,flowViewFileExtension">
+      <value paramID="dataflowxmi" paramName="dataflowxmi" paramUsage="flowViewFileExtension" sortIdx="6"/>
+    </changeParamTable>
+    <changeParamTable key="macroflowxmi,macroFlowFileExtension">
+      <value paramID="macroflowxmi" paramName="macroflowxmi" paramUsage="macroFlowFileExtension" sortIdx="7"/>
+    </changeParamTable>
+    <changeParamTable key="macroviewxmi,macroFlowViewFileExtension">
+      <value paramID="macroviewxmi" paramName="macroviewxmi" paramUsage="macroFlowViewFileExtension" sortIdx="8"/>
+    </changeParamTable>
+    <changeParamTable key="CompatibleFlows,editing">
+      <value paramID="CompatibleFlows" paramName="CompatibleFlows" paramUsage="editing" subParamID="DefaultDataFlow|Subflow" sortIdx="9"/>
+    </changeParamTable>
+    <changeParamTable key="GenerateNewFlowsForSelection,editing">
+      <value paramID="GenerateNewFlowsForSelection" paramName="GenerateNewFlowsForSelection" paramUsage="editing" subParamID="DefaultDataFlow|Subflow" sortIdx="10"/>
+    </changeParamTable>
+    <changeParamTable key="propagationSupport,actionEnable">
+      <value paramID="propagationSupport" paramName="propagationSupport" paramUsage="actionEnable" subParamID="yes" sortIdx="11"/>
+    </changeParamTable>
+    <changeParamTable key="FlowDragAndDrop_CopyOperators_SrcFlowType,editing">
+      <value paramID="FlowDragAndDrop_CopyOperators_SrcFlowType" paramName="FlowDragAndDrop_CopyOperators_SrcFlowType" paramUsage="editing" subParamID="etlmetadataxmi|macroflowxmi" sortIdx="12"/>
+    </changeParamTable>
+    <changeParamTable key="FlowDragAndDrop_CreateRefOperator_SrcFlowType,editing">
+      <value paramID="FlowDragAndDrop_CreateRefOperator_SrcFlowType" paramName="FlowDragAndDrop_CreateRefOperator_SrcFlowType" paramUsage="editing" subParamID="macroflowxmi::{http:///com/ibm/datatools/etl/dataflow/macro_ui.oplib/MacroCreator/MacroChooser}" sortIdx="13"/>
+    </changeParamTable>
+    <operatorMap key="01">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/advsrctgt.oplib/Extract/FileSources/FileExtract" iD="01" definitionID="http:///com/ibm/datatools/etl/dataflow/advsrctgt.oplib/Extract/FileSources/FileExtract" itemName="FileExtract" itemTag="/op:01" itemLabel="DW_MILESTONEDURATION" version="2.3.0">
+        <outputPortMap key="output">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/advsrctgt.oplib/Extract/FileSources/FileExtract::output::output" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/advsrctgt.oplib/Extract/FileSources/FileExtract::output::output" itemName="output" itemTag="/op:01/output:output:0" itemLabel="output" editable="false" version="1.53" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.0/@value/@subSelect/@result" toLink="/0/@linkList.0">
+            <changeParamTable key="/prop:subSelect">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:subSelect" paramName="subSelect" paramType="property" subParamID="31" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@subSelect" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@subSelect/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <fileFormat iD="22" itemName="fileFormat" itemTag="/op:01/prop:fileFormat" itemType="FileFormatDescriptor">
+          <FileFormatDescriptor fieldDelimiter="44" stringDelimiter="34">
+            <fieldList itemName="fieldList" itemLabel="Field list: " itemType="FieldList">
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="DURATION" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="STARTDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="ENDDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="MILESTONENAME" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.dataflow.baselib.srctgt:FileFieldDescriptor" name="LASTWRITTEN" virtualType="TIMESTAMP">
+                <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+              </columns>
+            </fieldList>
+            <result iD="FILEFORMAT_01" itemTag="/op:01/prop:fileFormat" name="FILEFORMAT_01">
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+                <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+              </columns>
+            </result>
+          </FileFormatDescriptor>
+        </fileFormat>
+        <additionalModifiers iD="23" itemName="additionalModifiers" itemTag="/op:01/prop:additionalModifiers" hidden="true"/>
+        <file iD="23" itemName="file" itemTag="/op:01/prop:file" variableChosen="true" assignedVariableID="${FLATFILES_PATH/PATH_V}/DW_MILESTONEDURATION.csv" itemType="File">
+          <file xsi:type="dynOpr:EString" itemName="fileName" itemLabel="file.fileName"/>
+        </file>
+        <saveCount iD="24" itemName="saveCount" itemTag="/op:01/prop:saveCount" itemType="int"/>
+        <rowCount iD="25" itemName="rowCount" itemTag="/op:01/prop:rowCount" itemType="int"/>
+        <warningCount iD="26" itemName="warningCount" itemTag="/op:01/prop:warningCount" itemType="int"/>
+        <commitCount iD="27" itemName="commitCount" itemTag="/op:01/prop:commitCount" enabled="false" itemType="int"/>
+        <messages iD="28" itemName="messages" itemTag="/op:01/prop:messages" itemType="File" fileName="">
+          <file xsi:type="dynOpr:EString" itemName="fileName" itemLabel="file.fileName"/>
+        </messages>
+        <tempFilesPath iD="29" itemName="tempFilesPath" itemTag="/op:01/prop:tempFilesPath" itemType="Directory">
+          <file xsi:type="dynOpr:EString" itemName="fileName" itemLabel="file.fileName"/>
+        </tempFilesPath>
+        <columnSelectList iD="30" itemName="columnSelectList" itemTag="/op:01/prop:columnSelectList" hidden="true" itemType="VirtualTable"/>
+        <subSelect iD="31" itemName="subSelect" itemTag="/op:01/prop:subSelect" itemType="ColumnMap">
+          <changeParamTable key="/op:01/prop:fileFormat,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:01/prop:fileFormat" paramName="fileFormat" paramType="property" paramUsage="mapFrom" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:columnSelectList,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:columnSelectList" paramName="columnSelectList" paramType="property" paramUsage="mapTo" subParamID="30" paramValue="/0/@operatorMap.0/@value/@columnSelectList" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@columnSelectList"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <optionsMap key="allowMapToExpressions" value="false"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <optionsMap key="autoAssign" value="byPosition"/>
+          <result iD="SUBSELECT_01" itemTag="/op:01/output:output:0" name="OUTPUT_01_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result/@columns.7"/>
+            </columns>
+            <partitionInfo type=""/>
+          </result>
+          <mapFromTableList iD="FILEFORMAT_01" itemTag="/op:01/prop:fileFormat" itemLabel="InputFile_Fields" name="FILEFORMAT_01">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" enabled="false" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.0">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" enabled="false" name="MILESTONECONFIGURATIONID" virtualType="BIGINT" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.1">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" enabled="false" name="DURATION" virtualType="BIGINT" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.2">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" enabled="false" name="STARTDATE" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.3">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" enabled="false" name="ENDDATE" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.4">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" enabled="false" name="MILESTONENAME" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.5">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESCRIPTION" enabled="false" name="MILESTONEDESCRIPTION" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.6">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" enabled="false" name="LASTWRITTEN" virtualType="TIMESTAMP" mappedToColList="/0/@operatorMap.0/@value/@subSelect/@mapToTableList.0/@columns.7">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+            </columns>
+          </mapFromTableList>
+          <mapToTableList iD="columnSelectList" itemTag="/prop:columnSelectList" itemLabel="Subset_of_Fields" name="columnSelectList">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT" value="&quot;FILEFORMAT_01&quot;.&quot;DWMILESTONEDURATIONKEY&quot;" alias="DWMILESTONEDURATIONKEY">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT" value="&quot;FILEFORMAT_01&quot;.&quot;MILESTONECONFIGURATIONID&quot;" alias="MILESTONECONFIGURATIONID">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" virtualType="BIGINT" value="&quot;FILEFORMAT_01&quot;.&quot;DURATION&quot;" alias="DURATION">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR" value="&quot;FILEFORMAT_01&quot;.&quot;STARTDATE&quot;" alias="STARTDATE">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR" value="&quot;FILEFORMAT_01&quot;.&quot;ENDDATE&quot;" alias="ENDDATE">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR" value="&quot;FILEFORMAT_01&quot;.&quot;MILESTONENAME&quot;" alias="MILESTONENAME">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR" value="&quot;FILEFORMAT_01&quot;.&quot;MILESTONEDESCRIPTION&quot;" alias="MILESTONEDESCRIPTION">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP" value="&quot;FILEFORMAT_01&quot;.&quot;LASTWRITTEN&quot;" alias="LASTWRITTEN">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@subSelect/@mapFromTableList.0/@columns.7"/>
+            </columns>
+          </mapToTableList>
+        </subSelect>
+        <validationRigor iD="32" itemName="validationRigor" itemTag="/op:01/prop:validationRigor" hidden="true"/>
+        <tablePartitions iD="33" itemName="tablePartitions" itemTag="/op:01/prop:tablePartitions"/>
+        <partitioningPartitions iD="34" itemName="partitioningPartitions" itemTag="/op:01/prop:partitioningPartitions"/>
+        <tableSpace iD="35" itemName="tableSpace" itemTag="/op:01/prop:tableSpace"/>
+        <subsetVT iD="36" itemName="subsetVT" itemTag="/op:01/prop:subsetVT" hidden="true" itemType="VirtualTable"/>
+        <partitioningKeys iD="37" itemName="partitioningKeys" itemTag="/op:01/prop:partitioningKeys" itemType="SubSelect">
+          <changeParamTable key="/op:01/prop:fileFormat,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:01/prop:fileFormat" paramName="fileFormat" paramType="property" paramUsage="mapFrom" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:subsetVT,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:subsetVT" paramName="subsetVT" paramType="property" paramUsage="mapTo" subParamID="36" paramValue="/0/@operatorMap.0/@value/@subsetVT" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@subsetVT"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <result iD="PARTITIONINGKEYS_01" itemTag="/op:01/prop:partitioningKeys" name="PARTITIONINGKEYS_01"/>
+          <mapFromTableList iD="FILEFORMAT_01" itemTag="/op:01/prop:fileFormat" itemLabel="fileFormat" name="FILEFORMAT_01">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+            </columns>
+          </mapFromTableList>
+          <mapToTableList iD="subsetVT" itemTag="/prop:subsetVT" itemLabel="Selected Keys:" name="subsetVT"/>
+        </partitioningKeys>
+        <subsetRangeVT iD="38" itemName="subsetRangeVT" itemTag="/op:01/prop:subsetRangeVT" hidden="true" itemType="VirtualTable"/>
+        <rangePartitioningKeys iD="39" itemName="rangePartitioningKeys" itemTag="/op:01/prop:rangePartitioningKeys" itemType="SubSelect">
+          <changeParamTable key="/op:01/prop:fileFormat,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:01/prop:fileFormat" paramName="fileFormat" paramType="property" paramUsage="mapFrom" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@fileFormat/@FileFormatDescriptor/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:subsetRangeVT,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:subsetRangeVT" paramName="subsetRangeVT" paramType="property" paramUsage="mapTo" subParamID="38" paramValue="/0/@operatorMap.0/@value/@subsetRangeVT" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@subsetRangeVT"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <result iD="RANGEPARTITIONINGKEYS_01" itemTag="/op:01/prop:rangePartitioningKeys" name="RANGEPARTITIONINGKEYS_01"/>
+          <mapFromTableList iD="FILEFORMAT_01" itemTag="/op:01/prop:fileFormat" itemLabel="fileFormat" name="FILEFORMAT_01">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+            </columns>
+          </mapFromTableList>
+          <mapToTableList iD="subsetRangeVT" itemTag="/prop:subsetRangeVT" itemLabel="Selected Keys:" name="subsetRangeVT"/>
+        </rangePartitioningKeys>
+        <rangePartitionBoundary iD="40" itemName="rangePartitionBoundary" itemTag="/op:01/prop:rangePartitionBoundary"/>
+        <FileLocationOptions iD="41" itemName="FileLocationOptions" itemTag="/op:01/prop:FileLocationOptions" itemType="FileLocationOption" containedEnum="OnServerSide"/>
+        <programUsed iD="42" itemName="programUsed" itemTag="/op:01/prop:programUsed" itemType="FileImportProgramOption"/>
+        <numRowToSkip iD="43" itemName="numRowToSkip" itemTag="/op:01/prop:numRowToSkip" enabled="false" itemType="int"/>
+        <XMLPath iD="45" itemName="XMLPath" itemTag="/op:01/prop:XMLPath" itemType="Directory">
+          <file xsi:type="dynOpr:EString" itemName="fileName" itemLabel="file.fileName"/>
+        </XMLPath>
+        <XMLValidation iD="46" itemName="XMLValidation" itemTag="/op:01/prop:XMLValidation" itemType="XMLValidationType"/>
+        <XMLSchema iD="47" itemName="XMLSchema" itemTag="/op:01/prop:XMLSchema" enabled="false"/>
+        <isXML iD="48" itemName="isXML" itemTag="/op:01/prop:isXML" hidden="true" itemType="Boolean" EBoolean="true"/>
+        <codeOptions iD="49" itemName="codeOptions" itemTag="/op:01/prop:codeOptions" itemType="CodeOptions"/>
+        <sysCode iD="50" itemName="sysCode" itemTag="/op:01/prop:sysCode" EString="LOAD FROM &quot;${FLATFILES_PATH/PATH_V}/DW_MILESTONEDURATION.csv&quot; OF DEL MODIFIED BY coldel, chardel&quot;&quot;  METHOD P(1, 2, 3, 4, 5, 6, 7, 8) MESSAGES ON SERVER INSERT INTO [&lt;TEMP_TABLE>] NONRECOVERABLE "/>
+        <userCode iD="51" itemName="userCode" itemTag="/op:01/prop:userCode" enabled="false"/>
+        <resetButton iD="52" itemName="resetButton" itemTag="/op:01/prop:resetButton" enabled="false" itemType="ButtonString"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="023">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin" iD="023" definitionID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin" itemName="AdvancedJoin" itemTag="/op:023" itemLabel="Table Join_023" version="2.3.0">
+        <inputPortMap key="in">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::input::in" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::input::in" itemName="in" itemTag="/op:023/input:in:0" itemLabel="in" version="2.3.0" lastAsssignedID="1" addPortsEnabled="false" delPortEnabled="false" schema="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.0">
+            <changeParamTable key="/op:01/output:output:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:01/output:output:0" paramName="output" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@outputPortMap.0/@value" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@subSelect/@result"/>
+            </changeParamTable>
+            <ownedSchema iD="IN_023_0" itemTag="/op:023/input:in:0" name="IN_023_0">
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.0"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.1"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.2"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.3"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.4"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.5"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.6"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+                <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@subSelect/@result/@columns.7"/>
+              </columns>
+              <partitionInfo type=""/>
+            </ownedSchema>
+            <stagingInfoList type="NONE"/>
+            <subPortList xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::input::in" iD="1" definitionID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::input::in" itemName="in1" itemTag="/op:023/input:in:1" itemLabel="in1" version="2.3.0" delPortEnabled="false" schema="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema" fromLink="/0/@linkList.1">
+              <changeParamTable key="/op:046/output:output:0,LINK">
+                <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:046/output:output:0" paramName="output" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@outputPortMap.0/@value" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@columnExpressions/@result"/>
+              </changeParamTable>
+              <ownedSchema iD="IN1_023_1" itemTag="/op:023/input:in:1" name="IN1_023_1">
+                <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+                  <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                  <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@result/@columns.0"/>
+                </columns>
+                <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+                  <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                  <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@result/@columns.1"/>
+                </columns>
+                <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+                  <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+                  <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@result/@columns.5"/>
+                </columns>
+                <partitionInfo type=""/>
+              </ownedSchema>
+              <stagingInfoList type="NONE"/>
+            </subPortList>
+          </value>
+        </inputPortMap>
+        <outputPortMap key="inner">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::inner" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::inner" itemName="inner" itemTag="/op:023/output:inner:0" itemLabel="Inner" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.1/@value/@project/@result">
+            <changeParamTable key="/prop:project">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:project" paramName="project" paramType="property" subParamID="26" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@project" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@project/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="leftOuter">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::leftOuter" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::leftOuter" itemName="leftOuter" itemTag="/op:023/output:leftOuter:0" itemLabel="Left Outer" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.1/@value/@project/@result" toLink="/0/@linkList.2">
+            <changeParamTable key="/prop:project">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:project" paramName="project" paramType="property" subParamID="26" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@project" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@project/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="rightOuter">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::rightOuter" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::rightOuter" itemName="rightOuter" itemTag="/op:023/output:rightOuter:0" itemLabel="Right Outer" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.1/@value/@project/@result">
+            <changeParamTable key="/prop:project">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:project" paramName="project" paramType="property" subParamID="26" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@project" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@project/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="fullOuter">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::fullOuter" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin::output::fullOuter" itemName="fullOuter" itemTag="/op:023/output:fullOuter:0" itemLabel="Full Outer" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.1/@value/@project/@result">
+            <changeParamTable key="/prop:project">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:project" paramName="project" paramType="property" subParamID="26" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@project" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@project/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <predicate iD="25" itemName="predicate" itemTag="/op:023/prop:predicate" itemLabel="predicate" itemType="Condition" value="&quot;IN_023_0&quot;.&quot;MILESTONENAME&quot; =&quot;IN1_023_1&quot;.&quot;NAME&quot;">
+          <changeParamTable key="/input:in:0">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:in:0" paramName="in" paramType="input" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+          <changeParamTable key="/input:in:1">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:in:1" paramName="in1" paramType="input" subParamID="1" paramValue="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema"/>
+          </changeParamTable>
+        </predicate>
+        <project iD="26" itemName="project" itemTag="/op:023/prop:project" itemType="ProjectExpression" value="&quot;IN_023_0&quot;.&quot;DWMILESTONEDURATIONKEY&quot;,&quot;IN_023_0&quot;.&quot;MILESTONECONFIGURATIONID&quot;,&quot;IN_023_0&quot;.&quot;DURATION&quot;,&quot;IN_023_0&quot;.&quot;STARTDATE&quot;,&quot;IN_023_0&quot;.&quot;ENDDATE&quot;,&quot;IN_023_0&quot;.&quot;MILESTONENAME&quot;,&quot;IN_023_0&quot;.&quot;MILESTONEDESCRIPTION&quot;,&quot;IN_023_0&quot;.&quot;LASTWRITTEN&quot;,&quot;IN1_023_1&quot;.&quot;MILESTONECONFIGURATIONID&quot;,&quot;IN1_023_1&quot;.&quot;NAME&quot;,&quot;IN1_023_1&quot;.&quot;STARTDATE&quot;">
+          <changeParamTable key="/input:in:0">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:in:0" paramName="in" paramType="input" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+          <changeParamTable key="/input:in:1">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:in:1" paramName="in1" paramType="input" subParamID="1" paramValue="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema"/>
+          </changeParamTable>
+          <result iD="PROJECT_023" itemTag="/op:023/output:fullOuter:0" name="FULLOUTER_023_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.7"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID_1" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.8"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.9"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE_1" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@project/@expressionList.10"/>
+            </columns>
+            <partitionInfo type=""/>
+          </result>
+          <expressionList name="DWMILESTONEDURATIONKEY" virtualType="BIGINT" value="&quot;IN_023_0&quot;.&quot;DWMILESTONEDURATIONKEY&quot;" alias="DWMILESTONEDURATIONKEY">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="MILESTONECONFIGURATIONID" virtualType="BIGINT" value="&quot;IN_023_0&quot;.&quot;MILESTONECONFIGURATIONID&quot;" alias="MILESTONECONFIGURATIONID">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="DURATION" virtualType="BIGINT" value="&quot;IN_023_0&quot;.&quot;DURATION&quot;" alias="DURATION">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="STARTDATE" virtualType="VARCHAR" value="&quot;IN_023_0&quot;.&quot;STARTDATE&quot;" alias="STARTDATE">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+          </expressionList>
+          <expressionList name="ENDDATE" virtualType="VARCHAR" value="&quot;IN_023_0&quot;.&quot;ENDDATE&quot;" alias="ENDDATE">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+          </expressionList>
+          <expressionList name="MILESTONENAME" virtualType="VARCHAR" value="&quot;IN_023_0&quot;.&quot;MILESTONENAME&quot;" alias="MILESTONENAME">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="MILESTONEDESCRIPTION" virtualType="VARCHAR" value="&quot;IN_023_0&quot;.&quot;MILESTONEDESCRIPTION&quot;" alias="MILESTONEDESCRIPTION">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="LASTWRITTEN" virtualType="TIMESTAMP" value="&quot;IN_023_0&quot;.&quot;LASTWRITTEN&quot;" alias="LASTWRITTEN">
+            <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+          </expressionList>
+          <expressionList name="MILESTONECONFIGURATIONID" virtualType="BIGINT" value="&quot;IN1_023_1&quot;.&quot;MILESTONECONFIGURATIONID&quot;" alias="MILESTONECONFIGURATIONID_1">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="NAME" virtualType="VARCHAR" value="&quot;IN1_023_1&quot;.&quot;NAME&quot;" alias="NAME">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="STARTDATE" virtualType="DATE" value="&quot;IN1_023_1&quot;.&quot;STARTDATE&quot;" alias="STARTDATE_1">
+            <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+        </project>
+        <validationRigor iD="27" itemName="validationRigor" itemTag="/op:023/prop:validationRigor" hidden="true"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="042">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Target/DBTargets/TableMerge" iD="042" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Target/DBTargets/TableMerge" itemName="TableMerge" itemTag="/op:042" itemLabel="DW_MILESTONEDURATION" version="2.3.0">
+        <inputPortMap key="input">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Target/DBTargets/TableMerge::input::input" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Target/DBTargets/TableMerge::input::input" itemName="input" itemTag="/op:042/input:input:0" itemLabel="input" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.2">
+            <changeParamTable key="/op:023/output:leftOuter:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:023/output:leftOuter:0" paramName="leftOuter" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@outputPortMap.1/@value" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@project/@result"/>
+            </changeParamTable>
+            <ownedSchema iD="INPUT_042_0" itemTag="/op:042/input:input:0" name="INPUT_042_0">
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.0"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.1"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.2"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.3"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.4"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.5"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.6"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+                <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.7"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID_1" name="MILESTONECONFIGURATIONID_1" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.8"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.9"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE_1" name="STARTDATE_1" virtualType="DATE">
+                <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@project/@result/@columns.10"/>
+              </columns>
+              <partitionInfo type=""/>
+            </ownedSchema>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </inputPortMap>
+        <outputPortMap key="target">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Target/DBTargets/TableMerge::output::target" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Target/DBTargets/TableMerge::output::target" itemName="target" itemTag="/op:042/output:target:0" itemLabel="DW_MILESTONEDURATION" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.2/@value/@columnExpressions/@result">
+            <changeParamTable key="/prop:columnExpressions">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:columnExpressions" paramName="columnExpressions" paramType="property" subParamID="34" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@columnExpressions" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@columnExpressions/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+            <targetOutPutLabel iD="35" itemName="targetOutPutLabel" itemTag="/op:042/output:target:0/prop:targetOutPutLabel" hidden="true" itemType="ConcatString" stringVal="DW_MILESTONEDURATION" defaultVal="">
+              <changeParamTable key="/prop:rdbTable,concat">
+                <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="concat" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+              </changeParamTable>
+              <optionsMap key="updateContainerLabel" value="true"/>
+            </targetOutPutLabel>
+          </value>
+        </outputPortMap>
+        <rdbTable iD="22" itemName="rdbTable" itemTag="/op:042/prop:rdbTable" itemType="DBTable" dbmFile="platform:/resource/CuramBIWarehouse/databases/CuramDWCore.dbm" dbmFileDbName="curamdw" dbmFileSchemaName="DB2ADMIN" dbmFileTableName="DW_MILESTONEDURATION">
+          <instanceParams key="dbVendor">
+            <value xsi:type="dynOpr:EString" EString="DB2 UDB"/>
+          </instanceParams>
+          <instanceParams key="dbVersion">
+            <value xsi:type="dynOpr:EString" EString="V10.1"/>
+          </instanceParams>
+          <optionsMap key="OnlyAllowSQLObject" value="org.eclipse.datatools.modelbase.sql.tables.Table"/>
+          <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+            </instanceParams>
+          </dbSchema>
+          <sqlObjRef xsi:type="LUW:LUWTable" href="../../databases/CuramDWCore.dbm#_FltqOCnCEeKVItlLKrEPfQ"/>
+          <dbTable xsi:type="dynOpr:EString" itemName="tableName" itemLabel="Table name:" itemType="TableName" EString="DW_MILESTONEDURATION">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed table name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window. "/>
+            </instanceParams>
+          </dbTable>
+          <dbConnection xsi:type="dynOpr:DBServer" itemName="connection" itemLabel="db.Connection" itemType="DBServer"/>
+          <result iD="" itemTag="/op:042/prop:rdbTable" name="DW_MILESTONEDURATION">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="DWMILESTONEDURATIONKEY" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="DURATION" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="STARTDATE" nullable="false" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="MILESTONENAME" nullable="false" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="MILESTONEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.2/@value/@rdbTable/@result/@columns.7"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+            <partitionInfo type=""/>
+          </result>
+        </rdbTable>
+        <updateMap iD="23" itemName="updateMap" itemTag="/op:042/prop:updateMap" itemType="MapExpression" defaultState="false">
+          <changeParamTable key="/input:input:0,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:input:0" paramName="input" paramType="input" paramUsage="mapFrom" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:rdbTable,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="mapFrom" subParamID="22" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:rdbTable,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="mapTo" subParamID="22" sortIdx="1" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="false"/>
+          <optionsMap key="allowMapToExpressions" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="false"/>
+          <result iD="UPDATEMAP_042" itemTag="/op:042/prop:updateMap" name="UPDATEMAP_042">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" nullable="false" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@updateMap/@mapToTableList.0/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" nullable="false" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESC" name="MILESTONEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@updateMap/@mapToTableList.0/@columns.7"/>
+            </columns>
+          </result>
+          <mapFromTableList iD="INPUT_042_0" itemTag="/input:input:0" itemLabel="input" name="INPUT_042_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" virtualType="BIGINT" mappedToColList="/0/@operatorMap.2/@value/@updateMap/@mapToTableList.0/@columns.2">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.2/@value/@updateMap/@mapToTableList.0/@columns.6">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID_1" name="MILESTONECONFIGURATIONID_1" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE_1" name="STARTDATE_1" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <partitionInfo type=""/>
+          </mapFromTableList>
+          <mapFromTableList iD="DW_MILESTONEDURATION" itemTag="/prop:rdbTable" itemLabel="existingTable" name="DW_MILESTONEDURATION">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" nullable="false" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" nullable="false" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESC" name="MILESTONEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+          </mapFromTableList>
+          <mapToTableList iD="DW_MILESTONEDURATION" itemTag="/prop:rdbTable" itemLabel="mergedTable" name="DW_MILESTONEDURATION">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" nullable="false" virtualType="BIGINT" value="&quot;INPUT_042_0&quot;.&quot;DURATION&quot;">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@updateMap/@mapFromTableList.0/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" nullable="false" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE" value="DATE(&quot;INPUT_042_0&quot;.&quot;STARTDATE_1&quot;)">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" nullable="false" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESC" name="MILESTONEDESC" virtualType="VARCHAR" value="&quot;INPUT_042_0&quot;.&quot;MILESTONEDESCRIPTION&quot;">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@updateMap/@mapFromTableList.0/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP" value="CASE WHEN LENGTH(&quot;INPUT_042_0&quot;.&quot;LASTWRITTEN&quot;   ) =0&#xD;&#xA;THEN  null&#xD;&#xA;WHEN LENGTH(&quot;INPUT_042_0&quot;.&quot;LASTWRITTEN&quot;   ) >0 &#xD;&#xA;THEN &quot;INPUT_042_0&quot;.&quot;LASTWRITTEN&quot;   END&#xD;&#xA;&#xD;&#xA;">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+          </mapToTableList>
+        </updateMap>
+        <insertMap iD="24" itemName="insertMap" itemTag="/op:042/prop:insertMap" itemType="MapExpression" defaultState="false">
+          <changeParamTable key="/input:input:0,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:input:0" paramName="input" paramType="input" paramUsage="mapFrom" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:rdbTable,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="mapTo" subParamID="22" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="autoAssign" value="byName"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="false"/>
+          <optionsMap key="allowMapToExpressions" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="false"/>
+          <result iD="INSERTMAP_042" itemTag="/op:042/prop:insertMap" name="INSERTMAP_042">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" nullable="false" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" nullable="false" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESC" name="MILESTONEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.7"/>
+            </columns>
+          </result>
+          <mapFromTableList iD="INPUT_042_0" itemTag="/input:input:0" itemLabel="input" name="INPUT_042_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT" mappedToColList="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.0">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT" mappedToColList="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.1">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" virtualType="BIGINT" mappedToColList="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.2">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="30"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.5">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESCRIPTION" name="MILESTONEDESCRIPTION" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.2/@value/@insertMap/@mapToTableList.0/@columns.6">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID_1" name="MILESTONECONFIGURATIONID_1" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE_1" name="STARTDATE_1" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <partitionInfo type=""/>
+          </mapFromTableList>
+          <mapToTableList iD="DW_MILESTONEDURATION" itemTag="/prop:rdbTable" itemLabel="updatedTable" name="DW_MILESTONEDURATION">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" nullable="false" virtualType="BIGINT" value="&quot;INPUT_042_0&quot;.&quot;DWMILESTONEDURATIONKEY&quot;">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapFromTableList.0/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT" value="&quot;INPUT_042_0&quot;.&quot;MILESTONECONFIGURATIONID&quot;">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapFromTableList.0/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" nullable="false" virtualType="BIGINT" value="&quot;INPUT_042_0&quot;.&quot;DURATION&quot;">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapFromTableList.0/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" nullable="false" virtualType="DATE" value="CASE WHEN LENGTH(&quot;INPUT_042_0&quot;.&quot;STARTDATE&quot; ) =0&#xD;&#xA;THEN  NULL&#xD;&#xA;WHEN LENGTH(&quot;INPUT_042_0&quot;.&quot;STARTDATE&quot; ) >0 &#xD;&#xA;THEN DATE(&quot;INPUT_042_0&quot;.&quot;STARTDATE&quot; ) END&#xD;&#xA;">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE" value="DATE(&quot;INPUT_042_0&quot;.&quot;STARTDATE_1&quot;)">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONENAME" name="MILESTONENAME" nullable="false" virtualType="VARCHAR" value="&quot;INPUT_042_0&quot;.&quot;MILESTONENAME&quot;">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapFromTableList.0/@columns.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONEDESC" name="MILESTONEDESC" virtualType="VARCHAR" value="&quot;INPUT_042_0&quot;.&quot;MILESTONEDESCRIPTION&quot;">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@insertMap/@mapFromTableList.0/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP" value="CASE WHEN LENGTH(&quot;INPUT_042_0&quot;.&quot;LASTWRITTEN&quot;   ) =0&#xD;&#xA;THEN  null&#xD;&#xA;WHEN LENGTH(&quot;INPUT_042_0&quot;.&quot;LASTWRITTEN&quot;  ) >0 &#xD;&#xA;THEN &quot;INPUT_042_0&quot;.&quot;LASTWRITTEN&quot;  END&#xD;&#xA;">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+          </mapToTableList>
+        </insertMap>
+        <inputMatch iD="25" itemName="inputMatch" itemTag="/op:042/prop:inputMatch" itemLabel="inputMatch" itemType="Condition" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;DWMILESTONEDURATIONKEY&quot; = &quot;INPUT_042_0&quot;.&quot;DWMILESTONEDURATIONKEY&quot;">
+          <changeParamTable key="/prop:rdbTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/input:input:0">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:input:0" paramName="input" paramType="input" subParamID="0" paramValue="/0/@operatorMap.2/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+        </inputMatch>
+        <runRunstats iD="26" itemName="runRunstats" itemTag="/op:042/prop:runRunstats" itemType="DynamicBoolean"/>
+        <runstatsCodeOptions iD="27" itemName="runstatsCodeOptions" itemTag="/op:042/prop:runstatsCodeOptions" enabled="false" itemType="CodeOptions"/>
+        <runstatsSysCode iD="28" itemName="runstatsSysCode" itemTag="/op:042/prop:runstatsSysCode" enabled="false"/>
+        <runstatsUserCode iD="29" itemName="runstatsUserCode" itemTag="/op:042/prop:runstatsUserCode" enabled="false"/>
+        <runstatsResetButton iD="30" itemName="runstatsResetButton" itemTag="/op:042/prop:runstatsResetButton" enabled="false" itemType="ButtonString"/>
+        <useMergeStatement iD="31" itemName="useMergeStatement" itemTag="/op:042/prop:useMergeStatement" hidden="true" itemType="boolean" EBoolean="true"/>
+        <executionOrderHint iD="32" itemName="executionOrderHint" itemTag="/op:042/prop:executionOrderHint" hidden="true" itemType="int"/>
+        <validationRigor iD="33" itemName="validationRigor" itemTag="/op:042/prop:validationRigor" hidden="true"/>
+        <columnExpressions iD="34" itemName="columnExpressions" itemTag="/op:042/prop:columnExpressions" hidden="true" itemType="ProjectExpression" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;DWMILESTONEDURATIONKEY&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;MILESTONECONFIGURATIONID&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;DURATION&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;STARTDATE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;ENDDATE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;MILESTONENAME&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;MILESTONEDESC&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;LASTWRITTEN&quot;">
+          <changeParamTable key="/prop:rdbTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <result iD="COLUMNEXPRESSIONS_042" itemTag="/op:042/output:target:0" name="TARGET_042_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWMILESTONEDURATIONKEY" name="DWMILESTONEDURATIONKEY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONENAME" name="MILESTONENAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONEDESC" name="MILESTONEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@columnExpressions/@expressionList.7"/>
+            </columns>
+            <partitionInfo type=""/>
+          </result>
+          <expressionList name="DWMILESTONEDURATIONKEY" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;DWMILESTONEDURATIONKEY&quot;" alias="DWMILESTONEDURATIONKEY">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="MILESTONECONFIGURATIONID" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;MILESTONECONFIGURATIONID&quot;" alias="MILESTONECONFIGURATIONID">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="DURATION" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;DURATION&quot;" alias="DURATION">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="STARTDATE" virtualType="DATE" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;STARTDATE&quot;" alias="STARTDATE">
+            <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+          <expressionList name="ENDDATE" virtualType="DATE" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;ENDDATE&quot;" alias="ENDDATE">
+            <containedType xsi:type="SQLDataTypes:TimeDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+          <expressionList name="MILESTONENAME" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;MILESTONENAME&quot;" alias="MILESTONENAME">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="MILESTONEDESC" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;MILESTONEDESC&quot;" alias="MILESTONEDESC">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="LASTWRITTEN" virtualType="TIMESTAMP" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;LASTWRITTEN&quot;" alias="LASTWRITTEN">
+            <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+          </expressionList>
+        </columnExpressions>
+        <targetOPLabel iD="35" itemName="targetOPLabel" itemTag="/op:042/prop:targetOPLabel" hidden="true" itemType="ConcatString" stringVal="DW_MILESTONEDURATION" defaultVal="">
+          <changeParamTable key="/prop:rdbTable,concat">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="concat" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <optionsMap key="updateContainerLabel" value="true"/>
+        </targetOPLabel>
+        <reservedValueByUser iD="36" itemName="reservedValueByUser" itemTag="/op:042/prop:reservedValueByUser" hidden="true" EString="SYSGENERATED_INIT"/>
+        <NOT_LOG_INITIALLY iD="37" itemName="NOT_LOG_INITIALLY" itemTag="/op:042/prop:NOT_LOG_INITIALLY" itemType="boolean"/>
+        <reportErrorWhenNoRowsProcessed iD="38" itemName="reportErrorWhenNoRowsProcessed" itemTag="/op:042/prop:reportErrorWhenNoRowsProcessed" itemType="boolean"/>
+        <targetPredicate iD="39" itemName="targetPredicate" itemTag="/op:042/prop:targetPredicate" itemLabel="targetPredicate" itemType="Condition" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DW_MILESTONEDURATION&quot;.&quot;DWMILESTONEDURATIONKEY&quot; IS NOT NULL">
+          <changeParamTable key="/prop:rdbTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" subParamID="22" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@rdbTable" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/input:input:0">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:input:0" paramName="input" paramType="input" subParamID="0" paramValue="/0/@operatorMap.2/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.2/@value" paramVirtualTable="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+        </targetPredicate>
+        <runReorg iD="40" itemName="runReorg" itemTag="/op:042/prop:runReorg" itemType="DynamicBoolean"/>
+        <reorgCodeOptions iD="41" itemName="reorgCodeOptions" itemTag="/op:042/prop:reorgCodeOptions" enabled="false" itemType="CodeOptions"/>
+        <reorgSysCode iD="42" itemName="reorgSysCode" itemTag="/op:042/prop:reorgSysCode" enabled="false"/>
+        <reorgUserCode iD="43" itemName="reorgUserCode" itemTag="/op:042/prop:reorgUserCode" enabled="false"/>
+        <reorgResetButton iD="44" itemName="reorgResetButton" itemTag="/op:042/prop:reorgResetButton" enabled="false" itemType="ButtonString"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="046">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableExtract" iD="046" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableSelect" itemName="TableExtract" itemTag="/op:046" itemLabel="S_MILESTONECONFIGURATION" version="2.3.0" compositeDefID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableExtract" sourceVirtualTable="/0/@operatorMap.3/@value/@rdbTable/@result">
+        <outputPortMap key="output">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableExtract::output::output" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableSelect::output::output" itemName="output" itemTag="/op:046/output:output:0" itemLabel="output" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.3/@value/@columnExpressions/@result" toLink="/0/@linkList.1">
+            <changeParamTable key="/prop:columnExpressions">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:columnExpressions" paramName="columnExpressions" paramType="property" subParamID="35" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@columnExpressions" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@columnExpressions/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <TableSourceSampleData iD="25" itemName="TableSourceSampleData" itemTag="/op:046/prop:TableSourceSampleData" hidden="true" itemType="DebugSampleTypes"/>
+        <TableSourceSampleData_firstdata iD="26" itemName="TableSourceSampleData_firstdata" itemTag="/op:046/prop:TableSourceSampleData_firstdata" enabled="false" hidden="true" itemType="Integer" EInt="200"/>
+        <reservedValueByUser iD="27" itemName="reservedValueByUser" itemTag="/op:046/prop:reservedValueByUser" hidden="true" EString="SYSGENERATED_INIT"/>
+        <SampleData iD="28" itemName="SampleData" itemTag="/op:046/prop:SampleData" hidden="true" itemType="DebugSampleTypes"/>
+        <SampleData_firstdata iD="29" itemName="SampleData_firstdata" itemTag="/op:046/prop:SampleData_firstdata" hidden="true" itemType="Integer"/>
+        <SampleData_Randomdata iD="30" itemName="SampleData_Randomdata" itemTag="/op:046/prop:SampleData_Randomdata" enabled="false" hidden="true" itemType="Double"/>
+        <accessMethod iD="31" itemName="accessMethod" itemTag="/op:046/prop:accessMethod" hidden="true" itemType="AccessMethod"/>
+        <samplingRate iD="32" itemName="samplingRate" itemTag="/op:046/prop:samplingRate" hidden="true" itemType="Double" EDouble="100.0"/>
+        <rdbTable iD="33" itemName="rdbTable" itemTag="/op:046/prop:rdbTable" hidden="true" itemType="DBTable" dbmFile="platform:/resource/CuramBIWarehouse/databases/CuramSTCore.dbm" dbmFileDbName="curamst" dbmFileSchemaName="DB2ADMIN" dbmFileTableName="S_MILESTONECONFIGURATION">
+          <instanceParams key="dbVendor">
+            <value xsi:type="dynOpr:EString" EString="DB2 UDB"/>
+          </instanceParams>
+          <instanceParams key="dbVersion">
+            <value xsi:type="dynOpr:EString" EString="V10.1"/>
+          </instanceParams>
+          <optionsMap key="OnlyAllowSQLObject" value="org.eclipse.datatools.modelbase.sql.tables.Table"/>
+          <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+            </instanceParams>
+          </dbSchema>
+          <sqlObjRef xsi:type="LUW:LUWTable" href="../../databases/CuramSTCore.dbm#_kniJLigWEeKPy_t7YrIFPQ"/>
+          <dbTable xsi:type="dynOpr:EString" itemName="tableName" itemLabel="Table name:" itemType="TableName" EString="S_MILESTONECONFIGURATION">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed table name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window. "/>
+            </instanceParams>
+          </dbTable>
+          <dbConnection xsi:type="dynOpr:DBServer" itemName="connection" itemLabel="db.Connection" itemType="DBServer"/>
+          <result iD="" itemTag="/op:046/prop:rdbTable" name="S_MILESTONECONFIGURATION">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="MILESTONECONFIGURATIONID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="NAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="TYPE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="512"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="EARLIESTSTARTDAY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="ADDEDEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.7"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="EXPCTDSTDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.8"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="EXPCTDENDDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.9"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="COMPLETEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.10"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="CREATIONDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.11"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.12"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="RECORDSTATUS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.13"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="WAIVERREQUIRED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.14"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="WAIVERALLOWED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.15"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.16"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.3/@value/@rdbTable/@result/@columns.17"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+            <partitionInfo type=""/>
+          </result>
+        </rdbTable>
+        <filterCondition iD="34" itemName="filterCondition" itemTag="/op:046/prop:filterCondition" itemLabel="filterCondition" hidden="true" itemType="Condition" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;NAME&quot;='Federal Investigation Duration'">
+          <changeParamTable key="/prop:rdbTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@rdbTable" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@rdbTable/@result"/>
+          </changeParamTable>
+        </filterCondition>
+        <columnExpressions iD="35" itemName="columnExpressions" itemTag="/op:046/prop:columnExpressions" hidden="true" itemType="ProjectExpression" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;MILESTONECONFIGURATIONID&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;NAME&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;TYPE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;EARLIESTSTARTDAY&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;DURATION&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;STARTDATE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;ENDDATE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;ADDEDEVENT&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;EXPCTDSTDATEEVENT&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;EXPCTDENDDATEEVENT&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;COMPLETEEVENT&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;CREATIONDATE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;COMMENTS&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;RECORDSTATUS&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;WAIVERREQUIRED&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;WAIVERALLOWED&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;VERSIONNO&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;LASTWRITTEN&quot;">
+          <changeParamTable key="/prop:rdbTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@rdbTable" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <result iD="COLUMNEXPRESSIONS_046" itemTag="/op:046/output:output:0" name="OUTPUT_046_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="TYPE" name="TYPE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="512"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="EARLIESTSTARTDAY" name="EARLIESTSTARTDAY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ADDEDEVENT" name="ADDEDEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.7"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="EXPCTDSTDATEEVENT" name="EXPCTDSTDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.8"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="EXPCTDENDDATEEVENT" name="EXPCTDENDDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.9"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="COMPLETEEVENT" name="COMPLETEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.10"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="CREATIONDATE" name="CREATIONDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.11"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.12"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="RECORDSTATUS" name="RECORDSTATUS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.13"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="WAIVERREQUIRED" name="WAIVERREQUIRED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.14"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="WAIVERALLOWED" name="WAIVERALLOWED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.15"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.16"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.3/@value/@columnExpressions/@expressionList.17"/>
+            </columns>
+            <partitionInfo type=""/>
+          </result>
+          <expressionList name="MILESTONECONFIGURATIONID" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;MILESTONECONFIGURATIONID&quot;" alias="MILESTONECONFIGURATIONID">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="NAME" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;NAME&quot;" alias="NAME">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="TYPE" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;TYPE&quot;" alias="TYPE">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="512"/>
+          </expressionList>
+          <expressionList name="EARLIESTSTARTDAY" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;EARLIESTSTARTDAY&quot;" alias="EARLIESTSTARTDAY">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="DURATION" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;DURATION&quot;" alias="DURATION">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="STARTDATE" virtualType="DATE" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;STARTDATE&quot;" alias="STARTDATE">
+            <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+          <expressionList name="ENDDATE" virtualType="DATE" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;ENDDATE&quot;" alias="ENDDATE">
+            <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+          <expressionList name="ADDEDEVENT" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;ADDEDEVENT&quot;" alias="ADDEDEVENT">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+          </expressionList>
+          <expressionList name="EXPCTDSTDATEEVENT" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;EXPCTDSTDATEEVENT&quot;" alias="EXPCTDSTDATEEVENT">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+          </expressionList>
+          <expressionList name="EXPCTDENDDATEEVENT" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;EXPCTDENDDATEEVENT&quot;" alias="EXPCTDENDDATEEVENT">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+          </expressionList>
+          <expressionList name="COMPLETEEVENT" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;COMPLETEEVENT&quot;" alias="COMPLETEEVENT">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+          </expressionList>
+          <expressionList name="CREATIONDATE" virtualType="DATE" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;CREATIONDATE&quot;" alias="CREATIONDATE">
+            <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+          <expressionList name="COMMENTS" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;COMMENTS&quot;" alias="COMMENTS">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+          </expressionList>
+          <expressionList name="RECORDSTATUS" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;RECORDSTATUS&quot;" alias="RECORDSTATUS">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+          </expressionList>
+          <expressionList name="WAIVERREQUIRED" virtualType="CHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;WAIVERREQUIRED&quot;" alias="WAIVERREQUIRED">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+          </expressionList>
+          <expressionList name="WAIVERALLOWED" virtualType="CHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;WAIVERALLOWED&quot;" alias="WAIVERALLOWED">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+          </expressionList>
+          <expressionList name="VERSIONNO" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;VERSIONNO&quot;" alias="VERSIONNO">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="LASTWRITTEN" virtualType="TIMESTAMP" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_MILESTONECONFIGURATION&quot;.&quot;LASTWRITTEN&quot;" alias="LASTWRITTEN">
+            <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+          </expressionList>
+        </columnExpressions>
+        <sourceOPLabel iD="37" itemName="sourceOPLabel" itemTag="/op:046/prop:sourceOPLabel" hidden="true" itemType="ConcatString" stringVal="S_MILESTONECONFIGURATION" defaultVal="">
+          <changeParamTable key="/prop:rdbTable,concat">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="concat" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@rdbTable" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <optionsMap key="updateContainerLabel" value="true"/>
+        </sourceOPLabel>
+        <stagingTableName iD="38" itemName="stagingTableName" itemTag="/op:046/prop:stagingTableName" hidden="true"/>
+        <tableSpace iD="39" itemName="tableSpace" itemTag="/op:046/prop:tableSpace" hidden="true"/>
+        <tempTableSpace iD="40" itemName="tempTableSpace" itemTag="/op:046/prop:tempTableSpace" hidden="true"/>
+        <subsetVT iD="41" itemName="subsetVT" itemTag="/op:046/prop:subsetVT" hidden="true" itemType="VirtualTable"/>
+        <partitioningKeys iD="42" itemName="partitioningKeys" itemTag="/op:046/prop:partitioningKeys" hidden="true" itemType="SubSelect">
+          <changeParamTable key="/prop:rdbTable,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="mapFrom" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@rdbTable" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:subsetVT,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:subsetVT" paramName="subsetVT" paramType="property" paramUsage="mapTo" subParamID="41" paramValue="/0/@operatorMap.3/@value/@subsetVT" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@subsetVT"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <result iD="PARTITIONINGKEYS_046" itemTag="/op:046/prop:partitioningKeys" name="PARTITIONINGKEYS_046"/>
+          <mapFromTableList iD="S_MILESTONECONFIGURATION" itemTag="/prop:rdbTable" itemLabel="Table" name="S_MILESTONECONFIGURATION">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="TYPE" name="TYPE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="512"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="EARLIESTSTARTDAY" name="EARLIESTSTARTDAY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ADDEDEVENT" name="ADDEDEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="EXPCTDSTDATEEVENT" name="EXPCTDSTDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="EXPCTDENDDATEEVENT" name="EXPCTDENDDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="COMPLETEEVENT" name="COMPLETEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CREATIONDATE" name="CREATIONDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="RECORDSTATUS" name="RECORDSTATUS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="WAIVERREQUIRED" name="WAIVERREQUIRED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="WAIVERALLOWED" name="WAIVERALLOWED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+          </mapFromTableList>
+          <mapToTableList iD="subsetVT" itemTag="/prop:subsetVT" itemLabel="Selected Keys:" name="subsetVT"/>
+        </partitioningKeys>
+        <subsetRangeVT iD="43" itemName="subsetRangeVT" itemTag="/op:046/prop:subsetRangeVT" hidden="true" itemType="VirtualTable"/>
+        <rangePartitioningKeys iD="44" itemName="rangePartitioningKeys" itemTag="/op:046/prop:rangePartitioningKeys" hidden="true" itemType="SubSelect">
+          <changeParamTable key="/prop:rdbTable,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="mapFrom" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@rdbTable" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:subsetRangeVT,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:subsetRangeVT" paramName="subsetRangeVT" paramType="property" paramUsage="mapTo" subParamID="43" paramValue="/0/@operatorMap.3/@value/@subsetRangeVT" paramParent="/0/@operatorMap.3/@value" paramVirtualTable="/0/@operatorMap.3/@value/@subsetRangeVT"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <result iD="RANGEPARTITIONINGKEYS_046" itemTag="/op:046/prop:rangePartitioningKeys" name="RANGEPARTITIONINGKEYS_046"/>
+          <mapFromTableList iD="S_MILESTONECONFIGURATION" itemTag="/prop:rdbTable" itemLabel="Table" name="S_MILESTONECONFIGURATION">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="MILESTONECONFIGURATIONID" name="MILESTONECONFIGURATIONID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="NAME" name="NAME" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="TYPE" name="TYPE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="512"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="EARLIESTSTARTDAY" name="EARLIESTSTARTDAY" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DURATION" name="DURATION" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ADDEDEVENT" name="ADDEDEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="EXPCTDSTDATEEVENT" name="EXPCTDSTDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="EXPCTDENDDATEEVENT" name="EXPCTDENDDATEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="COMPLETEEVENT" name="COMPLETEEVENT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CREATIONDATE" name="CREATIONDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="1000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="RECORDSTATUS" name="RECORDSTATUS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="WAIVERREQUIRED" name="WAIVERREQUIRED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="WAIVERALLOWED" name="WAIVERALLOWED" virtualType="CHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="CHAR"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+          </mapFromTableList>
+          <mapToTableList iD="subsetRangeVT" itemTag="/prop:subsetRangeVT" itemLabel="Selected Keys:" name="subsetRangeVT"/>
+        </rangePartitioningKeys>
+        <rangePartitionBoundary iD="45" itemName="rangePartitionBoundary" itemTag="/op:046/prop:rangePartitionBoundary" hidden="true"/>
+        <jdbcBatchSize iD="46" itemName="jdbcBatchSize" itemTag="/op:046/prop:jdbcBatchSize" hidden="true" itemType="Integer" EInt="1000"/>
+        <JDBCDriver iD="47" itemName="JDBCDriver" itemTag="/op:046/prop:JDBCDriver" hidden="true" EString="com.driver"/>
+        <DBURL iD="48" itemName="DBURL" itemTag="/op:046/prop:DBURL" hidden="true"/>
+        <DBType iD="49" itemName="DBType" itemTag="/op:046/prop:DBType" hidden="true" EString="DB2"/>
+        <UserName iD="50" itemName="UserName" itemTag="/op:046/prop:UserName" hidden="true"/>
+        <Password iD="51" itemName="Password" itemTag="/op:046/prop:Password" hidden="true"/>
+      </value>
+    </operatorMap>
+    <eventManager>
+      <causeToDependentsLookup value="/0/@operatorMap.0/@value/@outputPortMap.0/@value" key="/0/@operatorMap.0/@value/@subSelect"/>
+      <causeToDependentsLookup value="/0/@operatorMap.0/@value/@subSelect" key="/0/@operatorMap.0/@value/@columnSelectList"/>
+      <causeToDependentsLookup value="/0/@operatorMap.0/@value/@partitioningKeys" key="/0/@operatorMap.0/@value/@subsetVT"/>
+      <causeToDependentsLookup value="/0/@operatorMap.0/@value/@rangePartitioningKeys" key="/0/@operatorMap.0/@value/@subsetRangeVT"/>
+      <causeToDependentsLookup value="/0/@operatorMap.0/@value/@subSelect /0/@operatorMap.0/@value/@partitioningKeys /0/@operatorMap.0/@value/@rangePartitioningKeys" key="/0/@operatorMap.0/@value/@fileFormat"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@project /0/@operatorMap.1/@value/@predicate" key="/0/@operatorMap.1/@value/@inputPortMap.0/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@project /0/@operatorMap.1/@value/@predicate" key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@outputPortMap.0/@value /0/@operatorMap.1/@value/@outputPortMap.1/@value /0/@operatorMap.1/@value/@outputPortMap.2/@value /0/@operatorMap.1/@value/@outputPortMap.3/@value" key="/0/@operatorMap.1/@value/@project"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@inputPortMap.0/@value" key="/0/@operatorMap.0/@value/@outputPortMap.0/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.2/@value/@inputMatch /0/@operatorMap.2/@value/@targetPredicate /0/@operatorMap.2/@value/@insertMap /0/@operatorMap.2/@value/@updateMap" key="/0/@operatorMap.2/@value/@inputPortMap.0/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.2/@value/@outputPortMap.0/@value" key="/0/@operatorMap.2/@value/@columnExpressions"/>
+      <causeToDependentsLookup value="/0/@operatorMap.2/@value/@columnExpressions /0/@operatorMap.2/@value/@targetOPLabel /0/@operatorMap.2/@value/@outputPortMap.0/@value/@targetOutPutLabel /0/@operatorMap.2/@value/@inputMatch /0/@operatorMap.2/@value/@targetPredicate /0/@operatorMap.2/@value/@insertMap /0/@operatorMap.2/@value/@updateMap" key="/0/@operatorMap.2/@value/@rdbTable"/>
+      <causeToDependentsLookup value="/0/@operatorMap.3/@value/@outputPortMap.0/@value" key="/0/@operatorMap.3/@value/@columnExpressions"/>
+      <causeToDependentsLookup value="/0/@operatorMap.3/@value/@columnExpressions /0/@operatorMap.3/@value/@sourceOPLabel /0/@operatorMap.3/@value/@partitioningKeys /0/@operatorMap.3/@value/@rangePartitioningKeys /0/@operatorMap.3/@value/@filterCondition" key="/0/@operatorMap.3/@value/@rdbTable"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0" key="/0/@operatorMap.3/@value/@outputPortMap.0/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.2/@value/@inputPortMap.0/@value" key="/0/@operatorMap.1/@value/@outputPortMap.1/@value"/>
+      <dependentToCausesLookup value="/0/@operatorMap.0/@value/@outputPortMap.0/@value" key="/0/@operatorMap.1/@value/@inputPortMap.0/@value"/>
+      <dependentToCausesLookup value="/0/@operatorMap.3/@value/@outputPortMap.0/@value" key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0"/>
+      <dependentToCausesLookup value="/0/@operatorMap.1/@value/@outputPortMap.1/@value" key="/0/@operatorMap.2/@value/@inputPortMap.0/@value"/>
+    </eventManager>
+    <linkList xsi:type="dynOpr:Link" iD="024" definitionID="Link" itemTag="/link:024" toPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.0/@value/@outputPortMap.0/@value">
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.0" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.1">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.1" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.1"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.2" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.3">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.3" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.3"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.4">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.4" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.4"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.5">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.5" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.5"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.6" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.7">
+        <value fromCol="/0/@operatorMap.0/@value/@subSelect/@result/@columns.7" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.7"/>
+      </columnLinkTable>
+    </linkList>
+    <linkList xsi:type="dynOpr:Link" iD="047" definitionID="Link" itemTag="/link:047" toPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0" fromPort="/0/@operatorMap.3/@value/@outputPortMap.0/@value">
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema/@columns.0">
+        <value fromCol="/0/@operatorMap.3/@value/@columnExpressions/@result/@columns.0" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema/@columns.0"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema/@columns.1">
+        <value fromCol="/0/@operatorMap.3/@value/@columnExpressions/@result/@columns.1" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema/@columns.1"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema/@columns.2">
+        <value fromCol="/0/@operatorMap.3/@value/@columnExpressions/@result/@columns.5" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0/@ownedSchema/@columns.2"/>
+      </columnLinkTable>
+    </linkList>
+    <linkList xsi:type="dynOpr:Link" iD="048" definitionID="Link" itemTag="/link:048" toPort="/0/@operatorMap.2/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.1/@value/@outputPortMap.1/@value">
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.8">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.8" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.8"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.3">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.3" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.3"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.6" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.1">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.1" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.1"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.7">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.7" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.7"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.2" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.4">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.4" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.4"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.5">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.5" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.5"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.10">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.10" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.10"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.0" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.9">
+        <value fromCol="/0/@operatorMap.1/@value/@project/@result/@columns.9" toCol="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema/@columns.9"/>
+      </columnLinkTable>
+    </linkList>
+    <sqlExecutionSchema iD="34" itemName="sqlExecutionSchema" variableChosen="true" assignedVariableID="IWSCHEMA${RESERVED/RUN_ID}" itemType="SchemaName"/>
+    <sqlExecutionDB iD="35" itemName="sqlExecutionDB" itemType="DBServer" value="curamdw">
+      <instanceParams key="executionDBTypeOnly">
+        <value xsi:type="dynOpr:EString" EString="true"/>
+      </instanceParams>
+    </sqlExecutionDB>
+    <tableSpace iD="36" itemName="tableSpace"/>
+    <tempTableSpace iD="37" itemName="tempTableSpace"/>
+    <useDPF iD="38" itemName="useDPF" itemType="Boolean" EBoolean="true"/>
+    <breakPoints iD="39" itemName="breakPoints" hidden="true"/>
+    <tempStagingTablePrefix iD="41" itemName="tempStagingTablePrefix" itemTag="/prop:tempStagingTablePrefix" variableChosen="true" assignedVariableID="IWTEMP${RESERVED/RUN_ID}"/>
+    <enableCodegenOptimization iD="42" itemName="enableCodegenOptimization" itemTag="/prop:enableCodegenOptimization" itemType="Boolean" EBoolean="true"/>
+    <enableCodegenDistributedOptimization iD="43" itemName="enableCodegenDistributedOptimization" itemTag="/prop:enableCodegenDistributedOptimization" itemType="Boolean" EBoolean="true"/>
+    <enableAggressiveOptim4RemoteOperator iD="44" itemName="enableAggressiveOptim4RemoteOperator" itemTag="/prop:enableAggressiveOptim4RemoteOperator" itemType="Boolean"/>
+    <useGlobalDeclaredTableAsStaging iD="45" itemName="useGlobalDeclaredTableAsStaging" itemTag="/prop:useGlobalDeclaredTableAsStaging" itemType="Boolean" EBoolean="true"/>
+    <enableRowCompression iD="46" itemName="enableRowCompression" itemTag="/prop:enableRowCompression" itemType="Boolean"/>
+  </dynOpr:DefaultDataFlow>
+  <com.ibm.datatools.etl.dataflow.view:ETLFlow>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.1/@outputs.0" target="/1/@elements.5/@inputs.0" operatorLink="/0/@linkList.0">
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.6/@output" target="/1/@elements.5/@inputs.0/@fields.6/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.7/@output" target="/1/@elements.5/@inputs.0/@fields.7/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.3/@output" target="/1/@elements.5/@inputs.0/@fields.3/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.4/@output" target="/1/@elements.5/@inputs.0/@fields.4/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.0/@output" target="/1/@elements.5/@inputs.0/@fields.0/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.1/@output" target="/1/@elements.5/@inputs.0/@fields.1/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.2/@output" target="/1/@elements.5/@inputs.0/@fields.2/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.1/@outputs.0/@fields.5/@output" target="/1/@elements.5/@inputs.0/@fields.5/@input"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="280" y="318" height="-1" width="-1" type="http:///com/ibm/datatools/etl/dataflow/advsrctgt.oplib/Extract/FileSources/FileExtract" operator="/0/@operatorMap.0/@value">
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.0" operatorPort="/0/@operatorMap.0/@value/@outputPortMap.0/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.4"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.5"/>
+        </fields>
+        <fields name="DURATION">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.6"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.2"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.3"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.7"/>
+        </fields>
+        <fields name="MILESTONEDESCRIPTION">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.0"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@elements.1"/>
+        </fields>
+      </outputs>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.4/@outputs.0" target="/1/@elements.5/@inputs.1" operatorLink="/0/@linkList.1">
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.4/@outputs.0/@fields.1/@output" target="/1/@elements.5/@inputs.1/@fields.1/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.4/@outputs.0/@fields.0/@output" target="/1/@elements.5/@inputs.1/@fields.0/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.4/@outputs.0/@fields.5/@output" target="/1/@elements.5/@inputs.1/@fields.2/@input"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.5/@outputs.1" target="/1/@elements.6/@inputs.0" operatorLink="/0/@linkList.2">
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.6/@output" target="/1/@elements.6/@inputs.0/@fields.6/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.8/@output" target="/1/@elements.6/@inputs.0/@fields.8/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.9/@output" target="/1/@elements.6/@inputs.0/@fields.9/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.0/@output" target="/1/@elements.6/@inputs.0/@fields.0/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.7/@output" target="/1/@elements.6/@inputs.0/@fields.7/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.1/@output" target="/1/@elements.6/@inputs.0/@fields.1/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.5/@output" target="/1/@elements.6/@inputs.0/@fields.5/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.2/@output" target="/1/@elements.6/@inputs.0/@fields.2/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.3/@output" target="/1/@elements.6/@inputs.0/@fields.3/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.4/@output" target="/1/@elements.6/@inputs.0/@fields.4/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" visible="false" source="/1/@elements.5/@outputs.1/@fields.10/@output" target="/1/@elements.6/@inputs.0/@fields.10/@input"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="336" y="406" height="-1" width="-1" type="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableSelect" operator="/0/@operatorMap.3/@value">
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.2" operatorPort="/0/@operatorMap.3/@value/@outputPortMap.0/@value">
+        <fields name="MILESTONECONFIGURATIONID">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.2/@elements.1"/>
+        </fields>
+        <fields name="NAME">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.2/@elements.0"/>
+        </fields>
+        <fields name="TYPE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="EARLIESTSTARTDAY">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DURATION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.2/@elements.2"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ADDEDEVENT">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="EXPCTDSTDATEEVENT">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="EXPCTDENDDATEEVENT">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="COMPLETEEVENT">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="CREATIONDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="COMMENTS">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="RECORDSTATUS">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="WAIVERREQUIRED">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="WAIVERALLOWED">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="VERSIONNO">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+      </outputs>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="516" y="324" height="-1" width="-1" type="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/AdvancedJoin" operator="/0/@operatorMap.1/@value">
+      <inputs incomingConnection="/1/@elements.0" operatorPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input incomingConnection="/1/@elements.0/@elements.4"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input incomingConnection="/1/@elements.0/@elements.5"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DURATION">
+          <input incomingConnection="/1/@elements.0/@elements.6"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input incomingConnection="/1/@elements.0/@elements.2"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input incomingConnection="/1/@elements.0/@elements.3"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input incomingConnection="/1/@elements.0/@elements.7"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONEDESCRIPTION">
+          <input incomingConnection="/1/@elements.0/@elements.0"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input incomingConnection="/1/@elements.0/@elements.1"/>
+          <output type="OutputPort"/>
+        </fields>
+      </inputs>
+      <inputs incomingConnection="/1/@elements.2" operatorPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@subPortList.0">
+        <fields name="MILESTONECONFIGURATIONID">
+          <input incomingConnection="/1/@elements.2/@elements.1"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="NAME">
+          <input incomingConnection="/1/@elements.2/@elements.0"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input incomingConnection="/1/@elements.2/@elements.2"/>
+          <output type="OutputPort"/>
+        </fields>
+      </inputs>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.1/@value/@outputPortMap.0/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DURATION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONEDESCRIPTION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID_1">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="NAME">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE_1">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+      </outputs>
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.3" operatorPort="/0/@operatorMap.1/@value/@outputPortMap.1/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.3"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.5"/>
+        </fields>
+        <fields name="DURATION">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.7"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.8"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.9"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.6"/>
+        </fields>
+        <fields name="MILESTONEDESCRIPTION">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.0"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.4"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID_1">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.1"/>
+        </fields>
+        <fields name="NAME">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.2"/>
+        </fields>
+        <fields name="STARTDATE_1">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.10"/>
+        </fields>
+      </outputs>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.1/@value/@outputPortMap.2/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DURATION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONEDESCRIPTION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID_1">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="NAME">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE_1">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+      </outputs>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.1/@value/@outputPortMap.3/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DURATION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONEDESCRIPTION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID_1">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="NAME">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE_1">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+      </outputs>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="767" y="340" height="-1" width="-1" type="http:///com/ibm/datatools/etl/dataflow/core.oplib/Target/DBTargets/TableMerge" operator="/0/@operatorMap.2/@value">
+      <inputs incomingConnection="/1/@elements.3" operatorPort="/0/@operatorMap.2/@value/@inputPortMap.0/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input incomingConnection="/1/@elements.3/@elements.3"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input incomingConnection="/1/@elements.3/@elements.5"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DURATION">
+          <input incomingConnection="/1/@elements.3/@elements.7"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input incomingConnection="/1/@elements.3/@elements.8"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input incomingConnection="/1/@elements.3/@elements.9"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input incomingConnection="/1/@elements.3/@elements.6"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONEDESCRIPTION">
+          <input incomingConnection="/1/@elements.3/@elements.0"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input incomingConnection="/1/@elements.3/@elements.4"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID_1">
+          <input incomingConnection="/1/@elements.3/@elements.1"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="NAME">
+          <input incomingConnection="/1/@elements.3/@elements.2"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE_1">
+          <input incomingConnection="/1/@elements.3/@elements.10"/>
+          <output type="OutputPort"/>
+        </fields>
+      </inputs>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.2/@value/@outputPortMap.0/@value">
+        <fields name="DWMILESTONEDURATIONKEY">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONECONFIGURATIONID">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DURATION">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONENAME">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="MILESTONEDESC">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort"/>
+        </fields>
+      </outputs>
+    </elements>
+  </com.ibm.datatools.etl.dataflow.view:ETLFlow>
+</xmi:XMI>

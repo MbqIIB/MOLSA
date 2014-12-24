@@ -1,0 +1,13 @@
+//>>built
+define("curam/widget/MatrixMenuItem",["dijit","dojo","dojox","dojo/require!dijit/MenuItem"],function(_1,_2,_3){
+_2.provide("curam.widget.MatrixMenuItem");
+_2.require("dijit.MenuItem");
+_2.declare("curam.widget.MatrixMenuItem",_1.MenuItem,{id:"",postCreate:function(){
+_2.subscribe("/disableMenuItems",this,"disableItem");
+_2.subscribe("/enableMenuItems",this,"enableItem");
+},disableItem:function(){
+this.set("disabled",true);
+},enableItem:function(){
+this.set("disabled",false);
+}});
+});

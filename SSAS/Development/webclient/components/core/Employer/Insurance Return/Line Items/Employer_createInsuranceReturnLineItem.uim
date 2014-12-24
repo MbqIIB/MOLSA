@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2003 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create an insurance return line item      -->
+<PAGE
+  PAGE_ID="Employer_createInsuranceReturnLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Contribution"
+    NAME="DISPLAY"
+    OPERATION="listContributionProduct"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Contribution"
+    NAME="ACTION"
+    OPERATION="createEmployeeLineItem"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveAndNewButton"
+      LABEL="ActionControl.Label.SaveAndNew"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="insuranceRetHdrID"/>
+  <PAGE_PARAMETER NAME="insuranceReturnPeriodID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="insuranceRetHdrID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="insRetLineItemDtls$insuranceRetHdrID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="insuranceReturnPeriodID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="insuranceReturnPeriodID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.Employee">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Product">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="dtls$productID"
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="productID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Contributions"
+  >
+
+
+    <FIELD LABEL="Field.Label.EmploymentType">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="employmentTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NumberUnits">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="numInsuranceUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalEmployerContribution">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="employerConAmt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalContribution">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="totalContributionAmt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitType">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="insUnitTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.IncomeAmount">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="incomeAmount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalEmployeeContribution">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="employeeConAmt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

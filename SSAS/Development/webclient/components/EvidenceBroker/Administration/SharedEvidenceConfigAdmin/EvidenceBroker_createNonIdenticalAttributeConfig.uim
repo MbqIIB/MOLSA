@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Creates evidence sharing configuration for non-identical evidence      -->
+<!-- sharing.                                                               -->
+<PAGE
+  PAGE_ID="EvidenceBroker_createNonIdenticalAttributeConfig"
+  WINDOW_OPTIONS="width=775"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="EvidenceBrokerAdmin"
+    NAME="ACTION"
+    OPERATION="createNonIdenticalAttributeConfig"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="EvidenceBrokerAdmin"
+    NAME="DISPLAY"
+    OPERATION="listEvidenceTypesForMapping"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.SourceEvidenceType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="listSource$evidenceType"
+          NAME="DISPLAY"
+          PROPERTY="listSource$evidenceDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="sourceEvidenceType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.TargetEvidenceType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="listTarget$evidenceType"
+          NAME="DISPLAY"
+          PROPERTY="listTarget$evidenceDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="targetEvidenceType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="EvidenceBroker_listNonIdenticalAttributesConfig"
+        SAVE_LINK="false"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveAndAddButton"
+      LABEL="ActionControl.Label.SaveAndAdd"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="EvidenceBroker_createNonIdenticalSharedEvidenceConfig"
+        SAVE_LINK="false"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK
+        PAGE_ID="EvidenceBroker_listNonIdenticalAttributesConfig"
+        SAVE_LINK="false"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

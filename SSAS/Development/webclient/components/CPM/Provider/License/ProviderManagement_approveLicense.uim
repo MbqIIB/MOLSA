@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows user to approve license.                              -->
+<PAGE
+  PAGE_ID="ProviderManagement_approveLicense"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00117929, RD -->
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="DISPLAY"
+    OPERATION="checkLicenseApprovalCriteria"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00117929 -->
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="ACTION"
+    OPERATION="approveLicense"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="licenseID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <!-- BEGIN, CR00117929, RD -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="licenseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="licenseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="messageTest"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00117929 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="licenseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="licenseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00197352, CR00407812, SS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+      USE_BLANK="true"
+    >
+      <!-- END, CR00197352, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00187142, SS -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.No"/>
+  </ACTION_SET>
+  <!-- END, CR00187142 -->
+</PAGE>

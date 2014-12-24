@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the incident reporter details.       -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewIncidentReporter"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="incidentParticipantID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentParticipantID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY"
+    OPERATION="viewParticipant"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00235795, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00235795 -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="userNameInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.Incident.ParticipantName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="participantName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="incidentParticipantDtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="participantConcernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Incident.ParticipantStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Incident.ParticipantRole">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="role"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Incident.ParticipantDetails"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="userNameInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.Incident.ParticipantName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="participantName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Incident.ParticipantStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Incident.ParticipantRole">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="role"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Incident.Comments"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="incidentParticipantDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="true"
+  >
+    <ACTION_CONTROL
+      IMAGE="EditButton"
+      LABEL="ActionControl.Label.Edit"
+    >
+      <!-- BEGIN, CR00197352, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_modifyIncidentReporter"
+        WINDOW_OPTIONS="width=500"
+      >
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentParticipantID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentParticipantID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="incidentParticipantDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewIncident">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view performance measure details.         -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewSOPerformanceMeasure"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="measure"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="soPerformanceMeasureLinkID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="soPerformanceMeasureLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$soPerformanceMeasureLinkID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSOPerformanceMeasure"
+    NAME="DISPLAY"
+    OPERATION="viewServiceOfferingPerformanceMeasure"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Measure"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="measure"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Output"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="measureOutput"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$details$status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.ServiceEvaluationCriteria">
+    <!-- BEGIN, CR00198609, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198609 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.SECDelete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="criteriaDetailsList$displayLinkInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteEvaluationCriteriaFromSOPerformanceMeasure"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soPerformMsrEvalCrtLnkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soPerformMsrEvalCrtLnkID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="secDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="performanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00198609, PS -->
+    </ACTION_SET>
+    <!-- END, CR00198609 -->
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="criterion"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Response">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="responseType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SECStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="secDetails$status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="List.Title.Outcomes">
+    <!-- BEGIN, CR00198609, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198609 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.ScoreOutcomeEdit">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="outcomeList$details$displayLinkInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyScoreOutcome"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="scoreOutcomeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="scoreOutcomeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="outcomeList$details$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="performanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ScoreOutcomeDelete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="outcomeList$details$displayLinkInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteScoreOutcome"
+          WINDOW_OPTIONS="width=380"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="scoreOutcomeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="scoreOutcomeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="outcomeList$details$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="performanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00198609, PS -->
+    </ACTION_SET>
+    <!-- END, CR00198609 -->
+
+
+    <FIELD LABEL="Field.Label.MinimumScore">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="minimumScore"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MaximumScore">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumScore"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Outcome">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="outcome"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

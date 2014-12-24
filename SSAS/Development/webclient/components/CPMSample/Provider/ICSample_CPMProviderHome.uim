@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Sample Integrated case Product Provider home page.                     -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ICSample_CPMProviderHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY"
+    OPERATION="readICProviderdetails"
+  />
+
+
+  <MENU MODE="INTEGRATED_CASE">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="menuData"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <MENU>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewTask">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ICMember_createTask"
+      >
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewActivity">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ICMember_createMemberActivity"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseParticipantRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_PARAMETER NAME="caseParticipantRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseParticipantRoleID"
+    />
+  </CONNECT>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.Name">
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RegistrationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="enrollmentDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Address"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="formattedAddressData"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Phone"
+    >
+      <CONTAINER>
+
+
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneCountryCode"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneAreaCode"
+            />
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneNumber"
+            />
+          </CONNECT>
+        </FIELD>
+
+
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="phoneExtension"
+            />
+          </CONNECT>
+        </FIELD>
+
+
+      </CONTAINER>
+    </CLUSTER>
+  </CLUSTER>
+</PAGE>

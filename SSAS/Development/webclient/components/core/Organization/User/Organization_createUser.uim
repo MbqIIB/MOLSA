@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Create a new user for an organization                                  -->
+<PAGE
+  PAGE_ID="Organization_createUser"
+  WINDOW_OPTIONS="width=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="ACTION"
+    OPERATION="createUser"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="DISPLAY"
+    OPERATION="readAlternateLoginEnabled"
+  />
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.Title"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="title"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="surname"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00159851, NP -->
+    <FIELD LABEL="Field.Label.DefaultLocale">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="defaultLocale"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="firstname"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00159851 -->
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="locationID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Sensitivity"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="sensitivity"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+    TITLE="Cluster.Title.Contact"
+  >
+    <CONTAINER LABEL="Container.Label.BusinessPhone">
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="businessCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="businessAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="businessNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="businessPhoneExtn"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <CONTAINER LABEL="Container.Label.PersonalPhone">
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personalCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personalAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personalNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.BusinessEmail"
+      WIDTH="49"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="businessEMail"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PersonalEmail"
+      WIDTH="49"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personalEMail"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.Fax">
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="faxCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="faxAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="faxNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <CONTAINER LABEL="Container.Label.Mobile">
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="mobileCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="mobileAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="mobileNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <CONTAINER LABEL="Container.Label.Pager">
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="pagerCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="3"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="pagerAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        WIDTH="7"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="pagerNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Security"
+  >
+    <FIELD LABEL="Field.Label.UserName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="userName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Password">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="password"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PasswordExpiryDays"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="passwordExpiry"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Application"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applicationCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AccountExpiry"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="passwordExpiresOn"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CallCentreUser">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="ctiEnabled"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CLUSTER>
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$alternateLoginEnabled"
+        />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.LoginID">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="loginId"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <FIELD LABEL="Field.Label.PasswordConfirm">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="passwordConfirm"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PasswordExpiryLogin"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="pwdChangeAfterXLog"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RoleName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="roleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AccountEnabled">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="accountEnabled"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AccessPeriods"
+  >
+    <FIELD LABEL="Field.Label.SetAccess">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginRestrictions"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayMon">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginDayMon"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayWed">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginDayWed"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayFri">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginDayFri"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginTimeFrom">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginTimeFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDaySun">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginDaySun"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayTues">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginDayTues"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDayThurs">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginDayThurs"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.LoginDaySat">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginDaySat"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.LoginTimeTo"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="loginTimeTo"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

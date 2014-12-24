@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- This page allows the user to modify the wait list entry details.        -->
+<!-- BEGIN, CR00272514 -->
+<PAGE
+  PAGE_ID="ProviderManagement_updateWaitListEntry"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00272514 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="DISPLAY"
+    OPERATION="viewWaitListEntryDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="ACTION"
+    OPERATION="updateWaitListEntry"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="waitListEntryID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListEntryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$waitListEntryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="waitListEntryDtls$waitListEntryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="waitListEntryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00206896, SS -->
+  <!-- BEGIN, CR00248344, GP -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248344 -->
+    <!-- BEGIN, CR122350, NBR -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.Position"
+      WIDTH="54"
+    >
+      <!-- END, CR122350 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="positionString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="positionString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <!-- BEGIN, CR00156341, RPB -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.Priority"
+      USE_BLANK="true"
+      WIDTH="57"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.WaitListEntry.ExpiryDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiryDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="expiryDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.WaitListEntry.ReviewDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reviewDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reviewDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00156341 -->
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

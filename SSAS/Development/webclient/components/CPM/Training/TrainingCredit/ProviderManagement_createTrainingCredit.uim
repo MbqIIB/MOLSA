@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is create Training Credit Page                                    -->
+<PAGE
+  PAGE_ID="ProviderManagement_createTrainingCredit"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTrainingCredit"
+    NAME="ACTION"
+    OPERATION="createTrainingCredit"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTraining"
+    NAME="DISPLAY"
+    OPERATION="viewTraining"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="trainingID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="trainingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$trainingID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00137151, AS -->
+  <!-- BEGIN, CR00236707, PS -->
+  <CLUSTER
+    LABEL_WIDTH="28"
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+    <!--END, CR00236707-->
+
+
+    <!-- BEGIN CR00228079, PS -->
+    <FIELD
+      ALIGNMENT="CENTER"
+      CONFIG="CT_DISPLAY_LABELS"
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      LABEL="Field.Label.Category"
+      USE_BLANK="false"
+      WIDTH="80"
+    >
+      <!-- END, CR00137151 -->
+      <!-- END CR00228079 -->
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="parentProviderCategory"
+        />
+
+
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+  >
+
+
+    <!-- BEGIN, CR00187899, PS-->
+    <FIELD LABEL="Field.Label.Type">
+      <!-- END, CR00187899-->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00187899, PS-->
+    <FIELD LABEL="Field.Label.ValidityPeriod">
+      <!-- END, CR00187899-->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="validityPeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00187899, PS-->
+    <FIELD
+      LABEL="Field.Label.Value"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <!-- END, CR00187899-->
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="value"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00187899, PS-->
+    <FIELD
+      LABEL="Field.Label.ValidityPeriodUnit"
+      USE_BLANK="true"
+    >
+      <!-- END, CR00187899-->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="validityPeriodUnit"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

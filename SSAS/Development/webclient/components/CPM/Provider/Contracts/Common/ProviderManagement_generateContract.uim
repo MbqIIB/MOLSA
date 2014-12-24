@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to generate a provider contract.             -->
+<PAGE
+  PAGE_ID="ProviderManagement_generateContract"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="ACTION"
+    OPERATION="generateContract"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="contractVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- Generation Details -->
+
+
+  <!-- BEGIN, CR00235192, PS -->
+  <!-- BEGIN, CR00200333, SS -->
+  <!-- BEGIN, CR00197352, SS -->
+  <!-- BEGIN, CR00234235, PS -->
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+  >
+    <!-- END, CR00235192 -->
+    <!-- BEGIN, CR00248112, PS -->
+    <FIELD
+      LABEL="Field.Label.GenerationReason"
+      WIDTH="50"
+    >
+      <!-- END, CR00248112 -->
+      <!-- END, CR00234235 -->
+      <!-- END, CR00197352 -->
+      <!-- END, CR00200333 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="generationReason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+        </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.No"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

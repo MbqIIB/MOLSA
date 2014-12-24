@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to reject the provider.                      -->
+<PAGE
+  PAGE_ID="ProviderManagement_rejectProvider"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="Provider"
+    OPERATION="rejectProvider"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="Provider"
+      PROPERTY="details$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="Provider"
+      PROPERTY="details$versionNo"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00199675, SS -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- END, CR00199675 -->
+    <!-- BEGIN, CR00199675, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00197352, SS -->
+    <CLUSTER LABEL_WIDTH="30">
+      <!-- END, CR00197352 -->
+      <!-- END, CR00199675 -->
+      <!-- BEGIN, CR00234213, PS -->
+      <FIELD
+        LABEL="Field.Label.Reason"
+        WIDTH="100"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00234213 -->
+
+
+        <CONNECT>
+          <TARGET
+            NAME="Provider"
+            PROPERTY="details$reasonCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

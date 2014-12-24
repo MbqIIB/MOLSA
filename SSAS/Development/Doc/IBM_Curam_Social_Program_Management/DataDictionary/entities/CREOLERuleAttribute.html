@@ -1,0 +1,153 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>CREOLERuleAttribute</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Rule Attribute
+
+
+:</b>
+<i>A rule attribute defined in a <a href=CREOLERuleClass.html>Rule Class</a>.
+
+
+</i>
+
+
+
+<P>A row on this entity indicates that a <a href=CREOLERuleClass.html>Rule Class</a> declares a rule attribute (as opposed to inheriting an attribute from an ancestor <a href=CREOLERuleClass.html>Rule Class</a>).</P>
+
+
+
+<P>The declared rule attribute may or may not override an identically-named rule attribute declared on an ancestor <a href=CREOLERuleClass.html>Rule Class</a>.</P>
+
+
+
+<P>The name of the rule attribute must be unique within its declaring <a href=CREOLERuleClass.html>Rule Class</a>.</P>
+
+
+
+<p><b>Example</b></p>
+<P>If rule class A declares a rule attribute a1, then this entity will store a row for the rule attribute a1 declared on rule class A.</P>
+
+<P>If rule class B extends A and inherits (but does not override) rule attribute a1, then no row is stored on this entity for B's inheritance of a1.</P>
+
+<P>If rule class C extends A and overrides a1 by providing its own declaration of a rule attribute named "a1", then this entity will store a row for the rule attribute a1 declared on rule class C.</P>
+
+
+
+<p><b>Technical Notes</b></p>
+
+
+<P>This entity contains data which is automatically denormalized from <a href=CREOLERuleSet.html>Rule Set</a>.  All locking is handled by <a href=CREOLERuleSet.html>Rule Set</a> and <a href=CREOLEMigrationControl.html>Rule Set Migration Control</a>.</P>
+
+
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">creoleRuleAttributeID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique ID of this database row.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">declaringRuleClassID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Identifier of the rule class which declares this rule attribute.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">name</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unqualified name of this rule attribute.</td><td class="dataLast">SVR_STRING&lt;255&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">migrationAction</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">CREOLERuleAttribute.declaringRuleClassID</td><td class="dataLast"><a href="CREOLERuleClass.html#creoleRuleClassID">CREOLERuleClass.creoleRuleClassID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="CREOLEAttributeAvailability.html#availableRuleAttributeID">CREOLEAttributeAvailability.availableRuleAttributeID</a></td><td class="dataLast">CREOLERuleAttribute.creoleRuleAttributeID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (2)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">CREOLERuleAttributeNameIdx</td><td class="dataLast">name</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">CREOLEDeclaringRCIdx</td><td class="dataLast">declaringRuleClassID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

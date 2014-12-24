@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2008, 2010-2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page confirms the modification of overlapping placement for  -->
+<!-- during confirmation of reservation         -->
+<PAGE
+  PAGE_ID="ProviderManagement_confirmModifyOverlappingPlacementPrd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00293856, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00293856 -->
+
+
+  <PAGE_PARAMETER NAME="reservationID"/>
+  <PAGE_PARAMETER NAME="from"/>
+  <PAGE_PARAMETER NAME="to"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="placeID"/>
+  <PAGE_PARAMETER NAME="placementInd"/>
+  <PAGE_PARAMETER NAME="cancelInd"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- BEGIN, CR00293856, IBM -->
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="ACTION"
+    OPERATION="confirmUpdatedPlacement"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="reservationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$reservationID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00236480, SSK -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="from"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$from"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="to"
+    />
+    <!-- END, CR00293856 -->
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$to"
+    />
+  </CONNECT>
+  <!-- END, CR00236480 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$placeID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementInd"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$updateOverlappingPlacementPeriodInd"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="cancelInd"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$cancelExistingReservations"
+    />
+  </CONNECT>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.Approval"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00236707, PS -->
+
+
+      <!-- BEGIN, CR00272770, MR -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_resolveCancelOverlappingActiveRes"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00272770 -->
+        <!-- END, CR00236707 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="placeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="placementInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placementInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="cancelInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="cancelInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+      <LINK PAGE_ID="ProviderManagement_listReservation">
+
+
+        <!-- BEGIN, CR00272770, MR -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00272770 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

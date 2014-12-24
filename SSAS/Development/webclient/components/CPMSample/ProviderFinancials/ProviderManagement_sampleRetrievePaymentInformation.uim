@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2009 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search page for Retrieving Payment Information.            -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_sampleRetrievePaymentInformation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.PaymentInformationDetails"
+      />
+
+
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="SampleProviderFinancial"
+    NAME="ACTION"
+    OPERATION="retrievePaymentInformationForCase"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS">
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.CaseID"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$caseID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ClientID"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$clientID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOfferingID"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$serviceOfferingID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.Results">
+    <LIST>
+      <FIELD LABEL="Field.Label.AmountInvoiced">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$amountInvoiced"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+      <FIELD LABEL="Field.Label.AmountPaid">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$amountPaid"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ClientName">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$clientName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.NumberOfUnits">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$numberOfUnits"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.PaymentFromDate">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$paymentFromDate"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.PaymentToDate">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$paymentToDate"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ProviderName">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$providerName"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ServiceOfferingName">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$paymentDetails$serviceOfferingName"
+          />
+        </CONNECT>
+
+
+      </FIELD>
+
+
+    </LIST>
+  </CLUSTER>
+</PAGE>

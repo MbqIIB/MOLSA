@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a list of all related concepts.      -->
+<!-- BEGIN, CR00261199, SSK -->
+<?curam-deprecated Since Curam 6.0 SP1, replaced with ProviderManagement_listPublishedRelatedConcepts. 
+    To refresh the list of related concept in the same tab requires taxonomyVersionID and pageNo as page parameter.
+    Hence this page has been deprecated. A new uim, ProviderManagement_listPublishedRelatedConcepts,
+    which accepts taxonomyVersionID and pageNo as a page parameter is introduced. 
+    See release note: CR00261199 ?>
+<!-- END, CR00261199 -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listRelatedConcepts"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRelatedConcept"
+    NAME="DISPLAY"
+    OPERATION="listRelatedConcept"
+    PHASE="DISPLAY"
+  />
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewConcept">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createRelatedConcept"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyRelatedConcept"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="relatedConceptID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedConceptID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addTaxonomyTermsToRelatedConcept"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="relatedConceptID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedConceptID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeRelatedConcept"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="relatedConceptID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedConceptID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Code"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.Name">
+      <FIELD WIDTH="40">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="nameTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.NoOfAssociatedTaxonomyTerm"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="noOfAssociatedTaxonomyTerms"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.CustomConcept"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="customConceptInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewRelatedConcept">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$relatedConceptID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="relatedConceptID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+</PAGE>

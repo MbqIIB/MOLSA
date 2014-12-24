@@ -1,0 +1,103 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>RuleSetInformation</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Rule Set Information:</b>
+<i> A set of rules for determining the eligibility of a <a href=CaseHeader.html>case</a>.</i>
+<P>The rows on this table are read and written by the Rules Editor when you define your eligibility rules for a <a href=Product.html>Product</a>.</P>
+<P>The rows on this table are read by the Rules Engine when determining the eligibility of a <a href=CaseHeader.html>case</a> for the <a href=Product.html>Product</a>.</P>
+<p><b>Example</b></p><P>You create a new custom <a href=Product.html>Product</a> and define eligibility rules for <a href=Product.html>Product</a> using the Rules Editor.  The Rules Editor creates a row on this table to store your rules.</P>
+<P><a href=Users.html>User</a> Ronan Rooney creates a <a href=ProductDelivery.html>Product Delivery</a> case for your custom <a href=Product.html>Product</a> and records evidence for the case using online functionality.  He submits the case for approval and his supervisor <a href=Users.html>User</a> approves the case.  The case is queued for deferred eligibility determination.</P>
+<P>The queue manager dequeues the request to determine eligibility for the case and invokes the Rules Engine.  The Rules Engine reads the row on this table to identify the rules which should be applied to the <a href=ProductDelivery.html>Product Delivery</a> case, retrieves evidence about the case (via Rules Loaders) and determines that the case is eligible and calculates payment rates for the case.</P>
+<p><b>Technical Notes</b></p><P>The set of rules is encoded in XML and may be quite large.</P>
+<P>Rule sets may change over time to accommodate changes in legislation; however, older versions of rule sets may need to remain in order to determine eligibility for old cases.  The management of which rule set applies to a <a href=CaseHeader.html>case</a> is held on <a href=ProductRulesLink.html>Product Rules Link</a>.</P>
+<P>By default, C&uacute;ram uses Rule Sets only in the determination of case eligibility; however, the possibility exists for you to re-use the Rules Engine to perform rule-based processing for other purposes.</P>
+<P>For more information, see:</P>
+<UL>
+<LI>C&uacute;ram Rules Editor Guide; and</LI>
+<LI>C&uacute;ram Rules Codification Guide.</LI>
+</UL>
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ruleSetID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Rule set ID is a string uniquely identifying a rule set. For example PRODUCT_10.</td><td class="dataLast">SVR_STRING&lt;16&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">definition</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Rule set definition is a rule set XML definitions serialized into a string form.</td><td class="dataLast">SVR_STRING&lt;26214400&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">name</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Rule set name is a name of the rule set. It stored in the rule set definition as well, but it is used as a separate field here efficiency reasons.</td><td class="dataLast">SVR_STRING&lt;200&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">type</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Rule set type.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="FundedItemRulesLink.html#ruleSetID">FundedItemRulesLink.ruleSetID</a></td><td class="dataLast">RuleSetInformation.ruleSetID</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

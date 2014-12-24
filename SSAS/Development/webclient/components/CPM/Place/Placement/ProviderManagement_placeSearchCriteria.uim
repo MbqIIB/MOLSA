@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows you to search for available places for a particular    -->
+<!-- date range.                                                             -->
+<PAGE
+  PAGE_ID="ProviderManagement_placeSearchCriteria"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+
+
+    <!--BEGIN, CR00106702, RPB -->
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <!--END, CR00106702 -->
+
+
+  <PAGE_PARAMETER NAME="placementID"/>
+  <PAGE_PARAMETER NAME="oldPlaceID"/>
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="placementKey$placementID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <!--BEGIN, CR00200425, DRS -->
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseParticipantRoleID"
+    />
+    <!--END, CR00200425 -->
+  </CONNECT>
+
+
+  <!--BEGIN, CR00200425, DRS -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placementID"
+    />
+  </CONNECT>
+  <!--END, CR00200425 -->
+
+
+  <!--BEGIN, CR00106702, RPB -->
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <!--END, CR00106702 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Placement"
+    NAME="DISPLAY"
+    OPERATION="viewPlacement"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00293856, IBM -->
+  <!--BEGIN, CR00200425, DRS -->
+  <SERVER_INTERFACE
+    CLASS="Place"
+    NAME="ACTION"
+    OPERATION="getAvailablePlacesBasedOnCurrentPlacement"
+    PHASE="ACTION"
+  />
+  <!--END, CR00200425 -->
+  <!-- END, CR00293856 -->
+
+
+  <!-- BEGIN, CR00236219, PS -->
+  <!-- BEGIN, CR00248198, GP -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Search"
+  >
+    <!-- END, CR00248198 -->
+    <!-- BEGIN, CR00236707, PS -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_placeSearchCriteria">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="oldPlaceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="oldPlaceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00236707 -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_DEFAULT="false"
+    >
+      <!-- END, CR00236219 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00237603, PS -->
+  <LIST SCROLL_HEIGHT="150">
+    <!-- END, CR00237603 -->
+    <!-- BEGIN, CR00249047, PS -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="15"
+    >
+      <!-- END, CR00249047 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <!-- BEGIN, CR00236219, PS -->
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_transferClient"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00236219 -->
+          <CONNECT>
+
+
+            <!--BEGIN, CR00200425, DRS -->
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="place$placeID"
+            />
+            <!--END, CR00200425 -->
+
+
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="oldPlaceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="oldPlaceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Place.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="placeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.Location">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="placeLocation"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- BEGIN, CR00236707, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- END, CR00236707 -->
+
+
+</PAGE>

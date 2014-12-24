@@ -1,0 +1,135 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>ServiceInvoiceLineItem.searchByProviderAndServiceInvoice</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Search service invoice line item by provider and service invoice.
+
+@deprecated Since Curam 5.2 SP6, replaced with { @link curam.cpm.sl.entity.base.ServiceInvoiceLineItem#searchByProviderAndServiceInvoiceID(RetrieveProviderSILIKey)}. This method is not performant. This method takes a long time when a service invoice for a provider is searched. This method is replaced by a more performant method.
+
+See release note: CR00303803 </td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>SELECT
+  ServiceInvoiceLineItem.serviceInvoiceLineItemID,
+  ServiceInvoiceLineItem.serviceInvoiceID,
+  ServiceInvoiceLineItem.referenceNo,
+  ServiceInvoiceLineItem.externalReferenceNo,
+  ServiceInvoiceLineItem.saReferenceNo,
+  ServiceInvoiceLineItem.serviceID,
+  ServiceInvoiceLineItem.serviceDateFrom,
+  ServiceInvoiceLineItem.serviceDateTo,
+  ServiceInvoiceLineItem.noOfUnits,
+  ServiceInvoiceLineItem.unitAmount,
+  ServiceInvoiceLineItem.amountInvoiced,
+  ServiceInvoiceLineItem.caseReferenceNo,
+  ServiceInvoiceLineItem.caseID,
+  ServiceInvoiceLineItem.clientReferenceNo,
+  ServiceInvoiceLineItem.clientID,
+  ServiceInvoiceLineItem.clientFirstName,
+  ServiceInvoiceLineItem.clientLastName,
+  ServiceInvoiceLineItem.clientDOB,
+  ServiceInvoiceLineItem.providerReferenceNo,
+  ServiceInvoiceLineItem.providerID,
+  ServiceInvoiceLineItem.providerName,
+  ServiceInvoiceLineItem.payeeReferenceNo,
+  ServiceInvoiceLineItem.payeeID,
+  ServiceInvoiceLineItem.payeeName,
+  ServiceInvoiceLineItem.status,
+  ServiceInvoiceLineItem.serviceAuthorizationLIID,
+  ServiceInvoiceLineItem.expProInd,
+  ServiceInvoiceLineItem.allowDuplicateSILI,
+  ServiceInvoiceLineItem.payeeNameUpper,
+  ServiceInvoiceLineItem.validityStatus,
+  ServiceInvoiceLineItem.versionNo
+INTO
+  :serviceInvoiceLineItemID,
+  :serviceInvoiceID,
+  :referenceNo,
+  :externalReferenceNo,
+  :saReferenceNo,
+  :serviceID,
+  :serviceDateFrom,
+  :serviceDateTo,
+  :noOfUnits,
+  :unitAmount,
+  :amountInvoiced,
+  :caseReferenceNo,
+  :caseID,
+  :clientReferenceNo,
+  :clientID,
+  :clientFirstName,
+  :clientLastName,
+  :clientDOB,
+  :providerReferenceNo,
+  :providerID,
+  :providerName,
+  :payeeReferenceNo,
+  :payeeID,
+  :payeeName,
+  :status,
+  :serviceAuthorizationLIID,
+  :expProInd,
+  :allowDuplicateSILI, 
+  :payeeNameUpper,
+  :validityStatus,
+  :versionNo
+FROM
+  ServiceInvoice,
+  ServiceInvoiceLineItem 
+WHERE ServiceInvoiceLineItem.serviceInvoiceID = :serviceInvoiceID 
+  AND ServiceInvoiceLineItem.serviceInvoiceID = ServiceInvoice.serviceInvoiceID 
+  AND 
+  (
+    ServiceInvoice.originatorID = :providerID 
+    OR 
+    (
+      ServiceInvoiceLineItem.payeeID = :payeeID 
+      OR ServiceInvoiceLineItem.providerID = :providerID 
+    ) 
+  )</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

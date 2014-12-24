@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the service authorization.           -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewSampleServiceAuthorization"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.ServiceAuthorizationDetails"
+      />
+
+
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$contextDescription$description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <!-- BEGIN, CR00225586, RPB -->
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorization"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorization">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationLineItems"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationLineItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceAuthorization$referenceNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationBudget"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationBudgetInformation">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceAuthorization$referenceNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00225586 -->
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddLineItems">
+      <LINK PAGE_ID="ProviderManagement_addSampleServiceAuthorizationLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+      <!-- BEGIN, CR00187425, SS -->
+      <LINK
+        PAGE_ID="ProviderManagement_cancelServiceAuthorization"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00187425 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$contextDescription$description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizations"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceAuthorization"
+    NAME="DISPLAY"
+    OPERATION="viewServiceAuthorizationMultipleClientDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="serviceAuthorizationKey$serviceAuthorizationID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <!-- BEGIN, CR00154438, ABS -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="multipleClientsInd"
+      />
+    </CONDITION>
+    <!-- END, CR00154438 -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$clientReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$caseReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00154438, ABS -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="multipleClientsInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$caseReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="Cluster.Title.ClientDetails">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="multipleClientsInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.ClientReferenceNumberList"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientDetails$clientReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientNameList">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientDetails$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00154438 -->
+
+
+</PAGE>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This is list Training Requirement for License Type Page                -->
+<PAGE
+  PAGE_ID="ProviderManagement_listTrainingRequirementForLicenseType"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="licenseTypeDesc"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="licenseType"/>
+  <PAGE_PARAMETER NAME="licenseTypeDesc"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="DISPLAY"
+    OPERATION="listTrainingRequirementForLicenseType"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="licenseType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$licenseType"
+    />
+  </CONNECT>
+
+
+  <LIST SORTABLE="true">
+    <!-- BEGIN, CR00199014, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199014 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197421, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyTrainingRequirementForLicenseType"
+          WINDOW_OPTIONS="width=500"
+        >
+          <!-- END, CR00197421 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseTrainingRequirementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseTrainingRequirementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$licenseType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="licenseTypeDesc"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseTypeDesc"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00197421, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeTrainingRequirementForLicenseType"
+          WINDOW_OPTIONS="width=340"
+        >
+          <!-- END, CR00197421 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseTrainingRequirementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseTrainingRequirementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$licenseType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="licenseTypeDesc"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseTypeDesc"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199014, PS -->
+    </ACTION_SET>
+    <!-- END, CR00199014 -->
+
+
+    <FIELD
+      LABEL="Field.Label.Training"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Completion"
+      WIDTH="20"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="completion"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.RemovalReason"
+      WIDTH="35"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="removalReason"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

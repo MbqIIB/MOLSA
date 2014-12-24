@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:D="http://www.curamsoftware.com/BaseDomains"
+	elementFormDefault="qualified">
+
+	<xsd:import namespace="http://www.curamsoftware.com/BaseDomains" />
+    <xsd:include schemaLocation="IEGDomains"/>  
+
+	<xsd:element name="Application">
+		<xsd:complexType>
+			<xsd:sequence minOccurs="0">
+				<xsd:element ref="Person" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Person">
+		<xsd:complexType>
+			<xsd:attribute name="personID" type="D:SVR_KEY" />
+			<xsd:attribute name="isPrimary" type="IEG_BOOLEAN" default="false"/>
+			<xsd:attribute name="firstName" type="IEG_STRING" />
+			<xsd:attribute name="middleName" type="IEG_STRING" default=""/>
+			<xsd:attribute name="lastName" type="IEG_STRING" />
+			<xsd:attribute name="gender" type="IEG_GENDER" />
+			<xsd:attribute name="dateOfBirth" type="IEG_DATE"/>
+                        <xsd:attribute name="schoolName" type="IEG_STRING" />
+                        <xsd:attribute name="otherQuestion" type="IEG_STRING" />
+                        <xsd:attribute name="schoolLevel" type="IEG_STRING" />
+                        <xsd:attribute name="yetAnotherQuestion" type="IEG_STRING" />
+		</xsd:complexType>
+		<xsd:key name="PersonKey">
+			<xsd:selector xpath="./Person" />
+			<xsd:field xpath="@personID" />
+		</xsd:key>
+	</xsd:element>
+</xsd:schema>

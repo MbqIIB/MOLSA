@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a list of registered provider groups.-->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listProviderGroups"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00206671, SS -->
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAY"
+    OPERATION="listProviderGroupDetailsForResourceManager"
+  />
+
+
+  <!-- BEGIN, CR00234082, GP -->
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_searchConfirmProviderGroupNotRegistered"
+        WINDOW_OPTIONS="width=750"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00234082 -->
+
+
+  <!-- END, CR00206671 -->
+  <LIST>
+    <!-- BEGIN, CR00206671, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditProviderGroup">
+        <!-- BEGIN, CR00234497, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00234497 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyProviderGroup"
+          WINDOW_OPTIONS="width=725"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerGroupSummaryVersionDetails$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="17"
+    >
+      <!-- END, CR00206671 -->
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupSummaryVersionDetails$referenceNumber"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_providerGroupHome">
+        <CONNECT>
+          <!-- BEGIN, CR00206671, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerGroupSummaryVersionDetails$concernRoleID"
+          />
+          <!-- END, CR00206671 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00229065, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerGroupSummaryVersionDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerGroupID"
+          />
+        </CONNECT>
+        <!-- END, CR00229065 -->
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="28"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupSummaryVersionDetails$name"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00206671, SS -->
+    <FIELD
+      LABEL="Field.Label.Address"
+      WIDTH="40"
+    >
+      <!-- END, CR00207959 -->
+      <!-- END, CR00206671 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupSummaryVersionDetails$street1"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupSummaryVersionDetails$recordStatus"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

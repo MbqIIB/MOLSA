@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search for an existing provider group     -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchServiceInvoiceForProviderGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAYPROVIDERDETAILS"
+    OPERATION="readProviderGroupSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00206896, SS -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="ACTION"
+    OPERATION="searchServiceInvoiceDetailsForProvider"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00206896 -->
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROVIDERDETAILS"
+      PROPERTY="key$providerGroupConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- END, CR00206896 -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchServiceInvoiceForProviderGroup">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD
+      LABEL="Field.Label.ReferenceNumber"
+      WIDTH="57"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ReturnInvoicesReceived"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="57"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$returnInvoicesReceived"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235795 -->
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResults">
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <!-- END, CR00235795 -->
+      <!-- BEGIN, CR00233823, PS -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="key$referenceNo"
+        />
+      </CONNECT>
+      <!-- END, CR00233823 -->
+      <!-- END, CR00206896 -->
+    </FIELD>
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <!-- END, CR00235795 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$summaryDetailsList$receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Label.CreationDate">
+      <!-- END, CR00235795 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$summaryDetailsList$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Label.OriginatorName">
+      <!-- END, CR00235795 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$summaryDetailsList$originatorName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$summaryDetailsList$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Label.AmountInvoiced">
+      <!-- END, CR00235795 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$summaryDetailsList$amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233823, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewServiceInvoiceForProviderGroup">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$summaryDetailsList$serviceInvoiceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00233823 -->
+  </LIST>
+</PAGE>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2009, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is search Training Page                                           -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchTrainingByTrainingTypeForProviderGroupMember"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTraining"
+    NAME="ACTION"
+    OPERATION="searchByTrainingType"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="partyConcernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="providerMemberID"/>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchTrainingByTrainingTypeForProviderGroupMember">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Training.TrainingType"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$searchKey$trainingType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <LIST
+    SCROLL_HEIGHT="125"
+    TITLE="Cluster.Title.SearchResults"
+  >
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+
+
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_enterProviderGroupMemberTrainingDetails"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00246961 -->
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$SearchDetailsList$dtls$trainingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="partyConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerMemberID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Title.Training.Training">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$SearchDetailsList$dtls$trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Training.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$SearchDetailsList$dtls$trainingStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Training.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$SearchDetailsList$dtls$trainingEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- END, CR00246961 -->
+</PAGE>

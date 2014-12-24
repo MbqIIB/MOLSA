@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page displays the list of service enquiries made regarding a specific service delivery.    -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listEnquiriesForService"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Enquiries"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceEnquiry"
+    NAME="DISPLAY"
+    OPERATION="listEnquiriesForServiceDelivery"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="serviceDeliveryID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceDeliveryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceDeliveryID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.SelectProvider">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_confirmProviderSelection"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceDeliveryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceDeliveryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="providerSelectableInd"
+          />
+        </CONDITION>
+      </ACTION_CONTROL>
+      <SEPARATOR/>
+      <ACTION_CONTROL LABEL="ActionControl.Label.UpdateResponse">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_updateServiceEnquiryResponse"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceEnquiryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceEnquiryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddComment">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addServiceEnquiryComment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceEnquiryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceEnquiryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <SEPARATOR/>
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteEnquiry">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_confirmDeletePhoneEnquiry"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceEnquiryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceEnquiryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="deletePhoneEnquiryInd"
+          />
+        </CONDITION>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewServiceEnquiry">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceEnquiryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceEnquiryID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD
+      LABEL="Field.Label.EnquiryDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceEnquiryDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Provider"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ProviderResponse"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerResponse"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EnquiryMethod"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="enquiryMethod"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

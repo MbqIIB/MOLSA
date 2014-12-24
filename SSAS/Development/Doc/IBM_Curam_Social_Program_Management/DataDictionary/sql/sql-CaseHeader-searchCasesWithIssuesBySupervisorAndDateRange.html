@@ -1,0 +1,416 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>CaseHeader.searchCasesWithIssuesBySupervisorAndDateRange</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">&nbsp;</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  id.relatedCaseID,
+  ch2.caseReference,
+  cl.orgObjectType,
+  cl.orgObjectReference,
+  cl.userName,
+  ch2.registrationDate,
+  ch2.statusCode,
+  count(id.caseID) issuecount,
+  ch2.caseTypeCode,
+  ch2.startDate
+INTO
+  :caseID,
+  :caseReference,
+  :orgObjectType,
+  :orgObjectReference,
+  :userName,
+  :registrationDate,
+  :status,
+  :issueCount,
+  :caseTypeCode,
+  :startDate 
+FROM
+  CaseHeader ch2,
+  IssueDelivery id,
+  OrgObjectLink cl 
+WHERE ch2.caseID IN 
+  ( 
+  SELECT
+    ch1.caseID 
+  FROM
+    CaseHeader ch1,
+    OrgObjectLink cool1 
+  WHERE ch1.ownerOrgObjectLinkID = cool1.orgObjectLinkID 
+    AND cool1.orgObjectReference IN 
+    ( 
+    SELECT
+      distinct orgunit.organisationUnitID 
+    FROM
+      OrganisationUnit orgunit 
+    WHERE orgunit.organisationUnitID IN 
+      ( 
+      SELECT
+        ou.organisationUnitID 
+      FROM
+        OrganisationUnit ou,
+        OrgUnitPositionLink opl,
+        PositionHolderLink phl,
+        Position pos2 
+      WHERE phl.userName = :leadUserID 
+        AND phl.positionID = opl.positionID 
+        AND opl.positionID = pos2.positionID 
+        AND opl.organisationUnitID = ou.organisationUnitID 
+        AND pos2.leadPositionInd = '1' 
+        AND opl.recordStatus <> :status 
+        AND phl.recordStatus <> :status 
+      
+      UNION
+        
+      SELECT
+        organisationUnitID 
+      FROM
+        OrgUnitParentLink opar 
+      WHERE opar.recordStatus <> :status 
+        AND opar.parentOrganisationUnitID IN 
+        ( 
+        SELECT
+          organisationUnitID 
+        FROM
+          OrgUnitPositionLink opl1,
+          PositionHolderLink phl1,
+          Position pos3 
+        WHERE phl1.positionID = opl1.positionID 
+          AND opl1.positionID = pos3.positionID 
+          AND pos3.leadPositionInd = '1' 
+          AND phl1.userName = :leadUserID 
+          AND opl1.recordStatus <> :status 
+          AND phl1.recordStatus <> :status 
+        ) 
+      ) 
+    
+    UNION
+      
+    SELECT
+      distinct wq.workQueueID 
+    FROM
+      WorkQueue wq,
+      WorkQueueSubscription wqs 
+    WHERE wq.workQueueID = wqs.workQueueID 
+      AND wqs.userName IN 
+      ( 
+      SELECT
+        Users.userName 
+      FROM
+        Position,
+        PositionHolderLink,
+        OrganisationUnit,
+        OrgUnitPositionLink,
+        Users 
+      WHERE Position.positionID = PositionHolderLink.positionID 
+        AND OrgUnitPositionLink.positionID = PositionHolderLink.positionID 
+        AND OrgUnitPositionLink.organisationUnitID = OrganisationUnit.organisationUnitID 
+        AND PositionHolderLink.userName = Users.userName 
+        AND PositionHolderLink.recordStatus <> :status 
+        AND OrgUnitPositionLink.recordStatus <> :status 
+        AND Position.recordStatus <> :status 
+        AND Position.positionID IN 
+        ( 
+        SELECT
+          OrgUnitPositionLink.positionID 
+        FROM
+          OrgUnitPositionLink 
+        WHERE OrgUnitPositionLink.recordStatus <> :status 
+          AND OrgUnitPositionLink.organisationUnitID IN 
+          ( 
+          SELECT
+            opl.organisationUnitID 
+          FROM
+            OrgUnitPositionLink opl,
+            PositionHolderLink phl,
+            Position pos 
+          WHERE pos.positionID = phl.positionID 
+            AND phl.positionID = opl.positionID 
+            AND pos.leadPositionInd = '1' 
+            AND phl.userName = :supervisorUsername 
+            AND phl.recordStatus <> :status 
+            AND opl.recordStatus <> :status 
+          
+          UNION
+            
+          SELECT
+            OrgUnitParentLink.organisationUnitID 
+          FROM
+            OrgUnitParentLink 
+          WHERE OrgUnitParentLink.recordStatus <> :status 
+            AND OrgUnitParentLink.parentOrganisationUnitID IN 
+            ( 
+            SELECT
+              opl1.organisationUnitID 
+            FROM
+              OrgUnitPositionLink opl1,
+              PositionHolderLink phl1,
+              Position pos1 
+            WHERE pos1.positionID = phl1.positionID 
+              AND pos1.leadPositionInd = '1' 
+              AND phl1.positionID = opl1.positionID 
+              AND phl1.userName = :supervisorUsername 
+              AND opl1.recordStatus <> :status 
+              AND phl1.recordStatus <> :status 
+            ) 
+          ) 
+        
+        UNION
+          
+        SELECT
+          prl.positionID 
+        FROM
+          PositionReportingLink prl,
+          PositionHolderLink phl2,
+          Position pos2 
+        WHERE phl2.positionID = prl.reportsToID 
+          AND phl2.positionID = pos2.positionID 
+          AND pos2.leadPositionInd = '1' 
+          AND phl2.userName = :supervisorUsername 
+          AND phl2.recordStatus <> :status 
+          AND prl.recordStatus <> :status 
+        ) 
+      
+      UNION
+        
+      SELECT
+        cool.userName 
+      FROM
+        CaseUserRole cur,
+        OrgObjectLink cool 
+      WHERE cur.recordStatus <> :status 
+        AND cool.userName = :leadUserID 
+        AND cur.orgObjectLinkID = cool.orgObjectLinkID 
+      ) 
+    
+    UNION
+      
+    SELECT
+      distinct pos.positionID 
+    FROM
+      OrgUnitPositionLink ouposlink,
+      Position pos 
+    WHERE ouposlink.positionID = pos.positionID 
+      AND ouposlink.recordStatus <> :status 
+      AND ouposlink.organisationUnitID IN 
+      ( 
+      SELECT
+        ou.organisationUnitID 
+      FROM
+        OrganisationUnit ou,
+        OrgUnitPositionLink opl,
+        PositionHolderLink phl,
+        Position pos2 
+      WHERE phl.userName = :leadUserID 
+        AND phl.positionID = opl.positionID 
+        AND opl.positionID = pos2.positionID 
+        AND pos2.leadPositionInd = '1' 
+        AND opl.organisationUnitID = ou.organisationUnitID 
+        AND opl.recordStatus <> :status 
+        AND phl.recordStatus <> :status 
+      
+      UNION
+        
+      SELECT
+        OrgUnitParentLink.organisationUnitID 
+      FROM
+        OrgUnitParentLink 
+      WHERE OrgUnitParentLink.recordStatus <> :status 
+        AND OrgUnitParentLink.parentOrganisationUnitID IN 
+        ( 
+        SELECT
+          opl1.organisationUnitID 
+        FROM
+          OrgUnitPositionLink opl1,
+          PositionHolderLink phl1,
+          Position pos1 
+        WHERE pos1.positionID = phl1.positionID 
+          AND pos1.leadPositionInd = '1' 
+          AND phl1.positionID = opl1.positionID 
+          AND phl1.userName = :supervisorUsername 
+          AND opl1.recordStatus <> :status 
+          AND phl1.recordStatus <> :status 
+        ) 
+      ) 
+    
+    UNION
+      
+    SELECT
+      distinct prl.positionID 
+    FROM
+      PositionReportingLink prl,
+      PositionHolderLink phl2,
+      Position pos2 
+    WHERE phl2.positionID = prl.reportsToID 
+      AND phl2.positionID = pos2.positionID 
+      AND pos2.leadPositionInd = '1' 
+      AND phl2.userName = :supervisorUsername 
+      AND phl2.recordStatus <> :status 
+      AND prl.recordStatus <> :status 
+    ) 
+  
+  UNION
+    
+  SELECT
+    ch.caseID 
+  FROM
+    CaseHeader ch,
+    CaseUserRole cur,
+    OrgObjectLink cool 
+  WHERE ch.ownerOrgObjectLinkID = cur.orgObjectLinkID 
+    AND cur.orgObjectLinkID = cool.orgObjectLinkID 
+    AND cur.caseID = ch.caseID 
+    AND cool.userName IN 
+    ( 
+    SELECT
+      Users.userName 
+    FROM
+      Position,
+      PositionHolderLink,
+      OrganisationUnit,
+      OrgUnitPositionLink,
+      Users 
+    WHERE Position.positionID = PositionHolderLink.positionID 
+      AND OrgUnitPositionLink.positionID = PositionHolderLink.positionID 
+      AND OrgUnitPositionLink.organisationUnitID = OrganisationUnit.organisationUnitID 
+      AND PositionHolderLink.userName = Users.userName 
+      AND PositionHolderLink.recordStatus <> :status 
+      AND OrgUnitPositionLink.recordStatus <> :status 
+      AND Position.recordStatus <> :status 
+      AND Position.positionID IN 
+      ( 
+      SELECT
+        OrgUnitPositionLink.positionID 
+      FROM
+        OrgUnitPositionLink 
+      WHERE OrgUnitPositionLink.recordStatus <> :status 
+        AND OrgUnitPositionLink.organisationUnitID IN 
+        ( 
+        SELECT
+          opl.organisationUnitID 
+        FROM
+          OrgUnitPositionLink opl,
+          PositionHolderLink phl,
+          Position pos 
+        WHERE pos.positionID = phl.positionID 
+          AND phl.positionID = opl.positionID 
+          AND pos.leadPositionInd = '1' 
+          AND phl.userName = :supervisorUsername 
+          AND phl.recordStatus <> :status 
+          AND opl.recordStatus <> :status 
+        
+        UNION
+          
+        SELECT
+          OrgUnitParentLink.organisationUnitID 
+        FROM
+          OrgUnitParentLink 
+        WHERE OrgUnitParentLink.recordStatus <> :status 
+          AND OrgUnitParentLink.parentOrganisationUnitID IN 
+          ( 
+          SELECT
+            opl1.organisationUnitID 
+          FROM
+            OrgUnitPositionLink opl1,
+            PositionHolderLink phl1,
+            Position pos1 
+          WHERE pos1.positionID = phl1.positionID 
+            AND pos1.leadPositionInd = '1' 
+            AND phl1.positionID = opl1.positionID 
+            AND phl1.userName = :supervisorUsername 
+            AND opl1.recordStatus <> :status 
+            AND phl1.recordStatus <> :status 
+          ) 
+        ) 
+      
+      UNION
+        
+      SELECT
+        prl.positionID 
+      FROM
+        PositionReportingLink prl,
+        PositionHolderLink phl2,
+        Position pos2 
+      WHERE phl2.positionID = prl.reportsToID 
+        AND phl2.positionID = pos2.positionID 
+        AND pos2.leadPositionInd = '1' 
+        AND phl2.userName = :supervisorUsername 
+        AND phl2.recordStatus <> :status 
+        AND prl.recordStatus <> :status 
+      ) 
+    ) 
+  ) 
+  AND ch2.caseID = id.relatedCaseID 
+  AND ch2.ownerOrgObjectLinkID = cl.orgObjectLinkID 
+  AND ch2.statusCode <> :caseStatus 
+  AND ch2.registrationDate BETWEEN :registrationFromDate AND :registrationToDate 
+  AND id.caseID IN 
+  ( 
+  SELECT
+    ch3.caseID 
+  FROM
+    CaseHeader ch3 
+  WHERE ch3.statusCode = :issueStatus 
+    AND ch3.caseTypeCode = :caseType 
+  ) 
+GROUP
+  by id.relatedCaseID,
+  ch2.caseReference,
+  cl.orgObjectType,
+  cl.orgObjectReference,
+  cl.userName,
+  ch2.registrationDate,
+  ch2.statusCode,
+  ch2.caseTypeCode,
+  ch2.startDate 
+ORDER BY issuecount DESC
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

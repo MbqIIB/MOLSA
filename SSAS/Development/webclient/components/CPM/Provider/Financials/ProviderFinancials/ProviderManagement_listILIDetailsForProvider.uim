@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the list intruction line item payament details for provider page -->
+<PAGE
+  PAGE_ID="ProviderManagement_listILIDetailsForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderFinancial"
+    NAME="DISPLAY"
+    OPERATION="listILIPaymentDetailsForProvider"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="pmtInstrumentID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="pmtInstrumentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$pmtInstrumentID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <CONTAINER LABEL="Container.Label.Action">
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveViewPaymentTypesForProvider"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$paymentHistoryDetails$relatedReference"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedReference"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$paymentHistoryDetails$instructionLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="InstructionLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$paymentHistoryDetails$finInstructionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="finInstructionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$paymentHistoryDetails$instructionLineItemType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="paymentType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pmtInstrumentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pmtInstrumentID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.DateFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$serviceFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$serviceTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PaymentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$paymentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DeductionAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentHistoryDetails$deductionAmount"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

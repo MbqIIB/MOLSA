@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a list of all submitted              -->
+<!-- external access request.                                               -->
+<PAGE
+  PAGE_ID="ProviderManagement_listExternalAccessRequestsForResMgr"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="Request"
+    NAME="DISPLAY"
+    OPERATION="searchByOwnerAndStatus"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- BEGIN, CR00233616, PS -->
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Search">
+      <LINK PAGE_ID="ProviderManagement_searchExternalAccessRequests"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00233616 -->
+
+
+  <LIST>
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD
+      LABEL="Field.Label.RequestType"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$requestDetails$requestType"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_resolveViewExtAccRequest">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$requestDetails$requestID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="requestID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$requestDetails$requestCategory"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="requestCategory"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Title.DateCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$requestDetails$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235795 -->
+
+
+    <FIELD
+      LABEL="Field.Label.CreatedBy"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$requestDetails$createdBy"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Title.DateSubmitted">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$requestDetails$dateSubmitted"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$requestDetails$requestStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235795 -->
+
+
+  </LIST>
+
+
+</PAGE>

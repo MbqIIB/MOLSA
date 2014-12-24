@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                         -->
+<!-- All rights reserved.                                                                                           -->
+<!-- This software is the confidential and proprietary information of Curam          -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                 -->
+<!-- such Confidential Information and shall use it only in accordance with           -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                         -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                           -->
+<!-- This page allows user to search unassigned provider members.                     -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchUnassignedMember"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="ACTION"
+    OPERATION="searchUnassignedProviderMember"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createUnassignedProviderMember"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchPersonKey$searchKey$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchPersonKey$searchKey$firstName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DisplayPersonWithTraining">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchPersonKey$searchKey$personWithTraining"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchPersonKey$searchKey$lastName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchUnassignedMember"/>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <FIELD LABEL="Field.Label.PersonName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_listUnassignedMemberCertification">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TrainingPlan">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="trainingInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

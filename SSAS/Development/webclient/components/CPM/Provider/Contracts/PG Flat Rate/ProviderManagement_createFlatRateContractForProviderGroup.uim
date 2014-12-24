@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the Create Flat-Rate Contract for Provider Group page -->
+<PAGE
+  PAGE_ID="ProviderManagement_createFlatRateContractForProviderGroup"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN CR00090002, GP -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END CR00090002 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="FlatRateContract"
+    NAME="ACTION"
+    OPERATION="createProviderGroupFlatRateContract"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="FlatRateContract"
+    NAME="DISPLAY"
+    OPERATION="listProvidersContactsByProviderGroup"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="pgConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerGroupID"
+    />
+  </CONNECT>
+
+
+  <!-- Contract/Provider Group Details -->
+  <!-- BEGIN, CR00197352, SS -->
+  <!-- BEGIN, CR00234235, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00234235 -->
+    <!-- BEGIN, CR00235192, PS -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="100"
+    >
+      <!-- END, CR00235192 -->
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00234235, PS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_BLANK="true"
+      WIDTH="40"
+    >
+      <!-- END, CR00234235 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00235192, PS -->
+    <FIELD
+      LABEL="Field.Label.LicenseType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <!-- END, CR00235192 -->
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="requiredLicenseType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00235192, PS -->
+    <FIELD
+      LABEL="Field.Label.ContractServicesType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <!-- END, CR00235192 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contractServicesType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00234235, PS -->
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false"
+      WIDTH="40"
+    >
+      <!-- END, CR00234235 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00235192, PS -->
+    <FIELD
+      LABEL="Field.Label.Contact"
+      USE_BLANK="true"
+      WIDTH="100"
+    >
+      <!-- END, CR00235192 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="providerPartyID"
+          NAME="DISPLAY"
+          PROPERTY="providerPartyName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactProviderPartyID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- Payment Details -->
+  <!-- BEGIN, CR00197352, SS -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.PaymentDetails"
+  >
+    <!-- BEGIN, CR00234235, PS -->
+    <FIELD
+      LABEL="Field.Label.TotalContractAmt"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00234235 -->
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="totalContractAmt"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <!-- BEGIN, CR00248418, PS -->
+    <FIELD
+      LABEL="Field.Label.Frequency"
+      WIDTH="70"
+    >
+      <!-- END, CR00248418 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="frequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00234235, PS -->
+    <FIELD
+      LABEL="Field.Label.RegularPaymentAmt"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00234235 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="regularPaymentAmt"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- Provider List -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Providers"
+  >
+    <FIELD CONTROL="SKIP"/>
+    <FIELD CONTROL="TRANSFER_LIST">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="code"
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerList"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00197352, CR00407812, SS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00197352, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00094433, SP -->
+  <ACTION_SET ALIGNMENT="CENTER">
+    <!-- END, CR00094433 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.SaveAddService"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00246655, GP -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addServicesToProviderGroupContract"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00246655 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$contractVersionKey$contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

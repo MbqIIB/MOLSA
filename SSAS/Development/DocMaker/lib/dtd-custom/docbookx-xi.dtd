@@ -1,0 +1,48 @@
+<!--
+Copyright (c) 2004 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose such
+Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+
+<!--
+A DTD that overrides the standard DocBook XML DTD to add support for the
+validation of DocBook XML files that contain XIncludes. The xi:include
+element is supported in specific places as defined below.
+-->
+
+<!-- anywhere a chapter can appear -->
+<!ENTITY % local.chapter.class "| xi:include">
+<!-- anywhere an appendix can appear -->
+<!ENTITY % local.appendix.class "| xi:include">
+<!-- anywhere a section can appear -->
+<!ENTITY % local.section.class "| xi:include">
+
+<!-- inside chapter or section elements -->
+<!ENTITY % local.divcomponent.mix "| xi:include">
+<!-- inside para, programlisting, literallayout, etc. -->
+<!ENTITY % local.para.char.mix "| xi:include">
+<!-- inside bookinfo, chapterinfo, etc. -->
+<!ENTITY % local.info.class "| xi:include">
+
+<!-- Load DocBook. -->
+<!ENTITY % DocBookDTD SYSTEM "../docbook-xml/docbookx.dtd">
+%DocBookDTD;
+
+<!ELEMENT xi:include (xi:fallback?)>
+<!ATTLIST xi:include
+    xmlns:xi        CDATA       #FIXED    "http://www.w3.org/2003/XInclude"
+    href            CDATA       #IMPLIED
+    parse           (xml|text)  "xml"
+    xpointer        CDATA       #IMPLIED
+    encoding        CDATA       #IMPLIED
+    accept          CDATA       #IMPLIED
+    accept-language CDATA       #IMPLIED
+>
+
+<!ELEMENT xi:fallback ANY>
+<!ATTLIST xi:fallback
+    xmlns:xi        CDATA       #FIXED   "http://www.w3.org/2003/XInclude" >

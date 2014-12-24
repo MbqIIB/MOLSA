@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description      -->
+<!-- ===========      -->
+<!-- This page allows the user to add related concepts to the taxonomy term. -->
+<PAGE
+  PAGE_ID="ProviderManagement_addRelatedConceptsToTerm"
+  WINDOW_OPTIONS="width=700,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY"
+    OPERATION="previewRelatedConcepts"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionString"
+    CLASS="MaintainTaxonomyTerm"
+    NAME="ACTION"
+    OPERATION="storeRelatedConcepts"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="wizardStateID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <LIST
+    DEFAULT_PAGE_SIZE="15"
+    PAGINATION_THRESHOLD="15"
+  >
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="initialListTabString"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="relatedConceptID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="selectedListTabString"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CustomConcept">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="customConceptInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewPublishedTaxonomyVersion"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Back"
+      LABEL="ActionControl.Label.Back"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addUseReferencesToTerm"
+        WINDOW_OPTIONS="width=800"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="SaveAndExit"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewPublishedTermInEdit">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyInEditDataID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Next"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addRelatedTermsToTerm"
+        WINDOW_OPTIONS="width=800"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

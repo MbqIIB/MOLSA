@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							    -->
+<!-- =========== 							    -->
+<!-- This Page displays the Roster Line Item correction details    -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewPRLICorrectionFromTask"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00130880, ABS -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00130880 -->
+
+
+  <PAGE_PARAMETER NAME="prliCorrectionID"/>
+  <!-- BEGIN, CR00129363, RD -->
+  <PAGE_PARAMETER NAME="taskID"/>
+  <!-- END, CR00129363 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLICorrection"
+    NAME="DISPLAY"
+    OPERATION="readPRLICorrection"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="prliCorrectionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$prliCorrectionID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.ServiceDetails"
+  >
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ReferenceNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.VoucherNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="voucherNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceFromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceToDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- expected units -->
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ExpectedUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expectedUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ActualUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalUnitsDelivered"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ServiceName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.ClientDetails"
+  >
+    <FIELD LABEL="Field.Label.RosterLineItem.Client.ReferenceNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Client.DateOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientDOB"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Client.FirstName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Client.LastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientLastName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Label.ClientAddress">
+    <FIELD LABEL="Field.Label.RosterLineItem.Client.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientAddress"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Label.CorrectionReason">
+    <FIELD LABEL="Field.Label.RosterLineItem.Reason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="Cluster.Label.DailyAttendance">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isDailyAttendanceTrackingRequired"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Attendance.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Attendance.Attendance">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attendance"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Attendance.AbsenceReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dailyAttendanceDetails$absenceReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Attendance.UnitsAttended">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitsAttended"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Attendance.UnitsNotAttended">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dailyAttendanceDetails$unitsUnattended"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="Cluster.Label.AbsenceDetails">
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="isDailyAttendanceTrackingRequired"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.AbsenseReason.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="absenceDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AbsenseReason.AbsenceReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="absenceDetailsList$absenceReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AbsenseReason.Units">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="absenceDetailsList$unitsUnattended"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- BEGIN, CR00129363, RD -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="true"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <LINK PAGE_ID="TaskManagement_taskHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00129363 -->
+
+
+</PAGE>

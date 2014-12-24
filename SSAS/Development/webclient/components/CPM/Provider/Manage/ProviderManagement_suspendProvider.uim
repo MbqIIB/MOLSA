@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2012 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to suspend provider.                        -->
+<PAGE
+  PAGE_ID="ProviderManagement_suspendProvider"
+  WINDOW_OPTIONS="width=450"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY"
+    OPERATION="getFlatRateContractsForProvider"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="Provider"
+    OPERATION="suspendProvider"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerKey$providerID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="Provider"
+      PROPERTY="details$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="Provider"
+      PROPERTY="details$versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$liveContracts"
+    />
+    <TARGET
+      NAME="Provider"
+      PROPERTY="details$liveContracts"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00199675, SS -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- BEGIN, CR00207545, SS -->
+    <!-- BEGIN, CR00199675, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00197352, SS -->
+    <CLUSTER LABEL_WIDTH="22">
+      <!-- END, CR00197352 -->
+      <!-- END, CR00207545 -->
+      <!-- BEGIN, CR00233823, PS -->
+      <FIELD
+        LABEL="Field.Label.Reason"
+        WIDTH="100"
+      >
+        <!-- END, CR00233823 -->
+        <!-- END, CR00187976 -->
+        <!-- END, CR00199675 -->
+        <CONNECT>
+          <TARGET
+            NAME="Provider"
+            PROPERTY="details$reasonCode"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$liveContracts"
+        />
+      </CONDITION>
+      <!-- BEGIN, CR00187417, PS -->
+      <!-- BEGIN, CR00304343, GA -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_confirmSuspendProvider"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00304343 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="Provider"
+            PROPERTY="result$reasonCode"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reasonCode"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="result$liveContracts"
+        />
+      </CONDITION>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

@@ -1,0 +1,63 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>DPErrorInformation</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Deferred Process Error Information:</b>
+<i> An error which occurred during the invocation of a <a href=DPProcess.html>Deferred Process</a>.</i>
+<P>If an error occurs during the invocation of a <a href=DPProcess.html>Deferred Process</a>, then the transaction surrounding this invocation will be rolled back (thus losing any updates to business entities).  Once this rollback has occurred then the deferred processing engine starts another transaction, creates a row on this table to store the details of the error and commits the transaction.</P>
+<P>The data on this table is then available to application error processing.</P>
+<p><b>Example</b></p><P>You model a new deferred process.  You also modify some online business logic to call the API to queue requests to invoke your <a href=DPProcess.html>Deferred Process</a>.</P>
+<P><a href=Users.html>User</a> Ronan Rooney accesses an online function which calls your online business logic.  The C&uacute;ram Server starts your deferred process by enqueuing a JMS message.  Control returns to Ronan Rooney.</P>
+<P>The queue manager dequeues the JMS message and invokes the deferred processing engine.  The deferred processing engine attempts to invoke your <a href=DPProcess.html>Deferred Process</a> but encounters an error.  The deferred processing engine creates a row on this table to store the error.</P>
+<P>Your custom processing reads this row and sends an email to <a href=Users.html>User</a> Ronan Rooney notifying him of the error.</P>
+<p><b>Technical Notes</b></p><P>For more information see the C&uacute;ram Workflow Management System Developer's Guide.</P>
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (2)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">instDataID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The ID of a record on the WMInstanceData table. WMInstanceData is an application-defined table that is populated with information required by the deferred process.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">exceptionDesc</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Holds the details of any exception that occurred during the deferred process.</td><td class="dataLast">SVR_STRING&lt;2000&gt;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

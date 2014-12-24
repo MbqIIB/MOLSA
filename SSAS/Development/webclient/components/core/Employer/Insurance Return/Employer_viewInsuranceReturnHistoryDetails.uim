@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2003 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify an insurance return.               -->
+<PAGE
+  PAGE_ID="Employer_viewInsuranceReturnHistoryDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Contribution"
+    NAME="DISPLAY"
+    OPERATION="readInsuranceHeaderHistoryDetail"
+  />
+
+
+  <PAGE_PARAMETER NAME="insuranceRetHdrDetailsID"/>
+  <PAGE_PARAMETER NAME="insuranceRetHdrID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="insuranceRetHdrID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="insRetHeaderHistoryReadKey$insuranceRetHdrID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="insuranceRetHdrDetailsID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="insRetHeaderHistoryReadKey$insuranceRetHdrDetailsID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.Contact">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="contactName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="insuranceReturnType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Contributions"
+  >
+
+
+    <FIELD LABEL="Field.Label.TotalEmployer">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employerContribAmt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalContributionAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalContribAmt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CasualEmployees">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numCasualEmployees"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalPayroll">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalPayroll"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalEmployee">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employeeContribAmt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PermanentEmployees">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numPermanentEmployees"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalEmployees">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totNumEmployees"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

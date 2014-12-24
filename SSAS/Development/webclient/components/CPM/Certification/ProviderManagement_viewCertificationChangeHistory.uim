@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view certification change history.        -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewCertificationChangeHistory"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="certificationID"/>
+
+
+  <!-- BEGIN, CR00237067, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainCertifications"
+    NAME="DISPLAY"
+    OPERATION="listCertificationHistory"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00237067 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="certificationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$certificationID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00205039, PS -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.Home"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewCertification">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="certificationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="certificationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.ViewHistory"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewCertificationChangeHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="certificationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="certificationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00205039 -->
+
+
+  <!-- BEGIN, CR00237067, GP -->
+  <LIST SORTABLE="true">
+
+
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Certification.Date"
+      WIDTH="12"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00197421, PS -->
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Certification.User"
+      WIDTH="8"
+    >
+      <!-- END, CR00205039 -->
+      <!--END, CR00197421-->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Certification.CertificationType"
+      WIDTH="12"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificationType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Certification.CertificationCategory"
+      WIDTH="10"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="category"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD LABEL="Field.Label.Certification.Issuer">
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificationIssuer"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Certification.ValidityPeriod"
+      WIDTH="12"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="validityPeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Certification.ValidityPeriodUnit"
+      WIDTH="15"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="validityPeriodUnit"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.Certification.Status"
+      WIDTH="8"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00237067 -->
+</PAGE>

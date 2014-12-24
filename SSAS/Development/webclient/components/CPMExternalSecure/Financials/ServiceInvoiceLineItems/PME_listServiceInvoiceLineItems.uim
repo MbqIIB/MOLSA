@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009-2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to list service invoice line item for an     -->
+<!--  external provider.                                                    -->
+<PAGE
+  PAGE_ID="PME_listServiceInvoiceLineItems"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00228977, GP -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalServiceInvoiceLineItem"
+    NAME="DISPLAY"
+    OPERATION="listServiceInvoiceLineItems"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="serviceInvoiceID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceInvoiceID$serviceInvoiceID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewServiceInvoice"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="PME_viewServiceInvoice">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ListServiceInvoiceLineItems"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="PME_listServiceInvoiceLineItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST>
+
+
+    <!-- BEGIN, CR00158345, GP -->
+    <CONTAINER
+      LABEL="Field.Label.ClientName"
+      WIDTH="25"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientName"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewClientDetails">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PME_listClientsForServiceInvoiceLineItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceInvoiceLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceInvoiceLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00158345 -->
+    <FIELD
+      LABEL="Field.Label.Service"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="service"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.NumberOfUnits"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="noOfUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AmountInvoiced"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AmountPaid"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$amountPaid"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="PME_viewServiceInvoiceLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+  <!-- END, CR00228977 -->
+
+
+</PAGE>

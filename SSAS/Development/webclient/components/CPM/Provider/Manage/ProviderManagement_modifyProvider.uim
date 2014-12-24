@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This page allows the user to modify provider details. -->
+<!-- BEGIN, CR00291325, SS -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyProvider"
+  WINDOW_OPTIONS="width=900"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00291325 -->
+
+
+  <!-- BEGIN, CR00178272, AK -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="DISPLAY"
+    OPERATION="viewProviderDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="ACTION"
+    OPERATION="modifyProviderDetails"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="categoryVersionNo"/>
+  <PAGE_PARAMETER NAME="typeVersionNo"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$providerEnrollmentDetails$versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="categoryVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$providerEnrollmentDetails$providerCategoryVersion"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="typeVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$providerEnrollmentDetails$typeVersion"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$providerEnrollmentDetails$concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$providerEnrollmentDetails$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00228396, PS -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00228396 -->
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$providerEnrollmentDetails$modifyDesignatedCapacity"
+      />
+    </CONDITION>
+
+
+    <!-- BEGIN, CR00207380, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.ProviderName"
+      WIDTH="70"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00207380 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$providerName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.PreferredCommunication"
+      WIDTH="70"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$prefCommMethod"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$prefCommMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00197352 -->
+
+
+    <FIELD CONTROL="SKIP"/>
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.PreferredLanguage"
+      WIDTH="70"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$prefLanguage"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$prefLanguage"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.PreferredSEMethod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="70"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$preferredServiceEnquiryMethod"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$preferredServiceEnquiryMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00197352 -->
+
+
+  </CLUSTER>
+  <!-- BEGIN, CR00228396, PS -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00228396 -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="result$providerEnrollmentDetails$modifyDesignatedCapacity"
+      />
+    </CONDITION>
+
+
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.ProviderName"
+      WIDTH="70"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$providerName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.PreferredCommunication"
+      WIDTH="70"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$prefCommMethod"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$prefCommMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00197352 -->
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.PreferredLanguage"
+      WIDTH="70"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$prefLanguage"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$prefLanguage"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.PreferredSEMethod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="70"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$preferredServiceEnquiryMethod"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$preferredServiceEnquiryMethod"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- END, CR00197352 -->
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.PaymentDetails.Title"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Frequency"
+      WIDTH="85"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$paymentFrequency"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$paymentFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.PaymentMethod"
+      WIDTH="85"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$methodOfPaymentString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$methodOfPayment"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$methodOfPayment"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.Currency"
+      WIDTH="70"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$currencyType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$currencyType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00186631, ASN -->
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AdditionalInformation"
+  >
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.PhysicalCapacity"
+      WIDTH="30"
+    >
+      <!-- END, CR00228396 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$physicalCapacityString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$physicalCapacityString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AcceptCWReferral">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$acceptCWReferral"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$acceptCWReferral"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00228396, PS -->
+    <FIELD
+      LABEL="Field.Label.ReservationGracePeriod"
+      WIDTH="30"
+    >
+      <!-- END, CR00228396 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$reservationGracePeriodString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$reservationGracePeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00187976 -->
+  <!-- BEGIN, CR00234497, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- BEGIN, CR00235795, PS -->
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.AreasServed"
+      WIDTH="90"
+    >
+      <!-- END, CR00235795 -->
+      <FIELD HEIGHT="4">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$areasServedInformation"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="dtls$areasServedInformation"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.ClientInfo"
+    >
+      <FIELD HEIGHT="4">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$clientInformation"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="dtls$clientInformation"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+  </CLUSTER>
+  <!-- END, CR00234497 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Comments.Title"
+  >
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$providerEnrollmentDetails$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    > </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

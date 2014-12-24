@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Pre-processing.
+
+This script:
+
+  Takes an input CCS VOB and extracts the relevant content to form 3 deliverables:
+    * A TC.zip which contains the artifacts appropriate for translation
+    * A AC.zip which contains the artifacts appropriate for manual extraction
+    * A DNT.zip which contains all non-translated content in regards LOBs, DMX files, CTX and Messages files. This is used during post-processing to form the complete Language Pack in a Locale.
+
+  The script goes through a number of steps:
+
+    1. Uses a working directory "temp".
+    2. Copies all content to be processed to this working directory.
+    3. If the parameter input.devenv is specified, it extracts content from the JDE for translation.
+    4. The DMX files are processed:
+    6. All message files are processed:
+    7. All codetable files are processed:
+    9. All property files are processed:
+    10. All prx files are processed:
+    12. It runs CHKPII on the content and fails if there are issues.
+    13. Finally the 3 zips are produced.
+
+Required parameters:
+
+  -Dinput.directory=<path to VOB root> e.g. C:/CC/PFM_MAIN/PFM-VOB
+  -Dinput.devenv=<path to DevEnv directory> e.g. C:/CC/DevEnv
+
+Optional parameters:
+
+  -Dinput.baseline=Label of the baseline used to form the zip name
+
+-->
+<project name="pre-processing" default="complete" basedir=".">
+
+  <property environment="sysenv."/>
+
+  <property name="input.baseline"           value="empty"/>
+  <property name="csv.location"             location="${sysenv.CURAM_DIR}/GlbnTools/pre-processing/metadata"/>
+  <property name="working.dir"              location="${sysenv.CURAM_DIR}/GlbnTools/pre-processing/temp"/>
+  <property name="bld.dir"                  location="${sysenv.CURAM_DIR}/GlbnTools/pre-processing/build"/>
+  <property name="nontranslatablefiles"     location="${bld.dir}/NonTranslatableFiles.txt"/>
+  <property name="fortranslationfile"       location="${bld.dir}/ForTranslation.properties"/>
+  <property name="bld.cls"                  location="${bld.dir}/cls"/>
+  <property name="bld.rpx"                  location="${bld.dir}/rpx"/>
+  <property name="bld.chkpii"               location="${bld.dir}/chkpii"/>
+
+  <taskdef resource="net/sf/antcontrib/antlib.xml">
+    <classpath>
+      <pathelement location="${sysenv.CURAMCDEJ}/lib/ext/jar/ant-contrib.jar"/>
+    </classpath>
+  </taskdef>
+
+  <target name="complete" description="Pre-processes the translation deliverable."
+    depends="prepare, package"/>
+
+  <!--
+  Runs the complete set of steps as per the file description.
+  -->
+  <target name="prepare">
+
+    <fail message="An -Dinput.directory= needs to be passed to the target. This should be the root of a VOB" unless="input.directory"/>
+    <fail message="An -Dinput.devenv= needs to be passed to the target. This should be the root of a DevEnv" unless="input.devenv"/>
+
+    <antcall target="create.working.dir"/>
+    <antcall target="create.additional.content"/>
+
+    <mkdir dir="${bld.dir}"/>
+    <touch file="${fortranslationfile}"/>
+
+    <antcall target="process.data"/>
+    <antcall target="process.message"/>
+    <antcall target="process.codetables"/>
+    <antcall target="process.properties"/>
+    <antcall target="process.prx.files"/>
+    <antcall target="process.workflow.files"/>
+    <antcall target="process.ruleset.files"/>
+    <antcall target="process.imagemapconfig.files"/>
+
+    <!-- Add the additional content to the nontranslatablefiles file. -->
+    <echo file="${nontranslatablefiles}" append="true">
+# Include LOB content not translated as it may be referenced from localised DMX files
+EJBServer/components/*/data/**/*.sql
+EJBServer/components/*/data/**/*.jpg
+EJBServer/components/*/data/**/*.png
+EJBServer/components/*/data/**/*.xls
+EJBServer/components/*/data/**/*.uim
+EJBServer/components/*/data/**/*.xml
+EJBServer/components/*/data/**/*.ttf
+EJBServer/components/*/data/**/*.css
+EJBServer/components/*/data/**/*.pdf
+EJBServer/components/*/data/**/*.tab
+EJBServer/components/*/data/**/*.nav
+EJBServer/components/*/data/**/*.gif
+EJBServer/components/*/data/**/*.txt
+EJBServer/components/*/data/**/*.xsd
+EJBServer/components/*/data/**/*_es.properties
+EJBServer/components/*/data/**/impl.gen
+
+# Include XML Types converted to Simple XML
+EJBServer/components/*/properties/*.prx
+EJBServer/components/*/codetable/**/*.ctx
+EJBServer/components/*/codetable/**/*.itx
+EJBServer/components/*/data/**/*.dmx
+EJBServer/components/*/workflow/**/*.xml
+EJBServer/components/*/rulesets/**/*.xml
+webclient/components/**/ImageMapConfig.xml
+</echo>
+
+    <fileset id="files.without.extension" dir="${working.dir}">
+      <include name="EJBServer/components/*/data/**/*"/>
+      <exclude name="EJBServer/components/*/data/**/*.*"/>
+    </fileset>
+    <condition property="files.without.extension.found">
+      <resourcecount refid="files.without.extension" when="greater" count="0" />
+    </condition>
+
+    <pathconvert pathsep="${line.separator}" property="files.without.extension.output" refid="files.without.extension"/>
+    <fail message="The following files have no extension, this is not allowed:${line.separator} ${files.without.extension.output}"
+      if="files.without.extension.found" unless="skip.files.without.extension"/>
+
+    <copy todir="${bld.dir}/DNT">
+      <fileset dir="${working.dir}" includesfile="${nontranslatablefiles}" excludes="EJBServer/components/**/TSCXML-*.xml"/>
+    </copy>
+
+    <delete>
+      <fileset dir="${working.dir}" includesfile="${nontranslatablefiles}" excludes="EJBServer/components/**/TSCXML-*.xml"/>
+    </delete>
+
+    <antcall target="run.chkpii"/>
+  </target>
+
+  <target name="package">
+
+    <subant target="zip" genericantfile="./build.xml" inheritrefs="false" inheritall="false">
+      <property name="zip.prefix" value="EJBServer"/>
+      <dirset dir="${working.dir}/EJBServer/components" includes="*" erroronmissingdir="false"/>
+    </subant>
+
+    <subant target="zip" genericantfile="./build.xml" inheritrefs="false" inheritall="false">
+      <property name="zip.prefix" value="webclient"/>
+      <dirset dir="${working.dir}/webclient/components" includes="*" erroronmissingdir="false"/>
+    </subant>
+
+    <subant target="zip" genericantfile="./build.xml" inheritrefs="false" inheritall="false">
+      <property name="zip.prefix" value="BIContent"/>
+      <dirset dir="${working.dir}/BIContent/components" includes="*" erroronmissingdir="false"/>
+    </subant>
+
+    <subant target="zip" genericantfile="./build.xml" inheritrefs="false" inheritall="false">
+      <property name="zip.prefix" value="Reporting"/>
+      <dirset dir="${working.dir}/Reporting/components" includes="*" erroronmissingdir="false"/>
+    </subant>
+
+    <zip destfile="${bld.dir}/zips/TC/PFM_TC_Tools_${input.baseline}.zip" filesonly="true">
+      <zipfileset prefix="Tools" dir="${working.dir}/Tools" erroronmissingdir="false"/>
+    </zip>
+
+    <delete dir="${working.dir}"/>
+
+  </target>
+
+  <!--
+  Creates the working directory for further processing.
+  -->
+  <target name="create.working.dir">
+
+    <delete dir="${bld.dir}"/>
+    <delete dir="${working.dir}"/>
+    <copy todir="${working.dir}" includeEmptyDirs="false">
+      <fileset dir="${input.directory}">
+
+        <include name="BIContent/components/**/*.properties"/>
+
+        <include name="Reporting/components/*/data_manager/**/*.properties"/>
+
+        <include name="webclient/components/**/ImageMapConfig.xml"/>
+        <include name="webclient/components/**/*.properties"/>
+
+        <exclude name="webclient/components/**/*_en_*.properties"/>
+        <exclude name="webclient/components/**/Constants.properties"/>
+        <exclude name="webclient/components/**/Image.properties"/>
+
+        <include name="EJBServer/components/*/data/**"/>
+        <exclude name="EJBServer/components/*/data/ddl/**"/>
+        <exclude name="EJBServer/components/*/data/test/**"/>
+
+        <include name="EJBServer/components/*/codetable/**"/>
+        <include name="EJBServer/components/*/message/**"/>
+
+        <include name="EJBServer/components/*/evidence/**/*.properties"/>
+        <exclude name="EJBServer/components/*/evidence/**/evidence.properties"/>
+
+        <include name="EJBServer/components/*/properties/*.prx"/>
+
+        <include name="EJBServer/components/*/rulesets/**"/>
+        <exclude name="EJBServer/components/*/rulesets/functions/CustomFunctionMetaData.xml"/>
+
+        <include name="EJBServer/components/*/CREOLE_Rule_Sets/**/*.properties"/>
+
+        <include name="EJBServer/components/*/userpreferences/*.properties"/>
+        <include name="EJBServer/components/*/workflow/**"/>
+
+        <include name="EJBServer/components/*/batch/**/*.properties"/>
+        <include name="EJBServer/components/*/tab/**/*.properties"/>
+        <exclude name="EJBServer/components/*/tab/**/*_en_GB.properties"/>
+
+        <include name="Tools/Generators/EGTools/properties/*.properties"/>
+
+        <!-- Lists the components that are excluded from translation -->
+        <exclude name="*/components/CYSSECCommon/**"/>
+        <exclude name="*/components/CYSSupervisorWorkspace/**"/>
+        <exclude name="*/components/ChildServicesLW/**"/>
+        <exclude name="*/components/ChildServicesSDM/**"/>
+        <exclude name="*/components/IVEEligibility/**"/>
+        <exclude name="*/components/IncidentExtension/**"/>
+        <exclude name="*/components/OutcomeManagementSDMContent/**"/>
+        <exclude name="*/components/InvestigationSDMContent/**"/>
+        <exclude name="*/components/SampleSDMData/**"/>
+        <exclude name="*/components/YouthServices/**"/>
+        <exclude name="*/components/custom/**"/>
+
+        <!-- exclude generated evidence uim properties files -->
+        <exclude name="webclient/components/CREOLEDevelopmentProduct/Evidence/**"/>
+        <exclude name="webclient/components/CREOLETestProduct/Evidence/**"/>
+        <exclude name="webclient/components/ExProd/SocialAssistance/Evidence/**"/>
+        <exclude name="webclient/components/Evidence/Evidence/**"/>
+        <exclude name="webclient/components/Evidence/Product/Evidence/**"/>
+
+        <exclude name="*/components/Evidence/**"/>
+        <exclude name="*/components/EvGen/**"/>
+
+        <exclude name="*/components/ExProd/**"      if="translation.drop"/>
+        <exclude name="*/components/MedSerProd/**"  if="translation.drop"/>
+
+        <!-- Exclude any previous lang packs from translation -->
+        <exclude name="*/components/*_*/**"/>
+        <exclude name="**/readme.txt"/>
+        <exclude name="**/.keep"/>
+        <exclude name="**/.contrib"/>
+
+      </fileset>
+    </copy>
+
+    <!-- Copy the Application.prx specifically from EJBServer/project/properties to core -->
+    <copy file="${input.directory}/EJBServer/project/properties/Application.prx"
+          todir="${working.dir}/EJBServer/components/core/properties"
+          failonerror="false"/>
+
+  </target>
+
+  <!--
+  Gets additional content from the JDE, if the input.devenv location is passed to the target.
+
+  * Copies all properties from the CDEJ with the pattern curam/omega3/i18n/defaultproperties/*.properties and puts these in the core component;
+  * Copies the InfrastructurePreferences.properties from the SDEJ and puts these in the core server component;
+  * Copies all codetable and message files from the SDEJ to the core component for translation within that.
+  -->
+  <target name="create.additional.content">
+
+    <copy todir="${working.dir}/webclient/components/core" includeEmptyDirs="false">
+      <fileset dir="${input.devenv}/CuramCDEJ/doc/defaultproperties/curam/omega3/i18n">
+        <include name="*.properties"/>
+        <exclude name="*.js.properties"/>
+       </fileset>
+       <mapper type="glob" from="*.properties" to="*Default.properties"/>
+    </copy>
+
+    <copy todir="${working.dir}/webclient/components/core" includeEmptyDirs="false">
+      <fileset dir="${input.devenv}/CuramCDEJ/doc/defaultproperties">
+        <include name="**/*.js.properties"/>
+       </fileset>
+    </copy>
+
+    <copy file="${input.devenv}/CuramSDEJ/lib/InfrastructurePreferences.properties" todir="${working.dir}/EJBServer/components/core/userpreferences"/>
+
+    <copy todir="${working.dir}/EJBServer/components/core" includeEmptyDirs="false">
+      <fileset dir="${input.devenv}/CuramSDEJ">
+        <include name="codetable/**"/>
+        <include name="message/**"/>
+       </fileset>
+    </copy>
+
+  </target>
+
+  <target name="process.data" depends="build">
+
+    <taskdef name="processentitymetadata"
+      classname="ProcessEntityMetadata" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processentitymetadata
+      collatedTranslationFile="${fortranslationfile}"
+      inputCSV="${csv.location}/Entity Metadata.csv">
+      <fileset dir="${working.dir}">
+        <include name="EJBServer/components/*/data/**/*.dmx"/>
+      </fileset>
+    </processentitymetadata>
+
+  </target>
+
+  <target name="process.message" depends="build">
+
+    <taskdef name="processmessagemetadata"
+      classname="ProcessMessageMetadata" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processmessagemetadata
+      collatedTranslationFile="${fortranslationfile}"
+      nontranslatablefiles="${nontranslatablefiles}"
+      componentsDir="${working.dir}/EJBServer/components"
+      contentsCSV="${csv.location}/ExcludedMessageContents.csv"
+      filesCSV="${csv.location}/ExcludedMessageFiles.csv">
+      <fileset dir="${working.dir}">
+        <include name="EJBServer/components/*/message/*.xml"/>
+        <include name="EJBServer/components/*/message/*.iml"/>
+      </fileset>
+    </processmessagemetadata>
+
+  </target>
+
+  <target name="process.codetables" depends="build">
+
+    <taskdef name="processcodetablemetadata"
+      classname="ProcessCodetableMetadata" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processcodetablemetadata
+      collatedTranslationFile="${fortranslationfile}"
+      nontranslatablefiles="${nontranslatablefiles}"
+      componentsDir="${working.dir}/EJBServer/components"
+      contentsCSV="${csv.location}/ExcludedCodetableContents.csv"
+      filesCSV="${csv.location}/ExcludedCodetableFiles.csv">
+      <fileset dir="${working.dir}">
+        <include name="EJBServer/components/*/codetable/*.ctx"/>
+        <include name="EJBServer/components/*/codetable/*.itx"/>
+      </fileset>
+    </processcodetablemetadata>
+
+  </target>
+
+  <target name="process.properties" depends="build">
+
+    <taskdef name="processpropertymetadata"
+      classname="ProcessPropertyMetadata" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processpropertymetadata
+      collatedTranslationFile="${fortranslationfile}">
+      <fileset dir="${working.dir}">
+        <include name="BIContent/components/**/*.properties"/>
+        <include name="webclient/components/**/*.properties"/>
+        <include name="EJBServer/components/**/*.properties"/>
+        <include name="Reporting/components/*/data_manager/**/*.properties"/>
+        <include name="Tools/Generators/EGTools/properties/*.properties"/>
+      </fileset>
+    </processpropertymetadata>
+
+  </target>
+
+  <target name="process.prx.files">
+
+    <taskdef name="processpprxfiles"
+      classname="ProcessPRXFiles" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processpprxfiles
+      collatedTranslationFile="${fortranslationfile}">
+      <fileset dir="${working.dir}">
+        <include name="EJBServer/components/*/properties/*.prx"/>
+      </fileset>
+    </processpprxfiles>
+
+  </target>
+
+  <target name="process.workflow.files">
+
+    <taskdef name="processworkflowfiles"
+      classname="ProcessWorkflow" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processworkflowfiles
+      collatedTranslationFile="${fortranslationfile}">
+      <fileset dir="${working.dir}">
+        <include name="EJBServer/components/*/workflow/**/*.xml"/>
+      </fileset>
+    </processworkflowfiles>
+
+  </target>
+
+  <target name="process.ruleset.files">
+
+    <taskdef name="processrulesetfiles"
+      classname="ProcessRuleset" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processrulesetfiles
+      collatedTranslationFile="${fortranslationfile}">
+      <fileset dir="${working.dir}">
+        <include name="EJBServer/components/*/rulesets/**/*.xml"/>
+      </fileset>
+    </processrulesetfiles>
+
+  </target>
+
+  <target name="process.imagemapconfig.files">
+
+    <taskdef name="processimagemapconfig"
+      classname="ProcessImageMapConfig" classpath="${bld.cls}:lib/jdom.jar"/>
+
+    <processimagemapconfig
+      collatedTranslationFile="${fortranslationfile}">
+      <fileset dir="${working.dir}">
+        <include name="webclient/components/**/ImageMapConfig.xml"/>
+      </fileset>
+    </processimagemapconfig>
+
+  </target>
+
+  <!--
+  Run CHKPII on the content to be included for translation.
+  -->
+  <target name="run.chkpii">
+
+    <!-- add this line to the chkpiii target-->
+	<antcall target="clean.temp.components"/>
+ 
+    <copy file="lib/chkpwe11.exe" tofile="${bld.chkpii}/chkpii.exe"/>
+
+    <exec dir="${working.dir}" executable="${bld.chkpii}/chkpii.exe" resultproperty="chkpii.result">
+      <arg value="*"/>
+      <arg line="+WC /Q /S /O ${bld.chkpii}/CHKPII-REPORT.TXT"/>
+    </exec>
+
+    <fail message="CHKPII failed, please look at the report ${bld.chkpii}/CHKPII-REPORT.TXT">
+       <condition>
+         <not>
+          <or>
+           <equals arg1="${chkpii.result}" arg2="0"/>
+           <isset property="chkpii.force"/>
+          </or>
+         </not>
+       </condition>
+     </fail>
+  </target>
+
+  <!--
+  Build the two zips files which form the output from this process: TranslationDeliverable.zip & DNT.zip
+  -->
+  <target name="zip">
+
+    <basename property="base.name" file="${basedir}"/>
+
+    <condition property="package_prefix" value="SOL">
+      <or>
+        <equals arg1="CCSSECCommon" arg2="${base.name}"/>
+        <equals arg1="CCSSupervisorWorkspace" arg2="${base.name}"/>
+        <equals arg1="CCSSupervisorWorkspace" arg2="${base.name}"/>
+        <equals arg1="CFSSCommon" arg2="${base.name}"/>
+        <equals arg1="CFSSSECCommon" arg2="${base.name}"/>
+        <equals arg1="ChildServices" arg2="${base.name}"/>
+        <equals arg1="ChildServicesBI" arg2="${base.name}"/>
+        <equals arg1="ccs" arg2="${base.name}"/>
+        <equals arg1="reportingForCCS" arg2="${base.name}"/>
+      </or>
+    </condition>
+    <property name="package_prefix" value="PFM"/>
+
+    <!-- Translate Content -->
+    <zip destfile="${bld.dir}/zips/TC/${package_prefix}_TC_${base.name}_${zip.prefix}_${input.baseline}.zip" filesonly="true">
+      <zipfileset prefix="${zip.prefix}/components/${base.name}" dir="${basedir}" excludes="data/**/*.doc"/>
+    </zip>
+
+    <!-- Auxillary Content -->
+    <zip destfile="${bld.dir}/zips/AC/AC_${base.name}_${zip.prefix}_${input.baseline}.zip" filesonly="true">
+      <zipfileset prefix="${zip.prefix}/components/${base.name}" dir="${basedir}" includes="data/**/*.doc"/>
+    </zip>
+
+    <!-- Not translated but part of the Language Pack -->
+    <zip destfile="${bld.dir}/zips/DNT/DNT_${base.name}_${zip.prefix}_${input.baseline}.zip" filesonly="true">
+      <zipfileset dir="${bld.dir}/DNT" includes="${zip.prefix}/components/${base.name}/**" excludes="${zip.prefix}/components/${base.name}/data/**/*.doc"/>
+    </zip>
+
+  </target>
+
+  <!--
+  Runs the RPX tool on the produced TC.zip.
+  -->
+  <target name="run.rpx" description="Runs RPX on the TC.zip and creates a ${bld.dir}/RPX-Translations.zip">
+
+    <property name="input.zip.directory" location="${bld.dir}/zips/TC"/>
+
+    <delete dir="${bld.rpx}"/>
+    <unzip src="lib/RPX-FULL-2.0.9.zip" dest="${bld.rpx}/Tool"/>
+
+    <tstamp>
+      <format property="TODAY" pattern="yyyyMMdd"/>
+    </tstamp>
+
+    <for param="file">
+      <path>
+        <fileset dir="${input.zip.directory}" includes="*.zip"/>
+      </path>
+      <sequential>
+        <unzip src="@{file}" dest="${bld.rpx}/Input"/>
+      </sequential>
+    </for>
+
+    <condition property="pseudo.build.required">
+      <istrue value="${psuedo.rpx.required}"/>
+    </condition>
+
+    <antcall target="psuedo.rpx"/>
+    <antcall target="standard.rpx"/>
+
+    <!-- Manual workaround for incorrect conversion of %user-full-name to [%user]-full-name~xxx -->
+    <replaceregexp byline="true"
+      match=".%user.-full-name~(.*)"
+      replace="%user-full-name">
+      <fileset dir="${bld.rpx}/Output">
+        <include name="EJBServer/components/**/tab/**/*.properties"/>
+      </fileset>
+    </replaceregexp>
+
+    <!--
+    Temporary RPX fix for the FrequencyPattern file.
+    TODO: Get the RPX Tool updated to prevent this issue.
+    -->
+    <replace dir="${bld.rpx}/Output" value="%" token="[%">
+      <include name="webclient/components/**/FrequencyPatternSelectorDefault*.properties"/>
+      <include name="webclient/components/**/FrequencyPatternSelector*.properties"/>
+    </replace>
+    <replace dir="${bld.rpx}/Output" value="%" token="]%">
+      <include name="webclient/components/**/FrequencyPatternSelectorDefault*.properties"/>
+      <include name="webclient/components/**/FrequencyPatternSelector*.properties"/>
+    </replace>
+
+    <fileset dir="${bld.rpx}/Input" includes="**/*.*" id="rpx.diff.list">
+      <present present="srconly" targetdir="${bld.rpx}/Output"/>
+    </fileset>
+    <condition property="rpx.diff.exists">
+      <resourcecount refid="rpx.diff.list" when="greater" count="0"/>
+    </condition>
+    <pathconvert pathsep="${line.separator}" property="rpx.diff" refid="rpx.diff.list"/>
+    <fail if="rpx.diff.exists">${rpx.diff.exists} The following files were missed in translation by RPX:${line.separator}${rpx.diff}</fail>
+
+    <echo file="${bld.dir}/SolutionContent.txt" append="false">
+BIContent/components/ccs_${full.locale.entry}/**
+BIContent/components/reportingForCCS_${full.locale.entry}/**
+Reporting/components/CFSSCommon_${full.locale.entry}/**
+Reporting/components/CFSSSECCommon_${full.locale.entry}/**
+Reporting/components/ChildServices_${full.locale.entry}/**
+Reporting/components/ChildServicesBI_${full.locale.entry}/**
+EJBServer/components/CFSSCommon_${full.locale.entry}/**
+EJBServer/components/CFSSSECCommon_${full.locale.entry}/**
+EJBServer/components/ChildServices_${full.locale.entry}/**
+EJBServer/components/ChildServicesBI_${full.locale.entry}/**
+webclient/components/CCSSECCommon_${full.locale.entry}/**
+webclient/components/CCSSupervisorWorkspace_${full.locale.entry}/**
+webclient/components/CFSSCommon_${full.locale.entry}/**
+webclient/components/CFSSSECCommon_${full.locale.entry}/**
+webclient/components/ChildServices_${full.locale.entry}/**
+webclient/components/ChildServicesBI_${full.locale.entry}/**
+</echo>
+
+    <zip destfile="${bld.dir}/zips/RPX/RPX_PFM.zip" basedir="${bld.rpx}/Output"
+         excludesfile="${bld.dir}/SolutionContent.txt"/>
+
+    <zip destfile="${bld.dir}/zips/RPX/RPX_SOL.zip" basedir="${bld.rpx}/Output"
+         includesfile="${bld.dir}/SolutionContent.txt"/>
+
+    <delete dir="${bld.rpx}"/>
+    <echo>RPX completed, translated output can be found at ${bld.dir}/zips/RPX</echo>
+
+  </target>
+
+  <target name="psuedo.rpx" if="pseudo.build.required">
+
+    <java
+      classname="Rpx"
+      dir="${bld.rpx}/Tool/RPX"
+      maxmemory="1024M"
+      failonerror="true"
+      fork="true">
+      <classpath>
+       <pathelement location="${bld.rpx}/Tool/RPX"/>
+       <pathelement location="${bld.rpx}/Tool/RPX/rpx.jar"/>
+      </classpath>
+      <arg file="lib/pseudo_default.rpxconfig"/>
+      <arg file="${bld.rpx}/Input"/>
+      <arg file="${bld.rpx}/Output"/>
+    </java>
+
+  </target>
+
+  <target name="standard.rpx" unless="pseudo.build.required">
+
+    <java
+      classname="RpxPII"
+      dir="${bld.rpx}/Tool/RPX"
+      maxmemory="1024M"
+      failonerror="true"
+      fork="true">
+      <classpath>
+       <pathelement location="${bld.rpx}/Tool/RPX"/>
+       <pathelement location="${bld.rpx}/Tool/RPX/rpx.jar"/>
+      </classpath>
+      <arg file="lib/default.rpxconfig"/>
+      <arg file="${bld.rpx}/Input"/>
+      <arg file="${bld.rpx}/Output"/>
+      <arg file="${bld.rpx}/Mapping"/>
+      <arg line="-build ${input.baseline}"/>
+    </java>
+
+    <copy todir="${bld.dir}">
+      <fileset dir="${bld.rpx}/Mapping"/>
+    </copy>
+
+  </target>
+
+  <!--
+  Builds the Ant tasks for the project.
+  -->
+  <target name="build">
+
+    <mkdir dir="${bld.cls}"/>
+    <javac srcdir="src"
+           destdir="${bld.cls}"
+           debug="true"
+           classpath="lib/jdom.jar"
+           includeAntRuntime="true">
+      <include name="*.java"/>
+    </javac>
+
+  </target>
+
+  
+
+   
+  <!-- add this line to the chkpiii target
+	<antcall target="clean.temp.components"/>
+  -->
+  
+  <!-- add this task to the build.xml of the preprossing build.xml file-->
+  <target name="clean.temp.components">
+    <echo message="cleaning components that we do not want word counts for."/>
+    <delete includeEmptyDirs="false" quiet="false" failonerror="false" verbose="true">
+        <fileset dir="${working.dir}">
+            <!-- remove any file sets that we do not want to count -->
+           <includesfile name="${checkpii.clean}" if="checkpii.clean.verbose"/>
+        </fileset>
+    </delete>  
+  </target>
+
+</project>

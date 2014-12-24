@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2008, 2010 - 2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Modify attendees for the meeting -->
+<PAGE
+  PAGE_ID="CalendarMeetingAttendence_modify"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="DISPLAY"
+    OPERATION="readMeetingAttendence"
+  />
+  <SERVER_INTERFACE
+    CLASS="MeetingMinutesManagement"
+    NAME="ADD_ATTENDEE"
+    OPERATION="addMeetingAttendee"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="meetingID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="activityID"/>
+  <PAGE_PARAMETER NAME="teamID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$meetingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseKey$caseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="activityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="activityID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="meetingID"
+    />
+    <TARGET
+      NAME="ADD_ATTENDEE"
+      PROPERTY="meetingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ADD_ATTENDEE"
+      PROPERTY="caseKey$caseID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.CaseParticipantUser.Description"
+    LABEL_WIDTH="23"
+    TITLE="Cluster.Title.Invitation"
+  >
+
+
+    <!-- BEGIN, CR00219000, CW -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="associatedCaseRefInd"
+      />
+    </CONDITION>
+    <!-- END, CR00219000 -->
+    <FIELD
+      LABEL="Field.Label.CaseParticipantUser"
+      USE_BLANK="true"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$meetingInviteeDetailsList$inviteeDetails$identifier"
+          NAME="DISPLAY"
+          PROPERTY="result$meetingInviteeDetailsList$inviteeDetails$description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ADD_ATTENDEE"
+          PROPERTY="attendanceDetails$caseAttendeeIdentifier"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00351081, PB -->
+  <CLUSTER
+    DESCRIPTION="Cluster.Registered.Description"
+    LABEL_WIDTH="25"
+  >
+    <!-- END, CR00351081 -->
+    <CONTAINER LABEL="Container.Label.Registered">
+      <FIELD WIDTH="35">
+        <CONNECT>
+          <TARGET
+            NAME="ADD_ATTENDEE"
+            PROPERTY="attendanceDetails$otherAttendeeType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="60">
+        <CONNECT>
+          <TARGET
+            NAME="ADD_ATTENDEE"
+            PROPERTY="attendanceDetails$otherAttendeeID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00351081, PB -->
+  <CLUSTER
+    DESCRIPTION="Cluster.Email.Description"
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+    STYLE="cluster-no-top-margin-border"
+  >
+    <!-- END, CR00351081 -->
+    <FIELD LABEL="Field.Label.EmailAddress">
+      <CONNECT>
+        <TARGET
+          NAME="ADD_ATTENDEE"
+          PROPERTY="attendanceDetails$emailAddress"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00351081, PB -->
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <!-- END, CR00351081 -->
+    <FIELD
+      LABEL="Field.Label.Acceptance"
+      USE_DEFAULT="TRUE"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ADD_ATTENDEE"
+          PROPERTY="invitationAcceptanceStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Attended">
+      <CONNECT>
+        <TARGET
+          NAME="ADD_ATTENDEE"
+          PROPERTY="attendedInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00351081, PB -->
+  <CLUSTER
+    LABEL_WIDTH="25"
+    STYLE="cluster-no-top-margin-border"
+  >
+    <!-- END, CR00351081 -->
+    <FIELD
+      HEIGHT="5"
+      LABEL="Field.Label.Comment"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ADD_ATTENDEE"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER STYLE="outer-cluster-borderless-nospace">
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Add"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          PAGE_ID="THIS"
+          SAVE_LINK="false"
+        />
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST SCROLL_HEIGHT="140">
+    <!-- BEGIN, CR00232965, ELG -->
+    <FIELD WIDTH="7">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="meetingOrganizerInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attendeeFullName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Acceptance"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="invitationAcceptanceStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Attended"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attendedInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Comment"
+      WIDTH="33"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00232965 -->
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CalendarMeetingMinutes_editAttendeeFromAgenda"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="meetingAttendeeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="meetingAttendeeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="meetingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="meetingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CalendarMeetingMinutes_removeAttendeeFromAgenda"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="meetingAttendeeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="meetingAttendeeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="attendeeFullName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="context"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+
+
+</PAGE>

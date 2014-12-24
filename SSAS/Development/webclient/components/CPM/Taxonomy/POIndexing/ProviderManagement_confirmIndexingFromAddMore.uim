@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to remove a taxonomy term from related concept.-->
+<PAGE
+  PAGE_ID="ProviderManagement_confirmIndexingFromAddMore"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerOfferingID"/>
+  <PAGE_PARAMETER NAME="indexedTerms"/>
+  <PAGE_PARAMETER NAME="oldIndexedIDs"/>
+  <PAGE_PARAMETER NAME="indexedTermID"/>
+  <PAGE_PARAMETER NAME="confirmationString"/>
+  <PAGE_PARAMETER NAME="providerID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="ACTION"
+    OPERATION="addMoreTermstoExistingIndex"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="DISPLAY"
+    OPERATION="confirmIndexing"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00260693, SSK -->
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="DISPLAY1"
+    OPERATION="previewExistingIndexes"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- END, CR00260693 -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="indexedTerms"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="indexedTerms"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="oldIndexedIDs"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="oldIndexedIDs"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00260693, SSK -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="oldIndexedIDs"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="details$oldIndexedIDs"
+    />
+  </CONNECT>
+  <!-- END, CR00260693 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="indexedTermID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="confirmationString"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="confirmationString"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="indexedTerms$providerOfferingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="indexedTerms"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="indexedTerms$indexedTerms"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="oldIndexedIDs"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="indexedTerms$oldIndexedIDs"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="confirmationString"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="indexedTerms$confirmationString"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.Label.POIndex.ConfirmationText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addMoreTermsToIndex"
+      >
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerIdentifier"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="indexedTerms$indexedTerms"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="indexedTermIds"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$selectedTerms"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="selectedTerms"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+      <!-- BEGIN, CR00260693, SSK -->
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY1"
+          PROPERTY="oldIndexesExistsInd"
+        />
+      </CONDITION>
+      <!-- END, CR00260693 -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addTaxonomyTermsToPO"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00260693, SSK -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY1"
+          PROPERTY="oldIndexesExistsInd"
+        />
+      </CONDITION>
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addMoreTermsToIndex"
+      >
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerIdentifier"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="oldIndexedIDs"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="indexedTermIds"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$selectedTerms"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="selectedTerms"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+    <!-- END, CR00260693 -->
+  </ACTION_SET>
+</PAGE>

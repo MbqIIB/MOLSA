@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Home page for the common intake application view  -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="CommonIntake_applicationCaseHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY"  PROPERTY="key$applicationCaseID" />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+    <TARGET NAME="DISPLAY2"  PROPERTY="key$caseID" />
+  </CONNECT>
+  
+
+  <SERVER_INTERFACE 
+    CLASS="ApplicationCase" 
+    NAME="DISPLAY" 
+    OPERATION="viewApplicationHomeDetails"  
+    PHASE="DISPLAY"
+  />
+  
+  <SERVER_INTERFACE 
+    CLASS="VerificationApplication" 
+    NAME="DISPLAY2" 
+    OPERATION="listOutstandingVerificationDetailsForCaseEvidence"  
+    PHASE="DISPLAY"
+  />
+
+  <CLUSTER TITLE="Cluster.Title.ApplicationDetails" NUM_COLS="2" LABEL_WIDTH="50">
+  
+    <CONDITION>
+      <IS_FALSE NAME="DISPLAY" PROPERTY="result$multipleProgramsInd"/>
+    </CONDITION>
+    
+    <FIELD LABEL="Field.Label.SubmittedDateTime">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="submittedDateTime"/>
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.ExpiryDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="result$expiryDate"/>
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.MethodOfReceipt">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="methodOfApplication"/>
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.CompletionDate">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="completionDate"/>
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+  <CLUSTER TITLE="Cluster.Title.ApplicationDetails" NUM_COLS="2" LABEL_WIDTH="45">
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="result$multipleProgramsInd"/>
+    </CONDITION>
+    <FIELD LABEL="Field.Label.SubmittedDateTime">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="submittedDateTime"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MethodOfReceipt">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="methodOfApplication"/>
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+
+  <CLUSTER TITLE="Cluster.Title.SpecialAssistanceRequirements" SHOW_LABELS="false">
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="specialAssistanceRequirement"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <CLUSTER >
+    <CONDITION>
+      <IS_TRUE NAME="DISPLAY" PROPERTY="result$multipleProgramsInd"/>
+    </CONDITION>
+
+    <LIST TITLE="List.Title.ProgramsAppliedFor">
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Authorise">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="authoriseInd" />
+        </CONDITION>
+        <LINK URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="authoriseURL" OPEN_MODAL="true"/>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Deny">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="denyInd"/>
+        </CONDITION>
+        <LINK PAGE_ID="CommonIntake_denyProgram" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="programID"/>
+            <TARGET NAME="PAGE" PROPERTY="intakeProgramApplicationID"/>
+          </CONNECT>
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="programDtls$dtls$versionNo"/>
+            <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+          </CONNECT>
+
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Withdraw">
+        <CONDITION>
+          <IS_TRUE NAME="DISPLAY" PROPERTY="withdrawInd"/>
+        </CONDITION>
+
+        <LINK PAGE_ID="CommonIntake_withdrawProgram" OPEN_MODAL="true">
+          <CONNECT>
+            <SOURCE NAME="DISPLAY" PROPERTY="programID"/>
+            <TARGET NAME="PAGE" PROPERTY="intakeProgramApplicationID"/>
+          </CONNECT>
+
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+      <FIELD LABEL="Field.Label.Program" WIDTH="35">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="programDtls$dtls$name"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status" WIDTH="15">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="programDtls$dtls$status"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ExpiryDate" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="programDtls$dtls$expiryDate"/>
+      </CONNECT>
+    </FIELD>
+      <FIELD LABEL="Field.Label.CompletionDate" WIDTH="25">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="programDtls$dtls$disposedDate"/>
+      </CONNECT>
+    </FIELD>
+
+  </LIST>
+
+  </CLUSTER>
+  
+  <CLUSTER >
+    <LIST TITLE="List.Title.VerificationsOutstanding">
+      <FIELD LABEL="Field.Label.Verification" WIDTH="40">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY2" PROPERTY="verifiableDataItemName"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Client" WIDTH="30">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY2" PROPERTY="primaryClient"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.DueDate" WIDTH="30">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY2" PROPERTY="dueDate"/>
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  
+  <CLUSTER>
+
+    <LIST TITLE="List.Title.RecentTransactions">
+
+      <FIELD LABEL="Field.Label.Transaction" WIDTH="20">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="eventTypeDesc"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.TransactionDescription" WIDTH="35">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="transactionDescription"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.TransactionDateUpdated" WIDTH="20">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY" PROPERTY="transactionDateTime"/>
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.UpdatedBy" WIDTH="25">
+        <CONNECT>
+          <SOURCE NAME="DISPLAY"
+            PROPERTY="transationLogDtls$dtlsList$userFullName"/>
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Organization_viewUserDetails"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="transationLogDtls$dtlsList$username"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </LIST>
+    
+  </CLUSTER>
+  
+</PAGE>
+
+

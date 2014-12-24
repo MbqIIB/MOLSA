@@ -1,0 +1,107 @@
+#
+# Licensed Materials - Property of IBM
+# 
+# Copyright IBM Corporation 2012. All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or disclosure 
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+
+#
+# This is a sample file only.  Specified values are for sample or example purposes.
+#
+# this file defines the database connection properties used by 
+# the warehouse transformation library and configuration test 
+# programs
+# 
+
+# non mandatory bootstrap identity
+# this should be a unique name in your system
+bi.bootstrap.id=machineid configuration#1
+
+
+#configures how a missing component is reported
+# set to either [error|warning] (error=build failure, warning=build warning messages)
+component.order.warninglevel=error
+component.order=BIBuildTools,core,childservices,IncomeSupport,cgis
+# the locale languages and region codes supported
+component.locale.order=en,en_GB,en_US,es,ko,de,it,pt_BR,zh_CN,zh_TW,fr,jp
+# the installed language
+component.locale.order.installedLanguage=en
+
+# sample explorer path
+environment.iexplorer.url=file://C:/Program%20Files/Internet%20Explorer/iexplore.exe
+environment.launch.testresults=true
+
+#environment variable to validate
+environment.variables=JAVA_HOME_RDBMS,REPORTING_DIR,REPORTING_ENV, COGNOS_HOME,ANT_HOME, ORACLE_HOME,OWB_HOME,
+# reset commands
+environment.resetetl.date=01/01/1934:00:00:00
+environment.resetetl.dateformat=dd/mm/yyyy:hh:mm:ss
+#sets verbose option for antutilities task
+environment.buildproperties.antutilities.verbose=true
+
+#do not change the aggmonth.dateformat
+environment.datamart.aggmonth.start=30/04/2009 
+environment.datamart.aggmonth.end=31/10/2009
+environment.datamart.aggmonth.dateformat=dd/mm/yyyy
+environment.demodata.dateformat=dd/mm/yyyy
+
+#driver properties
+environment.jdbc.drivers=oracle.jdbc.OracleDriver
+#use double \\ to separate directories
+# there is no need to set environment.jdbc.jars, the drivers are loaded from the drivers directory
+#environment.jdbc.jars=ojdbc.jar
+
+#
+# OWB related settings
+#
+
+# needed for Ora installation
+environment.owb.oracleinstalled=true
+environment.owbconfig.validate.failonwarnings=true
+environment.owb.validateafterimport=true
+# set to false if you do not want the database rebuild on an OWB configtest
+environment.owb.tests.run.builddatabase=true
+
+# Using the java convention for path separators (\\).
+# Only set when deploying to on a remote server 
+# this is the Data Manager directory on the Oracle server i.e. where the staging, central
+# do not set this if the oracle server is on the same machine as the installed software
+environment.owbconfig.remotedatamanagerdir=
+# [true|false] controls if the default directory path results in a warning or error
+# true result in a build failure, false just a message
+environment.owbconfig.remotedatamanagerdir.failonwarnings=false
+
+
+#environment.owbconfig.version=10.2
+environment.owbconfig.version=11.2
+environment.owbconfig.version.sourceDB=11.2
+environment.owbconfig.exectemplate=sqlplus_exec_template.sql
+
+# override for the OWB locations if needed
+environment.owbconfig.source.location=SOURCE_LOCATION
+environment.owbconfig.static.location=STATIC_LOCATION
+environment.owbconfig.staging.location=STAGING_LOCATION
+environment.owbconfig.warehouse.location=CDW_LOCATION
+environment.owbconfig.datamarts.location=DATAMARTS_LOCATION
+environment.owbconfig.system.params=','
+environment.owbconfig.custom.params=','
+environment.owbconfig.jobtype=PLSQL
+# [true|false] controls the automated granting of the default privilages
+environment.databases.curam.privilages.autogrant=false
+environment.databases.bi.privilages.autogrant=false
+environment.databases.curam.updatenulls.autorun=false
+# this property is defaulted to zero, uncomment only to set a different value 
+#environment.owbconfig.maxnumberoferrors=0
+# this property is enabled by default , uncomment only disable the process which ensures the ETL max error property is set to zero. 
+#environment.owbconfig.maxnumberoferrors.disable=true
+# End: OWB related settings
+
+
+
+#cognos
+environment.cognos.installed=false
+# raises an inforamtional message if the connection properties are not sufficient 
+# to support BIRT KPI's when viewed through Tomcat
+environment.birt.testconnections=true

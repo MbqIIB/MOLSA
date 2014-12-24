@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+
+-->
+<project>
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_properties.xml"/>
+
+  <!--  ********************************************  -->
+  <!--  ***  Sets the staging extraction date    ***  -->
+  <!--  *******************************************  -->
+
+
+  <target
+    depends="init"
+    description="Sets the last ETL date for the staging area"
+    name="resetetl.staging"
+  >
+    <antcall target="resetdatabase">
+      <param
+        name="prm.reportingdatabase"
+        value="staging"
+      />
+    </antcall>
+  </target>
+
+
+  <!--  ********************************************  -->
+  <!--  ***  Sets the central extraction date    ***  -->
+  <!--  *******************************************  -->
+
+
+  <target
+    depends="init"
+    description="Sets the last ETL date for the central datawarehouse"
+    name="resetetl.central"
+  >
+    <antcall target="resetdatabase">
+      <param
+        name="prm.reportingdatabase"
+        value="central"
+      />
+    </antcall>
+  </target>
+
+
+  <!--  ********************************************  -->
+  <!--  ***  Sets the datamart extraction date    ***  -->
+  <!--  *******************************************  -->
+
+
+  <target
+    depends="init"
+    description="Sets the last ETL date for the core datamarts"
+    name="resetetl.datamarts"
+  >
+    <antcall target="resetdatabase">
+      <param
+        name="prm.reportingdatabase"
+        value="centraldm"
+      />
+    </antcall>
+  </target>
+
+  <!--  ********************************************  -->
+  <!--  ***  Sets the datamart extraction date    ***  -->
+  <!--  *******************************************  -->
+
+
+  <target
+    depends="init"
+    description="Sets the last ETL date for the core datamarts"
+    name="resetetl.all"
+  >
+      <java
+        classname="curam.util.reporting.internal.reset.ResetDatabase"
+        classpath="${environment.jdbc.jars}${path.separator}${jar.reporting.buildenv}"
+        failonerror="true"
+        fork="true"
+      >
+        <arg value="staging"/>
+        <arg value="central"/>      
+        <arg value="centraldm"/>
+  
+        <jvmarg value="-Djdbc.drivers=${environment.jdbc.drivers}"/>
+        
+      </java>
+
+  </target>
+  
+  <!--  ************************************  -->
+  <!--  ***  Sets the extraction date    ***  -->
+  <!--  ************************************  -->
+
+
+  <target
+    depends="init"
+    name="resetdatabase"
+  >
+
+<echo message="Reading from application.properties ${environment.resetetl.date} ${environment.resetetl.dateformat}"/>
+    <java
+      classname="curam.util.reporting.internal.reset.ResetDatabase"
+      classpath="${environment.jdbc.jars}${path.separator}${jar.reporting.buildenv}"
+      failonerror="true"
+      fork="true"
+    >
+      <arg value="${prm.reportingdatabase}"/>
+     
+
+      <jvmarg value="-Djdbc.drivers=${environment.jdbc.drivers}"/>
+      
+    </java>
+
+
+  </target>
+  
+</project>

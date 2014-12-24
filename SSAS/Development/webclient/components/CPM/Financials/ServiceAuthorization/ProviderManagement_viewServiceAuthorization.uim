@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the service authorization details.   -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceAuthorization"
+  WINDOW_OPTIONS="width=850,height=200"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00246672, PS -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.ServiceAuthorizationDetails"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00246672 -->
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorization"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00246672, PS -->
+      <LINK
+        PAGE_ID="ProviderManagement_viewServiceAuthorization"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00246672 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationLineItems"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00246672, PS -->
+      <LINK
+        PAGE_ID="ProviderManagement_viewServiceAuthorizationLineItems"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00246672 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceAuthorization$referenceNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationBudget"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00246672, PS -->
+      <LINK
+        PAGE_ID="ProviderManagement_viewServiceAuthorizationBudgetInformation"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00246672 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceAuthorization$referenceNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceAuthorization"
+    NAME="DISPLAY"
+    OPERATION="viewServiceAuthorizationMultipleClientDetails"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+  <PAGE_PARAMETER NAME="serviceInvoiceLineItemID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="serviceAuthorizationKey$serviceAuthorizationID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00206668, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00206668 -->
+    <!-- BEGIN, CR00154438, ABS -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="multipleClientsInd"
+      />
+    </CONDITION>
+    <!-- END, CR00154438 -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$clientReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$caseReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00154438, ABS -->
+  <!-- BEGIN, CR00206668, PS -->
+  <CLUSTER TITLE="Cluster.Title.Details">
+    <!-- END, CR00206668 -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="multipleClientsInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$caseReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="Cluster.Title.ClientDetails">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="multipleClientsInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.ClientReferenceNumberList"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientDetails$clientReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientNameList">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientDetails$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00154438 -->
+
+
+  <!-- BEGIN, CR00246672, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+  <!-- END, CR00246672 -->
+</PAGE>

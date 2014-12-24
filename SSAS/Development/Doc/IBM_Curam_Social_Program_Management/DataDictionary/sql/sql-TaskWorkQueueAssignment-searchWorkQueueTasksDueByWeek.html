@@ -1,0 +1,132 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>TaskWorkQueueAssignment.searchWorkQueueTasksDueByWeek</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Searches for tasks that are due for a specified work queue within the supplied date range.  The results can be filtered to return assigned, reserved or all tasks as required. The results are ordered by deadline date time, earliest first.
+
+@deprecated Since Curam 6.0. The TaskUserAssignment entity has been 
+
+deleted. This method has been replaced by 
+
+{@link curam.core.sl.entity.intf.TaskAssignment#
+
+searchTasksDueByWeekForRelatedIDType(TasksByDueDateKey)}. See release note
+
+CR00223130. 
+
+</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  t.taskID,
+  t.priority,
+  t.reservedBy,
+  t.assignedDateTime,
+  u.fullName,
+  t.wdoSnapshot,
+  t.overflowInd,
+  w.deadlineTime
+INTO
+  :taskID,
+  :priority,
+  :reservedBy,
+  :assignedDateTime,
+  :reservedByFullName,
+  :wdoSnapshot,
+  :overflowInd,
+  :deadlineDateTime 
+FROM
+  Task t 
+  
+  LEFT OUTER JOIN
+  
+  Users u 
+  ON (t.reservedBy = u.userName) 
+  
+  LEFT OUTER JOIN
+  
+  WorkflowDeadline w 
+  ON (t.taskID = w.taskID) 
+WHERE w.deadlineTime >= :fromDeadlineDateTime 
+  AND w.deadlineTime < :toDeadlineDateTime 
+  AND 
+  (
+    t.taskID IN 
+    ( 
+    SELECT
+      taskID 
+    FROM
+      TaskWorkQueueAssignment twqa 
+    WHERE twqa.workQueueID = :workQueueID 
+    ) 
+  ) 
+  AND 
+  (
+    
+    (
+      :allWorkQueueTasksInd = '0' 
+      OR 
+      (
+        t.reservedBy IS NULL 
+        OR t.reservedBy IS NOT NULL 
+      ) 
+    ) 
+    AND 
+    (
+      :allReservedWorkQueueTasksInd = '0' 
+      OR t.reservedBy IS NOT NULL 
+    ) 
+    AND 
+    (
+      :allAssignedWorkQueueTasksInd = '0' 
+      OR t.reservedBy IS NULL 
+    ) 
+  ) 
+ORDER BY w.deadlineTime ASC</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

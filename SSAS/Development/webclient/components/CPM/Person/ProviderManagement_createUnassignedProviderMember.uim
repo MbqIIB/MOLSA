@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                                              -->
+<!-- All rights reserved.                                                                                           -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                -->
+<!-- such Confidential Information and shall use it only in accordance with           -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                         -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                           -->
+<!-- This page allows user to create unassigned provider member.                       -->
+<PAGE
+  PAGE_ID="ProviderManagement_createUnassignedProviderMember"
+  WINDOW_OPTIONS="width=720"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="ACTION"
+    OPERATION="createUnassignedProviderMember"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00233823, PS -->
+  <CLUSTER STYLE="cluster-cpr-no-internal-padding">
+    <!-- END, CR00233823 -->
+    <!-- BEGIN, CR00247036, PS -->
+    <CLUSTER
+      DESCRIPTION="Cluster.ParticipantDetails.Text"
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.Person">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="searchConcernRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.Name">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="addressData"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00247036 -->
+      <!-- BEGIN, CR00233823, PS -->
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Country"
+        WIDTH="40"
+      >
+        <!-- END, CR00233823 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <!-- BEGIN, CR00233823, PS -->
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.LocalNumber"
+        WIDTH="40"
+      >
+        <!-- END, CR00233823 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00233823, PS -->
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.AreaCode"
+        WIDTH="40"
+      >
+        <!-- END, CR00233823 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <!-- BEGIN, CR00233823, PS -->
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Extension"
+        WIDTH="40"
+      >
+        <!-- END, CR00233823 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneExtension"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Title.MembershipDetails"
+  >
+    <!-- BEGIN, CR00247036, PS -->
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.StartDate"
+      WIDTH="50"
+    >
+      <!-- END, CR00247036 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247036, PS -->
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.EndDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00247036 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_listUnassignedMemberCertification">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

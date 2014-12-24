@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010, 2012 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Lists all of the service invoice line items for a Provider.            -->
+<PAGE
+  PAGE_ID="ProviderManagement_listServiceInvoiceLineItemsForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceInvoice"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewServiceInvoiceForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ServiceInvoiceLineItems"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listServiceInvoiceLineItemsForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAYPROVIDERDETAILS"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROVIDERDETAILS"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="serviceInvoiceKey$serviceInvoiceID"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="serviceInvoiceID"/>
+  <!-- BEGIN, CR00304623, SS -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="retrieveSILIDetailsForProvider"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00304623 -->
+
+
+  <LIST>
+    <!-- BEGIN, CR00158345, GP -->
+    <!-- BEGIN, CR00200179, SS -->
+    <CONTAINER
+      LABEL="Field.Label.ClientName"
+      WIDTH="18"
+    >
+      <!-- END, CR00200179 -->
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$clientName"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewClientDetails">
+        <!-- BEGIN, CR00200179, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_listClientsForServiceInvoiceLineItem"
+          WINDOW_OPTIONS="width=600"
+        >
+          <!-- END, CR00200179 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$serviceInvoiceLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceInvoiceLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYPROVIDERDETAILS"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00158345 -->
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.Service"
+      WIDTH="18"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$service"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.ServiceDateFrom"
+      WIDTH="18"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceDateFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.ServiceDateTo"
+      WIDTH="18"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceDateTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.AmountInvoiced"
+      WIDTH="18"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00200179, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00233823, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00233823 -->
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00200179 -->
+  </LIST>
+  <CLUSTER TITLE="Cluster.Title.Totals">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isDisplayOnlyAmountInvoiced"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.TotalAmountInvoiced">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$totalAmountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.Totals">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="isDisplayBothPaidAndInvoiced"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.TotalAmountInvoiced">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$totalAmountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TotalAmountPaid">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$totalAmountPaid"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

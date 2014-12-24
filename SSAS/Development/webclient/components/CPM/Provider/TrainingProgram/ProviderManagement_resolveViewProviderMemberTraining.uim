@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. Ltd. ("Confidential Information"). You shall not disclose  -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===============                                                        -->
+<!-- Redirects to corresponding View Provider Member Training Program page.        -->
+<!-- BEGIN, CR00279651, MR -->
+<?curam-deprecated Since Curam 6.0 SP2, replaced with
+  ProviderManagement_resolveProviderMemberTrainingView.uim. This UIM has been
+  deprecated because this does not consider trainingProgramOwnerType page
+  parameter. See release note: CR00279651?>
+<!-- END, CR00279651 -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveViewProviderMemberTraining"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+        
+        
+        curam.omega3.request.RequestHandler 
+        requestHandler = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        String url = "";
+		
+		//retrieve parameters from the request
+		String concernRoleID = request.getParameter("concernRoleID");
+		String trainingProgramID = request.getParameter("trainingProgramID");
+		String trainingProgramMemberID = request.getParameter("trainingProgramMemberID");
+		String managedThroughAgency = request.getParameter("managedThroughAgency");
+		String memberConcernRoleID = request.getParameter("memberConcernRoleID");
+      
+        //if it's a managed training
+        if("true".equals(managedThroughAgency)) {
+          url = context + "ProviderManagement_resolveViewTrainingProgramDetailsPage.do?" +
+          "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) +
+		  "&amp;trainingProgramMemberID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramMemberID) +
+		  "&amp;memberConcernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(memberConcernRoleID) +
+          "&amp;trainingProgramID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramID);
+        } else { //if it's a non-managed training
+          url = context + "ProviderManagement_viewCompletedProviderMemberTrainingDetailsPage.do?" +
+          "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) +
+		  "&amp;trainingProgramMemberID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramMemberID) +
+		  "&amp;memberConcernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(memberConcernRoleID) +
+          "&amp;trainingProgramID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramID);
+        }
+                      
+        url += "&amp;" + requestHandler.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+        
+    </JSP_SCRIPTLET>
+
+
+</PAGE>

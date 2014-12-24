@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!-- This page allows the user to change a template associated with the      --> 
+<!-- service offering.                                                       -->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    PAGE_ID="ProviderManagement_changeTemplateForServiceOffering">
+
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+        </CONNECT>
+        <CONNECT>
+            <SOURCE NAME="PAGE" PROPERTY="serviceOfferingName"/>
+        </CONNECT>
+    </PAGE_TITLE>
+
+  <!-- BEGIN, CR00292877, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292877 -->
+  
+    <PAGE_PARAMETER NAME="serviceOfferingName"/>
+    <PAGE_PARAMETER NAME="serviceOfferingID"/>
+    <PAGE_PARAMETER NAME="templateLinkID"/>
+    <PAGE_PARAMETER NAME="templateType"/>
+    <PAGE_PARAMETER NAME="versionNo"/>
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="templateType"/>
+        <TARGET NAME="ACTION" PROPERTY="templateType"/>
+    </CONNECT>
+
+
+    <SERVER_INTERFACE NAME="ACTION" CLASS="MaintainServiceOffering" OPERATION="searchTemplates"
+        PHASE="ACTION"/>
+
+    <CLUSTER TITLE="Cluster.Title.SearchCriteria" NUM_COLS="1" LABEL_WIDTH="35">
+        <FIELD LABEL="Field.Label.Name">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="searchSOTemplateIn$templateName"/>
+            </CONNECT>
+        </FIELD>
+        <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+            <ACTION_CONTROL LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+                <LINK PAGE_ID="THIS" SAVE_LINK="false"/>
+            </ACTION_CONTROL>
+
+            <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+                <LINK PAGE_ID="ProviderManagement_changeTemplateForServiceOffering">
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="serviceOfferingName"/>
+                        <TARGET NAME="PAGE" PROPERTY="serviceOfferingName"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="serviceOfferingID"/>
+                        <TARGET NAME="PAGE" PROPERTY="serviceOfferingID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="templateLinkID"/>
+                        <TARGET NAME="PAGE" PROPERTY="templateLinkID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="templateType"/>
+                        <TARGET NAME="PAGE" PROPERTY="templateType"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="versionNo"/>
+                        <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </ACTION_SET>
+    </CLUSTER>
+
+    <LIST TITLE="List.Title.SearchResults">
+        <CONTAINER LABEL="Container.Label.Action">
+            <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+                <LINK PAGE_ID="ProviderManagement_resolveChangeTemplateForServiceOffering">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="result$dtls$templateID"/>
+                        <TARGET NAME="PAGE" PROPERTY="templateID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="serviceOfferingID"/>
+                        <TARGET NAME="PAGE" PROPERTY="serviceOfferingID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="templateLinkID"/>
+                        <TARGET NAME="PAGE" PROPERTY="templateLinkID"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="templateType"/>
+                        <TARGET NAME="PAGE" PROPERTY="templateType"/>
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="PAGE" PROPERTY="versionNo"/>
+                        <TARGET NAME="PAGE" PROPERTY="versionNo"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </CONTAINER>
+        <FIELD LABEL="Field.Label.Name">
+            <CONNECT>
+                <SOURCE NAME="ACTION" PROPERTY="dtls$templateName"/>
+            </CONNECT>
+        </FIELD>
+    </LIST>
+
+</PAGE>

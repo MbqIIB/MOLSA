@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the service delivery configuration   -->
+<!-- and security rights for a service offering                             -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceDeliveryConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="viewServiceOffering"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_modifySecurityRightsAndServiceDeliveryConfiguration"
+        WINDOW_OPTIONS="width=750"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+
+    <FIELD LABEL="Field.Label.DeliveryType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$deliveryType"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.DeliveryFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="deliveryFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.Clients">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="singleOrMultipleClients"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.AuthorizedRateToBeSpecified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="authorizedRateInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.ServiceDeliveryParticipationEnabled">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="servDelParticipationInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.ManualSDCompletionEnabledIndicator">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="manualSDCEbdInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.OwnerToBeSpecified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ownerToBeSpecified"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <CONTAINER LABEL="Field.Label.ServiceDeliveryConfig.ProviderReferralTemplate">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerTemplate$templateDetails$templateName"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Template.Add" APPEND_ELLIPSIS="false">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="providerReferralTemplateInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addTemplateToServiceOffering"
+          WINDOW_OPTIONS="width=400"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingDtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerTemplate$templateType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Template.Change">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="providerReferralTemplateInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_changeTemplateForServiceOffering"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingDtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerTemplate$templateLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerTemplate$templateType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerTemplate$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Template.Delete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="providerReferralTemplateInd"
+          />
+        </CONDITION>
+        
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeReferralTemplateFromServiceOffering"
+          WINDOW_OPTIONS="width=400"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingDtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerTemplate$templateLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerTemplate$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+    <!-- BEGIN, CR00279917, GYH -->
+    <FIELD
+      LABEL="Field.Label.ServiceDeliveryConfig.NomineeType"
+      >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nomineeType"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.Product">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00279917 -->
+    
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.AllowFrequencyModification">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="freqModificationInd"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.MultipleServiceDeliveries">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="multipleServDelInd"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    
+    
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.NomineeToBeSpecifiedIndicator">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="nomineeToBeSpdInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.NumberOfUnitsToBeSpecified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numberOfUnitsInd"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.ProviderAndProviderTypeSelection">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerAndTypeSel"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <!-- BEGIN JG, CR00023142 -->
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.ProgressApplicationInd">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="progressApplicableInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00023142 -->
+
+    <CONTAINER LABEL="Field.Label.ServiceDeliveryConfig.ClientReferralTemplate">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="clientTemplate$templateDetails$templateName"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Template.Add" APPEND_ELLIPSIS="false">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="clientReferralTemplateInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addTemplateToServiceOffering"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingDtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="clientTemplate$templateType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Template.Change">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="clientReferralTemplateInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_changeTemplateForServiceOffering"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingDtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="clientTemplate$templateLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="clientTemplate$templateType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateType"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="clientTemplate$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Template.Delete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="clientReferralTemplateInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeReferralTemplateFromServiceOffering"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingDtls$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="clientTemplate$templateLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="templateLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="clientTemplate$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SecurityRights"
+  >
+    <FIELD LABEL="Field.Label.SecurityRights.Create">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createRight"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.SecurityRights.Maintain">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maintainRight"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.SecurityRights.View">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="viewRight"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.SecurityRights.Approve">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="approveRight"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

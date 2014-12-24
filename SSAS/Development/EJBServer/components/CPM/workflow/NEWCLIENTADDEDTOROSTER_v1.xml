@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process
+  category="PC21"
+  createdBy="admin"
+  id="9"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/Workflow.xsd"
+>
+  <!--  END, CR00235681-->
+  <name>NEWCLIENTADDEDTOROSTER</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">New Client Added to Roster</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00248687, NS -->
+  <description>
+    <localized-text>
+      <locale language="en">Notifies the owner of a provider whenever a new client is added to a roster line item during creation of a service authorisation line item.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00248687 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="providerRosterLineItemID"
+        struct-name="curam.cpm.sl.entity.struct.ProviderRosterLineItemKey"
+      />
+      <target-attribute
+        name="providerRosterLineItemID"
+        wdo-name="NewRosterLineItemCreatedDetails"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>NewRosterLineItemCreatedDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">New Roster Line Item Added Details</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>providerRosterLineItemID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">providerRosterLineItemID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity
+      category="AC1"
+      id="3"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Assigned Owner</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="2"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">New Client has been added to Roster</locale>
+            </localized-text>
+          </message-text>
+        </message>
+        <actions>
+          <action
+            page-id="ProviderManagement_viewRosterLineItemFrmTask"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">View New Client added</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="providerRosterLineItemID">
+              <wdo-attribute
+                name="providerRosterLineItemID"
+                wdo-name="NewRosterLineItemCreatedDetails"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+        <task-priority>
+          <priority>TP2</priority>
+        </task-priority>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>true</allow-task-forwarding>
+      </task>
+      <allocation-strategy
+        identifier="New Roster Line Item Queue"
+        type="target"
+      />
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="ROSTER"
+            event-type="PRLI_CANCELED"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="providerRosterLineItemID"
+              wdo-name="NewRosterLineItemCreatedDetails"
+            />
+          </event>
+          <event
+            event-class="ROSTER"
+            event-type="PRLI_PROCESSED"
+            identifier="2"
+          >
+            <event-match-attribute
+              name="providerRosterLineItemID"
+              wdo-name="NewRosterLineItemCreatedDetails"
+            />
+          </event>
+          <event
+            event-class="ROSTER"
+            event-type="PRLI_DENIED"
+            identifier="3"
+          >
+            <event-match-attribute
+              name="providerRosterLineItemID"
+              wdo-name="NewRosterLineItemCreatedDetails"
+            />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="3"
+      id="2"
+      to-activity-idref="2"
+    />
+  </transitions>
+</workflow-process>

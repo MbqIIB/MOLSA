@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search service offering page  -->
+<PAGE
+  PAGE_ID="PME_searchServiceOfferingPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <!-- BEGIN, CR00292877, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292877 -->
+  
+  <!-- BEGIN, CR00225696, ASN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="ACTION"
+    OPERATION="searchServiceOfferings"
+    PHASE="ACTION"
+  />
+ <!-- END, CR00225696 -->
+
+  <!-- BEGIN, CR00247036, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    LABEL_WIDTH="30"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- END, CR00247036 -->
+    <FIELD LABEL="Field.Label.ServiceOfferingName">
+      <CONNECT>
+        <!-- BEGIN, CR00225696, ASN -->
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceOfferingName"
+        />
+        <!-- END, CR00225696 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.UnitOfMeasure"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00225696, ASN -->
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchCriteria$unitOfMeasure"
+        />
+        <!-- END, CR00225696 -->
+      </CONNECT>
+
+
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false">
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="PME_searchServiceOfferingPopup"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+  <!-- BEGIN, CR00247036, PS -->
+  <LIST TITLE="List.Title.SearchResults" SCROLL_HEIGHT="100">
+    <!-- END, CR00247036 -->
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <!-- BEGIN, CR00225696, ASN -->
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="serviceOfferingID"
+            />
+            <!-- END, CR00225696 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00225696, ASN -->
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="name"
+            />
+            <!-- END, CR00225696 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </CONTAINER>
+
+    <!-- BEGIN, CR00225696, ASN -->
+    <FIELD LABEL="Field.Title.ServiceOfferingName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+        <!-- END, CR00225696 -->
+      </CONNECT>
+
+
+    </FIELD>
+
+
+  </LIST>
+
+  <!-- BEGIN, CR00246085, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+  <!-- END, CR00246085 -->
+</PAGE>

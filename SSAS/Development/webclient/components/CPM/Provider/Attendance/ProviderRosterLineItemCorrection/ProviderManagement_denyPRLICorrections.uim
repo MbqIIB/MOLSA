@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2009, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page denies the correction                                        -->
+<PAGE
+  PAGE_ID="ProviderManagement_denyPRLICorrections"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="prliCorrectionID"/>
+  <!-- BEGIN, CR00130882, RD -->
+  <PAGE_PARAMETER NAME="taskID"/>
+  <!-- END, CR00130882 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLICorrection"
+    NAME="ACTION"
+    OPERATION="denyPRLICorrection"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="prliCorrectionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="prliCorrectionID"
+    />
+  </CONNECT>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.Deny"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00130884, SG -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewPRLICorrectionFromTask">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="prliCorrectionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="prliCorrectionID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00129363, RD -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+        <!-- END, CR00129363 -->
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00130884 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+      <!-- BEGIN, CR00130882, RD -->
+      <LINK PAGE_ID="ProviderManagement_approveordenyPRLICorrection">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="prliCorrectionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="prliCorrectionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00130882 -->
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

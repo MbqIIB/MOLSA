@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2014. All rights reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the list of payament details for provider group page -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewFCTransactionDetailsForPG"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderFinancial"
+    NAME="DISPLAY"
+    OPERATION="viewFinancialTransactionForProvider"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="finInstructionID"/>
+  <PAGE_PARAMETER NAME="iliType"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="finInstructionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$financialInstructionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="iliType"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$iliType"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <DETAILS_ROW>
+      <!-- BEGIN, CR00416671, SS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="breakdownDispIndOpt"
+        >            
+        </IS_TRUE>
+      </CONDITION>
+      <!-- END, CR00416671 -->
+      <INLINE_PAGE PAGE_ID="ProviderManagement_resolveViewFCTransactionForPG">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="instructionLineItemType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="iliType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="instructLineItemCategory"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="iliCategory"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="relatedReference"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="relatedReference"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="productType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="productType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="ILIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="iliID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+
+
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD LABEL="Field.Label.DateFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="coverperiodFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="coverperiodTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PaymentType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="paymentTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DeductionAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="deductedAmount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

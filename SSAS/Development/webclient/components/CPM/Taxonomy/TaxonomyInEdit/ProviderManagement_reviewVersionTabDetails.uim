@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!--  This page allows the user to view taxonomy version details under review.                  -->
+<PAGE
+  PAGE_ID="ProviderManagement_reviewVersionTabDetails"
+  TYPE="DETAILS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+
+  <PAGE_PARAMETER NAME="taxonomyVersionDataID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyInEditData"
+    NAME="DISPLAY"
+    OPERATION="listReplacedTermsOnTaxonomyUpdate"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyVersionDataID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="listTaxonomyReviewItems$taxonomyVersionDataID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="30">
+
+
+    <FIELD LABEL="Field.Label.Version">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$version"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Language">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$language"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

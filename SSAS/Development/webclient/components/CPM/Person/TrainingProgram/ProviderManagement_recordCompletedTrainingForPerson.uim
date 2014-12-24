@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                                    -->
+<!-- All rights reserved.                                                                                           -->
+<!-- This software is the confidential and proprietary information of Curam          -->
+<!-- Software, Ltd. ("Confidential Information"). You shall   not disclose               -->
+<!-- such Confidential Information and shall use it only in accordance with           -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                         -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                            -->
+<!-- This page allows user to record the completed training for a person.             -->
+<PAGE
+  PAGE_ID="ProviderManagement_recordCompletedTrainingForPerson"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPersonTrainingProgram"
+    NAME="ACTION"
+    OPERATION="recordCompletedPersonTrainingProgram"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="DISPLAY"
+    OPERATION="viewPerson"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$partyConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="personKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    > </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00128235, NBR -->
+
+
+  <!-- BEGIN, CR00228981, PS -->
+  <CLUSTER STYLE="cluster-cpr-no-internal-padding">
+    <!-- END, CR00228981 -->
+    <!-- BEGIN, CR00233823, PS -->
+    <!-- BEGIN, CR00247036 -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text1"
+      LABEL_WIDTH="35"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00233823 -->
+      <FIELD
+        LABEL="Field.Label.RegisteredTraining"
+        WIDTH="75"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$trainingProviderDetails$trainingID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- BEGIN, CR00233823, PS -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text2"
+      LABEL_WIDTH="35"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00233823 -->
+      <FIELD
+        LABEL="Field.Label.UnRegisteredTraining"
+        WIDTH="75"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$trainingProviderDetails$trainingName"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Title.TrainingProviderDetails"
+  >
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text3"
+      LABEL_WIDTH="35"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00233823 -->
+      <FIELD
+        LABEL="Field.Label.RegisteredProvider"
+        WIDTH="75"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$trainingProviderDetails$trainingProviderID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- BEGIN, CR00233823, PS -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text4"
+      LABEL_WIDTH="35"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00128235 -->
+      <FIELD
+        LABEL="Field.Label.UnRegisteredProvider"
+        WIDTH="75"
+      >
+        <!-- END, CR00233823 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$trainingProviderDetails$trainingProviderDetails"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00248418, PS -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248418 -->
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD LABEL="Field.Label.DateCompleted">
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dateCompleted"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.UnitsCompleted"
+      USE_DEFAULT="true"
+      WIDTH="50"
+    >
+      <!-- END, CR00247036 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$unitsCompleted"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

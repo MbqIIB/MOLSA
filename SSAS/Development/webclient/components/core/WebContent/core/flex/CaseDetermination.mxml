@@ -1,0 +1,652 @@
+<?xml version="1.0"?>
+<!-- charts/MultipleAxes.mxml -->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                creationComplete="init()"
+                pageTitle="Key Events View"
+                layout="vertical"
+                verticalAlign="middle"
+                xmlns:googleflexlib="http://code.google.com/p/flexlib/" backgroundColor="#E6ECF4">
+  <mx:Script>
+    <![CDATA[
+      import flash.trace.Trace;
+      import mx.messaging.SubscriptionInfo;
+      import curam.common.panels.CollapsiblePanel;
+      import mx.rpc.events.FaultEvent;
+      import mx.rpc.events.ResultEvent;
+      import mx.controls.Alert;
+      import mx.charts.chartClasses.IAxis;
+      import mx.charts.HitData;
+      import mx.collections.ArrayCollection;
+
+      [Bindable]
+      public var max:Date;
+
+      [Bindable]
+      public var min:Date;
+
+      [Bindable]
+      private var timeLineSet:ArrayCollection;
+
+      [Bindable]
+      private var decisionSet:ArrayCollection;
+
+      [Bindable]
+      private var keyDataSet:ArrayCollection;
+
+      [Bindable]
+      private var displayRulesSet:ArrayCollection;
+
+      [Bindable]
+      public var numberOfTimelines:int;
+
+      [Bindable]
+      private var displayDecisions:Boolean;
+
+      [Bindable]
+      private var displayKeyData:Boolean;
+
+      [Bindable]
+      private var displayDisplayRules:Boolean;
+
+      [Bindable]
+      public var decisionXMLList:XMLList;
+      [Bindable]
+      public var keyDataXMLList:XMLList;
+      [Bindable]
+      private var numKeyDataTypes:int;
+      [Bindable]
+      private var numDisplayRulesTypes:int;
+      [Bindable]
+      public var displayRulesXMLList:XMLList;
+      [Bindable]
+      public var d:XMLList;
+      [Bindable]
+      public var rowCounter:int;
+      [Bindable]
+      private var leftBoundary:Number;
+      [Bindable]
+      private var timelineRange:Number;
+      [Bindable]
+      private var rightBoundary:Number;
+
+      /**
+       * This gets passed in to FLEX as a parameter.
+       */
+      private var caseID:String;
+
+      private function init():void
+      {
+        rowCounter=0;
+        caseID=new String(Application.application.parameters.caseID);
+
+        displayDecisions=true;
+        displayKeyData=true;
+        displayDisplayRules=true;
+
+
+        // Call the server to retrieve the Determination Data        
+        //httpService.url="../servlet/FileDownload?pageID=ActiveProductDeliveryDecisions&caseID=" + caseID;
+        //httpService.url="determinationData.xml"
+        //httpService.send(); // send http request
+        initDisplay();
+
+      }
+      private function initDisplay():void {
+        // TODO Load the xml here
+        numKeyDataTypes=0;
+        numDisplayRulesTypes=0;
+        //
+        // Process The Decisions
+        //
+        decisionXMLList=timelineXML.source[0].category.(@name == "Decisions").timeline.(@name == "Decisions");
+        decisionSet=new ArrayCollection();
+        for (var i:int=0; i < decisionXMLList.children().length(); i++)
+        {
+          var myEvent:XML=decisionXMLList.children()[i];
+          var temp=
+            {Date: new Date(myEvent.@date.toString()),
+              Name: myEvent.@tooltip,
+              Value: rowCounter, ItemType: "Decisions"};
+          decisionSet.addItem(temp);
+        }
+        timeLineSet=decisionSet;
+
+        //
+        // Process The Key Data
+        //
+        keyDataXMLList=timelineXML.source[0].category.(@name == "Key Data").timeline;
+        keyDataSet=new ArrayCollection();
+        numKeyDataTypes=keyDataXMLList.length();
+        trace("Number of unique key data types:"+numKeyDataTypes);
+        // Iterate through each of the key data types
+        for (var j:int=0; j < keyDataXMLList.length(); j++)
+        {
+          rowCounter--;
+          // Iterate through each of the events
+          for (var k:int=0; k < keyDataXMLList[j].event.length(); k++)
+          {
+            var keyDataEntry=
+              {Date: new Date(keyDataXMLList[j].event[k].@date.toString()),
+                Name: keyDataXMLList[j].event[k].@tooltip,
+                Value: rowCounter, ItemType: keyDataXMLList[j].@name};
+            keyDataSet.addItem(keyDataEntry);
+
+          }
+        }
+        timeLineSet=copyArrayCollection(timeLineSet, keyDataSet);
+
+        //
+        // Process The Display Rules
+        //
+        displayRulesXMLList=timelineXML.source[0].category.(@name == "Display Rule Outputs").timeline;
+        displayRulesSet=new ArrayCollection();
+        numDisplayRulesTypes=displayRulesXMLList.length();
+        trace("Number of unique display rules types:"+numDisplayRulesTypes);
+        // Iterate through each of the key data types
+        for (var a:int=0; a < displayRulesXMLList.length(); a++)
+        {
+          rowCounter--;
+          // Iterate through each of the events
+          for (var b:int=0; b < displayRulesXMLList[a].event.length(); b++)
+          {
+            var displayRuleEntry=
+              {Date: new Date(displayRulesXMLList[a].event[b].@date.toString()),
+                Name: displayRulesXMLList[a].event[b].@tooltip,
+                Value: rowCounter, ItemType: displayRulesXMLList[a].@name};
+            displayRulesSet.addItem(displayRuleEntry);
+
+          }
+        }
+        timeLineSet=copyArrayCollection(timeLineSet, displayRulesSet);
+
+        drawTimeLine();
+        slider.values[0]=0;
+        slider.values[1]=(max.getTime() - min.getTime());
+        trace("Slider Range:" + new Date(min.getTime() + timelineRange));
+        trace("test Range:" + (max.date.valueOf() - min.date.valueOf()) + " - " + timelineRange);
+        trace("Min Date:" + min + " Max Date:" + max);
+      }
+      /**
+       * Parse the XML - This is called when the HTTPService receives a result.
+       */
+      private function resultHandler(event:ResultEvent):void
+      {
+
+      }
+
+      /**
+       * Fault handler called when HTTPService encounters an error.
+       * @todo This needs to be removed in final version
+       */
+      private function faultHandler(event:FaultEvent):void
+      {
+        //Alert.show("Couldnt load data");
+        // If httpservice failed then try to load local decision list
+        //httpService.url="determinationData.xml"
+        //httpService.send();
+      }
+
+      private function drawTimeLine():void
+      {
+        //set min and max to outside most notifs
+        // TODO This assumes that the arraycollection is sorted by date!
+        min=decisionSet.getItemAt(0).Date;
+        max=decisionSet.getItemAt(decisionSet.length - 1).Date;
+
+        // Set the number of timelines
+        numberOfTimelines=rowCounter - 0.5;
+
+        //calculate the range between min and max
+        timelineRange=max.getTime() - min.getTime();
+
+        //if less than 2 hours switch to minutes
+        /* if (timelineRange < 7200000)
+           {
+           timelineDateAxis.dataUnits="minutes";
+           }
+           //if greater than 2 days switch to days
+           else if (timelineRange > 172800000)
+           {
+           timelineDateAxis.dataUnits="days";
+         }*/
+
+        //as long as the timeline has a range other than 0, add 20% to the min and max
+        if (timelineRange != 0)
+        {
+          min=new Date(min.getTime() - (timelineRange * .2));
+          max=new Date(max.getTime() + (timelineRange * .2));
+        }
+        //if the timeline does have a range of 0, add 1 minute to min and max
+        else
+        {
+          min=new Date(min.getTime() - 60000);
+          max=new Date(max.getTime() + 60000);
+        }
+        //set the min and max of the axis
+        timelineDateAxis.minimum=min;
+        timelineDateAxis.maximum=max;
+      }
+
+      public function timelineDataTips(e:HitData):String
+      {
+        return "<b>" + e.item.Name + "</b>\n" + dataTipsFormatter.format(e.item.Date);
+      }
+
+      private function setupTimeLineData():void
+      {
+
+        timeLineSet=new ArrayCollection();
+        timelineValueAxis.minimum=0;
+
+        if (decisionCheckBox.selected)
+        {
+          timeLineSet=copyArrayCollection(timeLineSet, decisionSet);
+          timelineValueAxis.minimum--;
+        }
+
+
+        if (milestoneCheckBox.selected)
+        {
+          timeLineSet=copyArrayCollection(timeLineSet, keyDataSet);
+          timelineValueAxis.minimum=timelineValueAxis.minimum-numKeyDataTypes;
+        }
+
+        if (displayRulesCheckBox.selected)
+        {
+          timeLineSet=copyArrayCollection(timeLineSet, displayRulesSet);
+          timelineValueAxis.minimum=timelineValueAxis.minimum-numDisplayRulesTypes;
+        }
+
+        drawTimeLine();
+
+      }
+
+      /**
+       * Format the y-axis label
+       */
+      public function defineVerticalLabel(
+        cat:Object,
+        pcat:Object,
+        ax:LinearAxis):String
+      {
+        var label:String="";
+        if (timeLineSet != null)
+        {
+          for (var i:int=0; i < +timeLineSet.length; i++)
+          {
+            if (timeLineSet.getItemAt(i).Value == cat)
+            {
+              label=timeLineSet.getItemAt(i).ItemType;
+            }
+          }
+        }
+        if (label.length > 20)
+        {
+          label=label.substr(0, 20);
+        }
+        return label;
+      }
+
+
+      /**
+       * Update the zoom level from the slider control
+       */
+      public function updateBoundariesFromSlider():void
+      {
+        leftBoundary=slider.values[0];
+        rightBoundary=slider.values[1];
+        timelineDateAxis.maximum=new Date(min.getTime() + rightBoundary);
+        timelineDateAxis.minimum=new Date(min.getTime() + leftBoundary);
+        trace("leftBoundary: " + leftBoundary + " Date:" + new Date(min.getTime() + leftBoundary));
+        trace("rightBoundary: " + rightBoundary + " Date:" + new Date(min.getTime() + rightBoundary));
+
+      }
+
+      /**
+       * Add two array collections together
+       */
+      private function copyArrayCollection(src1:ArrayCollection, src2:ArrayCollection):ArrayCollection
+      {
+        return new ArrayCollection(src1.toArray().concat(src2.toArray()));
+      }
+    ]]>
+  </mx:Script>
+
+  <mx:HTTPService id="httpService"
+                  useProxy="false"
+                  result="resultHandler(event)"
+                  fault="faultHandler(event)"/>
+
+
+  <mx:Style>
+    .issueTimelineHolder
+    {
+        background-color:#ffffff;
+    }
+    .issueTimelineChart
+    {
+        padding-top:5px;
+        padding-right:0;
+        padding-bottom:0;
+        padding-left:0;    
+    }
+    .timelineDateAxis
+    {
+        color:#787878;
+    }
+
+  </mx:Style>
+
+
+  <mx:Stroke id="timelineDateAxisStroke"
+             color="#9B9B9B"
+             weight="8"
+             alpha=".75"
+             caps="none"/>
+  <mx:Stroke id="timelineTickStroke"
+             color="#ffffff"/>
+
+  <mx:DateFormatter id="dataTipsFormatter"
+                    formatString="DD/MM/YYYY"/>
+
+
+  <mx:ApplicationControlBar dock="true">
+    <mx:Button label="Redraw"
+               click="setupTimeLineData();"/>
+
+
+    <mx:Spacer width="100%"/>
+
+    <mx:PopUpButton label="Select Timeline Data"
+                    openAlways="true">
+      <mx:popUp>
+        <mx:Form styleName="plain"
+                 backgroundColor="white">
+          <mx:FormItem label="Decisions:">
+            <mx:CheckBox id="decisionCheckBox"
+                         selected="{displayDecisions}"/>
+          </mx:FormItem>
+          <mx:FormItem label="Milestones:">
+            <mx:CheckBox id="milestoneCheckBox"
+                         selected="{displayKeyData}"/>
+          </mx:FormItem>
+          <mx:FormItem label="Display Rules:">
+            <mx:CheckBox id="displayRulesCheckBox"
+                         selected="{displayDisplayRules}"/>
+          </mx:FormItem>
+        </mx:Form>
+      </mx:popUp>
+    </mx:PopUpButton>
+  </mx:ApplicationControlBar>
+
+
+
+  <mx:Canvas styleName="issueTimelineHolder"
+             width="100%"
+             height="100%">
+    <mx:PlotChart id="issueTimelineChart"
+                  styleName="issueTimelineChart"
+                  showDataTips="true"
+                  dataTipFunction="timelineDataTips"
+                  dataProvider="{timeLineSet}"
+                  width="100%"
+                  height="90%">
+      <mx:backgroundElements>
+        <mx:GridLines direction="horizontal"/>
+      </mx:backgroundElements>
+
+      <mx:verticalAxis>
+        <mx:LinearAxis id="timelineValueAxis"
+                       minimum="{numberOfTimelines-0.5}"
+                       maximum="0.5"
+                       interval="1"
+                       labelFunction="defineVerticalLabel"/>
+      </mx:verticalAxis>
+
+
+      <mx:verticalAxisRenderers>
+        <mx:AxisRenderer axis="{timelineValueAxis}"
+                         showLabels="true"
+                         showLine="false"
+                         tickPlacement="none"
+                         minorTickPlacement="none"/>
+      </mx:verticalAxisRenderers>
+
+      <mx:horizontalAxis>
+        <mx:DateTimeAxis id="timelineDateAxis"
+                         dataUnits="days"
+                         minimum="{min}"
+                         maximum="{max}"
+                         displayLocalTime="true"/>
+      </mx:horizontalAxis>
+      <mx:horizontalAxisRenderers>
+        <mx:AxisRenderer axis="{timelineDateAxis}"
+                         styleName="timelineDateAxis"
+                         tickPlacement="outside">
+          <mx:axisStroke>{timelineDateAxisStroke}</mx:axisStroke>
+          <mx:tickStroke>{timelineTickStroke}</mx:tickStroke>
+        </mx:AxisRenderer>
+      </mx:horizontalAxisRenderers>
+
+      <mx:series>
+        <mx:PlotSeries xField="Date"
+                       yField="Value"/>
+      </mx:series>
+
+    </mx:PlotChart>
+    <googleflexlib:HSlider id="slider"
+                           width="100%"
+                           height="10%"
+                           trackHighlightSkin="flexlib.skins.SliderThumbHighlightSkin"
+                           allowTrackClick="true"
+                           allowThumbOverlap="false"
+                           liveDragging="true"
+                           change="updateBoundariesFromSlider()"
+                           showDataTip="true"
+                           dataTipPlacement="bottom"
+                           dataTipOffset="3"
+                           showTrackHighlight="true"
+                           thumbCount="2"
+                           snapInterval="1"
+                           values="{[leftBoundary, rightBoundary]}"
+                           minimum="0"
+                           maximum="{max.getTime()-min.getTime()}"
+                           bottom="0"
+                           left="120"/>
+  </mx:Canvas>
+
+  <!--
+       <mx:Panel title="XML lookup results"
+       paddingBottom="10"
+       paddingLeft="10"
+       paddingRight="10"
+       paddingTop="10">
+
+       <mx:Text text="{'determinationXMLList: ' + decisionXMLList}"
+       width="300"/>
+
+       </mx:Panel>
+  -->
+  <mx:XML id="timelineXML">
+    <timeline_widget>
+      <header enddate="01/01/0001"
+              rhsdate="01/01/0001"
+              startdate="01/01/0001"
+              style="eric_timeline"
+              zoomLevelInMonths="1"/>
+      <source id="5729704625922113536"
+              name="Superseded Determination created at 2010-03-04 09:43:11 as a Result of Case Adjudication">
+        <category hideable="false"
+                  name="Decisions">
+          <timeline hideable="false"
+                    name="Decisions">
+            <event date="01/01/2010"
+                   id="-106960491150049280"
+                   tooltip="Eligible"/>
+            <event date="03/17/2011"
+                   id="-9204231738438451200"
+                   tooltip="Not Eligible"/>
+          </timeline>
+        </category>
+        <category compare="ProductDelivery_compareDisplayRuleOutputChanges"
+                  name="Display Rule Outputs"
+                  view="ProductDelivery_viewDisplayRuleOutputChange">
+          <timeline name="Summary"
+                    visible="true">
+            <event date="01/01/2010"
+                   id="0"
+                   tooltip="Summary: ' Eligibility The claim is eligible . Entitlement Objective Type ID Entitled? Target Related Referen..."/>
+            <event date="01/17/2011"
+                   id="1"
+                   tooltip="Summary: 'null' ('2011-03-17' - '...')"/>
+          </timeline>
+        </category>
+        <category compare="ProductDelivery_viewKeyDataChange"
+                  name="Key Data"
+                  view="ProductDelivery_viewKeyDataChange">
+          <timeline name="Total salary amount"
+                    visible="true">
+            <event date="02/13/2010"
+                   id="61747122"
+                   tooltip="Total salary amount for the case: 1000"/>
+            <event date="02/14/2010"
+                   id="567567567"
+                   tooltip="Total salary amount for the case: 500"/>
+            <event date="03/01/2010"
+                   id="789789789"
+                   tooltip="Total salary amount for the case: 100"/>
+            <event date="03/13/2010"
+                   id="90-90-90"
+                   tooltip="Total salary amount for the case: 50"/>
+          </timeline>
+          <timeline name="Total bonus amount"
+                    visible="true">
+            <event date="03/23/2010"
+                   id="-1019012867"
+                   tooltip="Total bonus amount for the case: 333"/>
+          </timeline>
+          <timeline name="Total income amount"
+                    visible="true">
+            <event date="03/07/2010"
+                   id="1040942495"
+                   tooltip="Total income amount for the case: 1333"/>
+          </timeline>
+        </category>
+      </source>
+      <source id="-5096948878276558848"
+              name="Superseded Determination created at 2010-03-04 09:43:28 as a Result of Pre-Release Case Adjudication">
+        <category hideable="false"
+                  name="Decisions">
+          <timeline hideable="false"
+                    name="Decisions">
+            <event date="03/03/2010"
+                   id="2324983307630018560"
+                   tooltip="Eligible"/>
+            <event date="03/17/2011"
+                   id="-2286702710797369344"
+                   tooltip="Not Eligible"/>
+          </timeline>
+        </category>
+        <category compare="ProductDelivery_compareDisplayRuleOutputChanges"
+                  name="Display Rule Outputs"
+                  view="ProductDelivery_viewDisplayRuleOutputChange">
+          <timeline name="Summary"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="0"
+                   tooltip="Summary: ' Eligibility The claim is eligible . Entitlement Objective Type ID Entitled? Target Related Referen..."/>
+            <event date="03/17/2011"
+                   id="1"
+                   tooltip="Summary: 'null' ('2011-03-17' - '...')"/>
+          </timeline>
+        </category>
+        <category compare="ProductDelivery_viewKeyDataChange"
+                  name="Key Data"
+                  view="ProductDelivery_viewKeyDataChange">
+          <timeline name="Total salary amount"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="61747452"
+                   tooltip="Total salary amount for the case: 1000"/>
+          </timeline>
+          <timeline name="Total bonus amount"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="-1019012867"
+                   tooltip="Total bonus amount for the case: 333"/>
+          </timeline>
+          <timeline name="Total income amount"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="1040942495"
+                   tooltip="Total income amount for the case: 1333"/>
+          </timeline>
+        </category>
+      </source>
+      <source id="2685271277819658240"
+              name="Superseded Determination created at 2010-03-04 10:12:49 as a Result of Pre-Release Case Adjudication">
+        <category hideable="false"
+                  name="Decisions">
+          <timeline hideable="false"
+                    name="Decisions">
+            <event date="03/03/2010"
+                   id="-3439624215404216320"
+                   tooltip="Eligible"/>
+            <event date="03/17/2011"
+                   id="163255486492180480"
+                   tooltip="Not Eligible"/>
+            <event date="03/25/2011"
+                   id="-1926414740607729664"
+                   tooltip="Eligible"/>
+            <event date="05/17/2011"
+                   id="4270538346654072832"
+                   tooltip="Not Eligible"/>
+          </timeline>
+        </category>
+        <category compare="ProductDelivery_compareDisplayRuleOutputChanges"
+                  name="Display Rule Outputs"
+                  view="ProductDelivery_viewDisplayRuleOutputChange">
+          <timeline name="Summary"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="0"
+                   tooltip="Summary: ' Eligibility The claim is eligible . Entitlement Objective Type ID Entitled? Target Related Referen..."/>
+            <event date="03/17/2011"
+                   id="1"
+                   tooltip="Summary: ' EligibilityThe claim is not eligible .' ('2011-03-17' - '2011-03-24')"/>
+            <event date="03/25/2011"
+                   id="2"
+                   tooltip="Summary: ' Eligibility The claim is eligible . Entitlement Objective Type ID Entitled? Target Related Referen..."/>
+            <event date="05/17/2011"
+                   id="3"
+                   tooltip="Summary: 'null' ('2011-05-17' - '...')"/>
+          </timeline>
+        </category>
+        <category compare="ProductDelivery_viewKeyDataChange"
+                  name="Key Data"
+                  view="ProductDelivery_viewKeyDataChange">
+          <timeline name="Total salary amount"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="-545926604"
+                   tooltip="Total salary amount for the case: 1000"/>
+          </timeline>
+          <timeline name="Total bonus amount"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="-1626686923"
+                   tooltip="Total bonus amount for the case: 333"/>
+          </timeline>
+          <timeline name="Total income amount"
+                    visible="true">
+            <event date="03/03/2010"
+                   id="433268439"
+                   tooltip="Total income amount for the case: 1333"/>
+          </timeline>
+        </category>
+      </source>
+    </timeline_widget>
+
+  </mx:XML>
+
+</mx:Application>

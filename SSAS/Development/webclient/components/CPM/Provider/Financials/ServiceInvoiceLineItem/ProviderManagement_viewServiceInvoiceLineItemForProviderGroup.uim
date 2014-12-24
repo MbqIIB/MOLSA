@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view Service Invoice Line Item for a group-->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemForProviderGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.Description"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$details$referenceNo"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="viewServiceInvoiceLineItem"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAYPAYMENTADJUSTMENT"
+    OPERATION="viewServiceInvoiceLineItemTransanctions"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY2"
+    OPERATION="listClientDetailsForServiceInvoiceLineItem"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00158345 -->
+
+
+  <PAGE_PARAMETER NAME="serviceInvoiceLineItemID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAYPAYMENTADJUSTMENT"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+  <!-- END, CR00158345 -->
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceAuthorizationLineItemReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceDateFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceDateFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.NumberofUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$noOfUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AmountInvoiced">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PayeeReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$payeeReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$providerReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$service"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceDateTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceDateTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AmountPaid">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$amountPaid"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PayeeName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$payeeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <LIST TITLE="List.Label.ClientDetails">
+    <FIELD LABEL="Field.Label.ClientReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientFirstName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientLastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientLastName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ClientDateofBirth"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientDOB"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00158345 -->
+
+
+  <LIST TITLE="List.Title.PaymentAdjustments">
+    <FIELD LABEL="Field.Label.AdjustmentReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYPAYMENTADJUSTMENT"
+          PROPERTY="result$details$adjustmentReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AdjustmentAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYPAYMENTADJUSTMENT"
+          PROPERTY="result$details$adjustmentAmount"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

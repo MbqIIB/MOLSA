@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  This is the ant utilities file for Reporting project.
+  It contains sample content not intended for release.
+  
+-->
+<project>
+
+  <!--  *******************************  -->
+  <!--  ***  Import tasks definitions**  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_tasks.xml" />
+
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import initialization  ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_init.xml" />
+  
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${jar.ant.contrib}"/>
+    </classpath>
+  </taskdef>
+
+
+
+    <!--  *********************************************  -->
+  <!--  ***  Update the source last written values***  -->
+  <!--  *********************************************  -->
+  <target
+  depends="check.db.type, set.db.source, set.database.ora, set.database.db2"
+  name="_database.source.sample" 
+  description="build sample database object on the source application, -samplesource.failonerror.action=[continue|abort|stop]">
+  
+ 
+    <echo message="For update counts see ${dir.bin.sourceupdate}/curam-sample-initialdata.result"/>
+   	<condition property="_database.source.sample.tables.available">
+      <or>
+      <available file="${sysenv.REPORTING_DIR}/components/custom/ddl/oracle/source/CreateAppTables.sql"/>
+      <available file="${sysenv.REPORTING_DIR}/components/custom/ddl/db2/source/CreateAppTables.sql" />
+      </or>
+    </condition>
+	<echo message="Build sample tables is set to ${_database.source.sample.tables.available}"/>
+	<antcall target="_database.source.sample.ddl" />
+	
+  </target>
+  
+    <!--  *********************************************  -->
+  <!--  ***  Update the source last written values***  -->
+  <!--  *********************************************  -->
+  <target
+  if="_database.source.sample.tables.available"
+  depends="check.db.type, set.db.source, set.database.ora, set.database.db2"
+  name="_database.source.sample.ddl" 
+  description="build sample database object on the source application, -Dsample.curam.failonerror.action=[continue|abort|stop]">
+  
+    <property name="samplesource.failonerror.action" value="continue"/>
+
+    <!-- creates the sample table on the curam application database-->
+   <property name="sample.createtables" value="${sysenv.REPORTING_DIR}/components/custom/ddl/${db.platform}/source"/>
+   <property name="sample.droptables" value="${sysenv.REPORTING_DIR}/components/custom/ddl/${db.platform}/source"/>
+   <property name="sample.initialdata.template" value="${sysenv.REPORTING_DIR}/components/custom/data_manager/initialdata/curam_initialdata.sqlt"/>
+   <property name="sample.initialdata" value="${sysenv.REPORTING_DIR}/components/custom/data_manager/initialdata"/>
+
+   <!--[continue|abort|stop]-->
+   <property name="sample.curam.failonerror.action" value="abort"/>
+   
+      <!-- create the initial data-->
+    <AntGenerateSourceInitilaData reportingDir="${REPORTING_DIR}" initialDataFile="${sample.initialdata.template}" />
+
+	<echo message="${sample.droptables}/DropAppTables.sql"/>
+    <sql encoding="UTF-8" classpath="${environment.jdbc.jars}"   driver="${db.driver}" 
+            output="${dir.bin.sourceupdate}/curam-sample-dropobjects.result"
+            password="${db.password}" 
+            print="true" 
+            showheaders="false"
+            url="${db.url}" 
+            userid="${db.username}"
+            onerror="continue"            
+            >
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+             <path>
+                <fileset dir="${sample.droptables}">
+                  <include name="DropAppTables.sql"/>
+                </fileset>
+            </path>
+    </sql>
+	<!-- create the tables -->
+    <echo message="${sample.droptables}/CreateAppTables.sql"/>
+    <sql encoding="UTF-8" classpath="${environment.jdbc.jars}"   driver="${db.driver}" 
+            output="${dir.bin.sourceupdate}/curam-sample-createobjects.result"
+            password="${db.password}" 
+            print="true" 
+            showheaders="false"
+            url="${db.url}" 
+            userid="${db.username}"
+            onerror="${sample.curam.failonerror.action}"            
+            >
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+             <path>
+                <fileset dir="${sample.createtables}">
+                  <include name="CreateAppTables.sql"/>
+                </fileset>
+            </path>
+    </sql>
+	
+ 
+    <sql encoding="UTF-8" classpath="${environment.jdbc.jars}"   driver="${db.driver}" 
+            output="${dir.bin.sourceupdate}/curam-sample-initialdata.result"
+            password="${db.password}" 
+            print="true" 
+            showheaders="false"
+            url="${db.url}" 
+            userid="${db.username}"
+            onerror="${sample.curam.failonerror.action}"            
+            >
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+
+             <path>
+                <fileset dir="${sample.initialdata}">
+                  <include name="curam_initialdata.sql"/>
+                </fileset>
+            </path>
+    </sql>
+    <echo message="For update counts see ${dir.bin.sourceupdate}/curam-sample-initialdata.result"/>
+
+  </target>
+</project>

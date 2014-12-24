@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009-2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the view placement payments for provider page                 -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewPlacementPaymentForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderFinancial"
+    NAME="DISPLAY"
+    OPERATION="viewPaymentItemForUtilizationBasedPayment"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00113395, GP -->
+  <PAGE_PARAMETER NAME="relatedReference"/>
+  <!-- END, CR00113395 -->
+
+
+  <PAGE_PARAMETER NAME="InstructionLineItemID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="InstructionLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="ILIKey$instructLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00113395, GP -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedReference"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="placementKey$placementID"
+    />
+  </CONNECT>
+  <!-- END, CR00113395 -->
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceDateFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceDateFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Amount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.ClientRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$clientReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceDateTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceDateTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CaseRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$caseReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

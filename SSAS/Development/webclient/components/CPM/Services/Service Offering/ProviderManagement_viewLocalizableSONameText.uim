@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                          -->
+<!-- All rights reserved.                                                        -->
+<!-- This software is the confidential and proprietary information of Curam      -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose         -->
+<!-- such Confidential Information and shall use it only in accordance with      -->
+<!-- the terms of the license agreement you entered into with Curam              -->
+<!-- Software.                                                                   -->
+<!--This page allows you to view the list of the text translations               -->
+<!-- for service offering name.                                                   -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewLocalizableSONameText"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="viewLocalizableNameText"
+  />
+  <PAGE_PARAMETER NAME="localizableTextID"/>
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="localizableTextID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="localizableNameTextTranslationDetails$localizableTextID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="localizableTextParentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="version"
+    />
+  </CONNECT>
+
+  <LIST SCROLL_HEIGHT="125">
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00206671, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyLocalizableSONameTextTranslation"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00206671 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$textTranslationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="textTranslationID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Title.Language"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$localeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Text">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$text"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddTranslation">
+
+
+      <!-- BEGIN, CR00206671, SS -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addNameTranslationToServiceOffering"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00206671 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="localizableTextID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="localizableTextID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+
+
+</PAGE>

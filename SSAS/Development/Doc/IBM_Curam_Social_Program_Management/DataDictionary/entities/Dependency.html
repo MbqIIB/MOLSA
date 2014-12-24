@@ -1,0 +1,158 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>Dependency</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Dependency
+
+
+:</b>
+<i>The reliance of a dependent (identified by its type and ID) on a precedent (identified by its type and ID).
+
+
+</i>
+
+
+
+<P>When a client of the Dependency Manager identifies that one data item (a "dependent") depends on another (a "precedent"), then that client can request that the Dependency Manager stores the dependency as a row on this entity.<P>
+
+
+
+<P>The Dependency Manager uses the data on this entity to identify which dependents are affected by changes in one or more precedents, as stored as <a href=PrecedentChangeItem.html>Precedent Change Items</a> in a <a href=PrecedentChangeSet.html>Precedent Change Set</a>.</P>
+
+
+
+<p><b>Example</b></p>
+<P>The Eligibility and Entitlement Engine identifies that a determination result for <a href=ProductDelivery.html>Product Delivery</a> 123 depends on:</P>
+
+<UL>
+
+<LI>data from the claimant's row on the <a href=Person.html>Person</a> entity;</LI>
+
+<LI>active evidence from the parent integrated case 122; and</LI>
+
+<LI>product configuration data stored on <a href=CREOLEProduct.html>CREOLE Product</a>.</LI>
+
+</UL>
+
+
+
+<P>The Eligibility and Entitlement Engine requests the Dependency Manager to store a row on this entity for each of the three dependencies identified above.</P>
+
+
+
+<P>Later, change of circumstances evidence is activated on integrated case 122, and the Dependency Manager uses the data on this entity to identify that <a href=ProductDelivery.html>Product Delivery</a> 123 must be reassessed.</P>
+
+
+
+<p><b>Technical Notes</b></p>
+
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+<P>Optimistic locking is not required as rows are never modified.</P>
+
+
+
+<P>The Dependency Manager has no inherent understanding of the dependent and precedent referred to by a row on this entity.  As such:</P>
+
+<UL>
+
+<LI>it is the responsibility of clients of the Dependency Manager to request storage of dependencies that make sense to the client, and to request the removal of dependency records for dependents which no longer exist; and</LI>
+
+<LI>the dependentType, dependentyID, precedentType and precedentID attributes on this entity are not constrained by foreign keys, since the Dependency Manager intentionally does not maintain any lists of known dependents or precedents in the system.</LI>
+
+</UL>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">dependencyID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique identifier of this record.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">dependentType</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The type of the dependent.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">dependentID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The identifier of the dependent (within its dependentType).</td><td class="dataLast">SVR_STRING&lt;1000&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">precedentType</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The type of the precedent.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">precedentID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The identifier of the precedent (within its precedentType).</td><td class="dataLast">SVR_STRING&lt;1000&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (2)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">DependencyByDependentKeyIndex</td><td class="dataLast">dependentID, dependentType</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">DependencyByPrecedentKeyIndex</td><td class="dataLast">precedentID, precedentType</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

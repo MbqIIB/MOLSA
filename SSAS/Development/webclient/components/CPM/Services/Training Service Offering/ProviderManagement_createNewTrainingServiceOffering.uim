@@ -1,0 +1,1068 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to register a training service offering.      -->
+<PAGE
+  PAGE_ID="ProviderManagement_createNewTrainingServiceOffering"
+  WINDOW_OPTIONS="width=900,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  <PAGE_PARAMETER NAME="serviceOfferingType"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="getTrainingServiceOfferingWizardMenuDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY1"
+    OPERATION="getServiceOfferingWizardDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionIDString"
+    CLASS="MaintainServiceOffering"
+    NAME="ACTION"
+    OPERATION="setTrainingServiceOfferingDetails"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.Name"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceOffering.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceOfferingDtls$startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceOfferingDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.UnitOfMeasure"
+      USE_DEFAULT="true"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="unitOfMeasure"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="unitOfMeasure"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.MaximumUnits"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$maximumUnits"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceOfferingDetails$maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DeliveryType"
+      USE_BLANK="true"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="deliveryType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="deliveryType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceOffering.InhibitAuthorizationViaPlacement">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="saPlmtInhibitInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="saPlmtInhibitInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceOffering.PlacementBasedPayment">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="placementPmtInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementPmtInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Product">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="productID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="productID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.Reference"
+      USE_BLANK="true"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="reference"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.EndDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceOfferingDtls$endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceOfferingDtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.ProvisionMethod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="provisionMethod"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="provisionMethod"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.UnitFrequency"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="unitFrequency"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="unitFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.SpecialConditionType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="specialConditionType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="specialConditionType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceOffering.PayBasedOnAttendanceIndicator">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="payBasedOnAttendanceInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="payBasedOnAttendanceInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CheckAvailabilityExcludeIndicator">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="availabilityCheckExcludeInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="availabilityCheckExcludeInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Field.Label.ServiceOffering.Description"
+  >
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="localizableDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="localizableDescription"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ServiceRateDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.ServiceRate.MinimumAmount"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceRateDetails$minAmountString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceRateDetails$minAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.ServiceRate.FixedAmount"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceRateDetails$fixedAmountString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceRateDetails$fixedAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.ServiceRate.MaximumAmount"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceRateDetails$maxAmountString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceRateDetails$maxAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ServicePaymentOptionDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.ServiceRate.MinimumAmountPaymentOption"
+      WIDTH="88"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceRateDetails$minAmtPmtOption"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceRateDetails$minAmtPmtOption"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.ServiceRate.FixedAmountPaymentOption"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceRateDetails$fixedAmtPmtOption"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceRateDetails$fixedAmtPmtOption"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.ServiceRate.MaximumAmountPaymentOption"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceRateDetails$maxAmtPmtOption"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceRateDetails$maxAmtPmtOption"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Label.TrainingDetails"
+  >
+    <CLUSTER
+      DESCRIPTION="Cluster.Description.Training"
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.TrainingServiceOffering.Training">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="trainingDtls$trainingID"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP"/>
+    </CLUSTER>
+
+
+    <CLUSTER
+      DESCRIPTION="Cluster.Description.NewTraining"
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD
+        LABEL="Field.Label.TrainingServiceOffering.TrainingName"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="trainingName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.TrainingServiceOffering.TrainingType"
+        USE_BLANK="true"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="trainingType"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.TrainingServiceOffering.ApprovalRequired">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="approvalRequired"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.TrainingServiceOffering.UnitsRequired"
+        USE_BLANK="true"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="trainingSODetails$unitsRequired"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ServiceDeliveryConfiguration"
+  >
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.DeliveryFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="deliveryFrequency"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="deliveryFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceDeliveryConfig.Clients"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="singleOrMultipleClients"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="singleOrMultipleClients"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.AuthorizedRateToBeSpecified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="authorizedRateInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="authorizedRateInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.ServiceDeliveryParticipationEnabled">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="servDelParticipationInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="servDelParticipationInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceDeliveryConfig.ManualSDCompletionEnabledIndicator"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="manualSDCEbdInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="manualSDCEbdInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceDeliveryConfig.OwnerToBeSpecified"
+      USE_DEFAULT="true"
+      WIDTH="85"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="ownerToBeSpecified"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="ownerToBeSpecified"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.AllowFrequencyModification">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="freqModificationInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="freqModificationInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.MultipleServiceDeliveries">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="multipleServDelInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="multipleServDelInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceDeliveryConfig.NomineeToBeSpecifiedIndicator"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="nomineeToBeSpdInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="nomineeToBeSpdInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceDeliveryConfig.NumberOfUnitsToBeSpecified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="numberOfUnitsInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="numberOfUnitsInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceDeliveryConfig.ProviderAndProviderTypeSelection"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="85"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="providerAndTypeSel"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerAndTypeSel"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceDeliveryConfig.ProgressApplicationInd"
+      WIDTH="85"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="progressApplicableInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="progressApplicableInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SecurityRights"
+  >
+    <FIELD LABEL="Field.Label.SecurityRights.Create">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="createRight"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="createRight"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SecurityRights.Maintain">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="maintainRight"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="maintainRight"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SecurityRights.View">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="viewRight"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="viewRight"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.SecurityRights.Approve">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="approveRight"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="approveRight"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.EstimatedCostRuleSet"
+  >
+
+
+    <FIELD LABEL="Field.Label.EstimatedCostRuleSet.RuleSet">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="creoleRuleSetLinkDtls$creoleRuleSetID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="creoleRuleSetLinkDtls$creoleRuleSetID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EstimatedCostRuleSet.StartDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="creoleRuleSetLinkDtls$startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="creoleRuleSetLinkDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EstimatedCostRuleSet.DataStoreName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="creoleRuleSetLinkDtls$creoleDataStoreName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="creoleRuleSetLinkDtls$creoleDataStoreName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EstimatedCostRuleSet.EndDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="creoleRuleSetLinkDtls$endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="creoleRuleSetLinkDtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="serviceOfferingDtls$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceOfferingDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET TOP="false">
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="ProviderManagement_listServiceOffering"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Back">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_selectServiceOfferingType"
+        WINDOW_OPTIONS="width=900"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      LABEL="ActionControl.Label.Finish"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewTrainingServiceOfferingFrmList">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>User Interfaces and User Interaction</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Manual"><link rel="up" href="DMN11217.html" title="Inline Elements"><link rel="previous" href="DMN11985.html" title="Command-line Environments"><link rel="next" href="DMN11BAF.html" title="Footnotes"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN11985.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN11BAF.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN11A13"></a>User Interfaces and User Interaction</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11A18"></a>Overview</h3></div></div><div></div></div><p>When describing user-interfaces and user interactions with
+      user-interfaces, there are a number of inline elements that can be used.
+      If you use these elements correctly, you will guarantee that your
+      documents will allow the generation of consistent, well-formatted
+      presentation of content such as menu choices and keyboard
+      shortcuts.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11A21"></a>
+        <tt class="sgmltag-element">mousebutton</tt>
+      </h3></div></div><div></div></div><p>Use this to refer to a mouse button. The body of the
+      <tt class="sgmltag-element">mousebutton</tt> element should contain the button name:
+      use only <span class="mousebutton">left</span>,
+      <span class="mousebutton">right</span>, or
+      <span class="mousebutton">middle</span>.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11A3C"></a>
+        <tt class="sgmltag-element">keycap</tt>
+      </h3></div></div><div></div></div><p>Use this for the text appearing on a key on the keyboard. For
+      letter keys, always use the upper-case letter, as that is what is
+      printed on the key. For keys displaying words, use a space between the
+      words, for example, <span class="keycap">Num Lock</span>, or <span class="keycap">Page
+      Up</span>. Some keys do not have names or characters printed on them,
+      so use the one of the following in those cases: <span class="keycap">Enter</span>,
+      <span class="keycap">Space</span>, <span class="keycap">Backspace</span>,
+      <span class="keycap">Tab</span>, <span class="keycap">Shift</span>, <span class="keycap">Up Arrow</span>,
+      <span class="keycap">Down Arrow</span>, <span class="keycap">Left Arrow</span>, <span class="keycap">Right
+      Arrow</span>, <span class="keycap">Option</span>, etc.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11A78"></a>
+        <tt class="sgmltag-element">keycombo</tt>
+      </h3></div></div><div></div></div><p>When instructing a reader to press certain combinations of keys,
+      you should nest the relevant <tt class="sgmltag-element">keycap</tt> elements within a
+      <tt class="sgmltag-element">keycombo</tt> element. This will ensure that the correct
+      separator is added during rendering; you do not have to invent your own!
+      Here are some examples:</p><div class="informalexample"><pre class="programlisting">&lt;para&gt;
+  Press
+  &lt;keycombo&gt;
+    &lt;keycap&gt;Ctrl&lt;/keycap&gt;
+    &lt;keycap&gt;S&lt;/keycap&gt;
+  &lt;/keycombo&gt;
+  to save your file.
+&lt;/para&gt;</pre><div class="blockquote"><blockquote class="blockquote"><p>Press <span class="keycap">Ctrl</span>-<span class="keycap">S</span> to save your file.</p></blockquote></div></div><p>The whitespace characters within the <tt class="sgmltag-element">keycombo</tt>
+      element are not significant, so it is easy to format them in a text
+      editor so that they are easy to identify. Be careful, however, not to
+      place whitespace between the <tt class="sgmltag-endtag">&lt;/keycombo&gt;</tt>
+      closing tag and any following punctuation character.</p><p>It is not unusual to use certain keys in combination with
+      mouse-button clicks, and this can also be represented with the
+      <tt class="sgmltag-element">keycombo</tt> element as follows:</p><div class="informalexample"><pre class="programlisting">&lt;para&gt;
+  Click
+  &lt;keycombo&gt;
+    &lt;keycap&gt;Ctrl&lt;/keycap&gt;
+    &lt;mousebutton&gt;left&lt;/mousebutton&gt;
+  &lt;/keycombo&gt;
+  to extend your selection.
+&lt;/para&gt;</pre><div class="blockquote"><blockquote class="blockquote"><p>Click <span class="keycap">Ctrl</span>-<span class="mousebutton">left</span> to save your file.</p></blockquote></div></div><p>For keys that have more than one symbol on them, usually
+      punctuation characters, you do not have to indicate that the
+      <span class="keycap">Shift</span> key should be held to while pressing the key. For
+      letters, however, include the <span class="keycap">Shift</span> key in the key
+      combination to indicate if the letter should be upper-case, as the key
+      is only identified by the upper-case letter appearing on it and pressing
+      it without a modifier key would yield a lower-case letter.</p><p>DocBook also supports the concept of key combinations where keys
+      are pressed simultaneously (like the common <span class="keycap">Ctrl</span>-<span class="keycap">S</span> to save a file), and where keys are pressed in sequence,
+      but this distinction is not supported in C&uacute;ram documents.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11AE6"></a>
+        <tt class="sgmltag-element">guibutton</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a button in a dialog box, on a web page,
+      or elsewhere. Buttons include push-buttons, check-boxes and
+      radio-buttons.</p><p>Take care to use the correct case for the button name; the label
+      on an <span class="guibutton">OK</span> button, for example, is almost always
+      all in upper-case; of course, sometimes there really is an
+      <span class="guibutton">Ok</span> button, just to keep you on your toes.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11AFD"></a>
+        <tt class="sgmltag-element">guilabel</tt>
+      </h3></div></div><div></div></div><p>Use this for the label of a component in a dialog box or window
+      other than buttons, icons and menus. Typically, it is used for the
+      labels associated with text fields and list boxes. You should also use
+      it for the values that appear in list boxes.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11B09"></a>
+        <tt class="sgmltag-element">guiicon</tt>
+      </h3></div></div><div></div></div><p>Use this for the text or image associated with an icon or tool-bar
+      button. If the icon is to be included, use the
+      <tt class="sgmltag-element">inlinemediaobject</tt> element.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11B18"></a>
+        <tt class="sgmltag-element">guimenu</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a menu on the main menu bar of an
+      application or for a pop-up menu. For example, &ldquo;<span class="quote">open the
+      <span class="guimenu">File</span> menu</span>&rdquo;.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11B2B"></a>
+        <tt class="sgmltag-element">guisubmenu</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a sub-menu within a menu of an
+      application. For example, &ldquo;<span class="quote">open the <span class="guisubmenu">New</span>
+      sub-menu of the <span class="guimenu">File</span> menu</span>&rdquo;. Sub-menus normally
+      appear in menus with an arrow indicating that another menu will be
+      displayed when the sub-menu is selected.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11B42"></a>
+        <tt class="sgmltag-element">guimenuitem</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a menu item within a menu or sub-menu
+      that triggers an action of some kind.</p><p>It is common practice in user-interfaces to append an ellipsis
+      (&ldquo;<span class="quote">...</span>&rdquo;) to menu items that trigger actions that require
+      further user input (usually via a dialog box). As this is rarely an
+      actual ellipsis character, just use three full stops; don't leave them
+      out. Of course, some menu items do not include an ellipsis when they
+      should; you must also omit them in this case.</p><div class="informalexample"><pre class="programlisting">&lt;para&gt;
+  Open the &lt;guimenu&gt;File&lt;/guimenu&gt; and select the
+  &lt;guimenuitem&gt;Save As...&lt;/guimenuitem&gt; menu item.
+&lt;/para&gt;</pre><div class="blockquote"><blockquote class="blockquote"><p>Open the <span class="guimenu">File</span> menu and select the
+          <span class="guimenuitem">Save As...</span> menu item.</p></blockquote></div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11B69"></a>
+        <tt class="sgmltag-element">menuchoice</tt>
+      </h3></div></div><div></div></div><p>It is common to direct a user to a menu item via a menu or
+      sub-menu. To ensure that such directions are presented uniformly
+      throughout all documents, the <tt class="sgmltag-element">menuchoice</tt> element
+      should be used. This allows a path to a menu item to be defined with
+      ease and provides a consistent look by adding the separating characters
+      or glyphs automatically upon rendering. Do not include the separators in
+      the content.</p><p>Like the <tt class="sgmltag-element">keycombo</tt> element, the whitespace used
+      within the <tt class="sgmltag-element">menuchoice</tt> element is not
+      significant.</p><div class="informalexample"><pre class="programlisting">&lt;para&gt;
+  To create a new document select
+  &lt;menuchoice&gt;
+    &lt;guimenu&gt;File&lt;/guimenu&gt;
+    &lt;guisubmenu&gt;New&lt;/guisubmenu&gt;
+    &lt;guimenuitem&gt;Document...&lt;/guimenuitem&gt;
+  &lt;/menuchoice&gt;
+  from the menu. Alternatively, you can press
+  &lt;keycombo&gt;
+    &lt;keycap&gt;Alt&lt;/keycap&gt;
+    &lt;keycap&gt;Shift&lt;/keycap&gt;
+    &lt;keycap&gt;N&lt;/keycap&gt;
+  &lt;keycombo&gt;.
+&lt;/para&gt;</pre><div class="blockquote"><blockquote class="blockquote"><p>To create a new document select <span class="guimenu">File</span>&rarr;<span class="guisubmenu">New</span>&rarr;<span class="guimenuitem">Document...</span> from the menu. Alternatively, you can press the
+          <span class="keycap">Alt</span>-<span class="keycap">Shift</span>-<span class="keycap">N</span> keys.</p></blockquote></div></div></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN11985.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN11BAF.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

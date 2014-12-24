@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2009, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the list  provider group members  page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewEmploymentHistoryForProviderGroupMember"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00246961, GP -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00246961 -->
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="providerPartyID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="DISPLAY"
+    OPERATION="listEmploymentHistory"
+  />
+
+
+  <!-- BEGIN, CR00128037, JSP -->
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="DISPLAY1"
+    OPERATION="listMembershipHistory"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00128037 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="DISPLAY2"
+    OPERATION="readProviderPartySummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerPartyID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="providerPartyID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerPartyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerPartyID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerPartyID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerPartyID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.GroupMemberCertification"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listGroupMemberCertification">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.GroupMemberTraining"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listTrainingProgramForProviderGroupMember">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerGroupID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.GroupMemberEmploymentHistory"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewEmploymentHistoryForProviderGroupMember">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00246961 -->
+
+
+  <LIST TITLE="List.Title.ProviderGroupMembershipHistory">
+
+
+    <FIELD
+      LABEL="Field.Label.Provider"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="providerName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00246961, GP -->
+      <LINK PAGE_ID="ProviderManagement_resolveConcernRoleType">
+        <!-- END, CR00246961 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Role"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="role"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <CLUSTER>
+    <FIELD CONTROL="SKIP">
+		</FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.OtherEmploymentHistory">
+    <FIELD
+      LABEL="Field.Label.Employer"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employerName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Person_resolveEmployerHome"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="employerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="employerType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="employerType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Occupation"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="occupationType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

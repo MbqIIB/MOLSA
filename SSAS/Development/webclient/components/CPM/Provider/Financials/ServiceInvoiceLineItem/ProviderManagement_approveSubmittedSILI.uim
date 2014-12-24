@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!--This page allows to view the list of all the submitted Service Invoice -->
+<!--Line Items.                                                            -->
+<PAGE
+  PAGE_ID="ProviderManagement_approveSubmittedSILI"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="listAllSubmittedServiceInvoiceLineItems"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="ACTION"
+    OPERATION="bulkApproveServiceInvoiceLineItems"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Approve"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="serviceInvoiceID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceInvoiceID"
+    />
+  </CONNECT>
+
+
+  <LIST SCROLL_HEIGHT="125">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.MultiSelect.Accept"
+      WIDTH="10"
+    >
+      <WIDGET
+        LABEL="LABEL.WIDGET.SELECT"
+        TYPE="MULTISELECT"
+      >
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="SILIIDVersionNo"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="ServiceInvoiceLineItemIDList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Container.Label.ReferenceNumber">
+      <FIELD LABEL="Field.Label.ReferenceNumber">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="referenceNo"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="excprocInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="hasCorrection"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="service"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceDateFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceDateFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceDateTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceDateTo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

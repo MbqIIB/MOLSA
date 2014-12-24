@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver page that allows to modify the placement information based on -->
+<!-- the existing active reservation.                                      -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveModifyPlacementInformation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+    
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    boolean activeReservationExistsInd = Boolean.valueOf(request.getParameter("activeReservationExistsInd")).booleanValue();
+    
+    String placementID = request.getParameter("placementID");
+    String versionNo = request.getParameter("versionNo");
+    String placeID = request.getParameter("placeID");
+    String placeVersionNo = request.getParameter("placeVersionNo");
+    String fromDate = request.getParameter("fromDate");
+    String toDate = request.getParameter("toDate");
+    String compartmentID = request.getParameter("compartmentID");
+    String concernRoleID = request.getParameter("concernRoleID");
+    String url = "";
+    
+    if(activeReservationExistsInd) {
+      boolean cancelReservationInd = true;
+          
+      url = context + "ProviderManagement_modifyPlacementInformationConfirmCancelReservationPage.do?placementID=" + curam.omega3.request.RequestUtils.escapeURL(placementID) + 
+      "&amp;placeID=" + curam.omega3.request.RequestUtils.escapeURL(placeID) + 
+      "&amp;placeVersionNo=" + curam.omega3.request.RequestUtils.escapeURL(placeVersionNo) +
+      "&amp;fromDate=" + curam.omega3.request.RequestUtils.escapeURL(fromDate) +
+      "&amp;versionNo=" + curam.omega3.request.RequestUtils.escapeURL(versionNo) +
+      "&amp;toDate=" + curam.omega3.request.RequestUtils.escapeURL(toDate) + 
+      "&amp;compartmentID=" + curam.omega3.request.RequestUtils.escapeURL(compartmentID) + 
+      "&amp;cancelReservationInd=" + cancelReservationInd + 
+      "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+    } else {
+      if(!compartmentID.equals("")) {
+      url = context + "ProviderManagement_viewCompartmentPage.do?compartmentID=" + curam.omega3.request.RequestUtils.escapeURL(compartmentID); 
+      } else {
+      url = context + "ProviderManagement_viewPlacementDetailsPage.do?placementID=" + curam.omega3.request.RequestUtils.escapeURL(placementID) + "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+     }
+    }
+    url += "&amp;" + rh.getSystemParameters();  
+    response.sendRedirect(response.encodeRedirectURL(url));          
+    
+  </JSP_SCRIPTLET>
+</PAGE>

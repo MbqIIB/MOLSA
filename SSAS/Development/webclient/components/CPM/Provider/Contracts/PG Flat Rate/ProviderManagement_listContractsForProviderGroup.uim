@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2012 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall       -->
+<!-- not disclose such Confidential Information and shall use it only       -->
+<!-- in accordance with the terms of the license agreement you entered      -->
+<!-- into with Curam Software.                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list the Contracts for Provider Group.    -->
+<PAGE
+  PAGE_ID="ProviderManagement_listContractsForProviderGroup"
+  HIDE_CONDITIONAL_LINKS="false"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00208430, PS -->
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="listProviderGroupContracts"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00208430 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerGroupConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00198612, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00198612 -->
+      <!-- BEGIN, CR00235192, PS -->
+      <ACTION_CONTROL
+        LABEL="Action.Link.NewFlatRateContract"
+        >
+        <LINK 
+          PAGE_ID="ProviderManagement_createFlatRateContractForProviderGroup"
+          OPEN_MODAL="true"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="Action.Link.NewUtilizationContract">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createUtilizationContractForProviderGroup"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00235192 -->
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00198612, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198612 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00234497, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00234497 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveModifyContractForProviderGroup"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <!-- BEGIN, CR00248418, PS -->
+      <SEPARATOR/>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Generate">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="inEditIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_generateContract"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.PreviewContract">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="previewContractIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_previewContract"
+          WINDOW_OPTIONS="width=350"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.PrintContract">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="printContractIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_printContract"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Activate">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="issuedIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_activateContract"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Terminate">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="liveIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_terminateContract"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.Renew">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="liveIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_renewProviderGroupContract"
+          WINDOW_OPTIONS="width=300"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="startDate"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="startDate"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.AmendContract">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="amendContractIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_amendProviderGroupUtilizationContract"
+          WINDOW_OPTIONS="width=330"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <SEPARATOR/>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddService">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="addServiceIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addServicesToProviderGroupContract_fromView"
+          WINDOW_OPTIONS="width=500"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddContact">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="addContactIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createContractContact"
+          WINDOW_OPTIONS="width=450"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00314744, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewAttachment">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="inEditIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createContractAttachment"
+          WINDOW_OPTIONS="width=620"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00314744 -->
+      <SEPARATOR/>
+      
+      <ACTION_CONTROL 
+        LABEL="ActionControl.Label.StatusHistory" 
+        APPEND_ELLIPSIS="false"
+        >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewContractStatusHistory"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00248418 -->
+      
+      <!-- BEGIN, CR00234497, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteContract">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="deleteIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveDeleteContractForProvider"
+          WINDOW_OPTIONS="width=280"
+          >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractType"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00234497 -->
+
+      <!-- BEGIN, CR00198612, SS -->
+    </ACTION_SET>
+    <!-- END, CR00198612 -->
+
+
+    <!-- BEGIN, CR00208276, PS -->
+    <FIELD
+      LABEL="Field.Label.ReferenceNumber"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <!-- BEGIN, CR00208430, PS -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="referenceNumber"
+        />
+      </CONNECT>
+      <!-- END, CR00208430 -->
+    </FIELD>
+    <!-- END, CR00208276 -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Contract"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="contractType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ContractServicesType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="contractServicesType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- Links to View/Modify Flat-Rate/Utilization Contract pages -->
+    <!-- BEGIN, CR00198612, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_resolveViewContractForProviderGroup">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contractType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00208430, PS -->
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <!-- END, CR00208430 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198612 -->
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                -->
+<!-- ===========							                                -->
+<!-- This page allows the user to view the list of performance measures.    -->
+<PAGE
+  PAGE_ID="ProviderManagement_listSOPerformanceMeasure"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="PAGETITLE"
+    OPERATION="viewServiceOffering"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSOPerformanceMeasure"
+    NAME="DISPLAY"
+    OPERATION="listServiceOfferingPerformanceMeasure"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="PAGETITLE"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createSOPerformanceMeasure"
+        WINDOW_OPTIONS="width=360"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddExisting">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_addSOPerformanceMeasure"
+        WINDOW_OPTIONS="width=450"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddEvaluationCriteria">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="displayLinkInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addEvaluationCriteriaToSOPerformanceMeasure"
+          WINDOW_OPTIONS="width=400"
+        >
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soPerformanceMeasureLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soPerformanceMeasureLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="performanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddOutcome">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="displayLinkInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addScoreOutcome"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soPerformanceMeasureLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soPerformanceMeasureLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="performanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="displayLinkInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteSOPerformanceMeasure"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soPerformanceMeasureLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soPerformanceMeasureLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="performanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Measure"
+      WIDTH="45"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="measure"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewSOPerformanceMeasure">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="soPerformanceMeasureLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soPerformanceMeasureLinkID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+</PAGE>

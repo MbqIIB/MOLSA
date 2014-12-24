@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                                  -->
+<!-- All rights reserved.                                                      -->
+<!-- This software is the confidential and proprietary information of Curam    -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose       -->
+<!-- such Confidential Information and shall use it only in accordance with    -->
+<!-- the terms of the license agreement you entered into with Curam            -->
+<!-- Software.                                                                 -->
+<!-- Description                                                               -->
+<!-- ===========                                                               -->
+<!-- This page allows the user to view a list of available provider categories.-->
+<PAGE
+  PAGE_ID="ProviderManagement_listCategoryForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY"
+    OPERATION="listProviderCategories"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00198768, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00198768 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00207959, SS -->
+      <!-- BEGIN, CR00187976, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createCategoryForProvider"
+        WINDOW_OPTIONS="width=650"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00207959 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <LIST>
+    <!-- BEGIN, CR00198768, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00207959, SS -->
+        <!-- BEGIN, CR00187976, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyCategoryForProvider"
+          WINDOW_OPTIONS="width=650"
+        >
+          <!-- END, CR00187976 -->
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$providerCategoryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerCategoryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00207959, SS -->
+        <!-- BEGIN, CR00197352, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelCategoryForProvider"
+        >
+          <!-- END, CR00187417 -->
+          <!-- END, CR00197352 -->
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$details$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$providerCategoryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerCategoryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00198768 -->
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.Category"
+      WIDTH="20"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$providerTypeCategory"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.PrimaryCategory"
+      WIDTH="14"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="primaryInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="13"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="13"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198768, SS -->
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.EndReason"
+      WIDTH="28"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$endReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198768 -->
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="12"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198768, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewProviderCategory">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$providerCategoryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerCategoryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198768 -->
+
+
+  </LIST>
+
+
+</PAGE>

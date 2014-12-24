@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+                        Datamanager configuration file.
+  This file contains targets for the datamanager application.
+  The datamanager only recognises composite targets which contain 1 or more subtargets.
+  Each subtarget references a specific target.
+  Each target consists of entries which define a source from which the data manager may
+  retrieve data which can be either
+    1) directly passed on to the database
+    2) parsed into a form which the database will recognise and then passed on
+  Each entry also contains a base which must be available in order for the datamanager
+  to construct a path to the specified source. If the base is not specified the path
+  will be assumed to begin in the data manager applications home directory (i.e. the
+  directory in which it was started).
+  A composite target may then be passed to the data manager via the prm.target ANT property
+  (or passed directly to the application on the command line)
+  -->
+<datamanager>
+  <!--
+                                      TARGETS
+     A target defines a set of files or directories containg files to be processed by the
+     datamanager. The entries will be processed in the order that they appear within the
+     target. A target must be defined before it can become a subtarget of another composite
+     target. A target may not be invoked directly and must be a subtarget of a composite
+     target in order to be recognized by the datamanager.
+     The excludes tag defines a target which cannot be run within the same composite target
+     as another target
+  -->
+  <target name="tables">
+    <entry
+      base="basedir"
+      name="build/ddl/Merged_Tables.xml"
+      type="xml"
+    />
+  </target>
+
+
+  <target name="initial">
+    <entry
+      base="basedir"
+      name="build/ddl/Merged_Fids.xml"
+      type="xml"
+    />
+    <entry
+      base="basedir"
+      name="build/ddl/Merged_Batch.xml"
+      type="xml"
+    />
+
+
+    <entry
+      base="basedir"
+      name="build/datamanager/data/initial/"
+      type="dmx"
+    />
+    <entry
+      base="basedir"
+      name="build/svr/gen/int/rules"
+      type="dmx"
+    />
+    <entry
+      base="basedir"
+      name="build/svr/events/gen/dmx"
+      type="dmx"
+    />
+
+
+    <entry
+      base="basedir"
+      name="components/core/data/initial/handcraftedscripts/BatchDesc.sql"
+      type="sql"
+    />
+    <entry
+      base="basedir"
+      name="components/core/data/initial/handcraftedscripts/Supergroup.sql"
+      type="sql"
+    />
+    <entry
+      base="basedir"
+      name="build/svr/codetable/sql"
+      type="sql"
+    />
+  </target>
+
+
+  <target name="demo">
+    <entry
+      base="basedir"
+      name="build/datamanager/data/demo"
+      type="dmx"
+    />
+  </target>
+
+
+  <target name="test">
+    <entry
+      base="basedir"
+      name="build/datamanager/data/test"
+      type="dmx"
+    />
+  </target>
+
+
+  <target name="constraints">
+    <entry
+      base="basedir"
+      name="build/ddl/Merged_ForeignKeys.xml"
+      type="xml"
+    />
+  </target>
+
+
+  <target name="indices">
+    <entry
+      base="basedir"
+      name="build/ddl/Merged_PrimaryKeys.xml"
+      type="xml"
+    />
+    <entry
+      base="basedir"
+      name="build/ddl/Merged_Indices.xml"
+      type="xml"
+    />
+    <entry
+      base="basedir"
+      name="build/ddl/Merged_UniqueConstraints.xml"
+      type="xml"
+    />
+  </target>
+
+
+  <target name="extracteddata">
+    <entry
+      base="basedir"
+      name="build/dataextractor"
+      type="dmx"
+    />
+  </target>
+
+
+  <!--
+                                COMPOSITE TARGETS
+      A discrete set of subtargets which have been previously defined as targets. A composite
+      target is the unit of work used by the datamanager to describe the files which must
+      be processed in order to achieve its current objective. e.g. the composite target "all"
+      defines all targets which must be processed to achieve a clean database from scratch
+  -->
+  <compositetarget name="all">
+    <subtarget name="tables"/>
+    <subtarget name="indices"/>
+    <subtarget name="initial"/>
+    <subtarget name="demo"/>
+    <subtarget name="constraints"/>
+  </compositetarget>
+
+
+  <compositetarget name="initial">
+    <subtarget name="tables"/>
+    <subtarget name="indices"/>
+    <subtarget name="initial"/>
+    <subtarget name="constraints"/>
+  </compositetarget>
+
+
+  <compositetarget name="demo">
+    <subtarget name="tables"/>
+    <subtarget name="indices"/>
+    <subtarget name="initial"/>
+    <subtarget name="demo"/>
+    <subtarget name="constraints"/>
+  </compositetarget>
+
+
+  <compositetarget name="constraintsonly">
+    <subtarget name="indices"/>
+    <subtarget name="constraints"/>
+  </compositetarget>
+
+
+  <compositetarget name="test">
+    <subtarget name="tables"/>
+    <subtarget name="indices"/>
+    <subtarget name="initial"/>
+    <subtarget name="test"/>
+    <subtarget name="constraints"/>
+  </compositetarget>
+
+
+  <compositetarget name="insertextracteddata">
+    <subtarget name="tables"/>
+    <subtarget name="indices"/>
+    <subtarget name="extracteddata"/>
+    <subtarget name="constraints"/>
+  </compositetarget>
+
+
+</datamanager>

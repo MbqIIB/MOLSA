@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                                  -->
+<!-- ===========                                                                  -->
+<!-- This jsp redirects the user to a member home page within an integrated case. -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveSILIAdjustmentFactor"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+    
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    String adjustmentReason = request.getParameter("adjustmentReason");    
+    String sILITransactionID = request.getParameter("sILITransactionID");
+    String serviceInvoiceLineItemID = request.getParameter("serviceInvoiceLineItemID");
+    
+    
+    String pageName=""; 
+    String url = "";
+    
+    
+    if (sILITransactionID == null) {
+    // BEGIN, CR00126196, SK
+    core.ScriptletMissingParamException e = new
+    core.ScriptletMissingParamException(-20002, "sILITransactionID");
+    System.out.println(e);
+    throw e;
+    // END, CR00126196
+    }
+    if (adjustmentReason == null) {
+    // BEGIN, CR00126196, SK
+    core.ScriptletMissingParamException e = new
+    core.ScriptletMissingParamException(-20002, "adjustmentReason");
+    System.out.println(e);
+    throw e;
+    // END, CR00126196
+    }      
+    if (serviceInvoiceLineItemID == null) {
+    // BEGIN, CR00126196, SK
+    core.ScriptletMissingParamException e = new
+    core.ScriptletMissingParamException(-20002, "serviceInvoiceLineItemID");
+    System.out.println(e);
+    throw e;
+    // END, CR00126196
+    }      
+    
+    if( (adjustmentReason.equals("SILIAR16")) || (adjustmentReason.equals("SILIAR17"))  ){
+    
+    pageName = "ProviderManagement_viewProviderServiceRateForSILIAdjustmentFactor";
+    
+    url = context + pageName + "Page.do?sILITransactionID=" + curam.omega3.request.RequestUtils.escapeURL(sILITransactionID) +"&amp;serviceInvoiceLineItemID=" + curam.omega3.request.RequestUtils.escapeURL(serviceInvoiceLineItemID);
+    // BEGIN, CR00200160, PS
+    url += "&amp;" + rh.getSystemParameters();
+    // END, CR00200160
+    response.sendRedirect(response.encodeRedirectURL(url));      
+    }
+    
+    if( (adjustmentReason.equals("SILIAR18")) || (adjustmentReason.equals("SILIAR19"))  ){
+    
+    pageName = "ProviderManagement_viewServiceOfferingRateForSILIAdjustmentFactor";  
+    
+    url = context + pageName + "Page.do?sILITransactionID=" + curam.omega3.request.RequestUtils.escapeURL(sILITransactionID) + "&amp;serviceInvoiceLineItemID=" + curam.omega3.request.RequestUtils.escapeURL(serviceInvoiceLineItemID);
+    // BEGIN, CR00200160, PS
+    url += "&amp;" + rh.getSystemParameters();
+    // END, CR00200160
+    response.sendRedirect(response.encodeRedirectURL(url));      
+    
+    }
+    
+    if( (adjustmentReason.equals("SILIAR22")) || (adjustmentReason.equals("SILIAR23"))  ){
+    
+    pageName = "ProviderManagement_viewContractedRateForSILIAdjustmentFactor";  
+    
+    // BEGIN, CR00376993, PS
+    url = context + pageName + "Page.do?sILITransactionID=" + curam.omega3.request.RequestUtils.escapeURL(sILITransactionID) + "&amp;serviceInvoiceLineItemID=" + curam.omega3.request.RequestUtils.escapeURL(serviceInvoiceLineItemID);
+    // END, CR00376993
+    
+    // BEGIN, CR00200160, PS
+    url += "&amp;" + rh.getSystemParameters();
+    // END, CR00200160
+    response.sendRedirect(response.encodeRedirectURL(url));      
+    
+    }
+    
+    if( (adjustmentReason.equals("SILIAR20")) || (adjustmentReason.equals("SILIAR21"))  ){
+    
+    curam.interfaces.ServiceInvoicePkg.ServiceInvoice_resolveSILIAdjustmentFactor_TH 
+    th = new curam.interfaces.ServiceInvoicePkg.ServiceInvoice_resolveSILIAdjustmentFactor_TH();
+    
+    th.setFieldValue(th.key$sILITransactionID_idx,sILITransactionID);
+    
+    th.callServer();
+    String serviceAuthorizationLIID = th.getFieldValue(th.result$relatedID_idx);      
+    
+    pageName = "ProviderManagement_viewSALIForSILIAdjustmentFactor"; 
+    
+    // BEGIN, CR00376993, PS
+    url = context + pageName + "Page.do?serviceAuthorizationLIID=" + curam.omega3.request.RequestUtils.escapeURL(serviceAuthorizationLIID) + "&amp;serviceInvoiceLineItemID=" + curam.omega3.request.RequestUtils.escapeURL(serviceInvoiceLineItemID);
+    // END, CR00376993
+    
+    // BEGIN, CR00200160, PS
+    url += "&amp;" + rh.getSystemParameters();
+    // END, CR00200160
+    response.sendRedirect(response.encodeRedirectURL(url));      
+    
+    }
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

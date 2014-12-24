@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the status history of a provider-->
+<PAGE
+  PAGE_ID="ProviderManagement_viewSALIStatusHistoryForSILIAdjustmentFactor"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationLineItem"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSALIForSILIAdjustmentFactor">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationLineItemHistory"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSALIStatusHistoryForSILIAdjustmentFactor">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="contextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="serviceAuthorizationLIID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <SERVER_INTERFACE
+    CLASS="ServiceAuthorization"
+    NAME="DISPLAY"
+    OPERATION="serviceAuthorizationLineItemStatusHistoryList"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationLIID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceAuthorizationLIID"
+    />
+  </CONNECT>
+  <LIST>
+    <FIELD LABEL="Field.Label.Date">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$dateTimeChanged"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ModificationReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$modificationReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitsAuthorized">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$unitsAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

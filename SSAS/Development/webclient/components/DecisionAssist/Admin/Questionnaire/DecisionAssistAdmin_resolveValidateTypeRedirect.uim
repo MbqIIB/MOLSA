@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006-2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp  is used to open the question group child details page based  -->
+<!-- on the type of child element (question or hyperlink label).            -->
+<PAGE
+  PAGE_ID="DecisionAssistAdmin_resolveValidateTypeRedirect"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+      	pageContext.getSession()).getLocale() + "/";
+      String id = request.getParameter("idParam");
+      String type = request.getParameter("typeParam");
+      String parentID = request.getParameter("parentIdParam");
+      String scriptID = request.getParameter("questionScriptIDParam");
+      String pageID   = request.getParameter("questionPageIDParam");
+      String url = "";
+
+      if (id == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "ruleSetID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+      if (type == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "nodeID");
+       System.out.println(e);
+       throw e;
+       // END, CR00126196
+      }
+     
+      if (type.equals("1")) {
+        url = context + "IEG_ViewQuestionScriptPage.do" 
+        	+ "?questionScriptIDParam=" + curam.omega3.request.RequestUtils.escapeURL(scriptID);
+      } else if (type.equals("2")) {
+        url = context + "IEG_ViewQuestionPagePage.do" 
+        	+ "?questionPageIDParam=" + curam.omega3.request.RequestUtils.escapeURL(id) 
+        	+ "&amp;questionScriptIDParam=" + curam.omega3.request.RequestUtils.escapeURL(scriptID);
+      } else if (type.equals("3")) {
+        url = context + "IEG_ViewQuestionGroupPage.do" 
+        	+ "?questionGroupIDParam=" + curam.omega3.request.RequestUtils.escapeURL(id) 
+        	+ "&amp;questionScriptIDParam=" + curam.omega3.request.RequestUtils.escapeURL(scriptID)
+        	+ "&amp;questionDirectionParam="
+        	+ "&amp;questionGroupChildIDParam="
+        	+ "&amp;questionPageIDParam=" + curam.omega3.request.RequestUtils.escapeURL((pageID==null ? "" : pageID));
+      } else if (type.equals("4")) {
+        url = context + "IEG_ViewQuestionPage.do" 
+      	+ "?questionIDParam=" + curam.omega3.request.RequestUtils.escapeURL(id) 
+       	+ "&amp;questionGroupIDParam=" + curam.omega3.request.RequestUtils.escapeURL(parentID) 
+        + "&amp;questionScriptIDParam=" + curam.omega3.request.RequestUtils.escapeURL(scriptID)
+        + "&amp;questionPageIDParam=" + curam.omega3.request.RequestUtils.escapeURL((pageID==null ? "" : pageID));
+
+      } else if (type.equals("5")) {
+        url = context + "IEG_ViewPreconditionPage.do" 
+        	+ "?questionPageIDParam=" + curam.omega3.request.RequestUtils.escapeURL(id) 
+        	+ "&amp;questionScriptIDParam=" + curam.omega3.request.RequestUtils.escapeURL(scriptID);
+      } else if (type.equals("7")) {
+        url = context + "IEG_ViewPostconditionPage.do" 
+        	+ "?questionPageIDParam=" + curam.omega3.request.RequestUtils.escapeURL(id)
+        	+ "&amp;postconditionIDParam=" + curam.omega3.request.RequestUtils.escapeURL(parentID)
+        	+ "&amp;questionScriptIDParam=" + curam.omega3.request.RequestUtils.escapeURL(scriptID);
+      }
+      
+      url += "&amp;" + rh.getSystemParameters();
+      
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a list of administration roles -->
+<!-- for a Provider. -->
+<PAGE
+  PAGE_ID="ProviderGroup_listAdminRole"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00236433, AK -->
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="DISPLAY"
+    OPERATION="listAdministrators"
+  />
+  <!-- END, CR00236433 -->
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <!-- BEGIN, CR00236433, AK -->
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="readParticipantAdminRoleListKey$maintainAdminConcernRoleKey$concernRoleID"
+    />
+    <!-- END, CR00236433 -->
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+
+
+    <ACTION_CONTROL
+      IMAGE="NewOwnerButton"
+      LABEL="ActionControl.Label.NewOwner"
+    >
+      <!-- BEGIN, CR00197352, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderGroup_createOwnerRole"
+        WINDOW_OPTIONS="width=500"
+      >
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      IMAGE="NewSupervisorButton"
+      LABEL="ActionControl.Label.NewSupervisor"
+    >
+      <!-- BEGIN, CR00197352, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createSupervisorRole"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_listAdminRole.vim"/>
+
+
+</PAGE>

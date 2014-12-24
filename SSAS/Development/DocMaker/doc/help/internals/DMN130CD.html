@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Conversion Issues</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN13005.html" title="Converting FrameMaker Documents"><link rel="previous" href="DMN13056.html" title="The Conversion Process"><link rel="next" href="DMN1330B.html" title="Preparing a Book"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN13056.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN1330B.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN130CD"></a>Conversion Issues</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN130D2"></a>Introduction</h3></div></div><div></div></div><p>
+        Before converting <span class="application">FrameMaker</span> documents
+        to DocBook format, they must be checked, and probably edited, to
+        ensure the success of the conversion process. If the documents are
+        well prepared, the conversion process will be smoother and the
+        DocBook output will require less modification.
+      </p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN130DF"></a>The C&uacute;ram Template and Formats</h3></div></div><div></div></div><p>
+        Only documents that use the standard C&uacute;ram
+        <span class="application">FrameMaker</span> template can be converted.
+        The conversion process relies on the identification of the standard
+        paragraph and character formats defined in the template to determine
+        the structure and meaning of the text in the document. If these
+        formats are used incorrectly, ambiguously, or in ways that deviate
+        from their prescribed usage, the conversion process may fail.
+      </p><p>
+        Manual overrides of the predefined formats will not be preserved.
+        For example, if the character format &ldquo;<span class="quote">Emphasis</span>&rdquo; is
+        used, it will be converted to the DocBook <tt class="sgmltag-element">emphasis</tt>
+        element, but if an override such as the direct application of an
+        italic font was used, it will be lost. There is no way the
+        conversion process can determine why italics was used; it may
+        well not have been used for emphasis, so such an assumption would
+        be invalid.
+      </p><p>
+        All manual overrides will be flagged in the output DocBook document.
+        They can be identified within a <span class="application">FrameMaker</span>
+        by placing the cursor in the paragraph or character sequence being
+        checked and looking at the format name in the status bar in the lower
+        left of the <span class="application">FrameMaker</span> window. The
+        paragraph format name and, if applicable, the character format name
+        will be displayed. If either format name has an asterisk character
+        appended, this indicates a manual override. On some occasions
+        (typically when a character format is applied to all of the text in
+        a paragraph), it may be impossible to eliminate the flagging of a
+        manual override on a paragraph format. These can be ignored.
+      </p><p>
+        To remove manual overrides on character sequences, select the text
+        and set the character format to &ldquo;<span class="quote">Default &para; Font</span>&rdquo;
+        to clear the overrides before applying the correct character formats.
+      </p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN13106"></a>Cross-References</h3></div></div><div></div></div><p>
+        The conversion process attempts to identify and preserve all
+        cross-references in the document, however, there are some
+        limitations.
+      </p><p>
+        Chapter cross-references may be broken due to an anomaly in the
+        use of the C&uacute;ram template whereby a cross-reference marker is
+        created on a <span class="emphasis"><em>master</em></span> page instead of a
+        <span class="emphasis"><em>body</em></span> page. These will need to be fixed
+        manually before conversion.
+      </p><p>
+        Only some of the standard cross-reference formats (and even less
+        of the non-standard ones) are supported. One problem is the use of
+        cross-references that target another file. Many can be resolved
+        automatically, but there are restrictions. The table below
+        describes the supported cross-reference formats and when they
+        should be used. It is likely that most of the cross-references
+        in your document are compliant, but some may need to be changed.
+        Some formats have several names (some are just misspellings); the
+        supported alternatives are listed.
+      </p><div class="table"><a name="DMN1311A"></a><table summary="Cross-Reference Formats" border="1"><colgroup><col width="40%"><col width="60%"></colgroup><thead><tr><th><p>Format Name</p></th><th><p>Description</p></th></tr></thead><tbody><tr><td><p>Chapter Reference</p></td><td><p>
+                  A reference to a &ldquo;<span class="quote">ChapterNumber</span>&rdquo;
+                  paragraph. It should be the only format used for
+                  references to chapters. Any type of reference to a
+                  &ldquo;<span class="quote">ChapterTitle</span>&rdquo; paragraph is not supported.
+                </p><p>
+                  The alternative names &ldquo;<span class="quote">ChapterReference</span>&rdquo;,
+                  &ldquo;<span class="quote">Chapter Num</span>&rdquo;, and &ldquo;<span class="quote">Chapter Ref</span>&rdquo;
+                  are supported.
+                </p></td></tr><tr><td><p>Chapter &amp; Section Reference</p></td><td><p>
+                  A reference to a &ldquo;<span class="quote">Section</span>&rdquo; or
+                  &ldquo;<span class="quote">Subsection</span>&rdquo; paragraph within a chapter.
+                  This is the preferred format for use when sections are
+                  located in a different chapter or file.
+                </p><p>
+                  No alternatives are supported.
+                </p></td></tr><tr><td><p>Appendix Reference</p></td><td><p>
+                  A reference to an &ldquo;<span class="quote">Appendix Number</span>&rdquo; paragraph.
+                  It should be the only format used for references to other
+                  appendices.
+                </p><p>
+                  The alternative &ldquo;<span class="quote">Appendix Ref</span>&rdquo; is supported.
+                </p></td></tr><tr><td><p>Appendix &amp; Section Reference</p></td><td><p>
+                  A reference to a &ldquo;<span class="quote">Section</span>&rdquo; or
+                  &ldquo;<span class="quote">Subsection</span>&rdquo; paragraph within an appendix.
+                  This format was not included in the standard template,
+                  however, for a cross-reference to a section in an appendix
+                  from a location outside that appendix, this format should
+                  be applied or the cross-reference may not be resolved.
+                  You can import it from the conversion template described
+                  below. An ordinary section reference may work, but the
+                  probability is lower.
+                </p><p>
+                  The alternative &ldquo;<span class="quote">Appendix Section Reference</span>&rdquo;
+                  is supported.
+                </p></td></tr><tr><td><p>Section Reference</p></td><td><p>
+                  A reference to a &ldquo;<span class="quote">Section</span>&rdquo; or
+                  &ldquo;<span class="quote">Subsection</span>&rdquo; paragraph within the same
+                  chapter or appendix. If this is used to reference a
+                  section outside of the current chapter or appendix, it
+                  is less likely to be resolved correctly.
+                </p><p>
+                  Many variations on the format name are acceptable:
+                  &ldquo;<span class="quote">Heading &amp; Section</span>&rdquo;,
+                  &ldquo;<span class="quote">Section &amp; Heading</span>&rdquo;,
+                  &ldquo;<span class="quote">SectionAndTitleReference</span>&rdquo;,
+                  &ldquo;<span class="quote">Subsection Reference</span>&rdquo;, and
+                  &ldquo;<span class="quote">SubSection Reference</span>&rdquo;.
+                </p></td></tr><tr><td><p>Subsubection Reference</p></td><td><p>
+                  The &ldquo;<span class="quote">Subsubsection Reference</span>&rdquo; format is
+                  usually defined differently from the &ldquo;<span class="quote">Section
+                  Reference</span>&rdquo;, as this section level is not numbered,
+                  however, it will be treated like a standard section
+                  reference during conversion and is acceptable once the
+                  reference is within the same file. Again, when the
+                  reference is to another file, the chance of it working
+                  becomes slimmer.
+                </p><p>
+                  Long, made-up words seem to be hard to spell, so the
+                  following variations have been identified and are
+                  acceptable: &ldquo;<span class="quote">Subsubection Reference</span>&rdquo; and
+                  &ldquo;<span class="quote">Subsubsection</span>&rdquo;.
+                </p></td></tr><tr><td><p>Table Reference</p></td><td><p>
+                  A reference to a &ldquo;<span class="quote">TableTitle</span>&rdquo; paragraph
+                  within the same chapter or appendix. References to tables,
+                  even in the same chapter or appendix, cannot always be
+                  resolved due to limitations in the conversion facilities
+                  provided by <span class="application">FrameMaker</span>.
+                </p><p>
+                  No alternatives are supported.
+                </p></td></tr><tr><td><p>Figure Reference</p></td><td><p>
+                  A reference to a &ldquo;<span class="quote">FigureTitle</span>&rdquo; paragraph
+                  within the same chapter or appendix. References to figures
+                  in other chapters or appendices may not be resolved.
+                </p><p>
+                  No alternatives are supported.
+                </p></td></tr><tr><td><p>Listing Reference</p></td><td><p>
+                  A reference to a &ldquo;<span class="quote">ListingStart</span>&rdquo; paragraph
+                  within the same chapter or appendix. References to listings
+                  in other chapters or appendices may not be resolved.
+                </p><p>
+                  No alternatives are supported.
+                </p></td></tr></tbody></table><p class="title"><b>Table:&nbsp;Cross-Reference Formats</b></p></div><p>
+        None of the cross-reference formats that include page numbers are
+        supported. These should be located and changed to one of the
+        supported formats.
+      </p><p>
+        References within the same file are always resolved accurately for
+        all but tables. References to other files (and local tables) are
+        resolved by matching the title text stored in the reference to the
+        title text of possible targets. If there are several targets with the
+        same title text (e.g., &ldquo;<span class="quote">Introduction</span>&rdquo;, etc.), the
+        references cannot be resolved. In this case, a warning is issued
+        and the reference will have to be fixed by hand later. The special
+        formats &ldquo;<span class="quote">Chapter &amp; Section Reference</span>&rdquo; and
+        &ldquo;<span class="quote">Appendix &amp; Section Reference</span>&rdquo; improve the odds by
+        narrowing the search for titles to the target chapter or appendix
+        respectively.
+      </p><p>
+        When a cross-reference cannot be resolved due to ambiguities,
+        DocMaker will replace the reference with a marker that can be
+        easily identified. The format of an unresolved cross-reference
+        marker is
+        <tt class="literal">__dm_xref_<i class="replaceable"><tt>type</tt></i>__<i class="replaceable"><tt>target</tt></i>@@@</tt>, where <i class="replaceable"><tt>type</tt></i> is the
+        type of reference, for example, <tt class="literal">table</tt>, or
+        <tt class="literal">chapter_section</tt>, and
+        <i class="replaceable"><tt>target</tt></i> is some information about the
+        target such as the title text or paragraph number. Simply find
+        these markers as fix them when the conversion process is complete.
+      </p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN13260"></a>Vocabulary Limitations</h3></div></div><div></div></div><p>
+        The template used for C&uacute;ram documents does not have the rich
+        <span class="emphasis"><em>vocabulary</em></span> of formats (or tags) that are
+        available in DocBook. The resulting DocBook output will, therefore,
+        need to be edited to &ldquo;<span class="quote">upgrade</span>&rdquo; the document to use
+        the new vocabulary.
+      </p><p>
+        The &ldquo;<span class="quote">GUIElement</span>&rdquo; character format is used for all
+        buttons, menus, labels, etc., but DocBook distinguishes between
+        these objects. The conversion process applies the
+        <tt class="sgmltag-element">interface</tt> element to all of them, but you should
+        then modify your document and apply the <tt class="sgmltag-element">guibutton</tt>,
+        <tt class="sgmltag-element">guimenu</tt>, <tt class="sgmltag-element">guilabel</tt>, etc.
+        elements. For menus, this can include the use of the
+        <tt class="sgmltag-element">menuchoice</tt> element that allows the effective
+        definition of complex menu choices that include menus, sub-menus,
+        and menu items.
+      </p><p>
+        The &ldquo;<span class="quote">CodeElement</span>&rdquo; character format is also widely used
+        for many different objects such as class names, literal text, command
+        names, source code fragments, etc. These are all marked as
+        <tt class="sgmltag-element">literal</tt> elements in the converted output, but,
+        again, <tt class="sgmltag-element">classname</tt>, <tt class="sgmltag-element">command</tt>,
+        <tt class="sgmltag-element">sgmltag</tt>, etc. should be used instead and must
+        be applied manually.
+      </p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN13296"></a>Other Issues</h3></div></div><div></div></div><p>
+        <span class="application">FrameMaker</span> documents include a dictionary
+        of words that are allowed in the document. When converted, these
+        words are lost. The DocBook document will need to be spell-checked
+        and the allowable words added to the wordlist. As it is possible
+        for the document dictionary to contain erroneous words that were
+        added by accident, this presents an opportunity to review the
+        spelling within all the documents.
+      </p><p>
+        Quotation marks are used directly in
+        <span class="application">FrameMaker</span> documents, but the
+        <tt class="sgmltag-element">quote</tt> element is used in DocBook instead. As an
+        author types a quotation mark in <span class="application">FrameMaker</span>,
+        it is converted to a &ldquo;<span class="quote">smart quote</span>&rdquo; by the application.
+        These marks can cause problems when converting to different
+        encodings and are very difficult to maintain when editing a
+        DocBook document in a basic editor. The conversion process, however,
+        cannot replace these quotation marks with the <tt class="sgmltag-element">quote</tt>
+        element with any confidence, so the exercise should be performed
+        manually after conversion. Where the double quotation marks appear
+        within source code listings, they should be
+        &ldquo;<span class="quote">straight double quotes</span>&rdquo;<sup>[<a href="#ftn.N126F9" name="N126F9">4</a>]</sup>
+        to comply with the syntax of that language and should not be marked
+        with the <tt class="sgmltag-element">quote</tt> element. If the template changes
+        the style of the quotation mark used when rendering the
+        <tt class="sgmltag-element">quote</tt> element, you do not want it to affect any
+        source code examples.
+      </p><p>
+        Character, such as the &ldquo;<span class="quote">smart</span>&rdquo; quotation marks mentioned
+        above, that are not within the <span class="acronym">ISO</span>
+        &ldquo;<span class="quote">Latin 1</span>&rdquo; character set, appear as numeric character
+        entities. For example, an em-dash appears as
+        <tt class="sgmltag-genentity">&amp;#8212;</tt>. These can be difficult
+        to decipher, so you can convert these into named character entities
+        by editing the file using a suitable <span class="acronym">XML</span> editor
+        such as <span class="application">XXE</span> and then saving it. In the
+        case of the em-dash, it will now appear as
+        <tt class="sgmltag-genentity">&amp;mdash;</tt>. This procedure is not
+        mandatory, and while it makes the file more readable, the biggest
+        culprits are the &ldquo;<span class="quote">smart</span>&rdquo; quotes that should be replaced
+        with a <tt class="sgmltag-element">quote</tt> element instead of character entities.
+      </p><p>
+        DocBook has no inherent concept of formatting beyond the expectation
+        that whitespace in the content of certain elements (such as
+        <tt class="sgmltag-element">programlisting</tt> elements) should be preserved
+        during rendering. This means that there is no way to specify an
+        indented paragraph, something commonly used in C&uacute;ram documents
+        by applying the &ldquo;<span class="quote">Indent</span>&rdquo; paragraph format. DocMaker
+        will indent paragraphs as appropriate when rendering DocBook
+        documents, but there is no one element in DocBook that can be
+        applied to all indented paragraphs without the potential for
+        identifying content incorrectly. For example, paragraphs within
+        the same <tt class="sgmltag-element">listitem</tt> element are indented to the
+        same level by DocMaker, something that has to be manually arranged
+        using different formats in <span class="application">FrameMaker</span>.
+        However, isolated indented paragraphs may be intended as short
+        code samples, ad hoc lists, user input, etc. and these require
+        the application of very different DocBook elements. These can only
+        be resolved manually.
+      </p></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN13056.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN1330B.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

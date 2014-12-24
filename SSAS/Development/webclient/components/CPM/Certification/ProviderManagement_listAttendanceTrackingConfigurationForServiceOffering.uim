@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                    -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- in accordance with the terms of the license agreement you entered into     -->
+<!-- Software.                                                                  -->
+<!-- Description                                                                -->
+<!-- ===========                                                                -->
+<!-- This page allows the user to list all the service offering attendance      -->
+<!--  configuration.                                                            -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listAttendanceTrackingConfigurationForServiceOffering"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <PAGE_PARAMETER NAME="soAttendancePaymentID"/>
+  <PAGE_PARAMETER NAME="pageContext"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listSOAttendanceConfigurations"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY1"
+    OPERATION="listSOAttendancePayment"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY2"
+    OPERATION="viewSORosterConfiguration"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY3"
+    OPERATION="listAbsenceReasonConfiguration"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY3"
+      PROPERTY="associateIDKey$associateID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="false"
+  >
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.EditRoster">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_modifySORosterConfiguration"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="result$dtls$soRosterConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soRosterConfigurationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewAttendance">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createSOAttendanceTrackingConfiguration"
+        WINDOW_OPTIONS="width=400"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+
+
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$live$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soAttendanceConfigurationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContext"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContext"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewPayment">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createSOAttendancePayment"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$live$dtls$soAttendancePaymentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soAttendancePaymentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$pageContext"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContext"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewAbsenceReason">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createSOAbsenceReasonConfiguration"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY3"
+            PROPERTY="associateIDKey$associateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="associateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY3"
+            PROPERTY="result$pageContext"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContext"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Roster"
+  >
+    <FIELD LABEL="Field.Label.RosterGracePeriod">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="result$rosterGracePeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ManualApprovalForRosterProcessing">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="result$dtls$manualApprovalRequiredInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.AttendanceTracking">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditTracking">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$details$isCancelledIndicator"
+          />
+        </CONDITION>
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifySOAttendanceTrackingConfiguration"
+          WINDOW_OPTIONS="width=670"
+        >
+          <CONNECT>
+
+
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+            />
+
+
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendanceConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteTrackingConfig">
+        <CONDITION>
+
+
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$details$isCancelledIndicator"
+          />
+        </CONDITION>
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteSOAttendanceConfiguration"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+
+
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendanceConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$soAttendanceConfigurationDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.AttendanceTrackingEnabled"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$soAttendanceConfigurationDetails$attendanceTrackingEnabledInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TrackingEffectiveDates">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$soAttendanceConfigurationDetails$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TrackingStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$derivedStatus$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewSOAttendanceTrackingConfiguration">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soAttendanceConfigurationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+  <LIST TITLE="List.Title.AttendancePayment">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditPayment">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY1"
+            PROPERTY="result$dtlsList$derivedStatus$isSupersededInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifySOAttendancePayment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$dtlsList$dtls$soAttendancePaymentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendancePaymentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeletePayment">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteSOAttendancePayment"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$dtlsList$dtls$soAttendancePaymentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendancePaymentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="dtlsList$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.AttendanceTrackingForPayment">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="dtlsList$dtls$attendanceReqForPaymentInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PaymentEffectiveDates">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$dtlsList$dtls$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PaymentStatus">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="result$dtlsList$derivedStatus$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST
+    SORTABLE="true"
+    TITLE="List.Title.ListOfAbsenceReason"
+  >
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditAbsenceReason">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY3"
+            PROPERTY="isCancelledIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifySOAbsenceReasonConfiguration"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY3"
+              PROPERTY="result$absenceReasonDetails$details$absenceReasonID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="absenceReasonID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY3"
+              PROPERTY="associateIDKey$associateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="associateID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteAbsenceReason">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY3"
+            PROPERTY="isCancelledIndicator"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteSOAbsenceReasonConfiguration"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY3"
+              PROPERTY="result$absenceReasonDetails$details$absenceReasonID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="absenceReasonID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY3"
+              PROPERTY="associateIDKey$associateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="associateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY3"
+              PROPERTY="result$absenceReasonDetails$details$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY3"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Name"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY3"
+          PROPERTY="result$absenceReasonDetails$details$absenceReasonCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Payable"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY3"
+          PROPERTY="result$absenceReasonDetails$details$absenceReasonPayableInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Deductible"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY3"
+          PROPERTY="result$absenceReasonDetails$details$absenceReasonDeductibleInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.AbsenceStatus"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY3"
+          PROPERTY="result$absenceReasonDetails$details$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

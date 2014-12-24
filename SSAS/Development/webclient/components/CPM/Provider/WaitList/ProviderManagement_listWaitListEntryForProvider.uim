@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows user to view the list of wait list entries            -->
+<!-- for a provider.                                                        -->
+<PAGE
+  PAGE_ID="ProviderManagement_listWaitListEntryForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="DISPLAY"
+    OPERATION="listWaitListEntryForResource"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$resourceID"
+    />
+  </CONNECT>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ProviderWaitList"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listWaitListEntryForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00262116, SK -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00262116 -->
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ProviderServiceWaitList"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listProviderOfferingWaitListForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00272514, GP -->
+    <ACTION_CONTROL
+      LABEL="Menu.SearchWaitList"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00280598, GP -->
+      <LINK PAGE_ID="ProviderManagement_searchWaitListForProviderAndProviderOffering">
+        <!-- END, CR00280598 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="resourceID"
+          />
+        </CONNECT>
+        <!-- END, CR00272514 -->
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <!-- BEGIN, CR00228396, PS -->
+  <LIST>
+    <!-- END, CR00228396 -->
+    <!-- BEGIN, CR00199550, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199550 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00248344, GP -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_updateWaitListEntry"
+          WINDOW_OPTIONS="width=500"
+        >
+          <!-- END, CR00248344 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="waitListEntryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="waitListEntryID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00206896, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.AllocatePlace">
+        <!-- BEGIN, CR00233823, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyPrdForAllocateProviderWaitList"
+        >
+          <!-- END, CR00233823 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$waitListEntryDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$waitListEntryDtls$waitListEntryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="waitListEntryID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.MarkAsAllocated">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_markAsAllocated"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$waitListEntryDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$waitListEntryDtls$waitListEntryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="waitListEntryID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeWaitListEntry"
+          WINDOW_OPTIONS="width=370"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$waitListEntryDtls$waitListEntryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="waitListEntryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$waitListEntryDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199550, SS -->
+    </ACTION_SET>
+    <!-- BEGIN, CR00137381, SB -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.ClientName"
+      WIDTH="30"
+    >
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK PAGE_ID="Person_homePagePDC">
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- END, CR00137381 -->
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00199550, SS -->
+    <!-- BEGIN, CR122350, NBR -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.Position"
+      WIDTH="15"
+    >
+      <!-- END, CR122350 -->
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="positionString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.Priority"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00156341, RPB -->
+    <!-- BEGIN, CR00199550, SS -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.ReviewDate"
+      WIDTH="18"
+    >
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reviewDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00156341 -->
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00199550, SS -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.ExpiryDate"
+      WIDTH="18"
+    >
+      <!-- END, CR00199550 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expiryDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199550, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewWaitListEntryFrmProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="waitListEntryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199550 -->
+  </LIST>
+
+
+</PAGE>

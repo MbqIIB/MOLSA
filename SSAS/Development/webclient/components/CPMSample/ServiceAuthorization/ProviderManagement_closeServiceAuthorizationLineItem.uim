@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows user to close sample service authorization line item. -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_closeServiceAuthorizationLineItem"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+
+
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="contextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceAuthorization"
+    NAME="ACTION"
+    OPERATION="closeServiceAuthorizationLineItem"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="serviceAuthorizationReferenceNumber"/>
+  <PAGE_PARAMETER NAME="serviceAuthorizationLIID"/>
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationLIID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$serviceAuthorizationLineItemID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="1">
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.RemoveCategory"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ToDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$closeDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00187142, SS -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSamplesServiceAuthorizationLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No"/>
+  </ACTION_SET>
+  <!-- END, CR00187142 -->
+</PAGE>

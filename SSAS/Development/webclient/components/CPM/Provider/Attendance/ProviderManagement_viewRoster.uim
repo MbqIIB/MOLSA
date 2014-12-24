@@ -1,0 +1,1083 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2012 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                -->
+<!-- =========== 							                                -->
+<!-- This page allows user to display the details of a roster and a     -->
+<!-- roster line items.						                                -->
+<!-- BEGIN, CR00228146, ASN -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_viewRoster"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00228146 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="rosterID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00207010, ASN -->
+  <!-- BEGIN, CR00215605, ASN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainRoster"
+    NAME="DISPLAY2"
+    OPERATION="viewRosterDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00215605 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="rosterID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="rosterKey$rosterID"
+    />
+  </CONNECT>
+  <!-- END, CR00207010 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRoster"
+    NAME="DISPLAY"
+    OPERATION="isTotalUnitsGreaterThanExpectedUnits"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="rosterID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="rosterID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00124462, AK -->
+  <LIST TITLE="List.Title.RosterLineItem">
+
+
+    <!-- BEGIN, CR00207010, ASN -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="rliEditableInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00236707, PS -->
+
+
+        <!-- BEGIN, CR00341935, MR -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveRosterLineItemEdit"
+          WINDOW_OPTIONS="width=620"
+        >
+          <!-- END, CR00341935 -->
+          <!-- END, CR00236707 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCompletedInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliCompletedInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="hasCorrectionInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="hasCorrectionInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="dtls$versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCorrectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliCorrectionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="deleteRowsInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="deleteRowsInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="autoGeneratedInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="autoGeneratedInd"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Submit">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="flag"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveRosterLineItemSubmit"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliOpenInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliOpenInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliOpenCorrectionInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliOpenCorrectionInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="hasCorrectionInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="hasCorrectionInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00228146, ASN -->
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="prliDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="prliDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="correctionVersionNo"
+            />
+          </CONNECT>
+          <!-- END, CR00228146 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCorrectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliCorrectionID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="unitsExceededInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="unitsExceededInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCompletedInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliCompletedInd"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00208448, ASN -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Approve">
+
+
+        <!-- BEGIN, CR00228146, ASN -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="approveEnabledInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveApproveRoster"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00215605, ASN -->
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="prliDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliVersionNo"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="prliDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliDtls$versionNo"
+            />
+            <!-- END, CR00215605 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCorrectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliCorrectionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliInPendingApprovalInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliInPendingApprovalInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliInPendingApprovalCorrection"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliInPendingApprovalCorrection"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Deny">
+
+
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="rliInPendingApprovalInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_denyRosterLineItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00215605, ASN -->
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="prliDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliDtls$versionNo"
+            />
+            <!-- END, CR00215605 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliVersionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00208448 -->
+      <!-- END, CR00228146 -->
+      <!-- BEGIN, CR00235049, ASN -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddAbsenceReason">
+        <!-- BEGIN, CR00228146, ASN -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="absenceEnabledInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveAddAbsenceReason"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCorrectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliCorrectionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliAddAbsenceInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliAddAbsenceInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliAddAbsenceCorrectionInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliAddAbsenceCorrectionInd"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddDailyAttendance">
+
+
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="attendanceEnabledInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveAddDailyAttendance"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00215605, ASN -->
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliDtls$versionNo"
+            />
+            <!-- END, CR00215605 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCorrectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliCorrectionID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliAddAttendanceInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliAddAttendanceInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliAddAttendanceCorrectionInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliAddAttendanceCorrectionInd"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00235049 -->
+
+
+      <!-- BEGIN, CR00208241, ASN -->
+      <!-- BEGIN, CR00245984, ASN -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ServiceAuthorization"
+      >
+        <!-- END, CR00245984 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_relatedServiceAuthorizationLineItems"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00208241 -->
+
+
+      <!-- BEGIN, CR00228146, ASN -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.RestoreOriginalData">
+
+
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="restoreOriginalDataEnabledInd"
+          />
+        </CONDITION>
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveRestoreOriginalData"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliCorrectionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliCorrectionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="prliDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliOpenCorrectionInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliOpenCorrectionInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliInPendingApprovalCorrection"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliInPendingApprovalCorrection"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00245984, ASN -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ViewComplete"
+      >
+        <!-- END, CR00245984 -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="hasCorrectionInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00208448, ASN -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewCompletedRLI"
+        >
+          <!-- END, CR00208448 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00228146 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY2"
+            PROPERTY="rliOpenInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteRosterLineItem"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="providerRosterLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerRosterLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00215605, ASN -->
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="prliDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="prliVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="rliDtls$versionNo"
+            />
+            <!-- END, CR00215605 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rliVersionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00208448, ASN -->
+
+
+      <!-- END, CR00207010 -->
+    </ACTION_SET>
+    <!-- BEGIN, CR00215605, ASN -->
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.RosterLineItem.Reference"
+      WIDTH="10"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="rliDtls$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00215605 -->
+    <CONTAINER LABEL="ActionControl.Label.ClientName">
+      <FIELD
+        LABEL="Field.Label.RosterLineItem.ClientName"
+        WIDTH="15"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="clientName"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00248227, ASN -->
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="excprocInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00248227 -->
+
+
+      <!-- BEGIN, CR00305429, SS -->
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="rliCorrectionIndOpt"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00305429 -->
+
+
+      <!-- END, CR00127866 -->
+    </CONTAINER>
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.RosterLineItem.ServiceFrom"
+      WIDTH="12"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="serviceFrom"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.RosterLineItem.ServiceTo"
+      WIDTH="12"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="serviceTo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00128756, GYH -->
+    <FIELD
+      LABEL="Field.Label.RosterLineItem.ExpectedUnits"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="expectedUnitsString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.RosterLineItem.ActualUnits"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="unitsDeliveredString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00128756 -->
+
+
+    <!-- BEGIN, CR00215605, ASN -->
+    <FIELD LABEL="Field.Label.RosterLineItem.AuthorizationReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.RosterLineItem.Status"
+      WIDTH="8"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="result$prliDetailsList$prliDetails$prliDtls$status"
+        />
+        <!-- END, CR00215605 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_resolveRosterLineItemView">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="hasCorrectionInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="hasCorrectionInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="rliCorrectionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="prliCorrectionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00207010 -->
+  </LIST>
+
+
+</PAGE>

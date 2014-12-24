@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ 
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+
+-->
+<project>
+
+
+    <property environment="sysenv." />
+
+
+	<!--  ***************************  -->
+	<!--  ***  Import Properties  ***  -->
+	<!--  ***************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_properties.xml" />
+	
+	  <taskdef
+    classname="curam.util.reporting.internal.tasks.AntCheckForErrors"
+    classpath="${sysenv.REPORTING_ENV}/CuramBIBuildCheckingTools/jar/BIBuildErrorChecker.jar:${sysenv.REPORTING_ENV}/jar/BIBuildErrorChecker.jar"
+    name="errorsfound"/>
+	
+<!--  *****************************************************************  -->
+<!--  ***  test the ETL process execution                           ***  -->
+<!--  *****************************************************************  -->
+<target
+  description="do not execute - internal configuration target"
+  name="test.report.etlexecution">
+  
+    <taskdef
+          classname="curam.util.reporting.testcases.buildenvironment.AntTestControlTables"
+          classpath="${jar.reporting.buildenv};${jar.reporting.externaljars};${prop.test.classpath}"
+          name="AntETLProcessExecutionTest"
+    />
+    <mkdir dir="${dir.testresults}"/>
+    <AntETLProcessExecutionTest reportingDir="${REPORTING_DIR}" resultsBaseDir="${dir.testresults}" 
+	haltOnFailure="false" outputDirProperty="test.results.now.basedir" testResultProperty="prop.test.status.result"/>
+	 
+	<copy verbose="true" todir="${dir.testresults}/${test.results.now.basedir}">
+        <fileset dir="${DEV_generator}">
+          <include name="*.css"/>
+		  <include name="TestStatusesExplained.html"/>
+        </fileset>		
+    </copy>
+	
+	
+    <antcall target="test.report.backup">
+        <param name="param.test.results.basedir" value="${dir.testresults}"/>
+        <param name="param.test.results.resultsdir" value="${test.results.now.basedir}"/>
+    </antcall>
+	
+     <errorsfound logFile="${dir.logs.bilogfile}" >    
+           <Ignore name="filter" value="SQL"/>
+            <Error name="error" value="Error"/>  
+     </errorsfound>	
+	 
+	 <fail if="prop.test.status.result" message="ETL Exection failed."/>
+</target>
+
+<!--  *****************************************************************  -->
+<!--  ***  test the ETL name                                        ***  -->
+<!--  *****************************************************************  -->
+<target
+  description="do not execute - internal etl name policing target"
+  name="test.report.etlnames">
+  
+    <taskdef
+          classname="curam.util.reporting.testcases.buildenvironment.AntPoliceETLNames"
+          classpath="${jar.reporting.buildenv};${jar.reporting.externaljars};${prop.test.classpath}"
+          name="AntPoliceETLNames"
+    />
+    <mkdir dir="${dir.testresults}"/>
+    <AntPoliceETLNames reportingDir="${REPORTING_DIR}" resultsBaseDir="${dir.testresults}" 
+	haltOnFailure="false" outputDirProperty="test.results.now.basedir" testResultProperty="prop.test.status.result"/>
+	 
+	<copy verbose="true" todir="${dir.testresults}/${test.results.now.basedir}">
+        <fileset dir="${DEV_generator}">
+          <include name="*.css"/>
+		  <include name="TestStatusesExplained.html"/>
+        </fileset>		
+    </copy>
+	
+	
+    <antcall target="test.report.backup">
+        <param name="param.test.results.basedir" value="${dir.testresults}"/>
+        <param name="param.test.results.resultsdir" value="${test.results.now.basedir}"/>
+    </antcall>
+	
+     <errorsfound logFile="${dir.logs.bilogfile}" >    
+           <Ignore name="filter" value="SQL"/>
+            <Error name="error" value="Error"/>  
+     </errorsfound>	
+	 
+	 <fail if="prop.test.status.result" message="ETL Exection failed."/>
+</target>
+
+  <!--  ******************************************************************  -->
+<!--  *builds the html test report                                   ***  -->
+<!--  ******************************************************************  -->
+<target  depends="declareTasks" name="test.report.backup">
+
+    
+   <property name="CURAMBI_FILESERVER"
+                  value="TINY.CURAMSOFTWARE.COM" />
+   
+   <condition property="the.machineid" value="${sysenv.COMPUTERNAME}">
+      <and>
+        <isset property="sysenv.COMPUTERNAME"/>        
+      </and>
+    </condition>
+    <property name="the.machineid" value="LOCALHOST"/>
+   
+    <echo message="About to copy test results from ${the.machineid} to \\${sysenv.CURAMBI_FILESERVER}/ProductDevelopment/CuramApps/DataWarehouse/devtestresults/${the.machineid}/${param.test.results.resultsdir}" />
+    
+   <copy verbose="false" todir="\\${sysenv.CURAMBI_FILESERVER}/ProductDevelopment/CuramApps/DataWarehouse/devtestresults/${the.machineid}/">
+     <fileset dir="${param.test.results.basedir}">
+       <include name="${param.test.results.resultsdir}/**"/>
+     </fileset>
+    </copy>
+	
+    
+</target>
+
+ <target description="lanuch test results" if="launch.test.results"
+  name="lanuchtestresults"
+  >   
+  <exec
+    dir="${dir.test.results}"
+    error="${errorlog}"
+    executable="cmd"
+    failonerror="false" >
+      <arg value="/c start explorer.exe file:///${param.lanuch.file}"/>     
+  </exec>
+  </target>
+</project>

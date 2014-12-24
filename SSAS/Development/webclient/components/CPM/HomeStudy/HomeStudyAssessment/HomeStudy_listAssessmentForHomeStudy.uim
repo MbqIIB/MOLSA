@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not   -->
+<!-- disclose such Confidential Information and shall use it only in        -->
+<!-- accordance with in accordance with the terms of the license agreement  -->
+<!-- you entered into Software.                                             -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list all the assesment for the home study.-->
+<PAGE
+  PAGE_ID="HomeStudy_listAssessmentForHomeStudy"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewHomeStudy"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_viewDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.Assessments"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_listAssessmentForHomeStudy">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.HomeVisits"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_listHomeVisitsForHomeStudy">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.Documents"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_listDocumentsForHomeStudy">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- Navigation header -->
+  <!--<INCLUDE FILE_NAME="HomeStudy_homeStudyNavigationHeader.vim"/>-->
+  <SERVER_INTERFACE
+    CLASS="HomeStudyAssessment"
+    NAME="DISPLAY"
+    OPERATION="listByHomeStudy"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="homeStudyID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="homeStudyID$homeStudyAssessmentKey$homeStudyID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <!-- BEGIN, CR00198768, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198768 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00207959, SS -->
+        <!-- BEGIN, CR00197352, SS -->
+
+
+        <!-- BEGIN, CR00341935, MR -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="HomeStudy_modifyAssessmentForHomeStudy"
+          WINDOW_OPTIONS="width=730"
+        >
+          <!-- END, CR00341935 -->
+          <!-- END, CR00197352 -->
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyAssessmentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyAssessmentID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00207959, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="HomeStudy_cancelAssessmentForHomeStudy"
+        >
+          <!-- END, CR00187417 -->
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyAssessmentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyAssessmentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="description"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00198768, SS -->
+    </ACTION_SET>
+    <!-- END, CR00198768 -->
+    <!-- BEGIN, CR00200179, SS -->
+    <!-- BEGIN, CR00199961, SS -->
+    <FIELD
+      LABEL="Field.Label.AssessmentType"
+      WIDTH="17"
+    >
+      <!-- END, CR00199961 -->
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="assessmentType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199961, SS -->
+    <FIELD
+      LABEL="Field.Label.DateCompleted"
+      WIDTH="17"
+    >
+      <!-- END, CR00199961 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateCompleted"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199961, SS -->
+    <FIELD
+      LABEL="Field.Label.Result"
+      WIDTH="15"
+    >
+      <!-- END, CR00199961 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198768, SS -->
+    <!-- BEGIN, CR00199961, SS -->
+    <FIELD
+      LABEL="Field.Label.CorrectiveActionRequired"
+      WIDTH="25"
+    >
+      <!-- END, CR00199961 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$homeStudyAssessmentDtlsList$dtls$correctiveActionRequired"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198768 -->
+    <!-- BEGIN, CR00199961, SS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="12"
+    >
+      <!-- END, CR00199961 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198768, SS -->
+    <DETAILS_ROW>
+      <!-- BEGIN, CR00197352, SS -->
+      <INLINE_PAGE PAGE_ID="HomeStudy_viewAssessmentForHomeStudy">
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="homeStudyAssessmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyAssessmentID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198768 -->
+  </LIST>
+</PAGE>

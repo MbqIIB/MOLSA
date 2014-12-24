@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+  
+-->
+<project>
+
+  <!--  *******************************  -->
+  <!--  ***  Import tasks definitions**  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_tasks.xml" />
+
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import initialization  ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_init.xml" />
+  
+  
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${jar.ant.contrib}"/>
+    </classpath>
+  </taskdef>
+
+  <!--  *********************************************  -->
+  <!--  ***  Create schema objects                ***  -->
+  <!--  *********************************************  -->
+  <target depends="init"
+    description="Builds the staging, central and datamart schema objects -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures"
+    name="database.all">
+
+	
+    <antcall target="database.source.updatenulls" />
+    <antcall target="staticdata"/>
+                
+    <antcall target="database.staging" />
+    <antcall target="database.central" />
+    <antcall target="database.datamarts" />
+    <antcall target="grant.all"/>
+  </target>
+
+  <!--  *********************************************  -->
+  <!--  ***  Create transformation objects        ***  -->
+  <!--  *********************************************  -->
+  <target depends="init"
+    description="Builds the staging, central and datamart transformations -Ddebug.message=true"
+    name="database.transforms.all">
+           
+    <antcall target="database.staging.transforms" />
+    <antcall target="database.central.transforms" />
+    <antcall target="database.datamarts.transforms" />
+    
+  </target>
+
+    <!--  *********************************************  -->
+  <!--  ***  Update the source last written values***  -->
+  <!--  *********************************************  -->
+  <target
+ description="Updates curam lastwritten column values if null, use -Dexecute.updatenulls.curam=true, (-Dupdatenulls.failonerror.action=[continue|abort|stop] to continure on data failures)"
+  name="database.source.updatenulls"
+  >
+      <antcall target="database.source.updatenulls.no" />
+	  <antcall target="database.source.updatenulls.yes" />
+  </target>
+
+  <!--  *********************************************  -->
+  <!--  ***  Update the source last written values***  -->
+  <!--  *********************************************  -->
+  <target name="database.source.updatenulls.no"   unless="execute.updatenulls.curam.not">
+  <echo message="to force source database upadates use -Dexecute.updatenulls.curam=true" />
+  </target>  
+  
+  <!--  *********************************************  -->
+  <!--  ***  Update the source last written values***  -->
+  <!--  *********************************************  -->
+  <target
+  depends="check.db.type, set.db.source, set.database.ora, set.database.db2, 
+  declareTasks"
+ description="Updates curam lastwritten column values if null, use -Dexecute.updatenulls.curam=true (-Dupdatenulls.failonerror.action=[continue|abort|stop] to continure on data failures)"
+  name="database.source.updatenulls.yes"
+  if="execute.updatenulls.curam">
+  
+    <!-- excucute the update statements-->
+
+
+    <!-- create the drop commands from the create app tables sql file-->
+    <!-- the result is written into the property defined by the attribute updateStatements-->
+    <AntGenerateSourceUpdateStatements reportingDir="${REPORTING_DIR}" targetDirectory="${dir.bin.sourceupdate}" />
+
+    <sql encoding="UTF-8" classpath="${environment.jdbc.jars}"   driver="${db.driver}" 
+            output="${dir.bin.sourceupdate}/${file.source.generated.lastwritten}.result"
+            password="${db.password}" 
+            print="true" 
+            showheaders="false"
+            url="${db.url}" 
+            userid="${db.username}"
+            onerror="${updatenulls.failonerror.action}"            
+            >
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+
+             <path>
+                <fileset dir="${dir.bin.sourceupdate}">
+                  <include name="${file.source.generated.lastwritten}"/>
+                </fileset>
+            </path>
+    </sql>
+    <echo message="For update counts see ${dir.bin.sourceupdate}/${file.source.generated.lastwritten}.result"/>
+
+  </target>
+  
+
+
+  <!--  ************************************************************  -->
+  <!--  ***  Loads any demo data into the data mart schema***  -->
+  <!--  *************************************************************  -->
+  <target
+    depends="check.db.type, set.db.dmdemodata, set.database.ora, set.database.db2, declareTasks"
+    description="Loads the demo data datamart(-Ddemodata.failonerror.action=[continue|abort|stop] to continure on data failures)"
+    name="database.datamarts.demodata">
+    <property name="demo.datadir"
+      value="${dir.bin.datamanager.demodata}" />
+    
+    <!-- build the DDL first then load the demo data, 
+      the demo data wont ever be loaded on top of live data
+      the demo data has its database properties set in the application.properties file 
+    -->
+     <echo message="Note: use -Ddemodata.failonerror.action=[continue|abort|stop] to continure on data failures" />
+    
+    <antcall target="database.datamarts"/>
+    
+    <property name="demo.datefiles" value="timeperiod*${db.platform}*.sql" />
+    <property name="demo.dimensionfiles" value="dim_*.sql" />
+    <property name="demo.factfiles" value="fact_*.sql" />
+    <property name="demo.factfilesRDBMS" value="${db.platform}fact_*.sql" />
+                    
+    
+    <AntGenerateDemoData
+      demoDataDirectory="${dir.bin.datamanager.demodata}"
+      reportingDir="${REPORTING_DIR}"
+      fileset="data_manager/demodata"
+    />
+    
+    
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   print="false" driver="${db.driver}" 
+                  onerror="${demodata.failonerror.action}"
+      password="${db.password}" url="${db.url}" userid="${db.username}">
+        
+		<connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+	  
+      <fileset dir="${dir.bin.datamanager.demodata}">
+        <include name="${demo.datefiles}" />
+      </fileset>
+      <transaction>;</transaction>
+    </sql>
+    
+    
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   print="false" driver="${db.driver}" 
+                  onerror="${demodata.failonerror.action}"
+      password="${db.password}" url="${db.url}" userid="${db.username}">
+	  
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+      <fileset dir="${dir.bin.datamanager.demodata}">
+        <include name="${demo.dimensionfiles}" />
+      </fileset>
+      <transaction>;</transaction>
+    </sql>
+    
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   print="false" driver="${db.driver}" 
+                  onerror="${demodata.failonerror.action}"
+      password="${db.password}" url="${db.url}" userid="${db.username}">
+	  <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+      <fileset dir="${dir.bin.datamanager.demodata}">
+        <include name="${demo.factfiles}" />
+        <include name="${demo.factfilesRDBMS}" />
+      </fileset>
+      <transaction>;</transaction>
+    </sql>
+    <echo message="${db.url}: datamart tables created and demo data loaded" />
+    <echo message="Note: use -Ddemodata.failonerror.action=[continue|abort|stop] to continue on data failures" />
+
+  </target>
+  
+  
+    <!--  ************************************************************* -->
+    <!--  ***  Loads intial data into staging schema                *** -->
+    <!--  ************************************************************* -->
+    <target
+      depends="init,check.db.type,  set.db.staging, set.database.ora, set.database.db2, declareTasks"
+      description="Loads initial data into central "
+      name="database.staging.initialdata"
+      unless="transformsonly">
+       
+	<antcall target="database.generate.data"/>
+
+    <AntGenerateInitialData
+        demoDataDirectory="${dir.bin.datamanager.initialdata}"
+        reportingDir="${REPORTING_DIR}"
+        fileset="data_manager/initialdata"
+      />
+    
+    
+	<property name="initial.staging" value="st_initialdata*.sql" />         
+    <property name="initial.staging.properties" value="st_properties*.sql" />
+
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+        print="false" driver="${db.driver}" onerror="${database.failonerror.action}"              
+        password="${db.password}" url="${db.url}" userid="${db.username}">
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+        <fileset dir="${dir.bin.datamanager.initialdata}">
+          <include name="${initial.staging.properties}" />
+        </fileset>
+      <transaction>;</transaction>
+    </sql>  
+	
+      <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   print="false" driver="${db.driver}" onerror="${database.failonerror.action}"
+        password="${db.password}" url="${db.url}" userid="${db.username}">
+        <fileset dir="${dir.bin.datamanager.initialdata}">
+          <include name="${initial.staging}" />
+          <exclude name="${initial.staging.properties}" />		  
+        </fileset>
+        <transaction>;</transaction>
+		<connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+      </sql>
+      <echo message="Note: use -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures" />                           
+          
+  </target>
+
+  <!--  ************************************************************* -->
+  <!--  ***  Loads intial data into central schema                *** -->
+  <!--  ************************************************************* -->
+  <target
+    depends="init,check.db.type,  set.db.central, set.database.ora, set.database.db2, declareTasks"
+    description="Loads initial data into central "
+    name="database.central.initialdata"
+    unless="transformsonly">
+    
+    <antcall target="database.generate.data"/>
+
+    
+    <AntGenerateInitialData
+      demoDataDirectory="${dir.bin.datamanager.initialdata}"
+      reportingDir="${REPORTING_DIR}"
+      fileset="data_manager/initialdata"
+    />
+    	
+
+    <property name="initial.central.properties" value="dw_properties*.sql" />
+    <property name="initial.central" value="dw_initialdata*.sql" />
+
+
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+        print="false" driver="${db.driver}" onerror="${database.failonerror.action}"              
+        password="${db.password}" url="${db.url}" userid="${db.username}">
+	  <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+      <fileset dir="${dir.bin.datamanager.initialdata}">
+        <include name="${initial.central.properties}" />
+      </fileset>
+      <transaction>;</transaction>
+    </sql>  
+	
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   print="false" driver="${db.driver}" onerror="${database.failonerror.action}"
+      password="${db.password}" url="${db.url}" userid="${db.username}">
+        <fileset dir="${dir.bin.datamanager.initialdata}">
+          <exclude name="${initial.central.properties}" />	  
+          <include name="${initial.central}" />
+        </fileset>
+        <transaction>;</transaction>
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>	  
+    </sql>
+    <echo message="Note: use -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures" />                           
+        
+  </target>
+  
+  <!--  ************************************************************* -->
+  <!--  ***  Loads intial data into datamart schema               *** -->
+  <!--  ************************************************************* -->
+  <target
+    depends="init,check.db.type,  set.db.centraldm, set.database.ora, set.database.db2, declareTasks"
+    description="Loads initial data into datamarts"
+    name="database.datamarts.initialdata"
+    unless="transformsonly">       
+	
+	<antcall target="database.generate.data"/>
+
+    <AntGenerateInitialData
+      demoDataDirectory="${dir.bin.datamanager.initialdata}"
+      reportingDir="${REPORTING_DIR}"
+      fileset="data_manager/initialdata"
+      
+    />
+	
+    <property name="initial.datamart" value="dm_initialdata*.sql" />
+    <property name="initial.datamart.properties" value="dm_properties*.sql" />
+
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+        print="false" driver="${db.driver}" onerror="${database.failonerror.action}"              
+        password="${db.password}" url="${db.url}" userid="${db.username}">
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+      <fileset dir="${dir.bin.datamanager.initialdata}">
+        <include name="${initial.datamart.properties}" />
+      </fileset>
+      <transaction>;</transaction>
+    </sql>  
+		
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+        print="false" driver="${db.driver}" onerror="${database.failonerror.action}"              
+        password="${db.password}" url="${db.url}" userid="${db.username}">
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+	
+      <fileset dir="${dir.bin.datamanager.initialdata}">
+        <include name="${initial.datamart}" />
+        <exclude name="${initial.datamart.properties}" />
+      </fileset>
+      <transaction>;</transaction>
+    </sql>
+    <echo message="Note: use -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures" />                                       
+  </target>
+
+
+        
+        <!--  *********************************************  -->
+  <!--  ***  Create staging   schema objects      ***  -->
+  <!--  *********************************************  -->
+  <target
+    depends="check.db.type, set.db.staging, set.database.ora, set.database.db2"
+    description="Builds the staging schema objects"
+    name="database.staging">
+
+    <AntGenerateDDL
+      generatedDDLFile="${dir.bin.ddl}${file.separator}"
+      reportingDir="${REPORTING_DIR}" staging="true" central="false"
+      datamarts="false" transformsOnly="false" />
+
+        <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+            print="false" driver="${db.driver}" 
+            onerror="continue"
+            password="${db.password}" url="${db.url}" userid="${db.username}">
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+            <transaction src="${dir.bin.ddl}/${file.staging.schema.drop}"/>
+        </sql> 
+
+       <antcall target="database.staging.transforms"/>
+
+        <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+            print="false" driver="${db.driver}" 
+            onerror="${database.failonerror.action}"
+            password="${db.password}" url="${db.url}" userid="${db.username}">
+			
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+            <transaction src="${dir.bin.ddl}/${file.staging.schema}"/>
+
+        </sql>        
+
+       <antcall target="database.staging.initialdata"/>                
+
+        <antcall target="grant.staging"/>
+
+        <echo message="Note: use -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures" />                           
+</target>
+
+  <!--  *********************************************  -->
+  <!--  ***  Create staging   schema objects      ***  -->
+  <!--  *********************************************  -->
+  <target
+    depends="init, check.db.type, set.db.staging, set.database.ora, set.database.db2"
+    description="Builds the staging functions and procedures"
+    name="database.staging.transforms">
+         
+        <AntGenerateDDL
+                generatedDDLFile="${dir.bin.ddl}${file.separator}"
+                reportingDir="${REPORTING_DIR}" staging="true" central="false"
+                datamarts="false" transformsOnly="true" />
+
+     <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+          print="false" driver="${db.driver}" 
+          onerror="continue"
+          password="${db.password}" url="${db.url}" userid="${db.username}">
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+        <transaction src="${dir.bin.ddl}/${file.staging.schema.tranforms.drop}"/>
+      </sql> 
+
+
+        <!--deploy the java transforms-->
+        <antcall target="deployjava" > 
+        </antcall>
+
+
+      <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+          print="false" driver="${db.driver}" 
+          onerror="${database.failonerror.action}"
+          password="${db.password}" url="${db.url}" userid="${db.username}">
+          <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+
+          <transaction src="${dir.bin.ddl}/${file.staging.schema.tranforms}"/>
+      </sql>       
+              
+  </target>
+
+  <!--  **************************  -->
+  <!--  ***  release tasks     ***  -->
+  <!--  **************************  -->
+  <target name="deployjava" depends="declareTasks">
+
+    <FindSourcePaths verbose="false" reportingDir="${REPORTING_DIR}"
+      javaSourcePropertyName="notneeded" javaSourceComponentName="server.components"/>
+
+    <echo message="unloading transforms...."/>
+            
+    <for list="${server.components}" param="server.component" trim="true" delimiter=",">
+      <sequential
+      >  
+     <AntUtilities verbose="false" propertyName="inf.jar.exists" operation="fileexists"
+            value="${REPORTING_DIR}/components/@{server.component}/jar/@{server.component}TransformsInf.jar" /> 
+    
+        <antcall target="dropjava">
+          <param name="param.server.component" value="@{server.component}"/>
+          <param name="param.jar.fullpath" value="${REPORTING_DIR}/components/@{server.component}/jar/@{server.component}TransformsInf.jar"/>
+        </antcall>
+        
+        <antcall target="dropjava">
+          <param name="param.server.component" value="@{server.component}"/>
+          <param name="param.jar.fullpath" value="${REPORTING_DIR}/components/@{server.component}/jar/@{server.component}Transforms.jar"/>
+        </antcall>    
+        <echo message="...."/>
+
+      </sequential>
+    </for>
+    
+    <echo message="unloading transforms completed, for verbose output set -Ddebug.message=true"/>
+
+    <echo message="loading transforms...."/>
+    <for list="${server.components}" param="server.component" trim="true" delimiter=",">
+      <sequential
+      >  
+        <antcall target="loadjava">
+			<param name="param.server.component" value="@{server.component}"/>        
+          <param name="param.jar.fullpath" value="${REPORTING_DIR}/components/@{server.component}/jar/@{server.component}TransformsInf.jar"/>
+        </antcall> 
+        
+        <antcall target="loadjava">
+          <param name="param.server.component" value="@{server.component}"/>        
+          <param name="param.jar.fullpath" value="${REPORTING_DIR}/components/@{server.component}/jar/@{server.component}Transforms.jar"/>
+        </antcall>
+        <echo message="...."/>
+
+      </sequential>
+    </for>
+    <echo message="loading transforms completed, for verbose output set -Ddebug.message=true"/>
+
+  </target>
+  
+  <!--  *********************************************  -->
+  <!--  ***  Create central schema objects        ***  -->
+  <!--  *********************************************  -->
+  <target
+    depends="init, check.db.type, set.db.central, set.database.ora, set.database.db2"
+    description="Builds the central schema objects"
+    name="database.central">
+                
+    <AntGenerateDDL
+      generatedDDLFile="${dir.bin.ddl}${file.separator}"
+      reportingDir="${REPORTING_DIR}" staging="false" central="true"
+      datamarts="false" transformsOnly="false" />
+
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+      print="false" driver="${db.driver}" 
+      onerror="continue"
+      password="${db.password}" url="${db.url}" userid="${db.username}">
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+        <transaction src="${dir.bin.ddl}/${file.central.schema.drop}"/>
+    </sql>
+
+    <antcall target="database.central.transforms"/>
+                
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+                  print="false" driver="${db.driver}" 
+                  onerror="${database.failonerror.action}"
+      password="${db.password}" url="${db.url}" userid="${db.username}">
+       <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		                  
+       <transaction src="${dir.bin.ddl}/${file.central.schema}"/>
+    </sql>                
+                
+
+    <antcall target="database.central.initialdata"/>                
+    <antcall target="grant.dw"/>
+    <echo message="Note: use -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures" />                               
+</target>
+
+  <!--  *********************************************  -->
+  <!--  ***  Create central transform objects     ***  -->
+  <!--  *********************************************  -->
+  <target
+    depends="init, check.db.type, set.db.central, set.database.ora, set.database.db2"
+    description="Builds the central functions and procedures"
+    name="database.central.transforms">
+   
+          <AntGenerateDDL
+                  generatedDDLFile="${dir.bin.ddl}${file.separator}"
+                  reportingDir="${REPORTING_DIR}" staging="false" central="true"
+                  datamarts="false" transformsOnly="true" />
+
+       <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+            print="false" driver="${db.driver}" 
+            onerror="continue"
+            password="${db.password}" url="${db.url}" userid="${db.username}">
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+            <transaction src="${dir.bin.ddl}/${file.central.schema.tranforms.drop}"/>
+        </sql> 
+                    
+        
+        <!--deploy the java transforms, do not drop as until we ensure this is required	-->
+        <antcall target="deployjava" > 
+        </antcall>
+	
+        
+        <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+            print="false" driver="${db.driver}" 
+            onerror="${database.failonerror.action}"
+            password="${db.password}" url="${db.url}" userid="${db.username}">
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+            <transaction src="${dir.bin.ddl}/${file.central.schema.tranforms}"/>
+        </sql> 
+    
+    
+  </target>
+
+  <!--  *********************************************  -->
+  <!--  ***  Create datamarts schema objects       ***  -->
+  <!--  *********************************************  -->
+  <target
+    depends="init, check.db.type, set.db.centraldm, set.database.ora, set.database.db2"
+    description="Builds the datamart schema objects"
+    name="database.datamarts">
+
+                 
+    <AntGenerateDDL
+      generatedDDLFile="${dir.bin.ddl}${file.separator}"
+      reportingDir="${REPORTING_DIR}" staging="false" central="false"
+      datamarts="true" transformsOnly="false" />
+                        
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+      print="false" 
+      driver="${db.driver}" 
+      onerror="continue"
+      password="${db.password}" url="${db.url}" userid="${db.username}">
+
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+        <transaction src="${dir.bin.ddl}/${file.datamarts.schema.drop}"/>
+    </sql>
+
+    <antcall target="database.datamarts.transforms"/>
+
+    <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+                  print="false" 
+                  driver="${db.driver}" 
+                  onerror="${database.failonerror.action}"
+            password="${db.password}" url="${db.url}" userid="${db.username}">
+
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+      <transaction src="${dir.bin.ddl}/${file.datamarts.schema}"/>
+    </sql>
+                
+    <antcall target="database.datamarts.initialdata" />
+                <antcall target="grant.dm"/>
+                <echo message="Note: use -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures" />              
+  </target>
+
+  <!--  *********************************************  -->
+  <!--  ***  Create datamarts transform objects   ***  -->
+  <!--  *********************************************  -->
+  <target
+    depends="init, check.db.type, set.db.centraldm, set.database.ora, set.database.db2"
+    description="Builds the datamart functions and procedures"
+    name="database.datamarts.transforms">
+
+      <AntGenerateDDL
+              generatedDDLFile="${dir.bin.ddl}${file.separator}"
+              reportingDir="${REPORTING_DIR}" staging="false" central="false"
+              datamarts="true" transformsOnly="true" />
+
+       <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+            print="false" driver="${db.driver}" 
+            onerror="continue"
+            password="${db.password}" url="${db.url}" userid="${db.username}">
+            <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+            <transaction src="${dir.bin.ddl}/${file.datamarts.schema.tranforms.drop}"/>
+        </sql>                                       
+
+        <!--load the java transforms-->
+        <!--deploy the java transforms-->
+        <antcall target="deployjava" > 
+        </antcall>                    
+        <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+            print="false" driver="${db.driver}" 
+            onerror="${database.failonerror.action}"
+            password="${db.password}" url="${db.url}" userid="${db.username}">
+          <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+          <transaction src="${dir.bin.ddl}/${file.datamarts.schema.tranforms}"/>
+        </sql>  
+  </target>
+
+
+
+
+  <!--  *************************************************  -->
+  <!--  ***  Create log file for all Control tables ***  -->
+  <!--  ***********************************************  -->
+  <target depends="init, jar, declareTasks"
+    description="Writes the contents of all control tables to log file"
+    name="export.control">
+
+    <echo message="from application.properties using:environment.jdbc.drivers=${environment.jdbc.drivers} and jars=${prop.file.location}${path.separator}${environment.jdbc.jars}${path.separator}${jar.reporting.buildenv}${path.separator}${sysenv.ANT_HOME}${file.separator}lib${file.separator}ant.jar" />
+
+    <java
+      classname="curam.util.reporting.internal.tasks.AntExportControlTables"
+      classpath="${prop.file.location}${path.separator}${environment.jdbc.jars}${path.separator}${jar.reporting.buildenv}${path.separator}${sysenv.ANT_HOME}${file.separator}lib${file.separator}ant.jar"
+      failonerror="true" fork="true">
+      <arg value="centraldm" />
+      <jvmarg value="-Djdbc.drivers=${environment.jdbc.drivers}" />
+      <jvmarg value="-DREPORTING_DIR=${REPORTING_DIR}" />
+    </java>
+
+  </target>
+
+
+   <target
+  depends="init, check.db.type, set.db.staging, set.database.ora"
+  description="Returns the database "
+  name="owb.environment.tests.results">
+
+     <tstamp>
+        <format
+          pattern="MMddyyyy"
+          property="time.now"
+        />
+      </tstamp>
+      
+      <property
+        name="OWBEnvironmentTestsResults.file"
+        value="${dir.logs}${file.separator}${time.now}OWBEnvironmentTestsResults.log"
+      />
+      
+  <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   output="${OWBEnvironmentTestsResults.file}" showheaders="false" showtrailers="false" print="true" driver="${db.driver}" onerror="continue"
+        password="${decrypted.staging.db.password}" url="${db.url}" userid="${staging.db.username}">
+
+      <transaction>
+     select 's_codetableitem rows='|| count(*) from s_codetableitem;
+     select 's_etlcontrol rows='|| count(*) from s_etlcontrol;
+      </transaction>
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>	  
+  </sql>
+  
+  <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   output="${OWBEnvironmentTestsResults.file}" append="true" showheaders="false" showtrailers="false" print="true" driver="${db.driver}" onerror="continue"
+        password="${decrypted.central.db.password}" url="${db.url}" userid="${central.db.username}">
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+      <transaction>
+     select 'dw_casetype rows='|| count(*) from dw_casetype;
+     select 'dw_etlcontrol rows='|| count(*) from dw_etlcontrol;
+      </transaction>  
+  </sql>
+  <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   output="${OWBEnvironmentTestsResults.file}" append="true" showheaders="false" showtrailers="false" print="true" driver="${db.driver}" onerror="continue"
+        password="${decrypted.centraldm.db.password}" url="${db.url}" userid="${centraldm.db.username}">
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+      <transaction>
+     select 'dm_etlcontrol rows='|| count(*) from dm_etlcontrol;
+     select 'dm_dimcasetypes rows='|| count(*) from dm_dimcasetypes;
+      </transaction>  
+  </sql> 
+  
+  <loadfile
+        property="testresults"
+        srcFile="${OWBEnvironmentTestsResults.file}"
+         />
+    
+        <echo message="-----------------------------------------------------" />
+      <echo message="A row count of the 6 target tables is available below" />
+        <echo message="-----------------------------------------------------" />
+      
+  <echo message="${testresults}" />
+        <echo message="-----------------------------------------------------" />
+  
+    </target>     
+  <!--  ************************************************************* -->
+  <!--  ***  Generates SQL files from translated properties       *** -->
+  <!--  ************************************************************* -->
+  <target
+    depends="init,check.db.type,  set.db.centraldm, set.database.ora, set.database.db2, declareTasks"
+    description="Generates the xx_properties.sql files and .sql files with the demo data directory"
+    name="database.generate.data">       
+    	
+    <AntGenerateLocalizedData 
+      outputDataDirectory="${dir.bin.datamanager.initialdata}"
+      reportingDir="${REPORTING_DIR}"
+      fileset="data_manager/initialdata" tokenCharacter="'"  skip="false"
+      
+    />
+	
+    <echo message="Demo Data:"/>
+	<AntGenerateLocalizedData prefixed=""
+      outputDataDirectory="${dir.bin.datamanager.demodata}"
+      reportingDir="${REPORTING_DIR}"
+      fileset="data_manager/demodata" tokenCharacter="'"  skip="false"      
+    />
+		
+  </target>
+  
+</project>

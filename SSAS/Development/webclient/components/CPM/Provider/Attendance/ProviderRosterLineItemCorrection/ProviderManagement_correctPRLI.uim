@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							    -->
+<!-- =========== 							    -->
+<!-- This Page displays the details of a roster and a list of associated    -->
+<!-- roster line items.						            -->
+<PAGE
+  PAGE_ID="ProviderManagement_correctPRLI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLICorrection"
+    NAME="DISPLAY"
+    OPERATION="readPRLIDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLICorrection"
+    NAME="ACTION"
+    OPERATION="createPRLICorrection"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$correctionDetails$providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$correctionDetails$providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00153665, RD -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="clientAddressID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="clientAddressID"
+    />
+  </CONNECT>
+  <!-- END, CR00153665 -->
+
+
+  <!-- BEGIN, CR00129347, RPB -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="clientFirstName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="clientFirstName"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="clientLastName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="clientLastName"
+    />
+  </CONNECT>
+  <!-- END, CR00129347 -->
+
+
+  <!-- BEGIN CR00120422, SS -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$isGeneratedByUser"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="isGeneratedByUser"
+    />
+  </CONNECT>
+  <!-- END CR00120422 -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.ServiceDetails"
+  >
+
+
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="result$isGeneratedByUser"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ReferenceNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$serviceFromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ExpectedUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$expectedUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00128590, RD -->
+    <FIELD LABEL="Field.Label.RosterLineItem.CaseReferenceNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00128590 -->
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.VoucherNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$voucherNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$serviceToDate"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ActualUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$totalUnitsDelivered"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$correctionDetails$totalUnitsDelivered"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Label.ServiceDetails"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$isGeneratedByUser"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ReferenceNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$saReferenceNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$correctionDetails$saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$serviceFromDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$correctionDetails$serviceFromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ExpectedUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$expectedUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00128590, RD -->
+    <FIELD LABEL="Field.Label.RosterLineItem.CaseReferenceNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00128590 -->
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.VoucherNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$voucherNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$correctionDetails$voucherNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$serviceToDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$correctionDetails$serviceToDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ActualUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$totalUnitsDelivered"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$correctionDetails$totalUnitsDelivered"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.CorrectionReason"
+  >
+
+
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.RosterLineItem.Reason"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$correctionDetails$reason"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$correctionDetails$reason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+</PAGE>

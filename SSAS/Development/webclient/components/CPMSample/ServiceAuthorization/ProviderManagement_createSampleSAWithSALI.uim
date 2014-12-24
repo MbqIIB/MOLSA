@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to add service authorization line items      -->
+<!-- for service authorization. -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_createSampleSAWithSALI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.ServiceAuthorizationDetails"
+      />
+
+
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationLineItems">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="saReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizations"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceAuthorization"
+    NAME="ACTION"
+    OPERATION="addSALIForSAWithFrequency"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SADetails"
+  >
+    <FIELD
+      LABEL="Field.Label.SARefNo"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="saReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Frequency"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="saliGenerationFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SALIDetails"
+  >
+
+
+    <FIELD LABEL="Field.Label.UnitsAuthorized">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="unitsAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnits">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Provider">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$providerID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$serviceID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.MaximumUnitsFrequency"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$maximumUnitFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitsAmountFixedInd">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$saliDtls$unitsAmountFixedInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="25"
+    TITLE="Field.Label.Nominee"
+  >
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Nominee"
+    >
+
+
+      <FIELD
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="32"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$saliDtls$nomineeType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="45">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$saliDtls$nomineeID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.ProviderCategoryType"
+  >
+
+
+    <FIELD
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      WIDTH="70"
+    >
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

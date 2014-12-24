@@ -1,0 +1,357 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ServiceDelivery</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Service Delivery
+:</b>
+<i>The delivery of a <a href=ServiceOffering.html>service</a> to a <a href=CaseParticipantRole.html>client</a>.
+</i>
+<p>A service can be added to any type of <a href=CaseHeader.html>case</a> and <a href=OutcomePlan.html>outcome plans</a>. Most of the fields on this table are optional as the details may be held elsewhere, for instance if the service is being delivered through the use of a <a href=ProductDelivery.html>product delivery</a>, most of the delivery information will reside on the product delivery table. The deliveryTypeRelatedID can be used to link the service delivery to another delivery mechanism such as a <a href=ProductDelivery.html>product delivery</a>. However, each service delivery must have a record on this table so that it can be linked correctly to <a href=OutcomePlan.html>outcome plans</a> and <a href=CaseHeader.html>cases</a>.</br>
+
+For standard services delivered by third party providers( which do not require any rules/eligibility processing) the delivery information will reside solely on this table. </p>
+
+<p><b>Example</b></p>James Smith was assessed for substance abuse issues and as a result the <a href=Users.html>case worker</a> scheduled 10 sessions of counseling from 01/01/2011 to 02/15/2011 provided by <a href=Provider.html>Dr. John Kelly</a>. This entity stores the details of this service.
+
+<p><b>Technical Notes</b></p>Most of the fields on this entity are optional as the information may be held elsewhere, including on an external system. The deliveryTypeRelatedID can be used to link to additional delivery information held elsewhere. For each different deliveryType an implementation must be provided which retrieves all the service delivery information so it can be displayed on a plan. Out of the box Cúram supplies two delivery types, standard service deliveries provided by third party providers and product rules and evidence based service deliveries which allow payments to be made to a client in respect of the service.
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::CPM::Service Layer::ServiceDelivery::ServiceDelivery::Entity::ServiceDelivery</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">CPM\model\Packages\Service Layer\Service Delivery\ServiceDelivery.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">yes</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (32)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="serviceDeliveryID">serviceDeliveryID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique reference number assigned by the system to a ServiceDelivery record.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="coverPeriodStartDate">coverPeriodStartDate</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The date the service is expected to start. This data will be passed as input into the creation of a service authorization.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="coverPeriodEndDate">coverPeriodEndDate</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The date the service is expected to end. This data, if entered, will be passed as input into the creation of a service authorization.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="serviceAuthorizationID">serviceAuthorizationID</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The Service Authorization identifier for this Service Delivery.</td><td class="data"><a href="../domains/SERVICE_AUTHORIZATION_ID.html">SERVICE_AUTHORIZATION_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="unitsAuthorized">unitsAuthorized</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The number of units of the service that a client can receive. This data will be passed as input into the creation of a CPM service authorization.</td><td class="data"><a href="../domains/NUMBER_SERVICE_UNITS_AUTHORIZED.html">NUMBER_SERVICE_UNITS_AUTHORIZED</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="frequency">frequency</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The number of times a client will receive this service over a period of time e.g. Weekly on a Monday.</td><td class="data"><a href="../domains/FREQUENCY_PATTERN.html">FREQUENCY_PATTERN</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;9&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="ownerUsername">ownerUsername</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The user name identifier of the owner for this Service Delivery.</td><td class="data"><a href="../domains/USER_NAME.html">USER_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="status">status</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The status of the service i.e. Unapproved, Submitted, Rejected, Not Started, In Progress, Completed.</td><td class="data"><a href="../domains/SERVICE_DEL_STATUS.html">SERVICE_DEL_STATUS</a></td><td class="data"><a href="../codetables/ct-ServiceDeliveryStatus.html">ServiceDeliveryStatus</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="sensitivity">sensitivity</a></td><td class="data">details</td><td class="data">yes</td><td class="data">Sensitivity level associated with this service i.e. 1, 2, 3, 4 or 5.</td><td class="data"><a href="../domains/SENSITIVITY_CODE.html">SENSITIVITY_CODE</a></td><td class="data"><a href="../codetables/ct-Sensitivity.html">Sensitivity</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="serviceOfferingID">serviceOfferingID</a></td><td class="data">details</td><td class="data">no</td><td class="data">The unique identifier of the service offering this delivery is for.</td><td class="data"><a href="../domains/PROVIDER_SERVICE_ID.html">PROVIDER_SERVICE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="providerID">providerID</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The concernRoleID of the provider of the Service Delivery.</td><td class="data"><a href="../domains/PROVIDER_ID.html">PROVIDER_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="outcomeAchieved">outcomeAchieved</a></td><td class="data">details</td><td class="data">yes</td><td class="data">Indicates whether the expected outcome was achieved i.e. Attained, Not Attained, Cancelled.</td><td class="data"><a href="../domains/ACTIVITY_OUTCOME_ACHIEVED.html">ACTIVITY_OUTCOME_ACHIEVED</a></td><td class="data"><a href="../codetables/ct-ActivityOutcomeAchieved.html">ActivityOutcomeAchieved</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="authorizedRate">authorizedRate</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The stipulated amount per unit that the agency authorizes for payment to a provider for delivering the service to a particular client. This data will be passed as input into the creation of a service authorization.</td><td class="data"><a href="../domains/CURAM_AMOUNT.html">CURAM_AMOUNT</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_MONEY</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="providerType">providerType</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The type of provider that can provide the service to the client.The type is a sub-categorization of the provider category.</td><td class="data"><a href="../domains/PROVIDER_TYPE.html">PROVIDER_TYPE</a></td><td class="data"><a href="../codetables/ct-ProviderType.html">ProviderType</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="nomineeConcernRoleID">nomineeConcernRoleID</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The concern role identifier of a nominee - specifying someone other than the provider to receive payment for the service.</td><td class="data"><a href="../domains/NOMINEE_CONCERN_ROLE_ID.html">NOMINEE_CONCERN_ROLE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="createdBy">createdBy</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The username of the system user who created the record.</td><td class="data"><a href="../domains/USER_NAME.html">USER_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="creationDate">creationDate</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The date the record was created.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="caseID">caseID</a></td><td class="data">details</td><td class="data">no</td><td class="data">The identifier for the case the service delivery was created on.</td><td class="data"><a href="../domains/CASE_ID.html">CASE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="estimatedCost">estimatedCost</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The estimated cost of the service delivery.</td><td class="data"><a href="../domains/CURAM_AMOUNT.html">CURAM_AMOUNT</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_MONEY</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="noteID">noteID</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The identifier for the note record for the service delivery.</td><td class="data"><a href="../domains/NOTE_ID.html">NOTE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="reason">reason</a></td><td class="data">details</td><td class="data">no</td><td class="data">The reason for creating the service delivery.</td><td class="data"><a href="../domains/REASON_TEXT_SMALL.html">REASON_TEXT_SMALL</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;2000&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="participationFrequency">participationFrequency</a></td><td class="data">details</td><td class="data">yes</td><td class="data"><p>
+
+    The number of times a client is expected to participate in the service e.g. Weekly on a Monday.
+
+</p></td><td class="data"><a href="../domains/FREQUENCY_PATTERN.html">FREQUENCY_PATTERN</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;9&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="duration">duration</a></td><td class="data">details</td><td class="data">yes</td><td class="data"><p>
+
+    The length of time, in minutes,&nbsp;a client should participate in a service.
+
+</p></td><td class="data"><a href="../domains/DURATION_IN_MINUTES.html">DURATION_IN_MINUTES</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="federalAllowableComponentID">federalAllowableComponentID</a></td><td class="data">details</td><td class="data">yes</td><td class="data"><p>
+
+    Unique identifier of a linked federal allowable component if the service delivery counts towards one.
+
+</p></td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="completionComments">completionComments</a></td><td class="data">details</td><td class="data">yes</td><td class="data">Comments entered on completion of a service delivery, if no progress is recorded on completion.</td><td class="data"><a href="../domains/REASON_TEXT_SMALL.html">REASON_TEXT_SMALL</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;2000&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="serviceDeliveryEvaluationID">serviceDeliveryEvaluationID</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The Service Delivery Evaluation identifier for this Service Delivery.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="outcomeReason">outcomeReason</a></td><td class="data">details</td><td class="data">yes</td><td class="data">&nbsp;</td><td class="data"><a href="../domains/ACTIVITY_OUTCOME_REASON.html">ACTIVITY_OUTCOME_REASON</a></td><td class="data"><a href="../codetables/ct-ActivityOutcomeReason.html">ActivityOutcomeReason</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="deliveryType">deliveryType</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The type of delivery provided by this service. This attribute is the value as specified by the deliveryType attribute on the serviceOffering at the time the service was created.</td><td class="data"><a href="../domains/DELIVERY_TYPE_CODE.html">DELIVERY_TYPE_CODE</a></td><td class="data"><a href="../codetables/ct-SODeliveryType.html">SODeliveryType</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="deliveryTypeRelatedID">deliveryTypeRelatedID</a></td><td class="data">details</td><td class="data">yes</td><td class="data">ID of the related object used to store information about the service delivery. For Product Delivery based service deliveries this will hold the id of the PD case used as the delivery mechanism for the service.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="supervisorUsername">supervisorUsername</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The supervising user for the delivery.</td><td class="data"><a href="../domains/USER_NAME.html">USER_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="completedBy">completedBy</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The user name of the user who completed the service delivery. A service delivery can be completed via batch processing, in which case, this will be set to SYSTEM.</td><td class="data"><a href="../domains/USER_NAME.html">USER_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="completionDate">completionDate</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The date on which the service delivery was completed.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ServiceDelivery.caseID</td><td class="dataLast"><a href="CaseHeader.html#caseID">CaseHeader.caseID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">ServiceDelivery.nomineeConcernRoleID</td><td class="dataLast"><a href="ConcernRole.html#concernRoleID">ConcernRole.concernRoleID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ServiceDelivery.federalAllowableComponentID</td><td class="dataLast"><a href="FederalAllowableComponent.html#federalAllowableComponentID">FederalAllowableComponent.federalAllowableComponentID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">ServiceDelivery.noteID</td><td class="dataLast"><a href="Note.html#noteID">Note.noteID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ServiceDelivery.providerID</td><td class="dataLast"><a href="Provider.html#providerConcernRoleID">Provider.providerConcernRoleID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">ServiceDelivery.serviceAuthorizationID</td><td class="dataLast"><a href="ServiceAuthorization.html#serviceAuthorizationID">ServiceAuthorization.serviceAuthorizationID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ServiceDelivery.serviceDeliveryEvaluationID</td><td class="dataLast"><a href="ServiceDeliveryEvaluation.html#serviceDeliveryEvaluationID">ServiceDeliveryEvaluation.serviceDeliveryEvaluationID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">ServiceDelivery.serviceOfferingID</td><td class="dataLast"><a href="ServiceOffering.html#serviceOfferingID">ServiceOffering.serviceOfferingID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ServiceDelivery.ownerUsername</td><td class="dataLast"><a href="Users.html#userName">Users.userName</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">ServiceDelivery.supervisorUsername</td><td class="dataLast"><a href="Users.html#userName">Users.userName</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ServiceDeliveryLink.html#serviceDeliveryID">ServiceDeliveryLink.serviceDeliveryID</a></td><td class="dataLast">ServiceDelivery.serviceDeliveryID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ServiceDeliveryStatusHistory.html#serviceDeliveryID">ServiceDeliveryStatusHistory.serviceDeliveryID</a></td><td class="dataLast">ServiceDelivery.serviceDeliveryID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ServiceEnquiry.html#serviceDeliveryID">ServiceEnquiry.serviceDeliveryID</a></td><td class="dataLast">ServiceDelivery.serviceDeliveryID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (8)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ActiveSDelServiceAuthIdx</td><td class="dataLast">serviceAuthorizationID</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ServiceDelCaseStsIdx</td><td class="dataLast">caseID</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ServiceDelStatusCaseIdx</td><td class="dataLast">status, caseID</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">SDelServiceOffCaseStsIdx</td><td class="dataLast">serviceOfferingID, caseID</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ServiceProviderIdx</td><td class="dataLast">providerID, serviceOfferingID</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">SrvDelDeliveryTypeRelatdIDIdx</td><td class="dataLast">deliveryTypeRelatedID</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">SrvDelDeliveryNoteIDIdx</td><td class="dataLast">noteID</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">SrvDelNomineeConcernRolIDIdx</td><td class="dataLast">nomineeConcernRoleID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (13)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: serviceDeliveryID</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modify</td><td class="data">modify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByServiceOfferingAndCase</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Searches for service delivery records for the specified service offering and case</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByCase</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Returns&amp;nbsp;a&amp;nbsp;list&amp;nbsp;of&amp;nbsp;service&amp;nbsp;delivery&amp;nbsp;records&amp;nbsp;for&amp;nbsp;the&amp;nbsp;specified&amp;nbsp;case.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readByServiceAuthorization</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Returns a service delivery record for the specified service authorization, if one exists, otherwise a null object is returned.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByServiceDeliveryStatusAndCase</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Returns a list of service delivery records for the specified case with the specified status.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByOwnerAndCase</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Returns a list of service delivery records for the specified owner and case.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByStatus</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Returns&amp;nbsp;a&amp;nbsp;list&amp;nbsp;of&amp;nbsp;service&amp;nbsp;delivery&amp;nbsp;records&amp;nbsp;for&amp;nbsp;the&amp;nbsp;specified&amp;nbsp;status.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByProviderAndServiceOffering</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Returns a list of service delivery records for the specified provider and service offering.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByProvider</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Returns a list of service delivery records for the specified provider.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">countByServiceOffering</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">Gets service delivery records count for the given service offering.</td><td class="dataLast"><a href="../sql/sql-ServiceDelivery-countByServiceOffering.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readByDeliveryTypeRelatedID</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Returns service delivery identifier for the given delivery type related ID.</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This view contains the details of the service rate to modify -->
+<PAGE
+  PAGE_ID="ProviderManagement_editServiceRate"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.EditRate"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="serviceRateID"/>
+  <PAGE_PARAMETER NAME="serviceOfferingName"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="viewServiceRate"
+    OPERATION="viewServiceRate"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceRateID"
+    />
+    <TARGET
+      NAME="viewServiceRate"
+      PROPERTY="serviceRateKey$serviceRateKey$serviceRateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="viewServiceRate"
+      PROPERTY="result$endDate"
+    />
+    <TARGET
+      NAME="updateServiceRate"
+      PROPERTY="serviceRateDetails$endDate"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="updateServiceRate"
+    OPERATION="updateServiceRate"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="viewServiceRate"
+      PROPERTY="result$serviceOfferingID"
+    />
+    <TARGET
+      NAME="updateServiceRate"
+      PROPERTY="serviceRateDetails$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="viewServiceRate"
+      PROPERTY="result$serviceRateID"
+    />
+    <TARGET
+      NAME="updateServiceRate"
+      PROPERTY="serviceRateDetails$serviceRateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="viewServiceRate"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="updateServiceRate"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+
+
+    <!-- BEGIN, CR00187899, PS -->
+    <!-- BEGIN, CR00197766, PS -->
+    <FIELD
+      LABEL="Field.Label.MinimumAmount"
+      WIDTH="70"
+    >
+      <!-- END, CR00197766 -->
+      <!-- END, CR00187899 -->
+      <CONNECT>
+        <SOURCE
+          NAME="viewServiceRate"
+          PROPERTY="result$minAmountString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="updateServiceRate"
+          PROPERTY="serviceRateDetails$minAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00187899, PS -->
+    <!-- BEGIN, CR00197766, PS -->
+    <FIELD
+      LABEL="Field.Label.FixedAmount"
+      WIDTH="70"
+    >
+      <!-- END, CR00197766 -->
+      <!-- END, CR00187899 -->
+      <CONNECT>
+        <SOURCE
+          NAME="viewServiceRate"
+          PROPERTY="result$fixedAmountString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="updateServiceRate"
+          PROPERTY="serviceRateDetails$fixedAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00187899, PS -->
+    <!-- BEGIN, CR00197766, PS -->
+    <FIELD
+      LABEL="Field.Label.MaximumAmount"
+      WIDTH="70"
+    >
+      <!-- END, CR00197766 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="viewServiceRate"
+          PROPERTY="result$maxAmountString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="updateServiceRate"
+          PROPERTY="serviceRateDetails$maxAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00247984, PS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="65"
+    >
+      <!-- END, CR00247984 -->
+      <CONNECT>
+        <SOURCE
+          NAME="viewServiceRate"
+          PROPERTY="result$startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="updateServiceRate"
+          PROPERTY="serviceRateDetails$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00187899 -->
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00187899, CR00407812, PS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00187899, CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="viewServiceRate"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="updateServiceRate"
+          PROPERTY="serviceRateDetails$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+        </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+        </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

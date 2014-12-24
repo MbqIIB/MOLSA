@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view contract status history.             -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewContractStatusHistory"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$contractVersionID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00235192, PS -->
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="listContractStatusHistoryDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00235192 -->
+
+
+  <!-- BEGIN, CR00236707, PS -->
+  <LIST SCROLL_HEIGHT="125">
+    <!-- END, CR00236707 -->
+    <!-- Contract Status Details -->
+    <!-- BEGIN, CR00207545, SS -->
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="20"
+    >
+      <!-- END, CR00207545 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- User Homepage Link -->
+    <FIELD
+      LABEL="Field.Label.User"
+      WIDTH="25"
+    >
+      <!-- BEGIN, CR00235192, PS -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="lastModifiedByFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=600"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="lastModifiedBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00235192 -->
+    </FIELD>
+    <!-- BEGIN, CR00207545, SS -->
+    <FIELD
+      LABEL="Field.Label.Reason"
+      WIDTH="40"
+    >
+      <!-- END, CR00207545 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- Close -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Close"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

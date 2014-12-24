@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+    
+  Copyright IBM Corporation 2010, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- BEGIN, CR00407985, SG -->
+<?curam-deprecated Since Curam 6.0, replaced by CreateServiceDeliveryWizard_service1. This page is deprecated because a new 
+  page parameter is added. See release note CR00407985?>
+<!-- END, CR00407985 -->
+<PAGE
+  PAGE_ID="CreateServiceDeliveryWizard_service"
+  WINDOW_OPTIONS="width=800,height=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SCRIPT
+    ACTION="create.service.subscribeToServiceSelection()"
+    EVENT="ONLOAD"
+    SCRIPT_FILE="CreateServiceDeliveryWizard.js"
+  />
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292877, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292877 -->
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$wizardStateID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="CreateServiceDeliveryWizard"
+    NAME="DISPLAY"
+    OPERATION="getServicePage"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="CreateServiceDeliveryWizard"
+    NAME="ACTION"
+    OPERATION="searchServices"
+    PHASE="ACTION"
+  />
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchByName"
+  >
+    <FIELD LABEL="Field.Label.ServiceName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchByKeywords"
+  >
+    <FIELD LABEL="Field.Label.Keywords">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="keywords"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="CreateServiceDeliveryWizard_service">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+  <LIST TITLE="List.Title.Services">
+    <CONDITION>
+      <IS_TRUE
+        NAME="ACTION"
+        PROPERTY="searchByNameResultsInd"
+      />
+    </CONDITION>
+
+
+    <!-- BEGIN, CR00357388, PS -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="20"
+    >
+      <!-- END, CR00357388 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Select">
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="CreateServiceDeliveryWizard_resolveSelectService"
+          SAVE_LINK="false"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <!-- BEGIN, CR00357388, PS -->
+    <FIELD
+      LABEL="Field.Title.ServiceOfferingName"
+      WIDTH="80"
+    >
+      <!-- END, CR00357388 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <LIST TITLE="List.Title.Terms">
+    <CONDITION>
+      <IS_TRUE
+        NAME="ACTION"
+        PROPERTY="searchByKeywordResultsInd"
+      />
+    </CONDITION>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="CreateServiceDeliveryWizard_serviceList">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="termName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="termName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="termID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="termID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD
+      LABEL="Field.Title.Term"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="termName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.NumberServices"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="noOfNonReferralServices"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

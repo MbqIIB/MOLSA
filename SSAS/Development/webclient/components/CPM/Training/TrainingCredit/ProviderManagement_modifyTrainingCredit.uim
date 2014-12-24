@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is create Training Credit Page                                    -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyTrainingCredit"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTrainingCredit"
+    NAME="DISPLAY"
+    OPERATION="viewTrainingCredit"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTrainingCredit"
+    NAME="ACTION"
+    OPERATION="updateTrainingCredit"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="trainingCreditID"/>
+  <PAGE_PARAMETER NAME="trainingName"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingCreditID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$trainingCreditID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingCreditID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="trainingCreditID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="trainingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00140766, AS -->
+  <!-- BEGIN, CR00236707, PS -->
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+    <!-- END, CR00236707 -->
+    <FIELD
+      CONFIG="CT_DISPLAY_LABELS"
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      LABEL="Field.Label.Category"
+      WIDTH="70"
+    >
+      <!-- END, CR00140766 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="parentProviderCategory"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="parentProviderCategory"
+        />
+
+
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00228079, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00228079 -->
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="type"
+        />
+      </CONNECT>
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ValidityPeriod">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="validityPeriodString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="validityPeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Value">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="value"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="value"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ValidityPeriodUnit"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="validityPeriodUnit"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="validityPeriodUnit"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

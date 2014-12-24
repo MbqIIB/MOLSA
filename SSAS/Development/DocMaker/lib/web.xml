@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 2006 Curam Software Ltd. All rights reserved.
+
+Configuration file for the Curam Online Help web application.
+-->
+<web-app
+  xmlns="http://java.sun.com/xml/ns/j2ee"
+  id="WebApp"
+  version="2.4"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+>
+  <display-name>Curam Social Program Management Online Help</display-name>
+  <!--
+  The configuration servlet maintains configuration information shared by all
+  of the servlets. It must be initialized first.
+  -->
+  <servlet id="HelpConfigServlet">
+    <display-name>Curam Online Help Configuration Servlet</display-name>
+    <servlet-name>HelpConfigServlet</servlet-name>
+    <servlet-class>curam.docmaker.tools.help.HelpConfigServlet</servlet-class>
+    <!-- The URI of the splash page used when a topic cannot be resolved. -->
+    <init-param>
+      <param-name>splash</param-name>
+      <param-value>help-splash.html</param-value>
+    </init-param>
+    <!-- The name of the frame in which the help pages will be displayed. -->
+    <init-param>
+      <param-name>target</param-name>
+      <param-value>main</param-value>
+    </init-param>
+    <!-- The locale used for l10n. The placeholder is substituted when the WAR is built -->
+    <init-param>
+      <param-name>locale</param-name>
+      <param-value>@LOCALE@</param-value>
+    </init-param>
+    <!--init-param>
+      <param-name>debug</param-name>
+      <param-value>true</param-value>
+    </init-param-->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!--
+  The topic redirect servlet resolves topic names to page URIs. It provides
+  context-sensitive access to the help content and supports links between
+  books.
+  -->
+  <servlet id="HelpTopicServlet">
+    <display-name>Curam Online Help Topic Redirect Servlet</display-name>
+    <servlet-name>HelpTopicServlet</servlet-name>
+    <servlet-class>curam.docmaker.tools.help.HelpTopicServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <!--
+  The table of contents servlet displays the table of contents for the online
+  help.
+  -->
+  <servlet id="HelpContentsServlet">
+    <display-name>Curam Help Table of Contents Servlet</display-name>
+    <servlet-name>HelpContentsServlet</servlet-name>
+    <servlet-class>curam.docmaker.tools.help.HelpContentsServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <!--
+  The search servlet displays the search form and the results.
+  -->
+  <servlet id="HelpSearchServlet">
+    <display-name>Curam Help Search Servlet</display-name>
+    <servlet-name>HelpSearchServlet</servlet-name>
+    <servlet-class>curam.docmaker.tools.help.HelpSearchServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <!--
+  The mappings from URL patterns to the servlets.
+  -->
+  <servlet-mapping>
+    <servlet-name>HelpTopicServlet</servlet-name>
+    <url-pattern>/topic</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>HelpContentsServlet</servlet-name>
+    <url-pattern>/toc</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>HelpSearchServlet</servlet-name>
+    <url-pattern>/search</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

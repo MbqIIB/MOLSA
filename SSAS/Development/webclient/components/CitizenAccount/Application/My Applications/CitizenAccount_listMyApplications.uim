@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012,2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+
+<!-- ====================================================================== -->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ====================================================================== -->
+<PAGE PAGE_ID="CitizenAccount_listMyApplications" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE ICON="CitizenAccount_listMyApplications.Page.Icon">
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1" />
+        </CONNECT>
+    </PAGE_TITLE>
+    
+    <SERVER_INTERFACE CLASS="CitizenAccount" NAME="DISPLAY" OPERATION="listExistingApplications" />
+    
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.NewBenefit">
+            <LINK PAGE_ID="CitizenAccount_goIntake"/>
+        </ACTION_CONTROL>
+    </ACTION_SET>    
+    
+    <LIST TITLE="List.Title.InprogressList" DESCRIPTION="List.Title.InprogressList.Description">
+        <FIELD LABEL="Field.Title.Application">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="inprogresAppDtls$applicationName" />
+            </CONNECT>
+            <LINK OPEN_NEW="true" URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="inprogresAppDtls$applicationUrl" />
+        </FIELD>
+        <FIELD LABEL="Field.Title.Programs">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="programListXML" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.DateCreated">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="createdDate" />
+            </CONNECT>
+        </FIELD>
+        <CONTAINER SEPARATOR="Container.Separator">
+            <FIELD>
+                <CONNECT>
+                    <SOURCE NAME="DISPLAY" PROPERTY="resumeApplicationUrl" />
+                </CONNECT>
+            </FIELD>
+            <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+                <LINK PAGE_ID="CitizenAccount_deleteApplication" OPEN_MODAL="true" WINDOW_OPTIONS="width=400,height=150">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationTypeID" />
+                        <TARGET NAME="PAGE" PROPERTY="intakeApplicationTypeID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="inprogresAppDtls$applicationName" />
+                        <TARGET NAME="PAGE" PROPERTY="applicationName" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </CONTAINER>
+    </LIST>
+    <LIST TITLE="List.Title.SubmittedList" DESCRIPTION="List.Title.SubmittedList.Description">
+        <CONTAINER LABEL="Field.Title.Application" WIDTH="25">   	  
+    	    <ACTION_CONTROL LABEL="ActionControl.Label.TextTranslation" TYPE="FILE_DOWNLOAD" IMAGE="PDF.Icon">
+				<LINK>
+					<CONNECT>
+						<SOURCE NAME="DISPLAY" PROPERTY="intakeApplicationID"/>
+						<TARGET NAME="PAGE" PROPERTY="intakeApplicationID"/>
+					</CONNECT>
+				</LINK>
+			</ACTION_CONTROL>
+            <FIELD WIDTH="20">
+                <CONNECT>
+                    <SOURCE NAME="DISPLAY" PROPERTY="submittedAppDtls$applicationName" />
+                </CONNECT>
+                <LINK OPEN_NEW="true" URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="submittedAppDtls$applicationUrl" />
+            </FIELD>	    
+		</CONTAINER>
+        <FIELD LABEL="Field.Title.Programs" WIDTH="23">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="programName" />
+            </CONNECT>
+            <LINK OPEN_NEW="true" URI_SOURCE_NAME="DISPLAY" URI_SOURCE_PROPERTY="programUrl" />
+        </FIELD>
+        <FIELD LABEL="Field.Title.DateSubmitted" WIDTH="21">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="submittedDateTime" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Title.ProgramStatus" WIDTH="18">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="programStatus" />
+            </CONNECT>
+        </FIELD>
+        <CONTAINER SEPARATOR="Container.Separator" WIDTH="13">
+            <ACTION_CONTROL LABEL="ActionControl.Label.Withdraw">
+                <CONDITION>
+                    <IS_TRUE NAME="DISPLAY" PROPERTY="withdrawInd" />
+                </CONDITION>
+                <LINK PAGE_ID="CitizenAccount_withdrawIntakeApplication" OPEN_MODAL="true" WINDOW_OPTIONS="width=700,height=570">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="intakeProgramApplicationID" />
+                        <TARGET NAME="PAGE" PROPERTY="intakeProgramApplicationID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="programName" />
+                        <TARGET NAME="PAGE" PROPERTY="programName" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </CONTAINER>
+    </LIST>
+
+</PAGE>

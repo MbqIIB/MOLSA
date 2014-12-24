@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2009, 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search provider pop-up page                                -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchProviderPopUp"
+  POPUP_PAGE="true"
+  WINDOW_OPTIONS="width=850"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="searchProviders"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00236219, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- END, CR00236219 -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$name"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00235795, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Category"
+  >
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+
+
+        <LINK PAGE_ID="THIS">
+                </LINK>
+
+
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00132888, SG -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchProviderPopUp"/>
+      </ACTION_CONTROL>
+      <!-- END, CR00132888 -->
+      <!-- END, CR00235795 -->
+    </ACTION_SET>
+    <!-- BEGIN, CR00248112, PS -->
+    <!-- BEGIN, CR00247862, GP -->
+    <FIELD
+      CONFIG="CT_DISPLAY_LABELS"
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      LABEL="Field.Label.ProviderType"
+    >
+      <!-- END, CR00247862 -->
+      <!-- END, CR00248112 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$providerCategoryType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00236707, PS -->
+  <LIST
+    SCROLL_HEIGHT="125"
+    TITLE="List.Title.SearchResults"
+  >
+    <!-- END, CR00236707 -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$details$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$details$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PrimaryCategory">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$primaryCategory"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- BEGIN, CR00245942, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+  <!-- END, CR00245942 -->
+</PAGE>

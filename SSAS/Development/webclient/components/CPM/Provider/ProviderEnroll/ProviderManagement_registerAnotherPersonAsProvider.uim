@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows user to register a person and associate that person 
+  as provider member. -->
+<PAGE
+  PAGE_ID="ProviderManagement_registerAnotherPersonAsProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <!--
+            <CONNECT>
+                <SOURCE
+                    NAME="TEXT"
+                    PROPERTY="PageTitle.Description"
+                />
+            </CONNECT>
+            -->
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="referenceNumber"/>
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00138625, AS -->
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="providerRegistrationAsPersonOption"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00138625 -->
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.RegistrationComplete"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.StaticText.ReferenceNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="referenceNumber"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00180249, SK -->
+        <LINK PAGE_ID="Person_homePagePDC">
+          <!-- END, CR00180249 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.StaticText.Confirmation"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00138625, AS -->
+      <FIELD>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="providerOptionAnswerType"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00138625 -->
+    </CONTAINER>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Previous"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_searchPerson">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_resolveRegAnotherPersonAsProvider">
+        <!-- BEGIN, CR00138625, AS -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="providerOptionAnswerType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOptionAnswerType"
+          />
+        </CONNECT>
+        <!-- END, CR00138625 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Finish"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+
+-->
+<project>
+
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import common targets  ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_utilities.xml"/>
+
+  
+    <!--  *******************************  -->
+    <!--  ***  Import tasks definitions**  -->
+    <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_tasks.xml"/>
+  
+  
+  <!--  *****************************  -->
+  <!--  ***  CONFIG TEST          ***  -->
+  <!--  *****************************  -->
+
+
+  <target 
+    depends="init,declareTasks, check.db.type, set.database.ora,set.database.db2"
+    description="Ensures the reporting environment is set up correctly"
+    name="configtest"
+  >
+	<ant target="infosphere.configure" antfile="${REPORTING_ENV}/scripts/rep_infosphere.xml"/>
+
+    <CheckConfig birtTestOnly="${environment.birt.testconnections}" reportingDirectory="${REPORTING_DIR}" file="${prop.file}"/>
+	
+  </target>
+  
+  
+  
+  
+  
+</project>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search for a provider in the wait list entries 
+  using the specified search criteria.                                      -->
+<!-- BEGIN, CR00280598, GP -->
+<?curam-deprecated Since Curam 6.0 SP2 replaced with 
+  ProviderManagement_searchWaitListForProviderAndProviderOffering as the 
+  waitlist search page need to support both provider and provider offering. 
+  See release note : CR00280598.?>
+<!-- END, CR00280598 -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchWaitListForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00280598, GP -->
+  <!-- BEGIN, CR00278667, GP -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00278667 -->
+
+
+  <PAGE_PARAMETER NAME="resourceID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="ACTION"
+    OPERATION="searchWaitListEntryForProvider"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00280598 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="resourceID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$resourceID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00206896, SS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- END, CR00206896 -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"> </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchWaitListForProvider">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="resourceID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="resourceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+    <!-- BEGIN, CR00248198, GP -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.ClientName"
+      WIDTH="80"
+    >
+      <!-- END, CR00235192 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00249047, PS -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.Priority"
+      USE_BLANK="true"
+      WIDTH="40"
+    >
+      <!-- END, CR00249047 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$priority"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00249047, PS -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.Status"
+      USE_BLANK="true"
+      WIDTH="40"
+    >
+      <!-- END, CR00249047 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00206896 -->
+    <!-- BEGIN, CR00261441, GYH -->
+    <FIELD
+      LABEL="Field.Label.WaitListEntry.ExpiryDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="45"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$expiryDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00261441 -->
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <!-- BEGIN, CR00206078, PS -->
+    <FIELD LABEL="Field.Label.WaitListEntry.ClientName">
+      <!-- END, CR00206078 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK PAGE_ID="Person_homePagePDC">
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR122350, NBR -->
+    <!-- BEGIN, CR00206078, PS -->
+    <FIELD LABEL="Field.Label.WaitListEntry.Position">
+      <!-- END, CR00206078 -->
+      <!-- END, CR122350 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="positionString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206078, PS -->
+    <FIELD LABEL="Field.Label.WaitListEntry.Priority">
+      <!-- END, CR00206078 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$waitListEntryDtls$priority"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00206078, PS -->
+    <!-- BEGIN, CR00280598, GP -->
+    <FIELD LABEL="Field.Label.WaitListEntry.ReviewDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$waitListEntryDtls$reviewDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00280598 -->
+    <!-- END, CR00206896 -->
+    <FIELD LABEL="Field.Label.WaitListEntry.ExpiryDate">
+      <!-- END, CR00206078 -->
+      <!-- BEGIN, CR00280598, GP -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$waitListEntryDtls$expiryDate"
+        />
+      </CONNECT>
+      <!-- END, CR00280598 -->
+    </FIELD>
+    <!-- BEGIN, CR00206078, PS -->
+    <FIELD LABEL="Field.Label.WaitListEntry.Status">
+      <!-- END, CR00206078 -->
+      <!-- BEGIN, CR00280598, GP -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$details$waitListEntryDtls$status"
+        />
+      </CONNECT>
+      <!-- END, CR00280598 -->
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <DETAILS_ROW>
+      <!-- BEGIN, CR00280598, GP -->
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewWaitListEntryFrmProvider">
+        <!-- END, CR00280598 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="waitListEntryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00206896 -->
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a service invoice line item details. -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceInvoiceLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00199844, PS -->
+  <PAGE_PARAMETER NAME="serviceInvoiceLineItemID"/>
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="viewServiceInvoiceLineItemInsertion"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00199844 -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ServiceInvoiceLineItem"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewServiceInvoiceLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="details$serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ServiceInvoiceLineItemTransactions"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemTransanctions">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="details$serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ServiceInvoiceLineItemItemHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="details$serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00199844, PS -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$msgList$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00199844 -->
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY2"
+    OPERATION="listClientDetailsForServiceInvoiceLineItem"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00158345 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+  <!-- END, CR00158345 -->
+
+
+  <!-- BEGIN, CR00246089, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00246089 -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="flag"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.ServiceAuthorizationReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="saReferenceNo"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_viewServiceAuthorization"
+        WINDOW_OPTIONS="width=650"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NumberofUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="noOfUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00246089, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00246089 -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="flag"
+      />
+    </CONDITION>
+
+
+    <!-- BEGIN, CR00199844, PS -->
+    <FIELD LABEL="Field.Label.ServiceAuthorizationReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NumberofUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="noOfUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AmountPaid">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$amountPaid"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00199844 -->
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.ProviderDetails"
+  >
+    <FIELD LABEL="Field.Label.ProviderReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <LIST TITLE="List.Label.ClientDetails">
+    <!-- BEGIN, CR00199844, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199844 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00187417, PS -->
+        <!-- BEGIN, CR00197955, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeClientFromServiceInvoiceLineItem"
+        >
+          <!-- END, CR00197955 -->
+          <!-- END, CR00187417 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="result$clientDetails$siliClientID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="siliClientID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceInvoiceLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceInvoiceLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="clientReferenceNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="clientReferenceNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199844, PS -->
+    </ACTION_SET>
+    <!-- END, CR00199844 -->
+    <FIELD LABEL="Field.Label.ClientReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientFirstName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ClientLastName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientLastName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ClientDateofBirth"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientDOB"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00158345 -->
+
+
+  <!-- BEGIN, CR00199844, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.PayeeDetails"
+  >
+    <FIELD LABEL="Field.Label.PayeeReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="payeeReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PayeeName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="payeeName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00199844 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="SILICorrection"
+    NAME="DISPLAY1"
+    OPERATION="listSILICorrections"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+
+
+</PAGE>

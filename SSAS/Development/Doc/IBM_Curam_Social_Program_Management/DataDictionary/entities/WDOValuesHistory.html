@@ -1,0 +1,146 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>WDOValuesHistory</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Workflow Data Object Values History
+:</b>
+<i> An audit log of the <a href=ProcInstWDOData.html>Process Instance Data</a> used as input and output for activities in a <a href=ProcessInstance.html>Process Instance</a>.
+</i>
+
+<P>During the life of a <a href=ProcessInstance.html>Process Instance</a>, data is stored in the attributes of workflow data objects. The value of these attributes can change at many points during the execution of the process. The attributes values can also be used at many points.  A Workflow Data Object Values History record is created any time an activity reads (or modifies) the value of a workflow data object attribute during the execution of a <a href=ProcessInstance.html>Process Instance</a>.  Hence the set of Workflow Data Object Values History rows for a given <a href=ProcessInstance.html>Process Instance</a> provide an audit trail of the <a href=ProcInstWDOData.html>Process Instance Data</a> for the life of that <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>system prints out a letter (automatic);</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual); and</LI>
+
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+
+</UL>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.
+
+    </P>
+
+<P>
+
+      The initial activity in the process is 'system prints out a letter', so the Workflow Engine gets the necessary data for printing the letter (name, case, etc) from the attributes of the workflow data objects available to it. Before the activity is executed, the engine detects that an activity is about to use some <a href=ProcInstWDOData.html>Process Instance Data</a> and creates a Workflow Data Object Values History row to record the data values used.
+
+    </P>
+
+<P>
+
+      The second activity in the process is 'User posts the letter'.  Once this has been done, the Workflow Engine updates another Workflow Data Object attribute with the time at which the letter the letter was posted.  The engine detects that an activity has changed some <a href=ProcInstWDOData.html>Process Instance Data</a> and creates a Workflow Data Object Values History row to record the change.
+
+    </P>
+
+<p><b>Technical Notes</b></p>
+<P>
+
+      The pool of workflow data objects can be quite large, so it would be inefficient to log the values of the entire data pool before and after every activity.   Hence the workflow engine ensures that only those workflow data object attributes that are either used (as input to) or modified (as output from) an activity are audited.
+
+</P>
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (7)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">wdoValuesHistoryID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier associated with this workflow data object values history record.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">activityInstanceID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of the associated activity instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processInstanceID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of the associated process instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">executionPeriod</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The point during the execution of a workflow process instance that this history record was written.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">creationTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The time at which this record was created.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">wdoSnapShot</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The workflow data object snapshot represented as an XML string.</td><td class="dataLast">SVR_STRING&lt;35000&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">WDOValuesHistory.activityInstanceID</td><td class="dataLast"><a href="ActivityInstance.html#activityInstanceID">ActivityInstance.activityInstanceID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">WDOValuesHistory.processInstanceID</td><td class="dataLast"><a href="ProcessInstance.html#processInstanceID">ProcessInstance.processInstanceID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

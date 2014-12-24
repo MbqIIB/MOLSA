@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010 Curam Software Ltd.                             -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!-- Reads a service offering's home page details and further details        -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceOfferingFrmServiceGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_viewServiceOfferingView.vim"/>
+
+
+  <PAGE_PARAMETER NAME="serviceGroupID"/>
+
+
+  <!-- BEGIN, CR00117630, ASB -->
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingFrmGroupMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceGroupID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceGroupID"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00117630-->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_editServiceOfferingFrmView"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+      <!-- BEGIN, CR00187417, PS -->
+      <!-- BEGIN, CR00197352, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_cancelServiceOfferingFrmServiceGroup"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=350"
+      >
+        <!-- END, CR00187417 -->
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceGroupID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceGroupID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceOfferingDtls$name"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewServiceRate">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createServiceRate"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceOfferingDtls$name"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddTraining">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_addTrainingForServiceOffering"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceOfferingDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00157486, AK -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewApprovalCheck">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createServiceOfferingApprovalCheck"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!--END, CR00157486 -->
+
+
+  </ACTION_SET>
+
+
+</PAGE>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant initialization file for Curam projects.
+  It includes any initialization tasks that need to be performed before a application can be built.
+
+-->
+<project name="app_init" default="init">
+
+  <!--  ************************  -->
+  <!--  ***  INITIALISATION  ***  -->
+  <!--  ************************  -->
+  <target name="init">
+
+    <!-- Set the starting time stamp for use in file names -->
+    <tstamp><format property="tim.start.sort" pattern="yyyyMMddHHmmss"/></tstamp>
+
+    <!-- Start recording progress to a log file -->
+    <mkdir dir="${dir.bld.log}"/>
+    <record name="${dir.bld.log}/${tim.start.sort}.log" loglevel="${prp.loglevel}" />
+
+    <tstamp><format property="time.now" pattern="HH:mm:ss"/></tstamp>
+    <echo message="${time.now} Build Started"/>
+
+    <!-- Check for a CuramSDEJ installation -->
+    <antcall target="check.prop" inheritall="false">
+      <param name="prm.var" value="CURAMSDEJ"/>
+      <param name="prm.prop" value="sysenv.CURAMSDEJ"/>
+    </antcall>
+
+    <!-- Check for a J2EE installation -->
+    <antcall target="check.prop" inheritall="false">
+      <param name="prm.var" value="J2EE_JAR"/>
+      <param name="prm.prop" value="sysenv.J2EE_JAR"/>
+    </antcall>
+
+    <!-- Check for a SERVER_DIR variable -->
+    <antcall target="check.prop" inheritall="false">
+      <param name="prm.var" value="SERVER_DIR"/>
+      <param name="prm.prop" value="SERVER_DIR"/>
+    </antcall>
+
+    <!-- Check for a SERVER_MODEL_NAME variable -->
+    <antcall target="check.prop" inheritall="false">
+      <param name="prm.var" value="SERVER_MODEL_NAME"/>
+      <param name="prm.prop" value="SERVER_MODEL_NAME"/>
+    </antcall>
+
+    <condition property="prop.file.available">
+        <available file="${prop.file}"/>
+    </condition>
+    <antcall target="check.prop.file" />
+
+    <!-- Create required directories -->
+    <antcall target="ini.directories" inheritAll="false"/>
+    
+    <!-- Copy the Oracle driver depending on the java level set i.e. Java 5/6 -->
+    <antcall target="copy.oracle.driver" inheritAll="false"/>
+    
+  </target>
+  
+  <target name="copy.oracle.driver">
+  
+     <condition property="do.not.overwrite" value="false">
+       <filesmatch file1="${dir.sde.drivers}/ojdbc6.jar" file2="${dir.sde.drivers}/ojdbc.jar"/>
+     </condition>
+     <property name="do.not.overwrite" value="true"/>
+  
+     <copy file="${dir.sde.drivers}/ojdbc6.jar" 
+           tofile="${dir.sde.drivers}/ojdbc.jar"
+           overwrite="${do.not.overwrite}"/>
+  </target>
+  <!-- Non-visible target: update property in jar. -->
+  <target name="updateRegistry.for.propertyfile" if="crypto.file.exists">
+    <condition property="registry.jar.crypto.exists">
+            <available file="${dir.sde.lib}/Registry.jar"/>
+    </condition>
+    <condition property="curammbean.jar.crypto.exists">
+        <available file="${dir.sde.lib}/CuramMBean.jar"/>
+    </condition>
+    <antcall target="updateRegisryjar.crypto" />
+    <antcall target="updateCuramMBeanjar.crypto" />
+  </target>
+  <target name="updateRegisryjar.crypto" if="registry.jar.crypto.exists">
+    <path id="cryptoconfig.path">
+      <fileset dir="${crypto.prop.file.location}">
+        <include name="CryptoConfig*.properties"/>
+      </fileset>
+    </path>
+      <jar
+        destfile="${dir.sde.lib}/Registry.jar"
+        filesonly="true" level="${jar.compression}"
+        update="true">
+        <path refid="cryptoconfig.path"/>
+      </jar>
+  </target>
+  <target name="updateCuramMBeanjar.crypto" if="curammbean.jar.crypto.exists">
+    <path id="cryptoconfig.path">
+      <fileset dir="${crypto.prop.file.location}">
+        <include name="CryptoConfig*.properties"/>
+      </fileset>
+    </path>
+      <jar
+        destfile="${dir.sde.lib}/CuramMBean.jar"
+        filesonly="true" level="${jar.compression}"
+        update="true">
+        <path refid="cryptoconfig.path"/>
+      </jar>
+  </target>  
+ 
+  <target name="internal.verify.project.dir.path" 
+    depends="internal.check.crypto.location" 
+    if="crypto.file.exists">
+    <property name="overwritecryptojar" value="false"/>
+       <condition property="crypto.jar.exists">
+        <and>
+         <available  
+         file="${crypto.ext.dir}/${crypto.jar.file}" type="file"/>
+          <not>
+           <equals arg1="${overwritecryptojar}" 
+            arg2="true" casesensitive="false"/>
+         </not>
+        </and>
+       </condition>
+       <antcall target="internal.update.crypto.jar" inheritall="true"/>
+  </target>
+  
+  <target name="internal.update.crypto.jar" unless="crypto.jar.exists">
+    <condition property="vendor.dir" value="ibm">
+        <contains string="${java.vm.vendor}" substring="ibm" casesensitive="no"/>
+    </condition>
+    <condition property="vendor.dir" value="sun">
+      <or>
+      <contains string="${java.vm.vendor}" substring="sun" casesensitive="no"/>
+      <contains string="${java.vm.vendor}" substring="oracle" casesensitive="no"/>
+      <contains string="${java.vm.vendor}" substring="hewlett" casesensitive="no"/>
+    </or>
+    </condition>
+  
+   <copy file="${crypto.prop.file.location}/${vendor.dir}/${crypto.ks.file}" 
+            todir="${crypto.prop.file.location}" overwrite="true" failonerror="${false}"/>
+  <mkdir dir="${dir.bld}"/>            
+  <delete file="${dir.bld}/${crypto.jar.file}"/>
+     <jar destfile="${dir.bld}/${crypto.jar.file}" update="true" 
+                                      filesonly="true" level="0">
+    <fileset dir="${crypto.prop.file.location}">
+                       <include name="${crypto.ks.file}"/>
+                       <include name="${crypto.prop.file}"/>
+                       <include name="${crypto.jvm.vendor}/${crypto.ks.file}"/>
+                       <include name="sun/${crypto.ks.file}"/>
+                       </fileset>
+                 </jar>
+                 <copy file="${dir.bld}/${crypto.jar.file}"
+      toFile="${crypto.ext.dir}/${crypto.jar.file}" overwrite="${overwritecryptojar}"/>
+  </target>
+  <target name="internal.check.crypto.location">
+ <condition property="crypto.file.exists">
+ <available 
+      file="${crypto.prop.file.location}/${crypto.prop.file}" />
+  </condition>
+  </target>
+</project>

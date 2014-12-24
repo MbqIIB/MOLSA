@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- The view provider incident page allows the user to view the details    -->
+<!-- of the already recorded incident.                                      -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewIncident"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY"
+    OPERATION="viewIncident"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00233616, PS -->
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="DISPLAY1"
+    OPERATION="viewIncidentDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00233616 -->
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00233616, PS -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.CloseIncident">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY1"
+          PROPERTY="incidentClosedInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_closeIncident"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="incidentDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.DeleteIncident">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY1"
+          PROPERTY="incidentClosedInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_deleteIncident"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="incidentDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00233616 -->
+
+
+  <!-- BEGIN, CR00229065, PS -->
+  <!-- BEGIN, CR00272822, SS -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00229065 -->
+
+
+    <!-- BEGIN, CR00245885, CS -->
+    <FIELD LABEL="Field.Label.Category">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$incidentDtls$category"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00245885 -->
+
+
+    <CONTAINER LABEL="Field.Label.ReportedBy">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reportedBy"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00234213, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ViewIncidentParticipantDetails"
+      >
+        <!-- END, CR00234213 -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="anonymousReportInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewIncidentReporter"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reporterIncidentParticipantID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentParticipantID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <!-- BEGIN, CR00233616, PS -->
+    <FIELD LABEL="Field.Label.ClosureReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="closureReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00233616 -->
+
+
+    <FIELD LABEL="Field.Label.Compartment">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="compartmentName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Sensitivity"
+      USE_DEFAULT="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivityCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233616, PS -->
+    <CONTAINER LABEL="Container.Label.Status">
+      <FIELD USE_DEFAULT="true">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="status"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <!-- END, CR00233616 -->
+  </CLUSTER>
+  <!-- END, CR00272822 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.OtherLocation"
+  >
+    <FIELD HEIGHT="2">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="location"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.DescriptionOfIncident"
+  >
+    <FIELD HEIGHT="2">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.ClosureComments"
+  >
+    <!-- BEGIN, CR00199550, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="closureComment"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

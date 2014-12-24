@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                          -->
+<!-- This software is the confidential and proprietary information of Curam        -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose           -->
+<!-- such Confidential Information and shall use it only in accordance with        -->
+<!-- the terms of the license agreement you entered into with Curam                -->
+<!-- Software.                                                                     -->
+<!-- Description                                                                   -->
+<!-- ===========                                                                   -->
+<!-- This page is used to list all the Service Offerings Approval Criterion        -->
+<PAGE
+  PAGE_ID="ProviderManagement_listApprovalCriterion"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="listServiceOfferingApprovalCriterion"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00225696, ASN -->
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY1"
+    OPERATION="viewServiceOffering"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00225696 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <!-- BEGIN, CR00225696, ASN -->
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$serviceOfferingID"
+    />
+    <!-- END, CR00225696 -->
+  </CONNECT>
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+  <!-- BEGIN, CR00127614, AS -->
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+  <!-- END, CR00127614 -->
+
+
+  <!-- BEGIN, CR00199014, PS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createApprovalCriterion"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00199014 -->
+
+
+  <LIST SORTABLE="true">
+
+
+    <!-- BEGIN, CR00199014, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199014 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00206310, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_editApprovalCriterion"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00206310 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$approvalCriterionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="approvalCriterionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199014, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00206310, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelApprovalCriterion"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00206310 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$approvalCriterionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="approvalCriterionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00199014 -->
+    <!-- BEGIN, CR00205039, PS -->
+    <FIELD
+      LABEL="Field.Label.ApprovalCriterion.Criterion"
+      WIDTH="55"
+    >
+      <!-- END, CR00205039 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$criterion"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ApprovalCriterion.StartDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ApprovalCriterion.EndDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ApprovalCriterion.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199014, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewApprovalCriterion">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$approvalCriterionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="approvalCriterionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199014 -->
+  </LIST>
+</PAGE>

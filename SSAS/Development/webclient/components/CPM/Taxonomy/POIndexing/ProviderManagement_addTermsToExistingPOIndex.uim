@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows the user to search taxonomy terms by keyword and code -->
+<!-- and allows to add the taxonomy terms to a related concept.             -->
+<PAGE
+  PAGE_ID="ProviderManagement_addTermsToExistingPOIndex"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE DESCRIPTION="PageTitle.StaticText1.Description">
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="indexedTermIds"/>
+  <PAGE_PARAMETER NAME="providerOfferingID"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="selectedTerms"/>
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="indexingDetails$actionString"
+    CLASS="POTaxonomyIndexing"
+    NAME="ACTION"
+    OPERATION="searchAndAddTaxonomyTerms"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="indexingDetails$providerOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="indexedTermIds"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="indexedTermIds"
+    />
+  </CONNECT>
+  <CLUSTER TITLE="Cluster.Title.SelectedTerms">
+    <FIELD LABEL="Field.Label.Index">
+      <CONNECT>
+        <SOURCE
+          NAME="PAGE"
+          PROPERTY="selectedTerms"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.Keyword">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="keyName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="indexingDetails$code"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Search"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="THIS"
+        />
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        ACTION_ID="Reset"
+        LABEL="ActionControl.Label.Reset"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_addTermsToExistingPOIndex"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="Cluster.Title.SearchResults">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="SINGLESELECT">
+
+
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$taxonomyTermID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="indexingDetails$termIDS"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Term">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="termName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.IndexedServices">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="taxonomyServices"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_listPOsByTaxonomyTerm"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="dtls$taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="searchInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="searchInd"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Existing"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_confirmIndexingFromExisting"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="indexingDetails$providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$indexedTerms"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="indexedTerms"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$oldIndexedIDs"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="oldIndexedIDs"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$confirmationString"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="confirmationString"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="indexedTermID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="selectedTerms"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="selectedTerms"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="ExistAddMore"
+      LABEL="ActionControl.Label.AddMoreTerms"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_confirmIndexingFromExistingMore"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="indexingDetails$providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$indexedTerms"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="indexedTerms"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$oldIndexedIDs"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="oldIndexedIDs"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$confirmationString"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="confirmationString"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="indexedTermID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+
+
+      </LINK>
+
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewProviderServiceOffering">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

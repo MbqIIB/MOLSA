@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                   -->
+<!-- All rights reserved.                                                      -->
+<!-- This software is the confidential and proprietary information of Curam    -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose       -->
+<!-- such Confidential Information and shall use it only in accordance with    -->
+<!-- the terms of the license agreement you entered into with Curam            -->
+<!-- Software.                                                                 -->
+<!-- Description                                                               -->
+<!-- ===========                                                               -->
+<!-- This page allows the user to view a flat-rate contract services for a provider.   -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewFlatRateContractServicesForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuFlatRateContract"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewFlatRateContractForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuServices"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewFlatRateContractServicesForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuPerformanceMeasure"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewFlatRateContractPMForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuAttachments"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_listAttachmentForProviderFlatRateContract">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="FlatRateContract"
+    NAME="DISPLAY"
+    OPERATION="viewProviderFlatRateContractDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="viewFlatRateContractDtls$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$contractVersionID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="MaintainContractPerformanceMeasure"
+    NAME="DISPLAY1"
+    OPERATION="listContractPerformanceMeaures"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$contractVersionID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <FIELD
+      LABEL="Field.Label.POName"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="viewFlatRateProviderOfferingDetails$name"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_viewServiceForResourceMgr"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddPlaceLimit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createContractProviderOfferingPlaceLimit"
+          WINDOW_OPTIONS="width=500"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="viewFlatRateProviderOfferingDetails$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewPerformanceMeasure">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createServiceContractPerformanceMeasure"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewCurrentPerformanceMeasure">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY1"
+            PROPERTY="displayLinkInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewActualServiceContractPerformanceMeasure"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteProviderOffering">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteContractProviderOffering"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewContractService">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contractProviderOfferingLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractProviderOfferingLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="viewFlatRateContractDtls$contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+</PAGE>

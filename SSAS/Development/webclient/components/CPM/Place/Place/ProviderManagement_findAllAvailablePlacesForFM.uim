@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2011, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search available places within a date     -->
+<!-- range.                                                                 -->
+<!-- BEGIN, CR00273521, MR -->
+<PAGE PAGE_ID="ProviderManagement_findAllAvailablePlacesForFM" WINDOW_OPTIONS="width=800" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+  <!-- END, CR00273521 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.Home"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE NAME="ACTION" PROPERTY="informationMsgTxt"/>
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <!-- BEGIN, CR00293856, IBM -->
+  <SERVER_INTERFACE CLASS="Place" NAME="ACTION" OPERATION="getAvailablePlacesForAllProviders" PHASE="ACTION"/>
+  <!-- END, CR00293856 -->
+
+
+  <SERVER_INTERFACE CLASS="ServiceOffering" NAME="DISPLAY" OPERATION="listActiveServiceOfferings" PHASE="DISPLAY"/>
+
+
+  <!-- BEGIN, CR00273521, MR -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- END, CR00273521 -->
+
+
+  <CLUSTER LABEL_WIDTH="27" NUM_COLS="2" TITLE="Cluster.Label.Search">
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Search" TYPE="SUBMIT">
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset" TYPE="ACTION">
+        <!-- BEGIN, CR00273521, MR -->
+        <LINK PAGE_ID="ProviderManagement_findAllAvailablePlacesForFM"/>
+        <!-- END, CR00273521 -->
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.Provider.Name" USE_DEFAULT="false" WIDTH="70">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="providerPlacesDetails$providerName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Provider.Street1" USE_DEFAULT="false" WIDTH="70">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="providerPlacesDetails$street1"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FromDate" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="fromDate"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.Service" WIDTH="70">
+      <CONNECT>
+        <INITIAL HIDDEN_PROPERTY="result$serviceOfferingSummaryDetailsList$dtls$serviceOfferingID" NAME="DISPLAY" PROPERTY="result$serviceOfferingSummaryDetailsList$dtls$name"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="providerPlacesDetails$providerOfferingName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Provider.City" USE_DEFAULT="false" WIDTH="70">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="providerPlacesDetails$city"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ToDate" USE_DEFAULT="false">
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="toDate"/>
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00273521, MR -->
+
+
+  <!-- BEGIN, CR00387969, MR --><LIST SCROLL_HEIGHT="175" TITLE="List.Title.SearchResults">
+
+
+    <!-- END, CR00387969 -->
+    <FIELD LABEL="Field.Label.Provider.Reference">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$placeDetails$providerReferenceNo"/>
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_providerHomeForFacilityManager">
+        <!-- END, CR00273521 -->
+        <CONNECT>
+          <SOURCE NAME="ACTION" PROPERTY="result$placeDetails$providerConcernRoleID"/>
+          <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Provider.Name">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$placeDetails$providerName"/>
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Address">
+      <!-- END, CR00388527 -->
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$placeDetails$street"/>
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Compartment.AvailablePlaces">
+      <CONNECT>
+        <SOURCE NAME="ACTION" PROPERTY="result$placeDetails$availablePlaces"/>
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+</PAGE>

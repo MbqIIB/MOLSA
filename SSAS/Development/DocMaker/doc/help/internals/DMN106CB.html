@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Running DocMaker</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN105BC.html" title="Using DocMaker"><link rel="previous" href="DMN105F2.html" title="File Naming Patterns"><link rel="next" href="DMN10A70.html" title="Dependency Checking"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN105F2.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN10A70.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN106CB"></a>Running DocMaker</h2></div></div><div></div></div><p>Running DocMaker could not be easier, you simply open a command
+    prompt, change to the document root folder, and run the
+    <span><b class="command">docmaker</b></span> command. DocMaker is based on the Apache Ant
+    build tool, the same tool used for other C&uacute;ram build tasks and the
+    operations it performs are invoked by specifying
+    <i class="firstterm">targets</i> as command-line arguments to the
+    <span><b class="command">docmaker</b></span> command. The targets include operations such
+    as spell-checking, PDF generation, and the cleaning of generated output
+    files. By default, the <span><b class="command">docmaker</b></span> command will invoke a
+    target that displays some version information and an overview of its
+    usage. To display a list of the available targets, run DocMaker with the
+    <tt class="option">-projecthelp</tt> or <tt class="option">-p</tt> option as
+    follows:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">-projecthelp</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>A brief description of all the targets will be displayed. The
+    available targets are shown in the table below.</p><div class="table"><a name="DMN106FF"></a><table summary="DocMaker Targets" border="1"><colgroup><col width="33%"><col width="67%"></colgroup><thead><tr><th>Target</th><th>Description</th></tr></thead><tbody><tr><td><p>
+                <tt class="option">usage</tt>
+              </p></td><td><p>Prints the usage information for the
+            <span><b class="command">docmaker</b></span> command.</p></td></tr><tr><td><p>
+                <tt class="option">version</tt>
+              </p></td><td><p>Prints the DocMaker version number and installation
+            folder location and the version and location of Apache Ant and
+            Java that will be used.</p></td></tr><tr><td><p>
+                <tt class="option">clean</tt>
+              </p></td><td><p>Removes the generated output folder and all of its
+            contents. By default, this is the <tt class="filename">doc</tt> folder
+            within the document root folder.</p></td></tr><tr><td><p>
+                <tt class="option">force-clean</tt>
+              </p></td><td><p>If the output folder does not contain a folder named
+            <tt class="filename">dm-mark</tt>, DocMaker will refuse to delete it
+            when the clean target is invoked. This is to protect against the
+            deletion of the incorrect folder by mistake. This target will
+            remove the output folder even if the marker folder is not
+            present.</p></td></tr><tr><td><p>
+                <tt class="option">help</tt>
+              </p></td><td><p>On Microsoft Windows systems, this opens the HTML
+            Help version of this DocMaker manual in a web
+            browser.</p></td></tr><tr><td><p>
+                <tt class="option">generate-pdf</tt>
+              </p></td><td><p>Generates a PDF document for each
+            book.</p></td></tr><tr><td><p>
+                <tt class="option">generate-help</tt>
+              </p></td><td><p>Generates an online HTML Help system for each book
+            and also a single HTML Help system that combines all of the
+            books.</p></td></tr><tr><td><p>
+                <tt class="option">generate-fo</tt>
+              </p></td><td><p>Generates intermediate XSLFO output that is used to
+            produce PDF documents.</p></td></tr><tr><td><p>
+                <tt class="option">generate-all</tt>
+              </p></td><td><p>Generates both PDF and HTML Help
+            output.</p></td></tr><tr><td><p>
+                <tt class="option">spell</tt>
+              </p></td><td><p>Runs the GNU Aspell interactive spell-checking
+            application if it is installed.</p></td></tr><tr><td><p>
+                <tt class="option">autospell</tt>
+              </p></td><td><p>Runs the GNU Aspell non-interactive spell-checking
+            application if it is installed.</p></td></tr><tr><td><p>
+                <tt class="option">check</tt>
+              </p></td><td><p>Validates the DocBook XML content for conformance
+            with the DocBook XML standard and for conformance with additional
+            rules imposed for C&uacute;ram documentation.</p></td></tr><tr><td><p>
+                <tt class="option">new-simple-book</tt>
+              </p></td><td><p>Copies a template for a simple DocBook XML book file
+            to the current folder. The book file does not use XML
+            inclusions.</p></td></tr><tr><td><p>
+                <tt class="option">new-book</tt>
+              </p></td><td><p>Copies templates for a DocBook XML book file and
+            chapter file to the current folder. The book file uses an XML
+            inclusion to include the chapter file.</p></td></tr><tr><td><p>
+                <tt class="option">new-chapter</tt>
+              </p></td><td><p>Copies a template for a DocBook XML chapter file to
+            the current folder.</p></td></tr></tbody></table><p class="title"><b>Table:&nbsp;DocMaker Targets</b></p></div><p>To run a target, type <span><b class="command">docmaker</b></span> followed by the
+    name of target. For example, to generate PDF file, you would enter this
+    command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">generate-pdf</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>You can run more than one target at a time by entering the target
+    names on the command-line after the <span><b class="command">docmaker</b></span> command
+    and separating the names by spaces. Some targets, such as
+    <tt class="option">generate-all</tt>, will automatically run several other
+    targets for you.</p><p>As DocMaker runs, it displays information on the tasks it is
+    performing to achieve its target. Some of these tasks produce quite a lot
+    of output, but all you need to observe are the last few lines of output.
+    If the target was achieved, you will see the text &ldquo;<span class="quote">BUILD
+    SUCCESSFUL</span>&rdquo; followed by a line displaying the time taken to
+    complete the tasks. If the target could not be achieved, you will see
+    &ldquo;<span class="quote">BUILD FAILED</span>&rdquo; displayed followed by an error message and the
+    time taken. The error message is usually a summary of the problems
+    encountered by the last unsuccessful task; you can find out more detail by
+    reading back through the detailed messages to locate the source of the
+    problem. Typical problems include invalid document structure, misspelled
+    words, unresolved cross-references, etc. Once you correct the problem, you
+    can execute the target again.</p><p>Files created by DocMaker will be placed in the
+    <tt class="filename">doc</tt> folder within your documentation folder by
+    default. This folder will be created if it does not exist. Within the
+    <tt class="filename">doc</tt> folder, folders are created with names matching
+    the name of your chosen rendering format. Inside each <i class="firstterm">format
+    folder</i>, you will find copies of your book folders containing
+    the output files in the new format.</p><p>The rest of this section will introduce the different DocMaker
+    targets by leading you through examples of their use. The examples all
+    assume that the document root folder is <tt class="filename">C:\Books</tt> and
+    that the book folder is <tt class="filename">C:\Books\UserManual</tt>. The
+    example commands are shown with the command prompt indicating the folder
+    from which they should be executed. You do not type the folder name, only
+    the <span><b class="command">docmaker</b></span> command and its options.</p><div class="warning"><table border="0" summary="Warning: Running DocMaker from the Wrong Folder"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Warning]" src="../images/warning.gif"></td><th align="left"><a name="DMN10885"></a>Running DocMaker from the Wrong Folder</th></tr><tr><td valign="top" align="left" colspan="2"><p>The most common mistake made by new users of DocMaker is running
+      the <span><b class="command">docmaker</b></span> command from the wrong folder. All of
+      the common documentation tasks, other than the creation of new content
+      files from the DocMaker content templates, are performed by running the
+      command from the document root folder, <span class="emphasis"><em>not the book
+      folder</em></span>. This is clearly shown in the examples below.</p><p>If you try to generate output files by running DocMaker from a
+      book folder, you will probably get errors reporting that images or other
+      resources cannot be found. If you then run DocMaker from the document
+      root folder without first deleting the <tt class="filename">doc</tt> folder
+      that was incorrectly created within the book folder, you will get
+      countless error messages. These errors are caused when DocMaker searches
+      for <tt class="filename">book.xml</tt> files and finds
+      <tt class="filename">book.xml</tt> files among the temporary files created in
+      the erroneous <tt class="filename">doc</tt> folder. DocMaker automatically
+      ignores the <tt class="filename">doc</tt> folder located correctly within the
+      document root folder, but any others must be removed manually.</p></td></tr></table></div><p>The simplest way to begin writing a book is to use a book template.
+    There are two book templates available: a simple book file that contains a
+    legal notice and two skeleton chapters, and a compound book where the two
+    skeleton chapters are in separate chapter files and are included into the
+    book file. The templates are used by running one of the following
+    commands:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books\UserManual&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">new-book</tt>
+          </tt></b>
+        </p></blockquote></div></div><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books\UserManual&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">new-simple-book</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>The former command will create a compound book with three files. The
+    first, <tt class="filename">book.xml</tt>, contains the book title, the legal
+    notice, and references to the two chapter files. The file
+    <tt class="filename">c_introduction.xml</tt> contains an outline introduction
+    chapter, and <tt class="filename">c_topic.xml</tt> contains an outline for a
+    chapter in the body of the book. You can rename the chapter files, but, if
+    you do, you must update the references in the XML inclusions in the book
+    file.</p><p>The latter command will create only the
+    <tt class="filename">book.xml</tt> file and the content of the chapters appear
+    directly within that file.</p><p>For both templates, you will probably want to start by changing the
+    book title in the <tt class="filename">book.xml</tt> file. After that, you can
+    make whatever other changes you require.</p><p>If you have an existing book and you want to add another chapter to
+    it, you can run the command below to create a new
+    <tt class="filename">c_topic.xml</tt> file. You will have to add the reference
+    to this file to your book manually.</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books\UserManual&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">new-chapter</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>Now that you have a book, you can edit it and then render it to your
+    preferred format. DocBook renders all books in your project at the same
+    time, so you run the rendering targets from the root folder of your
+    documentation project. Never run the rendering targets from within a book
+    folder. To render your books to PDF format, run this command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">generate-pdf</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>When DocMaker has finished, you will find your PDF book in the file
+    <tt class="filename">C:\Books\doc\pdf\UserManual\book.pdf</tt>.</p><p>If you want to render your documentation to a HTML Help format that
+    uses a Java applet to provide a table of contents and a search function,
+    run this command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">generate-help</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>When DocMaker has finished, you will find your main HTML file will
+    be <tt class="filename">C:\Books\doc\help\UserManual\index.html</tt>. This file
+    is a HTML frame-set that adds the Help Applet that controls the access to
+    your generated documentation. There may be a large number of other files,
+    as HTML is not a self-contained format like PDF. If you want to distribute
+    your HTML Help content, you must distribute all the files. In addition,
+    DocMaker will place some shared files in the
+    <tt class="filename">C:\Books\doc\help\images</tt> folder. This will also need
+    to be distributed and must remain in the same location relative to your
+    HTML Help files, i.e., in <tt class="filename">../images</tt> relative to your
+    <tt class="filename">index.html</tt> file. DocMaker will also create a single
+    HTML Help system that combines all of your books, so that a single table
+    of contents and search function can be used for all. The main frame-set
+    file for this will be <tt class="filename">C:\Books\doc\help\index.html</tt>.
+    This file will be created even if you only have one book.</p><p>DocMaker can also perform some validation checks on your books to
+    test compliance with C&uacute;ram documentation conventions. For example, the
+    proper location of block elements and the length of lines in program
+    listings will be checked. To run the validation checks, enter the
+    following command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">check</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>DocMaker first validates the books against the DocBook XML document
+    type definition (DTD), only when the books are valid will the additional
+    rules be checked.</p><p>As DocMaker runs, errors and warnings will be displayed if rules are
+    broken. When it has finished, you will find a copy of these messages in
+    the file <tt class="filename">C:\Books\doc\check\UserManual\book.txt</tt>. The
+    messages do not refer to errors in the content by file name and line
+    number, as the rules are run against a version of the content that has
+    been assembled into a single file in the output folder. However, the
+    messages describe the locations of the errors in the content using the
+    titles of books, chapters, sections, etc., to guide you to the invalid
+    content.</p><p>If you have the <span class="application">GNU Aspell</span> application
+    installed on your computer (and accessible on the system path), DocMaker
+    can use it to spell-check the content of all of your books. DocMaker will
+    check all DocBook XML content files that follow the file naming patterns
+    for spelling errors; resource files will not be checked. A supplementary
+    word-list file is used for words that are valid in your books but that are
+    not in the main dictionary. This file, <tt class="filename">wordlist.txt</tt>,
+    will be created (or reused, if it is present) in the document root folder
+    and is shared for all books. You can edit it directly, or just let
+    <span class="application">Aspell</span> add new words. Take care if adding a
+    word to the end of this word list using a text editor:
+    <span class="application">Aspell</span> requires a new-line character after the
+    last word, or it will not be recognized as a word and will be removed from
+    the word list without warning. To run the spelling check, enter the
+    following command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">spell</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>DocMaker will open a new window for each file it finds and then
+    start <span class="application">Aspell</span> to let you correct the spellings
+    automatically. If there are no spelling errors, the window will be closed
+    automatically and the next file will be processed. Refer to your GNU
+    Aspell documentation to learn how to use the Aspell application.</p><p>Although primarily for use from other automated build scripts, you
+    can execute the spelling check non-interactively. Non-interactive checking
+    will check the content files and stop when the first content file
+    containing spelling errors is encountered. The list of unrecognized words
+    will be displayed. To run the non-interactive spelling check, enter the
+    following command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">autospell</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>DocMaker will open a new window for each file it finds and then
+    start <span class="application">Aspell</span> to let you correct the spellings
+    automatically. If there are no spelling errors, the window will be closed
+    automatically and the next file will be processed. Refer to your GNU
+    Aspell documentation to learn how to use the Aspell application.</p><p>If you want to clean up your documentation folder by removing all
+    the generated files, run this command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">clean</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>This will delete the <tt class="filename">doc</tt> folder and all its
+    contents. This is why it is important not to give one of your book folders
+    this name. DocMaker does, however, try to be careful when it is deleting
+    this folder. When creating files, it will also create a folder within the
+    <tt class="filename">doc</tt> folder called <tt class="filename">dm-mark</tt>; this
+    is used to mark the <tt class="filename">doc</tt> folder as one created by
+    DocMaker. If the <tt class="filename">dm-mark</tt> folder is not present,
+    DocMaker will not delete the <tt class="filename">doc</tt> folder and will
+    display a warning message. If you are sure you want to proceed, run this
+    command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">force-clean</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>This user manual is available in PDF and HTML Help format and
+    installed with DocMaker. You can access the online HTML Help by running
+    this command:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">help</tt>
+          </tt></b>
+        </p></blockquote></div></div><p>On Microsoft Windows systems, this will open the main help page in
+    your web browser.</p><p>You can combine several targets at once to perform a sequence of
+    operations. A typical sequence might be executed as follows:</p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <tt class="prompt">C:\Books&gt;</tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">check spell
+        generate-pdf</tt>
+          </tt></b>
+        </p></blockquote></div></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN105F2.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN10A70.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

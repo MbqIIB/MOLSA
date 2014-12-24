@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This jsp redirects the user to a Home Page.-->
+<!-- Each assignee type value is matched to a Home Page name.-->
+<PAGE
+  PAGE_ID="Participant_resolveRoleHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String participantType = request.getParameter("participantType");
+      String concernRoleID = request.getParameter("concernRoleID");
+      String url = "";
+
+      if(participantType == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "participantType");
+       throw e;
+       // END, CR00126196
+      }
+
+      if(concernRoleID == null) {
+        // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "concernRoleID");
+       throw e;
+       // END, CR00126196
+      }
+
+      if(participantType.equals("RL1")) {
+        url = context + "Person_homePagePDCPage.do" + "?concernRoleID="
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+      }
+      else {
+        if (participantType.equals("RL2")) {
+          url = context + "Employer_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL3")) {
+        url = context + "ServiceSupplier_homePagePage.do" + "?concernRoleID="
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL4")) {
+          url = context + "ProductProvider_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL5")) {
+          url = context + "InformationProvider_homePage.do" +
+            "?concernRoleID="+ curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL6")) {
+          url = context + "Utility_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        }
+      else {
+        if (participantType.equals("RL7")) {
+
+        curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH 
+         th = new curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH();
+    
+        th.setFieldValue(th.key$concernRoleID_idx,concernRoleID);
+
+        th.callServer();
+        String homePageName=th.getFieldValue(th.result$participantHomePageName_idx);
+        url = context + curam.omega3.request.RequestUtils.escapeURL(homePageName) + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+
+        }
+      else {
+        if (participantType.equals("RL13")) {
+          url = context + "Representative_homePage.do" + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        
+      }
+       else {
+
+        if (participantType.equals("RL8")) {
+         curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH 
+         th = new curam.interfaces.ParticipantPkg.Participant_resolveProspectHome_TH();
+    
+        th.setFieldValue(th.key$concernRoleID_idx,concernRoleID);
+
+        th.callServer();
+        String homePageName=th.getFieldValue(th.result$participantHomePageName_idx);
+        url = context + curam.omega3.request.RequestUtils.escapeURL(homePageName) + "?concernRoleID="
+            + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+        
+        }
+        // BEGIN, CR00229065, PS 
+        else{
+         if (participantType.equals("RL16")) {
+          url = context + "ProviderManagement_providerGroupHomePage.do?concernRoleID="
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;providerGroupID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+          // END, CR00229065
+        }
+        else{
+        if (participantType.equals("RL15")) {
+
+          // BEGIN, CR00272770, MR 
+          url = context + "ProviderManagement_providerHomePage.do" + "?concernRoleID="
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;providerConcernRoleID=" 
+          + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+          // END, CR00272770
+        }
+      }
+      }
+      }
+      }
+      }
+      }
+      }
+      }
+      }
+      }
+      url += "&amp;" + rh.getSystemParameters();
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

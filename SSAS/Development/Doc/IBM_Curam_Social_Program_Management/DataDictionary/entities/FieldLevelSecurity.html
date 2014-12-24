@@ -1,0 +1,93 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>FieldLevelSecurity</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Field Level Security:</b>
+<i> The security information for a field returned to the C&uacute;ram client application.</i>
+<P>There is a row on this table for each field in each struct which can be returned from the C&uacute;ram server application to the client.  If the sidName is blank, then all users may view the field; otherwise, only users which have been granted the specified SID may view the field (all other users will see a masked out version of the field).</P>
+<P>  The related <a href=SecurityIdentifier.html>Security Identifier</a> has a sidType of FIELD.</P>
+<p><b>Example</b></p><P><a href=Users.html>User</a> Ronan Rooney open a screen which displays personnel information.  Ronan Rooney can see the person name fields (as their Field Level Security rows do not specify a SID) but the salary field appears masked out (because its Field Level Security row specifies a SID of 'SalaryViewer', and <a href=Users.html>User</a> Ronan Rooney does not belong to a group which has 'SalaryViewer' privileges).</P>
+<P>  Ronan Rooney's supervisor (Superuser) opens the same screen and can see all fields (including salary).  This because Superuser is a member of the 'Personnel' group which has been assigned 'SalaryViewer' privileges, as stored in a row on the <a href=SecurityGroupSid.html>Security Group Security Identifier</a> table.</P>
+<p><b>Technical Notes</b></p><P>The same data can be displayed on many different client screens.  The security for the fields on these different screens is controlled separately for each screen.</P>
+<P>For more information see the C&uacute;ram Application Administration Guide.</P>
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">operationName</td><td class="data">Yes</td><td class="data">No</td><td class="data">The qualified name of an operation. Will also include the code_package option, if one was specified.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">fieldName</td><td class="data">Yes</td><td class="data">No</td><td class="data">The qualified name of a field returned by an operation. Also referred to as a returned field.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">sidName</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">SID name.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">FldLvlSecIndex1</td><td class="dataLast">operationName</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

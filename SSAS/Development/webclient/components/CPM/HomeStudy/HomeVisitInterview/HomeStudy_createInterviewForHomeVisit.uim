@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to create interview for the home visit.      -->
+<PAGE
+  PAGE_ID="HomeStudy_createInterviewForHomeVisit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="HomeVisitInterview"
+    NAME="ACTION"
+    OPERATION="createHomeVisitInterview"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="homeStudyID"/>
+  <PAGE_PARAMETER NAME="homeStudyHomeVisitID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="HomeVisitInterview"
+    NAME="DISPLAY"
+    OPERATION="listProviderPartysForCurrentProvider"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="HomeVisitInterview"
+    NAME="DISPLAY1"
+    OPERATION="getInitialDateTime"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyHomeVisitID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="homeStudyHomeVisitID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyHomeVisitID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="homeStudyHomeVisitID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="homeStudyID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00128007, NBR -->
+  <!-- BEGIN, CR00248198, GP -->
+  <CLUSTER>
+    <!-- BEGIN, CR00197352, SS -->
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+    >
+      <!-- END, CR00248198 -->
+      <!-- BEGIN, CR00247455, PS -->
+      <FIELD
+        EDITABLE="NONEDITABLE"
+        LABEL="Field.Label.Type"
+      >
+        <!-- END, CR00247455 -->
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$homeVisitInterviewDtls$type"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00128007 -->
+      <!-- BEGIN, CR00258324, PS -->
+      <FIELD LABEL="Field.Label.StartDate">
+        <!-- END, CR00258324 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="initialDateTime"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$homeVisitInterviewDtls$startDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00197352, SS -->
+      <FIELD LABEL="Field.Label.Location">
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$homeVisitInterviewDtls$location"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00197352, SS -->
+      <FIELD LABEL="Field.Label.Method">
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$homeVisitInterviewDtls$method"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00258324, PS -->
+      <FIELD LABEL="Field.Label.EndDate">
+        <!-- END, CR00258324 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="initialDateTime"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$homeVisitInterviewDtls$endDateTime"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.AttendeeDetails"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.Select"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00248198, GP -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- BEGIN, CR00197352, SS -->
+    <FIELD
+      CONTROL="TRANSFER_LIST"
+      HEIGHT="5"
+    >
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="providerPartyID"
+          NAME="DISPLAY"
+          PROPERTY="providerPartyName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="attendeeList"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00248198 -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.InterviewNarrative"
+  >
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00205618, NBR -->
+    <FIELD HEIGHT="5">
+      <!-- END, CR00205618 -->
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$homeVisitInterviewDtls$narrative"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00094433, SP -->
+  <ACTION_SET ALIGNMENT="CENTER">
+    <!-- END, CR00094433 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

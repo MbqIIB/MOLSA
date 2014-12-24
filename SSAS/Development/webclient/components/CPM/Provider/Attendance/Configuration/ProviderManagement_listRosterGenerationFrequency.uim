@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list roster generation frequency          -->
+<PAGE
+  PAGE_ID="ProviderManagement_listRosterGenerationFrequency"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listRosterGenerationFrequency"
+  />
+
+
+  <!-- BEGIN, CR00199014, PS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00199014 -->
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <!-- BEGIN, CR00197421, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createRosterGenerationFrequency"
+        WINDOW_OPTIONS="width=400"
+      > </LINK>
+      <!-- END, CR00197421 -->
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00137389, SB -->
+    <!-- BEGIN, CR00199014, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199014 -->
+      <!-- END, CR00137389 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$dtlsList$derivedStatus$isSupersededInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00197421, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyRosterGenerationFrequency"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00197421 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$rosterGenerationFrequencyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterGenerationFrequencyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$dtlsList$derivedStatus$isSupersededInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00137384, SB -->
+        <!-- BEGIN, CR00187417, PS -->
+        <!-- BEGIN, CR00197421, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteRosterGenerationFrequency"
+          WINDOW_OPTIONS="width=320"
+        >
+          <!-- END, CR00197421 -->
+          <!-- END, CR00187417 -->
+          <!-- END, CR00197352 -->
+          <!-- END, CR00137384  -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$rosterGenerationFrequencyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterGenerationFrequencyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199014, PS -->
+    </ACTION_SET>
+    <!-- END, CR00199014 -->
+
+
+    <FIELD
+      LABEL="Field.Label.Frequency"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="frequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EffectiveDates"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$derivedStatus$derivedStatus"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

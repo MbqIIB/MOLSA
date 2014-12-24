@@ -1,0 +1,1137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                        -->
+<!-- This software is the confidential and proprietary information of Curam      -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose         -->
+<!-- such Confidential Information and shall use it only in accordance with      -->
+<!-- the terms of the license agreement you entered into with Curam              -->
+<!-- Software.                                                                   -->
+<!-- This page allows the user to view provider details.                         -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_providerHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00178272, AK -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.ProviderDetails"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00117630, ASB -->
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="MENUCONTEXT"
+    OPERATION="viewProviderMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00117630-->
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="DISPLAY"
+    OPERATION="viewProviderDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00137350, AS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="ROSTER"
+    OPERATION="viewProviderAttendanceTracking"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ROSTER"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+  <!-- END, CR00137350 -->
+
+
+  <!-- BEGIN, CR00204909, PS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderApprovalCheck"
+    NAME="DISPLAY2"
+    OPERATION="listProviderApprovalChecks"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+  <!-- END, CR00204909 -->
+
+
+  <!-- BEGIN, CR00228396, PS -->
+  <ACTION_SET>
+    <!-- END, CR00228396 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="editIndicator"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <!-- BEGIN, CR00187976, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_modifyProvider"
+        WINDOW_OPTIONS="width=750"
+      >
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$providerCategoryVersion"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="categoryVersionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$typeVersion"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="typeVersionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Approve">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="approveIndicator"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <!-- BEGIN, CR00199550, SS -->
+      <!-- BEGIN, CR00187417, PS -->
+      <!-- BEGIN, CR00197352, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_approveProvider"
+      >
+        <!-- END, CR00187417 -->
+        <!-- END, CR00197352 -->
+        <!-- END, CR00199550 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Suspend">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="approvedStatusInd"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <!-- BEGIN, CR00207380, SS -->
+      <!-- BEGIN, CR00199550, SS -->
+      <!-- BEGIN, CR00187976, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_suspendProvider"
+        WINDOW_OPTIONS="width=425"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00199550 -->
+        <!-- END, CR00207380 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Reject">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="openStatusInd"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <!-- BEGIN, CR00207380, SS -->
+      <!-- BEGIN, CR00187976, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_rejectProvider"
+        WINDOW_OPTIONS="width=320"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00207380 -->
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Re-open">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="closedStatusInd"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <!-- BEGIN, CR00199550, SS -->
+      <!-- BEGIN, CR00187417, PS -->
+      <!-- BEGIN, CR00197352, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_reopenProvider"
+      >
+        <!-- END, CR00187417 -->
+        <!-- END, CR00197352 -->
+        <!-- END, CR00199550 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.ViewRelatedEnquiry">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$relatedEnquiryExist"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="ProviderManagement_viewProviderEnquiry">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$providerEnquiryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerEnquiryID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00228396, PS -->
+
+
+    <!-- BEGIN, CR00234213, PS -->
+    <ACTION_CONTROL
+      APPEND_ELLIPSIS="false"
+      LABEL="ActionControl.Label.ViewHistory"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_viewProviderStatusHistory"
+        WINDOW_OPTIONS="width=700"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00234213 -->
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="closeIndicator"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_closeProvider"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00228396-->
+    <FIELD LABEL="Field.Label.RegistrationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$enrollmentDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207380, SS -->
+    <!-- BEGIN, CR00234402, GP -->
+    <CONTAINER LABEL="Field.Label.PreferredLanguage">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$prefLanguage"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00236707, PS -->
+      <!-- BEGIN, CR00248011, GP -->
+      <ACTION_CONTROL IMAGE="InformationalIcon">
+        <!-- END, CR00248011 -->
+        <!-- END, CR00236707 -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="userSkillsInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewProviderOwnerLanguageSkillInformational"
+          WINDOW_OPTIONS="width=600"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00234402 -->
+    <FIELD
+      LABEL="Field.Label.PreferredSEMethod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$preferredServiceEnquiryMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PreferredCommunication">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$prefCommMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.PrimaryCategory">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$category"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="Field.Label.TypesforCategory"
+      >
+        <!-- BEGIN, CR00207380, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewProviderCategoryTypes"
+          WINDOW_OPTIONS="width=370"
+        >
+          <!-- END, CR00207380 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.PaymentDetails"
+  >
+    <FIELD LABEL="Field.Label.PaymentFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$paymentFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PaymentMethod">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$methodOfPaymentString"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Currency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$currencyType"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.OverrideMaxDeductionRate">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$overrideMDRInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00137358, AS -->
+      <!-- BEGIN, CR00228396, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Change"
+      >
+        <!-- BEGIN, CR00200179, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveChangeDeduction"
+          WINDOW_OPTIONS="width=365"
+        >
+          <!-- END, CR00228396 -->
+          <!-- END, CR00200179 -->
+          <!-- END, CR00187417 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnrollmentDetails$overrideMDRInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="deductionInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00137358 -->
+    </CONTAINER>
+  </CLUSTER>
+  <!-- END, CR00207380 -->
+
+
+  <!-- BEGIN, CR00197352, SS -->
+  <!-- BEGIN, CR00180149, ASN -->
+  <!-- BEGIN, CR00234213, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    STYLE="outer-cluster-borderless"
+    TITLE="Cluster.Title.AdditionalInformation"
+  >
+    <!-- END, CR00234213 -->
+    <!-- BEGIN, CR00207380, SS -->
+    <FIELD LABEL="Field.Label.PhysicalCapacity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$physicalCapacityString"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReservationGracePeriod">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$reservationGracePeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247036, PS -->
+    <FIELD LABEL="Field.Label.AcceptCWReferral">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$acceptCWReferral"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00247036 -->
+    <!-- BEGIN, CR00234213, PS -->
+    <FIELD LABEL="Field.Label.DesignatedCapacity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnrollmentDetails$designatedCapacityString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00137350, AS -->
+    <CONTAINER LABEL="Container.Label.PaperRosterRequired">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="ROSTER"
+            PROPERTY="result$dtlsList$paperRosterRequiredind"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00228396, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Change"
+      >
+        <!-- BEGIN, CR00235784, GP -->
+        <LINK
+          OPEN_MODAL="true"
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="paperRosterActionURL"
+          WINDOW_OPTIONS="width=300"
+        >
+
+
+          <!-- END, CR00228396 -->
+          <CONNECT>
+            <SOURCE
+              NAME="ROSTER"
+              PROPERTY="result$dtlsList$providerAttendanceTrackingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerAttendanceTrackingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+        <!-- END, CR00235784 -->
+      </ACTION_CONTROL>
+      <!-- END, CR00235223 -->
+    </CONTAINER>
+
+
+    <!-- END, CR00137350 -->
+  </CLUSTER>
+  <!-- END, CR00180149 -->
+  <!-- END, CR00207380 -->
+
+
+  <!-- BEGIN, CR00234497, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    STYLE="outer-cluster-borderless"
+  >
+    <!-- BEGIN, CR00235784, GP -->
+
+
+    <CONTAINER LABEL="Field.Label.AreasServedInfo">
+      <FIELD HEIGHT="4">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$areasServedInformation"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+
+
+        <LINK
+          OPEN_MODAL="true"
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="areaServedActionURL"
+          WINDOW_OPTIONS="width=350"
+        >
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnrollmentDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$areasServedInfoTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Field.Label.ClientInfo">
+
+
+      <FIELD HEIGHT="4">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$clientInformation"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="clientInformationActionURL"
+          WINDOW_OPTIONS="width=350"
+        >
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnrollmentDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$clientInfoTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00235784 -->
+  </CLUSTER>
+  <!-- END, CR00234497 -->
+
+
+  <!-- BEGIN, CR00207380, SS -->
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <!-- END, CR00207380 -->
+    <!-- BEGIN, CR00233746, PS -->
+    <LIST
+      SORTABLE="true"
+      TITLE="List.Title.ApprovalCheck"
+      WIDTH="90"
+    >
+      <!-- END, CR00233746 -->
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.EditApprovalChk">
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_modifyProviderApprovalCheck"
+            WINDOW_OPTIONS="width=300"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY2"
+                PROPERTY="approvalCheckID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="approvalCheckID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="concernRoleID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY2"
+                PROPERTY="versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <!-- BEGIN, CR00207380, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_deleteProviderApprovalCheck"
+            WINDOW_OPTIONS="width=305"
+          >
+            <!-- END, CR00207380 -->
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="concernRoleID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY2"
+                PROPERTY="approvalCheckID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="approvalCheckID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY2"
+                PROPERTY="versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <!-- BEGIN, CR00207380, SS -->
+      <FIELD
+        LABEL="Field.Label.Percentage"
+        WIDTH="55"
+      >
+        <!-- END, CR00207380 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="percentage"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00207380, SS -->
+      <FIELD
+        LABEL="Field.Label.Status"
+        WIDTH="45"
+      >
+        <!-- END, CR00207380 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="recordStatus"
+          />
+        </CONNECT>
+      </FIELD>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="ProviderManagement_viewProviderApprovalCheck">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="approvalCheckID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="approvalCheckID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+    </LIST>
+    <!-- END, CR00204909 -->
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Comments"
+    >
+      <!-- BEGIN, CR00407812, RB -->
+      <FIELD
+        HEIGHT="2"
+        LABEL="Field.Label.Comments"
+      >
+        <!-- END, CR00407812 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnrollmentDetails$comments"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- END, CR00178272 -->
+    <!-- BEGIN, CR00207380, SS -->
+  </CLUSTER>
+  <!-- END, CR00207380 -->
+</PAGE>

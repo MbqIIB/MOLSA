@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  This is the ant build file for IEG migration.
+  It contains any utility tasks used by this purpose.
+-->
+<project name="iegmigration" default="migrateiegscript">
+
+  <import file="./app_properties.xml" />
+
+  <!--  ******************************************  -->
+  <!--  ***  Check input directory property    ***  -->
+  <!--  ******************************************  -->
+  <target name="check.inputdir.available" unless="inputdir">
+    <fail message="The property 'inputdir' must be set. Please use -Dinputdir"/>
+  </target>
+  
+  <!--  ******************************************  -->
+  <!--  ***  Check output directory property   ***  -->
+  <!--  ******************************************  -->
+  <target name="check.outputdir.available" unless="outputdir">
+    <fail message="The property 'outputdir' must be set. Please use -Doutputdir"/>
+  </target>  
+  
+  <!--  ******************************************  -->
+  <!--  ***  Check script file name property   ***  -->
+  <!--  ******************************************  -->
+  <target name="check.scriptfilename.available" unless="scriptfilename">
+    <fail message="The property 'scriptfilename' must be set. Please use -Dscriptfilename"/>
+  </target>
+
+  <!--  ***********************************  -->
+  <!--  ***  Migrate script information ***  -->
+  <!--  ***********************************  -->
+  <target name="migrateiegscript" depends="build.migrate.properties"
+    description="Migrate an IEG script definition
+      (specify script file to be migrated using -Dscriptfilename, input directory using
+       -Dinputdir and output directory using -Doutputdir)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>Execution complete. Please review the log: ${outputdir}/migration-log.txt.</echo>
+
+  </target>
+
+  <!--  ******************************************  -->
+  <!--  ***  Build script migration properties ***  -->
+  <!--  ******************************************  -->
+  <target name="build.migrate.properties" depends="check.migrate.env">
+
+    <property name="batch.program"
+      value="curam.ieg.facade.intf.IEGMigrate.migrate"/>
+
+    <property name="batch.parameters"
+      value="inputDir=${inputdir},outputDir=${outputdir},scriptFileName=${scriptfilename}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  *******************************************  -->
+  <!--  ***  Check script migration environment ***  -->
+  <!--  *******************************************  -->
+  <target name="check.migrate.env"
+    depends="check.inputdir.available, check.outputdir.available, check.scriptfilename.available">
+
+    <!-- check if the specified script file exists -->
+    <available property="ieg.file.exists"
+      file="${inputdir}/${scriptfilename}" type="file"/>
+
+    <fail unless="ieg.file.exists"
+       message="The specified file ${inputdir}/${scriptfilename} does not exist."/>
+  </target>
+
+</project>

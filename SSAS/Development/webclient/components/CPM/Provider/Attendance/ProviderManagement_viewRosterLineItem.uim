@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                                    -->
+<!-- All rights reserved.                                                                                          -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                -->
+<!-- ===========							                                -->
+<!-- This Page displays the roster line item details.			            -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewRosterLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewRosterLineItem"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewRosterLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00215605, ASN -->
+    <ACTION_CONTROL
+      LABEL="Menu.DailyAttendance"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$dailyAttendanceLinkInd"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="ProviderManagement_viewDailyAttendance">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.DailyAttendanceHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$dailyAttendanceLinkInd"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="ProviderManagement_viewDailyAttendanceHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.Absence"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="result$dailyAttendanceLinkInd"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="ProviderManagement_listAbsenceReasonForPRLI">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.AbsenceHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="result$dailyAttendanceLinkInd"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="ProviderManagement_viewAbsenceHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00215605 -->
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.RosterLineItemHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewRosterLineItemStatusHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00215605, ASN -->
+    <ACTION_CONTROL
+      LABEL="Menu.RosterLineItemTransactions"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewRosterLineItemTransactions">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00215605 -->
+  </MENU>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00248227, ASN -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY4"
+        PROPERTY="result$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00248227 -->
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRosterLineItem"
+    NAME="DISPLAY2"
+    OPERATION="isTotalUnitsGreaterThanExpectedUnits"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRosterLineItem"
+    NAME="DISPLAY"
+    OPERATION="viewRosterLineItem"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLICorrection"
+    NAME="DISPLAY3"
+    OPERATION="listPRLICorrectionDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00168585, KG -->
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLIClient"
+    NAME="DISPLAY_CLIENTS"
+    OPERATION="listClientsForPRLI"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY3"
+      PROPERTY="key$providerRosterLineItemID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY_CLIENTS"
+      PROPERTY="providerRosterLineItemKey$providerRosterLineItemID"
+    />
+  </CONNECT>
+  <!-- END, CR00168585 -->
+
+
+  <!-- BEGIN, CR00248227, ASN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainRosterLineItem"
+    NAME="DISPLAY4"
+    OPERATION="viewRLIExceptionTask"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00248227 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY4"
+      PROPERTY="key$providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00129442 -->
+  <!-- BEGIN, CR00233823, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00233823 -->
+
+
+    <!-- BEGIN, CR00215605, ASN -->
+    <FIELD LABEL="Field.Label.RosterLineItem.Voucher">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="voucherNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00215605 -->
+    <FIELD LABEL="Field.Label.RosterLineItem.Case.Reference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Service.ExceptionTaskCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$exceptionTaskCreated"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00168585, KG -->
+
+
+  <!-- BEGIN, CR00215605, ASN -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ClientDetails"
+  >
+
+
+    <FIELD LABEL="Field.Label.RosterLineItem.Client.Reference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RosterLineItem.Client.DateOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientDOB"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.ClientAddress"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$addressData"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00215605 -->
+  <!-- END, CR00168585 -->
+
+
+</PAGE>

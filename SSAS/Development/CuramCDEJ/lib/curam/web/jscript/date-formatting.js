@@ -1,0 +1,2 @@
+dojo.require("curam.date");
+

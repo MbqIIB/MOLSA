@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Create a variable applied deduction for a product delivery.            -->
+<PAGE
+  PAGE_ID="ProviderManagement_createAppliedVariableDeduction"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="paymentTypes"/>
+  <PAGE_PARAMETER NAME="deductionName"/>
+  <PAGE_PARAMETER NAME="category"/>
+  <PAGE_PARAMETER NAME="relatedCaseID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderDeduction"
+    NAME="DISPLAY"
+    OPERATION="readDefaultDeductionDetailsForProvider"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderDeduction"
+    NAME="ACTION"
+    OPERATION="createVariableDeductionForProvider"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00235506, PS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderDeduction"
+    NAME="DISPLAY1"
+    OPERATION="listAppliedDeductionNameForProvider"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="paymentTypes"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$paymentType"
+    />
+  </CONNECT>
+  <!-- END, CR00235506 -->
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="deductionName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$deductionName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="liabilityConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="category"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerDeduction$category"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$deductionDtls$dtls$dtls$actionType"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerDeduction$actionType"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedCaseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerDeduction$relatedCaseID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$liabilityConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="paymentTypes"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$paymentType"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00247036, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00247036 -->
+    <!-- BEGIN, CR00235506, PS -->
+    <FIELD LABEL="Field.Label.DeductionName">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtlsList$dtls$dtls$deductionName"
+          NAME="DISPLAY1"
+          PROPERTY="result$dtlsList$dtls$dtls$deductionName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00249690, PS -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$deductionName"
+        />
+      </CONNECT>
+      <!-- END, CR00249690 -->
+    </FIELD>
+    <!-- END, CR00235506 -->
+
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Percentage"
+      WIDTH="4"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$deductionDtls$dtls$dtls$defaultPercentage"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR0122147, NBR -->
+    <FIELD
+      LABEL="Field.Label.Priority"
+      WIDTH="4"
+      WIDTH_UNITS="CHARS"
+    >
+      <!-- END, CR0122147 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$deductionDtls$dtls$dtls$priority"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.LiabilityClient">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$liabilityConcernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.AssignNextPriority">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="applyNextPriorityInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

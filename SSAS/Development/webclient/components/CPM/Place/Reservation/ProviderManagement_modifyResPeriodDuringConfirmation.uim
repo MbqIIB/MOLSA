@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify reservation period during          -->
+<!--  confirmation.                                                         -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyResPeriodDuringConfirmation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00236480, SSK -->
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="ACTION"
+    OPERATION="retrieveReservationPeriod"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00236480 -->
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="DISPLAY"
+    OPERATION="viewReservation"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="reservationID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROVIDER"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAYPROVIDER"
+    OPERATION="viewProvider"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="reservationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$reservationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="reservationID"
+    />
+    <!-- BEGIN, CR00236480, SSK -->
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="reservationPeriodDetails$confirmDetails$reservationID"
+    />
+  </CONNECT>
+  <!-- END, CR00236480 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <!-- BEGIN, CR00236480, SSK -->
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="reservationPeriodDetails$confirmDetails$concernRoleID"
+    />
+    <!-- END, CR00236480 -->
+  </CONNECT>
+  <!-- BEGIN, CR00247606, GP -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00247606 -->
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00249314, PS -->
+    <FIELD
+      LABEL="Field.Label.FromDate"
+      WIDTH="90"
+    >
+      <!-- END, CR00249314 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$from"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00236480, SSK -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reservationPeriodDetails$fromDate"
+        />
+      </CONNECT>
+      <!-- END, CR00236480 -->
+    </FIELD>
+    <FIELD LABEL="Field.Label.Provider">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYPROVIDER"
+          PROPERTY="result$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <!-- BEGIN, CR00249314, PS -->
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      WIDTH="90"
+    >
+      <!-- END, CR00249314 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$to"
+        />
+      </CONNECT>
+      <CONNECT>
+        <!-- BEGIN, CR00236480, SSK -->
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reservationPeriodDetails$toDate"
+        />
+      </CONNECT>
+      <!-- END, CR00236480 -->
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00236219, PS -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_modifyPlaceDuringConfirmation"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00236219 -->
+        <CONNECT>
+          <!-- BEGIN, CR00236480, SSK -->
+          <!-- BEGIN, CR00293856, IBM -->
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$fromDate"
+          />
+          <!-- END, CR00293856 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+          <!-- END, CR00236480 -->
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00236480, SSK -->
+          <!-- BEGIN, CR00293856, IBM -->
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$toDate"
+          />
+          <!-- END, CR00293856 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+        </CONNECT>
+        <!-- END, CR00236480 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00205476, GP -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    <!-- END, CR00205476 -->
+  </ACTION_SET>
+</PAGE>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list all the pages specified for a Service Offering.           -->
+<PAGE PAGE_ID="ProviderManagement_listServiceOfferingPages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText" />
+        </CONNECT>
+    </PAGE_TITLE>
+    <PAGE_PARAMETER NAME="serviceOfferingID" />
+    <SERVER_INTERFACE CLASS="ServiceOffering" NAME="DISPLAY" OPERATION="listServicePages" PHASE="DISPLAY" />
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="serviceOfferingID" />
+        <TARGET NAME="DISPLAY" PROPERTY="key$serviceOfferingID" />
+    </CONNECT>
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.New">
+            <LINK OPEN_MODAL="true" PAGE_ID="ProviderManagement_createServiceOfferingPage" WINDOW_OPTIONS="width=400">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="serviceOfferingID" />
+                    <TARGET NAME="PAGE" PROPERTY="serviceOfferingID" />
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+    </ACTION_SET>
+    <LIST>
+        <ACTION_SET TYPE="LIST_ROW_MENU">
+            <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+                <LINK OPEN_MODAL="true" PAGE_ID="ProviderManagement_editServiceOfferingPage">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="serviceOfferingPageID" />
+                        <TARGET NAME="PAGE" PROPERTY="serviceOfferingPageID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="soPageRef" />
+                        <TARGET NAME="PAGE" PROPERTY="soPageRef" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="soPageType" />
+                        <TARGET NAME="PAGE" PROPERTY="soPageType" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="pageDtls$versionNo" />
+                        <TARGET NAME="PAGE" PROPERTY="versionNo" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+                <LINK OPEN_MODAL="true" PAGE_ID="ProviderManagement_cancelServiceOfferingPage">
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="serviceOfferingPageID" />
+                        <TARGET NAME="PAGE" PROPERTY="serviceOfferingPageID" />
+                    </CONNECT>
+                    <CONNECT>
+                        <SOURCE NAME="DISPLAY" PROPERTY="pageDtls$versionNo" />
+                        <TARGET NAME="PAGE" PROPERTY="versionNo" />
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+        </ACTION_SET>
+        <FIELD LABEL="Field.PageReference.Label">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="soPageRef" />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.PageType.Label">
+            <CONNECT>
+                <SOURCE NAME="DISPLAY" PROPERTY="soPageType" />
+            </CONNECT>
+        </FIELD>
+    </LIST>
+</PAGE>

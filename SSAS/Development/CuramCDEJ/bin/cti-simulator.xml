@@ -1,0 +1,31 @@
+<!--
+
+  This file should be used for running the CTI Simulator.
+
+-->
+
+<project name="CTISimulator" default="main">
+
+  <property environment="sysenv."/>
+  <property name="port" value="101"/>
+
+  <property name="jar.location" value="${dir.web}/cti-lib"/>
+  <property name="jar.cti" value="${jar.location}/cti.jar"/>
+
+  <target name="main"
+          description="Run the simulator.">
+
+    <java
+      classname="curam.util.tools.cti.simulator.CTISimulator"
+      classpath="${jar.cti}"
+      jvm="${sysenv.JAVA_HOME}/jre/bin/java"
+      fork="true"
+      failonerror="true"
+    >
+      <jvmarg value="${java.jvmargs}" />
+      <arg line="${port}"/>
+    </java>
+
+  </target>
+
+</project>

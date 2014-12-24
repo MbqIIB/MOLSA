@@ -1,0 +1,184 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>AssessmentInstanceHistory</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Assessment Instance History
+
+
+
+
+:</b>
+<i>The history of  the life cycle of an <a href=AssessmentInstance.html>assessment instance</a>.
+
+
+
+
+</i>
+
+<p>
+
+When an <a href=AssessmentInstance.html>assessment instance</a> is run it can go through various states i.e. 'Submitted','Closed', 'Complete', 'Cancelled', 'Incomplete'. This entity stores a history of these states.
+
+</p> 
+
+
+
+
+
+<p><b>Example</b></p>
+<p>
+
+James Smith, Linda Smith and their child Robert must be assessed to identify the family's strengths and needs in an effort to help build an effective <a href=OutcomePlan.html>outcome plan</a>. The <a href=AssessmentDefinition.html>Family Strengths and Needs Assessment (FSN)</a> is run from the family's <a href=OutcomePlan.html>outcome plan</a> by a <a href=Users.html>case worker</a>. Linda is selected as Roberts <a href=AssessmentDeliveryRole.html>primary caregiver</a>, James is his <a href=AssessmentDeliveryRole.html>secondary caregiver</a> and Robert is selected as the <a href=AssessmentDeliveryRole.html>focus child</a>. The <a href=AssessmentDefinition.html>FSN</a> contains nine <a href=Factor.html>factors</a> which are used to assess the family's functioning and a <a href=FactorResult.html>result</a> is produced for each <a href=FactorDelivery.html>factor</a>. <a href=CaseApprovalCheck.html>Approval checks</a> have been defined for the <a href=AssessmentDefinition.html>FSN</a> and as such it must be manually approved. The <a href=Users.html>case worker</a> submits the assessment for approval resulting in an assessment status of Submitted. Subsequently, the <a href=Users.html>case workers</a> supervisor approves the assessment which results in the assessment having a status of Approved.
+
+
+
+This entity stores the states of 'Submitted' and 'Complete'.  
+
+</p></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::AssessmentPlanning::Delivery::Entity::AssessmentInstanceHistory::AssessmentInstanceHistory</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">AssessmentPlanning\model\Packages\Delivery\Entity\AssessmentInstanceHistory_cat.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="assessmentInstanceHistoryID">assessmentInstanceHistoryID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique identifier for the table.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="assessmentInstanceID">assessmentInstanceID</a></td><td class="data">details</td><td class="data">no</td><td class="data">Foreign key to the parent assessment instance entity.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="effectiveDate">effectiveDate</a></td><td class="data">details</td><td class="data">no</td><td class="data">The date and time the history record was created, i.e. the time the related assessment instance transitioned from one state to another.</td><td class="data"><a href="../domains/CURAM_DATETIME.html">CURAM_DATETIME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="status">status</a></td><td class="data">details</td><td class="data">no</td><td class="data">The status of the assessment instance record at the time the history record was created. This holds the new state of the assessment instance record as it transitions from the old state.</td><td class="data"><a href="../domains/ASSESSMENT_INSTANCE_STATUS.html">ASSESSMENT_INSTANCE_STATUS</a></td><td class="data"><a href="../codetables/ct-AssessmentInstanceStatus.html">AssessmentInstanceStatus</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="username">username</a></td><td class="data">details</td><td class="data">no</td><td class="data">The username of the user who performed the state transition of the related assessment instance record.</td><td class="data"><a href="../domains/USER_NAME.html">USER_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">AssessmentInstanceHistory.assessmentInstanceID</td><td class="dataLast"><a href="AssessmentInstance.html#assessmentInstanceID">AssessmentInstance.assessmentInstanceID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">AssessmentInstanceHistory.username</td><td class="dataLast"><a href="Users.html#userName">Users.userName</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">instanceAndHistoryIdx</td><td class="dataLast">assessmentInstanceID, status</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: assessmentInstanceHistoryID</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByAssessmentInstance</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Lists assessment instance history records for a given assessment instance.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByAssessmentInstanceAndStatus</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Searches for assessment instance history records for an assessment instance based on status.</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

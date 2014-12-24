@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant build file for Curam projects.
+  This project extends the SDEJ build scripts to enhance a number of targets.
+
+-->
+<project name="CuramServerBuild">
+
+  <property environment="sysenv."/>
+
+  <import file="${sysenv.CURAMSDEJ}/bin/build.xml"/>
+
+  <import file="${sysenv.CURAM_DIR}/Tools/Generators/EGTools/build.xml" optional="true"/>
+  <property file="${sysenv.CURAM_DIR}/Tools/Generators/EGTools/egtools.properties"/>
+
+  <import file="${sysenv.SERVER_DIR}/components/CREOLEInfrastructure/script/CREOLE_build.xml" optional="true"/>
+  <import file="${sysenv.SERVER_DIR}/components/Workflow/script/workflow_build.xml" optional="true"/>
+  <import file="${sysenv.CURAM_DIR}/BIApp/CuramBIRTViewer/buildscripts/app_BIbuildEAR.xml" optional="true"/>
+  <import file="${sysenv.CURAM_DIR}/SpellChecker/buildscripts/app_buildSpellCheckEAR.xml" optional="true"/>
+  <import file="${sysenv.SERVER_DIR}/deprecationreport.xml" optional="true"/>
+
+  <property name="file.curam.javadoc_stylesheet" value="${dir.sde.lib}/curam_javadoc.css"/>
+
+  <!--  ****************************  -->
+  <!--  ***  Overridden Targets  ***  -->
+  <!--  ****************************  -->
+
+  <!--
+    Override clean to clean up evidence generated artefacts
+  -->
+  <target name="clean" depends="serverbuild.clean">
+    <antcall target="egtools.server.clean"/>
+  </target>
+
+
+  <target name="model" depends="pre.model, serverbuild.model">
+    <antcall target="evidence.post.modelgen"/>
+  </target>
+
+  <target name="pre.model">
+    <antcall target="evidence.server.generated"/>
+  </target>
+
+  <!--
+    Run generators to create code in impl packages (in build/svr/gen).
+    (This is to support developers who compile in an IDE rather than at the command line.)
+  -->
+  <target name="generated" depends="serverbuild.generated">
+
+    <antcall target="creole.generate.test.classes"/>
+    <antcall target="creole.copyresourceto.cls"/>
+
+  </target>
+
+  <target name="implemented" depends="serverbuild.implemented">
+    <antcall target="creole.compile.test.classes"/>
+  </target>
+
+  <!--
+    This target is overridden to ensure that the additional files
+    are copied as part of the release target
+    -->
+  <target name="release" depends="serverbuild.release">
+    <antcall target="release.creole"/>
+    <antcall target="biapp.release"/>
+    <antcall target="release.workflow"/>
+
+    <!-- Copy swtag files -->
+    <copy todir="${dir.release}" >
+      <fileset dir="${sysenv.CURAM_DIR}" >
+        <include name="properties/version/**" />
+      </fileset>
+    </copy>
+
+  </target>
+
+  <target
+    name="websphereWebServices"
+    description="Create a Websphere WebServices EAR File">
+    <antcall target="workflowbuild.generateWebservices"/>
+    <antcall target="serverbuild.websphereWebServices"/>
+  </target>
+
+  <target
+    name="weblogicWebServices"
+    description="Create a WebLogic WebServices EAR File">
+    <antcall target="workflowbuild.generateWebservices"/>
+    <antcall target="serverbuild.weblogicWebServices"/>
+  </target>
+
+  <!-- Amending to build the Curam BIRT Viewer deployable EAR file -->
+  <target name="websphereEAR" depends="serverbuild.websphereEAR">
+
+    <!-- build BIRT EARs-->
+    <antcall target="biapp.BIRTViewerEARs"/>
+
+  <!-- call the specific targets for spell checking software. -->
+  <antcall target="spellcheck.buildEARs"/>
+
+  </target>
+
+  <target name="weblogicEAR" depends="serverbuild.weblogicEAR">
+
+    <!-- build BIRT EARs-->
+    <antcall target="biapp.BIRTViewerEARs"/>
+
+  <!-- call the specific targets for spell checking software. -->
+    <antcall target="spellcheck.buildEARs"/>
+
+  </target>
+
+  <!--
+    Override databasesql target to consolidate the CREOLE rule sets
+  -->
+  <target name="databasesql" depends="pre.databasesql, app_database.databasesql"/>
+  <target name="pre.databasesql">
+    <antcall target="creole.consolidate.rulesets"/>
+  </target>
+
+  <!--
+  Override insertlobdata target to allow post-insert processing
+  -->
+  <target name="insertlobdata">
+    <antcall target="app_database.insertlobdata"/>
+    <antcall target="post.insertlobdata"/>
+  </target>
+
+  <target name="post.insertlobdata">
+    <antcall target="workflowbuild.importProcessDefinitions"/>
+    <antcall target="creole.post.insertlobdata"/>
+  </target>
+
+
+  <target
+    description="Javadoc target to produce application javadoc which is Curam entity-aware"
+    name="javadoc"
+  >
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Overriding the SDEJ 'javadoc' target..."
+      />
+    </antcall>
+
+
+    <!-- Create javadoc documentation for Application -->
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Creating JavaDoc"
+      />
+    </antcall>
+
+
+    <path id="javadoc.source.path">
+      <dirset dir="${dir.base.components}">
+        <include name="*/source"/>
+      </dirset>
+      <pathelement location="${dir.bld.svr.gen}"/>
+      <pathelement location="${dir.bld.svr}/message/gen"/>
+    </path>
+
+
+    <property
+      name="impl.package"
+      value="curam.impl*:curam.core.impl*:curam.isu.impl*:curam.appeal.impl*:curam.serviceplans.impl*:curam.isproduct.impl*:curam.iscommon.impl*:curam.sample.impl*:curam.custom.impl*:curam.isscreening.impl.*"
+    />
+    <property
+      name="intf.package"
+      value="curam.intf*:curam.core.intf*:curam.isu.intf*:curam.appeal.intf*:curam.serviceplans.intf*:curam.isproduct.intf*:curam.iscommon.intf*:curam.sample.intf*:curam.custom.intf*:curam.isscreening.intf.*"
+    />
+    <property
+      name="struct.package"
+      value="curam.struct*:curam.core.struct*:curam.isu.struct*:curam.appeal.struct*:curam.serviceplans.struct*:curam.isproduct.struct*:curam.iscommon.struct*:curam.sample.struct*:curam.custom.struct*:curam.isscreening.struct.*"
+    />
+
+
+    <!-- Javadoc memory setting -->
+    <condition
+      property="javadoc.maxmemory"
+      value="${sysenv.JAVADOC_MAXMEMORY}"
+    >
+      <isset property="sysenv.JAVADOC_MAXMEMORY"/>
+    </condition>
+    <condition
+      property="javadoc.maxmemory"
+      value="1024m"
+    >
+      <not>
+        <isset property="sysenv.JAVADOC_MAXMEMORY"/>
+      </not>
+    </condition>
+
+
+    <delete dir="${dir.bld}/javadoc/${SERVER_MODEL_NAME} api"/>
+    <mkdir dir="${dir.bld}/javadoc/${SERVER_MODEL_NAME} api"/>
+    <javadoc
+      author="false"
+      breakiterator="true"
+      classpathref="j.cp"
+      destdir="${dir.bld}/javadoc/${SERVER_MODEL_NAME} api"
+      doctitle="${SERVER_MODEL_NAME}"
+      header="&lt;b&gt;${SERVER_MODEL_NAME}&lt;/b&gt;"
+      maxmemory="${javadoc.maxmemory}"
+      packagenames="**.impl.*,**.intf.*,**.struct.*,**.codetable.*,**.message.*"
+      sourcepathref="javadoc.source.path"
+      splitindex="yes"
+      stylesheetfile="${file.curam.javadoc_stylesheet}"
+      useexternalfile="true"
+      version="false"
+      windowtitle="${SERVER_MODEL_NAME}"
+    >
+      <group
+        packages="${impl.package}"
+        title="Business Process Objects"
+      />
+      <group
+        packages="${intf.package}"
+        title="Business Interface Classes "
+      />
+      <group
+        packages="${struct.package}"
+        title="Structs"
+      />
+
+
+      <taglet
+        name="curam.util.tools.taglet.Entity"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.LogicalName"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Definition"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Description"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Example"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.TechNotes"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Superseded"
+        path="${jar.tools}"
+      />
+    </javadoc>
+
+
+    <echo>The ${SERVER_MODEL_NAME} JavaDoc has been created in
+      ${dir.bld}/javadoc/${SERVER_MODEL_NAME} api</echo>
+  </target>
+
+
+  <!--  *******************************  -->
+  <!--  ***  A P I - J A V A D O C  ***  -->
+  <!--  *******************************  -->
+  <target
+    description="Generates the javadoc for black/grey box components, this is based on the javadoc.properties files."
+    name="apijavadoc"
+  >
+
+
+    <!-- Create javadoc documentation for API components -->
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Creating API JavaDoc"
+      />
+    </antcall>
+
+
+    <subant
+      genericantfile="./build.xml"
+      target="build.apijavadoc"
+    >
+      <dirset
+        dir="."
+        includes="components/*/properties"
+      />
+    </subant>
+
+
+  </target>
+
+
+  <target
+    depends="should.build.apijavadoc,build.apijavadoc.if"
+    name="build.apijavadoc"
+  >
+  </target>
+
+
+  <target name="should.build.apijavadoc">
+
+
+    <available
+      file="${basedir}/javadoc.properties"
+      property="javadoc.properties.exists"
+    />
+
+
+  </target>
+
+
+  <target
+    if="javadoc.properties.exists"
+    name="build.apijavadoc.if"
+  >
+    <property file="${basedir}/javadoc.properties"/>
+
+
+    <antcall
+      inheritAll="false"
+      target="dispmsg"
+    >
+      <param
+        name="prm.msg"
+        value="Building Javadoc for ${component.name}"
+      />
+    </antcall>
+
+
+    <delete dir="${dir.bld}/javadoc/${component.name} api"/>
+    <mkdir dir="${dir.bld}/javadoc/${component.name} api"/>
+
+
+    <!-- API Javadoc memory setting -->
+    <condition
+      property="apijavadoc.maxmemory"
+      value="${sysenv.JAVADOC_MAXMEMORY}"
+    >
+      <isset property="sysenv.JAVADOC_MAXMEMORY"/>
+    </condition>
+    <condition
+      property="apijavadoc.maxmemory"
+      value="1024m"
+    >
+      <not>
+        <isset property="sysenv.JAVADOC_MAXMEMORY"/>
+      </not>
+    </condition>
+
+
+    <javadoc
+      access="package"
+      author="false"
+      breakiterator="true"
+      classpathref="j.cp"
+      destdir="${dir.bld}/javadoc/${component.name} api"
+      doctitle="${component.name}"
+      failonerror="true"
+      header="&lt;b&gt;${component.name}&lt;/b&gt;"
+      maxmemory="${apijavadoc.maxmemory}"
+      packagenames="${component.javadoc.packagenames}"
+      sourcepath="${component.javadoc.source.path}"
+      splitindex="yes"
+      stylesheetfile="${file.curam.javadoc_stylesheet}"
+      useexternalfile="true"
+      version="false"
+      windowtitle="${component.name}"
+    >
+      <taglet
+        name="curam.util.tools.taglet.Entity"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.LogicalName"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Definition"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Description"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Example"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.TechNotes"
+        path="${jar.tools}"
+      />
+      <taglet
+        name="curam.util.tools.taglet.Superseded"
+        path="${jar.tools}"
+      />
+    </javadoc>
+
+
+    <echo>The ${component.name} JavaDoc has been created in
+      ${dir.bld}/javadoc/${component.name} api</echo>
+
+
+  </target>
+
+</project>

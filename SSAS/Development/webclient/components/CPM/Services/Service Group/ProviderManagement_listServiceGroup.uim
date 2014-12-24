@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to view a list of available service groups.   -->
+<?curam-deprecated Since Curam 6.0, replaced with 
+  ProviderManagement_browseAllServiceGroups. The list service groups functionality 
+  is replaced by browse service groups to browse through the 
+  hierarchy of service groups. ?>
+<PAGE
+  PAGE_ID="ProviderManagement_listServiceGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00117630, ASB -->
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="listServiceGroupsMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- END, CR00117630-->
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="listServiceGroups"
+    PHASE="DISPLAY"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00197421, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createServiceGroup"
+        WINDOW_OPTIONS="width=450"
+      />
+      <!-- END, CR00197421 -->
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00187877, SK -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.BrowseServiceGroups">
+      <LINK PAGE_ID="ProviderManagement_browseAllServiceGroups"/>
+    </ACTION_CONTROL>
+    <!-- END, CR00187877 -->
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <!-- BEGIN, CR00198609, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198609 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197421, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_editServiceGroupFromList"
+          WINDOW_OPTIONS="width=450"
+        >
+          <!-- END, CR00197421 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$listServiceGroupDetails$dtls$serviceGroupID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceGroupID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00198609, PS -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateServiceGroup">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createChildServiceGroup"
+          WINDOW_OPTIONS="width=450"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$listServiceGroupDetails$dtls$serviceGroupID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentServiceGroupID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddExistingServiceGroup">
+
+
+        <!-- BEGIN, CR00206310, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addServiceGroupToAnotherServiceGroup"
+          WINDOW_OPTIONS="width=300"
+        >
+          <!-- END, CR00206310 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$listServiceGroupDetails$dtls$serviceGroupID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentServiceGroupID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelServiceGroupFrmList"
+          SAVE_LINK="false"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$listServiceGroupDetails$dtls$serviceGroupID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceGroupID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00199014, PS -->
+    <FIELD
+      LABEL="Field.Label.GroupName"
+      WIDTH="60"
+    >
+      <!-- END, CR00199014 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$listServiceGroupDetails$dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198609 -->
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$listServiceGroupDetails$dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00199435, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewServiceGroupFrmList">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$listServiceGroupDetails$dtls$serviceGroupID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceGroupID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199435 -->
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                             -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the status history of a wait list entry.-->
+<PAGE
+  PAGE_ID="ProviderManagement_viewWaitListEntryStatusHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00245989, GP -->
+  <!-- BEGIN, CR00272514, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="DISPLAY"
+    OPERATION="viewWaitListEntryAndStatusHistoryDetails"
+    PHASE="DISPLAY"
+  />
+  <!--END, CR00272514 -->
+  <!-- END, CR00245989 -->
+
+
+  <PAGE_PARAMETER NAME="waitListEntryID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListEntryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$waitListEntryID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00272514, GP -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.WaitListHome"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewWaitListEntryFrmProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.WaitListHistory"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewWaitListEntryStatusHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!--END, CR00272514 -->
+
+
+  <!-- BEGIN, CR00236707, PS -->
+  <LIST SCROLL_HEIGHT="100">
+    <!-- END, CR00236707 -->
+    <FIELD LABEL="Field.Label.WaitListEntry.DateTime">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="changeDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00245989, GP -->
+    <FIELD LABEL="Field.Label.WaitListEntry.User">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFullName"
+        />
+      </CONNECT>
+      <!-- END, CR00245989 -->
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.WaitListEntry.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00272514, GP -->
+    <FIELD LABEL="Field.Label.WaitListEntry.Position">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="position"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewWaitListEntryHistoryFrmProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="waitListEntryHistoryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListEntryHistoryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListEntryID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!--END, CR00272514 -->
+  </LIST>
+</PAGE>

@@ -1,0 +1,165 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ProcEnactmentEvt</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Process Enactment Event
+:</b>
+<i> The workflow to enact whenever the specified event occurs.
+</i>
+
+<P>Workflows can be enacted:</P>
+
+<UL>
+
+<LI>by business logic explicitly invoking an enactment service;</LI>
+
+<LI>from an existing workflow (as a sub-flow); or</LI>
+
+<LI>in response to a business event.</LI>
+
+</UL> <P>This table stores configuration only for workflows enacted in response to a business event.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.
+
+      </P>
+
+<P>The payment business processing has already been modified to raise a 'payment increase' event whenever payments increase on a <a href=CaseHeader.html>case</a>.</P>
+
+<P>You use the Admin application to configure your workflow to start whenever the 'payment increase' event occurs.  Curam creates a Process Enactment Event row to store the association between this event and your workflow.</P>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises a 'payment increase' event.  The Workflow Engine reads this table to identify that your workflow is configured to start whenever the 'payment increase' event occurs, and enacts an instance of your workflow.</P>
+
+<p><b>Technical Notes</b></p>
+<P>The configuration of which event starts which workflow can be specified or modified at any time after the workflow has been defined.  </P>
+
+<P>Changes to your workflow and the event/workflow configuration are independent provided the event data can fully populate the enactment data required by workflow at all times, i.e. you can:</P>
+
+<UL>
+
+<LI>change your workflow without affecting which events start your workflow; or</LI>
+
+<LI>change the events which start your workflow without changing your workflow definition.</LI>
+
+</UL>
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">procStartEventID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of the process event association.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">eventClass</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The associated event class.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">eventType</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The type of Event (e.g. CASE_CLOSED).</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">processToStart</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of the workflow process to be started.  The latest released version of that process is always enacted.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">enabled</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Indicates whether this process/event association is enabled.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ProcEnactmentEvt.eventClass</td><td class="dataLast"><a href="EventClass.html#eventClass">EventClass.eventClass</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ProcEnactEvtData.html#procStartEventID">ProcEnactEvtData.procStartEventID</a></td><td class="dataLast">ProcEnactmentEvt.procStartEventID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (3)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ProcToStartIdx</td><td class="dataLast">processToStart</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ProcEntEvtEnbldIdx</td><td class="dataLast">enabled</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">EvtTypeClassIndex</td><td class="dataLast">eventClass, eventType</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

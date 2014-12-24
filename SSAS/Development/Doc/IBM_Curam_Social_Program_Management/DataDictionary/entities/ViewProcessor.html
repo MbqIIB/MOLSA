@@ -1,0 +1,169 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ViewProcessor</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>ViewProcessor
+:</b>
+<i><p>A View Processor supplements the standard processing invoked when a data is read from the Citizen's Data Hub. View Processors are associated via the context attribute with a &quot;Data Hub Context&quot;. The same context name is used to define other entities associated with the Data Hub Context such as the <a href=Transform.html>Transform</a>. The View Processor is invoked after the Transform has converted the Evidence XML into datastore XML. The View Processor references a custom class that can be defined by developers. In this class the developer can add code that inserts additional information into the data store xml. There can be multiple ViewProcessors defined for the same Data Hub Context, each identified by a differenty logical name.</p>
+</i>
+<p><b>Example</b></p>
+<p>A Customer adds two new ViewProcessors and associates them with the &quot;AllEvidence&quot; Data Hub Context. One references the             Out-Of-The-Box class curam.citizen.datahub.internal.impl.HouseholdCustomViewProcessorFactory and the other references 
+
+the 
+
+           Out-Of-The-Box class curam.citizen.datahub.internal.impl.CustomPersonAddressViewProcessorFactory. The former 
+
+           pulls in all related members of a Citizen's household and puts them into the datastore xml. The latter extracts a Citizen's Residential and Mailing addresses. All
+
+           of this information is also inserted into the datastore xml.
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::WorkspaceServices::DataHub::Entity::ViewProcessor</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">WorkspaceServices\model\DataHub.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">yes</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="viewProcessorID">viewProcessorID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique reference number of this record.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="logicalName">logicalName</a></td><td class="data">details</td><td class="data">no</td><td class="data">A unique logical name for the View Processor. View Processors associated with the same context are executed in alphabetical order of their logical name. So AAA is executed before BBB for the Data Hub Context &quot;HavingABaby&quot;
+
+</td><td class="data"><a href="../domains/VIEW_PROCESSOR_LOGICAL_NAME.html">VIEW_PROCESSOR_LOGICAL_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="context">context</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Identifies the related Data Hub Context.</td><td class="data"><a href="../domains/CITIZEN_CONTEXT_NAME.html">CITIZEN_CONTEXT_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="viewProcessorFactory">viewProcessorFactory</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Contains the class name of the Custom View Processor factory. The class must implement the interface curam.citizen.datahub.impl.CustomViewProcessorFactory.
+
+</td><td class="data"><a href="../domains/VIEW_PROCESSOR_CUSTOM_FACTORY.html">VIEW_PROCESSOR_CUSTOM_FACTORY</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="recordStatus">recordStatus</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Record status of this record i.e. Active, Cancelled.</td><td class="data"><a href="../domains/RECORD_STATUS.html">RECORD_STATUS</a></td><td class="data"><a href="../codetables/ct-RecordStatus.html">RecordStatus</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">modify</td><td class="data">modify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByRecordStatus</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">&lt;p&gt;Return all View Processors with a particular Record Status.&lt;/p&gt;
+
+@curam.example
+
+&lt;p&gt;Return all Active ViewProcessor records.&lt;/p&gt;
+
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readByLogicalName</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Get the View Processor associated with a unique logical name.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchActiveByContext</td><td class="data">readmulti</td><td class="data"><span style="white-space:nowrap;">ORDER_BY: logicalName</span>
+<br>
+</td><td class="data">&lt;p&gt;Return all the view processors associated with a given Data Hub Context.&lt;/p&gt;
+
+@curam.example
+
+&lt;p&gt;The &amp;quot;AllEvidence&amp;quot; context is associated with two View Processors.&lt;/p&gt;
+
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: viewProcessorID</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

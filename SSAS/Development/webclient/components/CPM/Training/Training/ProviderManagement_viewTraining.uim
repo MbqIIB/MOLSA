@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This is view Training Page                                             -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewTraining"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="trainingID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTraining"
+    NAME="DISPLAY"
+    OPERATION="viewTraining"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTrainingCredit"
+    NAME="DISPLAY2"
+    OPERATION="listTrainingCreditsForTraining"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$trainingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="key$trainingID"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="Cluster.Label.TrainingCredits">
+    <!-- BEGIN, CR00199014, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!--END, CR00199014-->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197421, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyTrainingCredit"
+          WINDOW_OPTIONS="width=500"
+        >
+          <!--END, CR00197421-->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="trainingCreditID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingCreditID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="trainingName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00197352, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <!-- BEGIN, CR00197421, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelTrainingCredit"
+        >
+          <!--END, CR00197421-->
+          <!-- END, CR00187417 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="trainingCreditID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingCreditID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="trainingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="trainingName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199014, PS -->
+    </ACTION_SET>
+    <!-- END, CR00199014 -->
+
+
+    <FIELD LABEL="Field.Label.ProviderCategory">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="providerCategory"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ProviderType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="providerType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00197421, PS -->
+    <FIELD
+      LABEL="Field.Label.Type"
+      USE_BLANK="true"
+      WIDTH="10"
+    >
+      <!--END, CR00197421-->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00197421, PS -->
+    <FIELD
+      LABEL="Field.Label.Value"
+      WIDTH="10"
+    >
+      <!--END, CR00197421-->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="value"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ValidityPeriod">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="validityPeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ValidityPeriodUnit">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="validityPeriodUnit"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

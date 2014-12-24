@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view address details for a Participant -->
+<!-- BEGIN, CR00261151, GP -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="PME_listRequests"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00229430, GP -->
+  <SERVER_INTERFACE
+    CLASS="ExternalRequests"
+    NAME="DISPLAY"
+    OPERATION="listAllRequestDetails"
+  />
+  <!-- END, CR00261151 -->
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Edit"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00261151, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00261151 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PME_resolveModifyRequest"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="requestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="requestID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="requestCategory"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="requestCategory"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Create">
+        <!-- BEGIN, CR00261151, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="newLineItemIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00261151 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PME_addServiceInvoiceRequestLineItem"
+          WINDOW_OPTIONS="width=750"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="requestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceInvoiceRequestID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Submit">
+        <!-- BEGIN, CR00261151, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="submitIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00261151 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PME_submitRequest"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="requestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="requestID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+        <!-- BEGIN, CR00261151, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="cancelIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00261151 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PME_cancelRequest"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="requestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="requestID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.RequestType"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="requestType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateCreated"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateSubmitted"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateSubmitted"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="PME_resolveViewRequest">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="requestID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="requestID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="requestCategory"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="requestCategory"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+  <!-- END, CR00229430 -->
+</PAGE>

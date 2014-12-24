@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2012 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list providers for resource manager.      -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listProvidersForResourceManager"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00206671, SS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="DISPLAY"
+    OPERATION="listProvidersForResourceManager"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00234082, GP -->
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_searchConfirmProviderNotRegistered"
+        WINDOW_OPTIONS="width=750"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00234082 -->
+
+
+  <!-- END, CR00206671 -->
+  <LIST>
+    <!-- BEGIN, CR00206671, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00234497, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00234497 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyProvider"
+          WINDOW_OPTIONS="width=750"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerSummaryVersionDetails$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerSummaryVersionDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerSummaryVersionDetails$categoryVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="categoryVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerSummaryVersionDetails$typeVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="typeVersionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00304303, ASN -->
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="10"
+    >
+      <!-- END, CR00304303 -->
+      <!-- END, CR00206671 -->
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerSummaryVersionDetails$referenceNumber"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <!-- BEGIN, CR00206671, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerSummaryVersionDetails$concernRoleID"
+          />
+          <!-- END, CR00206671 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00228396, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerSummaryVersionDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00228396 -->
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00304303, ASN -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <!-- END, CR00304303 -->
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerSummaryVersionDetails$name"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00304303, ASN -->
+    <FIELD
+      LABEL="Field.Label.Category"
+      WIDTH="20"
+    >
+      <!-- END, CR00304303 -->
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerSummaryVersionDetails$primaryCategory"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00304303, ASN -->
+    <FIELD
+      LABEL="Field.Label.Address"
+      WIDTH="35"
+    >
+      <!-- END, CR00304303 -->
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <!-- BEGIN, CR00293652, ASN -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="addressStringOpt"
+        />
+        <!-- END, CR00293652 -->
+        <!-- END, CR00206671 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00304303, ASN -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00304303 -->
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206671, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerSummaryVersionDetails$recordStatus"
+        />
+        <!-- END, CR00206671 -->
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

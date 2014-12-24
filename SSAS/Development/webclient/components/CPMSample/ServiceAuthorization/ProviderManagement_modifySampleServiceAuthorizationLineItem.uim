@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2009-2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify service authorization line item    -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifySampleServiceAuthorizationLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <!-- BEGIN, CR00228769, RPB -->
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.ServiceAuthorizationLineItemDetails"
+      />
+
+
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceAuthorization"
+    NAME="DISPLAY"
+    OPERATION="viewSALIDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00144022, ABS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceAuthorization"
+    NAME="DISPLAY1"
+    OPERATION="viewNomineeType"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00144022 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceAuthorization"
+    NAME="ACTION"
+    OPERATION="updateServiceAuthorizationLineItem"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSamplesServiceAuthorizationLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationLineItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="serviceAuthorizationLIID"/>
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+  <PAGE_PARAMETER NAME="serviceAuthorizationReferenceNumber"/>
+
+
+  <!-- BEGIN, CR00144022, ABS -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationLIID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="serviceAuthorizationLIID"
+    />
+  </CONNECT>
+  <!-- END, CR00144022 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationLIID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceAuthorizationLIID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationLIID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$ServiceAuthorizationLineItemID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitsAuthorized">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitsAuthorized"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$unitsAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitAmount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateAdded">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateAdded"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitsRemaining">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitsRemainingString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceAuthorizationLineItemDetails$status"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnitsFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumUnitFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00144022, ABS -->
+  <CLUSTER
+    LABEL_WIDTH="25"
+    TITLE="Field.Label.Nominee"
+  >
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Nominee"
+    >
+
+
+      <FIELD WIDTH="32">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="nomineeType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$nomineeType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="45">
+        <CONNECT>
+          <INITIAL
+            NAME="DISPLAY"
+            PROPERTY="nomineeName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="nomineeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$nomineeID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <!-- END, CR00144022 -->
+
+
+  <!-- END, CR00228769 -->
+</PAGE>

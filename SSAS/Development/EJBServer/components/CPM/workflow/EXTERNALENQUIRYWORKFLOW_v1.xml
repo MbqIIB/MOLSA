@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2007-2009, 2011-2012 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information"). You shall not disclose
+  such Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process
+  category="PC21"
+  createdBy="admin"
+  creationDate="20080109T111405"
+  id="7"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <!--END, CR00235681-->
+  <name>EXTERNALENQUIRYWORKFLOW</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">External Enquiry Workflow</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00248687, NS -->
+  <description>
+    <localized-text>
+      <locale language="en">
+        
+        <!-- BEGIN, CR00306765, AKr -->
+        This workflow process is not being called by any out of the box 
+        processing. It has been replaced by the EXTERNALPROVIDERENQUIRYWORKFLOW
+        workflow process.
+        <!-- END, CR00306765 -->
+      </locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00248687 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="providerEnquiryID"
+        struct-name="curam.cpm.eua.facade.struct.ProviderEnquiryDetails"
+      />
+      <target-attribute
+        name="providerEnquiryID"
+        wdo-name="ProviderEnquiryDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="providerType"
+        struct-name="curam.cpm.eua.facade.struct.ProviderEnquiryDetails"
+      />
+      <target-attribute
+        name="providerType"
+        wdo-name="ProviderEnquiryDetails"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>ProviderEnquiryDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">ProviderEnquiryDetails</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>providerEnquiryID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">providerEnquiryID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>providerCategory</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">providerCategory</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>providerType</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">providerType</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>concernRoleID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">concernRoleID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity
+      category="AC1"
+      id="3"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Assign Provider Enquiry to Owner</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="2"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">Provider Enquiry</locale>
+            </localized-text>
+          </message-text>
+        </message>
+        <actions>
+          <action
+            page-id="ProviderManagement_viewProviderEnquiry"
+            principal-action="false"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">View Enquiry</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="providerEnquiryID">
+              <wdo-attribute
+                name="providerEnquiryID"
+                wdo-name="ProviderEnquiryDetails"
+              />
+            </link-parameter>
+          </action>
+          <action
+            page-id="ProviderEnquiry_acceptProviderEnquiry"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Assign Provider Enquiry Owner</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="providerEnquiryID">
+              <wdo-attribute
+                name="providerEnquiryID"
+                wdo-name="ProviderEnquiryDetails"
+              />
+            </link-parameter>
+            <link-parameter name="taskID">
+              <wdo-attribute
+                name="taskID"
+                wdo-name="Context_Task"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>false</allow-task-forwarding>
+      </task>
+      <allocation-strategy
+        identifier="Enquiry Work Queue"
+        type="target"
+      />
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="PROVIDERENQUIRY"
+            event-type="TRANSFERENQUIRYTOPROVIDER"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="providerEnquiryID"
+              wdo-name="ProviderEnquiryDetails"
+            />
+          </event>
+          <event
+            event-class="PROVIDERENQUIRY"
+            event-type="CLOSEENQUIRY"
+            identifier="2"
+          >
+            <event-match-attribute
+              name="providerEnquiryID"
+              wdo-name="ProviderEnquiryDetails"
+            />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="3"
+      id="2"
+      to-activity-idref="2"
+    />
+  </transitions>
+</workflow-process>

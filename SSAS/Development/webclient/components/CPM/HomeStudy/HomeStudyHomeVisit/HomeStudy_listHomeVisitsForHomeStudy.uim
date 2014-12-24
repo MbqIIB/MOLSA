@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list the home visits for the home study   -->
+<PAGE
+  PAGE_ID="HomeStudy_listHomeVisitsForHomeStudy"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewHomeStudy"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_viewDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.Assessments"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_listAssessmentForHomeStudy">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.HomeVisits"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_listHomeVisitsForHomeStudy">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.Documents"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="HomeStudy_listDocumentsForHomeStudy">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00236233, GP -->
+  <SERVER_INTERFACE
+    CLASS="HomeStudyHomeVisit"
+    NAME="DISPLAY"
+    OPERATION="listHomeStudyHomeVisits"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00236233 -->
+  <!-- BEGIN, CR00198768, SS -->
+  <SERVER_INTERFACE
+    CLASS="HomeStudy"
+    NAME="DISPLAY1"
+    OPERATION="viewHomeStudy"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="homeStudyID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="searchByHomeStudyKey$homeStudyID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$key$homeStudyID"
+    />
+  </CONNECT>
+  <!-- END, CR00198768 -->
+  <LIST>
+
+
+    <!-- BEGIN, CR00198768, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="HomeStudy_modifyHomeVisitForHomeStudy"
+          WINDOW_OPTIONS="width=600"
+        >
+          <!-- END, CR00197352 -->
+          <!-- BEGIN, CR00236233, GP -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyHomeVisitDetails$homeStudyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddParticipant">
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="HomeStudy_createParticipantForAttendee"
+          WINDOW_OPTIONS="width=550"
+        >
+          <!-- END, CR00197352 -->
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$homeStudyDtls$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddInterview">
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="HomeStudy_createInterviewForHomeVisit"
+          WINDOW_OPTIONS="width=600"
+        >
+          <!-- END, CR00197352 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyHomeVisitDetails$homeStudyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="HomeStudy_cancelHomeVisitForHomeStudy"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00187417 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyHomeVisitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="homeStudyHomeVisitDetails$homeStudyID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="homeStudyID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00198768 -->
+    <FIELD LABEL="Field.Label.Purpose">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="purpose"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateOfVisit">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateOfVisit"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198768, SS -->
+    <FIELD LABEL="Field.Label.ConductedBy">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="conductedByFullName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00207959, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=420"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="conductedBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00207959 -->
+    </FIELD>
+    <!-- END, CR00198768 -->
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- END, CR00236233 -->
+    <!-- BEGIN, CR00198768, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="HomeStudy_viewHomeVisitForHomeStudy">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="homeStudyHomeVisitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyHomeVisitID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198768 -->
+
+
+  </LIST>
+</PAGE>

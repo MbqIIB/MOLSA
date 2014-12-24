@@ -1,0 +1,452 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>Address</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Address:</b>
+<i> A description of a location, as written or printed on mail as directions for delivery.</i>
+<P>Many concurrent addresses can be stored for a <a href=Concern.html>participant</a> but one address is marked as the primary or default address. A type e.g. home, work, etc. can be recorded for each address.</P>
+<p><b>Example</b></p><P>John Smith is a registered <a href=Person.html>person</a> in Curam. Two address records are stored for John; his home address and his business address.</P>
+<p><b>Technical Notes</b></p><P>Many types of Curam entities can have a related address; logically these entities have an 'address' attribute which is a 'complex data type'.  Physically however each of these entities has an address attribute which relates to a row on the address table.</P>
+<P>
+        Addresses may vary over time (e.g. a <a href=Concern.html>participant</a> may move house or notify the organization of a typographical error in the address).  Most organizations have a legal requirement to keep an exact record (including any typographical errors) of an address to which correspondence or payment has been sent.  To support this requirement, Curam has the ability to 'clone' an address record and mark the clone as non-modifiable.  Typically Curam financial and correspondence functionality stores references to these non-modifiable clone addresses.</P>
+<P>The storage format for address data is as follows:</P>
+<UL>
+<LI>client widget version required</LI>
+<LI>address ID</LI>
+<LI>address layout type</LI>
+<LI>country code</LI>
+<LI>modifiable indicator</LI>
+<LI>address version number</LI>
+<LI>a list of type/value pairs (list differs according to the address layout type - see below).</LI>
+</UL> <P>By default, Curam supports these address layout types:</P>
+<UL>
+<LI>US address format (Line1/Line2/Line3/City/State/Zip);</LI>
+<LI>UK address format (Line1/Line2/Line3/Line4/Line5/City/County/Postcode/Country); and</LI>
+<LI>Freeform address format (Free text).</LI>
+</UL> <P>Named parts of an address may be stored as rows on <a href=AddressElement.html>address element</a>.</P> 
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::Core::Reference Model::Concern::Entity Objects::Address::Address</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">core\model\Packages\Concern\Address_cat.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">yes</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">LAST_UPDATED_FIELD</td><td class="dataLast">yes</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">VALIDATION_EXIT_POINT</td><td class="dataLast">yes</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (8)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="addressID">addressID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique reference number assigned by the system to an address record</td><td class="data"><a href="../domains/ADDRESS_ID.html">ADDRESS_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="countryCode">countryCode</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Code to denote the country to which the address and the address city code applies</td><td class="data"><a href="../domains/ADDRESS_COUNTRY_CODE.html">ADDRESS_COUNTRY_CODE</a></td><td class="data"><a href="../codetables/ct-AddressCountry.html">AddressCountry</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="modifiableInd">modifiableInd</a></td><td class="data">details</td><td class="data">no</td><td class="data">field to indicate whether an address can be modified.  A 'Snapshot' address is one which is 'cloned'  from an existing address and may not be modified by the user, e.g. the address to which a check was sent.</td><td class="data"><a href="../domains/BOOLEAN_TYPE.html">BOOLEAN_TYPE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="addressData">addressData</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Data and meta-data for the address. Stored as a string to insulate CURAM from changes due to new Address formats.</td><td class="data"><a href="../domains/ADDRESS_DATA.html">ADDRESS_DATA</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;2048&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="addressLayoutType">addressLayoutType</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">The layout of the Address (US, UK, freeform, etc.).</td><td class="data"><a href="../domains/ADDRESS_LAYOUT_TYPE_CODE.html">ADDRESS_LAYOUT_TYPE_CODE</a></td><td class="data"><a href="../codetables/ct-AddressLayoutType.html">AddressLayoutType</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="geoCode">geoCode</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">A code that represents the coordinate measurement of an exact geographic location and time at, below, or above the surface of the earth.</td><td class="data"><a href="../domains/GEO_CODE.html">GEO_CODE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;2048&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="latitude">latitude</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The location of an address on the earth from north or south of the equator.</td><td class="data"><a href="../domains/ADDRESS_LATITUDE.html">ADDRESS_LATITUDE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DOUBLE</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="longitude">longitude</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The location of an address on the earth from east or west of the prime meridian.</td><td class="data"><a href="../domains/ADDRESS_LONGITUDE.html">ADDRESS_LONGITUDE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DOUBLE</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="AddressElement.html#addressID">AddressElement.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="BankBranch.html#addressID">BankBranch.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ConcernRoleAddress.html#addressID">ConcernRoleAddress.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ConcernRoleCommunication.html#addressID">ConcernRoleCommunication.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ConcernRoleContact.html#primaryAddressID">ConcernRoleContact.primaryAddressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ConcernRole.html#primaryAddressID">ConcernRole.primaryAddressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ConcernRoleSnapshot.html#primaryAddressID">ConcernRoleSnapshot.primaryAddressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ContactAddress.html#addressID">ContactAddress.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ExternalAgencyBranch.html#addressID">ExternalAgencyBranch.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="Hearing.html#addressID">Hearing.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="LiabilityInstrument.html#addressID">LiabilityInstrument.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="LiteReferral.html#addressID">LiteReferral.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="Location.html#addressID">Location.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="Organisation.html#addressID">Organisation.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="PRLIHistory.html#addressID">PRLIHistory.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="PaymentInstrument.html#addressID">PaymentInstrument.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="PaymentReceivedInstrument.html#addressID">PaymentReceivedInstrument.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="Payslip.html#addressID">Payslip.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ProviderEnquiry.html#homeAddressID">ProviderEnquiry.homeAddressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ProviderEnquiry.html#workAddressID">ProviderEnquiry.workAddressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ProviderLocation.html#addressID">ProviderLocation.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ProviderParticipantRequest.html#addressID">ProviderParticipantRequest.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ProviderRosterLineItem.html#addressID">ProviderRosterLineItem.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ProviderServiceCenter.html#addressID">ProviderServiceCenter.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ServicePlanContract.html#addressID">ServicePlanContract.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="SuspenseAccount.html#addressID">SuspenseAccount.addressID</a></td><td class="dataLast">Address.addressID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (59)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modify</td><td class="data">modify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+<span style="white-space:nowrap;">POST_DATA_ACCESS: yes</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">remove</td><td class="data">remove</td><td class="data"><span style="white-space:nowrap;">POST_DATA_ACCESS: yes</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getFirstLine</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method takes a addressData string and returns value of &amp;lt;ADD1&gt; tag (UK/US format) or first line of address(FREEFORM format).</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getCity</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">method takes in address data and returns &lt;CITY&gt; tag (for US/UK) or  the last line of address( for FREEFORM format).</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getLongFormat</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method takes in addressData and returns formatted address string.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getReportFormat</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Placeholder method to allow CURAM customization.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getShortFormat</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Placeholder method for CURAM customization.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getOneLineAddressString</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method decodes code table fields(e.g. city, state) to be in normal manner and returns address in one line, every element separated by comma.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getLongFormat</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method returns formatted address line passing in address ID.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">notifyNonDefaultLayout</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">If address layout type is not default address layout and user is not "system" user then sends a ticket to users supervisor (depending on environment settings).
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">insert</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Sets modifiable Ind to true and calls insertInternal.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insertInternal</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">POST_DATA_ACCESS: yes</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">clone</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Clones the address specified by the details and returns the new address details. The new details has modifiableInd set to False.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readAddressData</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Returns the address details as a string due to new Address formats.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">isEmpty</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Returns a boolean showing:
+- for name/value formats, whether all the tags have an empty value.
+- for FREEFORM format, if the freeform address data is empty.
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElements</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided and notifies user's supervisor of non-standard address writes.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getAddressAsList</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">method returns address as list of strings.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getAddressTagsForLayout</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Returns tab separated string of address tags for the address layout specified.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validate</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Validates the contents of the specified address. Returns the address header information and a list of address details, either freeform or a list of name-value pairs for non-freeform.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">validateHeader</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks that the details in the specified address header are valid.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateFreeformAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks the each of the specified freeform address lines are valid.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">validateUSAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks that the specified address details are in  a valid US format.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateUKAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks that the specified address details are in  a valid UK format.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getAddressStrings</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Takes in an address data string and returns:
+ - for US/UK format, four address line strings (if available) separated by newline character.
+ - for FREEFORM format, four lines (if available) from address data, starting starting by line  7.
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">isEqual</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks if firstAddressData and secondAddressData strings contains the same address.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">setAddressDataLine</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Sets addressData line according to the value and index specified in lineData.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">reorderAddressDataTags</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Puts address data tags in the correct order.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElement</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Retrieves the element from the AddressMapList specified by AddressMap.name and stores the value retrieved as an address element.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getState</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">method takes in address data and returns &lt;STATE&gt; tag for US addresses.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readCountryCode</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">To retrieve the country code of the address.</td><td class="dataLast"><a href="../sql/sql-Address-readCountryCode.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getCountry</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">internalInsert</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">@superseded - replaced by insertInternal</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readAddressDataByConcernRoleAddressID</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">Reads the address data by concernRoleAddressID.</td><td class="dataLast"><a href="../sql/sql-Address-readAddressDataByConcernRoleAddressID.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modifyAddressDetails</td><td class="data">nsmodify</td><td class="data"><span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">&nbsp;</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getCounty</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method takes in address data and returns  &lt;USCOUNTY&gt; tag (for US address format with county) or the empty string (for all other formats).</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">validateCAAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">insertAddress</td><td class="data">insert</td><td class="data">&nbsp;</td><td class="data">Inserts record to address entity. This method expects address ID to be set by the caller, if not set it delegates the call
+
+to insert() which is modeled to auto generate primary key field (address ID). It's preferred to call this method only in
+
+scenario's where caller wants to set the value of primary key (address ID) by itself.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">validateDEAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks that the specified address details are in a valid DE format.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getSecondLine</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method&amp;nbsp;takes&amp;nbsp;a&amp;nbsp;addressData&amp;nbsp;string&amp;nbsp;and&amp;nbsp;returns&amp;nbsp;value&amp;nbsp;of&amp;nbsp;&amp;lt;ADD2&amp;gt;&amp;nbsp;tag&amp;nbsp;(UK/US&amp;nbsp;format)&amp;nbsp;or&amp;nbsp;second&amp;nbsp;line&amp;nbsp;of&amp;nbsp;address(FREEFORM&amp;nbsp;format).</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElementsUS</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the US layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">storeElementsUK</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the UK layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElementsDE</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the DE layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">storeElementsCA</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the CA layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElementsNonSpecificLayout</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the non specific layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">storeElementsCommon</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates common address elements for all the layouts from the address data provided.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modifyAddress</td><td class="data">modify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">This modify operation will be called while re-applying a change set in the target system. Entity level validations that will happen during a standard modify operation will not be applicable in this case. This modify operation will update all the attributes defined for this entity.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateCACivicAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks that the specified address details are in a valid Canada Civic format.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElementsCACivic</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the CA Civic layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getProvince</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method takes in address data and returns &lt;PROVINCE&gt; tag for CA addresses.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">formatPostalCodeValue</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Retrieves the formatted postal code in the pattern of ANA NAN.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateTWAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks that the specified address details are in  a valid ZH_TW format.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElementsTW</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the ZH_TW layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateCNAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Checks that the specified address details are in  a valid ZH_CN format.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElementsCN</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the CN layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">storeElementsJP</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the JP layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">storeElementsKR</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the KR layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateJPAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the JP layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">validateKRAddress</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Creates address elements from the address data provided for the KR layout.</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

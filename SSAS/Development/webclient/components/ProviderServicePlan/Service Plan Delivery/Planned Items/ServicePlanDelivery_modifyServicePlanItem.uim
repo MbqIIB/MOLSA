@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify the the details of a plan          -->
+<!-- item of type Service. It also allows the user to modify the user name. -->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_modifyServicePlanItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+  
+    // Get the context details
+    String context = request.getContextPath() + "/";
+    curam.omega3.request.RequestHandler rh =
+      curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    // BEGIN, CR00128415, ANK
+    String description = request.getParameter("description");
+    // END, CR00128415
+    
+    // Retrieve the planned item id
+    String plannedItemID = request.getParameter("plannedItemID");
+    if (plannedItemID == null) {
+      // BEGIN, CR00126196, SK
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "plannedItemID");
+       throw e;
+       // END, CR00126196
+    }
+                    
+     
+    String url = context;
+    
+    // call server bean
+    curam.interfaces.ProviderServicePlanDeliveryPkg.ProviderServicePlanDelivery_viewPlannedItem_TH 
+    th = new curam.interfaces.ProviderServicePlanDeliveryPkg.ProviderServicePlanDelivery_viewPlannedItem_TH();
+            
+    th.setFieldValue(th.plannedItemIDKey$plannedItemIDKey$plannedItemIDKey$plannedItemID_idx,plannedItemID);
+    
+    th.callServer();
+          
+    String isProviderModifiable = new String(th.getFieldValue(th.result$plannedItemDetails$plannedItemDetails$concerningModifiableInd_idx));
+
+    // BEGIN, CR00128415, ANK         
+    // if Provider Modifiable is true
+    if (isProviderModifiable.equals("true")) {
+
+      // redirect to Modify Plan Item screen with Provider details Editable
+      url += "ServicePlanDelivery_modifyServicePlanItemProviderEditablePage.do?plannedItemID="+curam.omega3.request.RequestUtils.escapeURL(plannedItemID);
+    
+    } else {
+        
+      // redirect to Modify Plan Item screen with Provider details non Editable
+      url += "ServicePlanDelivery_modifyServicePlanItemProviderNonEditablePage.do?plannedItemID="+curam.omega3.request.RequestUtils.escapeURL(plannedItemID);
+     
+    }
+      
+    url += "&amp;" + rh.getSystemParameters();
+   // END, CR00128415
+   
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

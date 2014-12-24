@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="finish-page">
+    <xs:complexType>
+      <xs:attribute name="page-id" type="xs:string" use="required"/>
+      <xs:attribute name="execution-id-param-name" type="xs:string" use="required"/>
+      <xs:attribute name="case-id-param-name" type="xs:string" use="optional"/>
+      <xs:attribute name="participant-id-param-name" type="xs:string" use="optional"/>
+      <xs:attribute name="ieg-question-page-id" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="help-panel">
+    <xs:complexType>
+      <xs:attribute name="visible" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ieg-player-config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="finish-page" maxOccurs="unbounded"/>
+        <xs:element ref="tab-panel"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="notes-panel">
+    <xs:complexType>
+      <xs:attribute name="visible" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="previous-pages-panel">
+    <xs:complexType>
+      <xs:attribute name="visible" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="summary-panel">
+    <xs:complexType>
+      <xs:attribute name="visible" type="xs:boolean" use="required"/>
+      <xs:attribute name="show-question-label" type="xs:boolean" use="optional"/>
+      <xs:attribute name="show-question-value" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="tab-panel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="previous-pages-panel"/>
+        <xs:element ref="help-panel"/>
+        <xs:element ref="notes-panel"/>
+        <xs:element ref="unanswered-questions-panel"/>
+        <xs:element ref="summary-panel"/>
+      </xs:sequence>
+      <xs:attribute name="visible" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="unanswered-questions-panel">
+    <xs:complexType>
+      <xs:attribute name="visible" type="xs:boolean" use="required"/>      
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

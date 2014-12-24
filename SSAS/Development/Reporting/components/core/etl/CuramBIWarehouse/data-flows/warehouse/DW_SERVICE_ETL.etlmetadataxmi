@@ -1,0 +1,963 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:DB2Model="http:///com/ibm/db/models/db2/db2.ecore" xmlns:LUW="http:///com/ibm/db/models/db2/luw.ecore" xmlns:SQLDataTypes="http:///org/eclipse/datatools/modelbase/sql/datatypes.ecore" xmlns:com.ibm.datatools.etl.coretypes="http:///com/ibm/datatools/etl/coretypes.ecore" xmlns:com.ibm.datatools.etl.dataflow.view="http:///com/ibm/datatools/etl/dataflow/view.ecore" xmlns:dynOpr="dyn:///com/ibm/datatools/etl/core.oplib" xsi:schemaLocation="http:///com/ibm/db/models/db2/luw.ecore http:///com/ibm/db/models/db2/db2.ecore#//luw">
+  <dynOpr:DefaultDataFlow iD="0" definitionID="DefaultDataFlow" itemName="DW_SERVICE_ETL" itemTag="" itemComments="@curam.logicalname DW_SERVICE_ETL&#xD;&#xA;@curam.definition This data flow extracts changed data from {curam.primarysource.S_CODETABLEITEM} into {curam.primarytarget.DW_SERVICE}&#xD;&#xA;@curam.loadstragegy INSERT" version="2.3.0" lastAssignedID="10" externalReferences="/0/@operatorMap.1/@value/@dimensionTable /0/@operatorMap.0/@value/@rdbTable" etlFlow="/1">
+    <changeParamTable key="com.ibm.datatools.sqw.dataflow.db2.luw,flowCodeGenerator">
+      <value paramID="com.ibm.datatools.sqw.dataflow.db2.luw" paramName="com.ibm.datatools.sqw.dataflow.db2.luw" paramUsage="flowCodeGenerator" subParamID="com.ibm.datatools.sqw.dataflow.db2.luw.FlowCodeGenerator" sortIdx="-1"/>
+    </changeParamTable>
+    <changeParamTable key="etlmetadataxmi,flowFileExtension">
+      <value paramID="etlmetadataxmi" paramName="etlmetadataxmi" paramUsage="flowFileExtension"/>
+    </changeParamTable>
+    <changeParamTable key="Debugger,debugging">
+      <value paramID="Debugger" paramName="Debugger" paramUsage="debugging" subParamID="com.ibm.datatools.etl.epg.debug.DefaultVirtualTableDebugger" sortIdx="1"/>
+    </changeParamTable>
+    <changeParamTable key="DebugDataStation,debugging">
+      <value paramID="DebugDataStation" paramName="DebugDataStation" paramUsage="debugging" subParamID="http:///com/ibm/datatools/etl/dataflow/base.ui.oplib/Transform/ExternalDataStation" sortIdx="2"/>
+    </changeParamTable>
+    <changeParamTable key="CanvasTracer,executing">
+      <value paramID="CanvasTracer" paramName="CanvasTracer" paramUsage="executing" subParamID="com.ibm.datatools.etl.dataflow.ui.DataFlowExecutionListener" sortIdx="3"/>
+    </changeParamTable>
+    <changeParamTable key="ExecViewTracer,executing">
+      <value paramID="ExecViewTracer" paramName="ExecViewTracer" paramUsage="executing" subParamID="com.ibm.datatools.etl.dataflow.ui.DataFlowExecutionViewListener" sortIdx="4"/>
+    </changeParamTable>
+    <changeParamTable key="DB2 UDB,dbVendor">
+      <value paramID="DB2 UDB" paramName="DB2 UDB" paramUsage="dbVendor" subParamID="DB2 UDB" sortIdx="5"/>
+    </changeParamTable>
+    <changeParamTable key="dataflowxmi,flowViewFileExtension">
+      <value paramID="dataflowxmi" paramName="dataflowxmi" paramUsage="flowViewFileExtension" sortIdx="6"/>
+    </changeParamTable>
+    <changeParamTable key="macroflowxmi,macroFlowFileExtension">
+      <value paramID="macroflowxmi" paramName="macroflowxmi" paramUsage="macroFlowFileExtension" sortIdx="7"/>
+    </changeParamTable>
+    <changeParamTable key="macroviewxmi,macroFlowViewFileExtension">
+      <value paramID="macroviewxmi" paramName="macroviewxmi" paramUsage="macroFlowViewFileExtension" sortIdx="8"/>
+    </changeParamTable>
+    <changeParamTable key="CompatibleFlows,editing">
+      <value paramID="CompatibleFlows" paramName="CompatibleFlows" paramUsage="editing" subParamID="DefaultDataFlow|Subflow" sortIdx="9"/>
+    </changeParamTable>
+    <changeParamTable key="GenerateNewFlowsForSelection,editing">
+      <value paramID="GenerateNewFlowsForSelection" paramName="GenerateNewFlowsForSelection" paramUsage="editing" subParamID="DefaultDataFlow|Subflow" sortIdx="10"/>
+    </changeParamTable>
+    <changeParamTable key="propagationSupport,actionEnable">
+      <value paramID="propagationSupport" paramName="propagationSupport" paramUsage="actionEnable" subParamID="yes" sortIdx="11"/>
+    </changeParamTable>
+    <changeParamTable key="FlowDragAndDrop_CopyOperators_SrcFlowType,editing">
+      <value paramID="FlowDragAndDrop_CopyOperators_SrcFlowType" paramName="FlowDragAndDrop_CopyOperators_SrcFlowType" paramUsage="editing" subParamID="etlmetadataxmi|macroflowxmi" sortIdx="12"/>
+    </changeParamTable>
+    <changeParamTable key="FlowDragAndDrop_CreateRefOperator_SrcFlowType,editing">
+      <value paramID="FlowDragAndDrop_CreateRefOperator_SrcFlowType" paramName="FlowDragAndDrop_CreateRefOperator_SrcFlowType" paramUsage="editing" subParamID="macroflowxmi::{http:///com/ibm/datatools/etl/dataflow/macro_ui.oplib/MacroCreator/MacroChooser}" sortIdx="13"/>
+    </changeParamTable>
+    <operatorMap key="06">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableExtract" iD="06" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableSelect" itemName="TableExtract" itemTag="/op:06" itemLabel="S_SERVICE" version="2.3.0" compositeDefID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableExtract" sourceVirtualTable="/0/@operatorMap.0/@value/@rdbTable/@result">
+        <outputPortMap key="output">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableExtract::output::output" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableSelect::output::output" itemName="output" itemTag="/op:06/output:output:0" itemLabel="output" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" schema="/0/@operatorMap.0/@value/@columnExpressions/@result" toLink="/0/@linkList.0">
+            <changeParamTable key="/prop:columnExpressions">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:columnExpressions" paramName="columnExpressions" paramType="property" subParamID="35" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@columnExpressions" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@columnExpressions/@result"/>
+            </changeParamTable>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <TableSourceSampleData iD="25" itemName="TableSourceSampleData" itemTag="/op:06/prop:TableSourceSampleData" hidden="true" itemType="DebugSampleTypes"/>
+        <TableSourceSampleData_firstdata iD="26" itemName="TableSourceSampleData_firstdata" itemTag="/op:06/prop:TableSourceSampleData_firstdata" enabled="false" hidden="true" itemType="Integer" EInt="200"/>
+        <reservedValueByUser iD="27" itemName="reservedValueByUser" itemTag="/op:06/prop:reservedValueByUser" hidden="true" EString="SYSGENERATED_INIT"/>
+        <SampleData iD="28" itemName="SampleData" itemTag="/op:06/prop:SampleData" hidden="true" itemType="DebugSampleTypes"/>
+        <SampleData_firstdata iD="29" itemName="SampleData_firstdata" itemTag="/op:06/prop:SampleData_firstdata" hidden="true" itemType="Integer"/>
+        <SampleData_Randomdata iD="30" itemName="SampleData_Randomdata" itemTag="/op:06/prop:SampleData_Randomdata" enabled="false" hidden="true" itemType="Double"/>
+        <accessMethod iD="31" itemName="accessMethod" itemTag="/op:06/prop:accessMethod" hidden="true" itemType="AccessMethod"/>
+        <samplingRate iD="32" itemName="samplingRate" itemTag="/op:06/prop:samplingRate" hidden="true" itemType="Double" EDouble="100.0"/>
+        <rdbTable iD="33" itemName="rdbTable" itemTag="/op:06/prop:rdbTable" hidden="true" itemType="DBTable" dbmFile="platform:/resource/CuramBIWarehouse/databases/CuramSTCore.dbm" dbmFileDbName="curamst" dbmFileSchemaName="DB2ADMIN" dbmFileTableName="S_SERVICE">
+          <instanceParams key="dbVendor">
+            <value xsi:type="dynOpr:EString" EString="DB2 UDB"/>
+          </instanceParams>
+          <instanceParams key="dbVersion">
+            <value xsi:type="dynOpr:EString" EString="V10.1"/>
+          </instanceParams>
+          <optionsMap key="OnlyAllowSQLObject" value="org.eclipse.datatools.modelbase.sql.tables.Table"/>
+          <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName" EString="DB2ADMIN">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+            </instanceParams>
+          </dbSchema>
+          <sqlObjRef xsi:type="LUW:LUWTable" href="../../databases/CuramSTCore.dbm#_knr4QCgWEeKPy_t7YrIFPQ"/>
+          <dbTable xsi:type="dynOpr:EString" itemName="tableName" itemLabel="Table name:" itemType="TableName" EString="S_SERVICE">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed table name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window. "/>
+            </instanceParams>
+          </dbTable>
+          <dbConnection xsi:type="dynOpr:DBServer" itemName="connection" itemLabel="Connection:" itemType="DBServer" value="curamst"/>
+          <result iD="" itemTag="/op:06/prop:rdbTable" name="S_SERVICE">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="SERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="DESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="SERVICECODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="CESSATIONREASONCD" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="CESSATIONREASONTXT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="STATUSCODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.7"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.8"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="TYPEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.9"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.10"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.0/@value/@rdbTable/@result/@columns.11"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName" EString="DB2ADMIN">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+            <partitionInfo type=""/>
+          </result>
+        </rdbTable>
+        <filterCondition iD="34" itemName="filterCondition" itemTag="/op:06/prop:filterCondition" hidden="true" itemType="Condition">
+          <changeParamTable key="/prop:rdbTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@rdbTable" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@rdbTable/@result"/>
+          </changeParamTable>
+        </filterCondition>
+        <columnExpressions iD="35" itemName="columnExpressions" itemTag="/op:06/prop:columnExpressions" hidden="true" itemType="ProjectExpression" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;SERVICEID&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;DESCRIPTION&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;SERVICECODE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;STARTDATE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;ENDDATE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;CESSATIONREASONCD&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;CESSATIONREASONTXT&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;STATUSCODE&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;COMMENTS&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;TYPEDESC&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;VERSIONNO&quot;,&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;LASTWRITTEN&quot;">
+          <changeParamTable key="/prop:rdbTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@rdbTable" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <result iD="COLUMNEXPRESSIONS_06" itemTag="/op:06/output:output:0" name="OUTPUT_06_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICEID" name="SERVICEID" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DESCRIPTION" name="DESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="CESSATIONREASONCD" name="CESSATIONREASONCD" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.5"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="CESSATIONREASONTXT" name="CESSATIONREASONTXT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.6"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STATUSCODE" name="STATUSCODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.7"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.8"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="TYPEDESC" name="TYPEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.9"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.10"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@expressionList.11"/>
+            </columns>
+            <partitionInfo type=""/>
+          </result>
+          <expressionList name="SERVICEID" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;SERVICEID&quot;" alias="SERVICEID">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="DESCRIPTION" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;DESCRIPTION&quot;" alias="DESCRIPTION">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="SERVICECODE" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;SERVICECODE&quot;" alias="SERVICECODE">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+          </expressionList>
+          <expressionList name="STARTDATE" virtualType="DATE" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;STARTDATE&quot;" alias="STARTDATE">
+            <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+          <expressionList name="ENDDATE" virtualType="DATE" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;ENDDATE&quot;" alias="ENDDATE">
+            <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+          </expressionList>
+          <expressionList name="CESSATIONREASONCD" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;CESSATIONREASONCD&quot;" alias="CESSATIONREASONCD">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+          </expressionList>
+          <expressionList name="CESSATIONREASONTXT" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;CESSATIONREASONTXT&quot;" alias="CESSATIONREASONTXT">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="STATUSCODE" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;STATUSCODE&quot;" alias="STATUSCODE">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+          </expressionList>
+          <expressionList name="COMMENTS" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;COMMENTS&quot;" alias="COMMENTS">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="TYPEDESC" virtualType="VARCHAR" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;TYPEDESC&quot;" alias="TYPEDESC">
+            <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+          </expressionList>
+          <expressionList name="VERSIONNO" virtualType="BIGINT" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;VERSIONNO&quot;" alias="VERSIONNO">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+          </expressionList>
+          <expressionList name="LASTWRITTEN" virtualType="TIMESTAMP" value="&quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;S_SERVICE&quot;.&quot;LASTWRITTEN&quot;" alias="LASTWRITTEN">
+            <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+          </expressionList>
+        </columnExpressions>
+        <sourceOPLabel iD="37" itemName="sourceOPLabel" itemTag="/op:06/prop:sourceOPLabel" hidden="true" itemType="ConcatString" stringVal="S_SERVICE" defaultVal="">
+          <changeParamTable key="/prop:rdbTable,concat">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="concat" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@rdbTable" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <optionsMap key="updateContainerLabel" value="true"/>
+        </sourceOPLabel>
+        <stagingTableName iD="38" itemName="stagingTableName" itemTag="/op:06/prop:stagingTableName" hidden="true"/>
+        <tableSpace iD="39" itemName="tableSpace" itemTag="/op:06/prop:tableSpace" hidden="true"/>
+        <tempTableSpace iD="40" itemName="tempTableSpace" itemTag="/op:06/prop:tempTableSpace" hidden="true"/>
+        <subsetVT iD="41" itemName="subsetVT" itemTag="/op:06/prop:subsetVT" hidden="true" itemType="VirtualTable"/>
+        <partitioningKeys iD="42" itemName="partitioningKeys" itemTag="/op:06/prop:partitioningKeys" hidden="true" itemType="SubSelect">
+          <changeParamTable key="/prop:rdbTable,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="mapFrom" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@rdbTable" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:subsetVT,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:subsetVT" paramName="subsetVT" paramType="property" paramUsage="mapTo" subParamID="41" paramValue="/0/@operatorMap.0/@value/@subsetVT" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@subsetVT"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <result iD="PARTITIONINGKEYS_06" itemTag="/op:06/prop:partitioningKeys" name="PARTITIONINGKEYS_06"/>
+          <mapFromTableList iD="S_SERVICE" itemTag="/prop:rdbTable" itemLabel="Table" name="S_SERVICE">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICEID" name="SERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DESCRIPTION" name="DESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CESSATIONREASONCD" name="CESSATIONREASONCD" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CESSATIONREASONTXT" name="CESSATIONREASONTXT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STATUSCODE" name="STATUSCODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="TYPEDESC" name="TYPEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName" EString="DB2ADMIN">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+          </mapFromTableList>
+          <mapToTableList iD="subsetVT" itemTag="/prop:subsetVT" itemLabel="Selected Keys:" name="subsetVT"/>
+        </partitioningKeys>
+        <subsetRangeVT iD="43" itemName="subsetRangeVT" itemTag="/op:06/prop:subsetRangeVT" hidden="true" itemType="VirtualTable"/>
+        <rangePartitioningKeys iD="44" itemName="rangePartitioningKeys" itemTag="/op:06/prop:rangePartitioningKeys" hidden="true" itemType="SubSelect">
+          <changeParamTable key="/prop:rdbTable,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:rdbTable" paramName="rdbTable" paramType="property" paramUsage="mapFrom" subParamID="33" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@rdbTable" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@rdbTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:subsetRangeVT,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:subsetRangeVT" paramName="subsetRangeVT" paramType="property" paramUsage="mapTo" subParamID="43" paramValue="/0/@operatorMap.0/@value/@subsetRangeVT" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@subsetRangeVT"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="allowReOrderMapToColumns" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <result iD="RANGEPARTITIONINGKEYS_06" itemTag="/op:06/prop:rangePartitioningKeys" name="RANGEPARTITIONINGKEYS_06"/>
+          <mapFromTableList iD="S_SERVICE" itemTag="/prop:rdbTable" itemLabel="Table" name="S_SERVICE">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICEID" name="SERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DESCRIPTION" name="DESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CESSATIONREASONCD" name="CESSATIONREASONCD" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CESSATIONREASONTXT" name="CESSATIONREASONTXT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STATUSCODE" name="STATUSCODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="TYPEDESC" name="TYPEDESC" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName" EString="DB2ADMIN">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+          </mapFromTableList>
+          <mapToTableList iD="subsetRangeVT" itemTag="/prop:subsetRangeVT" itemLabel="Selected Keys:" name="subsetRangeVT"/>
+        </rangePartitioningKeys>
+        <rangePartitionBoundary iD="45" itemName="rangePartitionBoundary" itemTag="/op:06/prop:rangePartitionBoundary" hidden="true"/>
+        <jdbcBatchSize iD="46" itemName="jdbcBatchSize" itemTag="/op:06/prop:jdbcBatchSize" hidden="true" itemType="Integer" EInt="1000"/>
+        <JDBCDriver iD="47" itemName="JDBCDriver" itemTag="/op:06/prop:JDBCDriver" hidden="true" EString="com.driver"/>
+        <DBURL iD="48" itemName="DBURL" itemTag="/op:06/prop:DBURL" hidden="true"/>
+        <DBType iD="49" itemName="DBType" itemTag="/op:06/prop:DBType" hidden="true" EString="DB2"/>
+        <UserName iD="50" itemName="UserName" itemTag="/op:06/prop:UserName" hidden="true"/>
+        <Password iD="51" itemName="Password" itemTag="/op:06/prop:Password" hidden="true"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="07">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/bi.oplib/Target/SCD" iD="07" definitionID="http:///com/ibm/datatools/etl/dataflow/bi.oplib/Target/SCD" itemName="SCD" itemTag="/op:07" itemComments="" itemLabel="DW_SERVICE" version="2.3.0">
+        <inputPortMap key="input">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/bi.oplib/Target/SCD::input::input" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/bi.oplib/Target/SCD::input::input" itemName="input" itemTag="/op:07/input:input:0" itemLabel="input" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.0">
+            <changeParamTable key="/op:06/output:output:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:06/output:output:0" paramName="output" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@outputPortMap.0/@value" paramParent="/0/@operatorMap.0/@value" paramVirtualTable="/0/@operatorMap.0/@value/@columnExpressions/@result"/>
+            </changeParamTable>
+            <ownedSchema iD="INPUT_07_0" itemTag="/op:07/input:input:0" name="INPUT_07_0">
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICEID" name="SERVICEID" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.0"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DESCRIPTION" name="DESCRIPTION" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.1"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.2"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+                <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.3"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+                <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.4"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="CESSATIONREASONCD" name="CESSATIONREASONCD" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.5"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="CESSATIONREASONTXT" name="CESSATIONREASONTXT" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.6"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="STATUSCODE" name="STATUSCODE" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.7"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.8"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="TYPEDESC" name="TYPEDESC" virtualType="VARCHAR">
+                <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.9"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.10"/>
+              </columns>
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+                <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+                <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.11"/>
+              </columns>
+              <partitionInfo type=""/>
+            </ownedSchema>
+            <stagingInfoList type="PERSISTENT_TABLE" mode="UPDATEABLE"/>
+          </value>
+        </inputPortMap>
+        <inputPortMap key="sequencecolumn">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/bi.oplib/Target/SCD::input::sequencecolumn" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/bi.oplib/Target/SCD::input::sequencecolumn" itemName="sequencecolumn" itemTag="/op:07/input:sequencecolumn:0" itemLabel="sequencecolumn" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.1/@value/@inputPortMap.1/@value/@ownedSchema">
+            <ownedSchema iD="sequence_input" itemTag="/op:07/input:sequencecolumn:0" itemLabel="" name="sequence_input">
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="" name="SEQUENCEVALUE" virtualType="INTEGER" value="SEQUENCEVALUE">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="INTEGER" primitiveType="INTEGER"/>
+                <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.2/@value/@outputPortMap.0/@value/@ownedSchema/@columns.0"/>
+              </columns>
+            </ownedSchema>
+            <stagingInfoList type="NONE"/>
+            <secondaryLinkMap key="/0/@operatorMap.2/@value/@outputPortMap.0/@value">
+              <value iD="010" definitionID="Link" hidden="true" fromPort="/0/@operatorMap.2/@value/@outputPortMap.0/@value">
+                <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.1/@value/@ownedSchema/@columns.0">
+                  <value fromCol="/0/@operatorMap.2/@value/@outputPortMap.0/@value/@ownedSchema/@columns.0" toCol="/0/@operatorMap.1/@value/@inputPortMap.1/@value/@ownedSchema/@columns.0"/>
+                </columnLinkTable>
+              </value>
+            </secondaryLinkMap>
+          </value>
+        </inputPortMap>
+        <reservedValueByUser iD="38" itemName="reservedValueByUser" itemTag="/op:07/prop:reservedValueByUser" hidden="true" EString="DW_SERVICE"/>
+        <scdType iD="39" itemName="scdType" itemTag="/op:07/prop:scdType" itemType="SCDType"/>
+        <dimensionTable iD="40" itemName="dimensionTable" itemTag="/op:07/prop:dimensionTable" itemType="DBTable" dbmFile="platform:/resource/CuramBIWarehouse/databases/CuramDWCore.dbm" dbmFileDbName="curamdw" dbmFileSchemaName="DB2ADMIN" dbmFileTableName="DW_SERVICE">
+          <instanceParams key="dbVendor">
+            <value xsi:type="dynOpr:EString" EString="DB2 UDB"/>
+          </instanceParams>
+          <instanceParams key="dbVersion">
+            <value xsi:type="dynOpr:EString" EString="V10.1"/>
+          </instanceParams>
+          <optionsMap key="OnlyAllowSQLObject" value="org.eclipse.datatools.modelbase.sql.tables.Table"/>
+          <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+            </instanceParams>
+          </dbSchema>
+          <sqlObjRef xsi:type="LUW:LUWTable" href="../../databases/CuramDWCore.dbm#_Fl20LSnCEeKVItlLKrEPfQ"/>
+          <dbTable xsi:type="dynOpr:EString" itemName="tableName" itemLabel="Table name:" itemType="TableName" EString="DW_SERVICE">
+            <instanceParams key="itemDescription">
+              <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed table name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window. "/>
+            </instanceParams>
+          </dbTable>
+          <dbConnection xsi:type="dynOpr:DBServer" itemName="connection" itemLabel="db.Connection" itemType="DBServer"/>
+          <result iD="DW_SERVICE" itemTag="/op:07/prop:dimensionTable" name="DW_SERVICE">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="DWSERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="SERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="SERVICETYPE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="SERVICECODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="RDBCOLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.4"/>
+            </columns>
+            <dbSchema xsi:type="dynOpr:EString" itemName="schemaName" itemLabel="Schema name:" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName">
+              <instanceParams key="itemDescription">
+                <value xsi:type="dynOpr:EString" EString="This field accepts either a fixed database schema name or a variable. To use a variable, click the variable icon, select Use Variable, click the ellipsis button (...), and create or select the variable in the Variable Selection window."/>
+              </instanceParams>
+            </dbSchema>
+            <partitionInfo type=""/>
+          </result>
+        </dimensionTable>
+        <naturalKeyColumns iD="41" itemName="naturalKeyColumns" itemTag="/op:07/prop:naturalKeyColumns" hidden="true" itemType="VirtualTable"/>
+        <carryOverUpdateColumns iD="42" itemName="carryOverUpdateColumns" itemTag="/op:07/prop:carryOverUpdateColumns" hidden="true" itemType="VirtualTable"/>
+        <surrogateKeyColumn iD="43" itemName="surrogateKeyColumn" itemTag="/op:07/prop:surrogateKeyColumn" hidden="true" itemType="VirtualColumn"/>
+        <comparisonColumns iD="44" itemName="comparisonColumns" itemTag="/op:07/prop:comparisonColumns" hidden="true" itemType="VirtualTable"/>
+        <startDateColumn iD="45" itemName="startDateColumn" itemTag="/op:07/prop:startDateColumn" hidden="true" itemType="VirtualColumn"/>
+        <endDateColumn iD="46" itemName="endDateColumn" itemTag="/op:07/prop:endDateColumn" hidden="true" itemType="VirtualColumn"/>
+        <sysStartDateColumn iD="47" itemName="sysStartDateColumn" itemTag="/op:07/prop:sysStartDateColumn" hidden="true" itemType="VirtualColumn"/>
+        <sysEndDateColumn iD="48" itemName="sysEndDateColumn" itemTag="/op:07/prop:sysEndDateColumn" hidden="true" itemType="VirtualColumn"/>
+        <dimColsClassification iD="49" itemName="dimColsClassification" itemTag="/op:07/prop:dimColsClassification" itemType="ColumnMap" defaultState="false">
+          <changeParamTable key="/prop:dimensionTable,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:dimensionTable" paramName="dimensionTable" paramType="property" paramUsage="mapFrom" subParamID="40" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@dimensionTable" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@dimensionTable/@result"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:naturalKeyColumns,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:naturalKeyColumns" paramName="naturalKeyColumns" paramType="property" paramUsage="mapTo" subParamID="41" paramValue="/0/@operatorMap.1/@value/@naturalKeyColumns" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@naturalKeyColumns"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:comparisonColumns,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:comparisonColumns" paramName="comparisonColumns" paramType="property" paramUsage="mapTo" subParamID="44" sortIdx="1" paramValue="/0/@operatorMap.1/@value/@comparisonColumns" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@comparisonColumns"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:carryOverUpdateColumns,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:carryOverUpdateColumns" paramName="carryOverUpdateColumns" paramType="property" paramUsage="mapTo" subParamID="42" sortIdx="2" paramValue="/0/@operatorMap.1/@value/@carryOverUpdateColumns" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@carryOverUpdateColumns"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:surrogateKeyColumn,mapTo">
+            <value paramID="/prop:surrogateKeyColumn" paramName="surrogateKeyColumn" paramType="property" paramUsage="mapTo" subParamID="43" sortIdx="3" paramValue="/0/@operatorMap.1/@value/@surrogateKeyColumn"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:startDateColumn,mapTo">
+            <value paramID="/prop:startDateColumn" paramName="startDateColumn" paramType="property" paramUsage="mapTo" subParamID="45" sortIdx="4" paramValue="/0/@operatorMap.1/@value/@startDateColumn"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:endDateColumn,mapTo">
+            <value paramID="/prop:endDateColumn" paramName="endDateColumn" paramType="property" paramUsage="mapTo" subParamID="46" sortIdx="5" paramValue="/0/@operatorMap.1/@value/@endDateColumn"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:sysStartDateColumn,mapTo">
+            <value paramID="/prop:sysStartDateColumn" paramName="sysStartDateColumn" paramType="property" paramUsage="mapTo" subParamID="47" sortIdx="6" paramValue="/0/@operatorMap.1/@value/@sysStartDateColumn"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:sysEndDateColumn,mapTo">
+            <value paramID="/prop:sysEndDateColumn" paramName="sysEndDateColumn" paramType="property" paramUsage="mapTo" subParamID="48" sortIdx="7" paramValue="/0/@operatorMap.1/@value/@sysEndDateColumn"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="showMapToColumn" value="false"/>
+          <optionsMap key="allowMapToExpressions" value="false"/>
+          <optionsMap key="allowAddingMapToColumns" value="true"/>
+          <result iD="DIMCOLSCLASSIFICATION_07" itemTag="/op:07/prop:dimColsClassification" name="DIMCOLSCLASSIFICATION_07">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICEID" name="SERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.1"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICETYPE" name="SERVICETYPE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.4"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWSERVICEID" name="DWSERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@dimensionTable/@result/@columns.0"/>
+            </columns>
+          </result>
+          <mapFromTableList iD="DW_SERVICE" itemTag="/prop:dimensionTable" itemLabel="Dimension table" name="DW_SERVICE">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWSERVICEID" enabled="false" name="DWSERVICEID" nullable="false" virtualType="BIGINT" mappedToColList="/0/@operatorMap.1/@value/@dimColsClassification/@mapToTableList.3/@columns.0">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICEID" enabled="false" name="SERVICEID" nullable="false" virtualType="BIGINT" mappedToColList="/0/@operatorMap.1/@value/@dimColsClassification/@mapToTableList.0/@columns.0">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICETYPE" enabled="false" name="SERVICETYPE" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.1/@value/@dimColsClassification/@mapToTableList.1/@columns.0">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICECODE" enabled="false" name="SERVICECODE" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.1/@value/@dimColsClassification/@mapToTableList.1/@columns.1">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" enabled="false" name="LASTWRITTEN" virtualType="TIMESTAMP" mappedToColList="/0/@operatorMap.1/@value/@dimColsClassification/@mapToTableList.1/@columns.2">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+          </mapFromTableList>
+          <mapToTableList iD="naturalKeyColumns" itemTag="/prop:naturalKeyColumns" itemLabel="Natural Key Columns" name="naturalKeyColumns">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICEID" name="SERVICEID" nullable="false" virtualType="BIGINT" value="&quot;DW_SERVICE&quot;.&quot;SERVICEID&quot;" alias="SERVICEID">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@dimColsClassification/@mapFromTableList.0/@columns.1"/>
+            </columns>
+          </mapToTableList>
+          <mapToTableList iD="comparisonColumns" itemTag="/prop:comparisonColumns" itemLabel="Monitored Columns" name="comparisonColumns">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICETYPE" name="SERVICETYPE" virtualType="VARCHAR" value="&quot;DW_SERVICE&quot;.&quot;SERVICETYPE&quot;" alias="SERVICETYPE">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@dimColsClassification/@mapFromTableList.0/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR" value="&quot;DW_SERVICE&quot;.&quot;SERVICECODE&quot;" alias="SERVICECODE">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@dimColsClassification/@mapFromTableList.0/@columns.3"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP" value="&quot;DW_SERVICE&quot;.&quot;LASTWRITTEN&quot;" alias="LASTWRITTEN">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@dimColsClassification/@mapFromTableList.0/@columns.4"/>
+            </columns>
+          </mapToTableList>
+          <mapToTableList iD="carryOverUpdateColumns" itemTag="/prop:carryOverUpdateColumns" itemLabel="Carry-Over Update Columns" name="carryOverUpdateColumns"/>
+          <mapToTableList iD="surrogateKeyColumn" itemTag="/prop:surrogateKeyColumn" itemLabel="Surrogate Key Column" name="surrogateKeyColumn" expressionContainer="true" maxCols="1">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWSERVICEID" name="DWSERVICEID" nullable="false" virtualType="BIGINT" value="&quot;DW_SERVICE&quot;.&quot;DWSERVICEID&quot;" alias="DWSERVICEID">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@dimColsClassification/@mapFromTableList.0/@columns.0"/>
+            </columns>
+          </mapToTableList>
+          <mapToTableList iD="startDateColumn" itemTag="/prop:startDateColumn" itemLabel="Business Start Date Column" name="startDateColumn" expressionContainer="true" maxCols="1"/>
+          <mapToTableList iD="endDateColumn" itemTag="/prop:endDateColumn" itemLabel="Business End Date Column" name="endDateColumn" expressionContainer="true" maxCols="1"/>
+          <mapToTableList iD="sysStartDateColumn" itemTag="/prop:sysStartDateColumn" itemLabel="System Start Date Column (Optional)" name="sysStartDateColumn" expressionContainer="true" maxCols="1"/>
+          <mapToTableList iD="sysEndDateColumn" itemTag="/prop:sysEndDateColumn" itemLabel="System End Date Column (Optional)" name="sysEndDateColumn" expressionContainer="true" maxCols="1"/>
+        </dimColsClassification>
+        <inputToDimensionTableMap iD="50" itemName="inputToDimensionTableMap" itemTag="/op:07/prop:inputToDimensionTableMap" itemType="ColumnMap" defaultState="false">
+          <changeParamTable key="/input:input:0,mapFrom">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:input:0" paramName="input" paramType="input" paramUsage="mapFrom" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:dimensionTable,mapTo">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:dimensionTable" paramName="dimensionTable" paramType="property" paramUsage="mapTo" subParamID="40" paramValue="/0/@operatorMap.1/@value/@dimensionTable" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@dimensionTable/@result"/>
+          </changeParamTable>
+          <optionsMap key="allowMapToColumns" value="true"/>
+          <optionsMap key="resultProduced" value="true"/>
+          <optionsMap key="mapFromExclusiveAssignment" value="true"/>
+          <optionsMap key="showMapToColumn" value="true"/>
+          <optionsMap key="allowMapToExpressions" value="false"/>
+          <result iD="INPUTTODIMENSIONTABLEMAP_07" itemTag="/op:07/prop:inputToDimensionTableMap" name="INPUTTODIMENSIONTABLEMAP_07">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="DWSERVICEID" name="DWSERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICEID" name="SERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICETYPE" name="SERVICETYPE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.9"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:VirtualColumn" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="COLUMN" srcRef="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.11"/>
+            </columns>
+          </result>
+          <mapFromTableList iD="INPUT_07_0" itemTag="/input:input:0" itemLabel="Available Input Columns" name="INPUT_07_0">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICEID" enabled="false" name="SERVICEID" virtualType="BIGINT" mappedToColList="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapToTableList.0/@columns.1">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DESCRIPTION" name="DESCRIPTION" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICECODE" enabled="false" name="SERVICECODE" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapToTableList.0/@columns.3">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STARTDATE" name="STARTDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="ENDDATE" name="ENDDATE" virtualType="DATE">
+              <containedType xsi:type="SQLDataTypes:DateDataType" name="DATE" primitiveType="DATE"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CESSATIONREASONCD" name="CESSATIONREASONCD" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="CESSATIONREASONTXT" name="CESSATIONREASONTXT" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="STATUSCODE" name="STATUSCODE" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="COMMENTS" name="COMMENTS" virtualType="VARCHAR">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="TYPEDESC" enabled="false" name="TYPEDESC" virtualType="VARCHAR" mappedToColList="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapToTableList.0/@columns.2">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="VERSIONNO" name="VERSIONNO" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" enabled="false" name="LASTWRITTEN" virtualType="TIMESTAMP" mappedToColList="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapToTableList.0/@columns.4">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+            </columns>
+            <partitionInfo type=""/>
+          </mapFromTableList>
+          <mapToTableList iD="DW_SERVICE" itemTag="/prop:dimensionTable" itemLabel="DimensionTable" name="DW_SERVICE">
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="DWSERVICEID" name="DWSERVICEID" nullable="false" virtualType="BIGINT">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICEID" name="SERVICEID" nullable="false" virtualType="BIGINT" value="&quot;INPUT_07_0&quot;.&quot;SERVICEID&quot;">
+              <containedType xsi:type="SQLDataTypes:IntegerDataType" name="BIGINT" primitiveType="BIGINT"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapFromTableList.0/@columns.0"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICETYPE" name="SERVICETYPE" virtualType="VARCHAR" value="&quot;INPUT_07_0&quot;.&quot;TYPEDESC&quot;">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="2000"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapFromTableList.0/@columns.9"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="SERVICECODE" name="SERVICECODE" virtualType="VARCHAR" value="&quot;INPUT_07_0&quot;.&quot;SERVICECODE&quot;">
+              <containedType xsi:type="SQLDataTypes:CharacterStringDataType" name="VARCHAR" primitiveType="CHARACTER_VARYING" length="240"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapFromTableList.0/@columns.2"/>
+            </columns>
+            <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="LASTWRITTEN" name="LASTWRITTEN" virtualType="TIMESTAMP" value="&quot;INPUT_07_0&quot;.&quot;LASTWRITTEN&quot;">
+              <containedType xsi:type="SQLDataTypes:TimeDataType" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+              <sourceRef kind="EXPRESSION" srcRef="/0/@operatorMap.1/@value/@inputToDimensionTableMap/@mapFromTableList.0/@columns.11"/>
+            </columns>
+          </mapToTableList>
+        </inputToDimensionTableMap>
+        <surrogateKeyExpression iD="51" itemName="surrogateKeyExpression" itemTag="/op:07/prop:surrogateKeyExpression" itemType="Expression">
+          <changeParamTable key="/input:input:0">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/input:input:0" paramName="input" paramType="input" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@inputPortMap.0/@value" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema"/>
+          </changeParamTable>
+          <changeParamTable key="/prop:dimensionTable">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:dimensionTable" paramName="dimensionTable" paramType="property" subParamID="40" paramValue="/0/@operatorMap.1/@value/@dimensionTable" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@dimensionTable/@result"/>
+          </changeParamTable>
+        </surrogateKeyExpression>
+        <validationRigor iD="52" itemName="validationRigor" itemTag="/op:07/prop:validationRigor" hidden="true"/>
+        <endDateValue iD="53" itemName="endDateValue" itemTag="/op:07/prop:endDateValue" EString="12/31/9999"/>
+        <sourceOPLabel iD="54" itemName="sourceOPLabel" itemTag="/op:07/prop:sourceOPLabel" hidden="true" itemType="ConcatString" stringVal="DW_SERVICE" defaultVal="">
+          <changeParamTable key="/prop:dimensionTable,concat">
+            <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/prop:dimensionTable" paramName="dimensionTable" paramType="property" paramUsage="concat" subParamID="40" sortIdx="-1" paramValue="/0/@operatorMap.1/@value/@dimensionTable" paramParent="/0/@operatorMap.1/@value" paramVirtualTable="/0/@operatorMap.1/@value/@dimensionTable/@result"/>
+          </changeParamTable>
+          <optionsMap key="updateContainerLabel" value="true"/>
+        </sourceOPLabel>
+      </value>
+    </operatorMap>
+    <operatorMap key="09">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Transform/Sequencer" iD="09" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Transform/Sequencer" itemName="Sequencer" itemTag="/op:09" itemLabel="Sequence_09" version="2.3.0">
+        <outputPortMap key="output">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/dataflow/core.oplib/Transform/Sequencer::output::output" iD="0" definitionID="http:///com/ibm/datatools/etl/dataflow/core.oplib/Transform/Sequencer::output::output" itemName="output" itemTag="/op:09/output:output:0" itemLabel="output" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.2/@value/@outputPortMap.0/@value/@ownedSchema" columnLevel="true" toLink="/0/@operatorMap.1/@value/@inputPortMap.1/@value/@secondaryLinkMap.0/@value">
+            <ownedSchema iD="sequencer_schema" itemTag="/op:09/output:output:0" itemLabel="" name="sequencer_schema">
+              <columns xsi:type="com.ibm.datatools.etl.coretypes:Expression" itemLabel="" name="NEXTVAL" virtualType="INTEGER" value="NEXT VALUE FOR &quot;${SchemaNames/CuramBISchemaName}&quot;.&quot;DWSERVICESEQ&quot;">
+                <containedType xsi:type="SQLDataTypes:IntegerDataType" name="INTEGER" primitiveType="INTEGER"/>
+              </columns>
+            </ownedSchema>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <sequence iD="22" itemName="sequence" itemTag="/op:09/prop:sequence" itemType="SequenceType">
+          <Sequence name="DWSERVICESEQ">
+            <containedType xsi:type="SQLDataTypes:IntegerDataType" name="INTEGER" primitiveType="INTEGER"/>
+            <identity xsi:type="DB2Model:DB2IdentitySpecifier" generationType="ALWAYS_GENERATED" startValue="1" increment="1" minimum="1" maximum="2147483647" cache="1"/>
+          </Sequence>
+        </sequence>
+        <seqSchema iD="23" itemName="seqSchema" itemTag="/op:09/prop:seqSchema" variableChosen="true" assignedVariableID="${SchemaNames/CuramBISchemaName}" itemType="SchemaName" EString="${SchemaNames/CuramBISchemaName}"/>
+      </value>
+    </operatorMap>
+    <eventManager>
+      <causeToDependentsLookup value="/0/@operatorMap.0/@value/@outputPortMap.0/@value" key="/0/@operatorMap.0/@value/@columnExpressions"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@surrogateKeyExpression /0/@operatorMap.1/@value/@inputToDimensionTableMap" key="/0/@operatorMap.1/@value/@inputPortMap.0/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@surrogateKeyExpression /0/@operatorMap.1/@value/@sourceOPLabel /0/@operatorMap.1/@value/@dimColsClassification /0/@operatorMap.1/@value/@inputToDimensionTableMap" key="/0/@operatorMap.1/@value/@dimensionTable"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@inputPortMap.0/@value" key="/0/@operatorMap.0/@value/@outputPortMap.0/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@naturalKeyColumns"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@comparisonColumns"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@carryOverUpdateColumns"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@surrogateKeyColumn"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@startDateColumn"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@endDateColumn"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@sysStartDateColumn"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@dimColsClassification" key="/0/@operatorMap.1/@value/@sysEndDateColumn"/>
+      <causeToDependentsLookup value="/0/@operatorMap.0/@value/@filterCondition /0/@operatorMap.0/@value/@columnExpressions /0/@operatorMap.0/@value/@sourceOPLabel /0/@operatorMap.0/@value/@partitioningKeys /0/@operatorMap.0/@value/@rangePartitioningKeys" key="/0/@operatorMap.0/@value/@rdbTable"/>
+      <dependentToCausesLookup value="/0/@operatorMap.0/@value/@outputPortMap.0/@value" key="/0/@operatorMap.1/@value/@inputPortMap.0/@value"/>
+    </eventManager>
+    <linkList xsi:type="dynOpr:Link" iD="08" definitionID="Link" itemTag="/link:08" toPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.0/@value/@outputPortMap.0/@value">
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.0" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.0"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.1">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.1" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.1"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.2" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.2"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.3">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.3" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.3"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.4">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.4" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.4"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.5">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.5" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.5"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.6" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.6"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.7">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.7" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.7"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.8">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.8" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.8"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.9">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.9" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.9"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.10">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.10" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.10"/>
+      </columnLinkTable>
+      <columnLinkTable key="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.11">
+        <value fromCol="/0/@operatorMap.0/@value/@columnExpressions/@result/@columns.11" toCol="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema/@columns.11"/>
+      </columnLinkTable>
+    </linkList>
+    <sqlExecutionSchema iD="34" itemName="sqlExecutionSchema" variableChosen="true" assignedVariableID="IWSCHEMA${RESERVED/RUN_ID}" itemType="SchemaName"/>
+    <sqlExecutionDB iD="35" itemName="sqlExecutionDB" itemType="DBServer" value="curamdw">
+      <instanceParams key="executionDBTypeOnly">
+        <value xsi:type="dynOpr:EString" EString="true"/>
+      </instanceParams>
+    </sqlExecutionDB>
+    <tableSpace iD="36" itemName="tableSpace"/>
+    <tempTableSpace iD="37" itemName="tempTableSpace"/>
+    <useDPF iD="38" itemName="useDPF" itemType="Boolean" EBoolean="true"/>
+    <breakPoints iD="39" itemName="breakPoints" hidden="true"/>
+    <tempStagingTablePrefix iD="41" itemName="tempStagingTablePrefix" itemTag="/prop:tempStagingTablePrefix" variableChosen="true" assignedVariableID="IWTEMP${RESERVED/RUN_ID}"/>
+    <enableCodegenOptimization iD="42" itemName="enableCodegenOptimization" itemTag="/prop:enableCodegenOptimization" itemType="Boolean" EBoolean="true"/>
+    <enableCodegenDistributedOptimization iD="43" itemName="enableCodegenDistributedOptimization" itemTag="/prop:enableCodegenDistributedOptimization" itemType="Boolean" EBoolean="true"/>
+    <enableAggressiveOptim4RemoteOperator iD="44" itemName="enableAggressiveOptim4RemoteOperator" itemTag="/prop:enableAggressiveOptim4RemoteOperator" itemType="Boolean"/>
+    <useGlobalDeclaredTableAsStaging iD="45" itemName="useGlobalDeclaredTableAsStaging" itemTag="/prop:useGlobalDeclaredTableAsStaging" itemType="Boolean" EBoolean="true"/>
+    <enableRowCompression iD="46" itemName="enableRowCompression" itemTag="/prop:enableRowCompression" itemType="Boolean"/>
+  </dynOpr:DefaultDataFlow>
+  <com.ibm.datatools.etl.dataflow.view:ETLFlow>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="842" y="256" height="-1" width="-1" type="http:///com/ibm/datatools/etl/dataflow/bi.oplib/Target/SCD" operator="/0/@operatorMap.1/@value">
+      <inputs incomingConnection="/1/@elements.3" operatorPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value">
+        <fields name="SERVICEID">
+          <input incomingConnection="/1/@elements.3/@elements.10"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="DESCRIPTION">
+          <input incomingConnection="/1/@elements.3/@elements.5"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="SERVICECODE">
+          <input incomingConnection="/1/@elements.3/@elements.4"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input incomingConnection="/1/@elements.3/@elements.9"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input incomingConnection="/1/@elements.3/@elements.11"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="CESSATIONREASONCD">
+          <input incomingConnection="/1/@elements.3/@elements.6"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="CESSATIONREASONTXT">
+          <input incomingConnection="/1/@elements.3/@elements.0"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="STATUSCODE">
+          <input incomingConnection="/1/@elements.3/@elements.7"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="COMMENTS">
+          <input incomingConnection="/1/@elements.3/@elements.1"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="TYPEDESC">
+          <input incomingConnection="/1/@elements.3/@elements.8"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="VERSIONNO">
+          <input incomingConnection="/1/@elements.3/@elements.2"/>
+          <output type="OutputPort"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input incomingConnection="/1/@elements.3/@elements.3"/>
+          <output type="OutputPort"/>
+        </fields>
+      </inputs>
+      <inputs operatorPort="/0/@operatorMap.1/@value/@inputPortMap.1/@value">
+        <secondaryOpConnections xsi:type="com.ibm.datatools.etl.dataflow.view:SecondaryETLOperatorConnection" source="/1/@elements.1/@outputs.0" operatorLink="/0/@operatorMap.1/@value/@inputPortMap.1/@value/@secondaryLinkMap.0/@value">
+          <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.1/@outputs.0/@fields.0/@output" target="/1/@elements.0/@inputs.1/@fields.0/@input"/>
+        </secondaryOpConnections>
+        <fields name="SEQUENCEVALUE">
+          <input incomingConnection="/1/@elements.0/@inputs.1/@secondaryOpConnections.0/@elements.0"/>
+          <output type="OutputPort"/>
+        </fields>
+      </inputs>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="526" y="459" height="-1" width="-1" type="http:///com/ibm/datatools/etl/dataflow/core.oplib/Transform/Sequencer" operator="/0/@operatorMap.2/@value">
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.0/@inputs.1/@secondaryOpConnections.0" operatorPort="/0/@operatorMap.2/@value/@outputPortMap.0/@value">
+        <fields name="NEXTVAL">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.0/@inputs.1/@secondaryOpConnections.0/@elements.0"/>
+        </fields>
+      </outputs>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="384" y="234" height="-1" width="-1" type="http:///com/ibm/datatools/etl/dataflow/core.oplib/Extract/DBSources/TableSelect" operator="/0/@operatorMap.0/@value">
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.3" operatorPort="/0/@operatorMap.0/@value/@outputPortMap.0/@value">
+        <fields name="SERVICEID">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.10"/>
+        </fields>
+        <fields name="DESCRIPTION">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.5"/>
+        </fields>
+        <fields name="SERVICECODE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.4"/>
+        </fields>
+        <fields name="STARTDATE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.9"/>
+        </fields>
+        <fields name="ENDDATE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.11"/>
+        </fields>
+        <fields name="CESSATIONREASONCD">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.6"/>
+        </fields>
+        <fields name="CESSATIONREASONTXT">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.0"/>
+        </fields>
+        <fields name="STATUSCODE">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.7"/>
+        </fields>
+        <fields name="COMMENTS">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.1"/>
+        </fields>
+        <fields name="TYPEDESC">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.8"/>
+        </fields>
+        <fields name="VERSIONNO">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.2"/>
+        </fields>
+        <fields name="LASTWRITTEN">
+          <input/>
+          <output type="OutputPort" outgoingConnections="/1/@elements.3/@elements.3"/>
+        </fields>
+      </outputs>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.2/@outputs.0" target="/1/@elements.0/@inputs.0" operatorLink="/0/@linkList.0">
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.6/@output" target="/1/@elements.0/@inputs.0/@fields.6/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.8/@output" target="/1/@elements.0/@inputs.0/@fields.8/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.10/@output" target="/1/@elements.0/@inputs.0/@fields.10/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.11/@output" target="/1/@elements.0/@inputs.0/@fields.11/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.2/@output" target="/1/@elements.0/@inputs.0/@fields.2/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.1/@output" target="/1/@elements.0/@inputs.0/@fields.1/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.5/@output" target="/1/@elements.0/@inputs.0/@fields.5/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.7/@output" target="/1/@elements.0/@inputs.0/@fields.7/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.9/@output" target="/1/@elements.0/@inputs.0/@fields.9/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.3/@output" target="/1/@elements.0/@inputs.0/@fields.3/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.0/@output" target="/1/@elements.0/@inputs.0/@fields.0/@input"/>
+      <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLConnection" source="/1/@elements.2/@outputs.0/@fields.4/@output" target="/1/@elements.0/@inputs.0/@fields.4/@input"/>
+    </elements>
+  </com.ibm.datatools.etl.dataflow.view:ETLFlow>
+</xmi:XMI>

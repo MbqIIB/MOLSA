@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This jsp redirects the user to the View PlanItem Page.-->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_resolveServiceUnitDeliveryPage"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+                 
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String plannedItemID = request.getParameter("plannedItemID");
+      String deliveryDate = request.getParameter("deliveryDate");
+      
+      String url = "";
+  
+      if (plannedItemID == null) {
+
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "plannedItemID");
+       System.out.println(e);
+       throw e;
+
+      }
+      
+      curam.interfaces.ProviderServicePlanDeliveryPkg.ProviderServicePlanDelivery_checkPlannedItemType_TH
+      th = new curam.interfaces.ProviderServicePlanDeliveryPkg.ProviderServicePlanDelivery_checkPlannedItemType_TH();
+   
+      th.setFieldValue(th.plannedItemKey$plannedItemID_idx,plannedItemID);
+
+      th.callServer();
+     
+     String isServiceCustomService = th.getFieldValue(th.result$isServiceCustomService_idx);
+     String description = th.getFieldValue(th.result$description_idx);
+
+     if(isServiceCustomService.equals("true")) {
+     url = context + "ServicePlanDelivery_listClientParticipationForServicePlanItemPage.do?plannedItemID=" + curam.omega3.request.RequestUtils.escapeURL(plannedItemID) + "&amp;description=" + curam.omega3.request.RequestUtils.escapeURL(description);
+
+     }else {
+     url = context + "ServicePlanDelivery_listServiceUnitDeliveryPage.do?plannedItemID=" + curam.omega3.request.RequestUtils.escapeURL(plannedItemID) + "&amp;deliveryDate=" + curam.omega3.request.RequestUtils.escapeURL(deliveryDate);
+
+     }
+
+
+      url += "&amp;" + rh.getSystemParameters();
+
+      response.sendRedirect(response.encodeRedirectURL(url));
+
+      
+  </JSP_SCRIPTLET>
+</PAGE>

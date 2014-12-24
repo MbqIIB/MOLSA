@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the list  provider group members  page  -->
+<!-- BEGIN, CR00273116, GP -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listPlace"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00273116 -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewCompartment"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewCompartment">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPlaces"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPlace">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_PARAMETER NAME="compartmentID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- BEGIN, CR00260584, GYH -->
+  <!-- BEGIN, CR00273116, GP -->
+  <SERVER_INTERFACE
+    CLASS="Place"
+    NAME="DISPLAY"
+    OPERATION="listAllCompartmentPlaces"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00273116 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$compartmentID"
+    />
+  </CONNECT>
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00228688, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createPlace"
+      >
+        <!-- END, CR00228688 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <LIST>
+    <!-- BEGIN, CR00228688, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00234497, PS -->
+        <!-- BEGIN, CR00273116, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editInd"
+          >            
+          </IS_TRUE>
+        </CONDITION>
+        <!-- END, CR00273116 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyPlace"
+        >
+          <!-- END, CR00234497 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00234497, PS -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.MarkOutOfuse"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00273116, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="markOutOfInd"
+          >            
+          </IS_TRUE>
+        </CONDITION>
+        <!-- END, CR00273116 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_markPlaceOutOfUse"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.MarkInUse"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00273116, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="markForUseInd"
+          >            
+          </IS_TRUE>
+        </CONDITION>
+        <!-- END, CR00273116 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_markPlaceInUse"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Delete"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00273116, GP -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="deleteInd"
+          >            
+          </IS_TRUE>
+        </CONDITION>
+        <!-- END, CR00273116 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelPlace"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00234497 -->
+
+
+    </ACTION_SET>
+    <!-- END, CR00228688 -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="derivedPlaceStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00228688, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewPlace">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="placeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00228688 -->
+  </LIST>
+  <!-- END, CR00260584 -->
+</PAGE>

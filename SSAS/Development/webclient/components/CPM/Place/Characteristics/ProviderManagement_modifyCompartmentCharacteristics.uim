@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2007-2008, 2010-2011 Curam Software Ltd.                    -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!--	       This page allows the user to modify compartment characteristics of provider facility.  -->
+<!-- BEGIN, CR00377575, PS -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyCompartmentCharacteristics"
+  WINDOW_OPTIONS="width=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00377575 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="DISPLAY"
+    OPERATION="getPlacementCharacteristicDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="VIEW_DISPLAY"
+    OPERATION="viewCompartmentCharacteristic"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="ACTION"
+    OPERATION="updateCompartmentCharacteristic"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="compartmentID"/>
+  <PAGE_PARAMETER NAME="compartmentCharacteristicID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$compartmentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentCharacteristicID"
+    />
+    <TARGET
+      NAME="VIEW_DISPLAY"
+      PROPERTY="key$characteristicID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="updatePlacementCharDetails$placementCharacteristic$compartmentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentCharacteristicID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="updatePlacementCharDetails$placementCharacteristic$characteristicID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="updatePlacementCharDetails$placementCharacteristic$versionNo"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save1"
+      TYPE="SUBMIT"
+    >
+        </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >                
+        </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00235192, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00235192 -->
+
+
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.MinimumAge">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$minimumAge"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="updatePlacementCharDetails$placementCharacteristic$minimumAge"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.Gender"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$genderList$genderDetailsList$genderCode"
+          NAME="DISPLAY"
+          PROPERTY="result$genderList$genderDetailsList$genderDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="result$placementCharDetails$genderTypeCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="updatePlacementCharDetails$genderTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00198774, RPB -->
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.StartDate">
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="startDateTime"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198774 -->
+
+
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.SameLanguage">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$sameLanguageType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="updatePlacementCharDetails$placementCharacteristic$sameLanguageType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.SameGang">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$sameGangType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="updatePlacementCharDetails$placementCharacteristic$sameGangType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.MaximumAge">
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$maximumAge"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="updatePlacementCharDetails$placementCharacteristic$maximumAge"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.Service"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$serviceList$providerOfferingSummaryDetails$providerOfferingID"
+          NAME="DISPLAY"
+          PROPERTY="result$serviceList$providerOfferingSummaryDetails$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$providerOfferingID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="updatePlacementCharDetails$placementCharacteristic$providerOfferingID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00198774, RPB -->
+    <!-- BEGIN, CR00248428, GP -->
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.EndDate"
+      WIDTH="100"
+    >
+      <!-- END, CR00248428 -->
+      <CONNECT>
+        <SOURCE
+          NAME="VIEW_DISPLAY"
+          PROPERTY="endDateTime"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198774 -->
+
+
+    <!-- BEGIN, CR00351356, SS -->
+    <CLUSTER>
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="ethnicityIndicatorOpt"
+        />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.CompartmentCharacteristics.SameEthnicity">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DISPLAY"
+            PROPERTY="result$placementCharDetails$placementCharacteristic$sameEthinicityType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="updatePlacementCharDetails$placementCharacteristic$sameEthinicityType"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER>
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="religionIndicatorOpt"
+        />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.CompartmentCharacteristics.SameReligion">
+        <CONNECT>
+          <SOURCE
+            NAME="VIEW_DISPLAY"
+            PROPERTY="result$placementCharDetails$placementCharacteristic$sameReligionType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="updatePlacementCharDetails$placementCharacteristic$sameReligionType"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- END, CR00351356 -->
+  </CLUSTER>
+</PAGE>

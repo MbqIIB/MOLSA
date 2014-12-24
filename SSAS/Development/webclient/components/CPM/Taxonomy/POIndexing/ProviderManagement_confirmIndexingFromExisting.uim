@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to remove a taxonomy term from related concept.-->
+<PAGE
+  PAGE_ID="ProviderManagement_confirmIndexingFromExisting"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerOfferingID"/>
+  <PAGE_PARAMETER NAME="indexedTerms"/>
+  <PAGE_PARAMETER NAME="oldIndexedIDs"/>
+  <PAGE_PARAMETER NAME="indexedTermID"/>
+  <PAGE_PARAMETER NAME="confirmationString"/>
+  <PAGE_PARAMETER NAME="providerID"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="selectedTerms"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="ACTION"
+    OPERATION="createTaxonomyIndex"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="DISPLAY"
+    OPERATION="confirmIndexing"
+    PHASE="DISPLAY"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerOfferingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="indexedTerms"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="indexedTerms"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="oldIndexedIDs"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="oldIndexedIDs"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="indexedTermID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="confirmationString"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="confirmationString"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerOfferingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="indexedTerms"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="indexedTerms"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="oldIndexedIDs"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="oldIndexedIDs"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="confirmationString"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="confirmationString"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.Label.POIndex.ConfirmationText"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewProviderServiceOffering">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addTermsToExistingPOIndex"
+      >
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="oldIndexedIDs"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="indexedTermIds"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="selectedTerms"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="selectedTerms"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

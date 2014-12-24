@@ -1,0 +1,189 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>PrecedentChangeSet</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Precedent Change Set
+
+
+:</b>
+<i>A set of changes to precedent data.
+
+
+</i>
+
+
+
+<P>When a client of the Dependency Manager identifies that data that may have been used in a calculation has changed, then that client can request that the Dependency Manager must identify and recalculate dependent values affected by the change.<P>
+
+
+
+<P>If the Dependency Manager is configured to defer the identification/recalculation work to another transaction (e.g. by enqueuing a deferred process request or by waiting until the Dependency Manager batch suite is next run), then the Dependency Manager must record the changed precedent data in a precedent change set.  Each precedent change set has a header record stored as a row on this entity.</P>
+
+
+
+<P>By default, most rows on this entity relate to precedent change sets which are processed in deferred processing.  However, at all times there is a single open precedent change set which records precedent change items to be processed in batch, as identified by the "open" record on the <a href=PrecedentChangeSetBatchCtrl.html>Precedent Change Set Batch Control</a> entity.</P>
+
+
+
+<P>Each precedent change set goes through this lifecycle as stored in the status attribute:</P>
+
+<UL>
+
+<LI>Open. The state of a precedent change set when it is initially created. In
+
+this state new precedent change items can be added to the precedent
+
+change set.</LI>
+
+<LI>Submitted. The precedent change set has been submitted into dependent-identfication processing. No more precedent change items can be added to the precedent change set.</LI>
+
+<LI>Complete. The recalculation of all dependents affected by the precedent
+
+changes has been completed. The precedent change set is kept for historical purposes only.</LI>
+
+</UL>
+
+
+
+
+
+<p><b>Example</b></p>
+<P>The Eligibility and Entitlement Engine identifies that a determination result for <a href=ProductDelivery.html>Product Delivery</a> 123 depends on:</P>
+
+<UL>
+
+<LI>data from the claimant's row on the <a href=Person.html>Person</a> entity;</LI>
+
+<LI>active evidence from the parent integrated case 122; and</LI>
+
+<LI>product configuration data stored on <a href=CREOLEProduct.html>CREOLE Product</a>.</LI>
+
+</UL>
+
+
+
+<P>Later, change of circumstances evidence is activated on integrated case 122, and the Eligibility and Entitlement Engine notifies the Dependency Manager that there has been a change to the precedent data of type "active evidence" for case 122.  The Dependency Manager:</P>
+
+<UL>
+
+<LI>stores a new row on this entity to open a new precedent change set;</LI>
+
+<LI>stores a 
+
+<a href=PrecedentChangeItem.html>Precedent Change Item</a> identifying the data that changed and  ties to the precedent change set row on this entity; and</LI>
+
+<LI>submits the precedent change set for deferred processing by enqueuing a deferred processing request and transitioning the status on the precedent change set from "Open" to "Submitted".</LI>
+
+</UL>
+
+
+
+<P>When the deferred processing request is later dequeued, the Dependency Manager uses the information in the precedent change set together with the <a href=Dependency.html>Dependency</a> rows to identify that <a href=ProductDelivery.html>Product Delivery</a> 123 must be reassessed.  After triggering reassessment for the case, the Dependency Manager closes the precedent change set by transitioning the status on the row from "Submitted" to "Closed".</P>
+
+
+
+<p><b>Technical Notes</b></p>
+
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  Custom DMX files and/or database scripts must not be used to populate this entity.  The DMX file for this entity included with the application MUST be used to create a row for the initial precedent change set required by the application.</P>
+
+
+
+<P>It is perfectly possible for the Dependency Manager to be notified of changes in data, where that data has never been used in any calculation, and thus the data is not identified as a precedent in any <a href=Dependency.html>Dependency</a> row.  In such circumstances the Dependency Manager will identify that no dependents are affected by the changes in data.</P>
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">precedentChangeSetID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique identifier of this record.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">status</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The status of this Precedent Change Set.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">createdDateTime</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The date and time that this Precedent Change Set was created.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">submittedDateTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time that this Precedent Change Set was submitted for processing, if any.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">completedDateTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time that this Precedent Change Set completed processing, if any.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="PrecedentChangeItem.html#precedentChangeSetID">PrecedentChangeItem.precedentChangeSetID</a></td><td class="dataLast">PrecedentChangeSet.precedentChangeSetID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="PrecedentChangeSetBatchCtrl.html#precedentChangeSetID">PrecedentChangeSetBatchCtrl.precedentChangeSetID</a></td><td class="dataLast">PrecedentChangeSet.precedentChangeSetID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="WMInstanceData.html#precedentChangeSetID">WMInstanceData.precedentChangeSetID</a></td><td class="dataLast">PrecedentChangeSet.precedentChangeSetID</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- Resolver to check if provider home or provider group home has to be     -->
+<!--  openend                                                                -->
+<PAGE
+  PAGE_ID="PME_resolveProviderProviderGroupHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+        
+        curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        
+        String url = "";
+
+        curam.interfaces.ExternalParticipantPkg.ExternalParticipant_readProviderProviderGroupID_TH th = 
+        new curam.interfaces.ExternalParticipantPkg.ExternalParticipant_readProviderProviderGroupID_TH();
+
+        th.callServer();
+        
+        String concernRoleID = th.getFieldValue(th.result$participantRoleID_idx);
+        String concernRoleType = th.getFieldValue(th.result$concernRoleType_idx);
+        
+        if (concernRoleType.equals("RL15")) {
+        url = context + "PME_providerHomePage.do?concernRoleID=" +curam.omega3.request.RequestUtils.escapeURL(concernRoleID) ;
+        } else {
+        url = context + "PME_providerGroupHomePage.do?concernRoleID=" +curam.omega3.request.RequestUtils.escapeURL(concernRoleID) ;
+        }
+
+        // BEGIN, CR00178057, GP
+        url += "&amp;" + rh.getSystemParameters();
+        // END, CR00178057
+         
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+        
+        
+    </JSP_SCRIPTLET>
+</PAGE>

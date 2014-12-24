@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find if attendance type of reporting is enabled.           -->
+<PAGE
+  PAGE_ID="PME_resolveViewRosterByProviderGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00258880, FM -->
+  <JSP_SCRIPTLET>
+
+        curam.omega3.request.RequestHandler
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+        String url = "";
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+
+        String concernRoleID = request.getParameter("concernRoleID");
+        String rosterID = request.getParameter("rosterID");
+
+        curam.interfaces.MaintainExternalRosterPkg.MaintainExternalRoster_isReportingMethodAttendance_TH
+        th = new curam.interfaces.MaintainExternalRosterPkg.MaintainExternalRoster_isReportingMethodAttendance_TH();
+
+        th.setFieldValue(th.rosterKey$rosterID_idx,rosterID);
+
+        th.callServer();
+
+        String reportingAttendance = th.getFieldValue(th.result$attendanceReportingIndicator_idx);
+
+        if (reportingAttendance.equals("true")) {
+        url = context + "PME_viewAttendanceRosterByProviderGroupPage.do?concernRoleID="
+        + curam.omega3.request.RequestUtils.escapeURL(concernRoleID)
+        + "&amp;rosterID=" + curam.omega3.request.RequestUtils.escapeURL(rosterID);
+        }else{
+        url = context + "PME_viewRosterByProviderGroupPage.do?concernRoleID="
+        + curam.omega3.request.RequestUtils.escapeURL(concernRoleID)
+        + "&amp;rosterID=" + curam.omega3.request.RequestUtils.escapeURL(rosterID);
+        }
+
+        url += "&amp;" + rh.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+
+    </JSP_SCRIPTLET>
+  <!-- END, CR00258880 -->
+</PAGE>

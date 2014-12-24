@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is to create member certification.                           -->
+<PAGE
+  PAGE_ID="ProviderManagement_createMemberCertification"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="partyConcernRoleID"/>
+  <PAGE_PARAMETER NAME="providerPartyID"/>
+  <PAGE_PARAMETER NAME="contextdescription"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainMemberCertification"
+    NAME="ACTION"
+    OPERATION="createMemberCertification"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="partyConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$partyConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerPartyID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerPartyID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00197352, SS -->
+  <!-- BEGIN, CR00247862, GP -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="1"
+  >
+    <!-- END, CR00247862 -->
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.CertificationType"
+      USE_BLANK="true"
+      WIDTH="90"
+    >
+      <!-- END, CR00197352 -->
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$certificationID"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233746, PS -->
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.DateofIssue"
+      WIDTH="35"
+    >
+      <!-- END, CR00233746 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$dateofIssue"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comment"
+  >
+
+
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417165 -->
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$comments"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    <!-- END, CR00233823 -->
+  </ACTION_SET>
+
+
+</PAGE>

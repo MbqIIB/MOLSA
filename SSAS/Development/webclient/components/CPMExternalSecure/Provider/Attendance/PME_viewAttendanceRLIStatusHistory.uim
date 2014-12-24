@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to list the roster line item history         -->
+<PAGE
+  PAGE_ID="PME_viewAttendanceRLIStatusHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewRosterLineItem"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="PME_viewAttendanceRosterLineItem">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.DailyAttendance"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$dailyAttendanceLinkInd"
+        />
+      </CONDITION>
+
+
+      <LINK PAGE_ID="PME_viewDailyAttendanceDetailsForReporting">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.DailyAttendanceHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$dailyAttendanceLinkInd"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="PME_viewDailyAttendanceHistoryForReporting">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.RosterLineItemHistory"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="PME_viewAttendanceRLIStatusHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="result$pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalProvider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainExternalRosterLineItem"
+    NAME="DISPLAY"
+    OPERATION="listHistoryForPRLI"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerRosterLineItemKey$providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <!-- BEGIN, CR00273450, ASN -->
+    <FIELD
+      LABEL="Field.Label.DateTimeChanged"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateTimeChanged"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CorrectionReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="correctionReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00273450 -->
+    <FIELD LABEL="Field.Label.DenialReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="denialReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CancellationReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="cancelationReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.Status">
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="status"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="isStatusDeniedInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="PME_viewAttendanceRLIModifications">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="prliHistoryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="prliHistoryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198609 -->
+  </LIST>
+</PAGE>

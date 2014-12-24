@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page edits the completed training program for a provider group member.-->
+<PAGE
+  PAGE_ID="ProviderManagement_updateCompletedTrainingProgramDetailsForProviderGroupMember"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="result$pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="DISPLAY"
+    OPERATION="viewMemberCompletedTrainingDetailsNotManagedByAgency"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="ACTION"
+    OPERATION="updateCompletedProviderGroupMemberTrainingProgram"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="DISPLAY1"
+    OPERATION="viewPerson"
+  />
+
+
+  <PAGE_PARAMETER NAME="trainingProgramID"/>
+  <PAGE_PARAMETER NAME="memberConcernRoleID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <PAGE_PARAMETER NAME="trainingProgramMemberID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="memberConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="personKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingProgramID"
+    />
+
+
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="result$trainingProgramID"
+    />
+
+
+  </CONNECT>
+
+
+  <CONNECT>
+
+
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="key$trainingProgramMemberID"
+    />
+
+
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$trainingProgramMemberID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$trainingProgramMemberVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$partyVersionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerOrganizationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingProgramMemberID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$trainingProgramMemberID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.DateCompleted"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dateCompleted"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dateCompleted"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitsCompleted">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$unitsCompleted"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$unitsCompleted"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

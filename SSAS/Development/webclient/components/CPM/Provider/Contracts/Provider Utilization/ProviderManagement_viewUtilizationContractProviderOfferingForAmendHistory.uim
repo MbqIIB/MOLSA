@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view all provider offerings for           -->
+<!-- an amended utilization contract.	                                    -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewUtilizationContractProviderOfferingForAmendHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractProviderOfferingLinkID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="contractPerformanceMeasureID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainContractPerformanceMeasure"
+    NAME="DISPLAY1"
+    OPERATION="listContractServicePerformanceMeaures"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="searchContractPMforService$contractVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="viewProviderOfferingByContractVersionProviderOffering"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="contractPOLinkID"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="List.Title.ProviderServicePlaceLimit">
+    <FIELD LABEL="Field.Label.PlaceLimit">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$placeLimit"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- Rates -->
+  <LIST TITLE="List.Title.ProviderOfferingRate">
+    <FIELD
+      LABEL="Field.Label.MinAmount"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerOfferingRateDetailsList$minAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.MaxAmount"
+      WIDTH="24"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerOfferingRateDetailsList$maxAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.FixedAmount"
+      WIDTH="22"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerOfferingRateDetailsList$fixedAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerOfferingRateDetailsList$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="15"
+    >
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerOfferingRateDetailsList$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="List.Title.PerformannceMeasure">
+    <FIELD
+      LABEL="Field.Label.Measure"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="measure"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Target"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="target"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

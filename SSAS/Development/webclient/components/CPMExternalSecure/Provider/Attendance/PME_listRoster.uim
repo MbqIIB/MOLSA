@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							    -->
+<!-- =========== 							    -->
+<!-- This page allows the user to list all the rosters for a  provider.	    -->
+<!-- BEGIN, CR00233623, ASN -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="PME_listRoster"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00233623 -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalProvider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00228142, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainExternalRoster"
+    NAME="DISPLAY"
+    OPERATION="listRosterDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00228142 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET BOTTOM="false">
+    <ACTION_CONTROL LABEL="ActionControl.Label.GenerateRoster">
+      <!-- BEGIN, CR00235318, GP -->
+      <!-- BEGIN, CR00291053, SS -->
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="true"
+        PAGE_ID="PME_generateRoster"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00235318 -->
+        <!-- END, CR00291053 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00228142, GP -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00235049, ASN -->
+        <!-- BEGIN, CR00246408, SSK -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="noLineItemsInd"
+          />
+        </CONDITION>
+        <!-- END, CR00246408 -->
+        <!-- END, CR00235049 -->
+        <LINK
+          OPEN_MODAL="true"
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="editActionURL"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="rosterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Submit">
+        <!-- BEGIN, CR00235049, ASN -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isRosterLineItemCancelledInd"
+          />
+        </CONDITION>
+        <!-- END, CR00235049 -->
+        <!-- BEGIN, CR00233623, ASN -->
+        <LINK
+          OPEN_MODAL="true"
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="submitActionURL"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00233623 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="rosterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddClient">
+        <!-- BEGIN, CR00235049, ASN -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isRosterLineItemCancelledInd"
+          />
+        </CONDITION>
+        <!-- END, CR00235049 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PME_addClientToRoster"
+          WINDOW_OPTIONS="width=625"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="rosterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00235049, ASN -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isRosterLineItemCancelledInd"
+          />
+        </CONDITION>
+        <!-- END, CR00235049 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="PME_deleteRoster"
+          WINDOW_OPTIONS="width=500"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="rosterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="rosterID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00235318, GP -->
+    <FIELD
+      LABEL="Field.Label.Roster.ReferenceNumber"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Roster.ServiceName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceName"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Roster.FromDate"
+      WIDTH="9"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Roster.ToDate"
+      WIDTH="9"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Roster.DateGenerated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateGenerated"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00228142 -->
+
+
+    <FIELD LABEL="Field.Label.Roster.DateSubmitted">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateSubmitted"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Roster.SubmissionDueDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="submissionDueDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Roster.Status"
+      WIDTH="8"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rosterDerivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235318 -->
+
+
+    <!-- BEGIN, CR00227646, GP -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="PME_resolveViewRoster">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="rosterID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="rosterID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00227646 -->
+
+
+  </LIST>
+
+
+</PAGE>

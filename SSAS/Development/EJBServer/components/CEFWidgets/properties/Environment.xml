@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE environment [
+  <!ELEMENT comment (#PCDATA)>
+  <!ELEMENT doccomment (#PCDATA)>
+  <!ELEMENT environment (type+)>
+  <!ELEMENT section (comment?, doccomment?, variable*)>
+  <!ATTLIST section
+    name CDATA #REQUIRED
+    code CDATA #IMPLIED
+  >
+  <!ELEMENT type (section+)>
+  <!ATTLIST type
+    name (bindings | bootstrap_properties | dynamic_properties | static_properties) #REQUIRED >
+  <!ELEMENT variable (comment?, doccomment?)>
+  <!ATTLIST variable
+    displayname CDATA #IMPLIED
+    name CDATA #REQUIRED
+    type (STRING | INT64 | INT32 | INT16 | INT8 | BOOLEAN) "STRING"
+    default CDATA #IMPLIED
+    constant CDATA #IMPLIED
+    onlyin (Bootstrap.properties | WebSphereBootstrap.properties | WLSBootstrap.properties | all) "all"
+  >
+]>
+<environment>
+  <type name="dynamic_properties">
+    <section
+      code="POD_CONF"
+      name="Application - Custom widget configuration"
+    >
+
+
+      <comment>These values control Pods.</comment>
+
+
+      <variable
+        constant="POD_LAZYLOAD_IND"
+        default="true"
+        displayname="Pod Container Lazy Load Indicator"
+        name="pods.podcontainer.lazyload.on"
+        onlyin="all"
+        type="STRING"
+      >
+        <comment>Use Lazy Loading with Pod Containers.</comment>
+        <doccomment>See Pods Developer Guide.</doccomment>
+      </variable>
+      <variable
+        constant="POD_LAZYLOAD_INITIAL_ROWS"
+        default="1"
+        displayname="Pod Container Lazy Load Number of Initial Rows"
+        name="pods.podcontainer.lazyload.initialrows"
+        onlyin="all"
+        type="INT64"
+      >
+        <comment>Load this number of rows initially when loading Pods into a PodContainer.</comment>
+        <doccomment>See Pods Developer Guide.</doccomment>
+      </variable>
+      <variable
+        constant="POD_LAZYLOAD_POD_DROP_DELAY"
+        default="1000"
+        displayname="Pod Container Lazy Load Pod Drop Delay"
+        name="pods.podcontainer.lazyload.poddropdelay"
+        onlyin="all"
+        type="INT64"
+      >
+        <comment>The number of milliseconds between the introduction of lazy loaded pods.</comment>
+        <doccomment>See Pods Developer Guide.</doccomment>
+      </variable>
+      <variable
+        constant="POD_LAZYLOAD_POD_FADEIN_DURATION"
+        default="1000"
+        displayname="Pod Container Lazy Load Pod Fade Duration"
+        name="pods.podcontainer.lazyload.podfadeinduration"
+        onlyin="all"
+        type="INT64"
+      >
+        <comment>The number of milliseconds the fadein animation takes when lazy loading a Pod.</comment>
+        <doccomment>See Pods Developer Guide.</doccomment>
+      </variable>
+      <variable
+        constant="POD_HOME_IMAGE_DISPLAY"
+        default="false"
+        displayname="Pod Display Home Link Image"
+        name="pods.podbody.homeimagedisplay"
+        onlyin="all"
+        type="BOOLEAN"
+      >
+        <comment>Display the arrow link image next to the "home" link element located at the bottom of a POD</comment>
+      </variable>
+    </section>
+    <section
+      code="DIAG_TRACE"
+      name="Infrastructure - Diagnostic/trace parameters"
+    >
+      <variable
+        constant="ENV_TRACE_PODS_PAGE_LOADER"
+        default="NO"
+        displayname="Pods Page Loader"
+        name="curam.trace.pods.pageloader"
+        onlyin="all"
+        type="STRING"
+      >
+        <comment>Default: NO. Print diagnostic values from the Customizable Page loading process.</comment>
+      </variable>
+      <variable
+        constant="ENV_TRACE_PODS_POD_LOADER"
+        default="NO"
+        displayname="Pod Loader Trace Setting"
+        name="curam.trace.pods.podloader"
+        onlyin="all"
+        type="STRING"
+      >
+        <comment>Default: NO. Print diagnostic values from the Pod loading process.</comment>
+      </variable>
+    </section>
+    <section
+      code="INF_LOCALE"
+      name="Infrastructure – Locale parameters"
+    >
+      <variable
+        constant="ENV_SPELL_ENABLE"
+        default="true"
+        displayname="Enable Spellchecking Functionality"
+        name="curam.spellcheck.enable"
+        onlyin="all"
+        type="BOOLEAN"
+      >
+        <comment>Determines whether or not the spell check button is displayed within the rich text editor,
+           e.g. within the Notes functionality. When spell checking is enabled, the dictionaries that 
+           are available for selection and the dictionary that is displayed as default must be configured 
+           using the "SpellcheckLocale" code table. If no dictionaries are enabled, the spell check button 
+           will not be displayed within the rich text editor.</comment>
+      </variable>
+    </section>
+  </type>
+</environment>

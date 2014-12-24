@@ -1,0 +1,105 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>XMLArchiveDoc</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>XML Archive Document:</b>
+<i> An archived XML document that can be retrieved for re-printing.</i>
+<P>Most organizations have a requirement that (for legal reasons) correspondence from the organization must be reproducible in the original format with the original content intact.</P>
+<P>If the XML document used to create the correspondence were always created on-the-fly, then any changes to the client data on the database would prevent the original correspondence from being reproduced at a later time. To prevent this, a row is created on this table to hold the XML document containing the data as it existed at the time the correspondence was created.  This row can be retrieved at a later time to recreate the exact contents of the document.</P>
+<P>A row on this table only contains the data that is inserted into a template. The XSL stylesheet/template converts this into a proper document by inserting the data into the correct location within a template that contains boilerplate text. The document can then be re-printed.</P>
+<p><b>Example</b></p><P>You implement some new functionality that requires a new XSL template for printing correspondence to a <a href=Person.html>Person</a>.  <a href=Users.html>User</a> Ronan Rooney creates a new XSL template for this type of correspondence and uploads it.</P>
+<P><a href=Users.html>User</a> Ronan Rooney then uses your new functionality to format and print a letter to <a href=Person.html>Person</a> John Smith.  The C&uacute;ram Server retrieves data about John Smith (including his name, address and date of birth) and passes it to the XML infrastructure.</P>
+<P>The XML infrastructure formats John Smith's data into a printable document using the appropriate XSL template.  The XML infrastructure then creates a row on this table to store John Smith's data and a reference to the version of the XSL template which was used to format it.  The XML infrastructure then prints this document and <a href=Users.html>User</a> Ronan Rooney puts the printed document into an envelope and mails it to John Smith.</P>
+<P><a href=Users.html>User</a> Ronan Rooney then notices a typographical error in the XSL template.  He fixes this error, creating a new <a href=XSLTemplateInst.html>XSL Template Instance</a> with the version number 2.</P>
+<P><a href=Person.html>Person</a> John Smith receives the letter and notifies the organization that his date of birth (as held by the organization) is incorrect.  He subsequently moves house and takes legal action against the organization.  To support the organization's defense, <a href=Users.html>User</a> Ronan Rooney re-prints the letter that was sent to John Smith.  The XML infrastructure retrieves the data for the letter from this table and from it identifies the version of the template which was originally used to print the letter (version 1, containing the typographical error).  The XML infrastructure retrieves version 1 of the template from this table and formats the letter exactly as it was sent to John Smith (including his original address before he moved house and the incorrect date of birth).</P>
+<p><b>Technical Notes</b></p><P>The archiving of the data used to create a document is implementation-specific - archiving does not occur automatically.</P>
+<P>For more information see the C&uacute;ram XML Infrastructure Guide.</P>
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (7)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">documentID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique ID of this archived XML document.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">templateID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique ID of the XSL template used to format/print this document.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">localeIdentifier</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The language/country code.</td><td class="dataLast">SVR_STRING&lt;5&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">templateVersion</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The version number of the template used to print this document.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">documentName</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A name or short description for this document.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">document</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The content of the XML document.</td><td class="dataLast">SVR_STRING&lt;26214400&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">XMLArchiveDoc.templateID</td><td class="dataLast"><a href="XSLTemplateInst.html#templateID">XSLTemplateInst.templateID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

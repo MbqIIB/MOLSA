@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!-- This page allows the user to review the taxonomy term replacement after -->
+<!-- updating a taxonomy.                                                    -->
+<PAGE
+  PAGE_ID="ProviderManagement_reviewReplacedTerm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyInEditData"
+    NAME="DISPLAY"
+    OPERATION="viewReplacementTermDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionString"
+    CLASS="MaintainTaxonomyInEditData"
+    NAME="ACTION"
+    OPERATION="reviewReplacedTerm"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="taxonomyTermID"/>
+  <PAGE_PARAMETER NAME="taxonomyVersionDataID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyTermID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyTermID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taxonomyTermReviewDetails$taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyVersionDataID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taxonomyVersionDataID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyVersionDataID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="taxonomyVersionDataID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER TITLE="Cluster.Title.TermDetails">
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+    >
+      <FIELD LABEL="Field.Label.Code">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$code"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_previewTaxonomyTerm"
+          WINDOW_OPTIONS="width=800"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="taxonomyTermID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyTermID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="taxonomyVersionDataID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyVersionDataID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$termStatus"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.TermName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Facet">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="facet"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER LABEL_WIDTH="15">
+      <FIELD LABEL="Field.Label.Definition">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="definition"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.UserReferences">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="useReferencesString"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.SeeAlsoReferences">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="seeAlsoReferencesString"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.RelatedConcept">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="relatedConceptsString"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00261869, GP -->
+  <CLUSTER
+    DESCRIPTION="Cluster.Title.TermDetails.Description"
+    TITLE="List.Title.ReplacementTerms"
+  >
+    <!-- END, CR00261869 -->
+    <LIST>
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        WIDTH="10"
+      >
+        <WIDGET TYPE="MULTISELECT">
+
+
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="details$taxonomyInEditDataID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="selectedTermTabString"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+
+
+      <FIELD
+        LABEL="Field.Label.Code"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="details$code"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_previewUpdatedTerm"
+          WINDOW_OPTIONS="width=800"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="details$taxonomyInEditDataID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyInEditDataID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="taxonomyVersionDataID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyVersionDataID"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </FIELD>
+
+
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="details$name"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+
+
+  </CLUSTER>
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ACTION_ID="DeleteReplace"
+      LABEL="ActionControl.Label.Replace"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      ACTION_ID="Reject"
+      LABEL="ActionControl.Label.Reject"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      ACTION_ID="Delete"
+      LABEL="ActionControl.Label.Delete"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

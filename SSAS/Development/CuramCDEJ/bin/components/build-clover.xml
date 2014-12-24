@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 2006-2010 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+Recompiles the code with Clover instrumentation, runs the unit tests and
+generates a Clover report. This depends on targets and definitions in the
+"build-component.xml" script which imports this script.
+-->
+<project name="build.clover">
+  <!--
+  These properties are fixed relative to the base directory of the component,
+  as the project structure does not vary.
+  -->
+  <property name="dir.rpt.clover" value="${dir.target}/clover-report" />
+
+  <!--
+  Define the Clover tasks. Clover is installed in the ANT_HOME/lib folder by
+  the Development Environment installer.
+  -->
+  <!-- Needed for use with Clover 1.3 as older version used for development.
+       Not required for Clover 2.x -->
+  <taskdef resource="clovertasks" onerror="ignore"/>
+  <!-- Needed for Clover 2.x -->
+  <taskdef resource="cloverlib.xml" classpath="${jar.clover}" onerror="ignore"/>
+  <!--
+  Cleans the project, sets up Clover, and runs the tests. This will cause all
+  of the class files to be recompiled with Clover instrumentation before the
+  tests are run. If all reports are required (Clover, tests, Checkstyle,
+  JavaDoc, etc.) then this target should be executed first, otherwise the
+  other reports will be deleted by the "clean" target depended on by this
+  target.
+  -->
+  <target name="clover" depends="clean, -clover-setup, test" if="has.main.java">
+    <mkdir dir="${dir.rpt.clover}/html"/>
+
+    <!-- Generate the pretty HTML report. -->
+    <clover-report>
+      <current outfile="${dir.rpt.clover}/html" title="${ant.project.name}">
+        <format type="html" orderby="alpha" filter="privateDefaultConstructor"/>
+      </current>
+    </clover-report>
+
+    <!-- Generate an XML summary report that we can examine automatically. -->
+    <clover-report>
+      <current outfile="${dir.rpt.clover}/report.xml" summary="true"
+               title="${ant.project.name}">
+        <format type="xml" orderby="alpha" filter="privateDefaultConstructor"/>
+      </current>
+    </clover-report>
+
+    <!-- Extract some values from the XML report. -->
+    <xslt in="${dir.rpt.clover}/report.xml"
+          out="${dir.rpt.clover}/report.properties"
+          style="${dir.bld.scripts}/coverage-summary.xsl" />
+  </target>
+
+  <!--
+  Set up Clover so that subsequent invocations of the "javac" task will cause
+  the class files to be instrumented for coverage reporting.
+  -->
+  <target name="-clover-setup">
+    <property name="no.test.failure.on.error" value="true"/>
+    <mkdir dir="${dir.rpt.clover}"/>
+    <!-- Cover the main Java source code only. -->
+    <fileset id="covered.code" dir="${dir.src.main}/java">
+      <include name="**/*.java"/>
+    </fileset>
+    <clover-setup initstring="${dir.rpt.clover}/coverage.db">
+      <fileset refid="covered.code"/>
+      <!--
+      Ignore private default contructors. This is a common pattern found in
+      utility classes and should not be counted. The regular expression matches
+      private methods with the "()" signature that have no return type and
+      whose names start with an upper-case letter.
+      -->
+      <methodContext name="privateDefaultConstructor"
+                     regexp=" *private [A-Z][a-zA-Z0-9$_]+\(\).*"/>
+    </clover-setup>
+  </target>
+
+</project>

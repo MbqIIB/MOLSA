@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the provider person registration  page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_registerPersonAsProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <!--
+        &lt;CONNECT&gt;
+            &lt;SOURCE
+                NAME=&quot;TEXT&quot;
+                PROPERTY=&quot;PageTitle.StaticText2&quot;
+            /&gt;
+        &lt;/CONNECT&gt;
+        -->
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="relatedConcernID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedConcernID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="relatedConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="registerProviderPerson"
+    PHASE="ACTION"
+  />
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_registerPersonView.vim"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Previous"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_searchPerson">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00187417, PS -->
+      <LINK
+        PAGE_ID="ProviderManagement_registerAnotherPersonAsProvider"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00187417 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$registrationIDDetails$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$registrationIDDetails$alternateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="referenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Finish"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+
+
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

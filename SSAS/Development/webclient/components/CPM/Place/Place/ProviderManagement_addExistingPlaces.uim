@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page is to add existing places to a compartment.                   -->
+<!-- BEGIN, CR00236229, RPB -->
+<?curam-deprecated Since Curam 6.0, replaced with 
+    ProviderManagement_addExistingPlaces1.
+    This page is linked to the ProviderManagement_listPlace page on submission 
+    which requires concernRoleID as a page parameter to be passed. 
+    But the current page does not have concernRoleID in it and 
+    should accept it from the calling page as a page parameter. Hence this
+    page has been deprecated. A new uim, ProviderManagement_addExistingPlaces1,
+     which accepts concernRoleID as a page parameter is introduced. 
+     See release note: CR00236229 ?>
+<!-- END, CR00236229 -->
+<PAGE
+  PAGE_ID="ProviderManagement_addExistingPlaces"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Place"
+    NAME="DISPLAY"
+    OPERATION="listAllPlaces"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="ACTION"
+    OPERATION="addExistingPlace"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="compartmentID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="compartmentKey$compartmentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="compartmentkey$compartmentID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+
+
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="List.Multiselect.Header"
+      WIDTH="5"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placesList$placeID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="placeIDList$placeIDTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Place.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placesList$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.Location">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placesList$location"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPlace">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    > </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

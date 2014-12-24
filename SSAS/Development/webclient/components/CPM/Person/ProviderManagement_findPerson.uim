@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page finds a person  -->
+<PAGE
+  PAGE_ID="ProviderManagement_findPerson"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="ACTION"
+    OPERATION="createPerson"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00128007, NBR -->
+  <CLUSTER
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Label.Details"
+  >
+    <CLUSTER
+      DESCRIPTION="Cluster.Details.Text1"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Person"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createPersonKey$searchConcernRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      DESCRIPTION="Cluster.Details.Text2"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Name"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createPersonKey$name"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createPersonKey$addressData"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00128007 -->
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Country"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createPersonKey$phoneCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.LocalNumber"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createPersonKey$phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.AreaCode"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createPersonKey$phoneAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        ALIGNMENT="LEFT"
+        LABEL="Field.Label.Extension"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="createPersonKey$phoneExtension"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewPerson">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <LINK PAGE_ID="ProviderManagement_resourceMgrHome"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

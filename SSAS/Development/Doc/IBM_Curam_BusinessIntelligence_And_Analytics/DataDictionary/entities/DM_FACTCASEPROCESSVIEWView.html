@@ -1,0 +1,118 @@
+
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="staging-index.html">Staging Area Tables</a> | <a href="warehouse-index.html">Warehouse Tables</a> | <a href="datamart-index.html">Datamart Tables</a> | <a href="inf-index.html">Infrastructure Tables</a>
+</div>
+<hr>
+<table width="100%">
+<tr width="100%">
+<td colspan="1" align="left" valign="top"><h2>IBM C&#250;ram Business Intelligence and Analytics</h2></td><td align="right" valign="top"><img  src="../images/ibmlogo.png"></td>
+</tr>
+</table>
+
+<hr>
+<h2>Database View: <i>DM_FACTCASEPROCESSVIEW</i>
+</h2>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">View Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">
+<b>DM_FACTCASEPROCESSVIEW
+:</b>
+<i>  Fact Case Process View
+
+</i>
+<p><b>Description:</b></p>
+<P> 
+<P> This view returns the following attributes:</P></P>
+
+<p><b>Example:</b></p>
+<P>
+     
+</P>
+
+<p><b>Technical Notes:</b></p>
+
+<P>
+
+ 
+
+</p>
+</td>
+</tr>
+
+</tbody>
+</table>
+<br>
+<table  class="cbb" cellspacing="0">
+
+<thead>
+<tr >
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr >
+<td class="singleValue" colspan="1" >
+<pre>
+select
+   coalesce(t4.DWORGUNITID, t8.DWORGUNITID) as DWORGUNITID,
+   t3.DWPRODUCTID,
+   t2.dwprogramid,
+   coalesce(t4.CASEOWNERID, substr(t6.name, 1, 30)) as CASEOWNERID,
+   t1.DWSTATUSID,
+   t1.LASTWRITTEN,
+   t1.FROMDATE,
+   t1.TODATE,
+   t2.CASEID,
+   t1.DESCRIPTION,
+   coalesce(t5.DWADDRESSID, -1) as DWADDRESSID,
+   T2.CASEREFERENCE,
+   T2.DWINTEGRATEDCASETYPEKEY,
+   T2.DWCASETYPEKEY
+from
+   DW_CASE t2
+inner join
+   DW_CASESTATUSHISTORY t1 on t1.DWCASEID = t2.DWCASEID
+inner join
+   DW_PRODUCT t3 on t2.DWPRODUCTID = t3.DWPRODUCTID
+inner join 
+   DW_CASEOWNER t4 on t2.DWCASEOWNERID = t4.DWCASEOWNERID
+left outer join 
+   DW_ORGUNIT t6 on t4.DWORGUNITID = t6.DWORGUNITID
+left outer join 
+   DW_USERS t8 on t4.CASEOWNERID = t8.CASEOWNERID
+left outer join    
+   DM_CLIENTPRIMARYADDRESS t5 on t2.dwcaseid = t5.dwcaseid;
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div>
+
+<div class="menu">
+<a href="index.html">Home</a> | <a href="entities/staging-index.html">Staging Area Tables</a> | <a href="entities/warehouse-index.html">Warehouse Tables</a> | <a href="entities/datamart-index.html">Datamart Tables</a> | <a href="entities/inf-index.html">Infrastructure Tables</a>
+</div>
+<!--<div class="generated">Generated on 2013-Jan-28-10.00.27.203 <i>Version 6.0.5.0 </i>.-->
+</div>
+</body>
+</html>

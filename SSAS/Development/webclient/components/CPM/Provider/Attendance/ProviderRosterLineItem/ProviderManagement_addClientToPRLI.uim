@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 						                            	    -->
+<!-- ===========						                            	    -->
+<!-- This Page allows the user to add a new client to the provider roster   -->
+<!-- line item.                                                             -->
+<PAGE
+  PAGE_ID="ProviderManagement_addClientToPRLI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLIClient"
+    NAME="ACTION"
+    OPERATION="addPRLIClient"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.Roster.ClientReferenceNo"
+      WIDTH="70"
+    >
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Roster.ClientFirstName"
+      WIDTH="70"
+    >
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Roster.ClientDateOfBirth"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientDOB"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Roster.ClientLastName"
+      WIDTH="70"
+    >
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientLastName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="32"
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Label.ClientAddress"
+  >
+
+
+    <FIELD>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="addressData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.SaveNew"/>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

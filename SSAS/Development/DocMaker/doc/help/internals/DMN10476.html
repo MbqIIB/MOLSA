@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Build Script Integration</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN100B0.html" title="Installing DocMaker"><link rel="previous" href="DMN10443.html" title="Version Numbers"><link rel="next" href="DMN105BC.html" title="Using DocMaker"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN10443.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN105BC.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN10476"></a>Build Script Integration</h2></div></div><div></div></div><p>There are a two ways to integrate DocMaker into another Ant build
+    script: by executing a Windows <span><b class="command">cmd.exe</b></span> shell to invoke
+    the <tt class="filename">docmaker.bat</tt> file, or by invoking the DocMaker
+    Ant script directly. The choice of method may be influenced by a number of
+    factors.</p><p>You might execute the shell script if you want to isolate the
+    DocMaker build from the JVM that is used for your Ant script or if you
+    invoke DocMaker from another shell script. DocMaker builds (particularly
+    for PDF) have significant memory requirements that might be difficult to
+    manage if the Ant script is invoked directly from another Ant script. This
+    might also be necessary if the version of Ant being used for the main
+    build scripts is not compatible with DocMaker Ant scripts (see <a href="DMN10414.html" title="System Requirements">the section, <i>System Requirements</i></a> above). Incompatible versions of
+    the other tools and libraries that DocMaker uses could also be introduced
+    unwittingly if the DocMaker Ant scripts are invoked directly from another
+    Ant script.</p><p>You might execute the DocMaker Ant scripts directly if you are
+    confident that the tools and libraries on the classpath are compatible
+    with DocMaker's own and that DocMaker's memory requirements can be
+    satisfied while running in the same JVM as other Ant targets. This can
+    also be convenient on non-Windows platforms, as DocMaker is supplied only
+    with Windows shell scripts.</p><p>The Windows shell may be unique in that it does not return the exit
+    code of the last command executed as its own exit code. If a command
+    fails, the shell exits with a successful exit code. An Ant script that
+    invokes the DocMaker shell scripts might look like this (ignoring folders
+    and paths for now):</p><div class="example"><a name="DMN10492"></a><pre class="programlisting">&lt;target name="run-docmaker"&gt;
+  &lt;exec executable="cmd.exe" failonerror="true"&gt;
+    &lt;arg line="/c &amp;quot;docmaker.bat&amp;quot; generate-pdf" /&gt;
+  &lt;/exec&gt;
+&lt;/target&gt;</pre><p class="title"><b>Example:&nbsp;Ant Script Invoking DocMaker (Wrong)</b></p></div><p>However, if <tt class="filename">docmaker.bat</tt> fails, Ant will not
+    fail, as <span><b class="command">cmd.exe</b></span> will not return an error code. To
+    compensate for this, DocMaker comes with another script called
+    wrapexit.bat that ensures that the error code is propagated correctly.
+    This script invokes the <tt class="filename">docmaker.bat</tt> script and then
+    sets the <span><b class="command">cmd.exe</b></span> return code to the correct error code
+    using the <span><b class="command">exit</b></span> command. The main DocMaker script does
+    not do this by default, as executing the <span><b class="command">exit</b></span> command
+    to return the correct error code would close the command window if run
+    interactively.</p><p>Before learning the correct ways to invoke DocMaker from an Ant
+    script, you need to understand some of the environment settings that
+    DocMaker requires. There are three folder locations that must be
+    specified: the Ant base folder, the DocMaker home (installation) folder
+    and the DocMaker output folder. The Ant base folder controls where
+    DocMaker looks for the DocBook XML content files that will be processed.
+    Each book to be processed should have a file called
+    <tt class="filename">book.xml</tt> and each <tt class="filename">book.xml</tt> file
+    should be in a separate folder exactly one folder level below the Ant base
+    folder. The DocMaker home folder is requires for DocMaker to locale the
+    stylesheets, libraries, and other resources that it requires for
+    execution. The DocMaker build output folder is the location into which all
+    generated output will be placed.</p><p>DocMaker's home folder must be set for DocMaker to be executed. This
+    is the DocMaker installation folder that is called
+    <tt class="filename">DocMaker</tt> by default when the ZIP file is expanded.
+    The full path to this folder must be specified using either the
+    <tt class="envar">DOCMAKER_HOME</tt> environment variable or the
+    <tt class="property">docmaker.dir</tt> Ant property.</p><p>By default, the Ant base folder is set to the folder from which
+    DocMaker is executed; this is the standard Ant convention. When executing
+    DocMaker via its shell script, this can be overridden by setting the
+    <tt class="envar">DOCBOOK_SRC_DIR</tt> environment variable. When executing
+    DocMaker's Ant script directly, Ant's <tt class="property">basedir</tt>
+    property will override the default value.</p><div class="tip"><table border="0" summary="Tip: Command-line Arguments"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Tip]" src="../images/tip.gif"></td><th align="left"><a name="DMN104DA"></a>Command-line Arguments</th></tr><tr><td valign="top" align="left" colspan="2"><p>The <tt class="filename">docmaker.bat</tt> script sets a number of
+      environment variables and Ant options, but passes all command-line
+      arguments straight to Ant. Any command-line arguments supported by Ant
+      can be used, including tracing, property setting, multiple targets, and
+      project help.</p></td></tr></table></div><p>All of the generated output is placed below the output folder that,
+    by default, is called <tt class="filename">doc</tt> and created within the base
+    folder. Because this is the default value, it is not safe to create a
+    <tt class="filename">book.xml</tt> content file in a folder called
+    <tt class="filename">doc</tt> within the base folder. The output folder
+    location can be overridden by setting the <tt class="envar">DOCMAKER_OUT_DIR</tt>
+    environment variable or the <tt class="property">out.dir</tt> Ant property.
+    When creating the output folder, DocMaker creates a sub-folder called
+    <tt class="filename">dm-mark</tt> to mark this as DocMaker's output folder.
+    When the <tt class="option">clean</tt> target is called to delete the output
+    folder, DocMaker will not delete the output folder or its contents unless
+    it contains this marker folder, as it is possible that the folder may be a
+    <tt class="filename">doc</tt> folder that was not created by DocMaker and is
+    not safe to delete. The <tt class="option">force-clean</tt> target will override
+    this safety check and always delete the output folder.</p><div class="table"><a name="DMN1050B"></a><table summary="Environment Variables and Ant Properties" border="1"><colgroup><col width="33%"><col width="33%"><col width="34%"></colgroup><thead><tr><th>Environment Variable</th><th>Ant Property</th><th>Description</th></tr></thead><tbody><tr><td><p>
+                <tt class="envar">DOCMAKER_HOME</tt>
+              </p></td><td><p>
+                <tt class="property">docmaker.dir</tt>
+              </p></td><td><p>The path to the DocMaker installation. Must be
+            set.</p></td></tr><tr><td><p>
+                <tt class="envar">DOCMAKER_OUT_DIR</tt>
+              </p></td><td><p>
+                <tt class="property">out.dir</tt>
+              </p></td><td><p>The path to the folder used for all generated output.
+            Defaults to <tt class="filename">doc</tt> (relative to the base/input
+            folder).</p></td></tr><tr><td><p>
+                <tt class="envar">DOCBOOK_SRC_DIR</tt>
+              </p></td><td><p>
+                <tt class="property">basedir</tt>
+              </p></td><td><p>The path to the folder containing the folders in
+            which the DocBook XML content for each book is located. By
+            default, the shell script's current folder or Ant's base folder
+            will be used.</p></td></tr></tbody></table><p class="title"><b>Table:&nbsp;Environment Variables and Ant Properties</b></p></div><div class="warning"><table border="0" summary="Warning: Overriding the Output Folder"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Warning]" src="../images/warning.gif"></td><th align="left"><a name="DMN1058B"></a>Overriding the Output Folder</th></tr><tr><td valign="top" align="left" colspan="2"><p>When specifying an alternative output folder, some care is
+      required to avoid situations where DocMaker may confuse output files
+      with input files and rebuild its own output recursively. If the
+      specified output folder is below the document root folder, it must be
+      specified using a path that is relative to the document root folder. If
+      the folder is outside the document root folder, a relative or absolute
+      path may be used. The reason for this is that DocMaker avoids processing
+      its own output by excluding the output folder using the path to the
+      folder as a pattern and resolving this pattern relative to the document
+      root folder. If the output folder path is an absolute path, then the
+      pattern matching will fail. This is not a problem if the output folder
+      is not below the document root folder, as it would not be included
+      anyway; however, if it is within the document root folder, the pattern
+      must match or there will be problems. As there is little reason why you
+      would want to override the output folder to another location within the
+      document root folder, this minor requirement that the path be relative
+      in that case should not arise in the normal course of customizing
+      DocMaker builds.</p></td></tr></table></div><p>Using these environment variables and property settings, here are
+    two ways to invoke DocMaker from an Ant script (only the DocMaker home
+    folder setting is required, but all are shown for completeness):</p><div class="example"><a name="DMN10597"></a><pre class="programlisting">&lt;target name="run-docmaker-shell"&gt;
+  &lt;exec executable="cmd.exe" failonerror="true"&gt;
+    &lt;arg value="/c" /&gt;
+    &lt;arg value="${my.docmaker.dir}\bin\wrapexit.bat" /&gt;
+    &lt;arg value="generate-pdf" /&gt;
+    &lt;env key="DOCMAKER_HOME"    value="${my.docmaker.dir}" /&gt;
+    &lt;env key="DOCMAKER_OUT_DIR" value="${my.out.dir}" /&gt;
+    &lt;env key="DOCBOOK_SRC_DIR"  value="${my.src.dir}" /&gt;
+  &lt;/exec&gt;
+&lt;/target&gt;
+
+&lt;target name="run-docmaker-ant"&gt;
+  &lt;ant antfile="${my.docmaker.dir}/bin/docmaker.xml"
+       target="generate-pdf" inheritall="false"&gt;
+    &lt;property name="docmaker.dir" value="${my.docmaker.dir}" /&gt;
+    &lt;property name="out.dir"      value="${my.out.dir}" /&gt;
+    &lt;property name="basedir"      value="${my.src.dir}" /&gt;
+  &lt;/ant&gt;
+&lt;/target&gt;</pre><p class="title"><b>Example:&nbsp;Ant Script Invoking DocMaker</b></p></div><p>When invoking the shell script, the <tt class="envar">ANT_OPTS</tt>
+    environment variable can be used to pass additional JVM arguments. By
+    default, if the variable is not set, it will be set to
+    <tt class="option">-Xmx512m</tt> (maximum heap space of 512MB). This option can
+    be overridden, and additional options set, by setting the
+    <tt class="envar">ANT_OPTS</tt> variable appropriately. The
+    <tt class="envar">ANT_ARGS</tt> environment variable is set by the DocMaker shell
+    script and any existing value will be ignore. Additional Ant arguments
+    should be passed via extra command-line arguments to the script. The
+    DocMaker script uses the values of the environment variables to set the
+    corresponding Ant properties in the <tt class="envar">ANT_ARGS</tt> variable, so
+    the effect of setting these properties on the command-line of the script
+    is indeterminate.</p><p>When setting the environment variables, do not use any double
+    quotation marks around folder names that contain space characters, as this
+    is already done by the <tt class="filename">docmaker.bat</tt> script and extra
+    quotation marks will cause problems.</p></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN10443.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN105BC.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

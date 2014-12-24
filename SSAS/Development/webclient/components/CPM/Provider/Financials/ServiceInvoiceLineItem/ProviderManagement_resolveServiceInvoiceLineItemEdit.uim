@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                     						-->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This jsp redirects the user to the appropriate page to edit                -->
+<!-- service invoice line item or create new correction if service invoice line -->
+<!-- is complete or edit open correction.                                       -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveServiceInvoiceLineItemEdit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+        
+        
+        curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        
+        String serviceInvoiceLineItemID = request.getParameter("serviceInvoiceLineItemID");
+        String siliCompletedInd = request.getParameter("siliCompletedInd");
+        String hasCorrection = request.getParameter("hasCorrection");
+        String versionNo = request.getParameter("versionNo");
+        String siliCorrectionID = request.getParameter("siliCorrectionID");
+        String url = "";
+        
+        if (siliCompletedInd.equals("true"))
+         {
+         
+             if(hasCorrection.equals("true"))
+                {
+                url = context + "ProviderManagement_modifySILICorrectionPage.do?SILICorrectionID=" + curam.omega3.request.RequestUtils.escapeURL(siliCorrectionID)+ "&amp;serviceInvoiceLineItemID="+ curam.omega3.request.RequestUtils.escapeURL(serviceInvoiceLineItemID)+ "&amp;versionNo="+ curam.omega3.request.RequestUtils.escapeURL(versionNo);
+                }else
+                {
+                   url = context + "ProviderManagement_createSILICorrectionPage.do?serviceInvoiceLineItemID=" + curam.omega3.request.RequestUtils.escapeURL(serviceInvoiceLineItemID);
+                 }
+        } else
+         {
+           url = context + "ProviderManagement_modifyServiceInvoiceLineItemPage.do?serviceInvoiceLineItemID=" + curam.omega3.request.RequestUtils.escapeURL(serviceInvoiceLineItemID);
+        }
+        
+        url += "&amp;" + rh.getSystemParameters();  
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+        
+    </JSP_SCRIPTLET>
+</PAGE>

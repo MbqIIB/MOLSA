@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd..                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to add attachments.                          -->
+<PAGE
+  PAGE_ID="ProviderManagementContactLogWizard_addAttachments"
+  WINDOW_OPTIONS="width=760,height=410"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY"
+    OPERATION="readWizardDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAYWIZARD"
+    OPERATION="readWizardMenu"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="attachmentDetails$actionString"
+    CLASS="MaintainProviderIncident"
+    NAME="ACTION"
+    OPERATION="storeAttachmentDetails"
+    PHASE="ACTION"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="attachmentDetails$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAYWIZARD"
+      PROPERTY="wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER LABEL_WIDTH="14">
+    <WIDGET
+      LABEL="Field.Label.File"
+      TYPE="FILE_UPLOAD"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="fileContents"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="fileName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="28"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.FileDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.FileLocation"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentDetails$fileLocation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="attachmentDetails$fileLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.FileType"
+      USE_BLANK="true"
+      WIDTH="67"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.FileReference"
+      WIDTH="67"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentDetails$fileReference"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="attachmentDetails$fileReference"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00321084, GA -->
+    <FIELD
+      LABEL="Field.Label.ReceiptDate"
+      WIDTH="67"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentDetails$receiptDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="attachmentDetails$receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00321084 -->
+  </CLUSTER>
+
+
+  <CLUSTER LABEL_WIDTH="14">
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Description"
+      WIDTH="86"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="fileDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fileDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="TRUE"
+  >
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <!-- BEGIN, CR00414039, KRK -->
+    <ACTION_CONTROL
+      ACTION_ID="Back"
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.Back"
+      TYPE="SUBMIT"
+    >
+      <!-- END, CR00414039 -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagementContactLogWizard_addParticipants"
+        SAVE_LINK="FALSE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+  </ACTION_SET>
+
+
+</PAGE>

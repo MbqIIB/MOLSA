@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows facility manager to list all the attachments for a provider license.   -->
+<PAGE
+  PAGE_ID="ProviderManagement_listAttachmentsByLicenseForFacilityManager"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="DISPLAY"
+    OPERATION="listLicenseAttachment"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="licenseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="licenseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="licenseKey$licenseID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="DISPLAY1"
+    OPERATION="viewLicense"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="licenseID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$licenseID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewLicense"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewLicenseForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ServiceOfferings"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_listLicenseServiceOfferingsForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Attachments"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_listAttachmentsByLicenseForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST>
+
+
+    <FIELD LABEL="List.Title.File">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="List.Title.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="attachmentStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="Attachment_view">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="attachmentLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

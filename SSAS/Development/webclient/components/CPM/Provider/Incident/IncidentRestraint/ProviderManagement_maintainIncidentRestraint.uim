@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2011, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2011-2012 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify an incident restraint.                       -->
+<PAGE
+  PAGE_ID="ProviderManagement_maintainIncidentRestraint"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainIncidentRestraint"
+    NAME="ACTION"
+    OPERATION="modifyIncidentRestraint"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainIncidentRestraint"
+    NAME="DISPLAY"
+    OPERATION="viewIncidentRestraint"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="DISPLAY_ON_WHOM"
+    OPERATION="listIncidentActiveParticipantRole"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00313834, GA -->
+  <SERVER_INTERFACE
+    CLASS="MaintainIncidentRestraint"
+    NAME="DISPLAY_BY_WHOM"
+    OPERATION="listByWhomParticipants"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00313834 -->
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="incidentRestraintID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentRestraintID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentRestraintID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$incidentID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentRestraintID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$incidentRestraintID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY_ON_WHOM"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY_BY_WHOM"
+      PROPERTY="incidentID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY_BY_WHOM"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER LABEL_WIDTH="30">
+
+
+    <FIELD
+      LABEL="Field.Label.OnWhom"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$onWhomParticipantRoleID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="incidentParticipantRoleID"
+          NAME="DISPLAY_ON_WHOM"
+          PROPERTY="participantName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dtls$onWhomParticipantRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ByWhom"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$byWhomParticipantRoleID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="incidentParticipantID"
+          NAME="DISPLAY_BY_WHOM"
+          PROPERTY="participantName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dtls$byWhomParticipantRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="typeCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="typeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CLUSTER
+      LABEL_WIDTH="60"
+      NUM_COLS="2"
+    >
+      <FIELD
+        LABEL="Field.Label.Duration"
+        USE_DEFAULT="FALSE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="duration"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="duration"
+          />
+        </CONNECT>
+      </FIELD>
+      <CLUSTER SHOW_LABELS="FALSE">
+        <FIELD
+          ALIGNMENT="RIGHT"
+          USE_BLANK="TRUE"
+          USE_DEFAULT="FALSE"
+          WIDTH="58"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="durationUnitCode"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="durationUnitCode"
+            />
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+</PAGE>

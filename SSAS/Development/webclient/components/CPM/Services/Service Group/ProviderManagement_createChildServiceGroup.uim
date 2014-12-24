@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2009, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to create a Service Group                     -->
+<PAGE
+  PAGE_ID="ProviderManagement_createChildServiceGroup"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="listActiveServiceOfferings"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="ACTION"
+    OPERATION="createServiceGroup"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="parentServiceGroupID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="serviceGroupDtls$parentServiceGroupID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="parentServiceGroupID"/>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <CLUSTER
+    SHOW_LABELS="true"
+    STYLE="cluster-cpr-no-internal-padding"
+  >
+    <CLUSTER
+      LABEL_WIDTH="20"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+
+
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="serviceGroupDetails$serviceGroupDetails$serviceGroupDtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD
+        LABEL="Field.Label.Code"
+        WIDTH="60"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="serviceGroupDetails$serviceGroupDetails$serviceGroupDtls$reference"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      LABEL_WIDTH="20"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD
+        ALIGNMENT="LEFT"
+        HEIGHT="4"
+        LABEL="Field.Label.Description"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="serviceGroupDetails$serviceGroupDetails$serviceGroupDtls$description"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.ServiceOffering"
+  >
+    <FIELD CONTROL="SKIP"/>
+    <FIELD
+      CONTROL="TRANSFER_LIST"
+      HEIGHT="5"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$serviceOfferingSummaryDetailsList$dtls$serviceOfferingID"
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingSummaryDetailsList$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceGroupDetails$serviceGroupDetails$serviceOfferingIDS"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceGroupDetails$serviceGroupDetails$serviceGroupDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

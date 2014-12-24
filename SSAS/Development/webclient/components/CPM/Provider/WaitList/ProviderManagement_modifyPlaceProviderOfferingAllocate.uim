@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to update the place details during allocation-->
+<!-- BEGIN, CR00248344, GP -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyPlaceProviderOfferingAllocate"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00248344 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00293856, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="ACTION"
+    OPERATION="assignPlace"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00293856 -->
+
+
+  <!-- BEGIN, CR00187586, RPB -->
+  <SERVER_INTERFACE
+    CLASS="MaintainWaitList"
+    NAME="DISPLAY"
+    OPERATION="retrieveAllocateDetailsPassedByClient"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$keyVersionDtls$id"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="from"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$fromDateTime"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="to"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$toDateTime"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00187586 -->
+
+
+  <PAGE_PARAMETER NAME="waitListID"/>
+  <PAGE_PARAMETER NAME="from"/>
+  <PAGE_PARAMETER NAME="to"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="waitListTypeInd"/>
+  <PAGE_PARAMETER NAME="soID"/>
+  <PAGE_PARAMETER NAME="contextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="from"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$fromDateTime"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="to"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$toDateTime"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$keyVersionDtls$id"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="soID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$serviceOfferingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$keyVersionDtls$version"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="waitListTypeInd"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$waitListTypeInd"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00248344, GP -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="PAGE"
+          PROPERTY="from"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Place"
+      WIDTH="100"
+    >
+      <!-- END, CR00248344 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$placeID"
+        />
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="waitListID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="soID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="PAGE"
+          PROPERTY="to"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00248553, GP -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_resolveAllocatePlaceForWL"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00248553 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$cancelOverlappingRsrvInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="cancelOverlappingRsrvInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$existingPlacementPeriodChangeInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="existingPlmtPrdChangeInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$removeOpenWaitListInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="removeOpenWLInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$openWaitListInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="openWLInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$overlappingRsrvInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="overlappingRsrvInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placementPeriodChangeInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="plmtPrdChangeInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$fromDateTime"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$toDateTime"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$keyVersionDtls$id"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$keyVersionDtls$version"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$waitListAllocatedID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListAllocatedID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$waitListTypeInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="waitListTypeInd"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

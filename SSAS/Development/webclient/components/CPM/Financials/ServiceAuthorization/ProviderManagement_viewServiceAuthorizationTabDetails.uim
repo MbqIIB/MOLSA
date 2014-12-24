@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!-- Reads a service authorization's home page details.                           -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceAuthorizationTabDetails"
+  TYPE="DETAILS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$contextDescription$description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="result$contextDescription$description"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="serviceAuthorizationKey$serviceAuthorizationID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceAuthorization"
+    NAME="DISPLAY"
+    OPERATION="viewServiceAuthorizationMultipleClientDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER NUM_COLS="2">
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="multipleClientsInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceAuthorizationDetails$caseReferenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+</PAGE>

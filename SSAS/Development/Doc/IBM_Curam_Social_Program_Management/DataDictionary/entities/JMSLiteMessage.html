@@ -1,0 +1,151 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>JMSLiteMessage</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>JMS Lite Message
+:</b>
+<i> A queued message for testing Curam workflows/deferred processes.
+</i>
+
+<P>From http://java.sun.com/jms: 'The Java Message Service (JMS) API is a messaging standard that allows application components... to create, send, receive, and read messages. It enables distributed communication that is loosely coupled, reliable, and asynchronous.'</P>
+
+<P>'JMS Lite' is a light-weight implementation of JMS for Curam, specifically for supporting testing of Curam workflows and deferred processes.</P>
+
+<P>JMS Lite uses this database table to provide a simple transactional queue.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  
+
+      </P>
+
+<P>The payment business processing is a batch program that raises a 'payment increase' event whenever payments increase on a <a href=CaseHeader.html>case</a>.</P>
+
+<P>You configure your workflow to start whenever the 'payment increase' event occurs.</P>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  When your batch program runs it detects John Smith's rate increase and raises a 'payment increase' event.  This event causes the Curam infrastructure to place a process enactment message on the JMS Lite 'queue' (i.e. create a row on this table) to enact the process.  The batch process is configured to convert any JMS Lite messages into 'real' JMS messages in the application server when the batch application processing has successfully completed.</P>
+
+<P>The converted JMS message is delivered to the Workflow Engine in the application server, which enacts the workflow process.</P>
+
+<p><b>Technical Notes</b></p>
+<P>The JMS Lite implementation will be used automatically if your process runs outside an application server, e.g:</P>
+
+<UL>
+
+<LI>when you launch your server in the development environment, JMSLite will automatically detect the presence of the JMSLiteMessage row and will forward the message to the appropriate handler (e.g. to enact your workflow); or</LI>
+
+<LI>when you run production batch programs that interact with workflow or deferred processing;</LI>
+
+</UL>
+
+<P>otherwise the JMS implementation provided by your application server will be used.</P>
+
+<P>If your batch program creates rows on this table, you can configure your batch program to automatically convert these rows to JMS messages in your application server (thereby deleting them).</P>
+
+<P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (16)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">dbToJmsIndicator</td><td class="data">Yes</td><td class="data">No</td><td class="data">This table can contain two types of JMS message: either DBtoJMS or JMSLite. This flag indicates that a message on the table belongs to DBtoJMS rather than JMSLite.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">liteMessageID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Key for the JMSLite record.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">liteMessageType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">he JMS message Type (in JMS 1.02b - StreamMessage, MapMessage, TextMessage, ObjectMessage or BytesMessage). Note: This is not the same thing as the 'JMSType' header field on the message, which is arbitrary and is set by the application</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">jmsDestination</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The destination to which the JMS message is being sent.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">jmsDeliveryMode</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The delivery mode of the JMS message (in JMS 1.02b - Persistent, Non-Persistent).</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">jmsExpiration</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The expiration time of the JMS message.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">jmsPriority</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The priority level of the JMS message.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">jmsMessageID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The JMS Message ID.</td><td class="dataLast">SVR_STRING&lt;150&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">jmsTimestamp</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The time at which the JMS message was sent.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">jmsCorrelationID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A JMS Message ID indicating that this message is a reply to another message (the other message's JMS Message ID is the correlation ID).</td><td class="dataLast">SVR_STRING&lt;150&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">jmsReplyTo</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The Destination to which replies to this message should be sent.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">jmsType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A message type identifier, supplied by the client when the JMS message was sent.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">jmsRedelivered</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">An indication of whether the JMS message is being redelivered.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">properties</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The properties associated with the JMS message.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">body</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The body of the JMS message.</td><td class="dataLast">SVR_STRING&lt;400&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

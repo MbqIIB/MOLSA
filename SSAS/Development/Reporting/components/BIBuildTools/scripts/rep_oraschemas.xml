@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+  
+-->
+<project name="rep_oracleschemas" default="database.create.bischemas">
+          
+  <property environment="sysenv." />
+  <property name="donotcreate.BI.role" value=""/>
+          
+  <property name="schema.createscript"
+                  value="${sysenv.REPORTING_ENV}${file.separator}scripts/initoracleschemas.sql" />
+
+  <property name="superuser.file" value="${DEV_scripts}/rep_oraschemas.properties"/>
+  <property file="${superuser.file}" />
+  
+ 
+        
+  <target name="sample.database.commands" description="same tasks and their parameters">
+  
+    <echo message="appbuild database.create.bischemas use -Dschema.createscript=fullpathandfilename to run a different script, -Ddonotcreate.BI.role=REMARK"/>
+  </target>  
+  
+  <!--  ************************************************************  -->
+  <!--  ***  creates the 3 BI schemas                            ***  -->
+  <!--  ************************************************************  -->
+  
+  <target
+    depends="check.db.type,  set.db.staging, set.database.ora"
+    description="Creates the 3 reportins schemas, use (-Dschema.createscript=fullpathandfilename], to run an alternate schema creation script, -Ddonotcreate.BI.role=REMARK when not creating BI Role, -Dsuperuser.file="
+    name="database.create.bischemas"
+    if="usingoracle">
+
+    <echo message="creates the 3 BI schemas,use (-Dschema.createscript=fullpathandfilename], to run an alternate schema creation script, -Ddonotcreate.BI.role=REMARK when not creating BI Role -Dsuperuser.file=" />
+    <echo message=" using the schema names provided with the BIBootstrap.properties file creates the 3 BI schemas" />
+
+    <taskdef
+      classname="curam.util.reporting.internal.tasks.AntEncrypt"
+      classpath="${jar.reporting.buildenv}"
+      name="EncryptPassword"
+    />
+    
+    <taskdef
+        classname="curam.util.reporting.internal.tasks.AntTokenizer"
+        classpath="${jar.reporting.buildenv}"
+        name="AntTokenizer"
+    />      
+    
+    <EncryptPassword
+      password="${environment.oracle.dba.password}"
+      to="decrypted.environment.oracle.dba.password"
+    />
+    
+    <loadresource property="messagetokenised">
+       <file file="${schema.createscript}"/>
+    </loadresource>   
+	
+    <AntTokenizer property="createschema.property.out" tokens="${messagetokenised}" reportingDir="${REPORTING_DIR}" >
+       <reportingproperty name="%STAGING%" value="${staging.db.username}"/>
+       <reportingproperty name="%STAGINGP%" value="****************"/>
+       <reportingproperty name="%WAREHOUSE%" value="${central.db.username}"/>
+       <reportingproperty name="%WAREHOUSEP%" value="****************"/>    
+       <reportingproperty name="%DATAMART%" value="${centraldm.db.username}"/>
+       <reportingproperty name="%DATAMARTP%" value="****************"/>  
+       <reportingproperty name="%DATAMARTDMO%" value="${dmdemodata.db.username}"/>
+      <reportingproperty name="%DATAMARTDMOP%" value="****************"/>      
+      <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer>
+
+    <echo file="${DEV_scripts}/createSchemas.sql" append="true">${createschema.property.out}</echo> 
+
+    <AntTokenizer property="createschema.property" tokens="${messagetokenised}" reportingDir="${REPORTING_DIR}" >
+       <reportingproperty name="%STAGING%" value="${staging.db.username}"/>
+       <reportingproperty name="%STAGINGP%" value="${decrypted.staging.db.password}"/>
+       <reportingproperty name="%WAREHOUSE%" value="${central.db.username}"/>
+       <reportingproperty name="%WAREHOUSEP%" value="${decrypted.central.db.password}"/>    
+       <reportingproperty name="%DATAMART%" value="${centraldm.db.username}"/>
+       <reportingproperty name="%DATAMARTP%" value="${decrypted.centraldm.db.password}"/>  
+       <reportingproperty name="%DATAMARTDMO%" value="${dmdemodata.db.username}"/>
+      <reportingproperty name="%DATAMARTDMOP%" value="${decrypted.dmdemodata.db.password}"/>      
+      <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer>
+    <echo file="${DEV_scripts}/createSchemas1.sql" append="true">${createschema.property}</echo> 
+	
+    <sql encoding="UTF-8"   expandproperties="false"
+        classpath="${environment.jdbc.jars}"   
+        driver="${db.driver}" 
+        onerror="continue"
+        password="${decrypted.environment.oracle.dba.password}" 
+        url="${db.url}" 
+        userid="${environment.oracle.dba.userid}">
+           <transaction  src="${DEV_scripts}/createSchemas1.sql"/>    
+     </sql>
+	 <delete file="${DEV_scripts}/createSchemas1.sql" failonerror="false"/>
+     <echo message="schemas available at ${db.url} " />
+
+  </target>
+  
+
+</project>

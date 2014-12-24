@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                                    -->
+<!-- All rights reserved.                                                                                          -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                -->
+<!-- such Confidential Information and shall use it only in accordance with          -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                        -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                           -->
+<!-- Resolver to resolve transfer client into Placement or Reservation.                -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveTransferClient"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String url = "";
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    String concernRoleID = request.getParameter("concernRoleID");
+    String placeID = request.getParameter("placeID");
+    String placementID = request.getParameter("placementID");
+    String startDate = request.getParameter("startDate");
+    String placementVersionNo = request.getParameter("placementVersionNo");
+    String placementTransferred = request.getParameter("placementTransferred");
+       
+    if(placementTransferred.equals("true")) {
+
+    // BEGIN, CR00248553, GP
+    url = context + "ProviderManagement_dismissResolverPage.do?"+"&amp;pageParameter=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID);
+    // END, CR00248553
+    
+    } else {
+    
+    // BEGIN, CR00378463, PS
+    // BEGIN, CR00247132, VR
+    url = context + "ProviderManagement_confirmTransferToReservationPage.do?"+"concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + 
+    "&amp;placeID=" + curam.omega3.request.RequestUtils.escapeURL(placeID) + "&amp;placementID=" + curam.omega3.request.RequestUtils.escapeURL(placementID) + "&amp;startDate=" +
+    curam.omega3.request.RequestUtils.escapeURL(startDate) + "&amp;placementVersionNo=" + curam.omega3.request.RequestUtils.escapeURL(placementVersionNo) + "&amp;placementTransferred=" + curam.omega3.request.RequestUtils.escapeURL(placementTransferred);
+    }     
+    // END, CR00378463
+    // END, CR00247132
+    url += "&amp;" + rh.getSystemParameters();    
+    
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

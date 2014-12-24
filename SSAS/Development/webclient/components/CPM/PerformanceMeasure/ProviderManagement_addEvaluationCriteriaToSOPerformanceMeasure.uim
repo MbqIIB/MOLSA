@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows you to add performance measure to a provider.         -->
+<PAGE
+  PAGE_ID="ProviderManagement_addEvaluationCriteriaToSOPerformanceMeasure"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="soPerformanceMeasureLinkID"/>
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSOPerformanceMeasure"
+    NAME="DISPLAY"
+    OPERATION="listEvaluationCriteriaForPerformanceMeasure"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSOPerformanceMeasure"
+    NAME="ACTION"
+    OPERATION="addEvaluationCriteria"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="performanceMeasureID"/>
+  <SERVER_INTERFACE
+    CLASS="MaintainPerformanceMeasure"
+    NAME="DISPLAY1"
+    OPERATION="viewPerformanceMeasure"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="performanceMeasureID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$performanceMeasureID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="soPerformanceMeasureLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="soPerformanceMeasureLinkID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="soPerformanceMeasureLinkID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="soPerformanceMeasureLinkID"
+    />
+  </CONNECT>
+
+
+  <LIST SCROLL_HEIGHT="100">
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soEvaluationCriterionID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="evaluationCriteriaIDList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="criterion"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Response">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="responseType"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+
+
+  </ACTION_SET>
+
+
+</PAGE>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search providers page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchServiceInvoice"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00206955, PS -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="ACTION"
+    OPERATION="searchServiceInvoiceDetails"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00206955 -->
+  <!-- BEGIN, CR00247586, PS -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- END, CR00247586 -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PayeeReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$payeeReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- Begin CR00117758, KR -->
+    <FIELD LABEL="Field.Label.OriginatorReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$originatorReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- End CR00117758 -->
+    <!-- BEGIN, CR00247586, PS -->
+    <!-- BEGIN, CR00206955, PS -->
+    <!-- BEGIN, CR00228834, PS -->
+    <FIELD
+      LABEL="Field.Label.InvoicesReceived"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00228834 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$returnInvoicesReceived"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="40"
+    >
+      <!-- END, CR00247586 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00206955 -->
+    <FIELD LABEL="Field.Label.PayeeName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$payeeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- Begin CR00117758, KR -->
+    <FIELD LABEL="Field.Label.OriginatorName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$originatorName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- End CR00117758 -->
+
+
+    <!-- BEGIN, CR00246368, PS -->
+    <!-- BEGIN, CR00246672, PS -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="true"
+      TOP="false"
+    >
+      <!-- END, CR00246672 -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchServiceInvoice"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00246368 -->
+
+
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="summaryDetailsList$referenceNo"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_viewServiceInvoice">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="serviceInvoiceID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OriginatorName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$summaryDetailsList$originatorName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="serviceInvoiceDerivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00246672, PS -->
+    <FIELD LABEL="Field.Label.InvoicedAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00246672 -->
+  </LIST>
+
+
+  <!-- BEGIN, CR00248555, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createServiceInvoice"
+        SAVE_LINK="false"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00248555 -->
+
+
+</PAGE>

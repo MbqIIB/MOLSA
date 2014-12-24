@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  basedir="."
+  default="jar"
+  name="rep_javabuild"
+>
+
+  <property environment="sysenv."/>
+  
+  <import file="${REPORTING_ENV}/scripts/rep_jar.xml"/>
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_properties.xml" />
+  
+  
+  <!--  **************************  -->
+  <!--  ***  task definitions  ***  -->
+  <!--  **************************  -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${jar.ant.contrib}"/>
+    </classpath>
+  </taskdef>
+  
+  <!--  **************************  -->
+  <!--  ***  release tasks     ***  -->
+  <!--  **************************  -->
+  <target depends="declareTasks"
+    description="builds java components libraries" name="jar">
+
+    <echo>Building component binaries ...</echo>
+
+    <FindSourcePaths verbose="true" reportingDir="${REPORTING_DIR}"
+       javaSourcePropertyName="notneeded" javaSourceComponentName="server.components"/>
+
+    <for list="${server.components}" param="server.component" trim="true" delimiter=",">
+      <sequential
+      >
+
+        <antcall target="compile.source.dir">
+          <param name="server.component" value="@{server.component}"/>
+        </antcall>
+      </sequential>
+    </for>
+
+     <!--
+    <antcall target="CustomJavaBuild.compile" />
+    <antcall target="CustomJavaBuild.jar" />
+    -->
+    <echo>Building component binaries completed.</echo>
+    <antcall target="CustomJavaBuild.jar"/>
+  </target>
+
+  <!-- Server compilation -->
+  <target name="compile.source.dir" >
+  
+    <mkdir dir="${REPORTING_DIR}/components/${server.component}/build/cls"/>
+    <mkdir dir="${REPORTING_DIR}/components/${server.component}/jar"/>
+    <mkdir dir="${REPORTING_DIR}/components/${server.component}/source"/>
+    
+  <path id="${server.component}JavaComponents.path">
+    <fileset dir="${sysenv.REPORTING_DIR}/components">
+      <include name="**/jar/*.jar"/>
+      <exclude name="**/tests/jar/*.jar"/>
+      
+    </fileset>
+  </path>
+  <property
+    name="prop.javacomponents.path.${server.component}"
+    refid="JavaComponents.path"
+  /> 
+    <echo message="${server.component} includes ${transforms.java.includes}"/> 
+    <echo message="${server.component} excludes ${transforms.java.excludes}"/> 
+	<echo message="info: using ${sysenv.JAVA_HOME_RDBMS}, using ${sysenv.JAVA_HOME}"/>
+	<exec
+		dir="${sysenv.REPORTING_ENV}"
+		executable="cmd"
+		failonerror="false">
+			<arg value="/c"/>
+			<arg value="${sysenv.JAVA_HOME_RDBMS}/bin/java -version"/>
+	</exec>
+		
+    <javac 
+		 source="${compile.sourceversion}"
+		 target="${compile.targetversion}"
+         executable="${sysenv.JAVA_HOME_RDBMS}${file.separator}bin${file.separator}javac"
+         debug="${compile.debug}"
+         fork="${compile.fork}"
+         memoryMaximumSize="${compile.maxmemory}"
+         memoryInitialSize="${compile.maxmemory}"
+         nowarn="${compile.nowarn}"
+         optimize="${compile.optimize}"
+         deprecation="${compile.deprecation}"
+         verbose="${compile.verbose}"
+         includeAntRuntime="${compile.includeAntRuntime}"
+         includeJavaRuntime="${compile.includeJavaRuntime}"
+         failonerror="${compile.failonerror}"
+         listfiles="${compile.listfiles}"
+		 
+         includes="${transforms.java.includes}"
+         excludes="${transforms.java.excludes}"
+ 		 srcdir="${REPORTING_DIR}/components/${server.component}/source"
+         destdir="${REPORTING_DIR}/components/${server.component}/build/cls"
+         classpath="${jar.reporting.buildenv};${path.separator}${jar.reporting.helpersinternaluse}${path.separator}${jar.reporting.defaulttransforms}"
+	    >
+      <compilerarg value="-version"/>
+    </javac>
+
+    <mkdir dir="${REPORTING_DIR}/components/${server.component}/build/cls/meta-inf"/>       
+     <!-- zip source -->
+     <manifest file="${REPORTING_DIR}/components/${server.component}/build/cls/meta-inf/Manifest.mf">
+      <section name="common">
+        <attribute name="Specification-Title"   value="BI Build Tools and Transforms"/>
+          <attribute name="Specification-Vendor"  value="IBM Corporation"/>
+      </section>
+    </manifest> 
+        
+    <delete quiet="true" verbose="false" failonerror="false" file="${REPORTING_DIR}/components/${server.component}/jar/${server.component}Transforms.jar"/>    
+    <!-- jar -->
+    <jar manifest="${REPORTING_DIR}/components/${server.component}/build/cls/meta-inf/Manifest.mf"
+      destfile="${REPORTING_DIR}/components/${server.component}/jar/${server.component}Transforms.jar"
+      update="false"
+      filesonly="true" level="${jar.compression}">
+      <fileset dir="${REPORTING_DIR}/components/${server.component}/build/cls">
+      
+
+
+      </fileset>
+    </jar>
+
+    <mkdir dir="${REPORTING_DIR}/components/${server.component}/sample"/>       
+    <zip
+      basedir="${REPORTING_DIR}/components/${server.component}/source"
+      destfile="${REPORTING_DIR}/components/${server.component}/sample/${server.component}Transforms_src.zip">
+      <include name="**/*.java"/>
+      <include name="Manifest.mf"/>
+        
+    </zip>
+   
+      
+     <delete quiet="true" verbose="false" failonerror="false" file="${REPORTING_DIR}/components/${server.component}/source/Manifest.mf"/>
+
+  </target>
+
+
+</project>

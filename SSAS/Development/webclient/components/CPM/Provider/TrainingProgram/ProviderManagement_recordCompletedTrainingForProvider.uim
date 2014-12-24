@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page records the completed training for a provider.  -->
+<PAGE
+  PAGE_ID="ProviderManagement_recordCompletedTrainingForProvider"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderTrainingProgram"
+    NAME="ACTION"
+    OPERATION="recordCompletedTrainingProgramForProvider"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderTrainingProgram"
+    NAME="DISPLAY"
+    OPERATION="listProviderMembers"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerOrganizationID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$trainingProviderDetails$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00128007, NBR -->
+  <!-- BEGIN, CR00229065, PS -->
+  <CLUSTER STYLE="cluster-cpr-no-internal-padding">
+    <!-- END, CR00229065 -->
+    <!-- BEGIN, CR00198768, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text1"
+      LABEL_WIDTH="35"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00198768 -->
+
+
+      <!-- BEGIN, CR00235795, PS -->
+      <FIELD LABEL="Field.Label.RegisteredTraining">
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$trainingProviderDetails$trainingID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- BEGIN, CR00187976, SS -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text2"
+      LABEL_WIDTH="35"
+      STYLE="cluster-cpr-no-border"
+    >
+      <FIELD LABEL="Field.Label.UnRegisteredTraining">
+        <!-- END, CR00187976 -->
+
+
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$trainingProviderDetails$trainingName"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Title.TrainingProviderDetails"
+  >
+
+
+    <!-- BEGIN, CR00198768, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text3"
+      LABEL_WIDTH="35"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00198768 -->
+      <!-- BEGIN, CR00197352, SS -->
+      <FIELD LABEL="Field.Label.RegisteredProvider">
+        <!-- END, CR00187976 -->
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$trainingProviderDetails$trainingProviderID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <CLUSTER
+      DESCRIPTION="Field.StaticText.Text4"
+      LABEL_WIDTH="35"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00197352 -->
+      <FIELD LABEL="Field.Label.UnRegisteredProvider">
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$trainingProviderDetails$trainingProviderDetails"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <!-- END, CR00235795 -->
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    STYLE="training-details-list"
+  >
+    <!-- END, CR00128007 -->
+
+
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$memberTrainingWidget"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$trainingDetails"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

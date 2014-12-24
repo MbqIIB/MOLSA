@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not    -->
+<!-- disclose such Confidential Information and shall use it only in         -->
+<!-- accordance with the terms of the license agreement you entered into     -->
+<!-- with Curam Software.                                                    -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to update the training program details        -->
+<!-- for a provider group.                                                   -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyTrainingProgramForProviderGroup"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="DISPLAY"
+    OPERATION="readTrainingProgramForUpdate"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAY2"
+    OPERATION="readProviderGroupSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="ACTION"
+    OPERATION="updateProviderGroupTrainingProgram"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="trainingProgramID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingProgramID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$trainingProgramID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="providerGroupConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$trainingProgramID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$trainingProgramID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00137359, AS -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- END, CR00137359 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00198612, SS -->
+  <!-- BEGIN, CR00235795, PS -->
+  <CLUSTER
+    LABEL_WIDTH="52"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00235795 -->
+    <FIELD
+      LABEL="Field.Label.Training"
+      WIDTH="50"
+    >
+      <!-- END, CR00198612 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00198612, SS -->
+    <!-- BEGIN, CR00248555, PS -->
+    <FIELD
+      LABEL="Field.Label.AuthorizedFrom"
+      WIDTH="80"
+    >
+      <!-- END, CR00248555 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="authorizedFrom"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="authorizedFrom"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <!-- END, CR00235795 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitAmount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198612 -->
+    <!-- BEGIN, CR00248555, PS -->
+    <FIELD
+      LABEL="Field.Label.ToBeCompletedBy"
+      WIDTH="80"
+    >
+      <!-- END, CR00248555 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="toBeCompletedBy"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="toBeCompletedBy"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

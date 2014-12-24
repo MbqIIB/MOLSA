@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+  
+-->
+<project default="init">
+
+
+  <!--  ************************  -->
+  <!--  ***  create  ***  -->
+  <!--  ************************  -->
+
+
+  <target name="initializescripts">
+
+
+  </target>
+
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_properties.xml"/>
+
+
+  <!--  ************************  -->
+  <!--  ***  INITIALISATION  ***  -->
+  <!--  ************************  -->
+
+
+  <target name="init">
+  
+    <mkdir dir="${sysenv.REPORTING_ENV}/source"/>
+    <mkdir dir="${sysenv.REPORTING_ENV}/generator"/>
+
+	<echo message="add custom code here" file="${sysenv.REPORTING_ENV}/source/addcustomcodehere.txt"/>
+    <mkdir dir="${dir.logs}"/>
+    <mkdir dir="${dir.bld}"/>
+    <mkdir dir="${dir.bld.jar}"/>
+    <mkdir dir="${dir.bin}"/>
+	<mkdir dir="${dir.bin}/sourceupdate"/>
+    <mkdir dir="${dir.bin.ddl}"/>
+    <mkdir dir="${dir.bin.ddl}"/>
+    <mkdir dir="${dir.bin.etl}"/>
+    <mkdir dir="${dir.logs}"/>
+    <mkdir dir="${DEV_lib}"/>
+    <mkdir dir="${dir.logs.validate}"/>
+    <mkdir dir="${dir.bld.scripts}"/>
+    <mkdir dir="${dir.bin.datamanager}"/>
+    <mkdir dir="${dir.bin.datamanager}/initialdata"/>
+
+
+    <mkdir dir="${dir.bin.datamanager}/demodata"/>
+
+
+    <mkdir dir="${dir.bld.cognos}"/>
+    <mkdir dir="${dir.bld.cognos.deployment}"/>
+    <mkdir dir="${dir.bld.cognos.images}"/>
+    <mkdir dir="${dir.bld.cognos.maps}"/>
+
+
+    <mkdir dir="${dir.bld.source.rdbms}"/>
+    <mkdir dir="${dir.bld.source.tasks}"/>
+
+
+    <copy todir="${dir.bld.scripts}">
+      <fileset dir="${REPORTING_ENV}${file.separator}scripts">
+        <include name="*.tcl"/>
+      </fileset>
+    </copy>
+
+
+    <copy todir="${dir.bld.scripts}">
+      <fileset dir="${REPORTING_ENV}${file.separator}scripts">
+        <include name="*.sql"/>
+      </fileset>
+    </copy>
+
+
+  </target>
+
+
+  <!--  ************************************  -->
+  <!--  ***  CLEAN BUILT ARTIFACTS       ***  -->
+  <!--  ************************************  -->
+
+
+  <target
+    description="Removes datawarehouse ddl, scripts, classes and jars"
+    name="clean"
+  >
+    <delete
+      dir="${dir.bld}${file.separator}dw"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bin.datamanager}"
+      failonerror="false"
+    />
+    <delete failonerror="false">
+      <fileset
+        dir="${dir.bld}"
+        includes="**/*.class"
+      />
+    </delete>
+    <delete
+      dir="${dir.bld.source.rdbms}"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bld.source.tasks}"
+      failonerror="false"
+    />
+
+
+    <delete
+      dir="${dir.bin.ddl}"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bin.etl}"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bin.run.basedir}"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bin.grant}"
+      failonerror="false"
+    />
+
+
+    <delete
+      dir="${dir.logs}"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bld.scripts}"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bld.jar}"
+      failonerror="false"
+    />
+    <delete
+      dir="${dir.bld}"
+      failonerror="false"
+    />
+
+
+    <delete
+      dir="${dir.bld.cognos}"
+      failonerror="false"
+    />
+  </target>
+
+
+  <!--  ************************************  -->
+  <!--  ***  CLEAN BUILT ARTIFACTS       ***  -->
+  <!--  ************************************  -->
+
+
+  <target
+    description="Target to debug the build invocation files"
+    name="dummy"
+  > 
+    
+        </target>
+</project>

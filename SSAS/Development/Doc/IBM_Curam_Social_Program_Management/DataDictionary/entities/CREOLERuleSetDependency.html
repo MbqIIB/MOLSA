@@ -1,0 +1,123 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>CREOLERuleSetDependency</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Rule Set Dependency
+
+
+:</b>
+<i>A direct dependency of a dependent <a href=CREOLERuleSet.html>Rule Set</a> on a precedent <a href=CREOLERuleSet.html>Rule Set</a>.
+
+
+</i>
+
+
+
+<P>A row on this entity indicates that some part of the dependent rule set directly depends on some part of the precedent rule set.</P>
+
+
+
+<P>Note that one rule set may be both a precedent AND a dependent of another rule set, whether directly or indirectly.</P>
+
+
+
+<p><b>Example</b></p>
+<P>If rule set A contains a rule class A1, which extends rule class B1 of rule set B, then rule set A depends on rule set B.  This entity will store a row with A as a dependent and B as a precedent.</P>
+
+<P>If rule set B contains a rule attribute b2 which returns an instance of rule class A1, then rule set B also depends on rule set A.  This entity will also store a row with B as a dependent and A as a precedent.</P>
+
+
+
+<p><b>Technical Notes</b></p>
+
+
+<P>This entity contains data which is automatically denormalized from <a href=CREOLERuleSet.html>Rule Set</a>.  All locking is handled by <a href=CREOLERuleSet.html>Rule Set</a> and <a href=CREOLEMigrationControl.html>Rule Set Migration Control</a>.</P>
+
+
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">creoleRuleSetDependencyID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique ID of this database row.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">dependentRuleSetID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Identifier of the dependent rule set in this dependency relationship.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">precedentRuleSetID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Identifier of the precedent rule set in this dependency relationship.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">migrationAction</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">CREOLERuleSetDependency.precedentRuleSetID</td><td class="dataLast"><a href="CREOLERuleSet.html#creoleRuleSetID">CREOLERuleSet.creoleRuleSetID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">CREOLERuleSetDependency.dependentRuleSetID</td><td class="dataLast"><a href="CREOLERuleSet.html#creoleRuleSetID">CREOLERuleSet.creoleRuleSetID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

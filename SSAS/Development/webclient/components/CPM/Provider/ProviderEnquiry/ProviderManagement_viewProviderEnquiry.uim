@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view provider enquiry details.            -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewProviderEnquiry"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="providerEnquiryID"/>
+
+
+  <!-- BEGIN, CR00234402, GP -->
+  <SERVER_INTERFACE
+    CLASS="ProviderEnquiry"
+    NAME="DISPLAY"
+    OPERATION="viewProviderEnquiryDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00234402 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerEnquiryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerEnquiryID"
+    />
+  </CONNECT>
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+      <!-- BEGIN, CR00206443, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_modifyProviderEnquiry"
+        WINDOW_OPTIONS="width=800"
+      >
+        <!-- END, CR00206443 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnquiryID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerEnquiryID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerEnquiryName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerCategoryVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="categoryVersionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerTypeVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="typeVersionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.ViewRelatedProvider">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="result$relatedProviderExist"
+        />
+      </CONDITION>
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00291519,  HK -->
+  <INCLUDE FILE_NAME="ProviderManagement_viewProviderEnquiryView.vim"/>
+  <!-- END, CR00291519 -->
+</PAGE>

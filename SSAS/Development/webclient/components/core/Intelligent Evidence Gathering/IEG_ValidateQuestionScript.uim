@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006-2008 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<PAGE
+  PAGE_ID="IEG_ValidateQuestionScript"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="questionScriptParam"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainIEG"
+    NAME="validateQuestionScriptBean"
+    OPERATION="validateQuestionScript"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="questionScriptIDParam"/>
+  <PAGE_PARAMETER NAME="questionScriptParam"/>
+
+
+  <PAGE_PARAMETER NAME="idParam"/>
+  <PAGE_PARAMETER NAME="typeParam"/>
+  <PAGE_PARAMETER NAME="parentIdParam"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionScriptIDParam"
+    />
+    <TARGET
+      NAME="validateQuestionScriptBean"
+      PROPERTY="questionScriptID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <CONTAINER
+      LABEL="Field.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK
+          OPEN_NEW="true"
+          PAGE_ID="IEG_ValidateTypeRedirect"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="validateQuestionScriptBean"
+              PROPERTY="result$validationDtls$id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="idParam"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="validateQuestionScriptBean"
+              PROPERTY="result$validationDtls$idType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="typeParam"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="parentIdParam"
+            />
+            <SOURCE
+              NAME="validateQuestionScriptBean"
+              PROPERTY="parentId"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <CONTAINER LABEL="Field.Label.Message">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="validateQuestionScriptBean"
+            PROPERTY="result$validationDtls$validationError"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </LIST>
+
+
+  <ACTION_SET>
+
+
+    <ACTION_CONTROL
+      IMAGE="CloseButton"
+      LABEL="ActionControl.Label.Close"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="IEG_ListQuestionScripts"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

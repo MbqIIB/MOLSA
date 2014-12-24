@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 2005-2007 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+     This file generates help for the Curam Application.
+
+     Help information is embedded in webclient .properties file. Each property
+     in the property file can have an associated help property, which has the same
+     name except with .Help appended. This is where developers or documentors
+     add their help page information.
+
+     The help generation process extracts this information via custom
+     Ant tasks and structures it into DocBook format XML files.
+
+     These DocBook files are then transformed into online help format (HTML
+     with a index applet) using Curam Software's DocMaker tool, and also into
+     PDF guides.
+
+     For developers, additional functionality is provided:
+     help.starter creates initial help properties pages.
+-->
+<project
+  default="client"
+  name="CuramClientBuild"
+>
+
+
+  <!-- =================================================================== -->
+  <!-- ========================== I M P O R T S ========================== -->
+  <!-- =================================================================== -->
+
+
+  <!-- JDE client build script -->
+  <property environment="sysenv."/>
+  <import file="${sysenv.CURAMCDEJ}/bin/build.xml"/>
+  <import file="${sysenv.CURAM_DIR}/Tools/Generators/EGTools/build.xml" optional="true"/>
+
+
+  <!-- =================================================================== -->
+  <!-- ======================= P R O P E R T I E S ======================= -->
+  <!-- =================================================================== -->
+
+
+  <!-- Currently limited to one locale.  Change or override this property to build help for a different locale.-->
+  <property
+    name="docmaker.home"
+    value="${sysenv.DOCMAKER_HOME}"
+  />
+  <property
+    name="ant.home"
+    value="${sysenv.ANT_HOME}"
+  />
+  <property
+    name="dir.bld.help"
+    value="${dir.bld}/help"
+  />
+  <property
+    name="dir.bld.help.war"
+    value="${dir.bld.help}/war"
+  />
+
+  <!-- =================================================================== -->
+  <!-- =========== START: Online Help l10n properties ==================== -->
+  <!-- =================================================================== -->
+    
+  <!--
+  If "prp.help.locale" is set at this stage, it means it was a commandline override
+  for a "localized" build. So, override the template location to pick up developer
+  customizations. If the property isn't set at this stage, it will be set to
+  "en_US" in the property definition below.
+  When this is set the help.war created will contain the locale, e.g. help_de.war. To create
+  a localized help war to be used as the default, specify -Ddefault.help.build=true.
+  -->
+  <condition property="helptools.l10n.build">
+    <isset property="prp.help.locale" />
+  </condition>
+
+  <!-- For legacy purposes, if the helptools_l10n exists in the webclient, this will be used. -->
+  <condition property="dir.helptools.localization" value="${dir.client}/helptools_l10n">
+    <available file="${dir.client}/helptools_l10n" type="dir"/>
+  </condition>
+
+  <!-- Otherwise, this will be used if the webclient\helptools_l10n directory does not exist.-->
+  <property
+    name="dir.helptools.localization"
+    value="${dir.client}/helptools/helptools_l10n/${prp.help.locale}"
+  />
+
+  <condition property="dir.helptools.template"
+             value="${dir.helptools.localization}/template/${prp.help.locale}">
+    <isset property="helptools.l10n.build" />
+  </condition>
+
+  <condition property="help.war.filename"
+             value="${dir.bld.help.war}/help_${prp.help.locale}.war">
+    <and>
+      <isset property="helptools.l10n.build" />
+      <not>
+        <isset property="default.help.build" />
+      </not>
+    </and>
+  </condition>
+
+  <!-- =================================================================== -->
+  <!-- =========== END: Online Help property overrides =================== -->
+  <!-- =================================================================== -->
+
+  <property
+    name="prp.help.locale"
+    value="en_US"
+  />
+  <property
+    name="help.war.filename"
+    value="${dir.bld.help.war}/help.war"
+  />
+  <property
+    name="dir.xmlproperties"
+    value="${dir.bld.help}/xmlproperties"
+  />
+  <property
+    name="dir.xmlproperties.localized"
+    value="${dir.xmlproperties}/localized"
+  />
+  <property
+    name="dir.assemble"
+    value="${dir.bld.help}/assemble"
+  />
+  <property
+    name="dir.html"
+    value="${dir.bld.help}/html"
+  />
+  <property
+    name="dir.checker"
+    value="${dir.bld.help}/checker"
+  />
+  <property
+    name="dir.docbook"
+    value="${dir.bld.help}/docbook"
+  />
+  <property
+    name="dir.docbook.pages"
+    value="${dir.docbook}/pages"
+  />
+  <property
+    name="dir.docbook.master"
+    value="${dir.docbook}/master"
+  />
+  <property
+    name="dir.docbook.pdfmaster"
+    value="${dir.docbook}/pdfmaster"
+  />
+  <property
+    name="dir.docbook.chapters"
+    value="${dir.docbook}/chapters"
+  />
+  <property
+    name="dir.starter"
+    value="${dir.bld.help}/starter"
+  />
+  <property
+    name="file.starterbook"
+    value="${dir.starter}/book.xml"
+  />
+  <property
+    name="dir.helptools"
+    value="${dir.client}/helptools"
+  />
+  <property
+    name="dir.helptools.template"
+    value="${dir.helptools}/template"
+  />
+  <property
+    name="dir.helptools.xslt"
+    value="${dir.helptools}/xslt"
+  />
+  <property
+    name="dir.tmp.starter"
+    value="${dir.starter}.tmp"
+  />
+  <property
+    name="dir.bld.multivolumehelp"
+    value="${dir.bld.help}/multivolumehelp"
+  />
+  <property
+    name="dir.webcontent.help"
+    value="${dir.web}/Curam_Help"
+  />
+  <property
+    name="jar.helptools"
+    value="${dir.curam.jar}/helptools.jar"
+  />
+
+  <property
+    name="helptools.pre.cp"
+    value="${dir.helptools.localization}/properties"
+  />
+
+  <property
+    name="helptools.cp"
+    value="${helptools.pre.cp}:${jar.helptools}"
+  />
+
+  <property
+    name="jar.htmlcleaner"
+    value="${dir.ext.jar}/htmlcleaner2_1.jar"
+  />
+  <property
+    name="jar.ant"
+    value="${ant.home}/lib/ant.jar"
+  />
+  <property
+    name="jar.xerces"
+    value="${ant.home}/lib/xercesImpl.jar"
+  />
+  <property
+    location="${dir.client}"
+    name="dir.client.absolute"
+  />
+  <property
+    name="dir.uim.flat"
+    value="${dir.bld.help}/uim"
+  />
+  <property
+    location="${dir.bld.help}/filtered"
+    name="dir.uim.filtered"
+  />
+  <property
+    name="prp.docmaker.command"
+    value="${sysenv.DOCMAKER_HOME}/bin/wrapexit.bat"
+  />
+
+  <!-- =================================================================== -->
+  <!-- ========================= T A S K D E F S ========================= -->
+  <!-- =================================================================== -->
+
+  <taskdef
+    classname="curam.help.tools.anttasks.Assemble2DocbookTask"
+    classpath="${helptools.cp}"
+    name="assemble2docbook"
+  />
+  <taskdef
+    classname="curam.help.tools.anttasks.AssembleTask"
+    classpath="${helptools.cp}"
+    name="assemble"
+  />
+  <taskdef
+    classname="curam.help.tools.anttasks.CheckAssembleDependencies"
+    classpath="${helptools.cp}"
+    name="checkAssembleDependencies"
+  />
+  <taskdef
+    classname="curam.help.tools.anttasks.RecursiveDocmakerTask"
+    classpath="${helptools.cp}"
+    name="docmakerScript"
+  />
+  <taskdef
+    classname="curam.help.tools.anttasks.PostprocessHtmlHelp"
+    classpath="${helptools.cp}:${jar.htmlcleaner}"
+    name="postprocesshtmlhelp"
+  />
+
+  <!-- =================================================================== -->
+  <!-- ==========================  PATTERNSETS  ========================== -->
+  <!-- =================================================================== -->
+
+
+  <patternset id="helpPropertiesFiles">
+    <include name="**/*.properties"/>
+    <include name="**/*.*im"/>
+    <exclude name="**/*resolve*"/>
+    <exclude name="**/InteractionCentre/**/*"/>
+    <exclude name="**/sample/**/*"/>
+    <exclude name="*ProductEvidenceForm*"/>
+    <exclude name="*Hierarchy*"/>
+    <exclude name="**/GeneratedImagesText.properties"/>
+    <exclude name="**/Image.properties"/>
+    <exclude name="**/Pages.properties"/>
+    <exclude name="**/Constants.properties"/>
+    <exclude name="**/RulesEditorGroup.properties"/>
+    <exclude name="**/RulesEvidence.properties"/>
+    <exclude name="**/*Group.properties"/>
+    <exclude name="**/ISU/**/*"/>
+    <exclude name="**/Appeal_ISU/**/*"/>
+  </patternset>
+
+
+  <!-- =================================================================== -->
+  <!-- ========================== T A R G E T S ========================== -->
+  <!-- =================================================================== -->
+
+
+  <target
+    depends="help.setProps"
+    if="isNotWindows"
+    name="help.checkPlatform"
+  >
+    <fail message="This target is not supported on non-windows platforms"/>
+  </target>
+
+  <target name="help.setProps">
+    <condition property="isNotWindows">
+      <not>
+        <os family="windows"/>
+      </not>
+    </condition>
+  </target>
+
+  <target
+    depends="help.checkPlatform, help.staging"
+    description="Converts property files to XML format"
+    name="help.localizedproperties2xml"
+  >
+    <mkdir dir="${dir.xmlproperties.localized}"/>
+    <mkdir dir="${dir.xmlproperties.localized}/uim"/>
+    <mkdir dir="${dir.xmlproperties.localized}/classes"/>
+
+
+    <!-- remove files whose source files have been deleted -->
+    <delete>
+      <fileset dir="${dir.xmlproperties.localized}/uim">
+        <and>
+          <present
+            present="srconly"
+            targetdir="${dir.uim.flat}"
+          >
+            <mapper
+              from="*.xmllocalizedproperties"
+              to="*.uim"
+              type="glob"
+            />
+          </present>
+          <present
+            present="srconly"
+            targetdir="${dir.uim.flat}"
+          >
+            <mapper
+              from="*.xmllocalizedproperties"
+              to="*.vim"
+              type="glob"
+            />
+          </present>
+        </and>
+      </fileset>
+    </delete>
+
+
+    <mkdir dir="${dir.uim.filtered}"/>
+    <!-- copy the properties to intermediate directory, filtering out pages which don't have help -->
+    <copy todir="${dir.uim.filtered}">
+      <fileset dir="${dir.uim.flat}">
+        <patternset refid="helpPropertiesFiles"/>
+      </fileset>
+    </copy>
+
+
+    <!-- delete anything that's been removed -->
+    <delete>
+      <fileset dir="${dir.uim.filtered}">
+        <present
+          present="srconly"
+          targetdir="${dir.uim.flat}"
+        >
+        </present>
+      </fileset>
+    </delete>
+
+
+    <echo message="Converting localized properties to XML..."/>
+    <copy todir="${dir.uim.flat}" overwrite="false" >
+        <fileset dir="${dir.uim.flat}">
+            <include name="*${prp.help.locale}.properties" />
+        </fileset>
+        <globmapper from="*_${prp.help.locale}.properties" to="*.properties"/>
+    </copy>
+
+    <!-- Flagging the help if an invalid properties file is found-->
+    <java
+      classname="curam.help.tools.anttasks.LocalizedProperties2Xml"
+      classpath="${helptools.cp}:${jar.ant}:${jar.xerces}:${dir.uim.flat}"
+      failonerror="true"
+    >
+      <jvmarg value="-server"/>
+
+
+      <arg value="${prp.help.locale}"/>
+      <arg value="${dir.xmlproperties.localized}/uim"/>
+      <arg value="${dir.uim.filtered}"/>
+    </java>
+
+
+    <java
+      classname="curam.help.tools.anttasks.LocalizedProperties2Xml"
+      classpath="${helptools.cp}:${jar.ant}:${jar.xerces}:${dir.uim.flat}"
+      failonerror="true"
+    >
+      <jvmarg value="-server"/>
+
+
+      <arg value="${prp.help.locale}"/>
+      <arg value="${dir.xmlproperties.localized}/classes"/>
+      <arg value="${dir.bld.classes}"/>
+    </java>
+  </target>
+  <!--depends="help.checkPlatform" -->
+  <target
+    depends="help.checkPlatform"
+    description="Creates 'starter' help by copying existing client property files and adding initial help entries"
+    name="help.starter"
+  >
+    <delete dir="${dir.starter}"/>
+    <mkdir dir="${dir.starter}"/>
+
+
+    <delete dir="${dir.tmp.starter}"/>
+    <mkdir dir="${dir.tmp.starter}"/>
+
+
+    <!-- delete target files which are not up-to-date or whose sources have been removed-->
+    <delete>
+      <fileset dir="${dir.starter}">
+        <include name="**/*.properties"/>
+        <or>
+          <not>
+            <depend targetdir="${dir.src.components}"/>
+          </not>
+          <present
+            present="srconly"
+            targetdir="${dir.src.components}"
+          />
+        </or>
+      </fileset>
+    </delete>
+
+
+    <!-- copy properties files to tmp location -->
+    <!-- use patternset from properties -->
+    <copy todir="${dir.tmp.starter}">
+      <fileset dir="${dir.src.components}">
+        <include name="**/*.properties"/>
+        <patternset refid="helpPropertiesFiles"/>
+        <not>
+          <or>
+            <contains
+              casesensitive="no"
+              text="Help."
+            />
+            <contains
+              casesensitive="no"
+              text=".Help"
+            />
+          </or>
+        </not>
+      </fileset>
+    </copy>
+
+
+    <delete>
+      <fileset dir="${dir.tmp.starter}">
+        <include name="**/*.*im"/>
+      </fileset>
+    </delete>
+
+
+    <!-- kill empty directories -->
+    <delete includeEmptyDirs="true">
+      <fileset dir="${dir.tmp.starter}">
+        <include name="**/*.*im"/>
+      </fileset>
+    </delete>
+
+
+    <!-- update the contents of the tmp files -->
+
+
+    <!-- create a ".Help" property for every existing property -->
+    <replaceregexp
+      byline="true"
+      match="(.*)=(.*)"
+      replace="\1=\2&#x0A;\1.Help=Double_click_to_enter_text"
+    >
+      <fileset dir="${dir.tmp.starter}">
+        <include name="**/*.properties"/>
+      </fileset>
+    </replaceregexp>
+
+
+    <!-- remove unnecessary entries -->
+    <replaceregexp
+      byline="false"
+      match="\nPageTitle\.[^\n]*\.Help=[^\n]*\n"
+      replace="&#x0A;"
+    >
+      <fileset dir="${dir.tmp.starter}">
+        <include name="**/*.properties"/>
+      </fileset>
+    </replaceregexp>
+
+    <!-- remove unnecessary entries - more useful for updater -->
+    <!--<replaceregexp
+       byline="false"
+       match="\nHelp\.[^\n]*\.Help=[^\n]*\n"
+       replace="&#x0A;"
+     >
+       <fileset dir="${dir.tmp.starter}">
+         <include name="**/*.properties"/>
+       </fileset>
+     </replaceregexp> -->
+
+    <!-- create "related help" properties at the end -->
+    <replaceregexp
+      byline="false"
+      flags="s"
+      match="(.*)"
+      replace="\1&#x0A;Help.Related.1=Double_click_to_enter_text&#x0A;"
+    >
+      <fileset dir="${dir.tmp.starter}">
+        <include name="**/*.properties"/>
+      </fileset>
+    </replaceregexp>
+
+
+    <!-- create a "page description" property at the start (for UIM files only) -->
+    <replaceregexp
+      byline="false"
+      flags="s"
+      match="(.*)"
+      replace="Help.PageDescription=Double_click_to_enter_text&#x0A;&#x0A;\1"
+    >
+      <fileset dir="${dir.tmp.starter}">
+        <include name="**/*.properties"/>
+        <present targetdir="${dir.src.components}">
+          <mapper
+            from="*.properties"
+            to="*.uim"
+            type="glob"
+          />
+        </present>
+      </fileset>
+    </replaceregexp>
+
+
+    <!-- generate extra properties for any ACTION_CONTROLs which have no LABELs -->
+    <xslt
+      basedir="${dir.src.components}"
+      destdir="${dir.tmp.starter}"
+      extension=".properties.unlabeledactioncontrols"
+      scanincludeddirectories="false"
+      style="${dir.helptools.xslt}/UnlabeledActionControls.xslt"
+    >
+      <include name="**/*.?im"/>
+    </xslt>
+
+
+    <!-- move the updated tmp files to the output location-->
+    <!-- filesize selector for uacs -->
+    <!-- different selector for properties as well -->
+    <move todir="${dir.starter}">
+      <fileset dir="${dir.tmp.starter}">
+        <include name="**/*.properties"/>
+        <include name="**/*.unlabeledactioncontrols"/>
+        <size
+          value="0"
+          when="more"
+        />
+      </fileset>
+    </move>
+
+
+    <delete dir="${dir.tmp.starter}"/>
+
+
+  </target>
+
+
+  <target
+    depends="help.checkPlatform, help.checkcustomexists, help.copycomponents, help.copycustom"
+    name="help.staging"
+  >
+
+  </target>
+
+
+  <target
+    name="help.checkcustomexists"
+  >
+
+
+    <available
+      file="${dir.src.components}/custom"
+      property="dir.custom.available"
+      type="dir"
+    />
+
+
+  </target>
+
+
+  <target
+    name="help.copycomponents"
+  >
+    <!-- BEGIN, CR00128068, DG -->
+    <componentorder to="components.path" coredir="${dir.core}"
+                    componentsdir="${dir.src.components}"
+                    components="${prp.component.order}"
+                    locales="${prp.locale.list}"/>
+    <for list="${components.path}" delimiter=";" param="component">
+      <sequential>
+        <copy
+          flatten="true"
+          overwrite="true"
+          todir="${dir.uim.flat}"
+        >
+          <fileset dir="@{component}">
+            <include name="**/*.properties"/>
+            <include name="**/*.uim"/>
+            <include name="**/*.vim"/>
+          </fileset>
+        </copy>
+      </sequential>
+    </for>
+    <!-- END, CR00128068 -->
+  </target>
+
+
+  <target
+    if="dir.custom.available"
+    name="help.copycustom"
+  >
+
+
+    <copy
+      flatten="true"
+      overwrite="true"
+      todir="${dir.uim.flat}"
+    >
+      <fileset dir="${dir.src.components}/custom">
+        <include name="**/*.properties"/>
+        <include name="**/*.uim"/>
+        <include name="**/*.vim"/>
+      </fileset>
+    </copy>
+
+
+  </target>
+
+
+  <property
+    name="prp.regexpseparator"
+    value="\\"
+  />
+
+  <!--
+     Override appbuild client to integrate generated evidence client page generation.
+  -->
+  <target name="client" depends="pre.client.build, ClientBuild.client"/>
+
+  <target name="pre.client.build">
+    <antcall target="egtools.client.generate"/>
+  </target>
+
+  <!--
+      Override appbuild clean and integrate clean target for generated client evidence.
+    -->
+  <target name="clean" depends="ClientBuild.clean">
+    <antcall target="egtools.client.clean"/>
+  </target>
+
+
+</project>

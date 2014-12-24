@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+
+-->
+<project>
+
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_properties.xml"/>
+
+
+
+
+ <!--  ************************************************  -->
+  <!--  ***  Declares curam ant tasks                ***  -->
+  <!--  ************************************************  -->
+  <target name="declareTasks" unless="curam.bi.tasks.created">
+    
+	<echo message="Declaring tasks now"/>
+
+    <taskdef
+    classname="curam.util.reporting.internal.tasks.AntCheckXMLWellFormed"
+    classpath="${sysenv.REPORTING_ENV}/jar/BIBuildErrorCheckerSuppliment.jar:${sysenv.REPORTING_ENV}/jar/BIBuildErrorChecker.jar"
+    name="AntCheckXMLWellFormed"/>
+
+  
+  
+    <taskdef
+    classname="curam.util.reporting.internal.policing.CombineBIAConfiguration"
+    classpath="${jar.reporting.buildenv}"
+    name="CombineBIAConfiguration"/>
+	
+    <taskdef
+    classname="curam.util.reporting.internal.tasks.AntCheckForErrors"
+    classpath="${sysenv.REPORTING_ENV}/jar/BIBuildErrorCheckerSuppliment.jar:${sysenv.REPORTING_ENV}/jar/BIBuildErrorChecker.jar"
+    name="errorsfound"/>
+  
+
+  
+    <taskdef
+          classname="curam.util.reporting.internal.tasks.AntCheckForImportError"
+          classpath="${jar.reporting.buildenv}"
+          name="CheckForOMBImportError"
+    />
+        
+  <taskdef
+    classname="curam.util.reporting.internal.tasks.AntReadBuildFileName"
+    classpath="${jar.reporting.buildenv}"
+    name="ReadBuildFileName" /> 
+          
+  <taskdef
+      classname="curam.util.reporting.internal.tasks.AntTestClasspathRead"
+      classpath="${jar.reporting.buildenv}"
+      name="AntPropertyFileClasspathRead"/>  
+          
+
+ <taskdef
+        classname="curam.util.reporting.internal.tasks.AntGenerateOMBImportStatements"
+        classpath="${jar.reporting.buildenv}"
+        name="AntGenerateOMBImportStatements"
+  />
+  
+ <taskdef
+        classname="curam.util.reporting.internal.tasks.AntFindSourcePaths"
+        classpath="${jar.reporting.buildenv}"
+        name="FindSourcePaths"
+  />
+  
+   <taskdef
+          classname="curam.util.reporting.internal.tasks.AntUtilities"
+          classpath="${jar.reporting.buildenv}"
+          name="AntUtilities"
+  />
+
+    <taskdef
+      classname="curam.util.reporting.internal.tasks.AntGenerateDDL"
+      classpath="${jar.reporting.buildenv}"
+      name="AntGenerateDDL"
+    />
+    
+    <taskdef
+          classname="curam.util.reporting.internal.tasks.AntGenerateDemoData"
+          classpath="${jar.reporting.buildenv}"
+          name="AntGenerateDemoData"
+    />
+    <taskdef
+          classname="curam.util.reporting.internal.tasks.AntGenerateInitialData"
+          classpath="${jar.reporting.buildenv}"
+          name="AntGenerateInitialData"
+    />
+	<taskdef
+          classname="curam.util.reporting.internal.tasks.AntGenerateLocalizedData"
+          classpath="${jar.reporting.buildenv}"
+          name="AntGenerateLocalizedData"
+    />
+
+	
+    <taskdef
+        classname="curam.util.reporting.internal.tasks.AntGenerateRunScripts"
+        classpath="${jar.reporting.buildenv}"
+        name="AntGenerateRunScripts"
+    />
+    <taskdef
+        classname="curam.util.reporting.internal.tasks.AntGenerateGrantScripts"
+        classpath="${jar.reporting.buildenv}"
+        name="AntGenerateGrantScripts"
+    />  
+    <taskdef
+        classname="curam.util.reporting.internal.tasks.AntTokenizer"
+        classpath="${jar.reporting.buildenv}"
+        name="AntTokenizer"
+    />     
+    <taskdef
+        classname="curam.util.reporting.internal.tasks.AntCheckForImportError"
+        classpath="${jar.reporting.buildenv}"
+        name="AntCheckForImportError"
+    />  
+    
+    <taskdef
+              classname="curam.util.reporting.internal.tasks.AntGenerateStaticData"
+              classpath="${jar.reporting.buildenv}"
+              name="AntGenerateStaticData"
+    />
+
+	<taskdef
+          classname="curam.util.reporting.internal.tasks.AntValidatePropertiesFilesData"
+          classpath="${jar.reporting.buildenv}"
+          name="AntValidatePropertiesFileData"
+    />
+	
+    <taskdef
+          classname="curam.util.reporting.internal.tasks.AntCheckForValidateError"
+          classpath="${jar.reporting.buildenv}"
+          name="CheckForOMBValidateError"
+    />
+        <taskdef
+          classname="curam.util.reporting.internal.tasks.AntConfigTest"
+          classpath="${jar.reporting.buildenv};${environment.jdbc.jars};${DEV_drivers}"
+          name="CheckConfig"
+        />
+     
+      <taskdef
+        classname="curam.util.reporting.internal.tasks.AntGenerateUpdateStatements"
+        classpath="${jar.reporting.buildenv}"
+        name="AntGenerateSourceUpdateStatements"
+      />  
+	  
+      <taskdef
+        classname="curam.util.reporting.internal.tasks.AntGenerateSourceInitialStatements"
+        classpath="${jar.reporting.buildenv}"
+        name="AntGenerateSourceInitilaData"
+      />  
+
+
+	<taskdef
+          classname="curam.util.reporting.internal.tasks.AntConfigureInfoSphereClient"
+          classpath="${jar.reporting.buildenv}"
+          name="ConfigureInfoSphereClient"
+    />
+	
+    <taskdef
+          classname="curam.util.reporting.internal.tasks.AntInfoSphereSource"
+          classpath="${jar.reporting.buildenv};${classpath.file.location}"
+          name="AntInfoSphereSource"
+    /> 
+	
+    <taskdef
+          classname="curam.util.reporting.internal.tasks.AntInfoSphereLayeredVersion"
+          classpath="${jar.reporting.buildenv};${classpath.file.location}"
+          name="AntInfoSphereLayeredVersion"
+    /> 
+	
+	<taskdef
+          classname="curam.util.reporting.internal.tasks.AntGenerateAlterStatements"
+          classpath="${jar.reporting.buildenv};${classpath.file.location}"
+          name="AntGenerateAlterStatements"
+    /> 
+	
+	<property name="curam.bi.tasks.created" value="true"/>
+  </target>
+
+ 
+
+
+</project>

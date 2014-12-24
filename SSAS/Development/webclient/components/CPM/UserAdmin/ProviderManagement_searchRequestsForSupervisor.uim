@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search external access requests page  -->
+<PAGE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    PAGE_ID="ProviderManagement_searchRequestsForSupervisor">   
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE
+                NAME="TEXT"
+                PROPERTY="PageTitle.StaticText1"
+            />
+        </CONNECT>
+    </PAGE_TITLE>
+    
+    
+    <SERVER_INTERFACE
+        CLASS="Request"
+        NAME="ACTION"
+        OPERATION="searchByTypeDateCreatedOwner"
+        PHASE="ACTION"
+    />
+    
+    
+    <CLUSTER
+        LABEL_WIDTH="40"
+        TITLE="Cluster.Title.SearchCriteria"
+        NUM_COLS="2"
+        >
+        
+        
+        <ACTION_SET
+            ALIGNMENT="CENTER"
+            TOP="false"
+            >
+            
+            
+            <ACTION_CONTROL
+                DEFAULT="true"
+                LABEL="ActionControl.Label.Search"
+                TYPE="SUBMIT"
+                >
+                <LINK PAGE_ID="THIS"/>
+            </ACTION_CONTROL>
+            
+            <ACTION_CONTROL
+                LABEL="ActionControl.Label.Reset"
+                >
+                <LINK PAGE_ID="ProviderManagement_searchExternalAccessRequests"/>
+            </ACTION_CONTROL>
+            
+            
+        </ACTION_SET>
+        
+        <FIELD WIDTH="70" WIDTH_UNITS="CHARS">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$requestType"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD LABEL="Field.Label.DateCreated">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$dateCreated"
+                />
+            </CONNECT>
+        </FIELD>
+        
+    </CLUSTER>
+    
+    
+    <LIST TITLE="List.Title">
+        
+        <CONTAINER
+            LABEL="Container.Label.Action"
+            SEPARATOR="Container.Separator"
+            WIDTH="20"
+            >
+            <!-- Link to a page displaying non-editable details of the address -->
+            <ACTION_CONTROL LABEL="ActionControl.Label.View">
+                <LINK PAGE_ID="ProviderManagement_viewExternalAccessRequest">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="result$requestDetails$requestID"/>
+                        <TARGET NAME="PAGE" PROPERTY="requestID"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            
+            <!-- Link to a page displaying editable details of the address -->
+            <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+                <LINK PAGE_ID="ProviderManagement_viewExternalAccessRequest">
+                    <CONNECT>
+                        <SOURCE NAME="ACTION" PROPERTY="result$requestDetails$requestID"/>
+                        <TARGET NAME="PAGE" PROPERTY="requestID"/>
+                    </CONNECT>
+                </LINK>
+            </ACTION_CONTROL>
+            
+        </CONTAINER>
+        
+        <FIELD
+            LABEL="Field.Title.RequestType"
+            WIDTH="25"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="ACTION"
+                    PROPERTY="result$requestDetails$requestType"
+                />
+            </CONNECT>
+            <!--LINK PAGE_ID="ProviderManagement_providerGroupHome">
+                <CONNECT>
+                <SOURCE NAME="ACTION" PROPERTY="result$providerGroupSummaryDetailsList$dtls$concernRoleID"/>
+                <TARGET NAME="PAGE" PROPERTY="concernRoleID"/>
+                </CONNECT>
+                </LINK-->
+        </FIELD>
+        
+        
+        <FIELD
+            LABEL="Field.Title.DateCreated"
+            WIDTH="25"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="ACTION"
+                    PROPERTY="result$requestDetails$dateCreated"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD
+            LABEL="Field.Title.CreatedBy"
+            WIDTH="35"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="ACTION"
+                    PROPERTY="result$requestDetails$createdBy"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD
+            LABEL="Field.Title.DateSubmitted"
+            WIDTH="15"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="ACTION"
+                    PROPERTY="result$requestDetails$dateSubmitted"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD
+            LABEL="Field.Title.Status"
+            WIDTH="15"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="ACTION"
+                    PROPERTY="result$requestDetails$requestStatus"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+    </LIST>
+    
+    
+</PAGE>

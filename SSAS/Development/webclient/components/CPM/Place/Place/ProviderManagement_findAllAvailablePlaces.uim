@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009-2012 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search available places within a date     -->
+<!-- range.                                                                 -->
+<PAGE
+  PAGE_ID="ProviderManagement_findAllAvailablePlaces"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <!-- BEGIN, CR00293856, IBM -->
+  <SERVER_INTERFACE
+    CLASS="Place"
+    NAME="ACTION"
+    OPERATION="getAvailablePlacesForAllProviders"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00293856 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="listActiveServiceOfferings"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00206896, SS -->
+  <CLUSTER
+    LABEL_WIDTH="27"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.Search"
+  >
+    <!-- END, CR00206896 -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Reset"
+        TYPE="ACTION"
+      >
+        <LINK PAGE_ID="ProviderManagement_findAllAvailablePlaces"/>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.Provider.Name"
+      USE_DEFAULT="false"
+      WIDTH="70"
+    >
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerPlacesDetails$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.Provider.Street1"
+      USE_DEFAULT="false"
+      WIDTH="70"
+    >
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerPlacesDetails$street1"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--BEGIN, CR00156894, SG -->
+    <FIELD
+      LABEL="Field.Label.FromDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00156894 -->
+    <!-- BEGIN, CR00233616, PS -->
+    <FIELD
+      LABEL="Field.Label.Compartment.Service"
+      WIDTH="70"
+    >
+      <!-- END, CR00233616 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$serviceOfferingSummaryDetailsList$dtls$serviceOfferingID"
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingSummaryDetailsList$dtls$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerPlacesDetails$providerOfferingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.Provider.City"
+      USE_DEFAULT="false"
+      WIDTH="70"
+    >
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerPlacesDetails$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <!--BEGIN, CR00156894, SG -->
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00156894 -->
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00387969, MR -->
+  <LIST TITLE="List.Title.SearchResults">
+    <!-- END, CR00387969 -->
+
+
+    <!-- BEGIN, CR00233616, PS -->
+    <FIELD LABEL="Field.Label.Provider.Reference">
+      <!-- END, CR00233616 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$placeDetails$providerReferenceNo"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placeDetails$providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placeDetails$providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00233616, PS -->
+    <FIELD LABEL="Field.Label.Provider.Name">
+      <!-- END, CR00233616 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$placeDetails$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233616, PS -->
+    <!-- BEGIN, CR00388527, SS -->
+    <FIELD LABEL="Field.Title.Address">
+      <!-- END, CR00388527 -->
+      <!-- END, CR00233616 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$placeDetails$street"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233616, PS -->
+    <FIELD LABEL="Field.Label.Compartment.AvailablePlaces">
+      <!-- END, CR00233616 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$placeDetails$availablePlaces"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233616, PS -->
+  </LIST>
+
+
+</PAGE>

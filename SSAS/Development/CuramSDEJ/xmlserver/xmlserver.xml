@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file for starting the XML Server.
+
+-->
+<project name="CuramProjectXMLServer" default="main">
+
+
+  <property environment="sysenv."/>
+  <property name="java.fork"        value="true"/>
+  <property name="java.maxmemory"   value="768m"/>
+  <property name="java.failonerror" value="true"/>
+
+  <property name="version.prop.file" location="./third_party_version.properties"/>
+  <property file="${version.prop.file}"/>
+
+  <condition property="renderx.home" value="${sysenv.RENDERX_HOME}">
+    <isset property="sysenv.RENDERX_HOME"/>
+  </condition>
+
+  <property name="jar.avalon"             location="./avalon-framework-${version-avalon-framework}.jar"/>
+  <property name="jar.batik"              location="./batik-${version-batik}.jar"/>
+  <property name="jar.commonsio"          location="./commons-io-${version-commons-io}.jar"/>
+  <property name="jar.commonslogging"     location="./commons-logging-${version-commons-logging}.jar"/>
+  <property name="jar.concurrent"         location="./concurrent.jar"/>
+  <property name="jar.fop"                location="./fop-${version-fop}.jar"/>
+  <property name="jar.log4j"              location="./log4j-${version-log4j}.jar"/>
+  <property name="jar.xalan"              location="./xalan-${version-xalan}.jar"/>
+  <property name="jar.xerces"             location="./xerces-${version-xerces}.jar"/>
+  <property name="jar.serializer"         location="./serializer-${version-serializer}.jar"/>
+  <property name="jars.allxml"            location="${jar.xerces}${path.separator}${jar.serializer}${path.separator}${jar.xalan}"/>
+  <property name="jar.renderx.xep"        location="${renderx.home}/lib/xep.jar"/>
+  <property name="jar.xmlgraphicscommons" location="./xmlgraphics-commons-${version-xmlgraphics-commons}.jar"/>
+  <property name="jar.xmlservercommon"    location="./xmlservercommon.jar"/>
+  <property name="jar.xmlserver"          location="./xmlserver.jar"/>
+  <property name="xmlserver.port"   value="1800"/>
+  <property name="fop.config.file"        location="./fopcfg.xml"/>
+  <property name="custom.job.type"  value=""/>
+  <property name="default.document.generator"  value="curam.util.xmlserver.DefaultDocumentGenerator"/>
+
+  <property name="xmlserver.config.file" value="./xmlserverconfig.xml"/>
+
+  <path id="xmlserver.classpath">
+    <pathelement path="${sysenv.PRE_CLASSPATH}"/>
+    <pathelement path="${jar.xmlserver}"/>
+    <pathelement path="${jar.fop}"/>
+    <pathelement path="${jar.avalon}"/>
+    <pathelement path="${jar.concurrent}"/>
+    <pathelement path="${jar.xmlgraphicscommons}"/>
+    <pathelement path="${jar.commonsio}"/>
+    <pathelement path="${jar.batik}"/>
+    <pathelement path="${jar.commonslogging}"/>
+    <pathelement path="${jar.log4j}"/>
+    <pathelement path="${jar.xmlservercommon}"/>
+    <pathelement path="."/>
+    <pathelement path="${jar.renderx.xep}"/>
+    <pathelement path="${sysenv.POST_CLASSPATH}"/>
+  </path>
+
+  <condition property="java.jvmargs" value="-Xnoargsconversion" >
+    <os family="z/os"/>
+  </condition>
+  <property name="java.jvmargs" value="-Dfake.property=1"/>
+
+  <condition property="java.console.encoding" value="Cp1047">
+      <os family="z/os"/>
+  </condition>
+  <property name="java.console.encoding" value="UTF-8"/>
+
+  <condition property="java.file.encoding" value="UTF-8">
+      <os family="z/os"/>
+  </condition>
+  <property name="java.file.encoding" value="ISO-8859-1"/>
+
+  <condition property="print.command" value="CMD /x/c .\xmlserverprint.bat %d\%f %p">
+      <os family="windows"/>
+  </condition>
+  <property name="print.command" value="./xmlserverprint.sh %d/%f %p"/>
+
+  <condition property="rtl.generator.class" value="rtl.generator.class" >
+    <isset property="${rtl.generator.class}"/>
+  </condition>
+
+  <property name="rtl.generator.class"  value="curam.util.xmlserver.PDFDocumentGenerator"/>
+
+  <condition property="renderx.config.file" value="${renderx.home}/xep.xml" >
+    <isset property="renderx.home" />
+  </condition>
+
+  <property name="renderx.config.file"         value=""/>
+  <property name="use.template.cache"          value="true"/>
+  <property name="custom.text.generator.class" value=""/>
+  <property name="additional.args"             value=""/>
+
+  <!--  *****************************  -->
+  <!--  ***  X M L   S E R V E R  ***  -->
+  <!--  *****************************  -->
+  <target name="main" description="Start the XML Server">
+
+     <!-- Create the directories used for Temporary and Produced server output -->
+    <mkdir dir="./tmp" />
+    <mkdir dir="./template" />
+    <mkdir dir="./stats" />
+
+    <copy file="./xmlserverconfig.xml.template"
+      toFile="./xmlserverconfig.xml"
+      overwrite="true"/>
+
+     <!-- Build the XML Server configuration file -->
+    <replace file="./xmlserverconfig.xml" encoding="UTF-8">
+      <replacefilter token="#SERVER_COMMAND#"       value="${print.command}"/>
+      <replacefilter token="#SERVER_PORT#"          value="${xmlserver.port}"/>
+      <replacefilter token="#FOP_CONFIG_FILE#"      value="${fop.config.file}"/>
+      <replacefilter token="#RENDERX_CONFIG_FILE#"  value="${renderx.config.file}"/>
+      <replacefilter token="#CUSTOM_TEXT_GENERATOR_CLASS#" value="${custom.text.generator.class}"/>
+      <replacefilter token="#RTL_GENERATOR_CLASS#"  value="${rtl.generator.class}"/>
+      <replacefilter token="#USE_TEMPLATE_CACHE#"   value="${use.template.cache}"/>
+    </replace>
+
+     <!-- Ensure UNIX files are executable -->
+    <chmod file="./xmlserverprint.sh" perm="ug+rx"/>
+
+     <!-- Start the XML Server -->
+    <java
+      classname="curam.util.xmlserver.XMLServer"
+      classpathref="xmlserver.classpath"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="xmlserver"
+    >
+      <jvmarg value="${java.jvmargs}" />
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}" />
+      <jvmarg value="-Dfile.encoding=${java.file.encoding}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="-c ${xmlserver.config.file}" />
+      <arg line="${additional.args}"/>
+    </java>
+  </target>
+
+  <target name="stop" description="Stop the XML Server">
+
+    <exec executable="hostname" failonerror="true" outputproperty="host.name"/>
+    <!-- Stop the XML Server -->
+    <java
+      classname="curam.util.xmlserver.XMLServerShutdown"
+      classpathref="xmlserver.classpath"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="xmlservershutdown"
+    >
+      <jvmarg value="${java.jvmargs}" />
+      <jvmarg value="-Dconsole.encoding=${java.console.encoding}" />
+      <jvmarg value="-Dfile.encoding=${java.file.encoding}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <arg line="-host ${host.name} -port ${xmlserver.port}" />
+    </java>
+  </target>
+
+</project>
+

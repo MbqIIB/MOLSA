@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.ibm.datatools.etl.coretypes="http:///com/ibm/datatools/etl/coretypes.ecore" xmlns:com.ibm.datatools.etl.dataflow.view="http:///com/ibm/datatools/etl/dataflow/view.ecore" xmlns:dynOpr="dyn:///com/ibm/datatools/etl/core.oplib">
+  <dynOpr:ControlFlow iD="0" definitionID="ControlFlow" itemName="CuramStagingCoreStaticFlow" itemTag="" itemComments="This control flow is used  to schedule data mart ETL processes, these ETL processes generally read data from the warehouse,&#xD;&#xA;some processes may read data from the file system. The ETL processes within this control flow ensure the first class business objects &#xD;&#xA;within the data mart are populated with data, i.e. Fact tables in our star schemas. &#xD;&#xA;This control flow defines discrete work activities, where those activities execute and the order of execution." itemLabel="CuramDatamartCoreOperationalFlow" version="2.3.0" lastAssignedID="21" externalReferences="/0/@operatorMap.2/@value/@operatorMap.0/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.1/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.0/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.1/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.2/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.2/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.3/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.4/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.5/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.6/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.7/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.8/@value/@subProcessRef /0/@operatorMap.2/@value/@operatorMap.9/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.0/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.1/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.2/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.3/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.4/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.5/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.6/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.7/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.8/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.3/@value/@subProcessRef /0/@operatorMap.3/@value/@operatorMap.9/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.4/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.5/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.6/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.7/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.8/@value/@subProcessRef /0/@operatorMap.4/@value/@operatorMap.9/@value/@subProcessRef /0/@operatorMap.5/@value/@operatorMap.0/@value/@subProcessRef" etlFlow="/1">
+    <changeParamTable key="com.ibm.datatools.etl.cflow.core,flowCodeGenerator">
+      <value paramID="com.ibm.datatools.etl.cflow.core" paramName="com.ibm.datatools.etl.cflow.core" paramUsage="flowCodeGenerator" subParamID="com.ibm.datatools.etl.cflow.codegen.CodeGenMain" sortIdx="-1"/>
+    </changeParamTable>
+    <changeParamTable key="cflowxmi,flowFileExtension">
+      <value paramID="cflowxmi" paramName="cflowxmi" paramUsage="flowFileExtension"/>
+    </changeParamTable>
+    <changeParamTable key="Debugger,debugging">
+      <value paramID="Debugger" paramName="Debugger" paramUsage="debugging" subParamID="com.ibm.datatools.etl.cflow.EPGControlFlowDebugger" sortIdx="1"/>
+    </changeParamTable>
+    <changeParamTable key="CanvasTracer,executing">
+      <value paramID="CanvasTracer" paramName="CanvasTracer" paramUsage="executing" subParamID="com.ibm.datatools.etl.dataflow.ui.ControlFlowExecutionListener" sortIdx="2"/>
+    </changeParamTable>
+    <changeParamTable key="ExecViewTracer,executing">
+      <value paramID="ExecViewTracer" paramName="ExecViewTracer" paramUsage="executing" subParamID="com.ibm.datatools.etl.dataflow.ui.ControlFlowExecutionViewListener" sortIdx="3"/>
+    </changeParamTable>
+    <changeParamTable key="CompatibleFlows,editing">
+      <value paramID="CompatibleFlows" paramName="CompatibleFlows" paramUsage="editing" subParamID="ControlFlow|SubProcess" sortIdx="4"/>
+    </changeParamTable>
+    <changeParamTable key="GenerateNewFlowsForSelection,editing">
+      <value paramID="GenerateNewFlowsForSelection" paramName="GenerateNewFlowsForSelection" paramUsage="editing" subParamID="ControlFlow|SubProcess" sortIdx="5"/>
+    </changeParamTable>
+    <changeParamTable key="FlowDragAndDrop_CopyOperators_SrcFlowType,editing">
+      <value paramID="FlowDragAndDrop_CopyOperators_SrcFlowType" paramName="FlowDragAndDrop_CopyOperators_SrcFlowType" paramUsage="editing" subParamID="cflowxmi|sflowxmi" sortIdx="6"/>
+    </changeParamTable>
+    <changeParamTable key="FlowDragAndDrop_CreateRefOperator_SrcFlowType,editing">
+      <value paramID="FlowDragAndDrop_CreateRefOperator_SrcFlowType" paramName="FlowDragAndDrop_CreateRefOperator_SrcFlowType" paramUsage="editing" subParamID="sflowxmi::{http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity}||etlmetadataxmi|idsdataflowxmi|zdataflowxmi::{http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/DataFlowActivity}" sortIdx="7"/>
+    </changeParamTable>
+    <changeParamTable key="disableInputLinkValidation,validation">
+      <value paramID="disableInputLinkValidation" paramName="disableInputLinkValidation" paramUsage="validation" subParamID="true" sortIdx="8"/>
+    </changeParamTable>
+    <operatorMap key="01">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph" iD="01" definitionID="http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph" itemName="StartGraph" itemTag="/op:01" itemLabel="Start" editable="false" version="2.3.0">
+        <outputPortMap key="start">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph::output::start" iD="0" definitionID="http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph::output::start" itemName="start" itemTag="/op:01/output:start:0" itemLabel="Start" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" toLink="/0/@linkList.0">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="on-error">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph::output::on-error" iD="0" definitionID="http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph::output::on-error" itemName="on-error" itemTag="/op:01/output:on-error:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="cleanup">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph::output::cleanup" iD="0" definitionID="http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/StartGraph::output::cleanup" itemName="cleanup" itemTag="/op:01/output:cleanup:0" itemLabel="Cleanup" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+      </value>
+    </operatorMap>
+    <operatorMap key="03">
+      <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/End" iD="03" definitionID="http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/End" itemName="End" itemTag="/op:03" itemLabel="End" version="2.3.0">
+        <inputPortMap key="end">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/End::input::end" iD="0" definitionID="http:///com/ibm/datatools/etl/cflow/core/cflow.oplib/Flow/End::input::end" itemName="end" itemTag="/op:03/input:end:0" itemLabel="End" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.1/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.4">
+            <changeParamTable key="/op:019/output:unconditional:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:019/output:unconditional:0" paramName="unconditional" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.5/@value/@outputPortMap.2/@value" paramParent="/0/@operatorMap.5/@value"/>
+            </changeParamTable>
+            <ownedSchema iD="END_06_0_03" itemTag="/op:03/input:end:0" name="END_06_0_03"/>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </inputPortMap>
+        <exitOption iD="22" itemName="exitOption" itemTag="/op:03/prop:exitOption" hidden="true" itemType="ExitOptionEnum"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="06">
+      <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" iD="06" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" itemName="ParallelControlFlowActivity" itemTag="/op:06" itemLabel="Datamart_Operational_Batch_01" version="2.3.0" lastAssignedID="20">
+        <operatorMap key="06_0">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPERSONHISTORY_SP" itemTag="/op:06/op:06_0" itemLabel="DM_FACTPERSONHISTORY_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_0/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_0/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_0/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_0/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_0/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_0/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_0/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_0/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_0/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_0/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_0/prop:subProcessRef" itemLabel="DM_FACTPERSONHISTORY_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPERSONHISTORY_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_0/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_8">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_8" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPERSONHIST_TRANS_SP" itemTag="/op:06/op:06_8" itemLabel="DM_FACTPERSONHIST_TRANS_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_8/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_8/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_8/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_8/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_8/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_8/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_8/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_8/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_8/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_8/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_8/prop:subProcessRef" itemLabel="DM_FACTPERSONHIST_TRANS_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPERSONHIST_TRANS_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_8/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_12">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_12" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTALLEGATION_SP" itemTag="/op:06/op:06_12" itemLabel="DM_FACTALLEGATION_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_12/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_12/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_12/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_12/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_12/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_12/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_12/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_12/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_12/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_12/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_12/prop:subProcessRef" itemLabel="DM_FACTALLEGATION_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTALLEGATION_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_12/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_13">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_13" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTINVESTIGATION_SP" itemTag="/op:06/op:06_13" itemLabel="DM_FACTINVESTIGATION_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_13/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_13/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_13/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_13/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_13/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_13/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_13/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_13/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_13/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_13/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_13/prop:subProcessRef" itemLabel="DM_FACTINVESTIGATION_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTINVESTIGATION_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_13/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_14">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_14" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTCASEEVENT_SP" itemTag="/op:06/op:06_14" itemLabel="DM_FACTCASEEVENT_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_14/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_14/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_14/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_14/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_14/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_14/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_14/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_14/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_14/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_14/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_14/prop:subProcessRef" itemLabel="DM_FACTCASEEVENT_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTCASEEVENT_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_14/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_15">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_15" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTEDUCATIONHISTORY_SP" itemTag="/op:06/op:06_15" itemLabel="DM_FACTEDUCATIONHISTORY_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_15/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_15/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_15/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_15/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_15/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_15/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_15/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_15/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_15/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_15/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_15/prop:subProcessRef" itemLabel="DM_FACTEDUCATIONHISTORY_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTEDUCATIONHISTORY_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_15/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_16">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_16" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTEDHISTORY_TRANS_SP" itemTag="/op:06/op:06_16" itemLabel="DM_FACTEDHISTORY_TRANS_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_16/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_16/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_16/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_16/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_16/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_16/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_16/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_16/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_16/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_16/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_16/prop:subProcessRef" itemLabel="DM_FACTEDHISTORY_TRANS_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTEDHISTORY_TRANS_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_16/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_17">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_17" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTEMPLOYERHISTORY_SP" itemTag="/op:06/op:06_17" itemLabel="DM_FACTEMPLOYERHISTORY_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_17/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_17/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_17/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_17/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_17/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_17/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_17/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_17/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_17/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_17/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_17/prop:subProcessRef" itemLabel="DM_FACTEMPLOYERHISTORY_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTEMPLOYERHISTORY_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_17/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_18">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_18" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTEMPLOYERHIST_TRANS_SP" itemTag="/op:06/op:06_18" itemLabel="DM_FACTEMPLOYERHIST_TRANS_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_18/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_18/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_18/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_18/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_18/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_18/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_18/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_18/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_18/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_18/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_18/prop:subProcessRef" itemLabel="DM_FACTEMPLOYERHIST_TRANS_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTEMPLOYERHIST_TRANS_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_18/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="06_19">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="06_19" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPRODUCTPROVIDERHIST_SP" itemTag="/op:06/op:06_19" itemLabel="DM_FACTPRODUCTPROVIDERHIST_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:06/op:06_19/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:06/op:06_19/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/op:06_19/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/op:06_19/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:06/op:06_19/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:06/op:06_19/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:06/op:06_19/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:06/op:06_19/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:06/op:06_19/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:06/op:06_19/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:06/op:06_19/prop:subProcessRef" itemLabel="DM_FACTPRODUCTPROVIDERHIST_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPRODUCTPROVIDERHIST_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:06/op:06_19/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <inputPortMap key="in">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" itemName="in" itemTag="/op:06/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.2/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.0">
+            <changeParamTable key="/op:01/output:start:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:01/output:start:0" paramName="start" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.0/@value/@outputPortMap.0/@value" paramParent="/0/@operatorMap.0/@value"/>
+            </changeParamTable>
+            <ownedSchema iD="IN_06_0" itemTag="/op:06/input:in:0" name="IN_06_0"/>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </inputPortMap>
+        <outputPortMap key="on-success">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" itemName="on-success" itemTag="/op:06/output:on-success:0" itemLabel="On Success" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="on-failure">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" itemName="on-failure" itemTag="/op:06/output:on-failure:0" itemLabel="On Failure" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="unconditional">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" itemName="unconditional" itemTag="/op:06/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" toLink="/0/@linkList.1">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <etloperators iD="37" itemName="etloperators" itemTag="/op:06/prop:etloperators" itemType="ParallelContainerActivity">
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.2/@value/@operatorMap.2/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.2/@value/@operatorMap.3/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.2/@value/@operatorMap.4/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.2/@value/@operatorMap.5/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.2/@value/@operatorMap.6/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.2/@value/@operatorMap.7/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.2/@value/@operatorMap.8/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.2/@value/@operatorMap.0/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.2/@value/@operatorMap.1/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.2/@value/@operatorMap.9/@value"/>
+        </etloperators>
+        <executionOrder iD="38" itemName="executionOrder" itemTag="/op:06/prop:executionOrder" itemType="ExecutionOrder" containedEnum="sequential"/>
+        <logOption iD="39" itemName="logOption" itemTag="/op:06/prop:logOption" itemType="LogOption"/>
+        <logLevel iD="40" itemName="logLevel" itemTag="/op:06/prop:logLevel" itemType="LogLevel"/>
+        <traceLevel iD="41" itemName="traceLevel" itemTag="/op:06/prop:traceLevel" itemType="TraceLevel"/>
+        <skipLabel iD="42" itemName="skipLabel" itemTag="/op:06/prop:skipLabel" itemType="dummyLabel"/>
+        <activityDisabled iD="43" itemName="activityDisabled" itemTag="/op:06/prop:activityDisabled" itemType="boolean"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="010">
+      <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" iD="010" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" itemName="ParallelControlFlowActivity" itemTag="/op:010" itemLabel="Datamart_Operational_Batch_02" version="2.3.0" lastAssignedID="33">
+        <operatorMap key="010_23">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_23" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_UPDATE_FACTCASEHISTORY_SP" itemTag="/op:010/op:010_23" itemLabel="DM_UPDATE_FACTCASEHISTORY_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_23/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_23/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_23/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_23/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_23/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_23/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_23/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_23/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_23/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_23/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_23/prop:subProcessRef" itemLabel="DM_UPDATE_FACTCASEHISTORY_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_UPDATE_FACTCASEHISTORY_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_23/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_24">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_24" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTCASEPARTICIPANT_SP" itemTag="/op:010/op:010_24" itemLabel="DM_FACTCASEPARTICIPANT_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_24/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_24/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_24/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_24/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_24/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_24/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_24/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_24/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_24/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_24/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_24/prop:subProcessRef" itemLabel="DM_FACTCASEPARTICIPANT_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTCASEPARTICIPANT_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_24/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_25">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_25" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTCASEHISTORY_SP" itemTag="/op:010/op:010_25" itemLabel="DM_FACTCASEHISTORY_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_25/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_25/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_25/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_25/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_25/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_25/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_25/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_25/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_25/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_25/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_25/prop:subProcessRef" itemLabel="DM_FACTCASEHISTORY_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTCASEHISTORY_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_25/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_26">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_26" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPRODPROVHIST_TRANS_SP" itemTag="/op:010/op:010_26" itemLabel="DM_FACTPRODPROVHIST_TRANS_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_26/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_26/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_26/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_26/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_26/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_26/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_26/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_26/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_26/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_26/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_26/prop:subProcessRef" itemLabel="DM_FACTPRODPROVHIST_TRANS_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPRODPROVHIST_TRANS_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_26/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_27">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_27" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTSERVICESUPPLIERHIST_SP" itemTag="/op:010/op:010_27" itemLabel="DM_FACTSERVICESUPPLIERHIST_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_27/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_27/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_27/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_27/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_27/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_27/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_27/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_27/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_27/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_27/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_27/prop:subProcessRef" itemLabel="DM_FACTSERVICESUPPLIERHIST_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTSERVICESUPPLIERHIST_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_27/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_28">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_28" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTSERVSUPHIST_TRANS_SP" itemTag="/op:010/op:010_28" itemLabel="DM_FACTSERVSUPHIST_TRANS_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_28/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_28/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_28/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_28/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_28/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_28/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_28/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_28/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_28/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_28/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_28/prop:subProcessRef" itemLabel="DM_FACTSERVSUPHIST_TRANS_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTSERVSUPHIST_TRANS_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_28/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_29">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_29" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTUTILITYHISTORY_SP" itemTag="/op:010/op:010_29" itemLabel="DM_FACTUTILITYHISTORY_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_29/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_29/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_29/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_29/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_29/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_29/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_29/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_29/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_29/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_29/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_29/prop:subProcessRef" itemLabel="DM_FACTUTILITYHISTORY_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTUTILITYHISTORY_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_29/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_30">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_30" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTUTILITYHIST_TRANS_SP" itemTag="/op:010/op:010_30" itemLabel="DM_FACTUTILITYHIST_TRANS_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_30/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_30/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_30/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_30/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_30/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_30/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_30/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_30/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_30/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_30/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_30/prop:subProcessRef" itemLabel="DM_FACTUTILITYHIST_TRANS_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTUTILITYHIST_TRANS_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_30/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_31">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_31" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTSUSPENSE_SP" itemTag="/op:010/op:010_31" itemLabel="DM_FACTSUSPENSE_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_31/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_31/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_31/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_31/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_31/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_31/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_31/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_31/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_31/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_31/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_31/prop:subProcessRef" itemLabel="DM_FACTSUSPENSE_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTSUSPENSE_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_31/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="010_33">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="010_33" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_UPDATE_FACTPERSONHIST_SP" itemTag="/op:010/op:010_33" itemLabel="DM_UPDATE_FACTPERSONHIST_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:010/op:010_33/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:010/op:010_33/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/op:010_33/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/op:010_33/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:010/op:010_33/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:010/op:010_33/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:010/op:010_33/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:010/op:010_33/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:010/op:010_33/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:010/op:010_33/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:010/op:010_33/prop:subProcessRef" itemLabel="DM_UPDATE_FACTPERSONHIST_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_UPDATE_FACTPERSONHIST_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:010/op:010_33/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <inputPortMap key="in">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" itemName="in" itemTag="/op:010/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.3/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.1">
+            <changeParamTable key="/op:06/output:unconditional:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:06/output:unconditional:0" paramName="unconditional" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.2/@value/@outputPortMap.2/@value" paramParent="/0/@operatorMap.2/@value"/>
+            </changeParamTable>
+            <ownedSchema iD="IN_06_0_010" itemTag="/op:010/input:in:0" name="IN_06_0_010"/>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </inputPortMap>
+        <outputPortMap key="on-success">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" itemName="on-success" itemTag="/op:010/output:on-success:0" itemLabel="On Success" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="on-failure">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" itemName="on-failure" itemTag="/op:010/output:on-failure:0" itemLabel="On Failure" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="unconditional">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" itemName="unconditional" itemTag="/op:010/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" toLink="/0/@linkList.2">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <etloperators iD="37" itemName="etloperators" itemTag="/op:010/prop:etloperators" itemType="ParallelContainerActivity">
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.3/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.4/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.5/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.6/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.7/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.8/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.2/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.1/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.0/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.3/@value/@operatorMap.9/@value"/>
+        </etloperators>
+        <executionOrder iD="38" itemName="executionOrder" itemTag="/op:010/prop:executionOrder" itemType="ExecutionOrder" containedEnum="sequential"/>
+        <logOption iD="39" itemName="logOption" itemTag="/op:010/prop:logOption" itemType="LogOption"/>
+        <logLevel iD="40" itemName="logLevel" itemTag="/op:010/prop:logLevel" itemType="LogLevel"/>
+        <traceLevel iD="41" itemName="traceLevel" itemTag="/op:010/prop:traceLevel" itemType="TraceLevel"/>
+        <skipLabel iD="42" itemName="skipLabel" itemTag="/op:010/prop:skipLabel" itemType="dummyLabel"/>
+        <activityDisabled iD="43" itemName="activityDisabled" itemTag="/op:010/prop:activityDisabled" itemType="boolean"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="016">
+      <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" iD="016" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" itemName="ParallelControlFlowActivity" itemTag="/op:016" itemLabel="Datamart_Operational_Batch_03" version="2.3.0" lastAssignedID="19">
+        <operatorMap key="016_3">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_3" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_UPDATE_FACTALGRECORDST_SP" itemTag="/op:016/op:016_3" itemLabel="DM_UPDATE_FACTALGRECORDST_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_3/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_3/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_3/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_3/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_3/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_3/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_3/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_3/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_3/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_3/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_3/prop:subProcessRef" itemLabel="DM_UPDATE_FACTALGRECORDST_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_UPDATE_FACTALGRECORDST_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_3/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_4">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_4" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_UPDATE_FACTALGFINDING_SP" itemTag="/op:016/op:016_4" itemLabel="DM_UPDATE_FACTALGFINDING_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_4/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_4/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_4/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_4/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_4/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_4/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_4/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_4/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_4/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_4/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_4/prop:subProcessRef" itemLabel="DM_UPDATE_FACTALGFINDING_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_UPDATE_FACTALGFINDING_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_4/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_5">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_5" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_UPDATE_FACTAGLMALTREAT_SP" itemTag="/op:016/op:016_5" itemLabel="DM_UPDATE_FACTAGLMALTREAT_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_5/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_5/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_5/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_5/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_5/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_5/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_5/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_5/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_5/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_5/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_5/prop:subProcessRef" itemLabel="DM_UPDATE_FACTAGLMALTREAT_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_UPDATE_FACTAGLMALTREAT_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_5/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_12">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_12" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_UPDATE_FACTCP_ACTIVE_SP" itemTag="/op:016/op:016_12" itemLabel="DM_UPDATE_FACTCP_ACTIVE_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_12/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_12/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_12/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_12/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_12/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_12/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_12/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_12/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_12/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_12/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_12/prop:subProcessRef" itemLabel="DM_UPDATE_FACTCP_ACTIVE_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_UPDATE_FACTCP_ACTIVE_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_12/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_14">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_14" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_UPDATE_FACTCP_MASTER_SP" itemTag="/op:016/op:016_14" itemLabel="DM_UPDATE_FACTCP_MASTER_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_14/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_14/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_14/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_14/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_14/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_14/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_14/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_14/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_14/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_14/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_14/prop:subProcessRef" itemLabel="DM_UPDATE_FACTCP_MASTER_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_UPDATE_FACTCP_MASTER_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_14/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_15">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_15" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPAYMENTS_SP" itemTag="/op:016/op:016_15" itemLabel="DM_FACTPAYMENTS_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_15/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_15/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_15/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_15/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_15/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_15/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_15/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_15/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_15/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_15/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_15/prop:subProcessRef" itemLabel="DM_FACTPAYMENTS_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPAYMENTS_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_15/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_16">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_16" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPRODUCTAWARD_SP" itemTag="/op:016/op:016_16" itemLabel="DM_FACTPRODUCTAWARD_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_16/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_16/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_16/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_16/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_16/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_16/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_16/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_16/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_16/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_16/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_16/prop:subProcessRef" itemLabel="DM_FACTPRODUCTAWARD_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPRODUCTAWARD_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_16/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_17">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_17" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPRODAWARDRECIPIENT_SP" itemTag="/op:016/op:016_17" itemLabel="DM_FACTPRODAWARDRECIPIENT_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_17/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_17/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_17/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_17/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_17/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_17/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_17/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_17/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_17/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_17/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_17/prop:subProcessRef" itemLabel="DM_FACTPRODAWARDRECIPIENT_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPRODAWARDRECIPIENT_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_17/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_18">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_18" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTPROGRAMAPPLICATION_SP" itemTag="/op:016/op:016_18" itemLabel="DM_FACTPROGRAMAPPLICATION_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_18/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_18/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_18/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_18/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_18/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_18/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_18/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_18/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_18/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_18/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_18/prop:subProcessRef" itemLabel="DM_FACTPROGRAMAPPLICATION_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTPROGRAMAPPLICATION_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_18/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <operatorMap key="016_19">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="016_19" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTCONTACT_COMPL_SP" itemTag="/op:016/op:016_19" itemLabel="DM_FACTCONTACT_COMPL_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:016/op:016_19/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:016/op:016_19/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/op:016_19/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/op:016_19/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:016/op:016_19/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:016/op:016_19/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:016/op:016_19/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:016/op:016_19/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:016/op:016_19/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:016/op:016_19/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:016/op:016_19/prop:subProcessRef" itemLabel="DM_FACTCONTACT_COMPL_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTCONTACT_COMPL_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:016/op:016_19/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <inputPortMap key="in">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" itemName="in" itemTag="/op:016/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.4/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.2">
+            <changeParamTable key="/op:010/output:unconditional:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:010/output:unconditional:0" paramName="unconditional" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.3/@value/@outputPortMap.2/@value" paramParent="/0/@operatorMap.3/@value"/>
+            </changeParamTable>
+            <ownedSchema iD="IN_016_0" itemTag="/op:016/input:in:0" name="IN_016_0"/>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </inputPortMap>
+        <outputPortMap key="on-success">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" itemName="on-success" itemTag="/op:016/output:on-success:0" itemLabel="On Success" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="on-failure">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" itemName="on-failure" itemTag="/op:016/output:on-failure:0" itemLabel="On Failure" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="unconditional">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" itemName="unconditional" itemTag="/op:016/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" toLink="/0/@linkList.3">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <etloperators iD="37" itemName="etloperators" itemTag="/op:016/prop:etloperators" itemType="ParallelContainerActivity">
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.4/@value/@operatorMap.3/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" operator="/0/@operatorMap.4/@value/@operatorMap.4/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.1/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.0/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.2/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.5/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.6/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.7/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.8/@value"/>
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.4/@value/@operatorMap.9/@value"/>
+        </etloperators>
+        <executionOrder iD="38" itemName="executionOrder" itemTag="/op:016/prop:executionOrder" itemType="ExecutionOrder" containedEnum="sequential"/>
+        <logOption iD="39" itemName="logOption" itemTag="/op:016/prop:logOption" itemType="LogOption"/>
+        <logLevel iD="40" itemName="logLevel" itemTag="/op:016/prop:logLevel" itemType="LogLevel"/>
+        <traceLevel iD="41" itemName="traceLevel" itemTag="/op:016/prop:traceLevel" itemType="TraceLevel"/>
+        <skipLabel iD="42" itemName="skipLabel" itemTag="/op:016/prop:skipLabel" itemType="dummyLabel"/>
+        <activityDisabled iD="43" itemName="activityDisabled" itemTag="/op:016/prop:activityDisabled" itemType="boolean"/>
+      </value>
+    </operatorMap>
+    <operatorMap key="019">
+      <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" iD="019" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" itemName="ParallelControlFlowActivity" itemTag="/op:019" itemLabel="Datamart_Operational_Batch_04" version="2.3.0" lastAssignedID="0">
+        <operatorMap key="019_0">
+          <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" iD="019_0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" itemName="DM_FACTCONTACT_LOG_SP" itemTag="/op:019/op:019_0" itemLabel="DM_FACTCONTACT_LOG_SP" version="2.3.0">
+            <inputPortMap key="in">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::input::in" itemName="in" itemTag="/op:019/op:019_0/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </inputPortMap>
+            <outputPortMap key="on-success">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-success" itemName="on-success" itemTag="/op:019/op:019_0/output:on-success:0" itemLabel="On Success" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="on-failure">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::on-failure" itemName="on-failure" itemTag="/op:019/op:019_0/output:on-failure:0" itemLabel="On Failure" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <outputPortMap key="unconditional">
+              <value xsi:type="dynOpr:http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" iD="0" definitionID="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity::output::unconditional" itemName="unconditional" itemTag="/op:019/op:019_0/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+                <stagingInfoList type="NONE"/>
+              </value>
+            </outputPortMap>
+            <inputParameters iD="26" itemName="inputParameters" itemTag="/op:019/op:019_0/prop:inputParameters" itemType="VariableAssignment"/>
+            <logLevel iD="27" itemName="logLevel" itemTag="/op:019/op:019_0/prop:logLevel" itemType="LogLevel"/>
+            <traceLevel iD="28" itemName="traceLevel" itemTag="/op:019/op:019_0/prop:traceLevel" itemType="TraceLevel"/>
+            <skipLabel iD="29" itemName="skipLabel" itemTag="/op:019/op:019_0/prop:skipLabel" itemType="dummyLabel"/>
+            <activityDisabled iD="30" itemName="activityDisabled" itemTag="/op:019/op:019_0/prop:activityDisabled" itemType="boolean"/>
+            <exportParameters iD="31" itemName="exportParameters" itemTag="/op:019/op:019_0/prop:exportParameters" itemType="VariableAssignment"/>
+            <subProcessRef iD="32" itemName="subProcessRef" itemTag="/op:019/op:019_0/prop:subProcessRef" itemLabel="DM_FACTCONTACT_LOG_SP.sflowxmi" itemType="ExternalItemRef" refType="subProcess" refUri="/CuramBIWarehouse/sub-processes/datamarts/DM_FACTCONTACT_LOG_SP.sflowxmi"/>
+            <validationRigor iD="33" itemName="validationRigor" itemTag="/op:019/op:019_0/prop:validationRigor" hidden="true"/>
+          </value>
+        </operatorMap>
+        <inputPortMap key="in">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::input::in" itemName="in" itemTag="/op:019/input:in:0" itemLabel="Input" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" schema="/0/@operatorMap.5/@value/@inputPortMap.0/@value/@ownedSchema" fromLink="/0/@linkList.3">
+            <changeParamTable key="/op:016/output:unconditional:0,LINK">
+              <value xsi:type="com.ibm.datatools.etl.coretypes:VTParamEntry" paramID="/op:016/output:unconditional:0" paramName="unconditional" paramType="output" paramUsage="LINK" subParamID="0" sortIdx="-1" paramValue="/0/@operatorMap.4/@value/@outputPortMap.2/@value" paramParent="/0/@operatorMap.4/@value"/>
+            </changeParamTable>
+            <ownedSchema iD="IN_019_0" itemTag="/op:019/input:in:0" name="IN_019_0"/>
+            <stagingInfoList type="NONE"/>
+          </value>
+        </inputPortMap>
+        <outputPortMap key="on-success">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-success" itemName="on-success" itemTag="/op:019/output:on-success:0" itemLabel="On Success" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="on-failure">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::on-failure" itemName="on-failure" itemTag="/op:019/output:on-failure:0" itemLabel="On Failure" enabled="false" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <outputPortMap key="unconditional">
+          <value xsi:type="dynOpr:com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" iD="0" definitionID="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity::output::unconditional" itemName="unconditional" itemTag="/op:019/output:unconditional:0" itemLabel="Unconditional" editable="false" version="2.3.0" lastAsssignedID="0" delPortEnabled="false" mappable="false" toLink="/0/@linkList.4">
+            <stagingInfoList type="NONE"/>
+          </value>
+        </outputPortMap>
+        <etloperators iD="37" itemName="etloperators" itemTag="/op:019/prop:etloperators" itemType="ParallelContainerActivity">
+          <Flow_ParallelControlFlowActivity_etloperators xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" height="-1" width="-1" type="http:///com/ibm/datatools/sqw/subprocess/subprocess.oplib/SubProcessActivity" operator="/0/@operatorMap.5/@value/@operatorMap.0/@value"/>
+        </etloperators>
+        <executionOrder iD="38" itemName="executionOrder" itemTag="/op:019/prop:executionOrder" itemType="ExecutionOrder" containedEnum="sequential"/>
+        <logOption iD="39" itemName="logOption" itemTag="/op:019/prop:logOption" itemType="LogOption"/>
+        <logLevel iD="40" itemName="logLevel" itemTag="/op:019/prop:logLevel" itemType="LogLevel"/>
+        <traceLevel iD="41" itemName="traceLevel" itemTag="/op:019/prop:traceLevel" itemType="TraceLevel"/>
+        <skipLabel iD="42" itemName="skipLabel" itemTag="/op:019/prop:skipLabel" itemType="dummyLabel"/>
+        <activityDisabled iD="43" itemName="activityDisabled" itemTag="/op:019/prop:activityDisabled" itemType="boolean"/>
+      </value>
+    </operatorMap>
+    <eventManager>
+      <causeToDependentsLookup value="/0/@operatorMap.2/@value/@inputPortMap.0/@value" key="/0/@operatorMap.0/@value/@outputPortMap.0/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.3/@value/@inputPortMap.0/@value" key="/0/@operatorMap.2/@value/@outputPortMap.2/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.4/@value/@inputPortMap.0/@value" key="/0/@operatorMap.3/@value/@outputPortMap.2/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.5/@value/@inputPortMap.0/@value" key="/0/@operatorMap.4/@value/@outputPortMap.2/@value"/>
+      <causeToDependentsLookup value="/0/@operatorMap.1/@value/@inputPortMap.0/@value" key="/0/@operatorMap.5/@value/@outputPortMap.2/@value"/>
+      <dependentToCausesLookup value="/0/@operatorMap.0/@value/@outputPortMap.0/@value" key="/0/@operatorMap.2/@value/@inputPortMap.0/@value"/>
+      <dependentToCausesLookup value="/0/@operatorMap.2/@value/@outputPortMap.2/@value" key="/0/@operatorMap.3/@value/@inputPortMap.0/@value"/>
+      <dependentToCausesLookup value="/0/@operatorMap.3/@value/@outputPortMap.2/@value" key="/0/@operatorMap.4/@value/@inputPortMap.0/@value"/>
+      <dependentToCausesLookup value="/0/@operatorMap.4/@value/@outputPortMap.2/@value" key="/0/@operatorMap.5/@value/@inputPortMap.0/@value"/>
+      <dependentToCausesLookup value="/0/@operatorMap.5/@value/@outputPortMap.2/@value" key="/0/@operatorMap.1/@value/@inputPortMap.0/@value"/>
+    </eventManager>
+    <linkList xsi:type="dynOpr:Link" iD="09" definitionID="Link" itemTag="/link:09" toPort="/0/@operatorMap.2/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.0/@value/@outputPortMap.0/@value"/>
+    <linkList xsi:type="dynOpr:Link" iD="012" definitionID="Link" itemTag="/link:012" toPort="/0/@operatorMap.3/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.2/@value/@outputPortMap.2/@value"/>
+    <linkList xsi:type="dynOpr:Link" iD="017" definitionID="Link" itemTag="/link:017" toPort="/0/@operatorMap.4/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.3/@value/@outputPortMap.2/@value"/>
+    <linkList xsi:type="dynOpr:Link" iD="020" definitionID="Link" itemTag="/link:020" toPort="/0/@operatorMap.5/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.4/@value/@outputPortMap.2/@value"/>
+    <linkList xsi:type="dynOpr:Link" iD="021" definitionID="Link" itemTag="/link:021" toPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value" fromPort="/0/@operatorMap.5/@value/@outputPortMap.2/@value"/>
+    <exampleCFlowProp iD="35" itemName="exampleCFlowProp" hidden="true"/>
+    <breakPoints iD="36" itemName="breakPoints" hidden="true"/>
+    <logLevel iD="37" itemName="logLevel" itemType="LogLevel"/>
+    <traceLevel iD="38" itemName="traceLevel" itemType="TraceLevel"/>
+  </dynOpr:ControlFlow>
+  <com.ibm.datatools.etl.dataflow.view:ETLFlow>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.4/@outputs.0" target="/1/@elements.10/@inputs.0" operatorLink="/0/@linkList.0"/>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.10/@outputs.2" target="/1/@elements.3/@inputs.0" operatorLink="/0/@linkList.1"/>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.3/@outputs.2" target="/1/@elements.5/@inputs.0" operatorLink="/0/@linkList.2"/>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="581" y="133" height="-1" width="-1" operator="/0/@operatorMap.3/@value">
+      <inputs incomingConnection="/1/@elements.1" operatorPort="/0/@operatorMap.3/@value/@inputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.3/@value/@outputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.3/@value/@outputPortMap.1/@value"/>
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.2" operatorPort="/0/@operatorMap.3/@value/@outputPortMap.2/@value"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="130" y="198" height="-1" width="-1" operator="/0/@operatorMap.0/@value">
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.0" operatorPort="/0/@operatorMap.0/@value/@outputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.0/@value/@outputPortMap.1/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.0/@value/@outputPortMap.2/@value"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="848" y="132" height="-1" width="-1" type="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" operator="/0/@operatorMap.4/@value">
+      <inputs incomingConnection="/1/@elements.2" operatorPort="/0/@operatorMap.4/@value/@inputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.4/@value/@outputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.4/@value/@outputPortMap.1/@value"/>
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.6" operatorPort="/0/@operatorMap.4/@value/@outputPortMap.2/@value"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.5/@outputs.2" target="/1/@elements.8/@inputs.0" operatorLink="/0/@linkList.3"/>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="1375" y="232" height="-1" width="-1" operator="/0/@operatorMap.1/@value">
+      <inputs incomingConnection="/1/@elements.9" operatorPort="/0/@operatorMap.1/@value/@inputPortMap.0/@value"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="1104" y="139" height="-1" width="-1" type="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" operator="/0/@operatorMap.5/@value">
+      <inputs incomingConnection="/1/@elements.6" operatorPort="/0/@operatorMap.5/@value/@inputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.5/@value/@outputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.5/@value/@outputPortMap.1/@value"/>
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.9" operatorPort="/0/@operatorMap.5/@value/@outputPortMap.2/@value"/>
+    </elements>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperatorConnection" source="/1/@elements.8/@outputs.2" target="/1/@elements.7/@inputs.0" operatorLink="/0/@linkList.4"/>
+    <elements xsi:type="com.ibm.datatools.etl.dataflow.view:ETLOperator" x="279" y="129" height="-1" width="-1" type="com.ibm.datatools.sqw.cflow.parallel.pcflow.oplib/Flow/ParallelControlFlowActivity" operator="/0/@operatorMap.2/@value">
+      <inputs incomingConnection="/1/@elements.0" operatorPort="/0/@operatorMap.2/@value/@inputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.2/@value/@outputPortMap.0/@value"/>
+      <outputs type="OutputPort" operatorPort="/0/@operatorMap.2/@value/@outputPortMap.1/@value"/>
+      <outputs type="OutputPort" outgoingConnections="/1/@elements.1" operatorPort="/0/@operatorMap.2/@value/@outputPortMap.2/@value"/>
+    </elements>
+  </com.ibm.datatools.etl.dataflow.view:ETLFlow>
+</xmi:XMI>

@@ -1,0 +1,109 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ActivityOccurrence</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Parallel Activity Occurrence
+:</b>
+<i>Extension of <a href=ActivityInstance.html>Activity Instance</a> state data for Parallel Activity Instances - keeps track of which Workflow Data Object the Instance is processing.
+</i>
+
+<P>
+
+A Parallel Activity in a Workflow <a href=ProcessDefinition.html> Process Definition</a> allows a workflow to perform the same step on multiple data items in parallel.  The data items are obtained from the Parallel List WDO and one <a href=ActivityInstance.html>Activity Instance</a> is created for each item in the list.  The Parallel Activity Occurrence record tracks which item in the list is associated with each Activity Instance.
+
+</P>
+
+<p><b>Example</b></p>
+<P>
+
+    Your department is experiencing a significant amount of claim fraud, where clients are boosting their eligibility by claiming to have more dependents than they actually do.  You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to check the details for all dependents listed on claim forms.  The checks are time-consuming and you want to process claims quickly, so you simultaneously assign each dependent to an individual case worker for investigation (modeled as a Parallel Manual activity).
+
+</P>
+
+<P><a href=Person.html>Person</a> John Smith submits a claim form, indicating that he has three dependents.  This causes your workflow to be enacted, creating a <a href=ProcessInstance.html>Process Instance</a> and supplying the list of dependents as 'enactment data'.</P>
+
+<P>The system transitions to the first Activity definition in your workflow.  The Workflow Engine detects that this is a Parallel Manual Activity and divides up the list of dependents - creating one Activity Instance for each dependent in the list.</P>
+
+<P>It also creates a Parallel Activity Occurrence record for each Activity Instance, relating that instance to the dependent it will be processing.  Specifically, it records the position of that dependent in the supplied dependents list).</P>
+
+<P>The Workflow Engine creates Tasks for each of the Activity Instances, separately allocating those Tasks to independent caseworkers.  The Workflow Engine uses the Parallel Activity Occurrence information to populate each Task with the correct details for the respective dependent.</P>
+
+<p><b>Technical Notes</b></p>
+<P>See the Workflow Reference Guide for further information.</P>
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (3)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">occurrenceCount</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The number of the index from the parallel activity list workflow data object used to create this parallel activity instance.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">activityInstanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of a parallel activity instance workflow data object.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ActivityOccurrence.activityInstanceID</td><td class="dataLast"><a href="ActivityInstance.html#activityInstanceID">ActivityInstance.activityInstanceID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

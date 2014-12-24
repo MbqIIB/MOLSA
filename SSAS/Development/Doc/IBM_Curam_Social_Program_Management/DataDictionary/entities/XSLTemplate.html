@@ -1,0 +1,165 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>XSLTemplate</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>XSL Template:</b>
+<i> A family of versions of a stored XSL stylesheet/template.</i>
+<P>Most organizations have a requirement that (for legal reasons) correspondence from the organization must be reproducible in the original format with the original content intact.</P>
+<P>Each XSL stylesheet/template may undergo a number of changes, e.g. to correct errors or conform to new requirements.  However, an old version of a stylesheet/template cannot be changed directly (as this would prevent the correct re-printing of documents formatted using that template) - instead a new version is created.</P>
+<P>A row on this table holds the version number of the most recent version of the template and its editorial status.</P>
+<p><b>Example</b></p><P>You implement some new functionality that requires a new XSL template for printing correspondence to a <a href=Person.html>Person</a>.  <a href=Users.html>User</a> Ronan Rooney creates a new XSL template for this type of correspondence and uploads it.  A row is created on this table with a version number of 1.</P>
+<P><a href=Users.html>User</a> Ronan Rooney then uses your new functionality to format and print a letter to <a href=Person.html>Person</a> John Smith.  The C&uacute;ram Server retrieves data about John Smith and passes it to the XML infrastructure, together with the 'ID code' for the row on this table.</P>
+<P>The XML infrastructure retrieves the row from this table and from it identifies the version number of the latest template instance (in this case, 1).  The XML infrastructure retrieves the corresponding <a href=XSLTemplateInst.html>XSL Template Instance</a> row and uses it to format John Smith's data into a printable document.  The XML infrastructure then prints this document and <a href=Users.html>User</a> Ronan Rooney puts the printed document into an envelope and mails it to John Smith.</P>
+<P><a href=Users.html>User</a> Ronan Rooney then notices a typographical error in the XSL template.  He:</P>
+<UL>
+<LI>'checks out' the template; the XML infrastructure updates the row on this table to show that the template is checked out;</LI>
+<LI>edits the XSL template to correct the typographical error; and</LI>
+<LI>'checks in' his changes to the XSL template; the XML infrastructure creates a new row on <a href=XSLTemplateInst.html>XSL Template Instance</a> with the version number 2, and updates the row on XSL Template to show that the template is no longer checked out and that the latest version is 2.</LI>
+</UL>
+<P><a href=Users.html>User</a> Ronan Rooney uses your new functionality to format and print a letter to <a href=Person.html>Person</a> Mary Smith.  The XML infrastructure uses the latest version of the XSL template to format and print the letter (version 2, containing the correction to the typographical error).</P>
+<p><b>Technical Notes</b></p><P>The version of a template that is edited is not always the latest one. Any previous version can be edited and (when it is checked-in it) will become the new 'latest version'.</P>
+<P>New documents are always formatted using the latest version of the corresponding template.</P>
+<P>Each row on this table stores an 'ID code' to permit the row to be identified by application logic and retrieved.</P>
+<P>For more information see the C&uacute;ram XML Infrastructure Guide.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (15)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">templateID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique ID of an XSL template document.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">localeIdentifier</td><td class="data">Yes</td><td class="data">No</td><td class="data">The language/country code.</td><td class="dataLast">SVR_STRING&lt;5&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">templateName</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A name or short description of an XML document.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">latestVersion</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The version number (unsigned int) of an XSL template document.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">checkedOut</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">True if the template is checked out, false otherwise.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">checkedOutBy</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The name of the user the template is checked out to.</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">checkedOutVersion</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The version number (unsigned int) of the checked out XSL template document.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">checkedOutTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The time at which the template was checked out.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">coComment</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A comment when checking in or checking out templates.</td><td class="dataLast">SVR_STRING&lt;300&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">templateFile</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The name of a template file that is the source or destination of a template.</td><td class="dataLast">SVR_STRING&lt;300&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">templateType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The type code for this template.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">templateIDCode</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The ID code for this template. This allows templates to be associated one-to-one with a code table for easy selection and server-side code maintenance.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">editable</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">True if the template is editable, false otherwise.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">relatesTo</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A code specifying a type of relationship between this template and another type of entity (e.g., a claim or a case, etc.).</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="XSLTemplateInst.html#templateID">XSLTemplateInst.templateID</a></td><td class="dataLast">XSLTemplate.templateID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">XSLTemplIDCodeIdx</td><td class="dataLast">templateIDCode</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

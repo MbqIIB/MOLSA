@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search provider groups  page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyProviderMemberRelationship"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="ACTION"
+    OPERATION="modifyProviderMember"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="DISPLAY"
+    OPERATION="viewMember"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="providerMemberConcernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerMemberConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="memberDetails$providerPartyID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="memberDetails$versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerMemberConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="memberKey$providerPartyID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00200179, SS -->
+  <!-- BEGIN, CR00199550, SS -->
+  <!-- BEGIN, CR00187976, SS -->
+  <!-- BEGIN, CR00248011, GP -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248011 -->
+    <!-- END, CR00199550 -->
+    <!-- END, CR00200179 -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="60"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00228688, PS -->
+
+
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="47"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00228688 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$fromDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="memberDetails$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199550, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.Role"
+      WIDTH="90"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00199550 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$role"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="memberDetails$memberRole"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <!-- BEGIN, CR00228688, PS -->
+
+
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="45"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00228688 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$toDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="memberDetails$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00199550, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.Position"
+      USE_BLANK="true"
+      WIDTH="95"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00199550 -->
+      <!-- END, CR00207959 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$position"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="memberDetails$position"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+        </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+        </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

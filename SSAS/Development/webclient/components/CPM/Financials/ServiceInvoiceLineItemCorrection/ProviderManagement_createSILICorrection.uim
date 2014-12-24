@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page creates a new correction for service invoice line item  -->
+<PAGE
+  PAGE_ID="ProviderManagement_createSILICorrection"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <!-- BEGIN, CR00200393, SSK  -->
+  <SERVER_INTERFACE
+    CLASS="SILICorrection"
+    NAME="ACTION"
+    OPERATION="createNewServiceInvoiceLineItemCorrection"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00200393  -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="viewSILI"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00158345 -->
+
+
+  <PAGE_PARAMETER NAME="serviceInvoiceLineItemID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$details$serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00185711, DRS -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$details$externalReferenceNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="externalRefNo"
+    />
+  </CONNECT>
+  <!-- END CR00185711 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00246672, PS -->
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00246672 -->
+    <FIELD LABEL="Field.Label.ExtRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$externalReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$service"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$serviceID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD LABEL="Field.Label.ServiceDateFrom">
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceDateFrom"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$serviceFromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00246672, PS -->
+    <FIELD
+      LABEL="Field.Label.NumberOfUnits"
+      WIDTH="50"
+    >
+      <!-- END, CR00246672 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$noOfUnits"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$numberOfUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00246672, PS -->
+    <FIELD
+      LABEL="Field.Label.AmtInvoiced"
+      WIDTH="50"
+    >
+      <!-- END, CR00246672 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$amountInvoiced"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceAuthRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$saReferenceNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$saRefNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CaseRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$caseReferenceNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$caseRefNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD LABEL="Field.Label.ServiceDateTo">
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceDateTo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$serviceToDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00246672, PS -->
+    <FIELD
+      LABEL="Field.Label.UnitAmount"
+      WIDTH="50"
+    >
+      <!-- END, CR00246672 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$unitAmount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00246672, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.PayeeDetails"
+  >
+    <!-- END, CR00246672 -->
+    <FIELD LABEL="Field.Label.PayeeRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$payeeReferenceNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$payeeRefNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PayeeName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$payeeName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$payeeName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- BEGIN, CR00246672, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ProviderDetails"
+  >
+    <!-- END, CR00246672 -->
+    <FIELD LABEL="Field.Label.ProviderRefNo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$providerReferenceNo"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerRefNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$providerName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <!-- BEGIN, CR00246672, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    SHOW_LABELS="false"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.ClientDetails"
+  >
+    <!-- END, CR00246672 -->
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="clientDetails"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientDetails"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00158345 -->
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.CorrectionReason"
+  >
+    <!-- BEGIN, CR00197955, PS -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Cluster.Title.CorrectionReason"
+    >
+      <!-- END, CR00197955 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$reason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00200393, SSK  -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+
+    </ACTION_CONTROL>
+    <!-- END, CR00200393  -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

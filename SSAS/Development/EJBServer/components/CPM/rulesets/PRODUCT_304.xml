@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/ruleset.xsd"
+>
+  <Product
+    comment=""
+    id="PRODUCT_304"
+    legislationbase=""
+    producttype="RT2"
+  >
+    <Label
+      highlightonfailure="true"
+      legislationlink=""
+    >
+      <RuleName>
+        <Text
+          locale="en_US"
+          value="Provider Attendance Payment"
+        />
+      </RuleName>
+      <SuccessText>
+        <Text
+          locale="en_US"
+          value="Provider Attendance Payment succeeded"
+        />
+      </SuccessText>
+      <FailureText>
+        <Text
+          locale="en_US"
+          value="Provider Attendance Payment failed"
+        />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation"/>
+      <DataItem name="deliveryFrequency"/>
+      <DataItem name="personReferenceNumber"/>
+      <DataItem name="claimReferenceNumber"/>
+      <DataItem name="assessmentReferenceNumber"/>
+    </DataAccess>
+    <DataAccess name="ProviderAttendanceEvidence">
+      <DataItem name="paymentAmount"/>
+      <DataItem name="providerRosterLineItemID"/>
+    </DataAccess>
+    <DataAccess name="ProviderAttendanceConstants">
+      <DataItem name="paymentAmount"/>
+      <DataItem name="totalCount"/>
+    </DataAccess>
+    <RuleGroup
+      executionmode="stoponresult"
+      id="1"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Provider Attendance Payment"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Provider Attendance Payments exists"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Provider Attendance Payments does not exist"
+          />
+        </FailureText>
+      </Label>
+      <RuleListGroup
+        executionmode="executeall"
+        id="2"
+        listgroup="ProviderAttendanceEvidence"
+        operation="and"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Calculating Provider Attendance Payments"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Calculating Provider Attendance Payments Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Calculating Provider Attendance Payments Failed"
+            />
+          </FailureText>
+        </Label>
+        <DataItemAssignment
+          dataitem="ProviderAttendanceConstants.totalCount"
+          id="3"
+          value="ProviderAttendanceConstants.totalCount + 1"
+        />
+        <DataItemAssignment
+          dataitem="ProviderAttendanceConstants.paymentAmount"
+          id="4"
+          value="ProviderAttendanceConstants.paymentAmount + ProviderAttendanceEvidence.current.paymentAmount"
+        />
+      </RuleListGroup>
+      <RuleGroup
+        executionmode="stoponresult"
+        id="5"
+        operation="and"
+        summaryitem="false"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Checking total count and total amount for Provider Attendance Payments"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Checking total count and total amount for Provider Attendance Payments Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Checking total count and total amount for Provider Attendance Payments Failed"
+            />
+          </FailureText>
+        </Label>
+        <Rule id="6">
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Provider Attendance Payment"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Provider Attendance Payment Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Provider Attendance Payment Failed"
+              />
+            </FailureText>
+          </Label>
+          <Condition
+            closingbrackets="0"
+            dataitemlhs="ProviderAttendanceConstants.totalCount"
+            dataitemrhs="0"
+            id="7"
+            openingbrackets="0"
+            operation="&gt;"
+          />
+        </Rule>
+        <Rule id="8">
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Provider Attendance Payment"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Provider Attendance Payment Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Provider Attendance Payment Failed"
+              />
+            </FailureText>
+          </Label>
+          <Condition
+            closingbrackets="0"
+            dataitemlhs="ProviderAttendanceConstants.paymentAmount"
+            dataitemrhs="0"
+            id="9"
+            openingbrackets="0"
+            operation="&gt;"
+          />
+        </Rule>
+      </RuleGroup>
+    </RuleGroup>
+    <ObjectiveGroup
+      id="10"
+      priority="0"
+    >
+      <Label highlightonfailure="true">
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Provider Attendance Payment Objective Group"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Provider Attendance Payment Objective Group Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Provider Attendance Payment Objective Group Failed"
+          />
+        </FailureText>
+      </Label>
+      <ObjectiveListGroup
+        conjunction="all"
+        id="11"
+        listgroup="ProviderAttendanceEvidence"
+      >
+        <Label highlightonfailure="true">
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Attendance Objective List Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Attendance Payment Objective List Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Attendance Payment Objective List Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="12"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Check for Provider Attendance Payment greater than zero"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Check for Provider Attendance Payment greater than zero Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Check for Provider Attendance Payment greater than zero Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="13">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Attendance Payment"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Attendance Payment Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Attendance Payment Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="ProviderAttendanceEvidence.current.paymentAmount"
+              dataitemrhs="0"
+              id="14"
+              openingbrackets="0"
+              operation="&gt;"
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="15"
+          priority="0"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC3004"
+          recordid="10"
+          relatedreference="ProviderAttendanceEvidence.current.providerRosterLineItemID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Attendance Payment Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Attendance Payment Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Attendance Payment Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="16"
+            name="Provider Attendance Payment"
+            pattern="000020100"
+            recordid="120"
+            type="RTT3"
+            value="ProviderAttendanceEvidence.current.paymentAmount"
+          />
+        </Objective>
+      </ObjectiveListGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>

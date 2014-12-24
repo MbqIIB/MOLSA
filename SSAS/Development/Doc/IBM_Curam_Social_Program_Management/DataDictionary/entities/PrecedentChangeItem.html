@@ -1,0 +1,179 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>PrecedentChangeItem</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Precedent Change Item
+
+
+:</b>
+<i> An item in a <a href=PrecedentChangeSet.html>Precedent Change Set</a>, i.e. details of a precedent which has changed (identified by its type and ID).
+
+
+</i>
+
+
+
+<P>When a client of the Dependency Manager identifies that data that may have been used in a calculation has changed, then that client can request that the Dependency Manager must identify and recalculate dependent values affected by the change.<P>
+
+
+
+<P>If the Dependency Manager is configured to defer the identification/recalculation work to another transaction (e.g. by enqueuing a deferred process request or by waiting until the Dependency Manager batch suite is next run), then the Dependency Manager must record the changed precedent data in a <a href=PrecedentChangeSet.html>Precedent Change Set</a>.  Each item of changed precedent data is stored as a row on this entity, linking to its owning <a href=PrecedentChangeSet.html>Precedent Change Set</a>.</P>
+
+
+
+<p><b>Example</b></p>
+<P>The Eligibility and Entitlement Engine identifies that a determination result for <a href=ProductDelivery.html>Product Delivery</a> 123 depends on:</P>
+
+<UL>
+
+<LI>data from the claimant's row on the <a href=Person.html>Person</a> entity;</LI>
+
+<LI>active evidence from the parent integrated case 122; and</LI>
+
+<LI>product configuration data stored on <a href=CREOLEProduct.html>CREOLE Product</a>.</LI>
+
+</UL>
+
+
+
+<P>Later, change of circumstances evidence is activated on integrated case 122, and the Eligibility and Entitlement Engine notifies the Dependency Manager that there has been a change to the precedent data of type "active evidence" for case 122.  The Dependency Manager:</P>
+
+<UL>
+
+<LI>stores a new <a href=PrecedentChangeSet.html>Precedent Change Set</a> row;</LI>
+
+<LI>stores a new row on this entity identifying the data that changed and ties to the precedent change set row stored above; and</LI>
+
+<LI>submits the precedent change set for deferred processing.</LI>
+
+</UL>
+
+
+
+<P>When the deferred processing request is later dequeued, the Dependency Manager uses the precedent change item stored in the precedent change set together with the <a href=Dependency.html>Dependency</a> rows to identify that <a href=ProductDelivery.html>Product Delivery</a> 123 must be reassessed.</P>
+
+
+
+<p><b>Technical Notes</b></p>
+
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+<P>Optimistic locking is not required as rows are never modified.</P>
+
+
+
+<P>The Dependency Manager has no inherent understanding of the precedent referred to by a row on this entity.  As such the precedentType and precedentID attributes on this entity are not constrained by foreign keys, since the Dependency Manager intentionally does not maintain any lists of known precedents in the system.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">precedentChangeItemID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique identifier of this record.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">precedentChangeSetID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The identifier of the Precedent Change Set to which this Precedent Change Item belongs.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">precedentType</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The type of the precedent that changed.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">precedentID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The identifier of the precedent that changed (within its precedentType).</td><td class="dataLast">SVR_STRING&lt;1000&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">changedByUserName</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The identifier of the user whose transaction caused the precedent to change.</td><td class="dataLast">SVR_STRING&lt;40&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">changedDateTime</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The date and time that the precedent changed.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">PrecedentChangeItem.precedentChangeSetID</td><td class="dataLast"><a href="PrecedentChangeSet.html#precedentChangeSetID">PrecedentChangeSet.precedentChangeSetID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">PrecendentChangeItemSetIDIdx</td><td class="dataLast">precedentChangeSetID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (Confidential Information).   You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view completed provider group             -->
+<!-- training program.                                                      -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewCompletedProviderGroupTraining"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="trainingProgramID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="DISPLAY"
+    OPERATION="viewCompletedTrainingNotManagedByAgency"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAY1"
+    OPERATION="readProviderGroupSummaryDetails"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingProgramID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$trainingProgramID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerGroupConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00137364, AS -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.TrainingProviderDetails"
+  >
+    <FIELD LABEL="Field.Label.RegisteredProvider">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingProgramDetails$registeredTrainingProviderName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      HEIGHT="3"
+      LABEL="Cluster.Label.UnRegisteredProvider"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingProgramDetails$trainingProviderDetails"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00137364 -->
+
+
+  <LIST TITLE="List.Title.ProviderGroupMembers">
+    <!-- BEGIN, CR00198612, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_updateCompletedTrainingProgramForProviderGroupMember"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="trainingProgramID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$partyDetailsList$partyDetails$partyConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="memberConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00206505, SS -->
+      <!-- BEGIN, CR00235795, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ViewHistory"
+      >
+        <!-- END, CR00235795 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewMemberTrainingStatusHistory"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$partyDetailsList$partyDetails$trainingProgramMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramMemberID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00206505 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteTrainingProgramForProviderGroupMember"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$trainingProgramDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$partyDetailsList$partyDetails$trainingProgramMemberID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramMemberID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$partyDetailsList$partyDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramMemberVersionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00198612 -->
+    <FIELD LABEL="Field.Label.ProviderGroupMember">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$partyDetailsList$partyDetails$partyName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198612, SS -->
+    <FIELD LABEL="Field.Label.DateCompleted">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$partyDetailsList$partyDetails$dateCompleted"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitsCompleted">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$partyDetailsList$partyDetails$unitsCompleted"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Container.Label.Status">
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$partyDetailsList$partyDetails$status"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <!-- END, CR00198612 -->
+
+
+  </LIST>
+
+
+</PAGE>

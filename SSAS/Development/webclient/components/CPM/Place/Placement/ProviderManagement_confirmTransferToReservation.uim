@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                    -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- the terms of the license agreement you entered into with Curam             -->
+<!-- Software.                                                                  -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows user  to confirm the transfer of the                      -->
+<!-- placement to reservation.                                                                              -->
+<PAGE
+  PAGE_ID="ProviderManagement_confirmTransferToReservation"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="placeID"/>
+  <PAGE_PARAMETER NAME="placementID"/>
+  <PAGE_PARAMETER NAME="startDate"/>
+  <PAGE_PARAMETER NAME="placementVersionNo"/>
+  <PAGE_PARAMETER NAME="placementTransferred"/>
+  <!-- BEGIN, CR00188227, SSK -->
+  <SERVER_INTERFACE
+    CLASS="Placement"
+    NAME="DISPLAY1"
+    OPERATION="viewPlacementTransferSummary"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00188227  -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Placement"
+    NAME="ACTION"
+    OPERATION="transferClientToReservation"
+    PHASE="ACTION"
+  />
+  <!-- BEGIN, CR00247132, VR -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00247132  -->
+  <!-- BEGIN, CR00188227, SSK -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="placementID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="startDate"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="transferPlacementDetails$startDate"
+    />
+  </CONNECT>
+  <!-- END, CR00188227  -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placeID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placementID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00247132, VR -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY1"
+      PROPERTY="result$startDate"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="startDate"
+    />
+  </CONNECT>
+  <!-- END, CR00247132  -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placementVersionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementTransferred"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placementTransferred"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <!-- BEGIN, CR00247132, VR -->
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.ConfirmReservation.Confirm"
+        />
+        <!-- END, CR00247132  -->
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00187142, SS -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.No"/>
+
+
+  </ACTION_SET>
+  <!-- END, CR00187142 -->
+</PAGE>

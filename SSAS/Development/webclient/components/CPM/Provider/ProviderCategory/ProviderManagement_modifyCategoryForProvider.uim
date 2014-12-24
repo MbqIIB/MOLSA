@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the modify category for provider page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyCategoryForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="providerCategoryID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="modifyProviderCategory"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY"
+    OPERATION="viewProviderCategory"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerCategoryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerCategoryKey$providerCategoryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$providerCategory$providerCategoryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerCategoryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$providerCategory$providerConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerCategoryDetails$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$providerCategory$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerCategoryDetails$versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00207959, SS -->
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="37"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00187976 -->
+    <!-- END, CR00207959 -->
+
+
+    <FIELD LABEL="Field.Label.Category">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$category"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00228688, PS -->
+
+
+    <!-- BEGIN, CR00340134, MR -->
+
+
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="47"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00340134 -->
+      <!-- END, CR00228688 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.EndReason"
+      USE_BLANK="true"
+      WIDTH="95"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endReason"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endReason"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrimaryCategory">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="primaryInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="primaryInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00228688, PS -->
+
+
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="45"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00228688 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.ProviderType"
+  >
+
+
+    <FIELD CONTROL="TRANSFER_LIST">
+
+
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$initialsTypes$providerTypeCodeString"
+          NAME="DISPLAY"
+          PROPERTY="result$initialsTypes$providerType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$selectedProviderTypes"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerCategoryDetails$targetProviderTypes"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.ProviderComment"
+  >
+
+
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00228688, PS -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    <!-- END, CR00228688 -->
+  </ACTION_SET>
+
+
+</PAGE>

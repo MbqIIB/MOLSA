@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+  
+-->
+<project
+  basedir="."
+  default="buildjava"
+  name="CustomJavaBuild"
+>
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_properties.xml" />
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import initialization  ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_init.xml" />
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import utilities       ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_utilities.xml" />
+
+
+  <!--  **********************************  -->
+  <!--  ***  COMPILE JAVA SOURCE CODE  ***  -->
+  <!--  **********************************  -->
+
+  <target     depends="declareTasks"
+
+    description="Compiles the reporting classes" name="test.javacomponents">
+
+    <FindSourcePaths verbose="false" reportingDir="${REPORTING_DIR}"
+      javaSourcePropertyName="javasource.paths" javaSourceComponentName="javasource.components"/>
+      
+   </target>
+      
+
+  <target
+    depends="init,check.db.type,set.database.ora,set.database.db2, declareTasks"
+    description="Compiles the reporting classes" name="compile">
+
+    <FindSourcePaths  onlyCustomDirs="true" verbose="true" reportingDir="${REPORTING_DIR}"
+      javaSourcePropertyName="javasource.paths" />
+    
+    <javac 
+		 source="${compile.sourceversion}"
+		 target="${compile.targetversion}"
+         executable="${sysenv.JAVA_HOME_RDBMS}${file.separator}bin${file.separator}javac"
+         excludes="${custom.tasks.java.excludes}"
+         includes="${custom.tasks.java.includes}"                 
+         destdir="${dir.bld.source.tasks}" 
+         classpathref="CustomJavaComponents.path"
+         debug="${compile.debug}"
+         fork="${compile.fork}"
+         memoryMaximumSize="${compile.maxmemory}"
+         memoryInitialSize="${compile.maxmemory}"
+         nowarn="${compile.nowarn}"
+         optimize="${compile.optimize}"
+         deprecation="${compile.deprecation}"
+         verbose="${compile.verbose}"
+		 
+         includeAntRuntime="${compile.includeAntRuntime}"
+         includeJavaRuntime="${compile.includeJavaRuntime}"
+         failonerror="false"
+         listfiles="${compile.listfiles}">
+
+       <src path="${javasource.paths}" />         
+         
+      <compilerarg value="-version"/>
+    </javac>
+       
+      
+    <javac 
+		 source="${compile.sourceversion}"
+		 target="${compile.targetversion}"
+         executable="${sysenv.JAVA_HOME_RDBMS}${file.separator}bin${file.separator}javac"
+         debug="${compile.debug}"
+         fork="${compile.fork}"
+         memoryMaximumSize="${compile.maxmemory}"
+         memoryInitialSize="${compile.maxmemory}"
+         nowarn="${compile.nowarn}"
+         optimize="${compile.optimize}"
+         deprecation="${compile.deprecation}"
+         verbose="${compile.verbose}"
+         includeAntRuntime="${compile.includeAntRuntime}"
+         includeJavaRuntime="${compile.includeJavaRuntime}"
+         failonerror="${compile.failonerror}"
+         listfiles="${compile.listfiles}"
+	
+         excludes="${custom.transforms.java.excludes}"
+         includes="${custom.transforms.java.includes}"
+         destdir="${dir.bld.source.rdbms}" 
+         classpathref="CustomJavaComponents.path">
+
+      <src path="${javasource.paths}" />  
+      
+       </javac>
+
+  </target>
+  
+  
+  <target
+    depends="init,check.db.type,set.database.ora,set.database.db2, declareTasks"
+    description="Compiles the reporting classes" name="compile.info">
+    
+    <FindSourcePaths verbose="false" reportingDir="${REPORTING_DIR}"
+      javaSourcePropertyName="javasource.paths" />
+
+              <echo message="INFORMATION:Compiling class using RDBMS compiler, using ${sysenv.JAVA_HOME_RDBMS}${file.separator}bin${file.separator}javac" />              
+              <echo message="INFORMATION:Compiling class using SYSTEM compiler, using ${sysenv.JAVA_HOME}${file.separator}bin${file.separator}javac" />
+
+  </target>
+
+  <!--  *****************************  -->
+  <!--  ***  JAR SOURCE CODE      ***  -->
+  <!--  *****************************  -->
+
+
+  <target
+    depends="init,check.db.type,set.database.ora,set.database.db2,compile"
+    description="Jar's reporting classes" name="jar">
+       
+    
+
+    <jar compress="${compile.compress}" basedir="${dir.bld.source.tasks}"
+      destfile="${jar.reporting.customtasks}"
+      excludes="${custom.tasks.class.excludes}"
+      includes="${custom.tasks.class.includes}"
+      update="true" />
+     
+    <jar compress="${compile.compress}" basedir="${dir.bld.source.rdbms}"
+      destfile="${jar.reporting.etltransformsexternaluse}"
+      excludes="${custom.transforms.class.excludes}"
+      includes="${custom.transforms.class.includes}"
+      update="true" />
+
+
+
+  </target>
+
+
+</project>

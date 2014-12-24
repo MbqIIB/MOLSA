@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page changes a Speciality Type Icon -->
+<PAGE
+  PAGE_ID="ProviderManagement_changeSpecialtyTypeIcon"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainSpecialtyTypeIcon"
+    NAME="DISPLAY"
+    OPERATION="readSpecialtyTypeIcon"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainSpecialtyTypeIcon"
+    NAME="ACTION"
+    OPERATION="changeSpecialtyTypeIcon"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="specialtyTypeIconID"/>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="specialtyTypeIconID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="specialtyTypeIconIDKey$specialtyTypeIconID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="specialtyTypeIconID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$specialtyTypeIconID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$icon"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$icon"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$versionNo"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+  >
+    <FIELD
+      CONFIG="CT_DISPLAY_LABELS"
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      LABEL="Field.Label.SpecialtyType"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$specialty"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$specialty"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="32"
+    NUM_COLS="1"
+    SHOW_LABELS="true"
+  >
+    <FIELD
+      LABEL="Field.Title.IconName"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$iconName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$iconName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <WIDGET
+      LABEL="Field.Title.NewIcon"
+      TYPE="FILE_UPLOAD"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$newIcon"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+    </WIDGET>
+  </CLUSTER>
+
+
+</PAGE>

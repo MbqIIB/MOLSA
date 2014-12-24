@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2014. All rights reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.  
+-->
+<!-- Copyright 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 							                                -->
+<!-- =========== 				                       		         	    -->
+<!-- This page allows the user to list the contacts for a given Incident.   -->
+<PAGE
+  PAGE_ID="ProviderManagement_listIncidentContactLogs"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY"
+    OPERATION="listIncidentContactLog"
+  />
+
+
+  <!-- BEGIN, CR00321084, GA -->
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="PREVIEW"
+    OPERATION="previewIncidentContactLogDetails"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="PREVIEW"
+      PROPERTY="incidentID"
+    />
+  </CONNECT>
+  <!-- END, CR00321084 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- BEGIN, CR00198612, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00198612 -->
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+
+
+      <!-- BEGIN, CR00229103, NRK -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagementContactLogWizard_createContact"
+        WINDOW_OPTIONS="width=700"
+      >
+        <!-- END, CR00229103 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00234497, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00234497 -->
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00321084, GA -->
+    <ACTION_CONTROL
+      IMAGE="PreviewButton"
+      LABEL="ActionControl.Label.Preview"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="IncidentContactLog_previewContactLogsView"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PREVIEW"
+            PROPERTY="multiSelectStr"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="multiSelectStr"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00321084 -->
+
+
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <!-- BEGIN, CR00321084, GA -->
+    <CONTAINER>
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="PREVIEW"
+              PROPERTY="multiSelectStr"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <!-- END, CR00321084 -->
+
+
+    <!-- BEGIN, CR00198612, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198612 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyContactLogFromList"
+          WINDOW_OPTIONS="width=700"
+        >
+          <!-- END, CR00197352 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddContact">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addContactLogContact"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00321084, GA -->
+      <!-- BEGIN, CR00409027, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddAttachment">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="CaseContactLog_addAttachment"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="linkID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00409027 -->
+      <!-- END, CR00321084 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelContactLog"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="incidentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contactLogID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contactLogID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="contactLogType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00321084, GA -->
+    <FIELD
+      LABEL="Field.Label.StartDateTime"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EndDateTime"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDateTimeOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00321084 -->
+    <!-- BEGIN, CR00200179, SS -->
+    <!-- BEGIN, CR00198612, SS -->
+    <FIELD
+      LABEL="Field.Label.Purpose"
+      WIDTH="28"
+    >
+      <!-- END, CR00198612 -->
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="purpose"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Location"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="location"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198612, SS -->
+    <FIELD
+      LABEL="Field.Label.Method"
+      WIDTH="15"
+    >
+      <!-- END, CR00198612 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="method"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00200179, SS -->
+    <DETAILS_ROW>
+      <!-- BEGIN, CR00321084, GA -->
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewContactLogNarrative">
+        <!-- END, CR00321084 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contactLogID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contactLogID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198612 -->
+  </LIST>
+
+
+</PAGE>

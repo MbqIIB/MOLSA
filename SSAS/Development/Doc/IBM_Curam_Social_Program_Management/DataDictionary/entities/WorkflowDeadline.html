@@ -1,0 +1,157 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>WorkflowDeadline</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Workflow Deadline
+:</b>
+<i> The length of time that a <a href=Task.html>Task</a> or <a href=EventWait.html>Event Wait</a> is allowed to remain unprocessed.
+</i>
+
+<P>Curam supports the ability for a <a href=Task.html>Task</a> to have a 'deadline', which is the reasonable amount of time for a <a href=Users.html>User</a> to complete the <a href=Task.html>Task</a>.</P>
+
+<P>If the deadline passes and the <a href=Task.html>Task</a> has not been closed, the Workflow Engine notifies the specified deadline handler that <a href=Task.html>Task</a> has not yet been closed.</P>
+
+<P>Similarly, an <a href=EventWait.html>Event Wait</a> can have a 'deadline', which is the reasonable amount of time for an event to occur in the system.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.</P>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The system prints out the letter and assigns a <a href=Task.html>Task</a> to <a href=Users.html>User</a> Ronan Rooney to post the letter.  Your <a href=ProcessDefinition.html>Process Definition</a> specifies a deadline time of one day for the letter to be posted.</P>
+
+<P><a href=Users.html>User</a> Ronan Rooney is called away from the office and does not complete the <a href=Task.html>Task</a>.  After one day has passed the Workflow Engine invokes your specified deadline handler, which reassigns the <a href=Task.html>Task</a> to Ronan's supervisor.</P>
+
+<p><b>Technical Notes</b></p>
+<P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (8)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">deadlineID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of the workflow deadline.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">taskID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of a task associated with a workflow deadline . This field is not set for deadlines associated with event wait activities.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">activityInstanceID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of the activity instance associated with this workflow deadline.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">deadlineTime</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The time at which the workflow deadline times out. For a manual activity or a decision activity workflow deadline, this time is calculated by adding the deadline duration specified to the time that the associated manual activity task was created. For an event wait workflow deadline, the time is calculated by adding the deadline duration specified to the time that the associated event wait activity was executed.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">suspended</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">NOTE: This flag provides no functional benefit at present. In the future, if the functionality becomes available, this flag could set to true to indicate that the handler function associated with the workflow deadline was invoked but failed. This flag may be then be used to filter out deadlines that were previously handled but failed when scanning for workflow deadlines.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">deadlineType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The type of the workflow deadline (as deadlines may be associated with a number of activity types including manual activities, event wait activities and decision activities).</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">WorkflowDeadline.activityInstanceID</td><td class="dataLast"><a href="ActivityInstance.html#activityInstanceID">ActivityInstance.activityInstanceID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">WorkflowDeadline.taskID</td><td class="dataLast"><a href="Task.html#taskID">Task.taskID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">WkflwDdlnTimeIdx</td><td class="dataLast">deadlineTime</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">WkflwDdlnTskIDIdx</td><td class="dataLast">taskID</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">WkflwDnTmTskIDIdx</td><td class="dataLast">taskID, deadlineTime</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">WflwDdlnActInstIdx</td><td class="dataLast">activityInstanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

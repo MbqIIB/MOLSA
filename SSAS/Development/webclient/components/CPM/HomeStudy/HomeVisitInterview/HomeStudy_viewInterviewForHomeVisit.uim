@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the interview details.               -->
+<PAGE
+  PAGE_ID="HomeStudy_viewInterviewForHomeVisit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="description"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="HomeVisitInterview"
+    NAME="DISPLAY"
+    OPERATION="viewHomeVisitInterview"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="HomeVisitInterview"
+    NAME="DISPLAY1"
+    OPERATION="listAttendeesForInterview"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="homeVisitInterviewID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeVisitInterviewID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$homeVisitInterviewID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeVisitInterviewID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$homeVisitInterviewID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00229065, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00229065 -->
+    <FIELD LABEL="Field.Label.Location">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$homeVisitInterviewDtls$location"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Method">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$homeVisitInterviewDtls$method"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title.Attendees">
+    <FIELD LABEL="Field.Label.AttendeeName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="attendeeName"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.InterviewNarrative"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$homeVisitInterviewDtls$narrative"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

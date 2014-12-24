@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2002-2008, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page is listing all member certification -->
+<!-- BEGIN, CR00246961, GP -->
+<PAGE
+  PAGE_ID="ProviderManagement_listMemberCertificationChangeHistory"
+  WINDOW_OPTIONS="width=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00246961 -->
+
+
+  <PAGE_PARAMETER NAME="memberCertificationID"/>
+  <PAGE_PARAMETER NAME="contextdescription"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainMemberCertification"
+    NAME="DISPLAY"
+    OPERATION="listMemberCertificationChangeHistory1"
+  />
+  <!-- END, CR00246961 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="memberCertificationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$memberCertificationID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <LIST SCROLL_HEIGHT="125">
+
+
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <!--BEGIN  CR00121465 KR-->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateTime"
+        />
+      </CONNECT>
+      <!-- END CR00121465 -->
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.User"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="userFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="userName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.CertificationType"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificationType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateOfIssue"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateofIssue"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DateOfExpiry"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateofExpiry"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00246961 -->
+
+
+  </LIST>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+  <!-- END, CR00246961 -->
+</PAGE>

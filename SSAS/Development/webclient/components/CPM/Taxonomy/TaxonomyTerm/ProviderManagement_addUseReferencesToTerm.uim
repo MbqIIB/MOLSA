@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright  2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description      -->
+<!-- ===========      -->
+<!-- This page allows the user to add use references to the taxonomy term.   -->
+<PAGE
+  PAGE_ID="ProviderManagement_addUseReferencesToTerm"
+  WINDOW_OPTIONS="width=700,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY"
+    OPERATION="previewUseReferences"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="actionString"
+    CLASS="MaintainTaxonomyTerm"
+    NAME="ACTION"
+    OPERATION="storeUseReference"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="wizardStateID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Title.UseReference.Description"
+    NUM_COLS="2"
+  >
+    <CLUSTER LABEL_WIDTH="30">
+
+
+      <FIELD LABEL="Field.Label.UseReference">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="useReferenceName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER SHOW_LABELS="false">
+
+
+      <CONTAINER>
+        <ACTION_CONTROL
+          ACTION_ID="Add"
+          LABEL="ActionControl.Label.Add"
+          TYPE="SUBMIT"
+        >
+          <LINK
+            DISMISS_MODAL="false"
+            PAGE_ID="ProviderManagement_addUseReferencesToTerm"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="wizardStateID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="wizardStateID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <LIST>
+
+
+    <FIELD LABEL="Field.Label.UseReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="useReferenceName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CONTAINER WIDTH="20%">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeUseReferencesFromTerm"
+          WINDOW_OPTIONS="width=300"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="useReferenceName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="useReference"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+  </LIST>
+
+
+  <ACTION_SET TOP="false">
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewPublishedTaxonomyVersion"/>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Back"
+      LABEL="ActionControl.Label.Back"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_storeTaxonomyTerm"
+        WINDOW_OPTIONS="width=700"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="ProviderManagement_viewPublishedTermInEdit"
+        WINDOW_OPTIONS="width=700"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyInEditDataID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Next"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addRelatedConceptsToTerm"
+        WINDOW_OPTIONS="width=700"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

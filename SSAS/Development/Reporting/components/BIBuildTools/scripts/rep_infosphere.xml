@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	
+	This is the ant utilities file for Reporting project.
+	It contains any configuration test tasks used by the reporting build.
+	
+-->
+<project name="rep_infosphere"  default="configure.iwe.client">
+
+
+	<!--  ***************************  -->
+	<!--  ***  Import Properties  ***  -->
+	<!--  ***************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_properties.xml" />
+
+
+	<!--  *******************************  -->
+	<!--  ***  Import initialization  ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_init.xml" />
+
+
+	<!--  *******************************  -->
+	<!--  ***  Import utilities       ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_utilities.xml" />
+
+	<!--  *********************************************  -->
+    <!--  ***  tests the IWE config tasks           ***  -->
+    <!--  *********************************************  -->  
+    <target name="infosphere.configure" depends="declareTasks" description="Generates profiles, flat files ..." if="usingdb2">
+     <ConfigureInfoSphereClient baseDir="${dir.iweproject}${file.separator}" />
+	
+    </target>
+ 
+	<!--  *********************************************  -->
+    <!--  ***  initializes IWE artifacts            ***  -->
+    <!--  *********************************************  -->  	
+    <target name="infosphere.layered.copyup" depends="declareTasks" description="copies layered files to a higher offset" >
+	
+	  <fail message="use -Dtarget.component=childservices" unless="target.component"/>
+      <echo message="It is recommended that your clean you base project before layering, use infosphere.layered.cleandown"/>	
+	 <AntInfoSphereLayeredVersion
+      reportingDir="${REPORTING_DIR}" targetComponentName="${target.component}">
+	    <directory name="variables" value="variables"/>
+        <directory name="databases" value="databases"/>		
+	  </AntInfoSphereLayeredVersion>
+
+    </target>
+	<target name="infosphere.layered.cleandown" depends="declareTasks" description="removes layered files from a higher offset" >
+	
+	  <fail message="use -Dtarget.component=childservices" unless="target.component"/>
+	  <echo message="It is recommended that your clean you base project before layering"/>	
+
+	  <AntInfoSphereLayeredVersion cleanOnly="true" 
+      reportingDir="${REPORTING_DIR}" targetComponentName="${target.component}">
+	    <directory name="variables" value="variables"/>
+        <directory name="databases" value="databases"/>		
+	   </AntInfoSphereLayeredVersion>
+
+    </target>
+	
+	<!--  ********************************************************  -->
+    <!--  ***  initializes IWE artifacts, copies content from  ***  -->
+	<!--  *** higher offsets to the main project               ***  -->
+    <!--  ********************************************************  -->  	
+	
+    <target name="infosphere.merge" depends="declareTasks" description="copies content from higher offset to main project" >
+	 <AntInfoSphereSource
+      reportingDir="${REPORTING_DIR}">
+	    <directory name="variables" value="variables"/>
+	    <directory name="data-flows" value="data-flows"/>
+		<directory name="sub-processes" value="sub-processes"/>
+		<directory name="control-flows" value="control-flows"/>	
+        <directory name="databases" value="databases"/>		
+	  </AntInfoSphereSource>
+
+    </target>	
+	
+	<!--  *****************************************************************************  -->
+    <!--  ***  check IWE for name collisions, collisions from higher offsets        ***  -->
+    <!--  *****************************************************************************  -->  	
+    <target name="infosphere.police" depends="declareTasks" description="checks infosphere files for name collisions" >
+	 <AntInfoSphereSource
+      reportingDir="${REPORTING_DIR}"
+      policeOnly="true">
+	    <directory name="variables" value="variables"/>
+	    <directory name="data-flows" value="data-flows"/>
+		<directory name="sub-processes" value="sub-processes"/>
+		<directory name="control-flows" value="control-flows"/>	
+        <directory name="databases" value="databases"/>		
+	  </AntInfoSphereSource>
+
+	  </target>	
+	
+	<!--  *********************************************************  -->
+    <!--  ***  removes any copied artifacts from higher offsets ***  -->
+    <!--  *********************************************************  -->  	
+    <target name="infosphere.clean" depends="declareTasks" description="logical delete of all higher offset content, see .delete extension" > 
+	 <AntInfoSphereSource
+      reportingDir="${REPORTING_DIR}" cleanOnly="true">
+	    <directory name="variables" value="variables"/>
+	    <directory name="data-flows" value="data-flows"/>
+		<directory name="sub-processes" value="sub-processes"/>
+		<directory name="control-flows" value="control-flows"/>	
+		<directory name="databases" value="databases"/>
+	  </AntInfoSphereSource>
+  
+  
+    </target>	
+	
+</project>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.datatools.etl.appbuild:BuildProfile xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.ibm.datatools.etl.appbuild="http:///com/ibm/datatools/etl/appbuild.ecore" name="CuramBIWarehouseConfigurationTest" applicationName="CuramBIWarehouse_CuramBIWarehouseConfigurationTest" description="A lightweightsample warehouse application to verify WebSphere configuration" projectDir="E:/cc/af_ReportingMain/Reporting/components/core/etl/CuramBIWarehouse" parentProjectDir="E:\cc\af_ReportingMain\Reporting\components\core\etl" modelVersion="970" creationTime="1352306636202" modificationTime="1360194464873" buildProfileState="SETUP_COMPLETE">
+  <appBuildOptions>
+    <codeGenOptions/>
+    <varOptionsList option="TestArg" value="testval"/>
+  </appBuildOptions>
+  <runTimeOptions tmpLoc="C:/temp" libLoc="C:/Lib" homeLoc="C:/HomeLocation" logLoc="C:/Logs"/>
+  <flowsList>/CuramBIWarehouse/control-flows/CuramConfigurationTestSample.cflowxmi</flowsList>
+  <controlFlowInfoMap key="0_0">
+    <value id="0_0" description="This control flow is used  to test the WebSphere configuration required by the Business Intelligence Warehouse application.  &#xD;&#xA;&#xD;&#xA;A lightweight and fast process is required to test the Websphere configuration, this enables a fast turn around time for the identification and resolution of configuration issues. &#xD;&#xA;&#xD;&#xA;To support this configuration test, a small and lightweight Warehouse appliction is available for fast deployments, a warehouse application called CuramBIWarehouseConfigTest is available to test the WebSphere configuration, this control flow is the only control flow within the configuation test warehouse application.&#xD;&#xA;" name="CuramConfigurationTestSample" location="/CuramBIWarehouse/control-flows/CuramConfigurationTestSample.cflowxmi" creationTime="1352308277863" epg="//@epgMap.23/@value" isManaged="true" childActivityList="//@activityInfoMap.0/@value //@activityInfoMap.1/@value //@activityInfoMap.2/@value //@activityInfoMap.3/@value //@activityInfoMap.4/@value //@activityInfoMap.5/@value //@activityInfoMap.6/@value //@activityInfoMap.7/@value //@activityInfoMap.8/@value">
+      <resourceIdList>curamdb</resourceIdList>
+      <resourceIdList>curamst</resourceIdList>
+      <resourceIdList>DATAMART</resourceIdList>
+      <resourceIdList>CURAMDW</resourceIdList>
+      <resourceIdList>CURAMDM</resourceIdList>
+    </value>
+  </controlFlowInfoMap>
+  <activityInfoMap key="0_0_014">
+    <value id="0_0_014" description="All the ETL process must be run in sequence.  This will be used to test the a parrallel control flow." name="Parallel_Container_Test" creationTime="1352308277770" epg="//@epgMap.9/@value" actType="ParallelControlFlowActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@EXECUTIONORDER" value="parallel" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277770"/>
+      <paramValList id="@LOGOPTION" value="same_log" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277770"/>
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277770"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/S_PREPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/S_POSTPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/S_CODETABLEITEM}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/S_CASEGROUP}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_015">
+    <value id="0_0_015" name="S_ETLCONTROL_SP" creationTime="1352308277785" epg="//@epgMap.2/@value" actType="SubProcessActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277785"/>
+      <paramValList id="${FLATFILES_PATH/PATH_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_019">
+    <value id="0_0_019" description="All the ETL process must be run in sequence.  This will be used to test a sequential control flow." name="Sequential_Container_Test" creationTime="1352308277785" epg="//@epgMap.22/@value" actType="ParallelControlFlowActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@EXECUTIONORDER" value="sequential" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277785"/>
+      <paramValList id="@LOGOPTION" value="same_log" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277785"/>
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277785"/>
+      <paramValList id="${SUB_PROCESSES/DM_POSTPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/DW_PREPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/DM_DIMCASETYPES}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/DW_CASETYPE}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/DW_POSTPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/DM_PREPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${FLATFILES_PATH/PATH_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_014_0">
+    <value id="0_0_014_0" name="S_CODETABLEITEM_SP_01" creationTime="1352308277817" epg="//@epgMap.5/@value" actType="SubProcessActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277817"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/S_PREPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/S_POSTPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/S_CODETABLEITEM}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_014_4">
+    <value id="0_0_014_4" name="S_CASEGROUP_SP_02" creationTime="1352308277832" epg="//@epgMap.8/@value" actType="SubProcessActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277832"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/S_PREPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/S_POSTPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/S_CASEGROUP}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_019_014_1">
+    <value id="0_0_019_014_1" name="DW_ETLCONTROL_SP_01" creationTime="1352308277832" epg="//@epgMap.12/@value" actType="SubProcessActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277832"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${FLATFILES_PATH/PATH_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_019_014_2">
+    <value id="0_0_019_014_2" name="DW_CASETYPE_SP_03" creationTime="1352308277832" epg="//@epgMap.18/@value" actType="SubProcessActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277832"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/DW_CASETYPE}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/DW_PREPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/DW_POSTPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_019_014_3">
+    <value id="0_0_019_014_3" name="DM_ETLCONTROL_SP_02" creationTime="1352308277848" epg="//@epgMap.15/@value" actType="SubProcessActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277848"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${FLATFILES_PATH/PATH_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <activityInfoMap key="0_0_019_014_4">
+    <value id="0_0_019_014_4" name="DM_DIMCASETYPES_SP_04" creationTime="1352308277848" epg="//@epgMap.21/@value" actType="SubProcessActivity" parent="//@controlFlowInfoMap.0/@value">
+      <paramValList id="@SKIPEXECUTION" value="false" usageType="AttributeUsage" changePhase="RUNTIME" creationTime="1352308277848"/>
+      <paramValList id="${SUB_PROCESSES/LASTETL_DATE_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/DM_PREPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${RESERVED/RUN_ID}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${TARGET_TABLES/DM_DIMCASETYPES}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+      <paramValList id="${SUB_PROCESSES/DM_POSTPROCESS_V}" usageType="VariableReferenceUsage" isVariableChosen="true"/>
+    </value>
+  </activityInfoMap>
+  <groupedParamMap key="@EXECUTIONORDER">
+    <value id="@EXECUTIONORDER" paramName="executionOrder" dataType="12" dataTypeStr="ExecutionOrder" usageType="AttributeUsage" show="true" labelKey="executionOrder.label" changePhase="RUNTIME" creationTime="1352308277785" srcParamID="@EXECUTIONORDER" groupParamId="@EXECUTIONORDER"/>
+  </groupedParamMap>
+  <groupedParamMap key="@LOGOPTION">
+    <value id="@LOGOPTION" paramName="logOption" dataType="12" dataTypeStr="LogOption" usageType="AttributeUsage" show="true" labelKey="logOption.label" changePhase="RUNTIME" creationTime="1352308277785" srcParamID="@LOGOPTION" groupParamId="@LOGOPTION"/>
+  </groupedParamMap>
+  <groupedParamMap key="@SKIPEXECUTION">
+    <value id="@SKIPEXECUTION" paramName="activityDisabled" dataType="12" dataTypeStr="boolean" usageType="AttributeUsage" show="true" labelKey="Activity.disabled" changePhase="RUNTIME" creationTime="1352308277848" srcParamID="@SKIPEXECUTION" groupParamId="@SKIPEXECUTION"/>
+  </groupedParamMap>
+  <groupedParamMap key="${FLATFILES_PATH/PATH_V}">
+    <value id="${FLATFILES_PATH/PATH_V}" paramName="PATH_V" defaultValue="E:\cc\af_ReportingMain\Reporting\components\core\etl\CuramBIWarehouse\package-misc" dataType="12" dataTypeStr="File" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="PATH_V" descrKey="" changePhase="DEPLOYMENT" creationTime="1352308608746" srcParamID="${FLATFILES_PATH/PATH_V}" groupParamId="${FLATFILES_PATH/PATH_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${RESERVED/RUN_ID}">
+    <value id="${RESERVED/RUN_ID}" paramName="RUN_ID" defaultValue="" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="Unique ID for each execution" descrKey="" creationTime="1352308608746" srcParamID="${RESERVED/RUN_ID}" groupParamId="${RESERVED/RUN_ID}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${SUB_PROCESSES/DM_POSTPROCESS_V}">
+    <value id="${SUB_PROCESSES/DM_POSTPROCESS_V}" paramName="DM_POSTPROCESS_V" defaultValue="" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="DM_POSTPROCESS_V" descrKey="" changePhase="EXECUTION_INSTANCE" creationTime="1352308608746" srcParamID="${SUB_PROCESSES/DM_POSTPROCESS_V}" groupParamId="${SUB_PROCESSES/DM_POSTPROCESS_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${SUB_PROCESSES/DW_POSTPROCESS_V}">
+    <value id="${SUB_PROCESSES/DW_POSTPROCESS_V}" paramName="DW_POSTPROCESS_V" defaultValue="" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="DW_POSTPROCESS_V" descrKey="" changePhase="EXECUTION_INSTANCE" creationTime="1352308608746" srcParamID="${SUB_PROCESSES/DW_POSTPROCESS_V}" groupParamId="${SUB_PROCESSES/DW_POSTPROCESS_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${SUB_PROCESSES/DW_PREPROCESS_V}">
+    <value id="${SUB_PROCESSES/DW_PREPROCESS_V}" paramName="DW_PREPROCESS_V" defaultValue="" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="DW_PREPROCESS_V" descrKey="" changePhase="EXECUTION_INSTANCE" creationTime="1352308608746" srcParamID="${SUB_PROCESSES/DW_PREPROCESS_V}" groupParamId="${SUB_PROCESSES/DW_PREPROCESS_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${SUB_PROCESSES/LASTETL_DATE_V}">
+    <value id="${SUB_PROCESSES/LASTETL_DATE_V}" paramName="LASTETL_DATE_V" defaultValue="1900-01-01 00:00:00" dataType="12" dataTypeStr="Timestamp" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="LASTETL_DATE_V" descrKey="The Default Date is 01/01/1900." changePhase="EXECUTION_INSTANCE" creationTime="1352308608746" srcParamID="${SUB_PROCESSES/LASTETL_DATE_V}" groupParamId="${SUB_PROCESSES/LASTETL_DATE_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${SUB_PROCESSES/S_PREPROCESS_V}">
+    <value id="${SUB_PROCESSES/S_PREPROCESS_V}" paramName="S_PREPROCESS_V" defaultValue="" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="S_PREPROCESS_V" descrKey="" changePhase="EXECUTION_INSTANCE" creationTime="1352308608746" srcParamID="${SUB_PROCESSES/S_PREPROCESS_V}" groupParamId="${SUB_PROCESSES/S_PREPROCESS_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${SUB_PROCESSES/S_POSTPROCESS_V}">
+    <value id="${SUB_PROCESSES/S_POSTPROCESS_V}" paramName="S_POSTPROCESS_V" defaultValue="" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="S_POSTPROCESS_V" descrKey="" changePhase="EXECUTION_INSTANCE" creationTime="1352308608746" srcParamID="${SUB_PROCESSES/S_POSTPROCESS_V}" groupParamId="${SUB_PROCESSES/S_POSTPROCESS_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${SUB_PROCESSES/DM_PREPROCESS_V}">
+    <value id="${SUB_PROCESSES/DM_PREPROCESS_V}" paramName="DM_PREPROCESS_V" defaultValue="" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="DM_PREPROCESS_V" descrKey="" changePhase="EXECUTION_INSTANCE" creationTime="1352308608746" srcParamID="${SUB_PROCESSES/DM_PREPROCESS_V}" groupParamId="${SUB_PROCESSES/DM_PREPROCESS_V}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${TARGET_TABLES/S_CASEGROUP}">
+    <value id="${TARGET_TABLES/S_CASEGROUP}" paramName="S_CASEGROUP" defaultValue="S_CASEGROUP" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="S_CASEGROUP" descrKey="" creationTime="1352308608746" srcParamID="${TARGET_TABLES/S_CASEGROUP}" groupParamId="${TARGET_TABLES/S_CASEGROUP}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${TARGET_TABLES/DM_DIMCASETYPES}">
+    <value id="${TARGET_TABLES/DM_DIMCASETYPES}" paramName="DM_DIMCASETYPES" defaultValue="DM_DIMCASETYPES" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="DM_DIMCASETYPES" descrKey="" creationTime="1352308608746" srcParamID="${TARGET_TABLES/DM_DIMCASETYPES}" groupParamId="${TARGET_TABLES/DM_DIMCASETYPES}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${TARGET_TABLES/DW_CASETYPE}">
+    <value id="${TARGET_TABLES/DW_CASETYPE}" paramName="DW_CASETYPE" defaultValue="DW_CASETYPE" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="DW_CASETYPE" descrKey="" creationTime="1352308608746" srcParamID="${TARGET_TABLES/DW_CASETYPE}" groupParamId="${TARGET_TABLES/DW_CASETYPE}"/>
+  </groupedParamMap>
+  <groupedParamMap key="${TARGET_TABLES/S_CODETABLEITEM}">
+    <value id="${TARGET_TABLES/S_CODETABLEITEM}" paramName="S_CODETABLEITEM" defaultValue="S_CODETABLEITEM" dataType="12" dataTypeStr="String" isVariable="true" usageType="VariableReferenceUsage" show="true" labelKey="S_CODETABLEITEM" descrKey="" creationTime="1352308608746" srcParamID="${TARGET_TABLES/S_CODETABLEITEM}" groupParamId="${TARGET_TABLES/S_CODETABLEITEM}"/>
+  </groupedParamMap>
+  <resourceList xsi:type="com.ibm.datatools.etl.appbuild:DataResource" name="curamst" displayName="curamst" user="afarrell" password="CE44F61262EE7B15" originalRef="curamst" actualRef="curamst" creationTime="1352308608621" dbdriver="Curam DB2 JDBC Driver" dburl="jdbc:db2://LOCALHOST:50000/curamDW:retrieveMessagesFromServerOnGetMessage=true;" dbtype="DB2 UDB"/>
+  <resourceList xsi:type="com.ibm.datatools.etl.appbuild:DataResource" name="curamdb" displayName="curamdb" user="db2admin" originalRef="curamdb" actualRef="curamdb" creationTime="1352308608621" dbdriver="Curam DB2 JDBC Driver" dburl="jdbc:db2://LOCALHOST:50000/database"/>
+  <resourceList xsi:type="com.ibm.datatools.etl.appbuild:DataResource" name="curamdw" displayName="curamdw" user="db2admin" originalRef="curamdw" actualRef="curamdw" creationTime="1352308608621" dbdriver="Curam DB2 JDBC Driver" dburl="jdbc:db2://LOCALHOST:50000/curamDW"/>
+  <resourceList xsi:type="com.ibm.datatools.etl.appbuild:DataResource" name="curamdm" displayName="curamdm" user="db2admin" originalRef="curamdm" actualRef="curamdm" creationTime="1352308608621" dbdriver="Curam DB2 JDBC Driver" dburl="jdbc:db2://LOCALHOST:50000/curamDM"/>
+  <resourceList xsi:type="com.ibm.datatools.etl.appbuild:DataResource" name="DATAMART" displayName="DATAMART" originalRef="DATAMART" actualRef="DATAMART" creationTime="-1"/>
+  <resourceList xsi:type="com.ibm.datatools.etl.appbuild:DataResource" name="CURAMDW" displayName="CURAMDW" originalRef="CURAMDW" actualRef="CURAMDW" creationTime="-1"/>
+  <resourceList xsi:type="com.ibm.datatools.etl.appbuild:DataResource" name="CURAMDM" displayName="CURAMDM" originalRef="CURAMDM" actualRef="CURAMDM" creationTime="-1"/>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_1.DEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_1.DEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_1.DEPLOYMENT.epgxmi" epgType="DEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_3.UNDEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_3.UNDEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_3.UNDEPLOYMENT.epgxmi" epgType="UNDEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_4.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_4.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_4.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.1/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_3.DEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_3.DEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_3.DEPLOYMENT.epgxmi" epgType="DEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_5.UNDEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_5.UNDEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_5.UNDEPLOYMENT.epgxmi" epgType="UNDEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_8.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_8.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_8.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.3/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_3.DEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_3.DEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_3.DEPLOYMENT.epgxmi" epgType="DEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_5.UNDEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_5.UNDEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_5.UNDEPLOYMENT.epgxmi" epgType="UNDEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_8.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_8.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_8.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.4/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_1.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_1.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_1.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.0/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_1.DEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_1.DEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_1.DEPLOYMENT.epgxmi" epgType="DEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_3.UNDEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_3.UNDEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_3.UNDEPLOYMENT.epgxmi" epgType="UNDEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_4.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_4.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_4.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.5/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_1.DEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_1.DEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_1.DEPLOYMENT.epgxmi" epgType="DEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_3.UNDEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_3.UNDEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_3.UNDEPLOYMENT.epgxmi" epgType="UNDEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_4.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_4.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_4.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.7/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_3.DEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_3.DEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_3.DEPLOYMENT.epgxmi" epgType="DEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_5.UNDEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_5.UNDEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_5.UNDEPLOYMENT.epgxmi" epgType="UNDEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_8.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_8.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_8.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.6/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_3.DEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_3.DEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_3.DEPLOYMENT.epgxmi" epgType="DEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_5.UNDEPLOYMENT.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_5.UNDEPLOYMENT.epgxmi" epgLocation="etl/deployment/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_5.UNDEPLOYMENT.epgxmi" epgType="UNDEPLOYMENT"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_8.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_8.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_8.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.8/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_1.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_1.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_1.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@activityInfoMap.2/@value"/>
+  </epgMap>
+  <epgMap key="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.0_1.RUNTIME.epgxmi">
+    <value epgId="CuramBIWarehouse.control-flows.CuramConfigurationTestSample.0_1.RUNTIME.epgxmi" epgLocation="etl/runtime/CuramBIWarehouse.control-flows.CuramConfigurationTestSample.0_1.RUNTIME.epgxmi" epgType="RUNTIME" activityList="//@controlFlowInfoMap.0/@value"/>
+  </epgMap>
+  <deployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_1.DEPLOYMENT.epgxmi</deployEpgList>
+  <deployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_3.DEPLOYMENT.epgxmi</deployEpgList>
+  <deployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_3.DEPLOYMENT.epgxmi</deployEpgList>
+  <deployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_1.DEPLOYMENT.epgxmi</deployEpgList>
+  <deployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_1.DEPLOYMENT.epgxmi</deployEpgList>
+  <deployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_3.DEPLOYMENT.epgxmi</deployEpgList>
+  <deployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_3.DEPLOYMENT.epgxmi</deployEpgList>
+  <undeployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.015_3.UNDEPLOYMENT.epgxmi</undeployEpgList>
+  <undeployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_0_5.UNDEPLOYMENT.epgxmi</undeployEpgList>
+  <undeployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.014_4_5.UNDEPLOYMENT.epgxmi</undeployEpgList>
+  <undeployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_1_3.UNDEPLOYMENT.epgxmi</undeployEpgList>
+  <undeployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_3_3.UNDEPLOYMENT.epgxmi</undeployEpgList>
+  <undeployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_2_5.UNDEPLOYMENT.epgxmi</undeployEpgList>
+  <undeployEpgList>CuramBIWarehouse.control-flows.CuramConfigurationTestSample.019_014_4_5.UNDEPLOYMENT.epgxmi</undeployEpgList>
+  <codePkgHistory lastCodeGenTime="1352308403782" lastPkgGenTime="1352308608746" lastPkgGenLoc="E:/cc/af_ReportingMain/Reporting/build/infosphere/CuramBIWarehouseConfigurationTest.zip"/>
+</com.ibm.datatools.etl.appbuild:BuildProfile>

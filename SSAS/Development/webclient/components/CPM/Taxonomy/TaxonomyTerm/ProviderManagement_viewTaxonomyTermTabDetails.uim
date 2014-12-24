@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!-- This page allows the user to view the taxonomy term details.            -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewTaxonomyTermTabDetails"
+  TYPE="DETAILS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY"
+    OPERATION="viewTaxonomyTerm"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="taxonomyTermID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyTermID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taxonomyTermKey$taxonomyTermID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD LABEL="Field.Label.TermName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Facet">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="facetCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DateLastModified">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="lastModifiedDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ParentTerm">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="parentNameAndCode"
+        />
+      </CONNECT>
+
+
+      <LINK PAGE_ID="ProviderManagement_viewTaxonomyTerm">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="parentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+  </CLUSTER>
+</PAGE>

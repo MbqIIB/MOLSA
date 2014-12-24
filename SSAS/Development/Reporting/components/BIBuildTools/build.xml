@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+default="jar"
+name="ReportingDevEnvironment"
+>
+	
+	
+	<!--  ******************************************************************  -->
+	<!--  ***  Import Properties                                         ***  -->
+	<!--  ******************************************************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_utilities.xml"/>
+	
+	<!--  ******************************************************************  -->
+	<!--  ***  Import Properties                                         ***  -->
+	<!--  ******************************************************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_properties.xml"/>  
+	<import file="${REPORTING_ENV}/scripts/rep_encrypt.xml"/>
+	
+	
+	<!--  ******************************************************************  -->
+	<!--  ***  set this for each component , .e. for each runtest.xml   ***  -->
+	<!--  ******************************************************************  -->
+	
+	
+	<!--<property name="COMPONENT_NAME"  value ="DevEnvironment"/>-->
+	
+	
+	<!--  ***  DUMMY  ***  -->
+	
+	<target name="dummy" description="dummy target to test the environment"/>
+	
+
+	
+	<target name="init.internal" depends="declareTasks">
+	<!-- bootrap process for the local file system-->
+	<AntUtilities sourceProperty="dir.logs.bilogfile" propertyName="dir.logs.bilogfile.converted"   
+    operation="replace" value="\" replace="\\"/>
+	
+        <copy verbose="true"
+		   failonerror="false"
+		  overwrite="true"
+		  file="${DEV_scripts}${file.separator}log4j.properties.sample"
+		  tofile="${prop.file.location}${file.separator}log4j.properties">
+			<filterset
+			begintoken="%"
+			endtoken="%"
+			>
+				<filter
+				token="BI_LOG_FILE"
+				value="${dir.logs.bilogfile.converted}"
+				/>
+			</filterset>
+		 </copy>
+		<copy verbose="true"
+		   failonerror="false"
+		  overwrite="true" force="true"
+		  file="${prop.file.location}${file.separator}log4j.properties"
+		  tofile="${prop.file.location}${file.separator}log4j.properties.sample">
+    	</copy>
+        <copy verbose="true"
+		   failonerror="false"
+		  overwrite="true" force="true"
+		  file="${prop.file.location}${file.separator}log4j.properties"
+		  tofile="${DEV_generator}${file.separator}log4j.properties">
+    	</copy>		  
+		  
+	</target>
+	
+	<target
+    description="Cleans the build environment "
+    name="clean"
+	>
+		
+		
+		<delete
+		dir="${sysenv.REPORTING_ENV}/build/security"
+		failonerror="false"
+		/>
+		<delete
+		dir="${sysenv.REPORTING_ENV}/build/rdbms"
+		failonerror="false"
+		/>
+		<delete
+		dir="${sysenv.REPORTING_ENV}/build/tasks"
+		failonerror="false"
+		/>
+		<delete
+		dir="${sysenv.REPORTING_ENV}/build/curam"
+		failonerror="false"
+		/>
+		<delete
+		dir="${sysenv.REPORTING_ENV}/build/cls"
+		failonerror="false"
+		/>
+		<delete
+		dir="${sysenv.REPORTING_ENV}/build/apidoc"
+		failonerror="false"
+		/>    
+		
+		<antcall target="init"/>
+	</target>
+	
+	
+	<!--  *********************************************************************** -->
+	<!--  ***  INITIALISATION                                                ***  -->
+	<!--  *********************************************************************** -->
+	
+	
+	<target name="init">
+		
+		<mkdir dir="${sysenv.REPORTING_ENV}/source"/>
+	    <echo message="add custom code here" file="${sysenv.REPORTING_ENV}/source/addcustomcodehere.txt"/>
+	
+		<mkdir dir="${sysenv.REPORTING_ENV}/build/security"/>    
+		<mkdir dir="${sysenv.REPORTING_ENV}/jar"/>    
+		<mkdir dir="${sysenv.REPORTING_ENV}/build"/>
+		<mkdir dir="${sysenv.REPORTING_ENV}/build/tasks"/>
+		<mkdir dir="${sysenv.REPORTING_ENV}/build/rdbms"/>
+		<mkdir dir="${sysenv.REPORTING_ENV}/build/apidoc"/>
+		<mkdir dir="${sysenv.REPORTING_ENV}/build/infosphere"/>
+		<mkdir dir="${DEV_jar}"/>
+		<mkdir dir="${sysenv.REPORTING_DIR}/build/jar"/>
+		<mkdir dir="${dir.bld.scripts}"/>
+		<mkdir dir="${sysenv.REPORTING_ENV}/lib"/>
+		<mkdir dir="${sysenv.REPORTING_ENV}/lib-ext"/>
+		<mkdir dir="${sysenv.REPORTING_ENV}/scripts/cipher"/>
+		
+		<condition property="usingoracle">
+			<contains casesensitive="No" string="${db.type}" substring="ora"/>
+		</condition>
+		
+		<condition property="usingdb2">
+			<contains casesensitive="No" string="${db.type}" substring="DB2"/>
+		</condition>
+		<antcall target="init.checkplatform.db2" />
+		<antcall target="init.checkplatform.ora" />
+		
+	</target>
+	
+	
+	
+	
+	<!--  *********************************************************************** -->
+	<!--  ***  sets the target database platform                             ***  -->
+	<!--  *********************************************************************** -->
+	
+	<target name="init.checkplatform.db2"  if="usingdb2">
+		<delete quiet="true" file="${prop.platform.ora}"/>
+		<touch verbose="false" file = "${prop.platform.db2}" /> 
+		
+	</target>
+	<target name="init.checkplatform.ora" if="usingoracle" >
+		<delete quiet="true"  file="${prop.platform.db2}"/>
+		<touch verbose="false"  file = "${prop.platform.ora}" />  
+		
+	</target>
+	
+	<target name="init.drivers">	
+		<move
+		failonerror="false"
+		file="${DEV_drivers}/ojdbc6.jar"
+		force="true"
+		overwrite="true"
+		tofile="${DEV_drivers}/ojdbc.jar"
+		verbose="false"
+		/>
+		
+		<copy
+		failonerror="false"
+		force="true"
+		overwrite="false"
+		todir="${DEV_lib-ext}"
+		verbose="true"
+		>    
+			<path refid="approvedant.path"/>
+		</copy>  
+		<antcall target="cipher.init"/>
+		
+	</target>
+	
+	<target name="cipher.init">
+		
+		<copy todir="${sysenv.REPORTING_ENV}/scripts/cipher" failonerror="false">  
+			<fileset dir="${sysenv.ADBUILD_DIR}/cipher" includes="**"/>  
+		</copy>
+		
+		<condition property="crypto.vendor.file" value="${sysenv.REPORTING_ENV}${file.separator}scripts${file.separator}cipher${file.separator}ibm">
+			<contains string="${java.vm.vendor}" substring="ibm" casesensitive="no"/>
+		</condition>
+		<condition property="crypto.vendor.file" value="${sysenv.REPORTING_ENV}${file.separator}scripts${file.separator}cipher${file.separator}sun">
+			<or>
+				<contains string="${java.vm.vendor}" substring="sun" casesensitive="no"/>
+				<contains string="${java.vm.vendor}" substring="oracle" casesensitive="no"/>
+			</or>
+		</condition>
+		
+		<copy tofile="${crypto.prop.file.location}${file.separator}${crypto.ks.file}" file="${crypto.vendor.file}${file.separator}${crypto.ks.file}" verbose="false" overwrite="false"/>
+		<copy tofile="${crypto.prop.file.location}${file.separator}${crypto.prop.file}" file="${sysenv.REPORTING_ENV}${file.separator}scripts${file.separator}cipher${file.separator}${crypto.prop.file}" overwrite="false" verbose="false"/>
+		
+	</target>
+	
+	<!--  ************************************************************************ -->
+	<!--  * compile time information                                          ***  -->
+	<!--  ***********************************************************************  -->
+	
+	
+	<target
+    depends="init"
+    description="Java compile and runtime versions info"
+    name="jar.info"
+	>
+		<echo message="**Start BIBuildtools**********************************************************************"/>
+		<echo message="info: Compiling class using RDBMS compiler, using ${sysenv.JAVA_HOME_RDBMS}, use javac -version :"/>
+		<exec
+		dir="${sysenv.REPORTING_ENV}"
+		executable="cmd"
+		failonerror="false"
+		>
+			<arg value="/c"/>
+			<arg value="${sysenv.JAVA_HOME_RDBMS}/bin/java -version"/>
+			
+			
+		</exec>
+		<echo message="End***********************************************************************"/>
+		
+		
+		<echo message="**Start BIBuildtools ***********************************************************************"/>
+		<echo message="info: Compiling class using system compiler, using ${sysenv.JAVA_HOME}/bin/javac, javac -version and java version are below:"/>
+		<echo message="info: default system java version is , java -version is:"/>
+		<exec
+		dir="${sysenv.REPORTING_ENV}"
+		executable="cmd"
+		failonerror="false"
+		>
+			<arg value="/c"/>
+			<arg value="${sysenv.JAVA_HOME}/bin/java -version"/>
+			
+			
+		</exec>
+		<echo message="End***********************************************************************"/>
+	</target>
+	
+	
+	<!--  *********************************************************************** -->
+	<!--  * compiles and jars the reporting development environment     ***  -->
+	<!--  ***********************************************************************  -->
+	
+	
+	<!--  *********************************************************************** -->
+	<!--  ***  INITIALISATION                                                ***  -->
+	<!--  *********************************************************************** -->
+	
+	
+	
+	<target
+    depends="init"
+    description="Jar's reporting development environment and infastructure classes"
+    name="bootstrap"
+	>
+		<echo message="files are now available within BIBuildTools/jar"/>		
+	</target>
+	
+	
+	<!--  *********************************************************************** -->
+	<!--  * compiles and jars the reporting development environment     ***  -->
+	<!--  ***********************************************************************  -->
+	
+	
+	<target
+    depends="init"
+    description="Jar's reporting  infastructure classes for nightly builder"
+    name="jar.errorchecker"
+	>
+		<echo message="please execute appbuildtools.bat  from BIBuildTools"/>
+	</target>
+	
+	
+</project>

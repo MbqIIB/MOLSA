@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>File Naming Patterns</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN105BC.html" title="Using DocMaker"><link rel="previous" href="DMN105CB.html" title="Folder Structure Patterns"><link rel="next" href="DMN106CB.html" title="Running DocMaker"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN105CB.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN106CB.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN105F2"></a>File Naming Patterns</h2></div></div><div></div></div><p>Inside each book folder, the DocBook XML file that contains the
+    <tt class="sgmltag-element">book</tt> root element must be called
+    <tt class="filename">book.xml</tt>. This is called the <i class="firstterm">book
+    file</i>. You can create as many other files and folders within
+    the book folder as you want, but only the book file will be processed by
+    DocMaker. A book file must not be placed in a sub-folder of a book folder:
+    it must be contained directly within the book folder. This restriction
+    does not apply to other content files, such as those you might use for
+    chapters and sections.</p><p>You can use <i class="firstterm">XML inclusions</i> to organize the
+    content of a book into multiple files. These content files must conform to
+    a simple naming pattern. <i class="firstterm">Chapter files</i> containing
+    <tt class="sgmltag-element">chapter</tt> root elements should be named
+    <tt class="filename">c_*.xml</tt>; <i class="firstterm">appendix files</i>
+    containing <tt class="sgmltag-element">appendix</tt> root elements,
+    <tt class="filename">a_*.xml</tt>; and <i class="firstterm">section files</i>
+    containing <tt class="sgmltag-element">section</tt> root elements,
+    <tt class="filename">s_*.xml</tt>. You can substitute any name for the
+    &ldquo;<span class="quote">*</span>&rdquo; character in these patterns, but it is probably better
+    not to use names like <tt class="filename">c_chapter-1.xml</tt> or
+    <tt class="filename">s_section-3-7.xml</tt>, as the reorganization of content
+    (simply by reorganizing the XML inclusions or by inserting new content)
+    would make the numbered file names obsolete. A name like
+    <tt class="filename">c_introduction.xml</tt> or
+    <tt class="filename">s_configuration.xml</tt> might be a better choice, but you
+    are free to use your own names once the prefix is used correctly.</p><p>An example of a book file that uses XML inclusions to include two
+    chapter files is shown below.</p><div class="example"><a name="DMN1063E"></a><pre class="programlisting">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE book
+  PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"&gt;
+&lt;book&gt;
+
+  &lt;title&gt;My First Book&lt;/title&gt;
+
+  &lt;xi:include href="c_introduction.xml"
+              xmlns:xi="http://www.w3.org/2003/XInclude"/&gt;
+
+  &lt;xi:include href="c_main-topic.xml"
+              xmlns:xi="http://www.w3.org/2003/XInclude"/&gt;
+
+&lt;/book&gt;</pre><p class="title"><b>Example:&nbsp;Sample Book Using XML Inclusions</b></p></div><p>The example shows the correct <tt class="sgmltag-element">DOCTYPE</tt> declaration
+    for a DocBook XML document. This should appear at the top of all book
+    files. The <tt class="sgmltag-element">xi:include</tt> elements use the <tt class="sgmltag-attribute">href</tt> attribute to specify the location of the
+    chapter files relative to the book file. In this example, they are located
+    in the same book folder, so no path is required. They could, if desired,
+    be located in sub-folders of the book folder. The namespace declaration on
+    these elements is also required. The individual chapter files are written
+    like in the example below and have a similar <tt class="sgmltag-element">DOCTYPE</tt>,
+    but with a different root element specified. Note that without the
+    <tt class="sgmltag-element">DOCTYPE</tt>, the files cannot be validated effectively for
+    conformance with the DocBook XML standard.</p><div class="example"><a name="DMN1065B"></a><pre class="programlisting">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE chapter
+  PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"&gt;
+&lt;chapter&gt;
+  &lt;title&gt;Introduction&lt;/title&gt;
+
+  &lt;section&gt;
+    &lt;title&gt;About This Book&lt;/title&gt;
+
+    &lt;para&gt;This book is....&lt;/para&gt;
+  &lt;/section&gt;
+&lt;/chapter&gt;</pre><p class="title"><b>Example:&nbsp;Sample Chapter File</b></p></div><p>A chapter file, or other content file, must have a single root
+    element or it will not be a well-formed XML file and will cause errors
+    during processing. You can only have one <tt class="sgmltag-element">chapter</tt> root
+    element in a chapter file, and likewise for appendices and
+    sections.</p><div class="note"><table border="0" summary="Note: Support for XML Inclusions"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Note]" src="../images/note.gif"></td><th align="left"><a name="DMN1066B"></a>Support for XML Inclusions</th></tr><tr><td valign="top" align="left" colspan="2"><p>XML inclusions can, in theory, allow book files to include chapter
+      files and chapter files to include section files and section files to
+      include section files that become sub-sections. However, there are
+      limitations in the current version of the Apache Xerces parser used by
+      DocMaker that cause XML inclusions to fail under certain circumstances.
+      Limiting their use to including content directly with the relevant root
+      element of the document and not using more than two levels of inclusions
+      will avoid most of these limitations until improved support for XML
+      inclusions in the Apache Xerces parser becomes available.</p></td></tr></table></div><p>If your document includes resource files such as images, these can
+    be located in your book folder; in a sub-folder within your book folder;
+    or even in another sub-folder of the document root folder, if they are
+    shared between books. For the HTML Help output format, resources like
+    images need to be distributed as separate files along with the HTML files.
+    Therefore, DocMaker copies these resources to the relevant output folders,
+    but does not copy DocBook XML content files, as you do not need (and
+    probably do not want) to distribute these. DocMaker distinguishes between
+    content files and resource files solely based on the naming convention
+    described. If the file name does not match a book file name or other
+    content file name pattern, the file is not copied.</p><p>The references you make to resource files should be specified
+    relative to your <tt class="filename">book.xml</tt> file, not to the file that
+    is referring to the resource. For example, if you create an image file
+    <tt class="filename">C:\Books\UserManual\img1.gif</tt>, your reference to that
+    image from <tt class="filename">C:\Books\UserManual\book.xml</tt> is just
+    &ldquo;<span class="quote">
+        <tt class="filename">img1.gif</tt>
+      </span>&rdquo;. If you create
+    <tt class="filename">C:\Books\UserManual\img\img2.gif</tt>, the reference will
+    be &ldquo;<span class="quote">
+        <tt class="filename">img/img2.gif</tt>
+      </span>&rdquo;. However, if the
+    content for a chapter is stored in
+    <tt class="filename">C:\Books\UserManual\chap\c_intro.xml</tt> and it includes
+    the latter image, the reference will also be
+    &ldquo;<span class="quote">
+        <tt class="filename">img/img2.gif</tt>
+      </span>&rdquo;, <span class="emphasis"><em>not</em></span>
+      &ldquo;<span class="quote">
+        <tt class="filename">../img/img2.gif</tt>
+      </span>&rdquo;, as it must be
+    relative to the book file, not the chapter content file. If you create an
+    image and want to share it between two books, you can copy it to
+    <tt class="filename">C:\Books\UserManual\img\img3.gif</tt> and reference it as
+    &ldquo;<span class="quote">
+        <tt class="filename">../img/img3.gif</tt>
+      </span>&rdquo;. The reason for this
+    is that the XML inclusions are resolved before the resource references are
+    resolved: all of the content files are combined into a single book file
+    during processing and the references must be relative to that book
+    file.</p><div class="note"><table border="0" summary="Note: File Separator Characters"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Note]" src="../images/note.gif"></td><th align="left"><a name="DMN106B8"></a>File Separator Characters</th></tr><tr><td valign="top" align="left" colspan="2"><p>Although path names on your system (if you are using a Microsoft
+      Windows system) are normally specified with backslash characters
+      (&ldquo;<span class="quote">\</span>&rdquo;) separating elements of the path to the file, the
+      references in DocBook XML are universal resource indicators (URIs) and
+      the solidus (&ldquo;<span class="quote">/</span>&rdquo;) character must be used instead.</p></td></tr></table></div><p>The following chapters will describe how to write your DocBook XML
+    documents and how you might use resource files, such as images, but first
+    you will learn how to run DocMaker.</p></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN105CB.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN106CB.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

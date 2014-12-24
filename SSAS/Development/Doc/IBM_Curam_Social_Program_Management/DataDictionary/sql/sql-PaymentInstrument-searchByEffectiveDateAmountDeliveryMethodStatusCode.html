@@ -1,0 +1,109 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>PaymentInstrument.searchByEffectiveDateAmountDeliveryMethodStatusCode</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Search of the Payment Instrument
+by effectiveDate, amount, deliveryMethodType and statusCode
+</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  PaymentInstrument.pmtInstrumentID,
+  PaymentInstrument.amount,
+  PaymentInstrument.effectiveDate,
+  PaymentInstrument.creationDate,
+  PaymentInstrument.deliveryMethodType,
+  PaymentInstrument.reconcilStatusCode,
+  PaymentInstrument.concernRoleID,
+  PaymentInstrument.concernRoleName,
+  PaymentInstrument.caseNomineeID,
+  PaymentInstrument.nomineeName,
+  PaymentInstrument.nomineeAlternateID,
+  PaymentInstrument.addressID,
+  PaymentInstrument.currencyTypeCode,
+  PaymentInstrument.currencyExchangeID,
+  PaymentInstrument.bankAccountID,
+  PaymentInstrument.referenceNumber,
+  PaymentInstrument.referenceText,
+  PaymentInstrument.pslipInstructionID,
+  PaymentInstruction.finInstructionID
+INTO
+  :pmtInstrumentID,
+  :amount,
+  :effectiveDate,
+  :creationDate,
+  :deliveryMethodType,
+  :reconcilStatusCode,
+  :concernRoleID,
+  :concernRoleName,
+  :caseNomineeID,
+  :nomineeName,
+  :nomineeAlternateID,
+  :addressID,
+  :currencyTypeCode,
+  :currencyExchangeID,
+  :bankAccountID,
+  :referenceNumber,
+  :referenceText,
+  :pslipInstructionID,
+  :finInstructionID 
+FROM
+  PaymentInstrument,
+  PaymentInstruction 
+WHERE PaymentInstrument.pmtInstrumentID = PaymentInstruction.pmtInstrumentID 
+  AND PaymentInstrument.amount = :amount 
+  AND PaymentInstrument.deliveryMethodType = :deliveryMethodType 
+  AND PaymentInstrument.effectiveDate = :effectiveDate 
+  AND 
+  (
+    PaymentInstrument.reconcilStatusCode = :statusCode 
+    OR :statusCode IS NULL 
+  )
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

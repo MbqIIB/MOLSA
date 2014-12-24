@@ -1,0 +1,191 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>Transform</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Transform
+:</b>
+<i>Describes a mapping used to transform from Evidence XML to an XML format that can be used to populate a datastore or a mapping from datastore back to Evidence XML.
+</i>
+
+<p>This entity is central to the functioning of the DataHub. A Transform stores a mapping in XSLT. There are two types of mappings,
+
+            mappings for reads and mappings for updates, the type of mapping is identified by the type field. Mappings for reads transform data from Evidence Entities to data store XML.
+
+            Mappings for updates take a Difference Command and turn it back into a set of requests to change or update Evidence Entities.
+
+            A Difference Command is built by comparing &quot;before&quot; and &quot;after&quot; snapshots of a datastore. The before
+
+            snapshot represents the state of a datastore before an IEG script has been run. The after snapshot represents the state of
+
+            the datastore after a client has executed an IEG script. The Difference Command captures what actions they performed in that
+
+            script in terms of the changes made to the data store.</p>
+
+<br/>
+
+<p>The logicalName and type fields taken together for Transform must be unique. The logical name is identified with a particular Data Hub Context.
+
+          This Data Hub Context collect together a set of entities that share the same Data Hub Context name: A Transform, <a href=FilterEvidenceLink.html>Filter Evidence Link</a>, 
+
+          a <a href=ViewProcessor.html>View Processor</a> and <a href=UpdateProcessor.html>Update Processor</a>.</p>
+
+<p><b>Example</b></p>
+<p>The &quot;Having a Baby&quot; Life Event is linked to the Data Hub Context called HavingABaby. This Life Event allows a client to log in and
+
+            report that they or someone in their family is going to have a baby. The Life Event is linked to the Data Hub Context &quot;HavingABaby&quot;.
+
+            When the Life Event is launched it is pre-populated with information about the family that has been read from Cúram Evidence.
+
+            This information is read from the Evidence Tables and then the logical name &quot;HavingABaby&quot; is used to retrieve a Transform to convert
+
+            This evidence into a Data Store. This pre-populated datastore is used for the IEG Script. The Citizen answers all the questions in the IEG
+
+            Script and submits it. The Life Event engine calculates what has changed in the datastore and submits this to the data hub with the
+
+            context &quot;HavingABaby&quot;. The Data Hub queries for a Transform update script with the logical name of &quot;HavingABaby&quot;.
+
+            This Transform is then used to convert the differences into a set of updates to Evidence.
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::WorkspaceServices::DataHub::Entity::Transform</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">WorkspaceServices\model\DataHub.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">yes</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="transformID">transformID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique reference number of this record.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="logicalName">logicalName</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">The logical name of the transformer. This, and the type make a Transform unique. The logical name is a Data Hub Context.
+
+@curam.example
+
+<p>The logical name &quot;HavingABaby&quot; defines the transform used to pre-populate scripts for the Having a Baby Life Event.</p>
+
+</td><td class="data"><a href="../domains/TRANSFORMER_LOGICAL_NAME.html">TRANSFORMER_LOGICAL_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="schemaName">schemaName</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">The name of the data store schema to transform evidence to.</td><td class="data"><a href="../domains/DATASTORE_SCHEMA_NAME.html">DATASTORE_SCHEMA_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;40&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="function">function</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">The XSLT function used to transform Evidence XML to datastore XML.</td><td class="data"><a href="../domains/TRANSFORMER_FUNCTION.html">TRANSFORMER_FUNCTION</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;250000&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="recordStatus">recordStatus</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Record status of this record i.e. Active, Cancelled.</td><td class="data"><a href="../domains/RECORD_STATUS.html">RECORD_STATUS</a></td><td class="data"><a href="../codetables/ct-RecordStatus.html">RecordStatus</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="type">type</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">The type of the transform as defined in the TransformType codetable. There are two types of transform, read and update.</td><td class="data"><a href="../domains/TRANSFORM_TYPE.html">TRANSFORM_TYPE</a></td><td class="data"><a href="../codetables/ct-TransformType.html">TransformType</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: transformID</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modify</td><td class="data">modify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByRecordStatus</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">&lt;p&gt;Read all records by Record Status&lt;/p&gt;
+
+@curam.example Retrieve all Active records of this type.
+
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readByLogicalName</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Read a transform by its unique logical name.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readByLogicalNameAndType</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">&lt;p&gt;Reads a unique Transform by its logical name and a transform type from the TransformType codetable. &lt;/p&gt;</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

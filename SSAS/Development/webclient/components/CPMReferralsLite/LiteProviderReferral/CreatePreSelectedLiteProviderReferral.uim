@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c)2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--Create Provider Referral wit provider and service offering pre selected -->
+<PAGE
+  PAGE_ID="CreatePreSelectedLiteProviderReferral"
+  WINDOW_OPTIONS="width=750,height=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="LiteProviderReferral"
+    NAME="ACTION"
+    OPERATION="createLiteProviderReferral"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LiteProviderReferral"
+    NAME="DISPLAY"
+    OPERATION="getProviderServiceOfferingDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LiteProviderReferral"
+    NAME="DISPLAYCLIENTINFO"
+    OPERATION="getExistingClientDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYCLIENTINFO"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+  >
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Field.Label.Provider"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerAddress"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="provideEmailAddress"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Field.Label.ReferredFor"
+    >
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingName"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ContactDetails"
+  >
+    <FIELD LABEL="Field.Label.FirstName">
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCLIENTINFO"
+          PROPERTY="firstName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="firstName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.LastName">
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCLIENTINFO"
+          PROPERTY="lastName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="lastName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER NUM_COLS="2">
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCLIENTINFO"
+          PROPERTY="address"
+        />
+      </CONNECT>
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="address"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.HomePhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCLIENTINFO"
+          PROPERTY="homePhoneNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="homePhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.WorkPhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCLIENTINFO"
+          PROPERTY="workPhoneNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="workPhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.MobilePhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCLIENTINFO"
+          PROPERTY="mobilePhoneNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="mobilePhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EmailAddress">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAYCLIENTINFO"
+          PROPERTY="emailAddress"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="emailAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Field.Label.AdditionalInformation"
+  >
+    <FIELD HEIGHT="6">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="additionalInformation"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET BOTTOM="true">
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    > </ACTION_CONTROL>
+    <ACTION_CONTROL
+      DEFAULT="true"
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    > </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

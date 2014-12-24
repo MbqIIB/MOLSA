@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2012 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the service invoice line item transanctions details-->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemTransanctions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ServiceInvoiceLineItem"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00314240, SS -->
+      <LINK PAGE_ID="ProviderManagement_resolveServiceInvoiceLineItemView">
+        <!-- END, CR00314240 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ServiceInvoiceLineItemTransactions"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemTransanctions">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ServiceInvoiceLineItemItemHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemHistory">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="viewServiceInvoiceLineItemTransanctions"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="serviceInvoiceID"/>
+  <PAGE_PARAMETER NAME="serviceInvoiceLineItemID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceInvoiceLineItemID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00247586, PS -->
+  <LIST>
+    <FIELD
+      LABEL="Field.Label.CreationDate"
+      WIDTH="15"
+    >
+      <!-- END, CR00247586 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247586, PS -->
+    <FIELD
+      LABEL="Field.Label.TransactionType"
+      WIDTH="20"
+    >
+      <!-- END, CR00247586 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="transactionType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00247586, PS -->
+    <FIELD
+      LABEL="Field.Label.AdjustmentReason"
+      WIDTH="30"
+    >
+      <!-- END, CR00247586 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="adjustmentReason"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00247586, PS -->
+    <FIELD
+      LABEL="Field.Label.Amount"
+      WIDTH="15"
+    >
+      <!-- END, CR00247586 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="amount"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247586, PS -->
+    <FIELD
+      LABEL="Field.Label.AdjustmentAmount"
+      WIDTH="20"
+    >
+      <!-- END, CR00247586 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="adjustmentAmount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00200160, PS -->
+    <DETAILS_ROW>
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="adjustmentFactorInd"
+        />
+      </CONDITION>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_resolveSILIAdjustmentFactor">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="adjustmentReason"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="adjustmentReason"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$sILITransactionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="sILITransactionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00200160 -->
+  </LIST>
+
+
+</PAGE>

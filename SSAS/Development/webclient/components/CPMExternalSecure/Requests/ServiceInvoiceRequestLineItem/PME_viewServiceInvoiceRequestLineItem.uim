@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the external user to view service invoice request line-->
+<!-- item                                                                   -->
+<PAGE
+  PAGE_ID="PME_viewServiceInvoiceRequestLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="serviceInvoiceRequestLineItemID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="serviceInvoiceRequestID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceRequestLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceInvReqLineItemID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceInvoiceRequestLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="key$serviceInvReqLineItemID"
+    />
+  </CONNECT>
+  <!-- END, CR00158345 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE
+    CLASS="ExternalServiceInvoiceRequestLineItem"
+    NAME="DISPLAY"
+    OPERATION="viewServiceInvoiceRequestLineItem"
+  />
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <SERVER_INTERFACE
+    CLASS="ExternalServiceInvoiceRequestLineItem"
+    NAME="DISPLAY2"
+    OPERATION="listClientsForServiceInvReqLineItem"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00158345 -->
+
+
+  <INCLUDE FILE_NAME="PME_viewServiceInvoiceRequestLineItemView.vim"/>
+
+
+</PAGE>

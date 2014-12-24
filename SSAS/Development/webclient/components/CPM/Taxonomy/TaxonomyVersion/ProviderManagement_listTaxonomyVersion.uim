@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.		        					        -->
+<!-- All rights reserved.                                                		-->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with 	-->
+<!-- the terms of the license agreement you entered into with Curam         	-->
+<!-- Software.                                                              	-->
+<!-- Description                                                            	-->
+<!-- ===========                                                            	-->
+<!-- This page allows the user to view a list of all the taxonomy versions.     -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listTaxonomyVersion"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyVersion"
+    NAME="DISPLAY"
+    OPERATION="listTaxonomyVersion"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyInEditData"
+    NAME="DISPLAY1"
+    OPERATION="getInitialPageNumber"
+    PHASE="DISPLAY"
+  />
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.ImportNewFile">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="isAnyVersionInEdit"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        URI_SOURCE_NAME="DISPLAY"
+        URI_SOURCE_PROPERTY="result$actionURL"
+      >
+        
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewVersion">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="isAnyVersionInEdit"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createTaxonomyVersion"
+        WINDOW_OPTIONS="width=600"
+      >
+        
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Search">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="canSearchTaxonomy"
+        />
+      </CONDITION>
+
+
+      <LINK PAGE_ID="ProviderManagement_searchTaxonomyTermsByKeyWord"/>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="messageTest"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="isVersionEditable"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_updateTaxonomyVersion"
+          WINDOW_OPTIONS="width=600"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionDetails$taxonomyVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Publish">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="canBePublished"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_publishTaxonomyVersion"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionDetails$taxonomyVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Republish">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="republishInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_republishTaxonomyVersion"
+          WINDOW_OPTIONS="width=350"
+        >
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddTranslation">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="canImportTranslation"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          URI_SOURCE_NAME="DISPLAY"
+          URI_SOURCE_PROPERTY="result$details$addTranslationActionURL"
+          WINDOW_OPTIONS="width=600"
+        />
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="canBePublished"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeTaxonomyVersion"
+          WINDOW_OPTIONS="width=500"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionDetails$taxonomyVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.VersionNumber"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="version"
+        />
+      </CONNECT>
+      <LINK
+        URI_SOURCE_NAME="DISPLAY"
+        URI_SOURCE_PROPERTY="result$details$actionURL"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$details$isViewVersionEnabled"
+          />
+        </CONDITION>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="versionDetails$taxonomyVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="pageNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageNo"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </FIELD>
+
+
+    <CONTAINER LABEL="Field.Label.TaxonomyVersionName">
+      <FIELD WIDTH="40">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="nameTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Country"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="versionDetails$country"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_listTaxonomyVersionData">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="versionDetails$taxonomyVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

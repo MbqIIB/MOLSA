@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build" name="PlatformSpecificBuild"
+>
+
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_properties.xml"/>
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import tasks definitions**  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_createDB2.xml"/>
+  
+  <!--  *******************************  -->
+  <!--  ***  Import common targets  ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_utilities.xml"/>
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import tasks definitions**  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_tasks.xml"/>
+
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_resetetl.xml"/>
+
+
+  <import file="${REPORTING_ENV}/scripts/rep_cognos.xml"/>
+  
+  <!--  *******************************  -->
+  <!--  ***  Import initialization  ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_init.xml"/>
+
+
+  <!--  *******************************  -->
+  <!--  *** Import database targets ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_database.xml"/>
+
+
+  <!--  *******************************  -->
+  <!--  *** Import database targets ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_infosphere.xml"/>
+
+  <!--  *******************************  -->
+  <!--  *** Import grant targets ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_grant.xml"/>
+
+  <!--  ************************************  -->
+  <!--  ***  build all         ***  -->
+  <!--  ************************************  -->
+
+
+  <target
+    depends="init, jar, database.all"
+    description="init jar database md.import.all md.deploy.all"
+    name="all"
+  >
+
+  </target>
+
+
+
+  <!--  ***********************************************************  -->
+  <!--  ***  loads java transformation code into Oracle         ***  -->
+  <!--  ***********************************************************  -->
+  <target
+    name="loadjava" 
+  >
+   
+   <available file="${param.jar.fullpath}" property="file.jar.present.create"/>       
+   <antcall target="load-java" />
+
+  </target>
+  
+  <target name="load-java" if="file.jar.present.create">    
+    <!-- create the command file which will run against db2 -->
+    <tstamp>
+      <format
+        pattern="MMddyyyy-hhmmss"
+        property="time.now"
+      />
+    </tstamp>
+    <property
+      name="command.filename"
+      value="${dir.logs}${file.separator}${time.now}deploy.db2"
+    />
+    <property
+      name="log.filename"
+      value="${dir.logs}${file.separator}deloy${time.now}.log"
+    />
+    
+     <AntUtilities verbose="false" propertyName="db2.internal.name" operation="filename"
+            value="${param.jar.fullpath}" /> 
+            
+    <property
+      name="db2.internal.name.coded"
+      value="${db2.internal.name}InternalName"
+    />
+
+    <!-- create a command file and add the database connection details-->
+    <concat destfile="${command.filename}">
+ connect to ${db.name} user ${db.username} using ${db.password};
+ call sqlj.remove_jar('${db2.internal.name.coded}');
+ 
+ -- install jars files if the jars are not already present
+ CALL sqlj.install_jar('file:${param.jar.fullpath}',   '${db2.internal.name.coded}',0);
+ 
+ CALL sqlj.refresh_classes();
+ 
+ -- refeshes jars files if the jars were in use and could not be removed and re-installed
+ CALL sqlj.replace_jar('file:${param.jar.fullpath}',  '${db2.internal.name.coded}',0);
+ 
+ CALL sqlj.refresh_classes();
+ commit;
+         </concat>
+         
+	    <property name="debug.message.load" value="
+ call sqlj.remove_jar('${db2.internal.name.coded}');
+ 
+ -- install jars files if the jars are not already present
+ CALL sqlj.install_jar('file:${param.jar.fullpath}',   '${db2.internal.name.coded}',0);
+ 
+ CALL sqlj.refresh_classes();
+ 
+ -- refeshes jars files if the jars were in use and could not be removed and re-installed
+ CALL sqlj.replace_jar('file:${param.jar.fullpath}',  '${db2.internal.name.coded}',0);
+ 
+ CALL sqlj.refresh_classes();
+ commit;"/>
+		 
+
+    <!-- load the java code using db2cmd -->
+    <exec
+      dir="${REPORTING_ENV}"
+      executable="${db2cmd}"
+      failonerror="true"
+      resolveExecutable="true"
+    >
+      <!-- Java Arguments -->
+      <arg value="/c"/>
+      <arg value="db2"/>
+      
+      <arg value="-t"/>
+      <arg value="-v"/>
+      <arg value="-z ${log.filename}"/>
+      <arg value="-f ${command.filename}"/>
+    </exec>
+    <!-- wait for the command to execute before we display commands logs-->
+    <waitfor
+      maxwait="30"
+      maxwaitunit="second"
+    >
+      <available file="${log.filename}"/>
+    </waitfor>
+
+
+    <loadfile srcfile="${command.filename}" property="db2command.result"/>
+    <loadfile srcfile="${log.filename}" property="db2command.command"/>
+      
+    <!-- comment in when debugging-->
+    <antcall target="debug.message">
+      <param name="prm.msg" value="loading transformations"/>
+    </antcall>   
+     <antcall target="debug.message">
+      <param name="prm.msg" value="${debug.message.load}"/>
+    </antcall> 
+    
+  </target>
+
+  <!--  ***********************************************************  -->
+  <!--  ***  drops java transformation code into Oracle         ***  -->
+  <!--  ***********************************************************  -->
+  <target name="dropjava">
+    <available file="${param.jar.fullpath}" property="file.jar.present.drop"/> 
+
+    <!-- comment in when debugging-->
+    <antcall target="debug.message">
+      <param name="prm.msg" value=" BI Reporting jar unloaded from DB2"/>
+    </antcall>    
+
+    <antcall target="drop-java" />
+
+  </target>
+  
+  <target name="drop-java" if="file.jar.present.drop">    
+    <!-- comment in when debugging-->
+    <antcall target="debug.message">
+      <param name="prm.msg" value=" BI Reporting jar unloaded from DB2"/>
+    </antcall>     
+  </target> 
+  
+
+
+  <!--  *****************************  -->
+  <!--  ***  CONFIG TEST          ***  -->
+  <!--  *****************************  -->
+  <target
+    depends="init,check.db.type, set.database.db2"
+    description="Ensures the reporting environment is set up correctly"
+    name="configtest"
+  >
+
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${REPORTING_ENV}/scripts/rep_configtest.xml"
+      inheritall="true"
+      target="configtest"
+    >
+    </ant>
+  </target>
+
+
+  <!--  *************************************************  -->
+  <!--  ***    Create the database link required      ***  -->
+  <!--  *** for the Curam reporting Allegation table  ***  -->
+  <!--  *************************************************  -->
+  <target
+    depends="init, check.db.type, set.db.staging, set.database.db2"
+    description="Create the database link required for the Curam reporting Allegation table"
+    name="database.staging.post"
+  >
+
+  
+    </target>
+
+	<!--  *************************************************  -->
+	<!--  ***  Run the All  ETLs                     ***  -->
+	<!--  *************************************************  -->
+	<target
+    depends="init"
+    description="Runs all the ETLs, implemented for Oracle platform, not implemented for DB2 platform as yet"
+    name="run.all"
+	>
+		
+		<echo message="Runs all the ETLs, implemented for Oracle platform, not implemented for DB2 platform as yet"/>
+		
+	</target>
+	
+</project>

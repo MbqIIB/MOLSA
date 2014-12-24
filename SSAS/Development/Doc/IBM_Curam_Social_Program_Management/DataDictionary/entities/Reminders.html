@@ -1,0 +1,123 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>Reminders</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Reminder Notification
+:</b>
+<i> An instance of a Reminder Notification for an <a href=ActivityInstance.html>Activity Instance</a>.
+</i>
+
+<P>The Process Definition Tool (PDT) allows you to define an arbitrary number of Reminder Notifications for any Workflow Activity that waits on an Event.  Any Activity that waits on an event can optionally specify a deadline after which the workflow engine should stop waiting and take some action. Reminders can then be set to send out notifications at specific times in advance of the deadline.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to ensure claimant records are kept up-to-date with government employment records.
+
+</P>
+
+<UL>
+
+<LI> This workflow is triggered when government records show a claimant's employment details have changed (e.g. the claimant has been employed).</LI>
+
+<LI> The workflow has a single Manual Activity which requests a Case Worker contact the claimant and confirm the change of employment status.  The Case Worker must do this before the end of the month.</LI>
+
+<LI> A gentle reminder is set for two weeks prior to the deadline.</LI>
+
+<LI> An urgent reminder is set for three days prior to the deadline.</LI>
+
+</UL>
+
+<P><a href=Person.html>Person</a> John Smith begins a new job, having been unemployed for some time.  John's new employment is picked up by a daily update from the tax system.  This causes your workflow to be enacted, creating a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The system transitions to the first activity definition in your workflow - sending a Task to a Case Worker to confirm John's new employment details. The Task has a deadline 18 days away.</P>
+
+<P>Two Reminder Notification records are created, corresponding to the two reminders specified in the Activity definition.</P>
+
+<P>The Case Worker does not contact John for a few days.  Once the two-week point is passed (i.e. two weeks before the deadline), the Workflow Engine sends the gentle reminder. The Workflow Engine then deletes the corresponding Reminder Notification record.</P>
+
+<P>The Case Worker waits until the day before the deadline to contact John.  Once the 3 day point is passed (i.e. three days before the deadline), the Workflow Engine sends the urgent reminder.  The Workflow Engine then deletes the corresponding Reminder Notification record.</P>
+
+<p><b>Technical Notes</b></p>
+<P>See the Workflow Reference Guide for further information.</P>
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">deliveryDate</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The reminder delivery dateTime.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">reminderID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The reminder identifier.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">activityInstanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The activity instance ID.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">Reminders.activityInstanceID</td><td class="dataLast"><a href="ActivityInstance.html#activityInstanceID">ActivityInstance.activityInstanceID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

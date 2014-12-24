@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- ===========                                                            -->
+<!--Allows the user to enter provider details or search the system for providers of the referral service, with proximity to the service recipients' address. The search can also be filtered by provider speciality.
+  This page is linked to the ProviderManagement_specifyReferralProviderCPMService page and vice versa. This is to allow the search to be performed on the DISPLAY of the page so the provider search results are persisted each time the page is refreshed. -->
+<PAGE
+  PAGE_ID="ProviderManagement_specifyReferralProviderCPMServiceLink"
+  POPUP_PAGE="true"
+  WINDOW_OPTIONS="width=900,height=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SCRIPT EVENT="ONLOAD" ACTION="addListenerForProximityField()" SCRIPT_FILE="ServiceRecipientAddresses.js" />
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="referralID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+  <PAGE_PARAMETER NAME="addressID"/>
+  <PAGE_PARAMETER NAME="providerSpecialtiesTabbedString"/>
+  <PAGE_PARAMETER NAME="proximityDistance"/>
+  <PAGE_PARAMETER NAME="providerName"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="Referral"
+    NAME="DISPLAY"
+    OPERATION="readProviderSearchCriteriaProviderListForUpdate"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="searchProviderPerformedInd"
+    CLASS="Referral"
+    NAME="ACTION"
+    OPERATION="updateProvider"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="referralID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="referralID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="addressID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$addressID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerSpecialtiesTabbedString"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerSpecialtiesTabbedString"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="proximityDistance"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$proximityDistance"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="referralID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="referralID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="RIGHT">
+    <ACTION_CONTROL
+      ACTION_ID="false"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+
+
+  <CLUSTER>
+    <CLUSTER>
+      <CLUSTER
+        LABEL_WIDTH="24"
+        NUM_COLS="2"
+        TITLE="Cluster.Title.SearchCriteria"
+      >
+        <!--  drop down list that will hold the client names that a user -->
+        <!-- can select, which will subsequently cause the address dropdown field to be populated with a list of addresses, which the user can then select, and determine the proximity to of the retrieved providers   -->
+        <CLUSTER>
+          <FIELD
+            LABEL="Field.Label.ProviderName"
+            WIDTH="50"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="providerSearchCriteria$providerName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="listProviderDetailsKey$providerName"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD
+            LABEL="Field.Label.ProximityTo"
+            USE_BLANK="true"
+            WIDTH="50"
+          >
+            <CONNECT>
+              <INITIAL
+                HIDDEN_PROPERTY="clientNameDetails$caseParticipantRoleID"
+                NAME="DISPLAY"
+                PROPERTY="recipientName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="providerSearchCriteria$caseParticipantRoleID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="listProviderDetailsKey$caseParticipantRoleID"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD LABEL="Field.Label.Address">
+            <CONNECT>
+              <INITIAL
+                HIDDEN_PROPERTY="clientNameDetails$addressID"
+                NAME="DISPLAY"
+                PROPERTY="addressDisplayString"
+              />
+            </CONNECT>
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="listProviderDetailsKey$addressID"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD
+            USE_BLANK="true"
+            WIDTH="25"
+          >
+            <LABEL>
+              <CONNECT>
+                <SOURCE
+                  NAME="TEXT"
+                  PROPERTY="Distance.Label"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="DISPLAY"
+                  PROPERTY="proximityDistanceLabelDisplayString"
+                />
+              </CONNECT>
+            </LABEL>
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="listProviderDetailsKey$proximityDistance"
+              />
+            </CONNECT>
+          </FIELD>
+        </CLUSTER>
+        <CLUSTER
+          LABEL_WIDTH="30"
+          WIDTH="70"
+        >
+          <FIELD
+            HEIGHT="5"
+            LABEL="Field.Label.Specialties"
+            USE_BLANK="true"
+          >
+            <CONNECT>
+              <INITIAL
+                HIDDEN_PROPERTY="specialtyCode"
+                NAME="DISPLAY"
+                PROPERTY="specialtyDescription"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="providerSearchCriteria$providerSpecialtiesTabbedString"
+              />
+            </CONNECT>
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="listProviderDetailsKey$providerSpecialtiesTabbedString"
+              />
+            </CONNECT>
+          </FIELD>
+        </CLUSTER>
+      </CLUSTER>
+      <CLUSTER>
+        <ACTION_SET
+          ALIGNMENT="CENTER"
+          TOP="false"
+        >
+          <ACTION_CONTROL
+            ACTION_ID="true"
+            LABEL="ActionControl.Label.Search"
+            TYPE="SUBMIT"
+          >
+            <LINK
+              DISMISS_MODAL="false"
+              PAGE_ID="ProviderManagement_specifyReferralProviderCPMService"
+              SAVE_LINK="false"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="caseID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="caseID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="referralID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="referralID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="ACTION"
+                  PROPERTY="result$addressID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="addressID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="ACTION"
+                  PROPERTY="result$providerSpecialtiesTabbedString"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="providerSpecialtiesTabbedString"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="ACTION"
+                  PROPERTY="result$proximityDistance"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="proximityDistance"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="ACTION"
+                  PROPERTY="result$providerName"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="providerName"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+          <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+            <LINK
+              DISMISS_MODAL="false"
+              PAGE_ID="ProviderManagement_specifyReferralProviderCPMService"
+              SAVE_LINK="false"
+            >
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="caseID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="caseID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="referralID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="referralID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="addressID"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="addressID"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="providerSpecialtiesTabbedString"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="providerSpecialtiesTabbedString"
+                />
+              </CONNECT>
+              <CONNECT>
+                <SOURCE
+                  NAME="PAGE"
+                  PROPERTY="proximityDistance"
+                />
+                <TARGET
+                  NAME="PAGE"
+                  PROPERTY="proximityDistance"
+                />
+              </CONNECT>
+            </LINK>
+          </ACTION_CONTROL>
+        </ACTION_SET>
+      </CLUSTER>
+
+
+    </CLUSTER>
+    <LIST>
+      <CONTAINER
+        LABEL="Field.Label.Select"
+        WIDTH="10"
+      >
+        <WIDGET TYPE="SINGLESELECT">
+          <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="providerID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="providerID"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="ProviderManagement_viewProviderOverview">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+      <CONTAINER LABEL="Field.Label.ProviderName">
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerDetails$providerName"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="openInvestigationsIncidentsIconXML"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+      <FIELD LABEL="Field.Label.Type">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerCategory"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Address">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerAddress"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Specialties">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerSpecialties"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Proximity">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="proximity"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="17"
+    TITLE="Cluster.Title.SpecifyProviderDetails"
+  >
+
+
+    <CLUSTER
+      LABEL_WIDTH="32"
+      NUM_COLS="2"
+    >
+
+
+      <FIELD
+        LABEL="Field.Label.Name"
+        WIDTH="21"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="providerReferralRoleDetails$providerName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP"/>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="32"
+      NUM_COLS="2"
+    >
+      <FIELD>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="providerAddressDetails"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="32"
+      NUM_COLS="2"
+    >
+      <FIELD
+        LABEL="Field.Label.Email"
+        WIDTH="21"
+        WIDTH_UNITS="CHARS"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="emailAddress"
+          />
+        </CONNECT>
+      </FIELD>
+      <CONTAINER
+        LABEL="Field.Label.Phone"
+        WIDTH="31"
+      >
+        <FIELD
+          WIDTH="3"
+          WIDTH_UNITS="CHARS"
+        >
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="phoneCountryCode"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          WIDTH="3"
+          WIDTH_UNITS="CHARS"
+        >
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="phoneAreaCode"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD
+          WIDTH="8"
+          WIDTH_UNITS="CHARS"
+        >
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="phoneNumber"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+</PAGE>

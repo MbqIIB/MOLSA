@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list all the licenses for a provider.     -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listLicense"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00235511, GP -->
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="DISPLAY"
+    OPERATION="listLicensesForProvider"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00198768, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00198768 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00207959, SS -->
+      <!-- BEGIN, CR00187976, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createLicense"
+        WINDOW_OPTIONS="width=700"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00207959 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00198768, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198768 -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Edit"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <!-- BEGIN, CR00207959, SS -->
+        <!-- BEGIN, CR00187976, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyLicenseFromList"
+          WINDOW_OPTIONS="width=700"
+        >
+          <!-- END, CR00187976 -->
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseStatus"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseStatus"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseDetails$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="renewedInd"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="renewedInd"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00229065, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewService">
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addLicenseServiceOffering"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseDetails$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewAttachment">
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="editInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createLicenseAttachment"
+          WINDOW_OPTIONS="width=700"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00229065 -->
+      <!-- BEGIN, CR00198768, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Suspend">
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="suspendInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_suspendLicense"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Approve">
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="approvedInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <!-- BEGIN, CR00199961, SS -->
+        <!-- BEGIN, CR00199675, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_approveLicense"
+          WINDOW_OPTIONS="width=300"
+        >
+          <!-- END, CR00199675 -->
+          <!-- END, CR00199961 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseDetails$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reject">
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="rejectInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_rejectLicense"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Renew">
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="renewInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_renewLicense"
+          WINDOW_OPTIONS="width=600"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00206671, SS -->
+      <!-- BEGIN, CR00236219, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.StatusHistory"
+      >
+        <!-- END, CR00236219 -->
+        <!-- BEGIN, CR00207959, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_listLicenseStatusHistory"
+          WINDOW_OPTIONS="width=550"
+        >
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseDetails$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00206671 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00236219, PS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="deleteInd"
+          />
+        </CONDITION>
+        <!-- END, CR00236219 -->
+        <!-- BEGIN, CR00229065, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelLicense"
+          WINDOW_OPTIONS="width=300"
+        >
+          <!-- END, CR00229065 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="licenseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="licenseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00198768 -->
+    <!-- BEGIN, CR00260515, GP -->
+    <FIELD
+      LABEL="Field.Label.Number"
+      WIDTH="11"
+    >
+      <!-- END, CR00260515 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="licenseNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00199961, SS -->
+    <!-- BEGIN, CR00260515, GP -->
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="18"
+    >
+      <!-- END, CR00260515 -->
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="licenseType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00199961, SS -->
+    <FIELD
+      LABEL="Field.Label.DateIssued"
+      WIDTH="12"
+    >
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateIssued"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00199961, SS -->
+    <!-- BEGIN, CR00260515, GP -->
+    <FIELD
+      LABEL="Field.Label.ExpirationDate"
+      WIDTH="16"
+    >
+      <!-- END, CR00260515 -->
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="expirationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <!-- BEGIN, CR00199961, SS -->
+    <FIELD
+      LABEL="Field.Label.CreatedBy"
+      WIDTH="15"
+    >
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdByFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+        WINDOW_OPTIONS="width=420"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Issuer"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="issuer"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199961, SS -->
+    <CONTAINER
+      LABEL="Field.Label.Status"
+      WIDTH="11"
+    >
+      <!-- END, CR00207959 -->
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="licenseStatus"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <!-- END, CR00199961 -->
+    <!-- BEGIN, CR00198768, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewLicense">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198768 -->
+  </LIST>
+  <!-- END, CR00235511 -->
+
+
+</PAGE>

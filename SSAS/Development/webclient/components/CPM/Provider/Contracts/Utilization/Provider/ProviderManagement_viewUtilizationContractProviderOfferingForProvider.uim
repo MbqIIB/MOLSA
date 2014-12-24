@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewUtilizationContractProviderOfferingForProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractProviderOfferingLinkID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00197897, SSK -->
+  <SERVER_INTERFACE
+    CLASS="MaintainContractPerformanceMeasure"
+    NAME="DISPLAY1"
+    OPERATION="listContractServicePerformanceMeaures"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="searchContractPMforService$contractVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00197897 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="viewProviderOfferingByContractVersionProviderOffering"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="contractPOLinkID"
+    />
+  </CONNECT>
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_viewUtilizationContractProviderOfferingContent.vim"/>
+
+
+  <!-- BEGIN, CR00197897, SSK -->
+  <!-- List of Performance Measure -->
+  <LIST TITLE="List.Title.PerformannceMeasure">
+    <!-- BEGIN, CR00200179, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00200179 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00207545, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyContractPerformanceMeasure"
+          SAVE_LINK="true"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00207545 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="contractPerformanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractPerformanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00200179, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeContractPerformanceMeasure"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00200179 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="viewContractPerformanceMeasureDetails$contractPerformanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractPerformanceMeasureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="performanceMesureName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00200179, SS -->
+    </ACTION_SET>
+    <!-- END, CR00200179 -->
+    <!-- BEGIN, CR00207545, SS -->
+    <FIELD
+      LABEL="Field.Label.Measure"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="80"
+    >
+      <!-- END, CR00207545 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="measure"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207545, SS -->
+    <FIELD
+      LABEL="Field.Label.Target"
+      WIDTH="20"
+    >
+      <!-- END, CR00207545 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="target"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00197897 -->
+
+
+</PAGE>

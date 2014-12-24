@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Character Entities</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Manual"><link rel="up" href="book-index.html" title="C&uacute;ram DocMaker Manual"><link rel="previous" href="DMN11DAE.html" title="Inline Images"><link rel="next" href="DMN11E79.html" title="Punctuation Marks and Accented Characters"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN11DAE.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN11E79.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="chapter" lang="en"><div class="chapter_titlepage"><div><div><h2 class="title"><a name="DMN11DC1"></a>Character Entities</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN11DC7"></a>Entities</h2></div></div><div></div></div><p>Entities are references to characters, strings, or files. They are
+    used when it is not possible, or not preferable, to use the referenced
+    object directly. In the world of SGML and XML, there are general entities
+    and parameter entities and you can have internal and external forms of
+    either; here, only internal general entities are described.</p><p>A common use of entities is to allow words like
+    <i class="wordasword">C&uacute;ram</i> to be included in documents: on some
+    systems it can be difficult to type the &ldquo;<span class="quote">&uacute;</span>&rdquo; character, or the
+    document file may not support the encoding of that character. In these
+    cases, the character can be replaced with the corresponding character
+    entity <tt class="sgmltag-genentity">&amp;uacute;</tt>. When the document is
+    formatted, the entity will be replaced with the appropriate character. You
+    can see it in action in this example:</p><div class="informalexample"><pre class="programlisting">&lt;blockquote&gt;
+  &lt;para&gt;Use a character entity like this: C&amp;uacute;ram.&lt;/para&gt;
+&lt;/blockquote&gt;</pre></div><p>That example will be rendered like this:</p><div class="blockquote"><blockquote class="blockquote"><p>Use a character entity like this: C&uacute;ram.</p></blockquote></div><p>The name of a character entity must be defined in a document type
+    definition (<span class="acronym">DTD</span>). The <span class="acronym">DTD</span> associates
+    the name with the numeric code allocated to that character in the
+    character encoding scheme. If the DTD does not define a named entity for a
+    character that you require, you can use a numeric character reference
+    instead of a character entity. For example, the &ldquo;<span class="quote">&uacute;</span>&rdquo; can be
+    represented as <tt class="sgmltag-numcharref">&amp;#250;</tt>, where
+    &ldquo;<span class="quote">250</span>&rdquo; is the decimal code for the character. If you want to
+    use the hexadecimal code, you add an &ldquo;<span class="quote">x</span>&rdquo; before the code like
+    this: <tt class="sgmltag-numcharref">&amp;#xFA;</tt>. The DocBook XML DTD
+    defines hundreds of named character entities, so you will rarely need to
+    use the numeric references. The decimal codes used in character references
+    can include codes for almost any Unicode character.</p><div class="tip"><table border="0" summary="Tip: Entities in the XXE Editor"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Tip]" src="../images/tip.gif"></td><th align="left"><a name="DMN11E06"></a>Entities in the XXE Editor</th></tr><tr><td valign="top" align="left" colspan="2"><p>The <span class="application">XXE</span> editor will automatically
+      convert numeric character references to named character entities where
+      the entities are defined in the DocBook XML DTD.
+      <span class="application">XXE</span> will also convert entities and character
+      references into ordinary characters where a document's encoding supports
+      those characters.</p></td></tr></table></div><div class="tip"><table border="0" summary="Tip: Typing Accented and Other Characters"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Tip]" src="../images/tip.gif"></td><th align="left"><a name="DMN11E1B"></a>Typing Accented and Other Characters</th></tr><tr><td valign="top" align="left" colspan="2"><p>On some operating systems, you can type any of vowels with an
+      acute accent by using the <span class="keycap">Alt Gr</span> key. For example,
+      <span class="keycap">Alt Gr</span>-<span class="keycap">U</span> for &ldquo;<span class="quote">&uacute;</span>&rdquo; or <span class="keycap">Alt Gr</span>-<span class="keycap">Shift</span>-<span class="keycap">U</span> for &ldquo;<span class="quote">&Uacute;</span>&rdquo;.</p><p>On <span class="application">Microsoft Windows</span> operating systems,
+      you can also type characters if you know their codes. The codes are
+      entered on the numeric keypad and <span class="keycap">Num Lock</span> must be
+      turned on. While holding down the <span class="keycap">Alt</span> key, type
+      <span class="keycap">0</span> (zero) on the numeric keypad followed by the digits
+      in the character code, then release the <span class="keycap">Alt</span> key. The
+      character will appear (if your text editor has not mapped the
+      combination as a shortcut to some operation). The codes used are those
+      defined in the ANSI character encoding, but as this is a superset of the
+      ISO Latin 1 encoding, it can be used with a little care. It will not
+      work for Unicode characters above 255 and should not be used for codes
+      in the range 128-159, as these are not valid in ISO Latin 1 or Unicode,
+      only in ANSI.</p></td></tr></table></div><div class="warning"><table border="0" summary="Warning: Character Representation"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Warning]" src="../images/warning.gif"></td><th align="left"><a name="DMN11E61"></a>Character Representation</th></tr><tr><td valign="top" align="left" colspan="2"><p>Although you can represent any character you want in your source
+      document using entities or character references, your chosen character
+      may not be represented correctly when you render your document to
+      another format that does not use entities. DocMaker renders output
+      documents that use the UTF-8 character encoding and replaces entities in
+      the ISO Latin 1 input documents with the corresponding UTF-8 character
+      code. If the font used to view the output document does not define a
+      glyph for that character code, you will not see the character as you
+      expected. This does not mean that the document has been corrupted, only
+      that the font used is not suited to the content.</p></td></tr></table></div><p>When you use a text editor, you must take note of the character
+    encoding used for your document (see <a href="DMN12086.html" title="Editing DocBook XML Documents"><i>Editing DocBook XML Documents</i></a> for details). As C&uacute;ram
+    documents use the ISO Latin 1 encoding, you will not need to use <tt class="sgmltag-genentity">&amp;uacute;</tt>: it is included in that encoding.
+    However, there are other characters that you may want to use that are not
+    included in this encoding or are not as easy to type on the keyboard. The
+    following sections list some of the common character entities that you can
+    use in your DocBook documents. When using <span class="application">XXE</span>,
+    you can select characters visually, but it helps to know the correct code
+    to ensure that you are using the correct character&mdash;different dash
+    characters can be hard to tell apart, for example. These lists are not
+    exhaustive: they contain only the characters that you are likely to need
+    in C&uacute;ram documents.</p></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN11DAE.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN11E79.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

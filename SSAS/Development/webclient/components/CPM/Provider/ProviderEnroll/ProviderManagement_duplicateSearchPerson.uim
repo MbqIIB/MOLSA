@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows user to search for a person registered on the system. -->
+<?curam-deprecated Since Curam 6.0, This page is not used in v6 
+  as part of provider enrollment process. This is replaced by Enroll Provider wizard.?>
+<PAGE
+  PAGE_ID="ProviderManagement_duplicateSearchPerson"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <PAGE_PARAMETER NAME="relatedConcernID"/>
+  <SERVER_INTERFACE
+    CLASS="Person"
+    NAME="ACTION"
+    OPERATION="search"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="POPULATE"
+    OPERATION="populateSearchData"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="POPULATE"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="PageTitle.Description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchPerson">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER LABEL="Field.Label.LastName">
+      <FIELD WIDTH="85">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="personSearchKey$surname"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.DateOfBirth"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <SOURCE
+          NAME="POPULATE"
+          PROPERTY="result$street1"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$address"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.BirthLastName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$birthSurname"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.FirstName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$forename"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Gender"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$sex"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <SOURCE
+          NAME="POPULATE"
+          PROPERTY="result$city"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MotherBirthName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="personSearchKey$motherSurname"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Text.Description"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER LABEL="Container.Label.Action">
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Action.Select"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_confirmPersonRelatedToProvider"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00187417 -->
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$personSearchResult$details$dtls$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$personSearchResult$details$dtls$forename"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="firstName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$personSearchResult$details$dtls$surname"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="lastName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$personSearchResult$details$dtls$referenceNumber"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK PAGE_ID="Person_homePagePDC">
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$personSearchResult$details$dtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.FirstName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$personSearchResult$details$dtls$forename"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.LastName"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$personSearchResult$details$dtls$surname"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.AddressLineOne"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$personSearchResult$details$dtls$address"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.City"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$personSearchResult$details$dtls$city"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Title.DateOfBirth"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$personSearchResult$details$dtls$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Previous">
+      <!-- BEGIN, CR00187417, PS -->
+      <LINK
+        PAGE_ID="ProviderManagement_enrollProviderComplete"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00187417 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Next">
+      <LINK PAGE_ID="ProviderManagement_duplicateRegisterPersonAsProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="relatedConcernID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="relatedConcernID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Finish">
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

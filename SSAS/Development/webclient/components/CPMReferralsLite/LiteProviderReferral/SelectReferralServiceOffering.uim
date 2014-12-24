@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c)2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--Page for selecting the Service Offering                              -->
+<PAGE
+  PAGE_ID="SelectReferralServiceOffering"
+  WINDOW_OPTIONS="width=750,height=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="SearchForProviderOffering"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="name"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="category"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerSpecialtiesTabbedString"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Constant.NoValue"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="proximity"
+          />
+        </CONNECT>
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="VALIDATEACTION"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <SERVER_INTERFACE
+    CLASS="Referral"
+    NAME="DISPLAY_POTENTIAL_REFERRALS"
+    OPERATION="listAllReferralServiceOfferings"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LiteProviderReferral"
+    NAME="VALIDATEACTION"
+    OPERATION="validateService"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="LiteProviderReferral"
+    NAME="DISPLAYWIZARD"
+    OPERATION="readWizardDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <LIST
+    PAGINATED="false"
+    SCROLL_HEIGHT="340"
+  >
+
+
+    <CONTAINER LABEL="Field.Label.Select">
+
+
+      <WIDGET TYPE="SINGLESELECT">
+        <WIDGET_PARAMETER NAME="SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY_POTENTIAL_REFERRALS"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="VALIDATEACTION"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <!--<WIDGET_PARAMETER NAME="SELECT_INITIAL">
+                    <CONNECT>
+                        <SOURCE
+                            NAME="DISPLAY_POTENTIAL_REFERRALS"
+                            PROPERTY="serviceOfferingID"
+                        />
+                    </CONNECT>
+                </WIDGET_PARAMETER>-->
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_POTENTIAL_REFERRALS"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Description"
+      WIDTH="60"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY_POTENTIAL_REFERRALS"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

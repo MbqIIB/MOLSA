@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2002-2007, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- Views the details of an existing insurance return for an employer.     -->
+<PAGE
+  PAGE_ID="Employer_viewInsuranceReturn"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewInsurRet"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Employer_viewInsuranceReturn"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.History"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Employer_viewInsuranceReturnHistory"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="insuranceRetHdrDtlsID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrDetailsID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.FurtherDetails"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Employer_viewInsuranceReturnFurtherDetails"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00069948, GBA -->
+  <!-- END, CR00069948 -->
+  <SERVER_INTERFACE
+    CLASS="Contribution"
+    NAME="DISPLAY"
+    OPERATION="readInsuranceReturnHomePage"
+  />
+
+
+  <PAGE_PARAMETER NAME="insuranceRetHdrID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="insuranceRetHdrID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="insRetLineHdrRmKey$insuranceRetHdrID"
+    />
+  </CONNECT>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.Employer">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employerName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="insuranceReturnType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ReceiptDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="insuranceRetHeaderDetails$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Period">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="periodName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="creationDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Contributions"
+  >
+    <FIELD LABEL="Field.Label.TotalEmployer">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employerContribAmt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TotalContributionAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalContribAmt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TotalEmployee">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="employeeContribAmt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TotalPayroll">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalPayroll"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title.LineItems">
+    <ACTION_SET BOTTOM="false">
+      <ACTION_CONTROL
+        IMAGE="NewButton"
+        LABEL="ActionControl.Label.New"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Employer_createInsuranceReturnLineItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="insuranceRetHdrID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="insuranceRetHdrID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="periodName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="insuranceRetHeaderDetails$insuranceReturnPeriodID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="insuranceReturnPeriodID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.View">
+        <LINK PAGE_ID="Employer_viewInsuranceReturnLineItem">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="insuranceRetHdrID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="insuranceRetHdrID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="insuranceRetLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="insuranceRetLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="periodName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Employer_modifyInsuranceReturnLineItem"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="insuranceRetLineItemID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="insuranceRetLineItemID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="periodName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.EmployeeName"
+      WIDTH="35"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$fullName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Person_resolveHomePage">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TotalContribution"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$totalContributionAmt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.NumberUnits"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$numInsuranceUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

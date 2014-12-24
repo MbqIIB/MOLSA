@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process
+  category="PC21"
+  createdBy="admin"
+  creationDate="20071112T173355"
+  id="10"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <!--  END, CR00235681-->
+  <name>NEWINVOICECREATED</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">New Invoice Created</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00248687, NS -->
+  <description>
+    <localized-text>
+      <locale language="en">Notifies the financial user when an external user submits a service invoice.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00248687 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="serviceInvoiceID"
+        struct-name="curam.cpm.facade.struct.CreatedServiceInvoiceDetails"
+      />
+      <target-attribute
+        name="serviceInvoiceID"
+        wdo-name="NewInvoiceCreatedDetails"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>NewInvoiceCreatedDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">New Invoice Created Details</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>serviceInvoiceID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">serviceInvoiceID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity
+      category="AC1"
+      id="3"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Assigned Owner</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="2"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">New Invoice has been created</locale>
+            </localized-text>
+          </message-text>
+        </message>
+        <actions>
+          <action
+            page-id="ProviderManagement_viewServiceInvoice"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">View New Service Invoice</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="serviceInvoiceID">
+              <wdo-attribute
+                name="serviceInvoiceID"
+                wdo-name="NewInvoiceCreatedDetails"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+        <task-priority>
+          <priority>TP2</priority>
+        </task-priority>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>true</allow-task-forwarding>
+      </task>
+      <allocation-strategy
+        identifier="New Invoice Work Queue"
+        type="target"
+      />
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="NEWINVOICECREATED"
+            event-type="INVOICECANCELLED"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="serviceInvoiceID"
+              wdo-name="NewInvoiceCreatedDetails"
+            />
+          </event>
+          <event
+            event-class="NEWINVOICECREATED"
+            event-type="INVOICESUBMITTED"
+            identifier="2"
+          >
+            <event-match-attribute
+              name="serviceInvoiceID"
+              wdo-name="NewInvoiceCreatedDetails"
+            />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="3"
+      id="2"
+      to-activity-idref="2"
+    />
+  </transitions>
+</workflow-process>

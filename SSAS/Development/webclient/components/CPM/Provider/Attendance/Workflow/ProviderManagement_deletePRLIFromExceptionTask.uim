@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2009 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page asks for a confirmation whether to delete a roster line item.-->
+<PAGE
+  PAGE_ID="ProviderManagement_deletePRLIFromExceptionTask"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <!-- BEGIN, CR00132858, RPB -->
+  <PAGE_PARAMETER NAME="taskID"/>
+  <!-- END, CR00132858 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRosterLineItem"
+    NAME="DISPLAY"
+    OPERATION="viewRosterLineItem"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerRosterLineItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerRosterLineItemID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="providerRosterLineItemDtls$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="prliVersionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="rosterLineItemDtls$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="rliVersionNo"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRosterLineItem"
+    NAME="ACTION"
+    OPERATION="deleteRosterLineItemFromExceptionTask"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Text.Title"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00129466, RD -->
+      <LINK PAGE_ID="ProviderManagement_viewRosterLineItemFrmTask">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+      <!-- BEGIN, CR00132858, RPB -->
+      <LINK PAGE_ID="ProviderManagement_processRosterLineItemException">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="rosterLineItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taskID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00132858 -->
+    </ACTION_CONTROL>
+    <!-- END, CR00129466-->
+  </ACTION_SET>
+</PAGE>

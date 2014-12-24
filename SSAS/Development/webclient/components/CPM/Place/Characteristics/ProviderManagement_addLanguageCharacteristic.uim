@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<PAGE
+  PAGE_ID="ProviderManagement_addLanguageCharacteristic"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="DISPLAY"
+    OPERATION="getLanguageListForUpdate"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="ACTION"
+    OPERATION="addLanguageCharacteristics"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="compartmentCharacteristicID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentCharacteristicID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$characteristicID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentCharacteristicID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="languageDetails$placementCharacteristic$characteristicID"
+    />
+  </CONNECT>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save1"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00248428, GP -->
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD CONTROL="TRANSFER_LIST">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$languageDetailsList$languageCode"
+          NAME="DISPLAY"
+          PROPERTY="result$languageDetailsList$languageDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="languageDetails$languageIDTabList"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00248428 -->
+</PAGE>

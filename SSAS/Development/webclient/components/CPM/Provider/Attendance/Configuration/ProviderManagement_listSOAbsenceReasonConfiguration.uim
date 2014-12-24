@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                    -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- the terms of the license agreement you entered into with Curam             -->
+<!-- Software.                                                                  -->
+<!-- Description                                                                -->
+<!-- ===========                                                                -->
+<!-- This page allows the user to list all the absence reasons of the           -->
+<!-- service offering.                                                          -->
+<PAGE
+  PAGE_ID="ProviderManagement_listSOAbsenceReasonConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00199755, SSK -->
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listAbsenceReasonConfiguration"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00199755 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="associateIDKey$associateID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <!-- BEGIN, CR00199014, PS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00199014 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00197208, PS -->
+      <!-- BEGIN, CR00197766, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createSOAbsenceReasonConfiguration"
+      >
+        <!-- END, CR00197766 -->
+        <!-- END, CR00197208 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="associateIDKey$associateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="associateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContext"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContext"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST SORTABLE="true">
+
+
+    <!-- BEGIN, CR00199014, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199014 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00187899, PS -->
+        <!-- BEGIN, CR00199755, SSK -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isCancelledIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00199755  -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifySOAbsenceReasonConfiguration"
+          WINDOW_OPTIONS="width=300"
+        >
+          <!-- END, CR00187899 -->
+          <!-- BEGIN, CR00199755, SSK -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$absenceReasonDetails$details$absenceReasonID"
+            />
+            <!-- END, CR00199755 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="absenceReasonID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="associateIDKey$associateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="associateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00137384, SB -->
+        <!-- BEGIN, CR00187417, PS -->
+        <!-- BEGIN, CR00187899, PS -->
+        <!-- BEGIN, CR00199755, SSK -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="isCancelledIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00199755 -->
+        <!-- BEGIN, CR00206310, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteSOAbsenceReasonConfiguration"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00206310 -->
+          <!-- END, CR00187899 -->
+          <!-- END, CR00187417 -->
+          <!-- END, CR00137384  -->
+          <!-- BEGIN, CR00199755, SSK -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$absenceReasonDetails$details$absenceReasonID"
+            />
+            <!-- END, CR00199755 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="absenceReasonID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="associateIDKey$associateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="associateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00199755, SSK -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$absenceReasonDetails$details$versionNo"
+            />
+            <!-- END, CR00199755 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199014, PS -->
+    </ACTION_SET>
+    <!-- END, CR00199014 -->
+
+
+    <!-- BEGIN, CR00199014, PS -->
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Name"
+      WIDTH="50"
+    >
+      <!-- END, CR00199014 -->
+
+
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$absenceReasonDetails$details$absenceReasonCode"
+        />
+        <!-- END, CR00199755 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Payable"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$absenceReasonDetails$details$absenceReasonPayableInd"
+        />
+        <!-- END, CR00199755 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Deductible"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$absenceReasonDetails$details$absenceReasonDeductibleInd"
+        />
+        <!-- END, CR00199755 -->
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <!-- BEGIN, CR00199755, SSK -->
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$absenceReasonDetails$details$recordStatus"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <!-- END, CR00199755 -->
+
+
+  </LIST>
+
+
+</PAGE>

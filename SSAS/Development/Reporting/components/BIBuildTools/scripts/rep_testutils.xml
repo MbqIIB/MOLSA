@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ 
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+
+-->
+<project>
+
+
+<property environment="sysenv." />
+
+
+<property file="${sysenv.CURAM_DIR}/components/BIBuildTools/scripts/third_party_tools_version.properties" />        
+<property name="jar.junit" value="${sysenv.CURAM_DIR}/components/BIBuildTools/lib/junit/junit-${version-junit}.jar"/>
+
+
+<property name="jar.junit.rename"
+  value="${sysenv.CURAM_DIR}${file.separator}components${file.separator}BIBuildTools${file.separator}lib-ext${file.separator}junit-${version-junit}.jar"/>
+
+
+<!--  *****************************************************************  -->
+<!--  ***  Grant necessary permissions from all databases to public ***  -->
+<!--  *****************************************************************  -->
+<target
+  description="do not execute- internal configuration target"
+  name="test.init"
+>
+  <copy file="${jar.junit}"
+    tofile="${jar.junit.rename}"
+     verbose="false"
+  />
+</target>
+
+<!--  *****************************************************************  -->
+<!--  ***  Grant necessary permissions from all databases to public ***  -->
+<!--  *****************************************************************  -->
+<target
+  description="do not execute - internal configuration target"
+  name="tools.init"
+>
+  <copy todir="${sysenv.CURAM_DIR}/components/BIBuildTools/lib-ext">
+   <fileset dir="${sysenv.CURAM_DIR}/components/BIBuildTools/lib-ext/tools">
+      <include name="*.jar"/>
+    </fileset>
+  
+  </copy>
+</target>
+
+<!--  *****************************************************************  -->
+<!--  ***  copies a modified word count rountine                    ***  -->
+<!--  *****************************************************************  -->
+<target
+  description="do not execute - internal configuration target"
+  name="tools.globalisation.init">
+  
+  <copy verbose="true" overwrite="true" force="true" file="${sysenv.CURAM_DIR}/components/BIBuildTools/scripts/customBIbuildForGlbnTools.xml"
+  tofile="${sysenv.CURAM_DIR}/GlbnTools/pre-processing/build.xml"/>
+  
+</target>
+
+<!--  *****************************************************************  -->
+<!--  ***  copies a modified word count rountine                    ***  -->
+<!--  *****************************************************************  -->
+<target
+  description="do not execute - internal configuration target"
+  name="test.report.etl-process-execution">
+  
+    <taskdef
+          classname="curam.util.reporting.testcases.buildenvironment.AntTestControlTables"
+          classpath="${jar.reporting.buildenv};${environment.jdbc.jars};${DEV_drivers};${prop.test.classpath}"
+          name="AntTestControlTables"
+    />
+    <mkdir dir="${dir.testresults}"/>
+	<copy verbose="true" todir="${dir.testresults}">
+        <fileset dir="${DEV_generator}">
+          <include name="*.css"/>
+		  <include name="TestStatusesExplained.html"/>
+        </fileset>		
+    </copy>
+	  
+    <AntTestControlTables reportingDir="${REPORTING_DIR}" resultsDir="${dir.testresults}"/>
+  
+</target>
+<!--  *****************************************************************  -->
+<!--  ***  copies a modified word count rountine                    ***  -->
+<!--  *****************************************************************  -->
+<target
+  description="do not execute - internal configuration target"
+  name="dictionary.cleanconfig">
+	
+	<delete failonerror="false" quiet="true">
+      <fileset dir="${sysenv.CURAM_DIR}/components/core/doc" includes="**/InstallationConfiguration.xml" defaultexcludes="false"/>
+      <fileset dir="${sysenv.CURAM_DIR}/components/ChildServices/doc" includes="**/InstallationConfiguration.xml" />
+      <fileset dir="${sysenv.CURAM_DIR}/components/IncomeSupport/doc" includes="**/InstallationConfiguration.xml"/>
+	</delete>
+
+</target>
+  
+</project>

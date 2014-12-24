@@ -1,0 +1,137 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>AppResource</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2">Contains application resources.
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (11)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">name</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The name of the resource. This is independent of the locale and the file name and provides a logical name for a resource that is valid for all locales. For example, if resources representing the organization logo image are uploaded from the files "images/en_US/logo.png" and "images/fr_CA/logo.png" (perhaps because the text of the organization name appears in the logo and is translated to the appropriate language for each locale), then the resource name "logo" can be used for both resources and the "locale" field can indicate which image is appropriate for each locale.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">contentType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The content type (MIME type) for this resource. This identifies how the binary resource content should be interpreted. See the domain definition for more information.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">contentDisposition</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The content disposition for this resource. At its most basic, this can be treated as the suggested file name for the resource if it is used as an attachment. This field may be left blank if it is not required, but it is recommended that it be set based on the original file name of the resource. See the domain definition for more information.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">content</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The content for this resource. This is binary data. If the resource is a text resource, then the binary data will be interpreted according to the character set encoding defined as a paramter to the value of the "contentType" field, for example, "text/plain; charset=us-ascii". If no encoding is specifed, UTF-8 encoding will be assumed. See the domain definition for more information.</td><td class="dataLast">SVR_BLOB</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">internal</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Indicates if resource is internal.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">resourceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The resource ID.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">description</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Description of the resource.</td><td class="dataLast">SVR_STRING&lt;2000&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">category</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Category of the resource.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">localeIdentifier</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The locale of the resource. Only resources with locales for which the application has been configured, or that act as fall-back locales for the application's locales, will be used. If the locale is empty, the resource may be used as a fallback if a resource for a specific locale cannot be found.
+
+
+
+For example, if the resource named "logo" is requested for the "en_US" locale is requested, but no resource with that exact key exists, then the "logo" and "en" should be checked, followed by "logo" and "" (an empty locale) if that cannot be found.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="SpecialtyTypeIcon.html#resourceID">SpecialtyTypeIcon.resourceID</a></td><td class="dataLast">AppResource.resourceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ProgressAdmin.html#resourceID">ProgressAdmin.resourceID</a></td><td class="dataLast">AppResource.resourceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ResourceNameIndex</td><td class="dataLast">name</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

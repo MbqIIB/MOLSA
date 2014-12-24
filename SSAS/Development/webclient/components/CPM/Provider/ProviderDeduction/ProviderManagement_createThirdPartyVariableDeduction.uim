@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2012 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to select a deduction type for a third       -->
+<!-- party deduction.                                                       -->
+<!-- BEGIN, CR00235825, SSK -->
+<PAGE
+  PAGE_ID="ProviderManagement_createThirdPartyVariableDeduction"
+  WINDOW_OPTIONS="width=620"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00235825  -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="deductionName"/>
+  <PAGE_PARAMETER NAME="category"/>
+  <PAGE_PARAMETER NAME="thirdPartyConcernRoleID"/>
+  <PAGE_PARAMETER NAME="paymentTypes"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderDeduction"
+    NAME="ACTION"
+    OPERATION="createThirdPartyVariableDeductionForProvider"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderDeduction"
+    NAME="DISPLAY"
+    OPERATION="readDefaultDeductionDetailsForProvider"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderDeduction"
+    NAME="DISPLAY1"
+    OPERATION="listThirdPartyDeductionNameForProvider"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="paymentTypes"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$paymentType"
+    />
+  </CONNECT>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="deductionName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$deductionName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="thirdPartyConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$liabilityConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="category"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerDeduction$category"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="deductionName"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerDeduction$deductionName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="dtls$actionType"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerDeduction$actionType"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="paymentTypes"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$paymentType"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00248112, PS -->
+  <!-- BEGIN, CR00246209, GP -->
+  <!-- BEGIN, CR00235825, SSK -->
+  <CLUSTER>
+    <CLUSTER
+      DESCRIPTION="Cluster.ThirdPartySearch.Description"
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <CONTAINER LABEL="Field.Label.ThirdParty">
+        <!-- END, CR00246209 -->
+        <!-- BEGIN, CR00247036, PS -->
+        <FIELD>
+          <!-- END, CR00247036 -->
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="details$thirdPartyConcernRoleType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="details$providerDeduction$thirdPartyConcernRoleID"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+  </CLUSTER>
+  <!-- END, CR00235825 -->
+  <!-- END, CR00248112 -->
+
+
+  <!-- BEGIN, CR00248112, PS -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248112 -->
+    <!-- BEGIN, CR00235506, PS -->
+    <!-- BEGIN, CR00247036, PS -->
+    <FIELD LABEL="Field.Label.DeductionName">
+      <!-- END, CR00247036 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="dtls$deductionName"
+          NAME="DISPLAY1"
+          PROPERTY="dtls$deductionName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$deductionName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00235506 -->
+    <FIELD LABEL="Field.Label.AccountName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$customerAccName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00248112, PS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00248112 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Percentage"
+      WIDTH="4"
+      WIDTH_UNITS="CHARS"
+    >
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$rate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR0122147, NBR -->
+    <FIELD
+      LABEL="Field.Label.Priority"
+      WIDTH="4"
+      WIDTH_UNITS="CHARS"
+    >
+      <!-- END, CR0122147 -->
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$priority"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.AccountNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$customerAccNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00248112, PS -->
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00248112 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD LABEL="Field.Label.AssignNextPriority">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$applyNextPriorityInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="45"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerDeduction$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

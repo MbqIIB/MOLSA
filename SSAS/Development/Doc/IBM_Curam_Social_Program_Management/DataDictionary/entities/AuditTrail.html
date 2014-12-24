@@ -1,0 +1,116 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>AuditTrail</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Audit Trail:</b>
+<i> An audit of the read or write of a C&uacute;ram database table.</i>
+<P>C&uacute;ram supports the ability to record audit information about the invocation of any entity operation (both database reads and writes).  This mechanism is known as 'table-level auditing'.</P>
+<P>When an entity operation is audited, certain information is captured about the invocation of the operation, which includes information about the selection criteria used and may also include before and after images of the data.</P>
+<p><b>Example</b></p><P><a href=Users.html>User</a> Ronan Rooney opens a client screen which displays information about the <a href=Person.html>Person</a> John Smith (retrieved from the <a href=Person.html>Person</a> table).  C&uacute;ram audits the Person.read operation and stores:</P>
+<UL>
+<LI>the date and time of the operation;</LI>
+<LI>Ronan Rooney's user name;</LI>
+<LI>the fact that the table read was the <a href=Person.html>Person</a> table;</LI>
+<LI>the FID of the server method that Ronan Rooney's client screen called;</LI>
+<LI>the fact that the transaction type was online;</LI>
+<LI>the fact that the operation type was a read; and</LI>
+<LI>the concernRoleID of John Smith (which was the selection criteria used to perform the read).</LI>
+</UL>
+<P><a href=Users.html>User</a> Ronan Rooney then changes John Smith's date of birth from 1st January 1970 to 31st December 1969, and clicks on a button to store the updated details on the <a href=Person.html>Person</a> table.  C&uacute;ram audits the Person.modify operation and stores:</P>
+<UL>
+<LI>the date and time of the operation;</LI>
+<LI>Ronan Rooney's user name;</LI>
+<LI>the fact that the table modified was the <a href=Person.html>Person</a> table;</LI>
+<LI>the FID of the server method that Ronan Rooney's client screen called;</LI>
+<LI>the fact that the transaction type was online;</LI>
+<LI>the fact that the operation type was a modify; and</LI>
+<LI>the concernRoleID of John Smith (which was the selection criteria used to perform the modify).</LI>
+</UL>
+<p><b>Technical Notes</b></p><P>By default the table-level auditing mechanism is disabled.  See:</P>
+<UL>
+<LI>the C&uacute;ram Server Modelling Guide for details on how to enable this mechanism in a development model; and</LI>
+<LI>the C&uacute;ram Server Developer's Guide for details on how to override this mechanism in a runtime application.</LI>
+</UL>
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (10)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">timeEntered</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The time at which the database operation was invoked.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">userId</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The user who invoked the database operation.</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">tableName</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The name of the table that is being audited.</td><td class="dataLast">SVR_STRING&lt;128&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">programName</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The signature of the database operation which was invoked.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">tranType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The context in which the method was invoked.  This may be one of batch, online, deferred and other.</td><td class="dataLast">SVR_STRING&lt;1&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">keyInfo</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">An XML representation of the key that was used as part of the update operation.</td><td class="dataLast">SVR_STRING&lt;2000&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">detailInfo</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">An XML representation of the the values of the various fields before/after they were updated as part of a data access.  This may be an empty string.</td><td class="dataLast">SVR_STRING&lt;53000000&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">opType</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The type of database operation (Create, Read, Update or Delete) which caused this audit record to be produced.</td><td class="dataLast">SVR_CHAR</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">isCompressed</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Indicates whether the data in the detailInfo column has been compressed.
+
+</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

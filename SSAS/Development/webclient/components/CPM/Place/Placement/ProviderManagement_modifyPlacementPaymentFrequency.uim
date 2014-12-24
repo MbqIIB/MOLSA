@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the modify placement delivery pattern page  -->
+<!-- BEGIN, CR00291325, SS -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyPlacementPaymentFrequency"
+  WINDOW_OPTIONS="width=550"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00291325 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="frequencyID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderFinancial"
+    NAME="ACTION"
+    OPERATION="modifyPlacementPaymentFrequency"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderFinancial"
+    NAME="DISPLAY"
+    OPERATION="viewPlacementFrequency"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="frequencyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="placementFrequency$frequencyID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placementFrequency$versionNo"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="frequencyID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placementFrequency$frequencyID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00199014, PS -->
+  <CLUSTER>
+    <!--END, CR00199014-->
+    <FIELD LABEL="Field.Label.FrequencyPattern">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$frequencyPattern"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementFrequency$frequencyPattern"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247984, PS -->
+    <FIELD
+      LABEL="Field.Label.effectiveDate"
+      WIDTH="40"
+    >
+      <!-- END, CR00247984 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$effectiveDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementFrequency$effectiveDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+</PAGE>

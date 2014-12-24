@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  Script to configure Websphere using AppServer.properties.
+
+-->
+<project name="app_configureWAS" default="setup" basedir=".">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <import file="./app_macros.xml" />
+
+  <!-- App server specific properties -->
+  <property file="${app.prop.location}"/>
+
+  <!-- Defaults -->
+  <property name="curam.security.login.trace"           value=""/>
+  <property name="curam.security.check.identity.only"   value=""/>
+  <property name="curam.security.user.registry.enabled" value=""/>
+  <property name="curam.security.zos.saf"               value=""/>
+  <property name="curam.security.usernames.delimiter"   value=","/>
+  <property name="curam.security.user.registry.enabled.types"  value=""/>
+  <property name="curam.security.user.registry.disabled.types" value=""/>
+
+  <!-- The heap min/max is set to the same value -->
+  <property name="curam.server.jvm.heap.size"           value="1024"/>
+
+  <!-- wsadmin default min/max JVM heap size -->
+  <property name="curam.wsadmin.jvm.heap.size"          value="1024"/>
+
+  <taskdef name="string" classname="curam.util.tools.AntStrings"
+      classpath="${jar.coreinf}:${jar.tools}"/>
+
+  <!-- Profile default value on z/OS must be default -->
+  <condition property="profile.name" value="default">
+    <os family="z/os"/>
+  </condition>
+  <property name="profile.name"   value="AppSrv01"/>
+
+  <property name="cell.name"      value="${node.name}Cell"/>
+  <property name="properties.dir" location="${WAS_HOME}/profiles/${profile.name}/properties"/>
+  <property name="template.dir"   location="${WAS_HOME}/profileTemplates/default"/>
+  <property name="curam.transportchain.http.keepalive.enabled" value="true"/>
+  <property name="curam.transportchain.http.keepalive.timeout" value="30"/>
+  <property name="curam.db.zos.jcc.propfile"                   value=""/>
+  <property name="curam.zos.64bitmode"                         value="false"/>
+  <property name="curam.db2.purescale"                         value="false"/>
+
+  <!-- SOAP timeout for wsadmin -->
+  <property name="wsadmin.soap.timeout" value="3600"/>
+
+  <!-- On zOS, use explicit encoding, else system encoding -->
+  <condition property="replace.encoding" value="ISO-8859-1">
+    <os family="z/os"/>
+  </condition>
+  <property name="replace.encoding" value="${file.encoding}"/>
+
+  <!-- On z/OS profiles are not supported (only default) -->
+  <condition property="keep.profile" value="true">
+     <os family="z/os"/>
+  </condition>
+
+  <!-- On zOS some files (scripts) use native EBCDIC encoding, else system encoding -->
+  <condition property="replace.native.encoding" value="Cp1047">
+    <os family="z/os"/>
+  </condition>
+  <property name="replace.native.encoding" value="${file.encoding}"/>
+
+  <!-- On windows we call 'wsadmin.bat' -->
+  <condition property="wsadmin.extension" value=".bat" >
+    <os family="windows" />
+  </condition>
+  <!-- Unix platforms use wsadmin.sh -->
+  <property name="wsadmin.extension" value=".sh"/>
+
+  <!-- Set platform based on OS -->
+  <condition property="platform" value="zos" >
+    <os family="z/os" />
+  </condition>
+  <condition property="platform" value="unix" >
+    <os family="unix" />
+  </condition>
+  <property name="platform" value="windows"/>
+
+
+  <!--  *******************  -->
+  <!--  ***  S E T U P  ***  -->
+  <!--  *******************  -->
+  <target name="setup" depends="init, get.decrypted.db.password, check.db.type2.required, get.decrypted.appserver.password"
+    description="Backup WAS configuration and configure WAS on DB2 for Curam.">
+
+     
+     
+  <condition property="crypto.file.exists" value="true" >
+    <available file="${crypto.prop.file.location}/CryptoConfig.properties"/>
+  </condition>
+  <!--antcall target="updateRegistry.for.propertyfile"/-->
+
+
+    <!-- Copy registry file -->
+    <property name="registry.jar.file.location" value="${WAS_HOME}/lib"/>
+      
+    <copy file="../lib/Registry.jar" toFile="${registry.jar.file.location}/Registry.jar"
+      overwrite="true"/>
+
+    <!-- Change the memory sizing within the wsadmin script file -->
+    <replaceregexp file="${WAS_HOME}/bin/wsadmin${wsadmin.extension}"
+                   encoding="${replace.native.encoding}"
+                   match="-Xms\d+[mMkK] -Xmx\d+[mMkK]"
+                   replace="-Xms${curam.wsadmin.jvm.heap.size}m -Xmx${curam.wsadmin.jvm.heap.size}m"
+                   byline="true"
+    />
+    <!-- For z/OS, because of the filesystem structure, the file has to be set to execute. -->
+    <chmod file="${WAS_HOME}/bin/wsadmin${wsadmin.extension}"
+           perm="ugo+rx"
+           osfamily="z/os"/>
+
+    <antcall target="delete.profile" inheritall="false"/>
+    <antcall target="create.profile" inheritall="false"/>
+
+    <!-- Configure sas.client.props and wsadmin.properties -->
+    <exec executable="hostname" failonerror="true" outputproperty="host.name"/>
+
+    <!-- Change the login source from prompt to properties -->
+    <replace file="${properties.dir}/sas.client.props"
+      encoding="${replace.encoding}">
+      <replacetoken>com.ibm.CORBA.loginSource=prompt</replacetoken>
+      <replacevalue>com.ibm.CORBA.loginSource=properties</replacevalue>
+    </replace>
+
+    <!-- Comment out the old user id -->
+    <replaceregexp
+      file="${properties.dir}/sas.client.props"
+      match="com.ibm.CORBA.loginUserid=(.*)"
+      replace="com.ibm.CORBA.loginUserid=${security.username}"
+      byline="true"
+      encoding="${replace.encoding}">
+    </replaceregexp>
+
+    <!-- Comment out the old password -->
+    <replaceregexp
+      file="${properties.dir}/sas.client.props"
+      match="com.ibm.CORBA.loginPassword=(.*)"
+      replace="com.ibm.CORBA.loginPassword=${decrypted.appserver.password}"
+      byline="true"
+      encoding="${replace.encoding}">
+    </replaceregexp>
+
+    <!-- Change the principal name -->
+    <replace file="${properties.dir}/sas.client.props"
+      encoding="${replace.encoding}">
+      <replacetoken>com.ibm.CORBA.principalName=
+</replacetoken>
+      <replacevalue>com.ibm.CORBA.principalName=curam
+</replacevalue>
+     </replace>
+
+    <!-- And then soap.client.props -->
+    <!-- Comment out the old user id -->
+    <replaceregexp
+      file="${properties.dir}/soap.client.props"
+      match="com.ibm.SOAP.loginUserid=(.*)"
+      replace="com.ibm.SOAP.loginUserid=${security.username}"
+      byline="true"
+      encoding="${replace.encoding}">
+    </replaceregexp>
+
+    <!-- Comment out the old password -->
+    <replaceregexp
+      file="${properties.dir}/soap.client.props"
+      match="com.ibm.SOAP.loginPassword=(.*)"
+      replace="com.ibm.SOAP.loginPassword=${decrypted.appserver.password}"
+      byline="true"
+      encoding="${replace.encoding}">
+    </replaceregexp>
+
+    <!-- Copy templates to properties -->
+    <copy file="./SecurityConfig.template"
+      toFile="./SecurityConfig.properties"
+      overwrite="true"/>
+
+    <!-- replace tokens with properties -->
+    <replace file="./SecurityConfig.properties"
+      encoding="${replace.encoding}">
+      <replacefilter  token="!DBALIAS!"     value="${curam.db.auth.alias}"/>
+      <replacefilter  token="!DBUSER!"      value="${curam.db.username}"/>
+      <replacefilter  token="!DBPASSWORD!"  value="${decrypted.db.password}"/>
+      <replacefilter  token="!SECUSER!"     value="${security.username}"/>
+      <replacefilter  token="!SECPASSWORD!" value="${decrypted.appserver.password}"/>
+      <replacefilter  token="!LOGINTRACE!"  value="${curam.security.login.trace}"/>
+      <replacefilter  token="!IDENTITYONLY!" value="${curam.security.check.identity.only}"/>
+      <replacefilter  token="!REGISTRYENABLED!" value="${curam.security.user.registry.enabled}"/>
+      <replacefilter  token="!PLATFORM!"    value="${platform}"/>
+      <replacefilter  token="!SECSAF!"      value="${curam.security.zos.saf}"/>
+      <replacefilter  token="!DELIMITER!"   value="${curam.security.usernames.delimiter}"/>
+      <replacefilter  token="!REGISTRYENABLEDTYPES!"  value="${curam.security.user.registry.enabled.types}"/>
+      <replacefilter  token="!REGISTRYDISABLEDTYPES!" value="${curam.security.user.registry.disabled.types}"/>
+    </replace>
+
+    <string to="CURAMSDEJ.replace"   oldchar="\" newchar="/" from="${sysenv.CURAMSDEJ}" type="replace" />
+    <string to="DB2JCC_LICENSE_CISUZ_JAR.replace" oldchar="\" newchar="/" from="${DB2JCC_LICENSE_CISUZ_JAR}" type="replace" />
+    <string to="DB2DIR.replace" oldchar="\" newchar="/" from="${sysenv.DB2DIR}" type="replace" />
+
+    <replaceregexp
+      file="${properties.dir}/server.policy"
+      match="// Allow to use sun tools"
+      replace="${line.separator}grant codeBase &quot;file:${CURAMSDEJ.replace}/drivers/-&quot; {
+${line.separator}  permission java.security.AllPermission;
+${line.separator}};
+${line.separator}
+${line.separator}// (Curam config done.) Allow to use sun tools"
+      byline="true"
+      encoding="${replace.encoding}">
+    </replaceregexp>
+
+    <!-- stop ejb server -->
+    <antcall target="stopserverforconfigure" inheritall="false">
+      <param name="fail.on.error" value="false"/>
+    </antcall>
+
+    <!-- start ejb server -->
+    <antcall target="startserverforconfigure" inheritall="false"/>
+
+    <!-- do the configuration steps -->
+
+    <!-- security -->
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -profile ./ConfigProcedures.py -f ./SecurityConfig.py ./SecurityConfig.properties ${node.name}"/>
+
+    <!-- delete the SecurityConfig properties -->
+
+    <delete file="${dir.sde.bin}/SecurityConfig.properties" />
+
+
+    <!-- Application Server -->
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./ServerConfig.py ${curam.server.name} ${node.name} ${curam.server.port} ${platform} ${curam.zos.64bitmode} ${curam.server.jvm.heap.size} ${curam.server.jvm.heap.size}"/>
+
+    <string to="curam.db.type.upper" from="${curam.db.type}" type="uppercase" />
+
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./DataSourceConfig.py ${node.name} ${curam.server.name} ${curam.db.type.upper}
+                     ${curam.db.auth.alias} '${CURAMSDEJ.replace}'
+                     '${DB2JCC_LICENSE_CISUZ_JAR.replace}'
+                     ${curam.db.name} ${curam.db.oracle.servicename} ${curam.db.serverport} ${curam.db.servername}
+		     ${curam.db.driver.type} ${platform} '${DB2DIR.replace}' '${curam.db2.purescale}' ${curam.db.zos.jcc.propfile}
+                      "/>
+
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./PortConfig.py ${node.name} ${curam.server.name}
+                     ${curam.client.httpport} ${curam.server.name} ${curam.webservices.httpport}
+                     ${curam.transportchain.http.keepalive.enabled}
+                     ${curam.transportchain.http.keepalive.timeout} "/>
+
+    <!-- Server SIBus -->
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./SIBusConfig.py ${node.name} ${curam.server.name}
+                     CuramBus ${curam.db.username} ${curam.db.auth.alias} ${curam.db.type.upper}"/>
+
+    <property name="was.queue.factories" value="CuramQueueConnectionFactory"/>
+    <property name="was.queues" value="DPEnactment DPError WorkflowEnactment WorkflowActivity WorkflowError CuramDeadMessageQueue"/>
+
+    <!-- JMS -->
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./JMSConfig.py ${node.name} ${curam.server.name} '${was.queue.factories}'
+                     '${was.queues}' ${curam.db.auth.alias} CuramBus
+                     "/>
+
+    <!-- QUEUE CONFIGURATION -->
+    <!-- Configure the CuramDeadMessageQueue Queue -->
+    <antcall target="configure.queue" inheritall="false">
+      <param name="queue.name" value="CuramDeadMessageQueue" />
+      <param name="error.queue.name" value=""/>
+      <param name="wsadmin.extension" value="${wsadmin.extension}"/>
+    </antcall>
+
+    <!-- Configure the DPError Queue -->
+    <antcall target="configure.queue" inheritall="false">
+      <param name="queue.name" value="DPError" />
+      <param name="error.queue.name" value="CuramDeadMessageQueue"/>
+      <param name="wsadmin.extension" value="${wsadmin.extension}"/>
+    </antcall>
+
+    <!-- Configure the DPEnactment Queue -->
+    <antcall target="configure.queue" inheritall="false">
+      <param name="queue.name" value="DPEnactment" />
+      <param name="error.queue.name" value="DPError"/>
+      <param name="wsadmin.extension" value="${wsadmin.extension}"/>
+    </antcall>
+
+    <!-- Configure the WorkflowError Queue -->
+    <antcall target="configure.queue" inheritall="false">
+      <param name="queue.name" value="WorkflowError" />
+      <param name="error.queue.name" value="CuramDeadMessageQueue"/>
+      <param name="wsadmin.extension" value="${wsadmin.extension}"/>
+    </antcall>
+
+    <!-- Configure the WorkflowEnactment Queue -->
+    <antcall target="configure.queue" inheritall="false">
+      <param name="queue.name" value="WorkflowEnactment" />
+      <param name="error.queue.name" value="WorkflowError"/>
+      <param name="wsadmin.extension" value="${wsadmin.extension}"/>
+    </antcall>
+
+    <!-- Configure the WorkflowActivity Queue -->
+    <antcall target="configure.queue" inheritall="false">
+      <param name="queue.name" value="WorkflowActivity" />
+      <param name="error.queue.name" value="WorkflowError"/>
+      <param name="wsadmin.extension" value="${wsadmin.extension}"/>
+    </antcall>
+
+    <property name="was.topic.factories" value="CuramTopicConnectionFactory"/>
+    <property name="was.topics" value="CuramCacheInvalidationTopic"/>
+
+    <!-- Server Topic -->
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./TopicConfig.py ${node.name} ${curam.server.name} '${was.topic.factories}'
+                     '${was.topics}' ${curam.db.auth.alias} CuramBus
+                     "/>
+
+    <property name="do.extra.file" value=""/>
+    <antcall target="${do.extra.file}do.extra" inheritall="false"/>
+
+    <!-- Stop Server -->
+    <antcall target="stopserverforconfigure" inheritall="false">
+      <param name="fail.on.error" value="true"/>
+    </antcall>
+
+    <!-- Start with wsadmin.properties -->
+    <!-- Configure wsadmin.properties for SOAP  -->
+    <replaceregexp
+      file="${properties.dir}/soap.client.props"
+      match="com.ibm.SOAP.requestTimeout=(.*)"
+      replace="com.ibm.SOAP.requestTimeout=${wsadmin.soap.timeout}"
+      byline="true"
+      encoding="${replace.encoding}">
+    </replaceregexp>
+
+    <!-- Change the machine name from localhost to be the real name -->
+    <!-- replace tokens with properties -->
+    <replace file="${properties.dir}/wsadmin.properties"
+      encoding="${replace.encoding}">
+      <replacefilter
+        token="com.ibm.ws.scripting.host=localhost"
+        value="com.ibm.ws.scripting.host=${host.name}"/>
+    </replace>
+
+    <!-- Drop the SIB Tables -->
+    <ant target="droptables"   antfile="./app_sibDDLGenerator.xml" inheritAll="false" />
+
+    <!-- Create the SIB Tables -->
+    <ant target="createtables" antfile="./app_sibDDLGenerator.xml" inheritAll="false" />
+
+  </target>
+
+
+  <!-- ************************** -->
+  <!-- ***  D O .  E X T R A  *** -->
+  <!-- ************************** -->
+  <import file="./extra_was_configuration.xml" optional="true"/>
+  <target name="do.extra" description="Dummy target to allow hook for extra configuration to be performed."/>
+
+  <!-- ***************************************** -->
+  <!-- ***  C O N F I G U R E  A  Q U E U E  *** -->
+  <!-- ***************************************** -->
+  <target name="configure.queue">
+
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./SIBQueueConfig.py ${node.name} ${curam.server.name} CuramBus
+                     ${queue.name} ${error.queue.name}"/>
+
+  </target>
+
+  <!-- ***************************************** -->
+  <!-- ***  C O N F I G U R E  J V M         *** -->
+  <!-- ***************************************** -->
+  <target name="configure.jvm">
+
+    <execos command="${WAS_HOME}/profiles/${profile.name}/bin/wsadmin${wsadmin.extension}"
+            fail.required="true"
+            options="-profileName ${profile.name} -lang jython
+                     -f ./JVMConfig.py ${node.name} ${curam.server.name} ${platform}
+                     ${jvm.config.type} ${jvm.name} ${jvm.value}"/>
+
+  </target>
+
+
+  <!--  *****************  -->
+  <!--  ***  I N I T  ***  -->
+  <!--  *****************  -->
+  <target name="init">
+    <tstamp/>
+    <echo message="Invoking WAS configuration script"/>
+
+    <antcall target="check.prop" inheritall="false">
+      <param name="prm.var" value="WAS_HOME"/>
+      <param name="prm.prop" value="sysenv.WAS_HOME"/>
+    </antcall>
+
+  </target>
+
+  <!--  *********************  -->
+  <!--  ***  STARTSERVER  ***  -->
+  <!--  *********************  -->
+  <target name="startserverforconfigure">
+
+    <ant target="startserver"
+      antfile="./build.xml" inheritAll="false" >
+      <property name="dir.project.properties" value="${prop.file.location}"/>
+      <property name="server.name"            value="${curam.server.name}"/>
+    </ant>
+
+  </target>
+
+  <!--  ********************  -->
+  <!--  ***  STOPSERVER  ***  -->
+  <!--  ********************  -->
+  <target name="stopserverforconfigure">
+
+    <!-- Only stop the server if it has been started (i.e. if there is a -->
+    <!-- ${curam.server.name}.pid file in its log directory).            -->
+    <condition property="server.is.started">
+      <or>
+        <available file="${sysenv.WAS_HOME}/profiles/${profile.name}/logs/${curam.server.name}/${curam.server.name}.pid"/>
+        <available file="${sysenv.WAS_INSTANCE_HOME}/profiles/${profile.name}/logs/${curam.server.name}/${curam.server.name}.pid"/>
+      </or>
+    </condition>
+
+    <antcall target="stopOneWASServer.if.started"/>
+    <antcall target="stopOneWASServer.if.notstarted"/>
+
+  </target>
+
+
+ <!-- Non-visible target: update property in jar. -->
+  <target name="updateRegistry.for.propertyfile" if="crypto.file.exists">
+    <condition property="registry.jar.crypto.exists">
+            <available file="${dir.sde.lib}/Registry.jar"/>
+    </condition>
+    <condition property="curammbean.jar.crypto.exists">
+        <available file="${dir.sde.lib}/CuramMBean.jar"/>
+    </condition>
+    <antcall target="updateRegisryjar.crypto"/>
+  </target>
+  <target name="updateRegisryjar.crypto" if="registry.jar.crypto.exists">
+    <path id="cryptoconfig.path">
+      <fileset dir="${crypto.prop.file.location}">
+        <include name="CryptoConfig*.properties"/>
+      </fileset>
+    </path>
+      <jar
+        destfile="${dir.sde.lib}/Registry.jar"
+        filesonly="true" level="${jar.compression}"
+        update="true">
+        <path refid="cryptoconfig.path"/>
+      </jar>
+  </target>
+ 
+
+  <!-- Non-visible target: Stop a WAS server, IF it is already started. -->
+  <target name="stopOneWASServer.if.started" if="server.is.started">
+
+    <ant target="stopserver"
+      antfile="./build.xml" inheritAll="false" >
+      <property name="dir.project.properties" value="${prop.file.location}"/>
+      <property name="server.name"            value="${curam.server.name}"/>
+      <property name="fail.on.error"          value="${fail.on.error}"/>
+    </ant>
+
+  </target>
+
+  <!-- Non-visible target: Echo that the WAS server did not need to be stopped. -->
+  <target name="stopOneWASServer.if.notstarted" unless="server.is.started">
+    <echo message="Server '${curam.server.name}' did not need to be stopped, it was not running." />
+  </target>
+
+  <!-- ************************************ -->
+  <!-- ***  D E L E T E  P R O F I L E  *** -->
+  <!-- ************************************ -->
+  <target name="delete.profile" unless="keep.profile">
+
+    <echo message="Removing profile - ${WAS_HOME}/profiles/${profile.name}"/>
+    <!-- On windows we call 'manageprofiles.bat' -->
+    <condition property="manageprofiles.extension" value=".bat" >
+      <os family="windows" />
+    </condition>
+
+    <!-- Unix platforms use manageprofiles.sh -->
+    <property name="manageprofiles.extension" value=".sh"/>
+
+    <execos command="${WAS_HOME}/bin/manageprofiles${manageprofiles.extension}"
+            fail.required="false"
+            options="-delete -profileName ${profile.name} -profilePath '${WAS_HOME}/profiles/${profile.name}'"/>
+
+    <delete dir="${WAS_HOME}/profiles/${profile.name}"/>
+
+  </target>
+
+  <!-- ************************************ -->
+  <!-- ***  C R E A T E  P R O F I L E  *** -->
+  <!-- ************************************ -->
+  <target name="create.profile" unless="keep.profile">
+
+    <echo message="Creating profile - ${WAS_HOME}/profiles/${profile.name}"/>
+    <exec executable="hostname" failonerror="true" outputproperty="host.name"/>
+
+    <!-- Fix setupCmdLine.bat for Windows 2000 Machines -->
+    <condition property="windows.2000">
+      <os family="windows" name="Windows 2000"/>
+    </condition>
+    <antcall target="fix.bat.file"/>
+
+    <!-- On windows we call 'manageprofiles.bat' -->
+    <condition property="manageprofiles.extension" value=".bat">
+      <os family="windows" />
+    </condition>
+    <condition property="starting.port.addition" value="-startingPort ${starting.port}" >
+      <isset property="starting.port" />
+    </condition>
+
+    <!-- Unix platforms use manageprofiles.sh -->
+    <property name="manageprofiles.extension" value=".sh"/>
+    <property name="starting.port.addition" value="-defaultPorts"/>
+    <property name="profile.path" location="${WAS_HOME}/profiles/${profile.name}"/>
+
+    <execos command="${WAS_HOME}/bin/manageprofiles${manageprofiles.extension}"
+            fail.required="true"
+            options="-create -profileName ${profile.name} -profilePath '${profile.path}'
+                     -nodeName ${node.name} -hostName ${host.name} -cellName ${cell.name} -serverName ${curam.server.name}
+                     -templatePath ${template.dir} -winserviceCheck false ${starting.port.addition}"/>
+  </target>
+
+  <!-- Fix setupCmdLine.bat for Windows 2000 Machines -->
+  <target name="fix.bat.file" if="windows.2000">
+    <replaceregexp
+      file="${WAS_HOME}/bin/setupCmdLine.bat"
+      match="set WAS_PROFILE_FSDB_SCRIPT=$"
+      replace="set WAS_PROFILE_FSDB_SCRIPT= "
+      byline="true"
+      encoding="${replace.encoding}"
+      >
+    </replaceregexp>
+  </target>
+
+  <!-- ************************** -->
+  <!-- ***  C H E C K  R R S  *** -->
+  <!-- ************************** -->
+  <target name="check.db.type2.required">
+
+    <condition property="curam.db.driver.type" value="2">
+      <isset property="curam.db.type2.required"/>
+    </condition>
+    <property name="curam.db.driver.type" value="4"/>
+
+    <condition property="curam.db.driver.type2.invalid.for.rrs" value="true">
+      <and>
+        <os family="z/os"/>
+        <equals arg1="${curam.db.driver.type}" arg2="2"/>
+        <or>
+          <equals arg1="${sysenv.DB2DIR}" arg2=""/>
+          <contains string="${sysenv.DB2DIR}" substring="sysenv"/>
+        </or>
+      </and>
+    </condition>
+    <fail message="A Type 2 driver (RRS) is only valid on z/OS with the $DB2DIR environment variable set."
+     if="curam.db.driver.type2.invalid.for.rrs"/>
+
+  </target>
+
+</project>

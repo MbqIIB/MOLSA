@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to create place limit for a provider service.-->
+<PAGE
+  PAGE_ID="ProviderManagement_createContractProviderOfferingPlaceLimit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractProviderOfferingLinkID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="serviceOfferingName"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="readContractDateRangeByContractProviderOfferingLink"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="contractPOLinkID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="ACTION"
+    OPERATION="addContractedPlaceLimitForProvider"
+    PHASE="ACTION"
+  />
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="result$informationalMsgDtlsList$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="contractPOLinkID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00197352, SS -->
+  <CLUSTER
+    LABEL_WIDTH="38"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.PlaceLimit"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placeLimit"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_DEFAULT="false"
+    >
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <!-- BEGIN, CR00258324, PS -->
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false"
+    >
+      <!-- END, CR00258324 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00197352, CR00407812, SS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00197352, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <!-- BEGIN, CR00228396, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    <!-- END, CR00228396 -->
+  </ACTION_SET>
+
+
+</PAGE>

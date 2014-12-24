@@ -1,0 +1,249 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>InvestigationDelivery.readInvestigationTabDetails</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">&nbsp;</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">ns</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>SELECT
+  CaseHeader.caseID,
+  CaseHeader.statusCode,
+  CaseHeader.caseReference,
+  InvestigationDelivery.investigationType,
+  InvestigationDelivery.investigationSubtype,
+  CaseHeader.registrationDate,
+  CaseHeader.concernRoleID,
+  ConcernRole.concernRoleName,
+  ConcernRole.primaryAlternateID, 
+  ConcernRole.primaryPhoneNumberID, 
+  EmailAddress.emailAddress,
+  Address.addressData,
+  OrgObjectLink.orgObjectLinkID,
+  Resolution.resolution,
+  Resolution.creationDate,
+  InitialContactLog.contactLogID,
+  InitialContactLog.startDateTime,
+  InitialContactLog.contactLogType,
+  LatestContactLog.contactLogID,
+  LatestContactLog.startDateTime,
+  LatestContactLog.contactLogType,
+  AllAllegation.allegationCount,
+  DecidedAllegation.allegationCount,
+  SubstantiatedFinding.findingCount,
+  UnsubstantiatedFinding.findingCount,
+  IndicatedFinding.findingCount
+INTO
+  :caseID,
+  :caseStatus,
+  :caseReference,
+  :investigationType,
+  :investigationSubtype,
+  :registrationDate,
+  :concernRoleID,
+  :concernRoleName,
+  :clientPrimaryAlternateID,
+  :clientPhoneNumberID,
+  :clientEmailAddress,
+  :clientAddressData,
+  :orgObjectLinkID,
+  :resolution,
+  :resolutionCreationDate,
+  :initialContactLogID,
+  :initialContactStartDateTime,
+  :initialContactType,
+  :latestContactLogID,
+  :latestContactStartDateTime,
+  :latestContactType,
+  :countAllegationAll,
+  :countAllegationDecided,
+  :countFindingSubstantiated,
+  :countFindingUnsubstantiated,
+  :countFindingIndicated  
+FROM
+  CaseHeader,
+  ConcernRole
+  LEFT OUTER JOIN EmailAddress 
+    ON ConcernRole.primaryEmailAddressID = EmailAddress.emailAddressID
+  LEFT OUTER JOIN Address 
+    ON ConcernRole.primaryAddressID = Address.addressID,
+  OrgObjectLink,
+  InvestigationDelivery 
+  LEFT OUTER JOIN
+  (SELECT
+    ResolutionConfiguration.resolution,
+    Resolution.creationDate,
+    Resolution.caseID
+  FROM
+    InvestigationDelivery,
+    Resolution,
+    ResolutionConfiguration
+  WHERE InvestigationDelivery.resolutionStatus = :resolutionStatus
+    AND InvestigationDelivery.caseID = Resolution.caseID
+    AND Resolution.resolutionConfigurationID = ResolutionConfiguration.resolutionConfigurationID
+    AND Resolution.recordStatus = :recordStatus) Resolution ON Resolution.caseID = InvestigationDelivery.caseID   
+  LEFT OUTER JOIN
+  (SELECT
+  ContactLog.contactLogID,
+  ContactLog.contactLogType,
+  ContactLogLink.linkID,
+  UniqueContactLog.startDateTime
+FROM
+  ContactLogLink,
+  ContactLog INNER JOIN
+(SELECT
+    ContactLog.startDateTime startDateTime,
+    MIN(ContactLog.contactLogID) contactLogID
+  FROM
+    ContactLog,
+    ContactLogLink
+  WHERE ContactLog.contactLogID = ContactLogLink.contactLogID
+    AND ContactLog.recordStatus = :recordStatus
+    AND ContactLogLink.recordStatus = :recordStatus
+    AND ContactLog.startDateTime = ( 
+      SELECT MIN(startDateTime) 
+      FROM ContactLog, ContactLogLink
+      WHERE ContactLogLink.linkID = :caseID
+        AND ContactLogLink.recordStatus = :recordStatus
+        AND ContactLog.recordStatus = :recordStatus)
+  GROUP BY ContactLog.startDateTime) UniqueContactLog ON ContactLog.contactLogID = UniqueContactLog.contactLogID
+  WHERE ContactLog.contactLogID = ContactLogLink.contactLogID
+    AND ContactLog.recordStatus = :recordStatus
+    AND ContactLogLink.recordStatus = :recordStatus) InitialContactLog ON InitialContactLog.linkID = InvestigationDelivery.caseID   
+  LEFT OUTER JOIN
+  (SELECT
+  ContactLog.contactLogID,
+  ContactLog.contactLogType,
+  ContactLogLink.linkID,
+  UniqueContactLog.startDateTime
+FROM
+  ContactLogLink,
+  ContactLog INNER JOIN
+(SELECT
+    ContactLog.startDateTime startDateTime,
+    MAX(ContactLog.contactLogID) contactLogID
+  FROM
+    ContactLog,
+    ContactLogLink
+  WHERE ContactLog.contactLogID = ContactLogLink.contactLogID
+    AND ContactLog.recordStatus = :recordStatus
+    AND ContactLogLink.recordStatus = :recordStatus
+    AND ContactLog.startDateTime = ( 
+      SELECT MAX(startDateTime) 
+      FROM ContactLog, ContactLogLink
+      WHERE ContactLogLink.linkID = :caseID
+        AND ContactLogLink.recordStatus = :recordStatus
+        AND ContactLog.recordStatus = :recordStatus)
+  GROUP BY ContactLog.startDateTime) UniqueContactLog ON ContactLog.contactLogID = UniqueContactLog.contactLogID
+  WHERE ContactLog.contactLogID = ContactLogLink.contactLogID
+    AND ContactLog.recordStatus = :recordStatus
+    AND ContactLogLink.recordStatus = :recordStatus) LatestContactLog ON LatestContactLog.linkID = InvestigationDelivery.caseID
+  LEFT OUTER JOIN 
+    (SELECT 
+      COUNT(allegationID) allegationCount,
+      Allegation.caseID
+    FROM
+      Allegation
+    WHERE caseID = :caseID
+      AND recordStatus = :recordStatus
+    GROUP BY caseID) AllAllegation ON AllAllegation.caseID = InvestigationDelivery.caseID   
+  LEFT OUTER JOIN 
+    (SELECT 
+      COUNT(Allegation.allegationID) allegationCount,
+      Allegation.caseID
+    FROM
+      Allegation,
+      Finding
+    WHERE Allegation.caseID = :caseID
+      AND Allegation.recordStatus = :recordStatus 
+      AND Allegation.allegationID = Finding.allegationID
+    GROUP BY Allegation.caseID) DecidedAllegation ON DecidedAllegation.caseID = InvestigationDelivery.caseID   
+  LEFT OUTER JOIN 
+    (SELECT 
+      COUNT(Finding.findingID) findingCount,
+      Allegation.caseID
+    FROM
+      Allegation,
+      Finding
+    WHERE Allegation.caseID = :caseID
+      AND Allegation.recordStatus = :recordStatus 
+      AND Allegation.allegationID = Finding.allegationID
+      AND Finding.finding = :findingSubstantiated
+      AND Finding.overrideReason IS NULL
+    GROUP BY Allegation.caseID) SubstantiatedFinding ON SubstantiatedFinding.caseID = InvestigationDelivery.caseID   
+  LEFT OUTER JOIN 
+    (SELECT 
+      COUNT(Finding.findingID) findingCount,
+      Allegation.caseID
+    FROM
+      Allegation,
+      Finding
+    WHERE Allegation.caseID = :caseID
+      AND Allegation.recordStatus = :recordStatus 
+      AND Allegation.allegationID = Finding.allegationID
+      AND Finding.finding = :findingUnsubstantiated
+      AND Finding.overrideReason IS NULL
+    GROUP BY Allegation.caseID) UnsubstantiatedFinding ON UnsubstantiatedFinding.caseID = InvestigationDelivery.caseID   
+  LEFT OUTER JOIN 
+    (SELECT 
+      COUNT(Finding.findingID) findingCount,
+      Allegation.caseID
+    FROM
+      Allegation,
+      Finding
+    WHERE Allegation.caseID = :caseID
+      AND Allegation.recordStatus = :recordStatus 
+      AND Allegation.allegationID = Finding.allegationID
+      AND Finding.finding = :findingIndicated
+      AND Finding.overrideReason IS NULL
+    GROUP BY Allegation.caseID) IndicatedFinding ON IndicatedFinding.caseID = InvestigationDelivery.caseID   
+WHERE InvestigationDelivery.caseID = :caseID
+  AND InvestigationDelivery.caseID = CaseHeader.caseID
+  AND OrgObjectLink.orgObjectLinkID = CaseHeader.ownerOrgObjectLinkID
+  AND ConcernRole.concernRoleID = CaseHeader.concernRoleID
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

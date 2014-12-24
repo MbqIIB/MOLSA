@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to select the liability to which the         -->
+<!-- the deduction will be applied. The deduction is applied to one of the  -->
+<!-- selected liabilitied components.                                       -->
+<!-- BEGIN, CR00399934, PS -->
+<PAGE
+  PAGE_ID="ProviderManagement_selectLiabilityToApplyDeductionDetails"
+  WINDOW_OPTIONS="width=900"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00399934 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="paymentTypes"/>
+  <PAGE_PARAMETER NAME="deductionName"/>
+  <PAGE_PARAMETER NAME="category"/>
+
+
+  <!-- BEGIN, CR00128816, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderDeduction"
+    NAME="DISPLAY"
+    OPERATION="listActiveLiabilitiesForProviderAndNominee"
+  />
+  <!-- END, CR00128816 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00248418, PS -->
+  <LIST SCROLL_HEIGHT="125">
+    <!-- END, CR00248418 -->
+
+
+    <!-- BEGIN, CR00399934, PS -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <!-- END, CR00399934 -->
+
+
+      <!-- BEGIN, CR00247036, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Select"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_createAppliedVariableDeduction"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00247036 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="deductionName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="deductionName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="category"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="category"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="paymentTypes"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="paymentTypes"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="relatedCaseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <!-- BEGIN, CR00399934, PS -->
+    <FIELD
+      LABEL="Field.Label.CaseReference"
+      WIDTH="20"
+    >
+      <!-- END, CR00399934 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00399934, PS -->
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="25"
+    >
+      <!-- END, CR00399934 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="productType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00399934, PS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="10"
+    >
+      <!-- END, CR00399934 -->
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00399934, PS -->
+    <FIELD
+      LABEL="Field.Label.OriginalAmount"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$originalAmountOpt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.OutstandingAmount"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$outstandingAmountOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00399934 -->
+
+
+  </LIST>
+</PAGE>

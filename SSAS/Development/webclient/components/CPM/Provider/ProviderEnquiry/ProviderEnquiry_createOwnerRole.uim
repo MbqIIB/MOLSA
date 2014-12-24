@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to create administration role -->
+<!-- details for a Provider Enquiry. -->
+<PAGE
+  PAGE_ID="ProviderEnquiry_createOwnerRole"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="UserAdmin"
+    NAME="DISPLAY"
+    OPERATION="listSubordinateUserForCurrentUser"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderEnquiry"
+    NAME="ACTION"
+    OPERATION="setOwner"
+    PHASE="ACTION"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="providerEnquiryID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerEnquiryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerEnquiryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00208276, PS -->
+  <CLUSTER
+    DESCRIPTION="Cluster.Description.Manager"
+    LABEL_WIDTH="20"
+  >
+    <!-- END, CR00208276 -->
+
+
+    <!-- BEGIN, CR00235660, PS -->
+    <FIELD
+      LABEL="Field.Label.Manager"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00235660 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="userName"
+          NAME="DISPLAY"
+          PROPERTY="fullName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="managerName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Description.User"
+    LABEL_WIDTH="20"
+  >
+
+
+    <!-- BEGIN, CR00235660, PS -->
+    <FIELD
+      LABEL="Field.Label.User"
+      WIDTH="50"
+    >
+      <!-- END, CR00235660 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="userName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

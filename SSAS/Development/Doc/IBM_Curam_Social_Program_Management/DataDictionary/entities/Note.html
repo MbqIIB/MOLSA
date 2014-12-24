@@ -1,0 +1,301 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>Note</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Note:</b>
+<i> Free-text information relating to a <a href=Concern.html>participant</a> or a <a href=CaseHeader.html>case</a>.</i>
+<P>A <a href=Users.html>user</a> can enter free text information in the form of a <a href=CaseNote.html>case note</a> or <a href=ParticipantNote.html>participant note</a>.  Once a note has been created, its content cannot be deleted or modified. However, additional information can be added to the note.</P>
+<P>Curam records the username, date and time of each instance a note is created or added to.  A sensitivity level can be set on a note to restrict access to its content. A <a href=Users.html>user</a> can only view a note if their sensitivity level is greater than or equal to the sensitivity level set on the note.</P>
+<p><b>Example</b></p><P>James Smith is a registered <a href=Concern.html>participant</a>. <a href=Users.html>User</a> Ronan Rooney creates a note for James Smith with the following content:</P>
+<UL>
+<LI>James Smith called into the office today. James advised that he is leaving the country to live in France in June 2005.</LI>
+</UL> 
+<p><b>Technical Notes</b></p><P>The maximum amount of note text that can be entered is 30720 characters.</P>
+<P>Many types of Curam entities can have a related note; logically these entities have a 'note' attribute which is a 'complex data type'.  Physically however each of these entities has a note attribute which relates to a row on the note table.</P>
+<P>The note entity does not perform any optimistic locking.  It is the responsibility of other entities which aggregate a note to ensure that they perform any optimistic lock checking required.</P> 
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::Core::Reference Model::Service Layer::Note::Entity::Note</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">core\model\Packages\Reference Model\Service Layer\Note\entity_cat.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">no</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (7)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="noteID">noteID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique identifier of a note.</td><td class="data"><a href="../domains/NOTE_ID.html">NOTE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="sensitivityCode">sensitivityCode</a></td><td class="data">details</td><td class="data">no</td><td class="data">Describes the sensitivity of a note. 
+This field is used for security purposes.
+</td><td class="data"><a href="../domains/SENSITIVITY_CODE.html">SENSITIVITY_CODE</a></td><td class="data"><a href="../codetables/ct-Sensitivity.html">Sensitivity</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="notesText">notesText</a></td><td class="data">details</td><td class="data">no</td><td class="data">The free text associated with a note.</td><td class="data"><a href="../domains/NOTE_TEXT.html">NOTE_TEXT</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;30720&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="userName">userName</a></td><td class="data">details</td><td class="data">no</td><td class="data">unique identifier of the user who last modified the note.</td><td class="data"><a href="../domains/USER_NAME.html">USER_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="creationDateTime">creationDateTime</a></td><td class="data">details</td><td class="data">no</td><td class="data">The date which the note was created.</td><td class="data"><a href="../domains/CURAM_DATETIME.html">CURAM_DATETIME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="priorityCode">priorityCode</a></td><td class="data">details</td><td class="data">no</td><td class="data">Specifies the priority of this note.</td><td class="data"><a href="../domains/NOTE_PRIORITY_CODE.html">NOTE_PRIORITY_CODE</a></td><td class="data"><a href="../codetables/ct-NotePriority.html">NotePriority</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="subjectText">subjectText</a></td><td class="data">details</td><td class="data">yes</td><td class="data">The subject text of the note.</td><td class="data"><a href="../domains/SUBJECT_TEXT.html">SUBJECT_TEXT</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;120&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="CaseNote.html#noteID">CaseNote.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="CaseParticipantRoleNote.html#noteID">CaseParticipantRoleNote.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="IntegratedCaseMemberNote.html#noteID">IntegratedCaseMemberNote.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="NoteLink.html#noteID">NoteLink.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="OutcomePlanAction.html#noteID">OutcomePlanAction.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="OutcomePlanExpectedOutcome.html#noteID">OutcomePlanExpectedOutcome.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="OutcomePlanGoal.html#noteID">OutcomePlanGoal.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ParticipantNote.html#noteID">ParticipantNote.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="PlanReview.html#narrativeNoteID">PlanReview.narrativeNoteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="PlanReview.html#noteID">PlanReview.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="QuickNotes.html#noteID">QuickNotes.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ServiceDelivery.html#noteID">ServiceDelivery.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ServiceEnquiry.html#noteID">ServiceEnquiry.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="TriageNote.html#noteID">TriageNote.noteID</a></td><td class="dataLast">Note.noteID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (23)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: noteID</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validate</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">This method will validate the details of a note.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modifyNote</td><td class="data">nsmodify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: no</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">Modifies the details of the note record.
+
+
+
+@deprecated - replaced by {@link #modifyNote1()}
+
+@deprecated-since Version 6.0</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readNotesText</td><td class="data">nsread</td><td class="data"><span style="white-space:nowrap;">POST_DATA_ACCESS: no</span>
+<br>
+</td><td class="data">Reads the note text associated with this note.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getModifiedNoteText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Retrieves the notes text for a modification of a note.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getNewNoteText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Updates the note text for the note.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readSensitivityCode</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Retrieves the sensitivity of the note specified in the key.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateNoteText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Validates the note text.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">truncate</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Truncates the text of a note, if it exceeds a configurable parameter.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">modify</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">@superseded - replaced by modifyNote</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getLastModifiedText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">gets the last modified text of a note</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">validateInsert</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Validates notes details for the insert operation.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getLastNoteTextOldFormat</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Gets the last note text entered for this note if the note is the non xml format from the note text provided.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">determineSubjectText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The new subjectText field is a mandatory for a note. If no subjectText is found, this method will truncate the first 100 characters of the noteText to provide the data for the subjectText field.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modifySubjectText</td><td class="data">nsmodify</td><td class="data">&nbsp;</td><td class="data">Modifies only the subjectText attribute of an existing note record.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getCurrentUserFullname</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Gets the full name of the currently logged in user.
+
+
+
+@deprecated -  this method is no longer used for the V6 note functionality. 
+
+@deprecated-since Version 6.0</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getModifiedOnText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">@deprecated -  this method is no longer used for the V6 note functionality. 
+
+@deprecated-since Version 6.0</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getModifiedByText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">@deprecated -  this method is no longer used for the V6 note functionality. 
+
+@deprecated-since Version 6.0</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getCreatedByText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">@deprecated -  this method is no longer used for the V6 note functionality. 
+
+@deprecated-since Version 6.0</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getLastNoteText</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Gets the last note text entered for this note from the note text provided.
+
+
+
+@deprecated - replaced by {@link #getLastNoteText1()}
+
+@deprecated-since Version 6.0
+
+
+
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">modifyNote1</td><td class="data">nsmodify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: no</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">Modifies the details of the note record.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">getLastNoteText1</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Gets the last note text entered for this note from the note text provided.</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2011, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                      -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- This page allows the facility manager to view provider offering details. -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewProviderServiceOfferingForFacilityManager"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="providerOfferingID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerOfferingKey$providerOfferingID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderOffering"
+    NAME="DISPLAY"
+    OPERATION="viewProviderOfferingDetails"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderOfferingApprovalCheck"
+    NAME="DISPLAY1"
+    OPERATION="listProviderOfferingApprovalChecks"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="DISPLAY2"
+    OPERATION="listTaxonomyTermsByPOID"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$providerOfferingKey$providerOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="providerOfferingID$providerOfferingKey"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewProviderServiceOffering"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewProviderServiceOfferingForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOServiceRate"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listProviderServiceRateForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOPlaceLimit"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPOPlaceLimitsForFacilityManager">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.IntakeProcedure"
+    >
+      <CONTAINER LABEL="Field.Label.IntakeProcedureInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$intakeProcedureInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$intakeProcInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addIntakeInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="intakeProcAddInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$intkProcInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="intakeProcViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$intkProcInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.ClientFee"
+    >
+      <CONTAINER LABEL="Field.Label.ClientFeeInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$clientFeeInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$clientFeeInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addClientFeeInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="clientFeeAddInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$clientFeeInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="clientFeeViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$clientFeeInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Eligibility"
+    >
+      <CONTAINER LABEL="Field.Label.EligibilityInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$eligibilityInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$eligibilityInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addEligibilityInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="eligibilityAddInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$eligibilityInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="eligibilityViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$eligibilityInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.DocumentsRequired"
+    >
+      <CONTAINER LABEL="Field.Label.DocumentsRequiredInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$documentsRequiredInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$documentsReqInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addDocumentsRequiredInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="docReqdAddInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$docsReqdInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="docReqdViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$docsReqdInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingDetails$providerOfferingDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

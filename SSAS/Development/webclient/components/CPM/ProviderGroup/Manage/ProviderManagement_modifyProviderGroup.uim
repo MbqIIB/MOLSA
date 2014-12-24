@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                                	-->
+<!-- All rights reserved.                                                  		-->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- the terms of the license agreement you entered into with Curam             -->
+<!-- Software.                                                            		-->
+<!-- Description                                                                -->
+<!-- =========== 													     		-->
+<!-- This page allows the user to modify provider group details.	 			-->
+<!-- BEGIN, CR00291325, SS -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyProviderGroup"
+  WINDOW_OPTIONS="width=850"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00291325 -->
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerGroupKey$providerGroupConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="modifyProviderGroupDetails$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAY"
+    OPERATION="viewProviderGroup"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="ACTION"
+    OPERATION="modifyProviderGroup"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="modifyProviderGroupDetails$versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00206505, SS -->
+  <!-- BEGIN, CR00187976, SS -->
+  <!-- BEGIN, CR00208276, PS -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00208276 -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="70"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00206505 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="modifyProviderGroupDetails$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206505, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.PreferredLanguage"
+      WIDTH="70"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00206505 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$prefLanguage"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="modifyProviderGroupDetails$prefLanguage"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <!-- BEGIN, CR00206505, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.PreferredCommunication"
+      WIDTH="70"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00206505 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$prefCommMethod"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="modifyProviderGroupDetails$prefCommMethod"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00206505, SS -->
+  <!-- BEGIN, CR00187976, SS -->
+  <!-- BEGIN, CR00208276, PS -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.PaymentDetails"
+  >
+    <!-- END, CR00208276 -->
+    <!-- BEGIN, CR00199550, SS -->
+    <FIELD
+      LABEL="Field.Label.PaymentFrequency"
+      WIDTH="90"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00199550 -->
+      <!-- END, CR00206505 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentFrequency"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="modifyProviderGroupDetails$paymentFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199550, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.Currency"
+      WIDTH="80"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00199550 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$currencyType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="modifyProviderGroupDetails$currencyType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206505, SS -->
+    <!-- BEGIN, CR00199550, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.PaymentMethod"
+      WIDTH="90"
+    >
+      <!-- END, CR00187976 -->
+      <!-- END, CR00199550 -->
+      <!-- END, CR00206505 -->
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="result$methodOfPaymentString"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$methodOfPayment"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="modifyProviderGroupDetails$methodOfPayment"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00187976,CR00407812, SS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00187976,CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="modifyProviderGroupDetails$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

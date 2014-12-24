@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This is the enter person training details page                         -->
+<PAGE
+  PAGE_ID="ProviderManagement_enterPersonTrainingDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="trainingID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPersonTrainingProgram"
+    NAME="ACTION"
+    OPERATION="createTrainingProgramForPerson"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPersonTrainingProgram"
+    NAME="DISPLAY"
+    OPERATION="retrievePersonTrainingProgram"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$trainingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$trainingID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00228981, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00228981 -->
+    <FIELD LABEL="Field.Label.Training">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.UnitAmount"
+      WIDTH="55"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$unitAmount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00246783, GP -->
+    <FIELD LABEL="Field.Label.ToBeCompletedBy">
+      <!-- END, CR00246783 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$toBeCompletedBy"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$toBeCompletedBy"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.UnitsRequired"
+      WIDTH="55"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$unitsRequired"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$unitsRequired"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TrainingProvider">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$trainingProviderID"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00246783, GP -->
+    <FIELD LABEL="Field.Label.AuthorizedFrom">
+      <!-- END, CR00246783 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$authorizedFrom"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$authorizedFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247036, PS -->
+    <FIELD
+      LABEL="Field.Label.Completion"
+      WIDTH="85"
+    >
+      <!-- END, CR00247036 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$completion"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$completion"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

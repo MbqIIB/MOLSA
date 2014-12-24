@@ -1,0 +1,2422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/ruleset.xsd"
+>
+  <Product
+    comment=""
+    id="PRODUCT_53"
+    legislationbase=""
+    producttype="RT2"
+  >
+    <Label
+      highlightonfailure="true"
+      legislationlink=""
+    >
+      <RuleName>
+        <Text
+          locale="en_US"
+          value="Flat-Rate Contract Payments"
+        />
+      </RuleName>
+      <SuccessText>
+        <Text
+          locale="en_US"
+          value="Flat-Rate Contract Payments succeeded"
+        />
+      </SuccessText>
+      <FailureText>
+        <Text
+          locale="en_US"
+          value="Flat-Rate Contract Payments failed"
+        />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation"/>
+      <DataItem name="deliveryFrequency"/>
+      <DataItem name="personReferenceNumber"/>
+      <DataItem name="claimReferenceNumber"/>
+      <DataItem name="assessmentReferenceNumber"/>
+    </DataAccess>
+    <DataAccess name="FlatRateContractEvidenceRDO">
+      <DataItem name="paymentAmount"/>
+      <DataItem name="contractVersionID"/>
+      <DataItem name="isTotalContractedAmt"/>
+      <DataItem name="isOnceOffType"/>
+      <DataItem name="isYearlyPayment"/>
+      <DataItem name="isMonthlyPayment"/>
+      <DataItem name="isBiWeeklyPayment"/>
+      <DataItem name="isQuarterlyPayment"/>
+    </DataAccess>
+    <RuleGroup
+      executionmode="stoponresult"
+      id="1"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Provider Contract"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Provider Contract Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Provider Contract Failed"
+          />
+        </FailureText>
+      </Label>
+      <Rule id="2">
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Amount Rule for Provider Contract"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Amount Rule for Provider Contract Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Amount Rule for Provider Contract Failed"
+            />
+          </FailureText>
+        </Label>
+        <Condition
+          closingbrackets="0"
+          dataitemlhs="FlatRateContractEvidenceRDO.paymentAmount"
+          dataitemrhs="0"
+          id="3"
+          openingbrackets="0"
+          operation="&gt;"
+        />
+      </Rule>
+    </RuleGroup>
+    <ObjectiveGroup
+      conjunction="all"
+      id="4"
+    >
+      <Label highlightonfailure="true">
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Flat-Rate Contract Payments Objective Group"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Flat-Rate Contract Payments Objective Group Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Flat-Rate Contract Payments Objective Group Failed"
+          />
+        </FailureText>
+      </Label>
+      <RuleGroup
+        executionmode="stoponresult"
+        id="5"
+        operation="and"
+        summaryitem="false"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Rule Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Rule Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Rule Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <Rule id="6">
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Amount Rule for Provider Contract"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Amount Rule for Provider Contract Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Amount Rule for Provider Contract Failed"
+              />
+            </FailureText>
+          </Label>
+          <Condition
+            closingbrackets="0"
+            dataitemlhs="FlatRateContractEvidenceRDO.paymentAmount"
+            dataitemrhs="0"
+            id="7"
+            openingbrackets="0"
+            operation="&gt;"
+          />
+        </Rule>
+      </RuleGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="8"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="9"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="10">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="11"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="12">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="true"
+              id="13"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="14">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isYearlyPayment"
+              dataitemrhs="false"
+              id="15"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="16">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isMonthlyPayment"
+              dataitemrhs="false"
+              id="17"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="18">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isBiWeeklyPayment"
+              dataitemrhs="false"
+              id="19"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="20">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isQuarterlyPayment"
+              dataitemrhs="false"
+              id="21"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="22"
+          priority="4"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="23"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="24"
+            name="Provider Contract Daily Payment"
+            pattern="000100000"
+            recordid="25"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+          <ObjectiveTag
+            id="26"
+            name="Provider Contract Weekly Payment"
+            pattern="100100000"
+            recordid="27"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount * 7"
+          />
+        </Objective>
+      </ObjectiveGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="28"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="29"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="30">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="31"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="32">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="true"
+              id="33"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="34">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isYearlyPayment"
+              dataitemrhs="true"
+              id="35"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="36"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="37"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="38"
+            name="Provider Contract Yearly Payment"
+            pattern="301000001"
+            recordid="39"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount * 365"
+          />
+
+
+        </Objective>
+      </ObjectiveGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="40"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="41"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="42">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="43"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="44">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="true"
+              id="45"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="46">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isMonthlyPayment"
+              dataitemrhs="true"
+              id="47"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="48"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="49"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="50"
+            name="Provider Contract Monthly Payment"
+            pattern="200100000"
+            recordid="51"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount * 30"
+          />
+
+
+        </Objective>
+      </ObjectiveGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="52"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="53"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="54">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="55"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="56">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="true"
+              id="57"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="58">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isBiWeeklyPayment"
+              dataitemrhs="true"
+              id="59"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="60"
+          priority="0"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="61"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="62"
+            name="Provider Contract Daily Payment"
+            pattern="000100000"
+            recordid="63"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+          <ObjectiveTag
+            id="64"
+            name="Provider Contract Weekly Payment"
+            pattern="100100000"
+            recordid="65"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount * 7"
+          />
+          <ObjectiveTag
+            id="66"
+            name="Provider Contract Bi Weekly Payment"
+            pattern="100200000"
+            recordid="67"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount * 14"
+          />
+        </Objective>
+      </ObjectiveGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="68"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="69"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="70">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="71"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="72">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="true"
+              id="73"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="74">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isQuarterlyPayment"
+              dataitemrhs="true"
+              id="75"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="76"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="77"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="78"
+            name="Provider Contract Quarterly Payment"
+            pattern="200100000"
+            recordid="79"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount * 30"
+          />
+          <ObjectiveTag
+            id="80"
+            name="Provider Contract Quarterly Payment"
+            pattern="200300000"
+            recordid="81"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount * 90"
+          />
+        </Objective>
+      </ObjectiveGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="82"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="83"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="84">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="true"
+              id="85"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="86"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="87"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="88"
+            name="Provider Contract Payment"
+            pattern="000020100"
+            recordid="89"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+        </Objective>
+      </ObjectiveGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="90"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="91"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="92">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="false"
+              id="93"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="94">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="95"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="96">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isYearlyPayment"
+              dataitemrhs="false"
+              id="97"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="98">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isMonthlyPayment"
+              dataitemrhs="false"
+              id="99"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="100">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isBiWeeklyPayment"
+              dataitemrhs="false"
+              id="101"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="102">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isQuarterlyPayment"
+              dataitemrhs="false"
+              id="103"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="104"
+          priority="2"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="105"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Regular Amount Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Regular Amount Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Regular Amount Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="106"
+            name="Provider Contract Daily Regular Payment"
+            pattern="000100000"
+            recordid="107"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+          <ObjectiveTag
+            id="108"
+            name="Provider Contract Weekly Regular Payment"
+            pattern="100100000"
+            recordid="109"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+        </Objective>
+      </ObjectiveGroup>
+      <ObjectiveGroup
+        conjunction="all"
+        id="110"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="111"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="112">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="false"
+              id="113"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="114">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="115"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="116">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isYearlyPayment"
+              dataitemrhs="true"
+              id="117"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="118"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="119"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="120"
+            name="Provider Contract Yearly Payment"
+            pattern="301000001"
+            recordid="121"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+
+
+        </Objective>
+      </ObjectiveGroup>
+
+
+      <ObjectiveGroup
+        conjunction="all"
+        id="122"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="123"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="124">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="false"
+              id="125"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="126">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="127"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="128">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isMonthlyPayment"
+              dataitemrhs="true"
+              id="129"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="130"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="131"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="132"
+            name="Provider Contract Monthly Regular Payment"
+            pattern="200100000"
+            recordid="133"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+
+
+        </Objective>
+      </ObjectiveGroup>
+
+
+      <ObjectiveGroup
+        conjunction="all"
+        id="134"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="135"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="136">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="false"
+              id="137"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="138">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="139"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="140">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isBiWeeklyPayment"
+              dataitemrhs="true"
+              id="141"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="142"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="143"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="144"
+            name="Provider Contract Daily Payment"
+            pattern="000100000"
+            recordid="145"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount/14"
+          />
+          <ObjectiveTag
+            id="146"
+            name="Provider Contract Weekly Payment"
+            pattern="100100000"
+            recordid="147"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount/2"
+          />
+          <ObjectiveTag
+            id="148"
+            name="Provider Contract BiWeekly Payment"
+            pattern="100200000"
+            recordid="149"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+        </Objective>
+      </ObjectiveGroup>
+
+
+      <ObjectiveGroup
+        conjunction="all"
+        id="150"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Contract Payment Type Non-Once Off Objective Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="151"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Payment Type Non-Once Off  Rule Group Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="152">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Non-Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isTotalContractedAmt"
+              dataitemrhs="false"
+              id="153"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="154">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Once Off  Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isOnceOffType"
+              dataitemrhs="false"
+              id="155"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+          <Rule id="156">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Provider Contract Payment Type Total Contracted Amount Rule Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="FlatRateContractEvidenceRDO.isQuarterlyPayment"
+              dataitemrhs="true"
+              id="157"
+              openingbrackets="0"
+              operation="=="
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="158"
+          priority="1"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC503"
+          recordid="159"
+          relatedreference="FlatRateContractEvidenceRDO.contractVersionID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Contract Objective Failed"
+              />
+            </FailureText>
+          </Label>
+
+
+          <ObjectiveTag
+            id="160"
+            name="Provider Contract Daily Payment"
+            pattern="000100000"
+            recordid="161"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount/90"
+          />
+          <ObjectiveTag
+            id="162"
+            name="Provider Contract Monthly Payment"
+            pattern="200100000"
+            recordid="163"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount/3"
+          />
+          <ObjectiveTag
+            id="164"
+            name="Provider Contract Quarterly Payment"
+            pattern="200300000"
+            recordid="165"
+            type="RTT3"
+            value="FlatRateContractEvidenceRDO.paymentAmount"
+          />
+        </Objective>
+      </ObjectiveGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>

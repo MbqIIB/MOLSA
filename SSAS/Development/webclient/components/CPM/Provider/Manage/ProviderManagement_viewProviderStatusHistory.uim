@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the status history of a provider.    -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewProviderStatusHistory"
+  WINDOW_OPTIONS="width=700"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN CR00122155, RD -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+  <!-- END, CR00122155 -->
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY"
+    OPERATION="viewProviderStatusHistory"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROVIDERDETAILS"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAYPROVIDERDETAILS"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00235192, PS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="DISPLAY1"
+    OPERATION="viewProviderStatusHistory"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+  <!-- END, CR00235192 -->
+  <!-- BEGIN, CR00247862, GP -->
+  <LIST SCROLL_HEIGHT="200">
+    <!-- END, CR00247862 -->
+    <!-- BEGIN, CR00207380, SS -->
+    <FIELD
+      LABEL="Field.Label.Date"
+      WIDTH="17"
+    >
+      <!-- END, CR00207380 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$dtls$effectiveDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00247815, GP -->
+    <FIELD
+      LABEL="Field.Label.User"
+      WIDTH="30"
+    >
+      <!-- END, CR00247815 -->
+      <!-- BEGIN, CR00235192, PS -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="userFullName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00234213, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="userName"
+          />
+          <!-- END, CR00235192 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00234213 -->
+    </FIELD>
+
+
+    <!-- BEGIN, CR00247815, GP -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00247815 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$dtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207380, SS -->
+    <!-- BEGIN, CR00247815, GP -->
+    <FIELD
+      LABEL="Field.Label.Reason"
+      WIDTH="38"
+    >
+      <!-- END, CR00247815 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$detailsList$dtls$reason"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00197352 -->
+
+
+  </LIST>
+
+
+</PAGE>

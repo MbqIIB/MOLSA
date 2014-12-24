@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the View Provider Offering  page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewContractService"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractProviderOfferingLinkID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00197897, SSK -->
+  <SERVER_INTERFACE
+    CLASS="MaintainContractPerformanceMeasure"
+    NAME="DISPLAY1"
+    OPERATION="listContractServicePerformanceMeaures"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="searchContractPMforService$contractVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+  </CONNECT>
+  <!-- END, CR00197897 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="viewProviderOfferingByContractVersionProviderOffering"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractProviderOfferingLinkID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="contractPOLinkID"
+    />
+  </CONNECT>
+
+
+  <LIST TITLE="List.Title.ProviderServicePlaceLimit">
+    <!-- BEGIN, CR00199327, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199327-->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyProviderOfferingPlaceLimit"
+          WINDOW_OPTIONS="width=500"
+        >
+          <!-- END, CR00197352 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerOfferingPlaceLimitDtlsList$providerOfferingPlaceLimitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingPlaceLimitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerOfferingPlaceLimitDtlsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$serviceOfferingName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00207545, SS -->
+        <!-- BEGIN, CR00199327, SS -->
+        <!-- BEGIN, CR00197352, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelContractServicePlaceLimit"
+        >
+          <!-- END, CR00187417 -->
+          <!-- END, CR00197352 -->
+          <!-- END, CR00199327-->
+          <!-- END, CR00207545 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerOfferingPlaceLimitDtlsList$providerOfferingPlaceLimitID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingPlaceLimitID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractProviderOfferingLinkID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$serviceOfferingName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerOfferingPlaceLimitDtlsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerOfferingPlaceLimitDtlsList$providerOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199327, SS -->
+    </ACTION_SET>
+    <!-- END, CR00199327 -->
+    <!-- BEGIN, CR00207545, SS -->
+    <FIELD LABEL="Field.Label.PlaceLimit">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$placeLimit"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00207545 -->
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerOfferingPlaceLimitDtlsList$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199327, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewProviderOfferingPlaceLimit_FromContract">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerOfferingPlaceLimitDtlsList$providerOfferingPlaceLimitID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingPlaceLimitID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractProviderOfferingLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractProviderOfferingLinkID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199327 -->
+  </LIST>
+
+
+  <!-- BEGIN, CR00197897, SSK -->
+  <!-- List of Performance Measure -->
+  <LIST TITLE="List.Title.PerformannceMeasure">
+    <!-- BEGIN, CR00199327, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00207545, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyContractPerformanceMeasure"
+          SAVE_LINK="true"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00199327-->
+          <!-- END, CR00207545 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="contractPerformanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractPerformanceMeasureID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00199327, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeContractPerformanceMeasure"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00199327-->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="contractPerformanceMeasureID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractPerformanceMeasureID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="performanceMesureName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="performanceMeasureName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199327, SS -->
+    </ACTION_SET>
+    <!-- END, CR00199327 -->
+
+
+    <!-- BEGIN, CR00228688, PS -->
+    <FIELD
+      LABEL="Field.Label.Measure"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="75"
+    >
+      <!-- END, CR00228688 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="measure"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <!-- BEGIN, CR00228688, PS -->
+    <FIELD
+      LABEL="Field.Label.Target"
+      WIDTH="25"
+    >
+      <!-- END, CR00228688 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="target"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00197897 -->
+
+
+</PAGE>

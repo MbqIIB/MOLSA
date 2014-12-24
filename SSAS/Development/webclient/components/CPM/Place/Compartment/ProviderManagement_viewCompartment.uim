@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- View details of a compartment                                          -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewCompartment"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewCompartment"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewCompartment">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPlaces"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPlace">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <!-- BEGIN, CR00228688, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+      <!-- BEGIN, CR00132090, MR -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_modifyCompartment"
+        WINDOW_OPTIONS="width=300"
+      >
+        <!-- END, CR00132090 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.CreatePlace">
+      <!-- BEGIN, CR00234497, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createPlace"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00234497 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddExistingPlace">
+      <!-- BEGIN, CR00236229, RPB -->
+      <!-- BEGIN, CR00234497, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_addExistingPlaces1"
+      >
+        <!-- END, CR00234497 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00236229 -->
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.CreateCompartment">
+      <!-- BEGIN, CR00248428, GP -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createCompartment"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00248428 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="parentCompartmentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.CreateCharacteristics">
+      <!-- BEGIN, CR00234497, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createCompartmentCharacteristics"
+      >
+        <!-- END, CR00234497 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.MarkAllPlacesOutOfUse">
+      <!-- BEGIN, CR00234497, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_markAllPlacesOutOfUse"
+      >
+        <!-- END, CR00234497 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.MarkAllPlacesForUse">
+      <!-- BEGIN, CR00132090, MR -->
+      <!-- BEGIN, CR00234497, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_markAllPlacesForUse"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00234497 -->
+        <!-- END, CR00132090 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.CloseCompartment">
+      <!-- BEGIN, CR00234497, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_closeCompartment"
+      >
+        <!-- END, CR00234497 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00234497, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_deleteCompartment"
+        WINDOW_OPTIONS="width=400"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00234497 -->
+  </ACTION_SET>
+  <!-- END, CR00228688 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="DISPLAY"
+    OPERATION="viewCompartment"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="compartmentID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="compartmentKey$compartmentID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00228688, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00228688 -->
+    <FIELD LABEL="Field.Label.Compartment.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.AvailablePlaces">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$availablePlaces"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.OccupiedPlaces">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$occupiedPlaces"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.ReservedPlaces">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$reservedPlaces"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.DateCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.DesignatedCapacity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$designatedCapacity"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.OutOfUsePlaces">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$outOfUsePlaces"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.EmergencyPlaces">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$emergencyPlaces"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Compartment.DateClosed">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dateClosed"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="Cluster.PlacementCharacteristics.Title">
+    <!-- BEGIN, CR00198609, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198609 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00132090, MR -->
+        <!-- BEGIN, CR00198609, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyCompartmentCharacteristics"
+        >
+          <!-- END, CR00198609 -->
+          <!-- END, CR00132090 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementCharacList$characteristicID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="compartmentCharacteristicID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="compartmentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="compartmentID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementCharacList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00235192, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddLanguage">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addLanguageCharacteristic"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementCharacList$characteristicID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="compartmentCharacteristicID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddEthnicity">
+        <!-- BEGIN, CR00351356, SS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="ethnicityIndicatorOpt"
+          />
+        </CONDITION>
+        <!-- END, CR00351356 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addEthnicityCharacteristic"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementCharacList$characteristicID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="compartmentCharacteristicID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddGangAffiliation">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addGangAffiliationCharacteristic"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementCharacList$characteristicID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="compartmentCharacteristicID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddReligion">
+        <!-- BEGIN, CR00351356, SS -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="religionIndicatorOpt"
+          />
+        </CONDITION>
+        <!-- END, CR00351356 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addReligionCharacteristic"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementCharacList$characteristicID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="compartmentCharacteristicID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteCompartmentCharacteristics"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementCharacList$characteristicID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="characteristicID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placementCharacList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00235192 -->
+
+
+      <!-- BEGIN, CR00198609, PS -->
+    </ACTION_SET>
+    <!-- END, CR00198609 -->
+    <FIELD LABEL="Field.Label.Characteristic.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharacList$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Characteristic.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharacList$dateClosed"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Characteristic.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharacList$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198609, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewCompartmentCharacteristics">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$placementCharacList$characteristicID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="characteristicID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198609 -->
+  </LIST>
+  <LIST TITLE="Cluster.PlacementDetails.Title">
+    <!-- BEGIN, CR00198609, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198609 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00132090, MR -->
+        <!-- BEGIN, CR00169295, AK -->
+        <!-- BEGIN, CR00198609, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyPlacementDetails"
+        >
+          <!-- END, CR00198609 -->
+          <!-- END, CR00169295 -->
+          <!-- END, CR00132090 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementDetailsList$placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementDetailsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementDetailsList$placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00155774, AK -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="compartmentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="compartmentID"
+            />
+          </CONNECT>
+          <!-- END, CR00155774 -->
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00198609, PS -->
+    </ACTION_SET>
+    <!-- END, CR00198609 -->
+    <FIELD LABEL="Field.Label.Place">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementDetailsList$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementDetailsList$type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementDetailsList$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementDetailsList$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementDetailsList$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- -->
+  <LIST TITLE="Cluster.ReservationDetails.Title">
+    <!-- BEGIN, CR00198609, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198609 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reservation.Edit">
+        <!-- BEGIN, CR00260871, ASN -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyReservation"
+        >
+          <!-- END, CR00260871 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$reservationDetails$reservationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="reservationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$reservationDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00260871, ASN -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="from"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="from"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="to"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="to"
+            />
+          </CONNECT>
+          <!-- END, CR00260871 -->
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00235192, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ViewHistory"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewReservationStatusHistory"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$reservationDetails$reservationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="reservationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00235192 -->
+      <!-- BEGIN, CR00198609, PS -->
+    </ACTION_SET>
+    <!-- END, CR00198609 -->
+
+
+    <FIELD LABEL="Field.Label.Place">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$reservationDetails$placeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$reservationDetails$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Reservation.FromDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$reservationDetails$from"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Reservation.ToDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$reservationDetails$to"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00198609, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewReservation">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$reservationDetails$reservationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198609 -->
+  </LIST>
+</PAGE>

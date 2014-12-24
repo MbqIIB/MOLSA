@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2012 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify a provider incident details.       -->
+<!-- BEGIN, CR00357388, PS -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyIncident"
+  WINDOW_OPTIONS="width=900"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00357388 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY"
+    OPERATION="viewIncident"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="ACTION"
+    OPERATION="modifyIncident"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY1"
+    OPERATION="listActiveProviderMember"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$incidentID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="incidentDtls$incidentID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="incidentDtls$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="incidentDtls$versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="reporterIncidentParticipantID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="incidentParticipantRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="reporterDetails$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="incidentParticipantDtls$versionNo"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00127710, NBR -->
+  <!-- BEGIN, CR00187976, SS -->
+  <!-- BEGIN, CR00229065, PS -->
+  <!-- BEGIN, CR00247862, GP -->
+  <CLUSTER STYLE="cluster-cpr-no-internal-padding">
+    <CLUSTER
+      LABEL_WIDTH="40"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- BEGIN, CR00197352, SS -->
+
+
+      <FIELD
+        LABEL="Field.Label.Type"
+        WIDTH="100"
+      >
+        <!-- END, CR00247862 -->
+        <!-- END, CR00229065 -->
+        <!-- END, CR00187976 -->
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="type"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="type"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <!-- BEGIN, CR00229065, PS -->
+      <FIELD
+        LABEL="Field.Label.Sensitivity"
+        WIDTH="25"
+      >
+        <!-- END, CR00229065 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="sensitivityCode"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="sensitivityCode"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <!-- BEGIN, CR00245885, CS -->
+      <FIELD
+        LABEL="Field.Label.Category"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="68"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="category"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="category"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00245885 -->
+
+
+      <!-- BEGIN, CR00229065, PS -->
+      <FIELD
+        LABEL="Field.Label.Severity"
+        USE_DEFAULT="true"
+        WIDTH="50"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00229065 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="severity"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="severity"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+    </CLUSTER>
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00247862, GP -->
+    <CLUSTER
+      LABEL_WIDTH="20"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00247862 -->
+      <!-- BEGIN, CR00143771, SK -->
+      <FIELD LABEL="Field.Label.Description">
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00143771 -->
+    </CLUSTER>
+    <!-- BEGIN, CR00233616, PS -->
+    <CLUSTER LABEL_WIDTH="25">
+      <FIELD
+        LABEL="Field.Label.CurrentDescription"
+        USE_DEFAULT="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- END, CR00233616 -->
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00229065, PS -->
+  <CLUSTER
+    LABEL_WIDTH="38"
+    NUM_COLS="3"
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Occurrence.Title"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.IncidentDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="incidentDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="incidentDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.IncidentTime"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="incidentTime"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="incidentTime"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.TimeofDay"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="timeOfDay"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="timeOfDay"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00229065 -->
+
+
+  <!-- BEGIN, CR00128007, NBR -->
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Title.LocationDetails"
+  >
+    <!-- BEGIN, CR00272822, SS -->
+    <CLUSTER
+      LABEL_WIDTH="35"
+      NUM_COLS="2"
+    >
+      <!-- END, CR00272822 -->
+      <!-- END, CR00187976 -->
+      <FIELD LABEL="Field.Label.ProviderFacility">
+
+
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerFacilityInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="providerFacilityInd"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Compartment">
+        <CONNECT>
+          <INITIAL
+            NAME="DISPLAY"
+            PROPERTY="compartmentName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="compartmentID"
+          />
+        </CONNECT>
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      SHOW_LABELS="false"
+      STYLE="cluster-cpr-no-border"
+      TITLE="Cluster.Title.OtherLocation"
+    >
+      <!-- BEGIN, CR00187976, SS -->
+      <FIELD HEIGHT="4">
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="location"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="location"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="60"
+    NUM_COLS="1"
+    SHOW_LABELS="true"
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.ReporterDetails.Title"
+  >
+    <!-- END, CR00128007 -->
+
+
+    <!-- BEGIN, CR00247862, GP -->
+    <CLUSTER
+      LABEL_WIDTH="37"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- BEGIN, CR00281804, DJ -->
+      <FIELD
+        LABEL="Field.Label.ReportMethod"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="70"
+      >
+        <!-- END, CR00281804 -->
+        <!-- END, CR00247862 -->
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reportMethod"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="reportMethod"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.AnonymousReport">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="anonymousReportInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="anonymousReportInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00247862, GP -->
+    <CLUSTER
+      DESCRIPTION="Cluster.Incident.User.Details.Description"
+      LABEL_WIDTH="37"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00247862 -->
+
+
+      <FIELD LABEL="Field.Label.Incident.User">
+        <!-- END, CR00197352 -->
+        <!-- END, CR00187976 -->
+
+
+        <CONNECT>
+          <INITIAL
+            NAME="DISPLAY"
+            PROPERTY="reporterDetails$userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reporterDetails$userName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <!-- BEGIN,  CR00187976, SS -->
+    <!-- BEGIN, CR00247862, GP -->
+    <CLUSTER
+      DESCRIPTION="Cluster.Incident.Participant.Description"
+      LABEL_WIDTH="18"
+      STYLE="cluster-cpr-no-border"
+    >
+      <!-- END, CR00247862 -->
+      <!-- BEGIN, CR00197352, SS -->
+      <CONTAINER
+        LABEL="Field.Label.Incident.Participant"
+        WIDTH="50"
+      >
+        <FIELD WIDTH="30">
+          <!-- END, CR00187976 -->
+          <!-- END, CR00197352 -->
+          <CONNECT>
+            <!-- BEGIN, CR00303571, SS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reporterConcernRoleTypeCode"
+            />
+            <!-- END, CR00303571 -->
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="participantConcernRoleType"
+            />
+          </CONNECT>
+        </FIELD>
+        <!-- BEGIN, CR00197352, SS -->
+        <!-- BEGIN,  CR00187976, SS -->
+        <FIELD WIDTH="35">
+          <!-- END,  CR00187976 -->
+          <!-- END, CR00197352 -->
+          <CONNECT>
+            <INITIAL
+              NAME="DISPLAY"
+              PROPERTY="reporterConcernRoleName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="participantConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="incidentParticipantDtls$concernRoleID"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00247862, GP -->
+    <CLUSTER
+      DESCRIPTION="Cluster.Incident.Representative.Description"
+      LABEL_WIDTH="35"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+      TAB_ORDER="ROW"
+    >
+      <!-- END, CR00247862 -->
+      <!-- BEGIN, CR00247862, GP -->
+      <FIELD
+        LABEL="Field.Label.Incident.Name"
+        WIDTH="100"
+      >
+        <!-- END, CR00247862 -->
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="representativeName"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00247862, GP -->
+    <CLUSTER
+      LABEL_WIDTH="35"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+      TAB_ORDER="ROW"
+    >
+      <!-- END, CR00247862 -->
+      <!-- BEGIN, CR00235795, PS -->
+      <FIELD WIDTH="100">
+        <!-- END< CR00235795 -->
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="addressData"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN,  CR00187976, SS -->
+    <!-- BEGIN, CR00247862, GP -->
+    <CLUSTER
+      LABEL_WIDTH="35"
+      NUM_COLS="2"
+      STYLE="cluster-cpr-no-border"
+      TAB_ORDER="ROW"
+    >
+      <!-- END, CR00247862 -->
+      <FIELD
+        LABEL="Field.Label.Incident.ContactPhoneCountryCode"
+        WIDTH="30"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneCountryCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00187976, SS -->
+      <FIELD
+        LABEL="Field.Label.Incident.ContactPhoneNumber"
+        WIDTH="30"
+      >
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00187976, SS -->
+      <FIELD
+        LABEL="Field.Label.Incident.ContactPhoneAreaCode"
+        WIDTH="30"
+      >
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneAreaCode"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00187976, SS -->
+      <FIELD
+        LABEL="Field.Label.Incident.ContactPhoneExtension"
+        WIDTH="30"
+      >
+        <!-- END, CR00187976 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="phoneExtension"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+</PAGE>

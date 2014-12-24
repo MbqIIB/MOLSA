@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows you to view the list of participants associatedc      -->
+<!-- with the provider group.                                               -->
+<PAGE
+  PAGE_ID="ProviderManagement_listParticipantForProviderGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <!-- BEGIN, CR00199961, SS -->
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="concernRoleKey$concernRoleID"
+    />
+    <!-- END, CR00199961 -->
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROVIDERGROUPDETAILS"
+      PROPERTY="key$providerGroupConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAYPROVIDERGROUPDETAILS"
+    OPERATION="readProviderGroupSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00199961, SS -->
+  <SERVER_INTERFACE
+    CLASS="ProviderParticipant"
+    NAME="DISPLAY"
+    OPERATION="listProviderParticipantDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00199961 -->
+
+
+  <!-- BEGIN, CR00198612, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00198612 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00197352, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createParticipantForProviderGroup"
+        WINDOW_OPTIONS="width=550"
+      >
+        <!-- END, CR00197352 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAYPROVIDERGROUPDETAILS"
+            PROPERTY="result$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <!-- BEGIN, CR00089554, MC -->
+    <!-- BEGIN, CR00198612, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198612 -->
+      <!-- END, CR00089554 -->
+
+
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Edit"
+        TYPE="ACTION"
+      >
+        <!-- BEGIN, CR00197352, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyProviderGroupParticipantRelationship"
+          WINDOW_OPTIONS="width=450"
+        >
+          <!-- END, CR00197352 -->
+          <!-- BEGIN, CR00199961, SS -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$participantDetails$versionDetails$providerParticipantID"
+            />
+            <!-- END, CR00199961 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerParticipantID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYPROVIDERGROUPDETAILS"
+              PROPERTY="result$details$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAYPROVIDERGROUPDETAILS"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199961, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00207959, SS -->
+        <!-- BEGIN, CR00200333, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelParticipantFromProviderGroup"
+        >
+          <!-- END, CR00200333 -->
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$participantDetails$versionDetails$providerParticipantID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerParticipantID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$participantDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00199961 -->
+      <!-- BEGIN, CR00198612, SS -->
+    </ACTION_SET>
+    <!-- END, CR00198612 -->
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Name"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$participantDetails$versionDetails$participantName"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <!-- BEGIN, CR00199961, SS -->
+          <!-- BEGIN, CR00233952, SSK -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$participantDetails$versionDetails$participantID"
+          />
+          <!-- END, CR00233952 -->
+          <!-- END, CR00199961 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00199961, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$participantDetails$versionDetails$concernRoleType"
+          />
+          <!-- END, CR00199961 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Type"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$participantDetails$versionDetails$type"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.StartDate"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$participantDetails$versionDetails$fromDate"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.EndDate"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$participantDetails$versionDetails$toDate"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Status"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199961, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$participantDetails$versionDetails$recordStatus"
+        />
+        <!-- END, CR00199961 -->
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

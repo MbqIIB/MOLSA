@@ -1,0 +1,162 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>Simulation</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Simulation:</b>
+<i> Stores the detail records relating to a payment simulation.</i>
+<P>When a payment simulation is stored, this entity stores the details of each deduction that exists on the case when the simulation is created, the nominee to which the payment would be made and the amount. The high level details for the simulation are stored in the <a href=SimulationHeader.html>simulation header</a> entity.</P>
+<p><b>Example</b></p><P>A <a href=Users.html>case worker</a> creates a <a href=ProductDelivery.html>product delivery case</a> for <a href=Concern.html>participant</a> Linda Smith. Two <a href=CaseDeductionItem.html>case deductions</a>  are added to the <a href=ProductDelivery.html>product delivery case</a> and activated.  The <a href=Users.html>case worker</a> adds evidence and certification to the <a href=ProductDelivery.html>product delivery case</a>, approves and activates the case.  On the Simulate Payment page the <a href=Users.html>case worker</a>  simulates the payment for the entitlement and the <a href=CaseDeductionItem.html>deductions</a> for a specific date entered. From this page the <a href=Users.html>case worker</a> saves the simulation details that have been generated. </P> 
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::Core::Reference Model::Financial::Entity Objects::Simulation::Simulation</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">core\model\Packages\Financial Manager Packages\Simulation_cat.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (8)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="simulationID">simulationID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique identifier for the simulation record.</td><td class="data"><a href="../domains/SIMULATION_ID.html">SIMULATION_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="simulationHeaderID">simulationHeaderID</a></td><td class="data">details</td><td class="data">no</td><td class="data">Unique identifier for the related simulation header record.</td><td class="data"><a href="../domains/SIMULATION_HEADER_ID.html">SIMULATION_HEADER_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="fromDate">fromDate</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Start date of the coverage period for the instruction line item or deduction.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="toDate">toDate</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">End Date of the coverage period for the instruction line item or deduction.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="nominee">nominee</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Nominee on the case for which the payment is valid for the given simulation period.</td><td class="data"><a href="../domains/CASE_NOMINEE_ID.html">CASE_NOMINEE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="amount">amount</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">The amount of the simulated instruction line item.</td><td class="data"><a href="../domains/CURAM_AMOUNT.html">CURAM_AMOUNT</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_MONEY</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="iliType">iliType</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Type of instruction line item. This is populated if the instruction line item is a payment.</td><td class="data"><a href="../domains/ILI_TYPE_CODE.html">ILI_TYPE_CODE</a></td><td class="data"><a href="../codetables/ct-ILIType.html">ILIType</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="deductionName">deductionName</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Name of the Deduction. This is populated if the instruction line item is a deduction.</td><td class="data"><a href="../domains/DEDUCTION_NAME_CODE.html">DEDUCTION_NAME_CODE</a></td><td class="data"><a href="../codetables/ct-DeductionName.html">DeductionName</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">Simulation.simulationHeaderID</td><td class="dataLast"><a href="SimulationHeader.html#simulationHeaderID">SimulationHeader.simulationHeaderID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">SimulationIdx</td><td class="dataLast">simulationHeaderID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: simulationID</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchBySimulationHeaderID</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">removeAllForHeaderID</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">Remove all of the simulation records that apply to a specific simulation header record.</td><td class="dataLast"><a href="../sql/sql-Simulation-removeAllForHeaderID.html">SQL</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

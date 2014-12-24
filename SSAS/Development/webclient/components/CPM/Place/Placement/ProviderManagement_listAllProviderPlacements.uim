@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                   -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- the terms of the license agreement you entered into with Curam             -->
+<!-- Software.                                                                  -->
+<!-- Description                                                                -->
+<!-- ===========                                                                -->
+<!-- This page allows user to view the list of placements for a  provider.      -->
+<PAGE
+  PAGE_ID="ProviderManagement_listAllProviderPlacements"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <SERVER_INTERFACE
+    CLASS="Placement"
+    NAME="DISPLAY"
+    OPERATION="listPlacementsForProvider"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerKey$providerID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+    <!-- BEGIN, CR00199550, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199550 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00200179, SS -->
+        <!-- BEGIN, CR00155774, AK -->
+        <!-- BEGIN, CR00169295, AK -->
+        <!-- BEGIN, CR00236219, PS  -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyPlacementDetails"
+        >
+          <!-- END, CR00236219  -->
+          <!-- END, CR00169295 -->
+          <!-- END, CR00155774 -->
+          <!-- END, CR00200179 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00155774, AK -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <!-- END, CR00155774 -->
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199550, SS -->
+      <!-- BEGIN, CR00200179, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Transfer">
+        <!-- BEGIN, CR00237603, PS -->
+        <LINK
+          DISMISS_MODAL="true"
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_placeSearchCriteria"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00237603 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="oldPlaceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00200179 -->
+    </ACTION_SET>
+    <!-- END, CR00199550 -->
+
+
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$clientName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00120983, GYH -->
+      <LINK PAGE_ID="Participant_resolveRoleHome">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="participantType"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00120983 -->
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Place">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$placeName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD LABEL="Field.Label.Placement.PlaceLocation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$placeLocation"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00200179 -->
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00199550, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewPlacementDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00136546, SB -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleClientID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="placementID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placementID"
+          />
+        </CONNECT>
+        <!-- END, CR00136546 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="placeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placeID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199550 -->
+
+
+  </LIST>
+</PAGE>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 	-->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This jsp redirects the user to the relevant view client				-->
+<!-- participation screen, depending on the plan item type.					-->
+<PAGE
+  PAGE_ID="ServicePlanDelivery_resolveViewCaseClientParticipation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+  <JSP_SCRIPTLET>
+  
+    String context = request.getContextPath() + "/";
+    curam.omega3.request.RequestHandler rh =
+      curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+
+    String plannedItemID = request.getParameter("plannedItemID");
+    if (plannedItemID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "plannedItemID");
+       System.out.println(e);
+       throw e;
+    }
+                    
+    String dailyAttendanceID = request.getParameter("dailyAttendanceID");
+    if (dailyAttendanceID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "dailyAttendanceID");
+       System.out.println(e);
+       throw e;
+    }
+      
+    String url = context;
+    curam.interfaces.ProviderServicePlanDeliveryPkg.ProviderServicePlanDelivery_readPlanItemTypeCode_TH
+    th = new curam.interfaces.ProviderServicePlanDeliveryPkg.ProviderServicePlanDelivery_readPlanItemTypeCode_TH();    
+	th.setFieldValue(th.key$plannedItemIDKey$plannedItemIDKey$plannedItemID_idx,plannedItemID);
+    th.callServer();
+          
+    String planItemType = new String(th.getFieldValue(th.result$typeCode$details$typeCode_idx));
+        
+    // If 'service' or 'custom service' type plan item.
+    if (planItemType.equals("AT4011") || planItemType.equals("AT4012")) {
+          
+      // Redirect to 'service'/'custom service' client participation screen.
+      url += "ServicePlanDelivery_viewClientParticipationServicePlanItemPage.do?dailyAttendanceID=" + curam.omega3.request.RequestUtils.escapeURL(dailyAttendanceID);
+    
+    } else {
+
+      // Redirect to OOTB client participation screen.        
+      	url += "ServicePlanDelivery_viewClientParticipation_from_ServicePlanClientParticipationListPage.do?dailyAttendanceID=" + curam.omega3.request.RequestUtils.escapeURL(dailyAttendanceID);
+    }
+      
+    url += "&amp;" + rh.getSystemParameters();
+          
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+
+</PAGE>

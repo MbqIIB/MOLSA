@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.		        					     -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to upload the taxonomy XML file.              -->
+<PAGE
+  PAGE_ID="ProviderManagement_updateTaxonomy"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../WebContent/WEB-INF/CDEJ/schema/uim.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyVersion"
+    NAME="ACTION"
+    OPERATION="updateTaxonomy"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY"
+    OPERATION="listTaxonomyTermStatus"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyVersion"
+    NAME="DISPLAY1"
+    OPERATION="listUpdateReviewAttributes"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Title.Update.Description"
+    LABEL_WIDTH="25"
+  >
+    <WIDGET
+      LABEL="Field.Label.XMLFile"
+      TYPE="FILE_UPLOAD"
+      WIDTH="100"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="taxonomyXML"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+      <WIDGET_PARAMETER NAME="FILE_NAME">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="attachmentName"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+    </WIDGET>
+
+
+    <WIDGET
+      LABEL="Field.Label.XSDFile"
+      TYPE="FILE_UPLOAD"
+      WIDTH="100"
+    >
+      <WIDGET_PARAMETER NAME="CONTENT">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="taxonomyXSD"
+          />
+        </CONNECT>
+      </WIDGET_PARAMETER>
+
+
+    </WIDGET>
+
+
+    <FIELD
+      LABEL="Field.Label.TermStatus"
+      USE_BLANK="false"
+      USE_DEFAULT="false"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="statusCode"
+          NAME="DISPLAY"
+          PROPERTY="statusCodeDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="termStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.UserReview">
+    <LIST>
+      <CONTAINER
+        ALIGNMENT="CENTER"
+        LABEL="Container.Label.Select"
+        WIDTH="10"
+      >
+        <WIDGET TYPE="MULTISELECT">
+
+
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY1"
+                PROPERTY="reviewAttribute"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+          <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+            <CONNECT>
+              <TARGET
+                NAME="ACTION"
+                PROPERTY="reviewAttributeTabString"
+              />
+            </CONNECT>
+          </WIDGET_PARAMETER>
+        </WIDGET>
+      </CONTAINER>
+
+
+      <FIELD LABEL="Field.Label.Details">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="reviewAttributeDescription"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_listTaxonomyVersion"/>
+
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

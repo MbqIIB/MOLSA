@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to waive the training program for            -->
+<!-- the provider member under the provider group.                          -->
+<PAGE
+  PAGE_ID="ProviderManagement_waiveProviderGroupManagedTrainingForMember"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="trainingProgramMemberID"/>
+  <PAGE_PARAMETER NAME="partyVersionNo"/>
+  <PAGE_PARAMETER NAME="memberName"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="partyConcernRoleID"/>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="ACTION"
+    OPERATION="waiveProviderGroupPartyTrainingProgram"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingProgramMemberID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$trainingProgramMemberID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="partyVersionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$partyVersionNo"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="DISPLAY1"
+    OPERATION="viewPerson"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="partyConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="personKey$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+
+
+    <!-- BEGIN, CR00198612, SS -->
+    <CLUSTER LABEL_WIDTH="35">
+      <!-- END, CR00198612 -->
+      <!-- BEGIN, CR00248555, PS -->
+      <FIELD
+        LABEL="Field.Label.TrainingProgramMember.WaiverExpiryDate"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="40"
+      >
+        <!-- END, CR00248555 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$waiverExpiryDate"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    >    
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

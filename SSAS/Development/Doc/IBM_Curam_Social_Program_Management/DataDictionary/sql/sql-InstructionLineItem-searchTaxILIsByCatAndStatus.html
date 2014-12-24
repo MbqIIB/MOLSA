@@ -1,0 +1,143 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>InstructionLineItem.searchTaxILIsByCatAndStatus</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Search to retrieve a list of instruction line items by categories and status, which have a blank case ID. This will find Tax instruction line items.</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  ili1.instructLineItemID,
+  ili1.amount,
+  ili1.unprocessedAmount,
+  ili1.instructLineItemCategory,
+  ili1.instructionLineItemType,
+  ili1.financialCompID,
+  ili1.coverPeriodFrom,
+  ili1.coverPeriodTo,
+  ili1.effectiveDate,
+  ili1.creationDate,
+  ili1.statusCode,
+  ili1.caseID,
+  ili1.finInstructionID,
+  ili1.concernRoleID,
+  ili1.caseNomineeID,
+  ili1.primaryClientID,
+  ili1.deliveryMethodType,
+  ili1.creditDebitType,
+  ili1.currencyExchangeID,
+  ili1.currencyTypeCode,
+  ili1.adjustmentInd,
+  ili1.adjustmentFrequency,
+  ili1.nextAdjustmentDate,
+  ili1.instrumentGenInd,
+  ili1.fundID,
+  ili1.maximumAmount,
+  ili1.versionNo,
+  ili1.dueDate,
+  ili1.inRespectOfID
+INTO
+  :instructLineItemID,
+  :amount,
+  :unprocessedAmount,
+  :instructLineItemCategory,
+  :instructionLineItemType,
+  :financialCompID,
+  :coverPeriodFrom,
+  :coverPeriodTo,
+  :effectiveDate,
+  :creationDate,
+  :statusCode,
+  :caseID,
+  :finInstructionID,
+  :concernRoleID,
+  :caseNomineeID,
+  :primaryClientID,
+  :deliveryMethodType,
+  :creditDebitType,
+  :currencyExchangeID,
+  :currencyTypeCode,
+  :adjustmentInd,
+  :adjustmentFrequency,
+  :nextAdjustmentDate,
+  :instrumentGenInd,
+  :fundID,
+  :maximumAmount,
+  :versionNo,
+  :dueDate,
+  :inRespectOfID 
+FROM
+  InstructionLineItem ili1 
+WHERE ili1.statusCode = :statusCode 
+  AND ili1.caseID IS NULL 
+  AND 
+  (
+    
+    (
+      ili1.instructLineItemCategory = :instructLineItemCategory1 
+    ) 
+    OR 
+    (
+      ili1.instructLineItemCategory = :instructLineItemCategory2 
+      AND EXISTS 
+      ( 
+      SELECT
+        ili2.concernRoleID 
+      FROM
+        InstructionLineItem ili2 
+      WHERE ili2.concernRoleID = ili1.concernRoleID 
+        AND ili2.instructLineItemCategory = :instructLineItemCategory1 
+      ) 
+    ) 
+  ) 
+ORDER BY concernRoleID,
+  currencyTypeCode,
+  deliveryMethodType,
+  caseID
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows you to modify reservation information.-->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyReservation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="DISPLAY"
+    OPERATION="viewReservation"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="PROVIDEROFFERING"
+    OPERATION="listApprovedProviderOffering"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="reservationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$reservationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="PROVIDEROFFERING"
+      PROPERTY="providerID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION1"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+  <PAGE_PARAMETER NAME="reservationID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="from"/>
+  <PAGE_PARAMETER NAME="to"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="ACTION1"
+    OPERATION="updateReservation"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="reservationID"
+    />
+    <TARGET
+      NAME="ACTION1"
+      PROPERTY="key$reservationID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <FIELD LABEL="Field.Label.ClientName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.From"
+      WIDTH="90"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$from"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION1"
+          PROPERTY="key$from"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$providerOfferingSummaryDetails$providerOfferingID"
+          NAME="PROVIDEROFFERING"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION1"
+          PROPERTY="key$serviceOfferingID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place">
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="result$placeName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placeID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION1"
+          PROPERTY="key$placeID"
+        />
+      </CONNECT>
+      <LINK>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00293856, IBM -->
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+          <!-- END, CR00293856 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="from"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00293856, IBM -->
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+          <!-- END, CR00293856 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="to"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.To"
+      WIDTH="90"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$to"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION1"
+          PROPERTY="key$to"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Comments.Title"
+  >
+    <FIELD HEIGHT="4">
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION1"
+          PROPERTY="key$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+</PAGE>

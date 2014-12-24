@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Creating the book.xml File</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN13005.html" title="Converting FrameMaker Documents"><link rel="previous" href="DMN13734.html" title="Converting to XML"><link rel="next" href="DMN138C6.html" title="Converting to DocBook XML"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN13734.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN138C6.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN13822"></a>Creating the <tt class="filename">book.xml</tt> File</h2></div></div><div></div></div><p>
+      <span class="application">FrameMaker</span> produces no useful conversion of
+      the main book file, so the DocBook <span class="acronym">XML</span> equivalent
+      must now be created. This file, <tt class="filename">book.xml</tt>, contains
+      references to all the other files in the book and allows DocMaker to
+      process the book as a whole. DocMaker can create this file
+      automatically, but you will still need to check it manually and
+      possibly correct the ordering of the content.
+    </p><div class="orderedlist"><ol type="1"><li><p>
+          Open a command prompt, and change the current folder to the folder
+          containing your book files and the <tt class="filename">xmloutput</tt>
+          folder.
+        </p></li><li><p>
+          At the command prompt, run the following command:
+        </p><div class="informalexample"><div class="blockquote"><blockquote class="blockquote"><p>
+              <b class="userinput"><tt>
+                <tt class="prompt">C:\MyBook&gt;</tt>
+                <span><b class="command">docmaker</b></span>
+                <tt class="option">prepare-fm</tt>
+              </tt></b>
+            </p></blockquote></div></div><p>
+          This will create a <tt class="filename">book.xml</tt> file in the
+          <tt class="filename">xmloutput</tt> folder. The book will contain a
+          reference to every <span class="acronym">XML</span> file (in alphabetical
+          order) created by <span class="application">FrameMaker</span>. Files
+          that match the name patterns <tt class="filename">*TOC.xml</tt>,
+          <tt class="filename">*PrintHistory.xml</tt>,
+          <tt class="filename">*Cover.xml</tt>, <tt class="filename">*IX.xml</tt>
+          (but not <tt class="filename">*Unix.xml</tt>), and
+          <tt class="filename">*.backup.xml</tt> will be excluded automatically.
+          If you have a file containing content that matches one of these
+          patterns, you must add it to the <tt class="filename">book.xml</tt>
+          file manually.
+        </p></li><li><p>
+          Open the <tt class="filename">xmloutput/book.xml</tt> file in an editor
+          and locate the line defining the title of the book:
+        </p><div class="informalexample"><pre class="programlisting">&lt;book&gt;
+  &lt;title&gt;Unknown&lt;/title&gt;
+  ...
+&lt;/book&gt;</pre></div><p>
+          Change the text within the <tt class="sgmltag-element">title</tt> element to the
+          correct title of your book.
+        </p></li><li><p>
+          Below the book title, you will see
+          <span class="emphasis"><em>XInclude references</em></span> for each main content file
+          in your book. Reorder the references if necessary. If a file was
+          not included (perhaps one of the file names has the same ending
+          as the files that are automatically excluded), add a new reference
+          in the appropriate place within the <tt class="sgmltag-element">book</tt> element
+          copying the format of those present.
+        </p></li></ol></div><p>
+      Once the <tt class="filename">book.xml</tt> file is ready, you can now
+      convert your documents to correct DocBook <span class="acronym">XML</span>
+      format. If you encounter errors, you will have to fix them in the
+      original files, but you will not have to recreate the
+      <tt class="filename">book.xml</tt> file.
+    </p></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN13734.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN138C6.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

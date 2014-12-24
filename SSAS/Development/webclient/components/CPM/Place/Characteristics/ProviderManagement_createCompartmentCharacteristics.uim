@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!--  This page allows the user to create compartment characteristics of provider facility.  -->
+<PAGE
+  PAGE_ID="ProviderManagement_createCompartmentCharacteristics"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="DISPLAY"
+    OPERATION="getPlacementCharacteristicDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="ACTION"
+    OPERATION="addCharacteristicForCompartment"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="compartmentID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$compartmentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="compartmentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="placementCharDetails$placementCharacteristic$compartmentID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00094433, SP -->
+  <ACTION_SET ALIGNMENT="CENTER">
+    <!-- END, CR00094433 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save1"
+      TYPE="SUBMIT"
+    >
+            </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >                
+            </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00248428, GP -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248428 -->
+
+
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.MinimumAge"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$placementCharacteristic$minimumAge"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.Gender"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$genderList$genderDetailsList$genderCode"
+          NAME="DISPLAY"
+          PROPERTY="result$genderList$genderDetailsList$genderDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$genderTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00198774, RPB -->
+    <!-- BEGIN, CR00248859, PS -->
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.StartDate"
+      WIDTH="90"
+    >
+      <!-- END, CR00248859 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198774 -->
+
+
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.MaximumAge"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$placementCharacteristic$maximumAge"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.Service"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$serviceList$providerOfferingSummaryDetails$providerOfferingID"
+          NAME="DISPLAY"
+          PROPERTY="result$serviceList$providerOfferingSummaryDetails$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$placementCharacteristic$providerOfferingID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00198774, RPB -->
+    <!-- BEGIN, CR00248859, PS -->
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.EndDate"
+      USE_DEFAULT="false"
+      WIDTH="85"
+    >
+      <!-- END, CR00248859 -->
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDateTime"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00198774 -->
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00235192, PS -->
+  <!-- BEGIN,CR00234497, PS -->
+  <CLUSTER
+    NUM_COLS="4"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Language"
+  >
+    <FIELD ALIGNMENT="LEFT">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Language.Title"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.SameLanguage"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$placementCharacteristic$sameLanguageType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+  <!-- BEGIN, CR00235506, PS -->
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD
+      ALIGNMENT="LEFT"
+      CONTROL="TRANSFER_LIST"
+      WIDTH="100"
+    >
+      <!-- END, CR00235506 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$languageList$languageDetailsList$languageCode"
+          NAME="DISPLAY"
+          PROPERTY="result$languageList$languageDetailsList$languageDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$languageIDTabList"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="4"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.GangAffiliation"
+  >
+    <FIELD ALIGNMENT="LEFT">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Gang.Title"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.SameGang"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$placementCharacteristic$sameGangType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+  <!-- BEGIN, CR00235506, PS  -->
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD
+      ALIGNMENT="LEFT"
+      CONTROL="TRANSFER_LIST"
+      WIDTH="100"
+    >
+      <!-- END, CR00235506 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$gangAffiliationList$gangAffiliationDetailsList$gangAffiliationCode"
+          NAME="DISPLAY"
+          PROPERTY="result$gangAffiliationList$gangAffiliationDetailsList$gangAffiliationDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$gangAffiliationIDTabList"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="4"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Ethnicity"
+  >
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="ethnicityIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <FIELD ALIGNMENT="LEFT">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Ethnicity.Title"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.SameEthnicity"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$placementCharacteristic$sameEthinicityType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+  <!-- BEGIN, CR00235506, PS  -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="ethnicityIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <FIELD
+      ALIGNMENT="LEFT"
+      CONTROL="TRANSFER_LIST"
+      WIDTH="100"
+    >
+      <!-- END, CR00235506 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$ethnicityList$ethnicityDetailsList$ethnicityCode"
+          NAME="DISPLAY"
+          PROPERTY="result$ethnicityList$ethnicityDetailsList$ethnicityDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$ethnicityIDTabList"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="4"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Religion"
+  >
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="religionIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <FIELD ALIGNMENT="LEFT">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Religion.Title"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.CompartmentCharacteristics.SameReligion"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$placementCharacteristic$sameReligionType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+    <FIELD CONTROL="SKIP"/>
+    <!-- END, CR00234497 -->
+  </CLUSTER>
+  <!-- BEGIN, CR00235506, PS  -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="religionIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <FIELD
+      ALIGNMENT="LEFT"
+      CONTROL="TRANSFER_LIST"
+      WIDTH="100"
+    >
+      <!-- END, CR00235506 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$religionList$religionDetailsList$religionCode"
+          NAME="DISPLAY"
+          PROPERTY="result$religionList$religionDetailsList$religionDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="placementCharDetails$religionIDTabList"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+  <!-- END, CR00235192 -->
+</PAGE>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify absence reason .                   -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifySOAbsenceReasonConfiguration"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY"
+    OPERATION="viewAbsenceReason"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="ACTION"
+    OPERATION="updateAbsenceReason"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00137359, AS -->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- END, CR00137359 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save1"
+      TYPE="SUBMIT"
+    >
+
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+
+
+  <PAGE_PARAMETER NAME="associateID"/>
+  <PAGE_PARAMETER NAME="absenceReasonID"/>
+  <PAGE_PARAMETER NAME="pageContext"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="associateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="result$associateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="absenceReasonID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$absenceReasonID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$versionNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$recordStatus"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$recordStatus"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="key$absenceReasonID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="dtls$absenceReasonID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00247036, PS -->
+  <CLUSTER LABEL_WIDTH="35">
+    <!-- END, CR00247036 -->
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.Name"
+      WIDTH="98"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$absenceReasonCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.AbsenceReason.Payable"
+      WIDTH="98"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$absenceReasonPayableInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$absenceReasonPayableInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AbsenceReason.Deductible">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$absenceReasonDeductibleInd"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dtls$absenceReasonDeductibleInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

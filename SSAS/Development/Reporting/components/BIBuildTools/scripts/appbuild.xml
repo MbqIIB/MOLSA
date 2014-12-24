@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Reporting for CEF" >
+
+  <!-- do not modify this file as it is overwritten during the release process
+       modify the custom.xml if you require a permenant target, or modify the 
+       original source from which this is built.
+  -->
+	<property environment="sysenv." />
+
+	<dirname property="COMPONENT_DIR" file="appbuild.xml"/>   
+	<import file="${sysenv.REPORTING_ENV}/scripts/rep_properties.xml"/>
+	<import file="${sysenv.REPORTING_ENV}/scripts/rep_compile.xml" optional="true"/>
+	<import file="${sysenv.REPORTING_ENV}/scripts/rep_QAtesting.xml" optional="true"/>
+	<taskdef
+			classname="curam.util.reporting.internal.tasks.AntReadBuildFileName"
+			classpath="${jar.reporting.buildenv}"
+			name="ReadBuildFileName"
+			/>
+
+	<ReadBuildFileName reportingDir="${sysenv.REPORTING_DIR}" buildFilePropertyName="BUILDSCRIPTNAME"/>
+	<import file="${sysenv.REPORTING_ENV}/scripts/${BUILDSCRIPTNAME}"/>
+
+	<import file="${sysenv.REPORTING_ENV}/scripts/rep_compile.xml"/>
+    <import file="${REPORTING_ENV}/scripts/rep_database_sample.xml" optional="true"/>
+
+
+	<!--  ******************************************************************  -->
+	<!--  ***  add overridden tasks here                                 ***  -->
+	<!--  ******************************************************************  -->
+
+    <!--  *********************************************  -->
+    <!--  ***  Create schema objects                ***  -->
+    <!--  *********************************************  -->
+  <target depends="init"
+    description="Builds the staging, central and datamart schema objects -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures"
+    name="database.all">
+ 
+	<antcall target="_database.source.sample" />
+	
+	
+    <antcall target="database.source.updatenulls" />
+    <antcall target="staticdata"/>
+                
+    <antcall target="database.staging" />
+    <antcall target="database.central" />
+    <antcall target="database.datamarts" />
+    <antcall target="grant.all"/>
+  </target>
+  
+   <!--  ******************************************************************  -->
+   <!--  ***  verify the error checker is available                     ***  -->
+   <!--  ******************************************************************  -->
+
+  <target  name ="test.errorchecker" description="test target to verify the build error checker">
+
+	<echo message="ignore#2" file="${REPORTING_ENV}/errorlogtest1.log" />
+    <errorsfound logFile="${REPORTING_ENV}/errorlogtest1.log"  ignore="True" >
+          <Ignore name="filter" value="ignore#2"/>
+          <Error name="error" value="test#B"/>                
+    </errorsfound>
+    
+    <echo message="test#A" file="${REPORTING_ENV}/errorlogtest2.log" />
+
+    <errorsfound logFile="${REPORTING_ENV}/errorlogtest2.log"  errorProperty="test.prop.namez" >
+      <Ignore name="filter" value="ignore#1"/>
+      <Ignore name="filter" value="ignore#2"/>
+
+      <Error name="error" value="test#A"/>        
+      <Error name="error" value="test#B"/>                
+    </errorsfound>
+
+    
+  </target>
+	<target depends="declareTasks" name="test.componentorder">
+		<echo message="Start checking component order===========" />
+		<AntUtilities propertyName="ignore" operation="component.order"
+				value="components" sourceproperty="REPORTING_DIR" verbose="true"/>
+		<echo message="End checking component order===========" />
+	</target>
+
+	  <!--  **************************  -->
+  <!--  ***  release tasks     ***  -->
+  <!--  **************************  -->
+  <target name="test.sourcepaths" depends="declareTasks">
+
+    <FindSourcePaths verbose="true" reportingDir="${REPORTING_DIR}"
+      javaSourcePropertyName="notneeded" javaSourceComponentName="server.components"/>
+  </target>
+
+  
+  <target name="test.remotedatamanagerdir" depends="declareTasks">
+
+		<AntUtilities
+		operation="datamanagerdir"
+		propertyName="DATADIR_OWB_TEMP"
+		value="${owbconfig.remotedatamanagerdir}"
+		/>
+
+		
+		<AntUtilities
+		operation="toOWBpathformat"
+		propertyName="DATADIR_OWB"
+		value="${DATADIR_OWB_TEMP}"
+		/>
+  </target>
+  
+	<!--  *********************************************  -->
+	<!--  ***  tests the generation data tasks      ***  -->
+	<!--  *********************************************  -->  
+
+	<target name="test.initialdata" >
+
+		<taskdef
+				classname="curam.util.reporting.internal.tasks.AntExecuteDataTests"
+				classpath="${jar.reporting.buildenv};${REPORTING_DIR}/components/BIBuildTools/generator;${prop.thirdPartyCompile.jars};"
+				name="AntExecuteDataTests"
+				/>
+
+		<AntExecuteDataTests reportingDir="${sysenv.REPORTING_DIR}" testType="0"/>
+
+	</target>
+
+	<target name="properties.utf.test">
+		<taskdef
+				classname="curam.util.reporting.internal.tasks.AntCopyPropertiesToUTFValues"
+				classpath="${jar.reporting.buildenv};;${prop.thirdPartyCompile.jars};"
+				name="AntCopyPropertiesToUTFValues"
+				/>
+		<AntCopyPropertiesToUTFValues source="${properties.test.ascii.source}" target="${properties.test.utf.target}"/>
+	</target>
+
+
+	<!--  *********************************************  -->
+	<!--  ***  Create staging   schema objects      ***  -->
+	<!--  *********************************************  -->
+	<target
+			depends="init, check.db.type, set.db.staging, set.database.ora, set.database.db2, declareTasks"
+			description="Builds the staging schema objects"
+			name="test.database.generate">
+
+		<AntGenerateDDL
+				generatedDDLFile="${dir.bin.ddl}${file.separator}"
+				reportingDir="${REPORTING_DIR}" staging="true" central="false"
+				datamarts="false" transformsOnly="false" />
+		<AntGenerateDDL
+				generatedDDLFile="${dir.bin.ddl}${file.separator}"
+				reportingDir="${REPORTING_DIR}" staging="false" central="true"
+				datamarts="false" transformsOnly="false" />
+		<AntGenerateDDL
+				generatedDDLFile="${dir.bin.ddl}${file.separator}"
+				reportingDir="${REPORTING_DIR}" staging="false" central="false"
+				datamarts="true" transformsOnly="false" />        
+		<AntGenerateDDL
+				generatedDDLFile="${dir.bin.ddl}${file.separator}"
+				reportingDir="${REPORTING_DIR}" staging="true" central="false"
+				datamarts="false" transformsOnly="true" />
+		<AntGenerateDDL
+				generatedDDLFile="${dir.bin.ddl}${file.separator}"
+				reportingDir="${REPORTING_DIR}" staging="false" central="true"
+				datamarts="false" transformsOnly="true" />
+		<AntGenerateDDL
+				generatedDDLFile="${dir.bin.ddl}${file.separator}"
+				reportingDir="${REPORTING_DIR}" staging="false" central="false"
+				datamarts="true" transformsOnly="true" />                           
+		<echo message="Note: use -Ddatabase.failonerror.action=[continue|abort|stop] to continue on data failures" />                           
+
+		<antcall target="database.generate.data"/> 
+
+		<AntGenerateInitialData
+				demoDataDirectory="${dir.bin.datamanager.initialdata}"
+				reportingDir="${REPORTING_DIR}"
+				fileset="data_manager/initialdata"
+				/>
+
+		<AntGenerateDemoData
+				demoDataDirectory="${dir.bin.datamanager.demodata}"
+				reportingDir="${REPORTING_DIR}"
+				fileset="data_manager/demodata"
+				/>				
+		<antcall target="staticdata" />
+	</target>  
+</project>

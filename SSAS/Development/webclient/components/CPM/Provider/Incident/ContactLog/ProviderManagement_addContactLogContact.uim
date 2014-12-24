@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010 Curam Software Ltd.																								-->
+<!-- All rights reserved.                                                   																-->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with 	-->
+<!-- the terms of the license agreement you entered into with Curam         	-->
+<!-- Software.                                                              	-->
+<!-- Description                                                            	-->
+<!-- ===========                                                            	-->
+<!-- This page allows the user to add an attendee to a incident contact log.    -->
+<!-- BEGIN, CR00321084, GA -->
+<PAGE
+  PAGE_ID="ProviderManagement_addContactLogContact"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="ACTION"
+    OPERATION="addContactLogAttendee"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY"
+    OPERATION="listActiveProviderMember"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="PARTICIPANTSDISPLAY"
+    OPERATION="listIncidentActiveParticipantRole"
+  />
+
+
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="contactLogID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="PARTICIPANTSDISPLAY"
+      PROPERTY="incidentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contactLogID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="contactLogID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="true"
+    TITLE="Cluster.Label.AttendeeDetails"
+  >
+
+
+    <CLUSTER NUM_COLS="2">
+      <CONTAINER LABEL="Field.Label.CurrentUserIsParticipant">
+        <FIELD USE_BLANK="true">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="currentUserIsAttendeeIndOpt"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+      <FIELD CONTROL="SKIP"/>
+    </CLUSTER>
+
+
+    <CLUSTER
+      DESCRIPTION="Cluster.Description.IncidentParticipant"
+      NUM_COLS="2"
+    >
+      <FIELD
+        CONTROL="CHECKBOXED_LIST"
+        HEIGHT="3"
+        LABEL="Field.Label.IncidentParticipant"
+        USE_BLANK="true"
+        WIDTH="90"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="incidentParticipantRoleID"
+            NAME="PARTICIPANTSDISPLAY"
+            PROPERTY="participantName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="incidentParticipantRoleIDTabListOpt"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER
+      DESCRIPTION="Cluster.Description.ProviderMember"
+      NUM_COLS="2"
+    >
+      <CONTAINER LABEL="Field.Label.ProviderMember">
+        <FIELD USE_BLANK="true">
+          <CONNECT>
+            <INITIAL
+              HIDDEN_PROPERTY="details$concernRoleID"
+              NAME="DISPLAY"
+              PROPERTY="providerMemberName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="providerMemberConcernRoleID"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+      <FIELD CONTROL="SKIP"/>
+    </CLUSTER>
+
+
+    <CLUSTER
+      BEHAVIOR="NONE"
+      DESCRIPTION="Cluster.Description.RegisteredParticipant"
+      LABEL_WIDTH="25"
+      NUM_COLS="1"
+      SHOW_LABELS="true"
+    >
+
+
+      <CONTAINER LABEL="Field.Label.RegisteredParticipant">
+        <FIELD WIDTH="25">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="concernRoleType"
+            />
+          </CONNECT>
+        </FIELD>
+        <FIELD WIDTH="40">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </FIELD>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      BEHAVIOR="NONE"
+      DESCRIPTION="Cluster.Description.UnRegisteredParticipant"
+      LABEL_WIDTH="50"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+    >
+      <FIELD
+        LABEL="Field.Label.ParticipantName"
+        WIDTH="82"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="newConcernRoleName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP"/>
+    </CLUSTER>
+
+
+    <CLUSTER
+      BEHAVIOR="NONE"
+      DESCRIPTION="Cluster.Description.User"
+      LABEL_WIDTH="50"
+      NUM_COLS="2"
+      SHOW_LABELS="true"
+    >
+      <FIELD
+        HEIGHT="1"
+        LABEL="Field.Label.User"
+        WIDTH="110"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD CONTROL="SKIP"/>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="true"
+  >
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+  </ACTION_SET>
+  <!-- END, CR00321084 -->
+
+
+</PAGE>

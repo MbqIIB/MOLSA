@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Transform Ant Task</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN12C4B.html" title="DocMaker Tools"><link rel="previous" href="DMN12C4B.html" title="DocMaker Tools"><link rel="next" href="DMN12FC5.html" title="Ant Script Profiling"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN12C4B.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN12FC5.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN12C5A"></a>Transform Ant Task</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12C5F"></a>Features</h3></div></div><div></div></div><p>DocMaker's Transform Ant task has a number of features that
+      differentiate it from Ant's own Style/XSLT task. The Transform task was
+      developed to solve some of the problems inherent in the use of Apache
+      Xalan under Java 1.4 and later. The Java Runtime Environment (JRE) 1.4
+      and later includes an old version of Apache Xalan in its core and it can
+      be difficult to use a newer version of Xalan instead. The Transform task
+      ensures that any version of Xalan can be used and that the version
+      included in the JRE will be ignored.</p><p>Some of the main features of the Transform task are:</p><div class="itemizedlist"><ul type="disc"><li><p>Special, optimized classloaders to make it simple to use any
+          version of Apache Xalan regardless of the version of Xalan included
+          in the JRE.</p></li><li><p>All classpath configuration can be performed within the same
+          Ant script, so no JVM options need to be set and no JRE
+          installations need to be modified.</p></li><li><p>XML inclusions are recognized and inclusions specified in the
+          input XML file can be performed optionally.</p></li><li><p>Dependency checking support also detects and checks the
+          timestamps on XML files included by the main input XML file.</p></li><li><p>Performance profiling of the XSLT stylesheets can be enabled
+          and the results analyzed in a spreadsheet application.</p></li><li><p>An option to compile the stylesheet and use the Apache Xalan
+          XSLTC processor rather than the default interpretive processor. This
+          may improve the speed of the transformation.</p></li></ul></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12C92"></a>Task Configuration</h3></div></div><div></div></div><p>The Transform task forms an implicit Ant
+      <tt class="sgmltag-element">fileset</tt> for the selection of one or more input XML
+      files to be processed. The base directory of the
+      <tt class="sgmltag-element">fileset</tt> is the same as the project's base directory
+      unless overridden using the <tt class="sgmltag-attribute">basedir</tt>
+      attribute. The task can contain <tt class="sgmltag-element">include</tt> and
+      <tt class="sgmltag-element">exclude</tt> child elements to select the input files. The
+      task is similar to Ant's core Style/XSLT task, but dispenses with some
+      redundant features.</p><div class="table"><a name="DMN12CAA"></a><table summary="Transform Task Attributes" border="1"><colgroup><col width="33%"><col width="50%"><col width="17%"></colgroup><thead><tr><th>Attribute</th><th>Description</th><th>Required</th></tr></thead><tbody><tr><td><p>
+                  <tt class="sgmltag-attribute">basedir</tt>
+                </p></td><td><p>Specifies the base directory used to locate the
+              input XML files. The default is the project's base
+              directory.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">destdir</tt>
+                </p></td><td><p>The directory in which the output XML files will be
+              placed. If not specified, the project's base directory will be
+              used. If neither the <tt class="sgmltag-attribute">destdir</tt> nor the <tt class="sgmltag-attribute">basedir</tt> attributes are specified,
+              then the output XML files will be created in the same directory
+              as the input XML files and unless a different <tt class="sgmltag-attribute">extension</tt> is specified, the
+              transformation will fail. If the destination directory does not
+              exist, it will be created.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">in</tt>
+                </p></td><td><p>The name of a single input file to be processed.
+              The name will be resolved relative to the project's base
+              directory if it represents a relative path. This must be used in
+              combination with the <tt class="sgmltag-attribute">out</tt>
+              attribute. Extended dependency checking is not support when
+              using <tt class="sgmltag-attribute">in</tt> and <tt class="sgmltag-attribute">out</tt>.</p></td><td><p>No, unless <tt class="sgmltag-attribute">out</tt>
+              is specified.</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">out</tt>
+                </p></td><td><p>The name of a single output file to be created when
+              the single input file is processed. The name will be resolved
+              relative to the project's base directory if it represents a
+              relative path. The <tt class="sgmltag-attribute">destdir</tt>
+              attribute must not be used. If the directories in the path to
+              the output file do not exist, they will be
+              created.</p></td><td><p>No, unless <tt class="sgmltag-attribute">in</tt>
+              is specified.</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">extension</tt>
+                </p></td><td><p>The file extension to use for the output XML files.
+              If not specified, the extension of the input file will be
+              used.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">style</tt>
+                </p></td><td><p>The XSLT stylesheet file to be used. If the path is
+              not absolute, it will be resolved relative to the project's base
+              directory.</p></td><td><p>Yes</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">classpathref</tt>
+                </p></td><td><p>A reference to a path-like structure (usually a
+              <tt class="sgmltag-element">path</tt> element) that defines the classpath
+              required for Apache Xalan and Apache Xerces to override any
+              version included in the JRE. The JAXP/TRAX API
+              (<tt class="classname">javax.xml.*</tt>, etc. classes) need not be
+              included if these classes are present in the JRE, as these will
+              not be overridden. If stylesheets use extension functions or
+              elements, the appropriate classes should also be included in
+              this classpath. If not specified, the system classpath will be
+              used.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">xmlcatalogref</tt>
+                </p></td><td><p>A reference to the XML catalog used to resolve
+              references to a document type definition (DTD) from the input
+              XML files. See the documentation on the Ant
+              <tt class="type">XMLCatalog</tt> type to learn how to configure an XML
+              catalog.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">dependdir</tt>
+                </p></td><td><p>The base directory to use when locating dependency
+              files used for dependency checking of XML inclusions. For each
+              input XML file relative to the <tt class="sgmltag-attribute">basedir</tt>, there may be a dependency
+              file in the same relative location below the <tt class="sgmltag-attribute">dependdir</tt> that contains the
+              dependency information.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">dependextension</tt>
+                </p></td><td><p>The extension used for the dependency files in the
+              <tt class="sgmltag-attribute">dependdir</tt>. The file names
+              should be the same as the names of the input XML files. By
+              default, the extension of the input XML file will be
+              assumed.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">xinclude</tt>
+                </p></td><td><p>Indicates if XML inclusions in the input XML files
+              should be processed. This is <tt class="sgmltag-attvalue">false</tt> by default. Set to <tt class="sgmltag-attvalue">true</tt> if XML inclusions are
+              required.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">force</tt>
+                </p></td><td><p>Forces the processing of the input XML files and
+              disables all dependency checking. This is <tt class="sgmltag-attvalue">false</tt> by default.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">profile</tt>
+                </p></td><td><p>Enables performance profiling of the stylesheet by
+              specifying the name of a CSV (comma-separated values) file that
+              should be created with the profile data after the processing is
+              complete. If not specified, no profiling will be performed. This
+              is <tt class="sgmltag-attvalue">false</tt> by default. Set to
+              <tt class="sgmltag-attvalue">true</tt> to enable profiling.
+              Note that profiling will not work if the XSLTC processor is
+              enabled using the <tt class="sgmltag-attribute">compile</tt>
+              attribute.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">compile</tt>
+                </p></td><td><p>Enables the use of the compiling processor XSLTC
+              instead of the Xalan interpretive processor. The XSLTC processor
+              must be available on the classpath or this option will be
+              ignored. This is <tt class="sgmltag-attvalue">false</tt> by
+              default. Set to <tt class="sgmltag-attvalue">true</tt> if
+              compiled stylesheets should be enabled. If enabled, stylesheet
+              profiling will not be possible, even if XSLTC is not found on
+              the classpath and the interpretive Xalan processor is
+              used.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">locationinfo</tt>
+                </p></td><td><p>Enables the creation of node location information
+              when source files are parsed. This is <tt class="sgmltag-attvalue">false</tt> by default. Set to <tt class="sgmltag-attvalue">true</tt> if node location information
+              should be enabled. If enabled, stylesheet may use Xalan
+              extension functions to access the system ID, line number, and
+              column number of a node. This requires considerable extra
+              resources to support, so only enable it when
+              necessary.</p></td><td><p>No</p></td></tr><tr><td><p>
+                  <tt class="sgmltag-attribute">scanincludeddirectories</tt>
+                </p></td><td><p>If any child <tt class="sgmltag-element">include</tt> elements
+              match directories, indicates if all files in these directories
+              should be processed. This is <tt class="sgmltag-attvalue">true</tt> by default.</p></td><td><p>No</p></td></tr></tbody></table><p class="title"><b>Table:&nbsp;Transform Task Attributes</b></p></div><p>As well as nested <tt class="sgmltag-element">include</tt> and
+      <tt class="sgmltag-element">exclude</tt> elements, the Transform task also supports
+      nested <tt class="sgmltag-element">param</tt> and <tt class="sgmltag-element">outputproperty</tt>
+      elements in the same way as Ant's Style/XSLT task. See the documentation
+      of that task for more details. Other nested elements of the Style/XSLT
+      task are not supported.</p><p>The following example illustrates how the Transform task is
+      defined.</p><div class="example"><a name="DMN12EDC"></a><pre class="programlisting">&lt;path id="cp.task"&gt;
+  &lt;fileset dir="${docmaker.lib.dir}"&gt;
+    &lt;include name="jde-commons-ext.jar" /&gt;
+    &lt;include name="docmaker.jar" /&gt;
+  &lt;/fileset&gt;
+&lt;/path&gt;
+
+&lt;taskdef name="transform" classpathref="cp.task"
+  classname="curam.docmaker.tools.anttasks.Transform" /&gt;</pre><p class="title"><b>Example:&nbsp;Defining the Transform Task</b></p></div><p>The classpath includes two JAR files located in the
+      <tt class="filename">lib</tt> directory of the DocMaker installation. The
+      JAXP and TRAX APIs must also be provided, but these will probably be
+      accessible via the classpath of Ant or the JRE, so they rarely need to
+      be specified explicitly. These APIs are usually defined in the
+      <tt class="filename">xml-apis.jar</tt> file that is supplied with Apache
+      Xalan, Xerces or Ant, or in the core JRE.</p><p>The next example shows how an XML catalog and the Xalan classpath
+      can be configured for use with the task.</p><div class="example"><a name="DMN12EF4"></a><pre class="programlisting">&lt;path id="cp.transform"&gt;
+  &lt;fileset dir="${xalan.dir}"&gt;
+    &lt;include name="xalan.jar" /&gt;
+    &lt;include name="xercesImpl.jar" /&gt;
+  &lt;/fileset&gt;
+&lt;/path&gt;
+
+&lt;xmlcatalog id="cat.docbook"&gt;
+  &lt;dtd publicId="-//OASIS//DTD DocBook XML V4.2//EN"
+       location="file:///${dtd.dir}/docbookx.dtd"/&gt;
+&lt;/xmlcatalog&gt;</pre><p class="title"><b>Example:&nbsp;Configuring the Transform Task</b></p></div><p>The classpath should include the JAR files necessary to run the
+      version of Xalan that you require. A compatible version of Xerces should
+      also be included. Some versions of Xalan may require additional JAR
+      files; the above will work for Xalan 2.6.0, but Xalan 2.7.0 also
+      requires the <tt class="filename">serializer.jar</tt> file that is shipped
+      with it. If there are multiple instances of the Transform task in an Ant
+      script, and each uses the same classpath reference, they will all share
+      a single classloader to access Xalan classes. This has significant
+      performance benefits. If you use different classpath references for each
+      instance of the task, the classloaders will not be shared. Therefore,
+      where possible, try to define a single classpath that will be used by
+      all instances of the Transform task.</p><p>The XML catalog defines the location of the DTD file corresponding
+      to the public ID of DocBook XML 4.2. Note that a bug in Ant 1.6 means
+      that the &ldquo;<span class="quote">file:///</span>&rdquo; prefix is required before the location
+      of the DTD file. The XML catalog ensures that a local copy of the DTD
+      will be used for validation if an input XML file defines a
+      <tt class="sgmltag-element">DOCTYPE</tt> with the same public ID. If an XML catalog
+      were not used, a copy of the DTD would be downloaded from the location
+      specified by the system ID of the <tt class="sgmltag-element">DOCTYPE</tt> (probably
+      somewhere on the Internet) and download could impact performance
+      adversely.</p><p>The transform task can be used as shown below.</p><div class="example"><a name="DMN12F14"></a><pre class="programlisting">&lt;transform destdir="${html.dir}" style="my.xsl"
+           extension=".html" basedir="${in.dir}"
+           xinclude="true" classpathref="cp.transform"
+           xmlcatalogref="cat.docbook"&gt;
+  &lt;include name="**/book.xml" /&gt;
+&lt;/transform&gt;</pre><p class="title"><b>Example:&nbsp;Using the Transform Task</b></p></div><p>This will use the stylesheet <tt class="filename">my.xsl</tt> to
+      transform all <tt class="filename">book.xml</tt> files located below the
+      directory indicated by the <tt class="property">in.dir</tt> property into
+      <tt class="filename">book.html</tt> files in corresponding directories below
+      the directory indicated by the <tt class="property">html.dir</tt> property.
+      If the input XML files include other XML files, the inclusions will be
+      resolved before the transformation is performed.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12F36"></a>Dependency Checking</h3></div></div><div></div></div><p>Dependency checking is based on the modification time-stamps of
+      the files and operates according to the following rules:</p><div class="itemizedlist"><ul type="disc"><li><p>If the <tt class="sgmltag-attribute">force</tt> attribute is
+          set to <tt class="sgmltag-attvalue">true</tt>, no dependency
+          checking is performed and all input XML files are processed.</p></li><li><p>If the XSLT stylesheet file is newer than the output XML file,
+          the corresponding input XML file is processed again.</p></li><li><p>If the input XML file is newer than the output XML file, it is
+          processed again.</p></li><li><p>If any of the files listed in an input XML file's
+          corresponding dependency file are newer than the output XML file,
+          the input XML file is processed again.</p></li></ul></div><p>The dependency file is a simple file that lists the names of files
+      that the input XML file depends on. Each input XML file can have a
+      corresponding dependency file that is resolved using the <tt class="sgmltag-attribute">dependextension</tt> (if any) and the same
+      relative path to the <tt class="sgmltag-attribute">dependdir</tt> (if
+      any) as the input XML file has to the <tt class="sgmltag-attribute">basedir</tt>. The dependency file lists the
+      dependent files one per line using paths that are relative to the
+      corresponding input XML file. DocMaker includes an XSLT stylesheet than
+      can transform an XML file into a dependency file by identifying the XML
+      inclusions in the input file. However, if included XML files have
+      further XML inclusions, they are not detected. If XML inclusions are not
+      used, the simple dependency checking rules will probably suffice, but
+      the following example demonstrates how to use the extended dependency
+      checking.</p><div class="example"><a name="DMN12F70"></a><pre class="programlisting">&lt;target name="dependencies"&gt;
+  &lt;transform destdir="${dep.dir}" style="depend.xsl"
+             extension=".d"&gt;
+    &lt;outputproperty name="method" value="text"/&gt;
+    &lt;include name="**/*.xml"/&gt;
+  &lt;/transform&gt;
+&lt;/target&gt;
+
+&lt;target name="transform" depends="dependencies"&gt;
+  &lt;transform destdir="${out.dir}" style="my.xsl"
+             dependdir="${dep.dir}" dependextension=".d"
+             xinclude="true"&gt;
+    &lt;include name="**/*.xml"/&gt;
+  &lt;/transform&gt;
+&lt;/target&gt;</pre><p class="title"><b>Example:&nbsp;Dependency Checking of XML Inclusions</b></p></div><p>The <tt class="option">dependencies</tt> target does not enable XML
+      inclusions and uses an XSLT stylesheet to transform input XML files into
+      dependency files with the extension &ldquo;<span class="quote">.d</span>&rdquo; located in another
+      directory. The <tt class="filename">depend.xsl</tt> stylesheet can be copied
+      from DocMaker's <tt class="filename">lib</tt> directory; it will create a
+      text file that lists the values of the <tt class="sgmltag-attribute">href</tt> attributes of any
+      <tt class="sgmltag-element">xi:include</tt> elements it finds in the input file. You
+      are free to generate dependency files using any other method, but this
+      is the way that DocMaker does it.</p><p>The <tt class="option">transform</tt> target depends on the
+      <tt class="option">dependencies</tt> target. It enables XML inclusions and
+      processes the same input XML files using a different stylesheet. It
+      indicates the location of the dependency files to ensure that, even if
+      an input XML file has not changed, a change to a file that it includes
+      will be detected and trigger the processing again. When editing DocBook
+      XML content, this is useful if only a chapter file is edited, as the
+      change will be detected via the inclusion in the book file and the book
+      will be rendered again.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12F9C"></a>Performance Profiling</h3></div></div><div></div></div><p>Profiling the execution of XSLT stylesheets can be very useful if
+      performance is a problem. The Transform task can generate a profile in a
+      file in CSV (comma-separated values) format that shows the number of
+      invocations of each template in the stylesheet, the total time spent
+      executing each template and other statistics. This file can be opened in
+      any common spreadsheet application to sort the data and analyze the
+      problem areas. Enabling profiling is simple and is shown below.</p><div class="example"><a name="DMN12FA4"></a><pre class="programlisting">&lt;path id="cp.transform"&gt;
+  &lt;fileset dir="${docmaker.lib.dir}"&gt;
+    &lt;include name="jde-commons-ext.jar" /&gt;
+    &lt;include name="profile.jar" /&gt;
+  &lt;/fileset&gt;
+  &lt;fileset dir="${xalan.dir}"&gt;
+    &lt;include name="xalan.jar" /&gt;
+    &lt;include name="xercesImpl.jar" /&gt;
+  &lt;/fileset&gt;
+&lt;/path&gt;
+
+&lt;target name="transform-html"&gt;
+  &lt;transform destdir="${html.dir}" style="my.xsl"
+             extension=".html" basedir="${in.dir}"
+             xinclude="true" classpathref="cp.transform"
+             xmlcatalogref="cat.docbook"
+             profile="html-profile.csv"&gt;
+    &lt;include name="**/book.xml" /&gt;
+  &lt;/transform&gt;
+&lt;/target&gt;</pre><p class="title"><b>Example:&nbsp;Profiling XSLT Stylesheets</b></p></div><p>Profiling requires the addition of two JAR file to the Transform
+      task's classpath (the classpath used for transformations, not for the
+      task definition). Both JAR files can be found in the
+      <tt class="filename">lib</tt> directory of the DocMaker installation. To
+      compensate for a bug in Apache Xalan, the
+      <tt class="filename">profile.jar</tt> file should come before the
+      <tt class="filename">xalan.jar</tt> file in the definition of the classpath
+      as shown above.</p><p>Profiling is enabled by adding the profile attribute to the
+      transform task and setting it to the location of the CSV file that
+      should be created. The profile will include data gathered from the
+      transformations of every input XML file and will be saved when the task
+      has completed. The extension &ldquo;<span class="quote">.csv</span>&rdquo; is convenient, as you
+      are likely to have a spreadsheet application installed that is
+      associated with this extension.</p></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN12C4B.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN12FC5.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

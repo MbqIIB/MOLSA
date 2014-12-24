@@ -1,0 +1,46 @@
+set RC=
+@echo off
+
+
+setlocal
+REM Move to the current directory
+cd /d %~dp0
+set current=%~dp0
+
+call ..\setreportingenv.bat
+IF ERRORLEVEL 1 goto BUILDERROR
+
+cd %current=%
+
+set BI_BUILDFILE=%current%build.xml
+
+if exist %current%custom.xml set BI_BUILDFILE=%current%custom.xml
+
+echo buildfile is:%BI_BUILDFILE%   %BI_BUILD_PROPS%
+
+call ant -buildfile %BI_BUILDFILE% %BI_BUILD_PROPS% -projecthelp
+IF ERRORLEVEL 1 goto BUILDERROR
+
+goto END
+
+rem  *********************
+rem  ***  BUILD ERROR  ***
+rem  *********************
+:BUILDERROR
+set ERRORLEVEL=1
+goto END
+
+rem  **************
+rem  ***  EXIT  ***
+rem  **************
+:EXIT
+exit /B %RC%
+
+rem  *************
+rem  ***  END  ***
+rem  *************
+:END
+endlocal & set RC=%ERRORLEVEL%
+call :EXIT %RC%
+
+

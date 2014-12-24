@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2009-2011 Curam Software Ltd.                              -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- the terms of the license agreement you entered into with Curam             -->
+<!-- Software.                                                                  -->
+<!-- This page allows the user to view provider service center details.         -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewProvderServiceCenter"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00178272, AK -->
+  <SERVER_INTERFACE
+    CLASS="ProviderServiceCenter"
+    NAME="DISPLAY"
+    OPERATION="viewServiceCenterDetails"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="providerServiceCenterID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerServiceCenterID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerServiceCenterKey$providerServiceCenterID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00246961, GP -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Address.Label"
+  >
+    <!-- END, CR00246961 -->
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$contactDetails$formattedAddress"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EmailAddress">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$contactDetails$emailAddress"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PhoneNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$contactDetails$formattedPhoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.WebAddress">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$contactDetails$webAddress"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.Services">
+    <!-- BEGIN, CR00199327, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_updateServiceCenterProviderOfferingPopup"
+          WINDOW_OPTIONS="width=450"
+        >
+          <!-- END, CR00199327-->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$servCenterProviderOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="servCenterProviderOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <!-- BEGIN, CR00233823, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelServiceCenterProviderOfferingPopup"
+          WINDOW_OPTIONS="width=300"
+        >
+          <!-- END, CR00233823 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$servCenterProviderOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="servCenterProviderOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199327, SS -->
+    </ACTION_SET>
+    <!-- END, CR00199327 -->
+
+
+    <FIELD LABEL="Field.Label.ServiceName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$serviceName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00246783, GP -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_viewServiceForResourceMgr"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00246783 -->
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Fileld.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$serviceCenterRecordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00199327, SS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewServiceCenterProviderOfferingPopup">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerServiceCenterSummaryDetails$serviceCenterProviderOfferingDetails$servCenterProviderOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="servCenterProviderOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00199327 -->
+  </LIST>
+
+
+  <!-- BEGIN, CR00180149, ASN -->
+
+
+  <!-- BEGIN, CR00207545, SS -->
+  <!-- BEGIN, CR00228396, PS -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AdditionalInformation"
+  >
+    <!-- END, CR00228396 -->
+    <CONTAINER LABEL="Field.Label.AreasServedInfo">
+      <FIELD HEIGHT="4">
+        <!-- END, CR00207545 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$areasServedInformation"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$areasServedInfoExistsInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00206671, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          DISMISS_MODAL="true"
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addAreasServedInfoTranslationForServiceCenter"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00187417 -->
+          <!-- END, CR00206671 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerServiceCenterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerServiceCenterID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$providerServiceCenterDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+
+
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="areaServiceAddInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00206671, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00187417 -->
+          <!-- END, CR00206671 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$providerServiceCenterDtls$areasSvdInfoTxtID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="areaServiceViewInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+          WINDOW_OPTIONS="width=700"
+        >
+          <!-- END, CR00187417 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$providerServiceCenterDtls$areasSvdInfoTxtID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER LABEL="Field.Label.ClientInfo">
+      <!-- BEGIN, CR00207545, SS -->
+      <FIELD HEIGHT="4">
+        <!-- END, CR00207545 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$clientInformation"
+          />
+        </CONNECT>
+      </FIELD>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$clientInfoExistsInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00206671, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          DISMISS_MODAL="true"
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addClientInfoTranslationForServiceCenter"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00187417 -->
+          <!-- END, CR00206671 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerServiceCenterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerServiceCenterID"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$providerServiceCenterDtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="clientInfoAddInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00206671, SS -->
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+          WINDOW_OPTIONS="width=350"
+        >
+          <!-- END, CR00187417 -->
+          <!-- END, CR00206671 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$providerServiceCenterDtls$clientInfoTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="LocalizableTextTranslation"
+        LABEL="ActionControl.Label.TextTranslation"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="clientInfoViewInd"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00187417, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+          WINDOW_OPTIONS="width=700"
+        >
+          <!-- END, CR00187417 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerServiceCenterSummaryDetails$providerServiceCenterDtls$clientInfoTextID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localizableTextID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+  </CLUSTER>
+
+
+  <!-- END, CR00180149 -->
+
+
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Comments.Label"
+  >
+    <!-- BEGIN, CR00207545, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00207545 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerServiceCenterSummaryDetails$providerServiceCenterDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00178272 -->
+
+
+</PAGE>

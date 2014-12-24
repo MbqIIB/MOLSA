@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to display a list of investigations for a    -->
+<!-- provider.                                                              -->
+<PAGE
+  PAGE_ID="ProviderManagement_listInvestigation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00291801, ASN -->
+  <SERVER_INTERFACE
+    CLASS="ProviderInvestigation"
+    NAME="DISPLAY"
+    OPERATION="listInvestigationsForProvider"
+  />
+  <!-- END, CR00291801 -->
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00199327, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00199327 -->
+    <ACTION_CONTROL
+      IMAGE="NewButton"
+      LABEL="ActionControl.Label.New"
+    >
+      <!-- BEGIN, CR00206896, SS -->
+      <!-- BEGIN, CR00187976, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createInvestigation"
+        WINDOW_OPTIONS="width=525"
+      >
+        <!-- END, CR00187976 -->
+        <!-- END, CR00206896 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.Reference"
+      WIDTH="18"
+    >
+      <!-- END, CR00200179 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReference"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_investigationHome">
+        <CONNECT>
+          <!-- BEGIN, CR00291801, ASN -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <!-- END, CR00291801 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00249720, VR -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00249720 -->
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="18"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <!-- BEGIN, CR00291801, ASN -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="investigationType"
+        />
+        <!-- END, CR00291801 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00200179, SS -->
+    <!-- BEGIN, CR00291801, ASN -->
+    <FIELD
+      LABEL="Field.Label.Roles"
+      WIDTH="25"
+    >
+      <!-- END, CR00200179 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="roleString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00291801 -->
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="20"
+    >
+      <!-- END, CR00200179 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="13"
+    >
+      <!-- END, CR00200179 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <!-- BEGIN, CR00291801, ASN -->
+
+
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewProviderInvestigationTabDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00291801 -->
+  </LIST>
+
+
+</PAGE>

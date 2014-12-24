@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Application Development script that wraps the server build.xml file. This file is not shipped to customers and shouldn't
+  contain any scripts that customers may depend on.
+-->
+<project
+  default="main"
+  name="DependencyManagerBatchBase"
+>
+  <property environment="sysenv."/>
+  <property
+    name="dir.server"
+    value="${sysenv.SERVER_DIR}"
+  />
+  <property
+    name="dir.sde"
+    value="${sysenv.CURAMSDEJ}"
+  />
+  <property
+    name="jarFile"
+    value="lib/DependencyManagerBatchScript.jar"
+  />
+  <property
+    name="version.prop.file"
+    value="${dir.sde}/lib/third_party_version.properties"
+  />
+  <property file="${version.prop.file}"/>
+  <property
+    location="${dir.sde}/lib/providerutil-${version-providerutil}.jar"
+    name="jar.providerutil"
+  />
+  <property
+    location="${dir.sde}/lib/fscontext-${version-fscontext}.jar"
+    name="jar.fscontext"
+  />
+
+
+  <import file="DependencyManagerBatchProperties.xml"/>
+  <import file="${dir.sde}/bin/app_batchlauncher.xml"/>
+  <import file="${dir.sde}/bin/app_properties.xml"/>
+
+
+  <path id="depCheckCP">
+    <pathelement path="${jarFile}"/>
+    <pathelement location="${prop.file.location}"/>
+    <path refid="j.cp"/>
+  </path>
+
+
+  <!--
+  *********************
+  **** MAIN ***********
+  
+  *********************
+  -->
+  <target name="main">
+    <antcall target="runBatchProcesses"/>
+  </target>
+
+
+  <target
+    depends="checkForDependents"
+    name="runBatchProcesses"
+    unless="hasNoDependents"
+  >
+    <mkdir dir="${dir.logs.dependencymanager.detailed}"/>
+
+
+    <antcall target="runSubmit"/>
+    <antcall target="runRecalculate"/>
+    <antcall target="runComplete"/>
+
+
+  </target>
+
+
+  <target name="checkForDependents">
+
+
+    <taskdef
+      classname="curam.utility.dependencymanager.CheckForDependentsTask"
+      name="checkForDependentsTask"
+    >
+
+
+      <classpath>
+        <path refid="depCheckCP"/>
+      </classpath>
+    </taskdef>
+
+
+    <checkForDependentsTask/>
+
+
+  </target>
+
+
+  <target name="runSubmit">
+
+
+    <property
+      name="submit.logfile"
+      value="${dir.logs.dependencymanager.detailed}/${submit.precedent.change.set.log}.log"
+    />
+    <record
+      loglevel="info"
+      name="${submit.logfile}"
+    />
+
+
+    <ant
+      antfile="${sysenv.CURAMSDEJ}/bin/app_batchlauncher.xml"
+      inheritall="false"
+      target="main"
+    >
+      <property
+        name="batch.program"
+        value="curam.dependency.intf.SubmitPrecedentChangeSet.process"
+      />
+      <property
+        name="batch.username"
+        value="SYSTEM"
+      />
+    </ant>
+
+
+    <record
+      action="stop"
+      loglevel="info"
+      name="${submit.logfile}"
+    />
+  </target>
+
+
+  <target name="runRecalculate">
+    <ant
+      antfile="DependencyManagerBatch.xml"
+      target="runRecalculate"
+    />
+  </target>
+
+
+  <target name="runRecalculateStream">
+    <property
+      name="runReCalStream.logfile"
+      value="${dir.logs.dependencymanager.detailed}/${perform.batch.recalculations.stream.log}_${dependentType}_${streamNo}.log"
+    />
+    <record
+      loglevel="info"
+      name="${runReCalStream.logfile}"
+    />
+
+
+    <ant
+      antfile="${sysenv.CURAMSDEJ}/bin/app_batchlauncher.xml"
+      inheritall="false"
+      target="main"
+    >
+      <property
+        name="batch.program"
+        value="curam.dependency.intf.PerformBatchRecalculationsFromPrecedentChangeSetStream.process"
+      />
+      <property
+        name="batch.username"
+        value="SYSTEM"
+      />
+    </ant>
+
+
+    <record
+      action="stop"
+      loglevel="info"
+      name="${runReCalStream.logfile}"
+    />
+  </target>
+
+
+  <target name="runRecalculateChunker">
+
+
+    <property
+      name="runReCalChunker.logfile"
+      value="${dir.logs.dependencymanager.detailed}/${perform.batch.recalculations.chunker.log}_${dependentType}.log"
+    />
+    <record
+      loglevel="info"
+      name="${runReCalChunker.logfile}"
+    />
+
+
+    <sequential>
+      <sleep seconds="5"/>
+      <ant
+        antfile="${sysenv.CURAMSDEJ}/bin/app_batchlauncher.xml"
+        inheritall="false"
+        target="main"
+      >
+        <property
+          name="batch.program"
+          value="curam.dependency.intf.PerformBatchRecalculationsFromPrecedentChangeSet.process"
+        />
+        <property
+          name="batch.username"
+          value="SYSTEM"
+        />
+        <property
+          name="batch.parameters"
+          value="dependentType=${dependentType}"
+        />
+      </ant>
+    </sequential>
+
+
+    <record
+      action="stop"
+      loglevel="info"
+      name="${runReCalChunker.logfile}"
+    />
+
+
+  </target>
+
+
+  <target name="runComplete">
+
+
+    <property
+      name="complete.logfile"
+      value="${dir.logs.dependencymanager.detailed}/${complete.precedent.change.set.log}.log"
+    />
+    <record
+      loglevel="info"
+      name="${complete.logfile}"
+    />
+
+
+    <ant
+      antfile="${sysenv.CURAMSDEJ}/bin/app_batchlauncher.xml"
+      inheritall="false"
+      target="main"
+    >
+      <property
+        name="batch.program"
+        value="curam.dependency.intf.CompletePrecedentChangeSet.process"
+      />
+      <property
+        name="batch.username"
+        value="SYSTEM"
+      />
+    </ant>
+
+
+    <record
+      action="stop"
+      loglevel="info"
+      name="${complete.logfile}"
+    />
+  </target>
+</project>

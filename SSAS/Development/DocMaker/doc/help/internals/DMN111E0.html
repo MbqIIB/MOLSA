@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Tables</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN10D76.html" title="Block Elements"><link rel="previous" href="DMN10F46.html" title="Figures and Examples"><link rel="next" href="DMN1159A.html" title="Admonitions"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN10F46.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN1159A.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN111E0"></a>Tables</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN111E5"></a>Overview</h3></div></div><div></div></div><p>A <tt class="sgmltag-element">table</tt> is a formal element that contains a
+      <tt class="sgmltag-element">title</tt> and a <tt class="sgmltag-element">tgroup</tt> element that
+      defines a two-dimensional grid of cells that contain some document
+      content. The top row of the table contains the headings of each of the
+      columns in the table. The other rows contain the information being
+      tabulated. Like the <tt class="sgmltag-element">example</tt> and
+      <tt class="sgmltag-element">figure</tt> elements, the <tt class="sgmltag-element">table</tt> element
+      has a corresponding <tt class="sgmltag-element">informaltable</tt> element that can be
+      used when a title is not required.</p><div class="important"><table border="0" summary="Important"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Important]" src="../images/important.gif"></td><th align="left">Important</th></tr><tr><td valign="top" align="left" colspan="2"><p>All tables used in C&uacute;ram documents should use the
+        <tt class="sgmltag-element">table</tt> element with a <tt class="sgmltag-element">title</tt>, not
+        the <tt class="sgmltag-element">informaltable</tt> element, unless the table is used
+        only to assist the formatting of simple lists of data.</p></td></tr></table></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11212"></a>
+        <tt class="sgmltag-element">table</tt>
+      </h3></div></div><div></div></div><p>The structure of the <tt class="sgmltag-element">table</tt> element is probably
+      the most complex of any of the DocBook elements. However, in C&uacute;ram
+      documentation, tables are generally fairly simple grids and the basic
+      use of the <tt class="sgmltag-element">table</tt> element is not difficult to
+      master.</p><p>A <tt class="sgmltag-element">table</tt> element contains a
+      <tt class="sgmltag-element">title</tt> element and a <tt class="sgmltag-element">tgroup</tt>
+      element. The <tt class="sgmltag-element">tgroup</tt> element defines the layout of the
+      table. There can be more than one <tt class="sgmltag-element">tgroup</tt> element, but
+      that configuration is not supported in C&uacute;ram documentation. The
+      <tt class="sgmltag-element">tgroup</tt> element must have a <tt class="sgmltag-attribute">cols</tt> attribute specifying the number of
+      columns in the table.</p><p>Within the <tt class="sgmltag-element">tgroup</tt> element you place one
+      <tt class="sgmltag-element">thead</tt> and one <tt class="sgmltag-element">tbody</tt> element. The
+      <tt class="sgmltag-element">thead</tt> element contains a single
+      <tt class="sgmltag-element">row</tt> element that defines the column headings for the
+      table. If you do not want headings, you can leave out the
+      <tt class="sgmltag-element">thead</tt> element. The <tt class="sgmltag-element">tbody</tt> element
+      contains one or more <tt class="sgmltag-element">row</tt> elements that make up the
+      main body of the table.</p><p>Each <tt class="sgmltag-element">row</tt> can contain <tt class="sgmltag-element">entry</tt>
+      elements that define the cells within that row. The
+      <tt class="sgmltag-element">entry</tt> elements can contain plain text or block
+      elements such as paragraphs, images, lists, etc. In C&uacute;ram documentation,
+      you should generally only place plain text or <tt class="sgmltag-element">para</tt>
+      elements in the <tt class="sgmltag-element">entry</tt> elements.</p><pre class="programlisting">&lt;section&gt;
+  ...
+  &lt;table&gt;
+    &lt;title&gt;The Phone List&lt;/title&gt;
+    &lt;tgroup cols="2"&gt;
+      &lt;thead&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Name&lt;/entry&gt;
+          &lt;entry&gt;Extension&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Bob&lt;/entry&gt;
+          &lt;entry&gt;219&lt;/entry&gt;
+        &lt;/row&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Alice&lt;/entry&gt;
+          &lt;entry&gt;260&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/tbody&gt;
+    &lt;/tgroup&gt;
+  &lt;/table&gt;
+  ...
+&lt;/section&gt;</pre><div class="blockquote"><blockquote class="blockquote"><div class="table"><a name="DMN11271"></a><table summary="The Phone List" border="1"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Name</th><th>Extension</th></tr></thead><tbody><tr><td>Bob</td><td>219</td></tr><tr><td>Alice</td><td>260</td></tr></tbody></table><p class="title"><b>Table:&nbsp;The Phone List</b></p></div></blockquote></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN112A6"></a>
+        <tt class="sgmltag-element">colspec</tt>
+      </h3></div></div><div></div></div><p>The <tt class="sgmltag-element">colspec</tt> element is optional but can be
+      added to the <tt class="sgmltag-element">tgroup</tt> element to control the widths of
+      the columns in the table. There should be one <tt class="sgmltag-element">colspec</tt>
+      element for each column in the table. The <tt class="sgmltag-element">colspec</tt>
+      elements are placed within the <tt class="sgmltag-element">tgroup</tt> element before
+      the <tt class="sgmltag-element">thead</tt> element. They should contain two
+      attributes: <tt class="sgmltag-attribute">colnum</tt> specifying the
+      number of the column to which this <tt class="sgmltag-element">colspec</tt> applies
+      (starting with <tt class="sgmltag-attvalue">1</tt> for the first
+      column), and <tt class="sgmltag-attribute">colwidth</tt> defining the
+      width of the indicated column.</p><p>The width of the column can be specified in a number of different
+      units (inches, millimeters, points, percent, etc.) However, for
+      consistency, C&uacute;ram documentation should only use <i class="firstterm">proportional
+      widths</i>. Proportional widths simply specify column widths as
+      ratios of the total table width. The value is a number followed by an
+      asterisk (&ldquo;<span class="quote">*</span>&rdquo;) character. For example, if the table
+      contains two columns, and you want the first column to be twice the
+      width of the second column (i.e., a ratio of 2:1), the proportional
+      widths will be <tt class="sgmltag-attvalue">2*</tt> and <tt class="sgmltag-attvalue">1*</tt> respectively.</p><p>The fraction of the total table width allocated to a column can be
+      calculated by dividing the column's width by the sum of all the
+      proportional column width values. A ratio of 5:2:2:1 represents five
+      tenths (a half), two-tenths (a fifth), two-tenths, and one tenth and the
+      proportional width values of <tt class="sgmltag-attvalue">5*</tt>,
+      <tt class="sgmltag-attvalue">2*</tt>, <tt class="sgmltag-attvalue">2*</tt>, and <tt class="sgmltag-attvalue">1*</tt> can be used.</p><p>There is no need to set one of the numbers to <tt class="sgmltag-attvalue">1*</tt> and calculate from there. As percentages
+      are just fractions, they can be used instead. For example, the 5:2:2:1
+      ratio represents 50%, 20%, 20%, and 10%, so the proportional widths of
+      <tt class="sgmltag-attvalue">50*</tt>, <tt class="sgmltag-attvalue">20*</tt>, <tt class="sgmltag-attvalue">20*</tt>,
+      and <tt class="sgmltag-attvalue">10*</tt> can be used. The 2:1 ratio
+      is (approximately) 66.67% to 33.33%, so <tt class="sgmltag-attvalue">2*</tt> and <tt class="sgmltag-attvalue">1*</tt>
+      are easier to enter, but <tt class="sgmltag-attvalue">66*</tt> and
+      <tt class="sgmltag-attvalue">33*</tt> could be used to represent the
+      percentages. Though they only add to 99 and not 100, this 66:33 ratio is
+      actually more accurate than the percentages specified to only two
+      decimal places.</p><div class="warning"><table border="0" summary="Warning: Narrow Column Widths"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Warning]" src="../images/warning.gif"></td><th align="left"><a name="DMN1131D"></a>Narrow Column Widths</th></tr><tr><td valign="top" align="left" colspan="2"><p>It is possible to select column widths that are too narrow for
+        the content of the column and this can cause problems when generating
+        <span class="acronym">PDF</span> output. The typical symptom is an endlessly
+        repeating message from the <span class="application">FOP</span> library
+        stating, &ldquo;<span class="quote">area contents overflows area in line</span>&rdquo;. To
+        remedy this, locate the table that is causing the problem and make the
+        narrowest column slightly wider. It can sometimes be difficult to
+        identify the culprit, but it is usually a table you have just changed
+        prior to the error occurring. However, you may have to temporarily
+        comment out parts of your document to eliminate possible candidates
+        from your search.</p></td></tr></table></div><pre class="programlisting">&lt;section&gt;
+  ...
+  &lt;table&gt;
+    &lt;title&gt;The Phone List Again&lt;/title&gt;
+    &lt;tgroup cols="2"&gt;
+      &lt;colspec colnum="1" colwidth="3*"/&gt;
+      &lt;colspec colnum="2" colwidth="2*"/&gt;
+      &lt;thead&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Name&lt;/entry&gt;
+          &lt;entry&gt;Extension&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Bob&lt;/entry&gt;
+          &lt;entry&gt;219&lt;/entry&gt;
+        &lt;/row&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Alice&lt;/entry&gt;
+          &lt;entry&gt;260&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/tbody&gt;
+    &lt;/tgroup&gt;
+  &lt;/table&gt;
+  ...
+&lt;/section&gt;</pre><div class="blockquote"><blockquote class="blockquote"><div class="table"><a name="DMN11338"></a><table summary="The Phone List Again" border="1"><colgroup><col width="60%"><col width="40%"></colgroup><thead><tr><th>Name</th><th>Extension</th></tr></thead><tbody><tr><td>Bob</td><td>219</td></tr><tr><td>Alice</td><td>260</td></tr></tbody></table><p class="title"><b>Table:&nbsp;The Phone List Again</b></p></div></blockquote></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN1136D"></a>Accessibility</h3></div></div><div></div></div><p>Accessibility guidelines require that each table in a C&uacute;ram user
+      guide has associated summary text describing the purpose and contents of
+      the table. A table summary is used when rendering to HTML format, so
+      that a screen-reading application can read the table summary to the user
+      before reading the table's entries.</p><div class="important"><table border="0" summary="Important"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Important]" src="../images/important.gif"></td><th align="left">Important</th></tr><tr><td valign="top" align="left" colspan="2"><p>All C&uacute;ram user guides <span class="emphasis"><em>must</em></span> have table
+        summaries. They are optional for other documents.</p></td></tr></table></div><p>To insert a table summary, add a <tt class="sgmltag-element">blockinfo</tt>
+      element to the <tt class="sgmltag-element">table</tt> before the table's
+      <tt class="sgmltag-element">title</tt> element and add an <tt class="sgmltag-element">abstract</tt>
+      element to the <tt class="sgmltag-element">blockinfo</tt> element. The
+      <tt class="sgmltag-element">abstract</tt> can contain an optional
+      <tt class="sgmltag-element">title</tt> element and one or more <tt class="sgmltag-element">para</tt>
+      elements containing the description of the table.</p><pre class="programlisting">&lt;section&gt;
+  ...
+  &lt;table&gt;
+    &lt;blockinfo&gt;
+      &lt;abstract&gt;
+        &lt;para&gt;
+          A table of employees' extension numbers with names in
+          the first column and extension numbers in the second
+          column. The rows are in no particular order.
+        &lt;/para&gt;
+      &lt;/abstract&gt;
+    &lt;/blockinfo&gt;
+    &lt;title&gt;Another Phone List&lt;/title&gt;
+    &lt;tgroup cols="2"&gt;
+      &lt;colspec colnum="1" colwidth="3*"/&gt;
+      &lt;colspec colnum="2" colwidth="2*"/&gt;
+      &lt;thead&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Name&lt;/entry&gt;
+          &lt;entry&gt;Extension&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Bob&lt;/entry&gt;
+          &lt;entry&gt;219&lt;/entry&gt;
+        &lt;/row&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Alice&lt;/entry&gt;
+          &lt;entry&gt;260&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/tbody&gt;
+    &lt;/tgroup&gt;
+  &lt;/table&gt;
+  ...
+&lt;/section&gt;</pre><div class="blockquote"><blockquote class="blockquote"><div class="table"><a name="DMN1139F"></a><table summary="Another Phone List" border="1"><colgroup><col width="60%"><col width="40%"></colgroup><thead><tr><th>Name</th><th>Extension</th></tr></thead><tbody><tr><td>Bob</td><td>219</td></tr><tr><td>Alice</td><td>260</td></tr></tbody></table><p class="title"><b>Table:&nbsp;Another Phone List</b></p></div></blockquote></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN113DD"></a>The Peculiar Content of <tt class="sgmltag-element">entry</tt> Elements</h3></div></div><div></div></div><p>The <tt class="sgmltag-element">entry</tt> element is used to represent a table
+      cell. It also has the distinction of being the only element defined in
+      the DocBook XML standard that can contain block elements or inline
+      elements (including text) but not a mix of both. After an opening
+      <tt class="sgmltag-starttag">&lt;entry&gt;</tt> tag, if the next node is not a
+      block element, then inline elements and text are expected. However,
+      character content, even whitespace, is considered a text node, so any
+      character content between the opening <tt class="sgmltag-starttag">&lt;entry&gt;</tt> tag and the opening block element tag
+      renders the block element invalid. Similarly, you cannot place character
+      content between subsequent block elements within an
+      <tt class="sgmltag-element">entry</tt>. You can read more about this on the reference
+      page for the <tt class="sgmltag-element">entry</tt> element in <a href="http://www.docbook.org/tdg/en/html/entry.html" target="_top">DocBook: The
+      Definitive Guide</a>.</p><div class="important"><table border="0" summary="Important: Using para within
+        entry"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Important]" src="../images/important.gif"></td><th align="left"><a name="DMN113FD"></a>Using para within
+        entry</th></tr><tr><td valign="top" align="left" colspan="2"><p>Most of the examples in this chapter do not use a
+        <tt class="sgmltag-element">para</tt> element within an <tt class="sgmltag-element">entry</tt>
+        element. However, as you will be writing documents with tables more
+        complex than those shown here, you should use the
+        <tt class="sgmltag-element">para</tt> element to contain the content of
+        <tt class="sgmltag-element">entry</tt> elements in the table body. For simple column
+        headings defined in the table head, the <tt class="sgmltag-element">para</tt>
+        element is not as important.</p></td></tr></table></div><p>Here are some examples of what is valid:</p><div class="example"><a name="DMN1141D"></a><pre class="programlisting">&lt;entry&gt;Bob&lt;/entry&gt;
+
+&lt;entry&gt;&lt;para&gt;Bob&lt;/para&gt;&lt;/entry&gt;
+
+&lt;entry&gt;
+  &lt;personname&gt;Bob&lt;/personname&gt;
+&lt;/entry&gt;
+
+&lt;entry&gt;&lt;para&gt;
+    Bob sits near Carol.
+  &lt;/para&gt;&lt;para&gt;
+    Alice sits near Dave.
+  &lt;/para&gt;&lt;/entry&gt;</pre><p class="title"><b>Example:&nbsp;Valid Content of <tt class="sgmltag-element">entry</tt></b></p></div><p>The first <tt class="sgmltag-element">entry</tt> contains only text, so it is
+      valid. The second <tt class="sgmltag-element">entry</tt> contains only a block element
+      and is also valid. The third <tt class="sgmltag-element">entry</tt> contains
+      whitespace around a <tt class="sgmltag-element">personname</tt> element, but this is
+      an inline element (see <a href="DMN11725.html" title="Inline Elements"><i>Inline Elements</i></a>),
+      not a block element, and it is permitted to mix character content with
+      inline elements. The last <tt class="sgmltag-element">entry</tt> contains two
+      <tt class="sgmltag-element">para</tt> elements and there is no character content
+      within the <tt class="sgmltag-element">entry</tt> element that is not within these
+      block elements, so this is valid.</p><p>When a block element like <tt class="sgmltag-element">para</tt> is used, there
+      can be no character content within the <tt class="sgmltag-element">entry</tt> element,
+      only other block elements like <tt class="sgmltag-element">para</tt>. Whitespace must
+      be avoided, not only between the <tt class="sgmltag-element">entry</tt> element's tags
+      and the <tt class="sgmltag-element">para</tt> elements' tags, but also between the
+      <tt class="sgmltag-element">para</tt> elements' tags, as whitespace there would be
+      considered character content of the <tt class="sgmltag-element">entry</tt> element and
+      could not be mixed with block elements. Some of these invalid uses are
+      shown below:</p><div class="example"><a name="DMN1145C"></a><pre class="programlisting">&lt;entry&gt;
+  Bob
+  &lt;para&gt;sits near Carol.&lt;/para&gt;
+&lt;/entry&gt;
+
+&lt;entry&gt;
+  &lt;para&gt;
+    Bob sits near Carol.
+  &lt;/para&gt;
+  &lt;para&gt;
+    Alice sits near Dave.
+  &lt;/para&gt;
+&lt;/entry&gt;
+
+&lt;entry&gt;&lt;para&gt;
+    Bob sits near Carol.
+  &lt;/para&gt;
+  &lt;para&gt;
+    Alice sits near Dave.
+  &lt;/para&gt;&lt;/entry&gt;</pre><p class="title"><b>Example:&nbsp;Invalid Content of <tt class="sgmltag-element">entry</tt></b></p></div><p>In the first <tt class="sgmltag-element">entry</tt> element there is a mixture
+      of character content (&ldquo;<span class="quote">Bob</span>&rdquo; and whitespace) and block
+      elements (<tt class="sgmltag-element">para</tt>). In the second, the same mix exists,
+      only this time the character content is just whitespace. In the third,
+      there is still whitespace between the <tt class="sgmltag-element">para</tt> elements
+      that is considered character content of the <tt class="sgmltag-element">entry</tt>
+      element.</p><div class="tip"><table border="0" summary="Tip: Use XXE"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Tip]" src="../images/tip.gif"></td><th align="left"><a name="DMN1147A"></a>Use XXE</th></tr><tr><td valign="top" align="left" colspan="2"><p>If you use the XMLmind XML Editor
+        (<span class="application">XXE)</span> as your DocBook XML editor, all of
+        these peculiar requirements of the <tt class="sgmltag-element">entry</tt> element
+        are managed automatically. <span class="application">XXE</span> reformats
+        saved files to conform to these rules, so you can use it to
+        &ldquo;<span class="quote">fix</span>&rdquo; a file created using a text editor.</p></td></tr></table></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11492"></a>Spanning Columns</h3></div></div><div></div></div><p>Occasionally, you will want a single heading above one or more
+      columns in the body of a table, or you may want to split one or more
+      table entries in two. These conditions require the use of
+      <i class="firstterm">spans</i>: where an <tt class="sgmltag-element">entry</tt> element
+      spans more than one column. Spans are specified by naming the columns
+      and then using those names to identify the start and end columns for an
+      <tt class="sgmltag-element">entry</tt>. The column names are defined by adding a
+      <tt class="sgmltag-attribute">colname</tt> attribute to the
+      <tt class="sgmltag-element">colspec</tt>. The spans are defined by adding <tt class="sgmltag-attribute">namest</tt> and <tt class="sgmltag-attribute">nameend</tt> attributes to an
+      <tt class="sgmltag-element">entry</tt> element; the attribute values are set to the
+      names of the starting column and the ending column in the span
+      respectively.</p><p>If you have a single heading above two columns, then the heading
+      <tt class="sgmltag-element">entry</tt> spans those two columns.</p><pre class="programlisting">&lt;section&gt;
+  ...
+  &lt;table&gt;
+    &lt;title&gt;External Phone List&lt;/title&gt;
+    &lt;tgroup cols="3"&gt;
+      &lt;colspec colnum="1" colwidth="6*"/&gt;
+      &lt;colspec colnum="2" colwidth="2*" colname="area-code"/&gt;
+      &lt;colspec colnum="3" colwidth="5*" colname="number"/&gt;
+      &lt;thead&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Name&lt;/entry&gt;
+          &lt;entry namest="area-code" nameend="number"&gt;
+            Phone Number
+          &lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Bob&lt;/entry&gt;
+          &lt;entry&gt;01&lt;/entry&gt;
+          &lt;entry&gt;555-9876&lt;/entry&gt;
+        &lt;/row&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Alice&lt;/entry&gt;
+          &lt;entry&gt;021&lt;/entry&gt;
+          &lt;entry&gt;555-6789&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/tbody&gt;
+    &lt;/tgroup&gt;
+  &lt;/table&gt;
+  ...
+&lt;/section&gt;</pre><div class="blockquote"><blockquote class="blockquote"><div class="table"><a name="DMN114C1"></a><table summary="External Phone List" border="1"><colgroup><col width="46%"><col width="15%"><col width="39%"></colgroup><thead><tr><th>Name</th><th colspan="2">Phone
+                Number</th></tr></thead><tbody><tr><td>Bob</td><td>01</td><td>555-9876</td></tr><tr><td>Alice</td><td>021</td><td>555-6789</td></tr></tbody></table><p class="title"><b>Table:&nbsp;External Phone List</b></p></div></blockquote></div><p>The table was defined to have three columns. The entries in the
+      table's body are the same as before, but there are only two
+      <tt class="sgmltag-element">entry</tt> elements in the table's heading
+      <tt class="sgmltag-element">row</tt>, and the second is defined to start in the
+      <tt class="sgmltag-attvalue">area-code</tt> column and finish in the
+      <tt class="sgmltag-attvalue">number</tt> column. This makes the
+      heading span those columns.</p><p>Sometimes the spanning mechanism can be confusing, but it helps to
+      remember that it always works like the above. For example, if you have a
+      column where a single <tt class="sgmltag-element">entry</tt> is split in two, the
+      situation is no different: you actually have two columns and all
+      <tt class="sgmltag-element">entry</tt> elements except the &ldquo;<span class="quote">split</span>&rdquo;
+        <tt class="sgmltag-element">entry</tt> are span those columns. The
+      &ldquo;<span class="quote">split</span>&rdquo;
+        <tt class="sgmltag-element">entry</tt> is actually two ordinary
+      <tt class="sgmltag-element">entry</tt> elements; the only ones that do not specify a
+      span. There is no concept of a &ldquo;<span class="quote">split</span>&rdquo;
+        <tt class="sgmltag-element">entry</tt> in DocBook: an <tt class="sgmltag-element">entry</tt> is
+      either in a single column or it spans multiple columns.</p><pre class="programlisting">&lt;section&gt;
+  ...
+  &lt;table&gt;
+    &lt;title&gt;Yet Another Phone List&lt;/title&gt;
+    &lt;tgroup cols="3"&gt;
+      &lt;colspec colnum="1" colwidth="6*"/&gt;
+      &lt;colspec colnum="2" colwidth="2*" colname="direct-dial"/&gt;
+      &lt;colspec colnum="3" colwidth="5*" colname="number"/&gt;
+      &lt;thead&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Name&lt;/entry&gt;
+          &lt;entry namest="direct-dial" nameend="number"&gt;
+            Extension
+          &lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Alice&lt;/entry&gt;
+          &lt;entry namest="direct-dial" nameend="number"&gt;260&lt;/entry&gt;
+        &lt;/row&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Bob&lt;/entry&gt;
+          &lt;entry&gt;*&lt;/entry&gt;
+          &lt;entry&gt;219&lt;/entry&gt;
+        &lt;/row&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Carol&lt;/entry&gt;
+          &lt;entry namest="direct-dial" nameend="number"&gt;288&lt;/entry&gt;
+        &lt;/row&gt;
+        &lt;row&gt;
+          &lt;entry&gt;Dave&lt;/entry&gt;
+          &lt;entry namest="direct-dial" nameend="number"&gt;235&lt;/entry&gt;
+        &lt;/row&gt;
+      &lt;/tbody&gt;
+    &lt;/tgroup&gt;
+  &lt;/table&gt;
+  ...
+&lt;/section&gt;</pre><div class="blockquote"><blockquote class="blockquote"><div class="table"><a name="DMN1153B"></a><table summary="Yet Another Phone List" border="1"><colgroup><col width="46%"><col width="15%"><col width="39%"></colgroup><thead><tr><th>Name</th><th colspan="2">Extension</th></tr></thead><tbody><tr><td>Alice</td><td colspan="2">260</td></tr><tr><td>Bob</td><td>*</td><td>219</td></tr><tr><td>Carol</td><td colspan="2">288</td></tr><tr><td>Dave</td><td colspan="2">235</td></tr></tbody></table><p class="title"><b>Table:&nbsp;Yet Another Phone List</b></p></div></blockquote></div><p>In this table, Bob's number appears to be the odd one out: it is
+      the only one that has an asterisk to indicate a direct dialing option
+      for his number and appears to be split in two. However, the DocBook XML
+      code shows that there are two columns defined for the extension number
+      &ldquo;<span class="quote">column</span>&rdquo; and that these entries are the only ones that do
+      not span those two columns: all the other ones are odd.</p></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN10F46.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN1159A.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

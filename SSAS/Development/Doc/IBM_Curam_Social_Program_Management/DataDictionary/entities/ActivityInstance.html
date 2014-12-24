@@ -1,0 +1,215 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ActivityInstance</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Activity Instance
+:</b>
+<i> The runtime data for an activity in an enacted workflow.
+</i>
+
+<P>A new Activity Instance row is created for each execution of an activity in the enactment of a workflow <a href=ProcessDefinition.html>Process Definition</a>.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>system prints out a letter (automatic);</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual); and</LI>
+
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+
+</UL> <P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The <a href=ProcessDefinition.html>Process Definition</a> specifies an initial activity ('system prints out a letter') and so the Workflow Engine creates an Activity Instance row for this initial activity and sets its startDateTime.  Because this activity is an automatic one, the Workflow Engine immediately calls the business processing defined by the activity.  Upon completion of the business processing, the Workflow Engine sets the endDateTime on the Activity Instance and marks it as completed.</P>
+
+<P>The Workflow Engine follows the transition out of the 'system prints a letter' activity and determines that the next activity is 'User puts the letter in an envelope'.  The Workflow Engine creates another Activity Instance row for this next step in the workflow and sets its startDateTime.  Because this activity is a manual one, the Workflow Engine creates a <a href=Task.html>Task</a> for a <a href=Users.html>User</a> to perform the work.  <a href=Users.html>User</a> Ronan Rooney performs the work and upon completion he opens the correspondence screen and marks the letter as 'sent'.  Curam raises an event which causes the Workflow Engine to:</P>
+
+<UL>
+
+<LI>close the <a href=Task.html>Task</a>;</LI>
+
+<LI>set the endDateTime on the Activity Instance and mark it as completed; and</LI>
+
+<LI>follows the transition out of the 'User puts the letter in an envelope' activity.</LI>
+
+</UL> <P>The Workflow Engine determines that the next activity is 'End Process', which performs the necessary clean up and ends the <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<p><b>Technical Notes</b></p>
+<P>There is no 'Activity' database table.  An activity is an XML element defined within the <a href=ProcessDefinition.html>Process Definition</a> metadata.</P>
+
+<P>For 'sequential' workflows there will only be at most one active Activity Instance for any <a href=ProcessInstance.html>Process Instance</a>.  However, a <a href=ProcessDefinition.html>Process Definition</a> can specify concurrent paths and thus for such 'concurrent' workflows a <a href=ProcessInstance.html>Process Instance</a> may have multiple active Activity Instances.</P>
+
+<P>For a workflow which contains no loops, there will be at most one Activity Instance for each activity defined in the <a href=ProcessDefinition.html>Process Definition</a>.  However, if the <a href=ProcessDefinition.html>Process Definition</a> makes use of loops, then there can be multiple Activity Instances for the same activity (one for each iteration round the loop); note though that at most one of these 'loop' Activity Instances will be active.</P>
+
+<P>The Process Definition Tool (PDT) ensures that every <a href=ProcessDefinition.html>Process Definition</a> has an 'End Process' activity.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (10)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">activityInstanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of a workflow activity instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">activityID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of the workflow activity.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">status</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The status of the activity instance.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">iterationID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">An Activity contained within a loop may have multiple instances (one for each iteration of the loop) - this ID allows them to be distinguished from one another.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processInstanceID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of the process instance, within the workflow engine, that is responsible for the workflow of a particular process instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">taskID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The ID of the Task associated with this activity instance, if there is one (this will only be populated for Manual Activities).</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">category</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The category of the workflow activity.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">startDateTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time this activity instance was started at.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">endDateTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time at which this activity instance completed.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ActivityInstance.processInstanceID</td><td class="dataLast"><a href="ProcessInstance.html#processInstanceID">ProcessInstance.processInstanceID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">ActivityInstance.iterationID</td><td class="dataLast"><a href="Iteration.html#iterationID">Iteration.iterationID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ActivityOccurrence.html#activityInstanceID">ActivityOccurrence.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="EventWait.html#activityInstanceID">EventWait.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="FailedMessage.html#activityInstanceID">FailedMessage.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="Iteration.html#loopActivityInstID">Iteration.loopActivityInstID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="MatchedEvtArchive.html#activityInstanceID">MatchedEvtArchive.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="Reminders.html#activityInstanceID">Reminders.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="SuspendedActivity.html#activityInstanceID">SuspendedActivity.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="WDOValuesHistory.html#activityInstanceID">WDOValuesHistory.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="WorkflowDeadline.html#activityInstanceID">WorkflowDeadline.activityInstanceID</a></td><td class="dataLast">ActivityInstance.activityInstanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">PrcInstIdStatusIdx</td><td class="dataLast">processInstanceID, status</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ProcInstIDActIDIdx</td><td class="dataLast">processInstanceID, activityID</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ActInstTaskIDIndex</td><td class="dataLast">taskID</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ActivityInstIDsIdx</td><td class="dataLast">processInstanceID, activityInstanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

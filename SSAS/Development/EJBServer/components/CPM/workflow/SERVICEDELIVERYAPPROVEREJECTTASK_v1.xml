@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2010, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010, 2012 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This workflow is used to generate a service invoice exception task.    -->
+<workflow-process
+  category="PC1"
+  createdBy="admin"
+  creationDate="20091126T160202"
+  id="28516"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <name>SERVICEDELIVERYAPPROVEREJECTTASK</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Service delivery approve reject task</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00306765, AKr -->
+  <description>
+    <localized-text>
+      <locale language="en">Creates a task for the individual responsible for 
+        approving or rejecting a service delivery that has been submitted for
+        approval.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00306765 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="subject"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="subject"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="priority"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="priority"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="assignmentTo"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="assignedTo"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="assignType"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="assigneeType"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="serviceDeliveryID"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="serviceDeliveryID"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="caseID"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="caseID"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="deadlineTime"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="deadlineDateTime"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="deadlineDuration"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="deadlineDuration"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="comments"
+        struct-name="curam.cpm.workflowprocesses.servicedelivery.struct.ApproveRejectServiceTaskDetails"
+      />
+      <target-attribute
+        name="comments"
+        wdo-name="ApproveRejectCreateDetails"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>ApproveRejectCreateDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">ApproveRejectCreateDetails</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>subject</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Task subject</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>priority</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Task priority</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>assignedTo</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">User name</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>assigneeType</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Assignee type</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>caseID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Case</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>serviceDeliveryID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Service</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>deadlineDateTime</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Deadline date</locale>
+            </localized-text>
+          </display-name>
+          <type>DATETIME</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>deadlineDuration</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Deadline Duration</locale>
+            </localized-text>
+          </display-name>
+          <type>INT32</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>comments</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Comments</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="99">
+      <name>
+        <localized-text>
+          <locale language="en">StartProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity.</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="100"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="200">
+      <name>
+        <localized-text>
+          <locale language="en">EndProcessActivity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity id="201">
+      <name>
+        <localized-text>
+          <locale language="en">ServiceDeliveryApproveRejectTask</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">When a service is submitted for approval this task is sent to the supervisor of the user submitting the service.  The supervisor must then decide on whether to approve or reject the submitted service.</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="101"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">%1s</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute
+              name="subject"
+              wdo-name="ApproveRejectCreateDetails"
+            />
+          </message-parameters>
+        </message>
+        <actions>
+          <action
+            page-id="ProviderManagement_serviceHome"
+            principal-action="false"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Service  Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="caseID">
+              <wdo-attribute
+                name="caseID"
+                wdo-name="ApproveRejectCreateDetails"
+              />
+            </link-parameter>
+            <link-parameter name="serviceDeliveryID">
+              <wdo-attribute
+                name="serviceDeliveryID"
+                wdo-name="ApproveRejectCreateDetails"
+              />
+            </link-parameter>
+          </action>
+          <action
+            page-id="ProviderManagement_confirmServiceApproval"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Approve</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="serviceDeliveryID">
+              <wdo-attribute
+                name="serviceDeliveryID"
+                wdo-name="ApproveRejectCreateDetails"
+              />
+            </link-parameter>
+            <link-parameter name="contextDescription">
+              <wdo-attribute
+                name="comments"
+                wdo-name="ApproveRejectCreateDetails"
+              />
+            </link-parameter>
+          </action>
+          <action
+            page-id="ProviderManagement_rejectServiceApproval"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Reject</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="serviceDeliveryID">
+              <wdo-attribute
+                name="serviceDeliveryID"
+                wdo-name="ApproveRejectCreateDetails"
+              />
+            </link-parameter>
+            <link-parameter name="contextDescription">
+              <wdo-attribute
+                name="comments"
+                wdo-name="ApproveRejectCreateDetails"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+        <task-priority>
+          <mapped-priority>
+            <wdo-attribute
+              name="priority"
+              wdo-name="ApproveRejectCreateDetails"
+            />
+          </mapped-priority>
+        </task-priority>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>false</allow-task-forwarding>
+        <initial-comment>
+          <wdo-attribute
+            name="comments"
+            wdo-name="ApproveRejectCreateDetails"
+          />
+        </initial-comment>
+      </task>
+      <allocation-strategy
+        identifier="curam.cpm.workflowprocesses.servicedelivery.intf.WorkflowAllocationFunction.manualAllocationStrategy"
+        type="function"
+      >
+        <function-mappings>
+          <formal-parameters>
+            <formal-parameter index="0">
+              <struct type="curam.cpm.workflowprocesses.servicedelivery.struct.AllocationDetails">
+                <field name="assignType">
+                  <base-type type="STRING">
+                    <wdo-attribute
+                      name="assigneeType"
+                      wdo-name="ApproveRejectCreateDetails"
+                    />
+                  </base-type>
+                </field>
+                <field name="assignmentTo">
+                  <base-type type="STRING">
+                    <wdo-attribute
+                      name="assignedTo"
+                      wdo-name="ApproveRejectCreateDetails"
+                    />
+                  </base-type>
+                </field>
+              </struct>
+            </formal-parameter>
+          </formal-parameters>
+        </function-mappings>
+      </allocation-strategy>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="TASK"
+            event-type="CLOSED"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="taskID"
+              wdo-name="Context_Task"
+            />
+          </event>
+          <event
+            event-class="SERVICEDELIVERY"
+            event-type="APPROVEDREJECTED"
+            identifier="2"
+          >
+            <event-match-attribute
+              name="serviceDeliveryID"
+              wdo-name="ApproveRejectCreateDetails"
+            />
+          </event>
+        </events>
+      </event-wait>
+      <biz-object-associations>
+        <biz-object-association biz-object-type="BOT1">
+          <wdo-attribute
+            name="caseID"
+            wdo-name="ApproveRejectCreateDetails"
+          />
+        </biz-object-association>
+      </biz-object-associations>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="99"
+      id="100"
+      to-activity-idref="201"
+    />
+    <transition
+      from-activity-idref="201"
+      id="101"
+      to-activity-idref="200"
+    />
+  </transitions>
+</workflow-process>

@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>HTML Help Format</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN12594.html" title="Output Formats"><link rel="previous" href="DMN125AE.html" title="Portable Document Format"><link rel="next" href="DMN1296E.html" title="Conditional Content"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN125AE.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN1296E.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN125CA"></a>HTML Help Format</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN125D1"></a>Overview</h3></div></div><div></div></div><p>DocMaker can convert DocBook XML content into HTML Help format.
+      HTML Help a popular format and the files produced by DocMaker are
+      compatible with many third-party help authoring systems from Microsoft,
+      Macromedia and others. However, integration with such third-party
+      systems is not the primary purpose of DocMaker; DocMaker provides
+      everything required to create and deploy a fully-functional online help
+      system without the need for any other tools.</p><p>DocMaker not only generates the HTML Help files, it also includes
+      two systems that can be used to access that help content: a Java Help
+      Applet that displays the table of contents and search controls for the
+      help content in the browser and allows applications to invoke the online
+      help in a context-sensitive manner; and a Help Server, a server-side
+      implementation providing the same functionality as the applet but that
+      is deployed and executed in a J2EE web container. The applet has the
+      advantage that it can be executed without a web container or web
+      server&mdash;for example, from a CD-ROM&mdash;but, while it is
+      accessible and meets modern accessibility guidelines, it does not meet
+      the older W3C Web Content Accessibility Guidelines (WCAG) 1.0 that do
+      not permit applets. The applet also requires that JavaScript is enabled
+      for context-sensitive access to the help system. The Help Server
+      requires a J2EE web container, but does not require an applet or
+      JavaScript to support context-sensitive access to the help system or for
+      any of its basic functionality. It is meets the WCAG 1.0 guidelines for
+      accessibility. However, for improved usability, JavaScript should be
+      enabled, as it is required to support the collapsing and expanding of
+      the entries in the table of contents and for the synchronization of the
+      table of contents to the current help content page. The Help Applet can
+      be deployed along with the Help Server and both can be used
+      simultaneously if desired, though a C&uacute;ram application can only be
+      configured to launch context-sensitive help using one or the
+      other.</p><p>For the most part, there is little that you have to do to generate
+      online HTML Help other than to execute DocMaker's
+      <tt class="option">generate-help</tt> target. However, to support
+      context-sensitivity and accessibility, some extra information is
+      required in the DocBook XML content.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN125E3"></a>Accessibility</h3></div></div><div></div></div><p>The online help for C&uacute;ram applications is required to be
+      accessible by disabled users. There are a number of extra requirements
+      that your DocBook XML content must meet to ensure the online help will
+      be accessible:</p><div class="itemizedlist"><ul type="disc"><li><p>Each table must have a summary describing its contents. See
+          <a href="DMN111E0.html#DMN1136D" title="Accessibility">the section, <i>Accessibility</i></a> for more
+          details.</p></li><li><p>Each image must have an alternative text representation and a
+          longer description describing its contents. See <a href="DMN10F46.html#DMN1109D" title="Accessibility">the section, <i>Accessibility</i></a> for
+          more details.</p></li></ul></div><p>When you run DocMaker's <tt class="option">check</tt> target, and the
+      <tt class="sgmltag-attribute">role</tt> attribute of your
+      <tt class="sgmltag-element">book</tt> element is set to <tt class="sgmltag-attvalue">user</tt>, the accessibility of your content will
+      be checked automatically. Once you meet these requirements, DocMaker
+      will generate help content that is accessible.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12612"></a>Organization of HTML Output Files</h3></div></div><div></div></div><p>Unlike the PDF output where a single PDF file is created, the HTML
+      Help output is comprised of a large number of HTML files, Java archive
+      (JAR) files and image files. All of these are created and located
+      automatically, so there is no need for any manual intervention. However,
+      it is important to be able to identify the main files and to understand
+      how they are organized so that you can deploy your HTML Help content
+      successfully.</p><p>The files are created below the <tt class="filename">help</tt> folder
+      within the DocMaker output folder (usually called
+      <tt class="filename">doc</tt>). Within the <tt class="filename">help</tt> folder,
+      there will be one folder for each book generated. The
+      <tt class="filename">help</tt> folder itself will contain the
+      <i class="firstterm">top-level</i> help system that can be used to present
+      all of the books in the set. The top-level help system is configured to
+      run both the Help Applet and the Help Server. Each book folder also
+      contains the necessary files to distribute help using the Help Applet
+      only; the Help Server is not configured at this level. To make the Help
+      Server easier to deploy, a single <i class="firstterm">help.war</i>
+      archive file is located in the help folder and it contains a
+      fully-configured J2EE application that can be deployed to a web
+      container. This WAR file also contains the Help Applet, so, on deploying
+      the help application, both the Help Server and the Help Applet can be
+      served simultaneously. The WAR file contains all of the files in the
+      help folder and sub folders, so, even if it is not to be deployed to a
+      web container, it can be used to distribute the help system. Its
+      contents could, for example, be extracted to a CD-ROM used to distribute
+      applet-based help.</p><p>There are five main types of files created in the
+      <tt class="filename">help</tt> folder and in the book sub-folders:</p><div class="variablelist"><dl><dt><span class="term">HTML Content Files</span></dt><dd><p>These are created in the book folders only, not at the top
+            level. For each chapter and top-level section in your DocBook
+            source content, a separate HTML file is created. These names of
+            these files are generated automatically; they usually begin with
+            the letters &ldquo;<span class="quote">DM</span>&rdquo; followed by a unique node number.
+            Each file represents a single page of your HTML Help
+            content.</p></dd><dt><span class="term">HTML Frameset Files</span></dt><dd><p>To organize all the HTML content files, a HTML
+            <span class="emphasis"><em>frameset</em></span> is used. A frameset is a HTML file
+            that defines how the display area of a web browser should be
+            sub-divided into separate areas, each of which will display the
+            contents of a separate HTML file. These areas are called
+            <span class="emphasis"><em>frames</em></span>. There are two frameset files, one for
+            applet-based help and one for server-based help. The framesets are
+            defined in the <tt class="filename">index.html</tt> and
+            <tt class="filename">index.jsp</tt> files respectively. This
+            <tt class="filename">index.html</tt> file defines two frames: on the
+            left, a frame for the Help Applet configured in the
+            <tt class="filename">applet.html</tt> file; and on the right, a frame
+            for the help content that defaults to displaying the
+            <tt class="filename">book-index.html</tt> file that contains the book
+            title and legal notice. The <tt class="filename">index.jsp</tt> file
+            contains four frames: on the left are three frames, one for the
+            logo, one for the table of contents and one for the search
+            results; the frame on the right is the same as that used for
+            applet-based help. Both the top-level <tt class="filename">help</tt>
+            folder and the book folders will contain an
+            <tt class="filename">index.html</tt> file that can be used to start
+            applet-based help. The <tt class="filename">index.jsp</tt> file appears
+            only in the top-level <tt class="filename">help</tt> folder.</p></dd><dt><span class="term">Image Files</span></dt><dd><p>Image files include both the images you have referenced from
+            your DocBook content files and other images that are included
+            automatically during rendering, such as the C&uacute;ram logo, the icons
+            for tips and warnings, and navigation buttons. These latter images
+            are shared by all of the generated books and are placed in a
+            separate folder from the images explicitly referenced from your
+            content.</p></dd><dt><span class="term">HTML Help Meta-data Files</span></dt><dd><p>DocMaker generates a number of files that contain meta-data
+            relevant to the development of a HTML Help system. These files use
+            standard names are in standard formats that can be interpreted by
+            any help development tools that support the HTML Help format.
+            DocMaker only requires two of these meta-data files: the
+            <tt class="filename">toc.hhc</tt> file containing the table of contents
+            information that associates chapter and section titles with HTML
+            content files; and the <tt class="filename">alias.h</tt> file that
+            associates topic names with HTML content files. The other
+            meta-data files are deleted automatically, but they can be made
+            available if required.</p></dd><dt><span class="term">Java Archive (JAR) Files</span></dt><dd><p>The Help Applet used to present the table of contents and
+            support context-sensitivity is stored in a JAR file included in
+            the DocMaker installation. This JAR file is copied into the HTML
+            Help output folder for each book and the meta-data files are moved
+            inside the archive. When a user opens the frameset containing the
+            applet frame and the content frame, the JAR file is downloaded and
+            the applet is executed. The applet then loads the table of
+            contents and the topic names from these meta-data files and begins
+            operating. The help server uses many of the same facilities as the
+            help applet, but the servlet classes are packaged in an additional
+            JAR file.</p></dd></dl></div><p>If you want to deploy your HTML Help content, you must preserve
+      the way the files are organized when they are created by DocMaker. All
+      of the files are created below the <tt class="filename">help</tt> folder of
+      your output folder (the output folder is called
+      <tt class="filename">doc</tt>, unless your build system has overridden the
+      name). Within the help folder, you will see an
+      <tt class="filename">images</tt> folder and one folder for each book, just as
+      you would see them in your documentation root folder. The
+      <tt class="filename">images</tt> folder contains the common icons supplied by
+      DocMaker, and within each book folder, you will find the HTML content
+      files, frameset files and the JAR file for the book; the image files
+      referenced by a book are organized within the folder exactly as they
+      were in the original DocBook book folder.</p><p>When deploying your help content, you must copy the relevant book
+      folders to the required location and you must copy the
+      <tt class="filename">images</tt> folder and place it in the same location
+      relative to your book folders, i.e., the <tt class="filename">images</tt>
+      folder must be copied to the same location as the book folders. If you
+      do not preserve this relative location, the image references in the HTML
+      content files will be invalid.</p><p>The HTML Help content can be deployed to a web server, or to a
+      local filesystem (including a CD-ROM). The applet-based help system
+      contains no dynamic content and does not require the execution of any
+      scripts on a web server. The system is managed entirely by the Help
+      Applet that is downloaded via the frameset. To access the content for a
+      book, only the <tt class="filename">index.html</tt> frameset file needs to be
+      opened. A link to this file can contain a topic name parameter, as
+      described in <a href="DMN12127.html#DMN121FF" title="Context-Sensitivity">the section, <i>Context-Sensitivity</i></a>, but this
+      parameter is interpreted by the applet, so, again, no web server is
+      required. The Help Server does require a web container to operate, but
+      is otherwise similar to the Help Applet; the
+      <tt class="filename">index.jsp</tt> frameset file can be passed the same
+      topic name parameter as would be passed to the Help Applet (see
+      below).</p><p>If you have several books containing HTML Help content, you can
+      access them individually, as above, or as a single set of books. In the
+      output <tt class="filename">help</tt> folder, along with the
+      <tt class="filename">images</tt> folder and the output book folders, you will
+      find another copy of the applet JAR file and some frameset files. The
+      <tt class="filename">index.html</tt> file located here will access the help
+      content using an applet that contains copies of the meta-data files for
+      <span class="emphasis"><em>all</em></span> of the books and thus displays a table of
+      contents that shows each book at the root level and allows the user to
+      navigate to any page in any book. Context-sensitive invocations also
+      work as before. When deploying this Help Applet, it must be located in
+      the same position relative to the book folders, as it only links to the
+      HTML content files in those folders and the relative links must be
+      preserved. The Help Server does not support help for a single book in a
+      set of books, only top-level help for the entire set (though a set can
+      contain only one book).</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN126F1"></a>Invoking Context-Sensitive Help</h3></div></div><div></div></div><p>Context-sensitivity and the use of page IDs as topic names was
+      covered in <a href="DMN12127.html#DMN121FF" title="Context-Sensitivity">the section, <i>Context-Sensitivity</i></a>. The details
+      here describe how you can integrate context-sensitive help into an
+      application.</p><p>When an application launches the context sensitive help, it must
+      supply the topic name to the Help Applet or Help Server. This is
+      accomplished by simply linking to one of two files,
+      <tt class="filename">index.html</tt> or <tt class="filename">index.jsp</tt>
+      respectively, and adding a topic name parameter to the URI for that
+      link. The choice of Help Server or Help Applet and the generation of
+      these links is handled automatically within a C&uacute;ram client application.
+      For example, to request the online help (using the Help Applet) for the
+      &ldquo;<span class="quote">Application_home</span>&rdquo; page, the URI would be <tt class="systemitem">index.html?topicname=Application_home</tt>, as
+      long as the online help contains some content is marked with that page
+      ID as the topic name. Depending on how the online HTML Help has been
+      deployed, the full URL may include the name of the HTTP server and the
+      path to the <tt class="filename">index.html</tt> file. For the URL to be
+      valid, the topic name must be encoded using the method specified in
+      <a href="http://www.ietf.org/rfc/rfc1738.txt" target="_top">RFC 1738</a>;
+      however, most topic names will be unchanged, as the encoding is only
+      necessary for certain reserved characters. Parameters are passed to the
+      <tt class="filename">index.jsp</tt> file in the same manner.</p><div class="note"><table border="0" summary="Note: Backward Compatibility"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Note]" src="../images/note.gif"></td><th align="left"><a name="DMN1271B"></a>Backward Compatibility</th></tr><tr><td valign="top" align="left" colspan="2"><p>Older C&uacute;ram client applications used online help generated by
+        Quadralay <span class="application">WebWorks</span>. The URL for a
+        context-sensitive link did not include the
+        <i class="parameter"><tt>topicname</tt></i> parameter and its value, only the
+        actual topic name; for example, <tt class="systemitem">index.html?Application_home</tt>. For
+        backward compatibility with this scheme, DocMaker's Help Applet and
+        Help Server support the omission of the
+        <i class="parameter"><tt>topicname</tt></i> parameter and will then interpret the
+        first parameter name as the name of the topic, but only when no other
+        parameters are passed.</p></td></tr></table></div><p>The Help Applet used for online HTML Help requires a browser that
+      supports the Sun Microsystems Java Plug-in. If this plug-in is not
+      installed, the table of contents will not be available and
+      context-sensitive help will not work. Context-sensitive access to the
+      help content also requires that the browser have JavaScript, and the
+      scripting of Java applets, enabled, though the table of contents will
+      work without either.</p><p>The Help Server does not require JavaScript support for
+      context-sensitive help, though it does enhance the operation of the help
+      system.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN1273C"></a>Online Help User Interface</h3></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h4 class="title"><a name="DMN12741"></a>Instructions on Using the Help System</h4></div></div><div></div></div><p>When delivering your online help content, you may want to
+        provide your readers with instructions on how to navigate through the
+        content. The navigation features available are described here so that
+        you may include them in your own content or training materials. As
+        this guide is a developer guide, it is not appropriate to assume that
+        all users will have access to this content, or that they would realize
+        that this is where they should go to learn about using the help
+        system. Most users accessing the help system will be application
+        users, so your application help content is the most appropriate place
+        to provide these instructions.</p><div class="note"><table border="0" summary="Note: Keyboard Shortcuts"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Note]" src="../images/note.gif"></td><th align="left"><a name="DMN12749"></a>Keyboard Shortcuts</th></tr><tr><td valign="top" align="left" colspan="2"><p>The keyboard shortcuts used to navigate through the table of
+          contents and the search results differ between the Help Applet and
+          the Help Server. This inconsistency is not the result of a defect or
+          failing of either system, but is simply the result of having two
+          different user interfaces that each have different default keyboard
+          shortcuts. The Help Applet uses a Java Swing graphical user
+          interface and the keyboard shortcuts are the default ones that users
+          will expect when using such an interface. Similarly, the Help Server
+          delivers content in HTML format to the browser and the keyboard
+          shortcuts are simply the standard shortcuts implemented by the
+          browser to navigate through HTML content. No attempt has been made
+          to make the shortcuts consistent, as this would likely be more
+          confusing for users than the default&mdash;but
+          different&mdash;shortcuts that they would expect.</p></td></tr></table></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h4 class="title"><a name="DMN12753"></a>Help Applet</h4></div></div><div></div></div><p>The Help Applet is one of two systems used to display the table
+        of contents for one or more books and provide a means to search the
+        content. It appears on the left of the browser window in its own
+        frame. The table of contents is displayed as a tree of book, chapter,
+        and section titles mirroring the hierarchical structure of the book.
+        The results of a search are displayed in a list in order of relevance;
+        each entry is the title of a section that matches the search terms and
+        a tool-tip provides more information about the book and chapter in
+        which that section was found.</p><p>Within the Help Applet, the mouse or the <span class="keycap">Tab</span>
+        key can be used to move the focus between the controls. To change
+        between the Contents and the Search tabs using the keyboard, set the
+        focus to the label of the active tab and use the <span class="keycap">Left</span>
+        or <span class="keycap">Right</span> arrow key to switch to the other tab. The
+        size of the font used in the Help Applet can be changed within certain
+        limits: use <span class="keycap">Ctrl</span>-<span class="keycap">-</span> to decrease the font size and <span class="keycap">Ctrl</span>-<span class="keycap">=</span> to increase it.</p><p>The <span class="guilabel">Contents</span> tab presents a tree control
+        with a hierarchical view of the contents of the online help
+        documentation. The use of the table of contents tree is very
+        straightforward: double-clicking on a title, or clicking a
+        &ldquo;<span class="quote">+</span>&rdquo; icon beside a title, will expand that title to
+        display the titles of the contained elements; single-clicking on a
+        title will open the corresponding help page. If using the keyboard,
+        the arrow keys can be used to navigate the tree: the
+        <span class="keycap">Up</span> and <span class="keycap">Down</span> arrow keys move through
+        the visible tree entries and the <span class="keycap">Right</span> and
+        <span class="keycap">Left</span> arrow keys expand and collapse the tree nodes
+        respectively. If only one book is being managed by the Help Applet,
+        then the book title in the table of contents will be expanded
+        automatically to display the chapter titles when the applet first
+        loads; otherwise, two or more unexpanded book titles will be
+        displayed.</p><p>Searching is performed on the <span class="guilabel">Search</span> tab by
+        entering some search terms in the <span class="guilabel">Search</span> text
+        field and then pressing the <span class="keycap">Enter</span> key or clicking the
+        <span class="guibutton">Search</span> button. The results, if any, are then
+        displayed in the list and the number of results is shown in the
+        <span class="guilabel">Results</span> field below the list. The mouse or the
+        <span class="keycap">Up</span> and <span class="keycap">Down</span> arrow keys can be used
+        to select entries in the list. Selecting an entry in the results list
+        will open the corresponding help page.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h4 class="title"><a name="DMN127BC"></a>Help Server</h4></div></div><div></div></div><p>The Help Server, the alternative to the Help Applet, displays
+        the table of contents and the search controls in separate frames to
+        the left of the help content. The browser's keyboard shortcuts are
+        used to navigate through the content in these frames. As these
+        shortcuts are browser-dependent, the user should be directed to their
+        browser's help information for details on their use. However, in most
+        browsers, the <span class="keycap">Tab</span> key is used to move from
+        link-to-link within the frames and the <span class="keycap">Enter</span> key is
+        used to activate the selected link.</p><p>The Contents frame and the Search frame both display a heading
+        at the top of the frame to indicate their purpose. When JavaScript is
+        enabled, a button showing up and down arrows appears to the left of
+        these headings and can be used to automatically resize the frames.
+        Pressing the button in either frame will resize the frames so that the
+        height of the larger of the two frames is decreased to the height of
+        its heading; the height of the other frame will be increased to use
+        all of the remaining space. This makes it easy to resize the frames so
+        that the maximum amount of space is used to display the table of
+        contents or the search results, as the user prefers. The contents of
+        the frames will not be scrolled by this operation, so when a frame is
+        enlarged again, the content will be in the same position as it was
+        when the frame was contracted. With or without JavaScript, the frames
+        can be resized manually to any size by dragging the frame borders with
+        the mouse. By default, when the help system is first started, the
+        frames will be of equal size.</p><p>The appearance of the table of contents differs depending on the
+        availability of JavaScript. Without JavaScript, the table of contents
+        appears as a hierarchy of entries with chapters indented below books
+        and sections indented below chapters. Where an entry has some related
+        content at a lower level (for example, a section containing
+        sub-sections) it appears with a plain bullet icon to the left.</p><p>When JavaScript is enabled, the table of contents tree is
+        modified automatically when the page is loaded. The tree is
+        &ldquo;<span class="quote">collapsed</span>&rdquo; to show only the book titles and the plain
+        bullet icons are replaced with &ldquo;<span class="quote">plus</span>&rdquo; icons to indicate
+        that the nodes can be expanded if the icon is clicked. When expanded,
+        the icon changes to a &ldquo;<span class="quote">minus</span>&rdquo; icon and the lower-level
+        entries are displayed. Clicking the icon will now collapse the entry,
+        hiding the lower-level entries and changing the icon back to a
+        &ldquo;<span class="quote">plus</span>&rdquo; icon. This behavior is the same as the behavior of
+        the table of contents tree in the Help Applet. For keyboard users, an
+        entry can be expanded or collapsed using the <span class="keycap">+</span> and
+        <span class="keycap">-</span> keys when the link for the entry has the input
+        focus. In most browsers, the <span class="keycap">Up</span> and
+        <span class="keycap">Down</span> arrow keys can be used to scroll the contents of
+        the frame.</p><p>Searching the content is similar to searching using the Help
+        Applet: search terms are entered in the search text field and the
+        search button is activated. Search results are displayed below the
+        search text field. Each result displays a link to the matching section
+        and the name of the book and chapter containing that section. The
+        score displayed indicates the relevance of the result and the results
+        are sorted with highest scores first. This is the same order as that
+        used by the Help Applet, though the applet does not display the score
+        values.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h4 class="title"><a name="DMN127F5"></a>Help Content Pages</h4></div></div><div></div></div><p>One help page is generated for each top-level section in a book.
+        The first section in each chapter appears on the same page as the
+        title for that chapter. A single page is also generated containing the
+        title of the book, the abstract of the book (if present), and the
+        legal notice.</p><p>On each help page, a navigation tool-bar is displayed above and
+        below the content of the page. The tool-bar at the bottom is always
+        located so that it cannot be seen without first scrolling down. This
+        avoids cluttering the presentation with two tool-bars when the content
+        is short. The tool-bar is shown below. Not all of the tool-bar buttons
+        are always visible; their presence depends on the location of the
+        current page within the book or the availability of JavaScript. The
+        buttons on the tool-bar are hyperlinked images that link to other
+        pages or execute scripts. For accessibility, each button has an
+        associated <i class="firstterm">access key</i> that can be used to
+        change the input focus to that button without using the mouse. To
+        activate a button using an access key, press the <span class="keycap">Alt</span>
+        key and the access key together to change the focus to the button and
+        then press the <span class="keycap">Enter</span> key. In some browsers, pressing
+        the access key will immediately activate the link and you do not have
+        to press <span class="keycap">Enter</span>.</p><div class="figure"><a name="DMN1280F"></a><div class="mediaobject"><img src="images/help-tool-bar.gif" alt="The Online HTML Help Tool-bar"></div><p class="title"><b>Figure:&nbsp;The Online HTML Help Tool-bar</b></p></div><p>From left-to-right, the buttons are as follows:</p><div class="variablelist"><dl><dt><span class="term">Home</span></dt><dd><p>Opens the home page for the current book containing the
+              book title, abstract and legal notice. This button is not
+              displayed on a home page. The access key for this button is
+              <span class="keycap">H</span>.</p></dd><dt><span class="term">Up</span></dt><dd><p>Opens the page containing the content for the parent
+              element of that presented on the current page. For example, when
+              viewing a page containing the content for a section, the
+              relevant chapter page (containing the chapter title and the
+              first section) is opened; when viewing a chapter page, the book
+              home page is opened. This button is not displayed on a home
+              page. The access key for this button is
+              <span class="keycap">U</span>.</p></dd><dt><span class="term">Synchronize Table of Contents</span></dt><dd><p>Selects and expands the title in the table of contents
+              corresponding to the currently displayed page. The title will be
+              scrolled into view automatically if it is not already visible.
+              This is useful when a hyperlinked cross-reference or a search
+              result jumps to another page and the user wants to determine the
+              context for that page or read related pages. This button is only
+              displayed when JavaScript is available, as synchronization
+              requires JavaScript to perform the operation. The access key for
+              this button is <span class="keycap">S</span>. Synchronization works for
+              both the Help Applet and the Help Server. When synchronizing the
+              table of contents provided by the Help Server, the relevant
+              entry in the table of contents is highlighted with a yellow
+              background that quickly fades back to the normal background
+              color. This helps to draw the user's attention to the entry, as
+              the sudden jump in the table of contents can otherwise be
+              disorienting.</p></dd><dt><span class="term">Previous Page</span></dt><dd><p>Opens the previous page. This is the previous page in the
+              context of a book, it is not the same as the browser's back
+              button. This button is not displayed on a book home page, as
+              that is the first page in a book and has no previous page. The
+              access key for this button is <span class="keycap">P</span>.</p></dd><dt><span class="term">Next Page</span></dt><dd><p>Opens the next page. This is the next page in the context
+              of a book, it is not the same as the browser's forward button.
+              This button is not displayed on the last page of a book. The
+              access key for this button is <span class="keycap">N</span>.</p></dd></dl></div><p>When navigating through the online help content using the
+        tool-bar buttons or hyperlinked internal cross-references, the table
+        of contents is not automatically synchronized with the page content; a
+        user can use the tool-bar button to do this manually at any time.
+        However, when starting the online help using a topic name for
+        context-sensitivity, or when activating a hyperlinked external
+        cross-reference to a different book within a set of books displayed by
+        the Help Applet, the table of contents is synchronized automatically
+        to the target page. This synchronization is not automatic when using
+        the Help Server.</p><p>Your browser will determine which keys you need to use to change
+        the input focus between the control frames on the left and the help
+        page frame, but few, if any, browsers provide a means to change the
+        input focus to an applet or out of an applet. To assist you, a button
+        is provided at the top of the applet frame that, when activated, will
+        cause the input focus to change to the Help Applet. The access key for
+        this button is <span class="keycap">A</span>.</p></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12882"></a>Suppressing Entries in the Table of Contents</h3></div></div><div></div></div><p>By default, the table of contents includes entries for all
+      chapters, appendices, and sections. However, for some types of online
+      help, it may be desirable to suppress the entries for some of the
+      content. For example, you may not want to display entries for an
+      appendix that contains hundreds of sections, one for each possible error
+      message that the system can report. To suppress the inclusion of these
+      entries, the <tt class="sgmltag-attribute">role</tt> attribute of any
+      <tt class="sgmltag-element">chapter</tt>, <tt class="sgmltag-element">appendix</tt> or
+      <tt class="sgmltag-element">section</tt> element can be set to <tt class="sgmltag-attvalue">no-toc</tt>. This will suppress the entry in the
+      table of contents for the element and all of its descendant elements.
+      When used on <tt class="sgmltag-element">section</tt> elements, it is possible to
+      suppress only some <tt class="sgmltag-element">section</tt> elements within a
+      <tt class="sgmltag-element">chapter</tt> or <tt class="sgmltag-element">appendix</tt>, and not
+      all.</p><p>Setting the <tt class="sgmltag-attribute">role</tt> attribute to
+      <tt class="sgmltag-attvalue">no-toc</tt> on any other type of element
+      will have no effect; you cannot apply this to a <tt class="sgmltag-element">book</tt>
+      element, for example. It will also have no effect on the table of
+      contents displayed for output formats other than HTML Help.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN128B6"></a>Localizing Online Help</h3></div></div><div></div></div><p>The Help Applet, Help Server and the boilerplate text in the help
+      content can be localized to match the language used in the content. The
+      localization of the Help Applet is achieved by adding a Java-style
+      properties file to the applet's JAR file using Java's standard
+      locale-specific naming convention. The boilerplate text in the help
+      content is localized by adding entries to an XML properties file used by
+      the XSLT stylesheets that generate the HTML.</p><p>To localize the Help Applet, you need to add an appropriate
+      properties file to the Help Applet JAR file
+      <tt class="filename">lib\help-applet.jar</tt> in your DocMaker installation.
+      The English language properties file is already present, so follow these
+      steps to add your localized text:</p><div class="orderedlist"><ol type="1"><li><p>Expand the <tt class="filename">lib\help-applet.jar</tt> file in a
+          temporary location and locate the contained
+          <tt class="filename">HelpUI.properties</tt> file in the extracted
+          <tt class="filename">curam\docmaker\tools\help</tt> folder.</p></li><li><p>Make a copy of the <tt class="filename">HelpUI.properties</tt>
+          file in the same folder and append the locale name to the end of the
+          new file name, separating the locale from the existing name using an
+          underscore character. For example, for the &ldquo;<span class="quote">fr_CA</span>&rdquo;
+          locale, the file should be named
+          <tt class="filename">HelpApplet_fr_CA.properties</tt>.</p></li><li><p>Edit this new file and localize the text for each
+          property.</p></li><li><p>Create a new JAR file from the entire folder structure
+          extracted from the original JAR file, a folder structure that now
+          includes the new properties file, and replace the existing
+          <tt class="filename">lib\help-applet.jar</tt> file with this new JAR
+          file.</p></li></ol></div><p>To generate content with the correctly localized boilerplate text,
+      the localized text needs to be added to the file
+      <tt class="filename">lib\xsl-custom\common\l10n.xml</tt> in your DocMaker
+      installation. This file already contains the basic English language
+      text, so perform the following steps:</p><div class="orderedlist"><ol type="1"><li><p>Locate the <tt class="sgmltag-element">l:l10n</tt> element and duplicate the
+          element and all of its contents creating a second element alongside
+          the first.</p></li><li><p>In the copy of the <tt class="sgmltag-element">l:l10n</tt> element, change
+          the <tt class="sgmltag-element">language</tt> attribute to the name of your locale
+          (just the language code can be used if the country code is not
+          significant).</p></li><li><p>Within the <tt class="sgmltag-element">l:l10n</tt> element, locate each
+          <tt class="sgmltag-element">l:gentext</tt> or <tt class="sgmltag-element">l:template</tt>
+          element (the latter are nested within <tt class="sgmltag-element">l:context</tt>
+          elements) and change the value of the <tt class="sgmltag-attribute">text</tt> attribute of each to the text
+          appropriate for the language being used.</p></li></ol></div><p>There are only a limited number of elements that need to be
+      localized in the <tt class="filename">lib\xsl-custom\common\l10n.xml</tt>
+      file. Most of the localization for many common languages is already
+      done. However, if there is no file in the
+      <tt class="filename">lib\docbook-xsl\common</tt> folder for your required
+      language (the files are named using the locale name and the
+      <tt class="filename">.xml</tt> extension), you will have to create a file
+      there by copying an existing file and making the appropriate changes to
+      the <tt class="sgmltag-attribute">text</tt> attributes. If this is
+      required, you should also add an entry to the
+      <tt class="filename">lib\docbook-xsl\common\l10n.xml</tt> file for your new
+      locale following the format of the other entries.</p><p>By default DocMaker will generate content using the
+      &ldquo;<span class="quote">en</span>&rdquo; locale (though &ldquo;<span class="quote">en_US</span>&rdquo; is used for
+      spell-checking), but this can be overridden by setting the
+      <tt class="property">docmaker.help.locale</tt> property on the command line.
+      For example, to set the locale to Spanish, the following command is
+      used:</p><div class="blockquote"><blockquote class="blockquote"><p>
+          <b class="userinput"><tt>
+            <span><b class="command">docmaker</b></span>
+            <tt class="option">-Ddocmaker.help.locale=es</tt>
+            <tt class="option">generate-help</tt>
+          </tt></b>
+        </p></blockquote></div></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN125AE.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN1296E.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

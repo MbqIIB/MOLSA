@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2002-2008, 2010-2011 Curam Software Ltd.                                          -->
+<!-- All rights reserved.                                                                                           -->
+<!-- This software is the confidential and proprietary information of Curam          -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                 -->
+<!-- such Confidential Information and shall use it only in accordance with           -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                         -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                           -->
+<!-- This page allows user to list all unassigned member certification.                  -->
+<PAGE
+  PAGE_ID="ProviderManagement_listUnassignedMemberCertification"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY2"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPerson"
+    NAME="DISPLAY2"
+    OPERATION="viewPerson"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="personKey$concernRoleID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="MaintainMemberCertification"
+    NAME="DISPLAY"
+    OPERATION="listUnassignedMemberCertification"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$partyConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00247036, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_confirmDeletePerson"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="result$providerPartyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerPartyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00247036 -->
+
+
+  <LIST>
+    <!-- BEGIN, CR00205270, ASN -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00205270 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyUnassignedMemberCertification"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$memberCertificationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="memberCertificationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="result$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contextdescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00229065, PS -->
+      <!-- BEGIN, CR00247036, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ViewChangeHistory"
+      >
+        <!-- END, CR00247036 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_listMemberCertificationChangeHistory"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$memberCertificationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="memberCertificationID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteMemberCertification"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$memberCertificationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="memberCertificationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtlsList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00229065 -->
+      <!-- BEGIN, CR00205270, ASN -->
+    </ACTION_SET>
+    <!-- END, CR00205270 -->
+    <!-- BEGIN, CR00246961, GP -->
+    <!-- BEGIN, CR00248418, PS -->
+    <FIELD
+      LABEL="Field.Label.CertificationType"
+      WIDTH="30"
+    >
+      <!-- END, CR00248418 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificationType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247036, PS -->
+    <FIELD
+      LABEL="Field.Label.Issuer"
+      WIDTH="30"
+    >
+      <!-- END, CR00247036 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$issuer"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.DateOfIssue"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtlsList$dateofIssue"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.DateOfExpiry"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateofExpiry"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247036, PS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <!-- END, CR00247036 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="derivedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00246961 -->
+
+
+    <!-- BEGIN, CR00228981, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewUnassignedMemberCertification">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtlsList$memberCertificationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="memberCertificationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="result$pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextdescription"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00228981 -->
+  </LIST>
+</PAGE>

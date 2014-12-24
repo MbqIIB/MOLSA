@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  default="constructBatchScript"
+  name="PrecedentChange"
+>
+
+
+  <property environment="sysenv."/>
+  <property
+    name="dir.server"
+    value="${sysenv.SERVER_DIR}"
+  />
+  <property
+    name="dir.sde"
+    value="${sysenv.CURAMSDEJ}"
+  />
+  <property
+    name="drivers"
+    value="${dir.sde}/drivers"
+  />
+  <property
+    name="DB2JCC_LICENSE_CISUZ_JAR"
+    value="${sysenv.DB2JCC_LICENSE_CISUZ_JAR}"
+  />
+
+
+  <property
+    name="jarFile"
+    value="./lib/DependencyManagerBatchScript.jar"
+  />
+
+
+  <!--  *** Codetable ***  -->
+  <property
+    name="jar.codetable"
+    value="${dir.server}\build\jar\codetable.jar"
+  />
+  <!--  *** Oracle ***  -->
+  <property
+    name="jar.oracle"
+    value="${drivers}/ojdbc6.jar"
+  />
+  <!--  *** DB2 ***  -->
+  <property
+    name="jar.db2"
+    value="${DB2JCC_LICENSE_CISUZ_JAR}:${sysenv.DB2DIR}/jcc/classes/db2jcc.jar:${sysenv.DB2DIR}/classes/db2jcc.jar:${drivers}/db2jcc.jar:${drivers}/db2jcc_license_cu.jar"
+  />
+
+
+  <path id="constructBatchScriptClasspath">
+    <pathelement path="${jarFile}"/>
+    <pathelement path="${dir.sde}/lib/coreinf.jar"/>
+    <pathelement path="${jar.oracle}"/>
+    <pathelement path="${jar.db2}"/>
+    <pathelement path="${jar.codetable}"/>
+  </path>
+
+
+  <import file="${dir.sde}/bin/app_properties.xml"/>
+
+
+  <target name="constructBatchScript">
+
+
+    <echo>
+      A warning message on Oracle may show, this is just a warning.
+    </echo>
+
+
+    <java
+      classname="curam.utility.dependencymanager.ConstructDependencyManagerBatch"
+      classpathref="constructBatchScriptClasspath"
+    />
+
+
+    <echo>
+      A warning message on Oracle may show, this is just a warning.
+    </echo>
+
+
+  </target>
+
+
+</project>

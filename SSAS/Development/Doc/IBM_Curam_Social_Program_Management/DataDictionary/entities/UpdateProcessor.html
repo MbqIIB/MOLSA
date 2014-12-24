@@ -1,0 +1,162 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>UpdateProcessor</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>UpdateProcessor
+:</b>
+<i><p>An Update Processor replaces or partially replaces the standard processing invoked when a data update is performed on the            Data Hub. The Update Processor can be invoked prior to the standard processing, after the standard processing or instead of             the standard processing. This behavior is determined by the insertPoint attribute. New behaviors can be added by implementing
+
+          the CustomUpdateProcessor interface.</p>
+</i>
+<p><b>Example</b></p>
+<p>Example 1: Jim the Developer has defined an UpdateProcessor for the &quot;HavingABaby&quot; Data Hub Context. It is inserted in the PRE position
+
+            according to the UpdateProcessorType code table. The purpose of this UpdateProcessor to update the Citizen's Case Notes with additional information about their request.</p>
+
+<p>Example 2: Joanne the developer has added an UpdateProcessor for the &quot;ChangeOfAddress&quot; Data Hub Context. It is inserted in the REPLACE position. This means that when the data is submitted with this Data Hub Context, it is never transformed back into Evidence update. Instead, the standard processing in replaced with new Custom Processing which sends the update to a legacy system in the form of a web service call.</p>
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::WorkspaceServices::DataHub::Entity::UpdateProcessor</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">WorkspaceServices\model\DataHub.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">yes</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="updateProcessorID">updateProcessorID</a></td><td class="data">key</td><td class="data">no</td><td class="data">The unique identifier for an Update Processor.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="logicalName">logicalName</a></td><td class="data">details</td><td class="data">no</td><td class="data">A unique logical name for the Update Processor.</td><td class="data"><a href="../domains/UPDATE_PROCESSOR_LOGICAL_NAME.html">UPDATE_PROCESSOR_LOGICAL_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="context">context</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data"><p>Context in which to use this update processor. This is a Data Hub Context.</p>
+
+@curam.example Define an UpdateProcessor for &quot;HavingABaby&quot;
+
+
+
+</td><td class="data"><a href="../domains/CITIZEN_CONTEXT_NAME.html">CITIZEN_CONTEXT_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="insertPoint">insertPoint</a></td><td class="data">details</td><td class="data">no</td><td class="data">An insert point for the Update Processor. Can be Pre, Post or Replace standard processing. Defined by the UpdateProcessorType code table.
+
+@curam.example PRE- Indicates that this processor runs before the standard processing which invokes the {@curam.entity citizen.datahub.transform.impl.Transform Transform}.</td><td class="data"><a href="../domains/UPDATE_PROCESSOR_INSERT_POINT.html">UPDATE_PROCESSOR_INSERT_POINT</a></td><td class="data"><a href="../codetables/ct-UpdateProcessorType.html">UpdateProcessorType</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="updateProcessorFactory">updateProcessorFactory</a></td><td class="data">details</td><td class="data">no</td><td class="data">The Java class name of the factory used to create the Update Processor. Must implement CustomUpdateProcessorFactory interface.</td><td class="data"><a href="../domains/UPDATE_PROCESSOR_CUSTOM_FACTORY.html">UPDATE_PROCESSOR_CUSTOM_FACTORY</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="recordStatus">recordStatus</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Record status of this record i.e. Active, Cancelled.</td><td class="data"><a href="../domains/RECORD_STATUS.html">RECORD_STATUS</a></td><td class="data"><a href="../codetables/ct-RecordStatus.html">RecordStatus</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (6)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: updateProcessorID</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modify</td><td class="data">modify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByRecordStatus</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">&lt;p&gt;Return all records that match a particular Record Status, for example ACTIVE.&lt;/p&gt;
+
+</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readByLogicalName</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Returns a unique UpdateProcessor corresponding to the logical name passed in.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchActiveByContext</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">&lt;p&gt;Returns all active UpdateProcessors based on the context attribute which refers to the Data Hub Context.&lt;/p&gt;</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

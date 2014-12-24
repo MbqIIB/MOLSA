@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2010 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewPlace"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="Place"
+    NAME="DISPLAY"
+    OPERATION="viewPlace"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="placeID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placeID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$placeID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00228688, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00228688 -->
+    <FIELD LABEL="Field.Label.Place.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placeDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Place.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placeDtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="Cluster.OutOfUsePeriods.Title">
+    <FIELD LABEL="Field.Label.OutOfUsePeriods.From">
+      <CONNECT>
+        <!-- BEGIN, CR00177555, NS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$outOfUsePeriodList$startDateTime"
+        />
+        <!-- END, CR00177555 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OutOfUsePeriods.To">
+      <CONNECT>
+        <!-- BEGIN, CR00177555, NS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$outOfUsePeriodList$endDateTime"
+        />
+        <!-- END, CR00177555 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.OutOfUsePeriods.Reason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$outOfUsePeriodList$reason"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- BEGIN, CR00248198, GP -->
+  <LIST TITLE="Cluster.PlacementInformation">
+    <FIELD
+      LABEL="Field.Label.PlacementInformation.ClientName"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementInfoList$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PlacementInformation.From"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementInfoList$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PlacementInformation.To"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementInfoList$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.PlacementInformation.Service"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementInfoList$serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00117391, SS -->
+    <FIELD
+      LABEL="Field.Label.PlacementInformation.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementInfoList$placementStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00117391 -->
+
+
+    <!-- BEGIN, CR00228688, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- BEGIN, CR00236219, PS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyPlacementDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementInfoList$placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementInfoList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Transfer">
+        <LINK
+          DISMISS_MODAL="false"
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_placeSearchCriteria"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="placeID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="oldPlaceID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementInfoList$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$placementInfoList$placementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="placementID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00236219 -->
+    </ACTION_SET>
+    <!-- END, CR00228688 -->
+  </LIST>
+
+
+  <LIST TITLE="Cluster.ReservationInformation">
+
+
+    <!-- BEGIN,CR00228688, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00228688 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditReservation">
+        <!-- BEGIN, CR00260871, ASN -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyReservation"
+        >
+          <!-- END, CR00260871 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reservationID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="reservationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="reservationDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00260871, ASN -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="from"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="from"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="to"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="to"
+            />
+          </CONNECT>
+          <!-- END, CR00260871 -->
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00228688, PS -->
+    </ACTION_SET>
+    <!-- END, CR00228688 -->
+
+
+    <FIELD
+      LABEL="Field.Label.ReservationInformation.ClientName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reservationDetails$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ReservationInformation.From"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="from"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ReservationInformation.To"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="to"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ReservationInformation.Service"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reservationDetails$serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00248198 -->
+
+
+    <!-- BEGIN, CR00228688, PS -->
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewReservation">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="reservationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="reservationID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00228688 -->
+  </LIST>
+
+
+</PAGE>

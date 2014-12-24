@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                                  -->
+<!-- All rights reserved.                                                                                          -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                -->
+<!-- such Confidential Information and shall use it only in accordance with           -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                         -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                           -->
+<!-- This page allows the user to create a Service Offering Approval Criterion    -->
+<PAGE
+  PAGE_ID="ProviderManagement_createApprovalCriterion"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="ACTION"
+    OPERATION="createServiceOfferingApprovalCriterion"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="listApprovalCriterion"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00225696, ASN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY1"
+    OPERATION="viewServiceOffering"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00225696 -->
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$dtls$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <!-- BEGIN, CR00225696, ASN -->
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$serviceOfferingID"
+    />
+    <!-- END, CR00225696 -->
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00247984, PS -->
+  <!-- BEGIN, CR00258324, PS -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00258324 -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="50"
+    >
+      <!-- END, CR00247984 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00247984, PS -->
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="50"
+    >
+      <!-- END, CR00247984 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00197766, PS -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- END, CR00197766 -->
+    <FIELD CONTROL="SKIP"/>
+    <!-- BEGIN, CR00247984, PS -->
+    <FIELD
+      CONTROL="TRANSFER_LIST"
+      HEIGHT="5"
+      USE_DEFAULT="false"
+    >
+      <!-- END, CR00247984 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$dtls$code"
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$approvalCriteriaList"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00197208,CR00407812, PS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00197208,CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$dtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

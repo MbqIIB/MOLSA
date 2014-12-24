@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search provider pop-up page                                -->
+<PAGE
+  PAGE_ID="ProviderServicePlan_searchProviderOfferingPopUp"
+  POPUP_PAGE="true"
+  SCRIPT_FILE="ProviderServicePlanUtility.js"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderServicePlanDelivery"
+    NAME="ACTION"
+    OPERATION="searchProviders"
+    PHASE="ACTION"
+  />
+
+
+  <!-- Page Parameter used in this page -->
+  <PAGE_PARAMETER NAME="serviceOfferingName"/>
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <!-- Page Level Connect Statements used in this page  -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+  <!--BEGIN, CR00249267, MR-->
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+    >
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    /> 
+  </ACTION_SET>
+  <!--END, CR00249267-->
+  
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      CONTROL="CT_HIERARCHY_HORIZONTAL"
+      LABEL="Field.Label.ProviderType"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerCategoryType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- Provider address search criteria cluster -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Address"
+  >
+    <FIELD LABEL="Field.Label.Address">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="address"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+  <!--BEGIN, CR00249267, MR-->
+  <CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Search"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="THIS"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+      <LINK PAGE_ID="ProviderServicePlan_searchProviderOfferingPopUp"/>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  </CLUSTER>
+  <!--END, CR00249267-->
+  
+  <!-- Search Results cluster -->
+  <LIST TITLE="List.Title.SearchResults">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="concernRoleName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ProviderType">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="providerType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PrimaryCategory">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$category"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <JSP_SCRIPTLET>
+    
+        out.println("&lt;SCRIPT type='text/javascript'&gt;getServiceOfferingName();&lt;/SCRIPT&gt;");
+    
+  </JSP_SCRIPTLET>
+
+
+</PAGE>

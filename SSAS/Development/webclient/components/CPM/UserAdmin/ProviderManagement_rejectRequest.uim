@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to reject a request                          -->
+<PAGE
+  PAGE_ID="ProviderManagement_rejectRequest"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Request"
+    NAME="ACTION"
+    OPERATION="rejectRequest"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="requestID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="requestID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$requestID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$versionNo"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00205479, PS -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- END, CR00205479 -->
+    <!-- BEGIN, CR00235795, PS -->
+    <CLUSTER LABEL_WIDTH="20">
+      <!-- END, CR00235795 -->
+      <!-- BEGIN, CR00249047, PS -->
+      <FIELD
+        HEIGHT="4"
+        LABEL="Field.Label.Reason"
+        USE_BLANK="true"
+      >
+        <!-- END, CR00249047 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="rejectReason"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.No"/>
+
+
+  </ACTION_SET>
+</PAGE>

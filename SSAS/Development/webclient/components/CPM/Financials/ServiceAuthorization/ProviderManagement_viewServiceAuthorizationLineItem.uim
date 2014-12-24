@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the home page for the web application.                         -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceAuthorizationLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationLineItem"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00246672, PS -->
+      <LINK
+        PAGE_ID="ProviderManagement_viewServiceAuthorizationLineItem"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00246672 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00228769, RPB -->
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationLineItemHistory"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00246672, PS -->
+      <LINK
+        PAGE_ID="ProviderManagemen_serviceAuthorizationLineItemStatusHistory"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00246672 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationLIID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceInvoiceLineItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.ServiceAuthorizationLineItemDetails"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ServiceAuthorization"
+    NAME="DISPLAY"
+    OPERATION="viewSALIDetails"
+    PHASE="DISPLAY"
+  />
+  <PAGE_PARAMETER NAME="serviceAuthorizationLIID"/>
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+  <PAGE_PARAMETER NAME="serviceAuthorizationReferenceNumber"/>
+  <PAGE_PARAMETER NAME="serviceInvoiceLineItemID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationLIID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceAuthorizationLIID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00246672, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00246672 -->
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.DateAdded">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateAdded"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnitsFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumUnitFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="Cluster.Title.RelatedLineItems">
+    <!-- BEGIN, CR00206668, PS -->
+    <FIELD LABEL="Field.Title.ReferenceNumber">
+      <!-- END, CR00206668 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.NumberOfUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="numberofUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="relatedServiceInvoiceLineItemInformationDetails$status"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00246672, PS -->
+    <FIELD LABEL="Field.Label.AmountInvoiced">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AmountPaid">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="relatedServiceInvoiceLineItemInformationDetails$amountPaid"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00246672 -->
+  </LIST>
+  <!-- END, CR00228769 -->
+
+
+  <!--   BEGIN, CR00123231, RPB -->
+  <LIST TITLE="Cluster.Title.RelatedRLI">
+
+
+    <!-- BEGIN, CR00206668, PS -->
+    <FIELD LABEL="Field.Title.ActualUnits">
+      <!-- END, CR00206668 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="actualUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceFrom">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceFrom"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceTo">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="serviceTo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="relatedPRLIDetailsList$status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00246672, PS -->
+    <FIELD LABEL="Field.Label.AmountPaid">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="relatedPRLIDetailsList$amountPaid"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00246672 -->
+
+
+    <!-- BEGIN, CR00198609, PS -->
+    <DETAILS_ROW>
+      <!-- BEGIN, CR00132338, SG -->
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewRelatedRosterLineItem">
+        <!-- END, CR00132338 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="prliId"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerRosterLineItemID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleId"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198609 -->
+  </LIST>
+  <!--   END, CR00123231-->
+</PAGE>

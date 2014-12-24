@@ -1,0 +1,112 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>OrganisationUnit.listSupervisorOrgUnit</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">&nbsp;</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  ou.organisationUnitID,
+  ou.name,
+  ou.statusCode,
+  ou.creationDate,
+  ouparentlink.organisationStructureID
+INTO
+  :orgUnitID,
+  :orgUnitName,
+  :orgUnitStatusCode,
+  :orgUnitCreationDate,
+  :orgStructureID 
+FROM
+  OrganisationUnit ou,
+  OrgUnitParentLink ouparentlink 
+WHERE ou.organisationUnitID = ouparentlink.organisationUnitID 
+  AND ouparentlink.recordStatus <> :status 
+  AND ou.organisationUnitID IN 
+  ( 
+  SELECT
+    organisationUnitID 
+  FROM
+    OrgUnitPositionLink opl1,
+    PositionHolderLink phl1,
+    Position p1 
+  WHERE p1.positionID = phl1.positionID 
+    AND p1.leadPositionInd = '1' 
+    AND phl1.positionID = opl1.positionID 
+    AND phl1.userName = :userName 
+    AND opl1.recordStatus <> :status 
+    AND phl1.recordStatus <> :status 
+  
+  UNION
+    
+  SELECT
+    organisationUnitID 
+  FROM
+    OrgUnitParentLink opar 
+  WHERE opar.recordStatus <> :status 
+    AND opar.parentOrganisationUnitID IN 
+    ( 
+    SELECT
+      organisationUnitID 
+    FROM
+      OrgUnitPositionLink opl2,
+      PositionHolderLink phl2,
+      Position position1 
+    WHERE position1.positionID = phl2.positionID 
+      AND phl2.positionID = opl2.positionID 
+      AND phl2.userName = :userName 
+      AND position1.leadPositionInd = '1' 
+      AND opl2.recordStatus <> :status 
+      AND phl2.recordStatus <> :status 
+    ) 
+  ) 
+  AND ou.recordStatus <> :status 
+ORDER BY ou.name
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

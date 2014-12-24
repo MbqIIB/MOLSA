@@ -1,0 +1,221 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>Task</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Task
+:</b>
+<i> A set of instructions to enable a <a href=Users.html>User</a> to perform the manual work required by an <a href=ActivityInstance.html>Activity Instance</a>.
+</i>
+
+<P>The Workflow Engine creates a Task whenever a manual <a href=ActivityInstance.html>Activity Instance</a> is executed. At the time that the Task is created:</P>
+
+<UL>
+
+<LI>the Task is associated with an <a href=EventWait.html>Event Wait</a> which specifies the Curam event which will subsequently close the Task; and</LI>
+
+<LI>an allocation strategy is executed to determine the agent which will perform the task.</LI>
+
+</UL>
+
+<P>The agent performs the work required by the task and upon completion causes an event to be raised.</P>
+
+<P>When the event is raised, the Workflow Engine reads the <a href=EventWait.html>Event Wait</a> table and determines which Tasks to close.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>system prints out a letter (automatic); and</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual).</LI>
+
+</UL>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The system creates and executes the first (automatic) <a href=ActivityInstance.html>Activity Instance</a> which prints out the letter.</P>
+
+<P>The system transitions to the next activity definition in your workflow and creates the second <a href=ActivityInstance.html>Activity Instance</a>. Because this <a href=ActivityInstance.html>Activity Instance</a> is a manual one, when the Workflow Engine executes the <a href=ActivityInstance.html>Activity Instance</a>, it also creates a Task which details the work to be done (as defined by the activity in your <a href=ProcessDefinition.html>Process Definition</a>).</P>
+
+<P>Based on the allocation strategy defined by the activity, the Task is assigned to <a href=Users.html>User</a> Ronan Rooney.  The Task instructs Ronan to collect the letter from the printer and post it.  Ronan performs this work and in the correspondence screen marks the letter as 'sent'.  Curam raises an event which causes the Workflow Engine to close the Task and the <a href=ProcessInstance.html>Process Instance</a> ends.</P>
+
+<p><b>Technical Notes</b></p>
+<P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (16)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">taskID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The ID of the task.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">wdoSnapshot</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A snapshot of the WDO data mapped to the parameters of the task subject taken when a task record is created.</td><td class="dataLast">SVR_STRING&lt;3900&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">creationTime</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The date and time at which the task was created.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">assignedDateTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time at which the task was assigned.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">totalTimeWorked</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Total time spent on this task (in seconds).</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">restartTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time at which the task was restarted.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">reservedBy</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The name of the user that has reserved the task.</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">status</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The status of the task.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">priority</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The priority of the task.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">category</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The category of the manual activity associated with this task.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">deadTimeOverInd</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">A boolean flag to indicate if the time associated with a deadline may be overridden.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">allowForwardInd</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">A boolean flag to indicate if the task can be forwarded.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">administrationSID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The administration security identifier associated with a manual activity.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">overflowInd</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Indicates if the WDO snapshot XML string requires access to the process instance overflow table.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="BizObjAssociation.html#taskID">BizObjAssociation.taskID</a></td><td class="dataLast">Task.taskID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="TaskHistory.html#taskID">TaskHistory.taskID</a></td><td class="dataLast">Task.taskID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="TaskWDOOverflow.html#taskID">TaskWDOOverflow.taskID</a></td><td class="dataLast">Task.taskID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="WorkflowDeadline.html#taskID">WorkflowDeadline.taskID</a></td><td class="dataLast">Task.taskID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="TaskAssignment.html#taskID">TaskAssignment.taskID</a></td><td class="dataLast">Task.taskID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">TskRSvdByStatusIdx</td><td class="dataLast">reservedBy, status</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">TaskReservedByIdx</td><td class="dataLast">reservedBy</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">TaskAssignDateIdx</td><td class="dataLast">assignedDateTime</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">TaskRestartDateIdx</td><td class="dataLast">restartTime</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">TskMultipFieldIdx</td><td class="dataLast">reservedBy, status, assignedDateTime, creationTime</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

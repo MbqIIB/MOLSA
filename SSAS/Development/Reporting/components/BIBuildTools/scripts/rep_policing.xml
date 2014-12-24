@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	
+	This is the ant utilities file for Reporting project.
+	It contains any configuration test tasks used by the reporting build.
+	
+-->
+<project name="rep_policing"  default="ci.police.all">
+
+
+	<!--  ***************************  -->
+	<!--  ***  Import Properties  ***  -->
+	<!--  ***************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_properties.xml" />
+
+
+	<!--  *******************************  -->
+	<!--  ***  Import initialization  ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_init.xml" />
+
+
+	<!--  *******************************  -->
+	<!--  ***  Import utilities       ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_utilities.xml" />
+
+    <!--  *******************************  -->
+	<!--  ***  Import utilities       ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_infosphere.xml" />
+
+    <!--  *******************************  -->
+	<!--  ***  Import tasks           ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_tasks.xml" />
+
+	
+	<!--  *********************************************  -->
+    <!--  ***  all CI policing tests                ***  -->
+    <!--  *********************************************  -->  
+    <target name="ci.police.all" depends="declareTasks" description="run all policing tests">
+	
+       <echo message="Running all BI build policing tests"/>
+	   <antcall target="properties.validate"/>
+	   <antcall target="infosphere.police"/>
+	</target>
+	
+	<!--  *********************************************  -->
+    <!--  ***  all smoke policing tests                ***  -->
+    <!--  *********************************************  -->  
+    <target name="smoke.police.all" depends="declareTasks" description="run all smoke policing">
+
+    <property
+      name="errorlog"
+      value="${dir.logs}${file.separator}ChkpiiTest.log"
+    />       
+	<dirname property="mybasedir" file="..${file.separator}"/>
+	<echo message="Running all smoke build policing tests..."/>
+		   
+    <delete file="${errorlog}"/>
+    <echo message="Testing:${REPORTING_DIR}/GlbnTools/appbuild.bat police -Dinput.directory=${REPORTING_DIR} -Dcheckpii.clean=${REPORTING_DIR}${file.separator}checkpii-clean.txt -Dchkpii.clean.verbose=false" />    
+    <exec
+      dir="${REPORTING_DIR}/GlbnTools"
+      output="${errorlog}"
+      executable="cmd"
+      failonerror="false"
+     >
+    <arg value="/c"/>
+    <arg value="appbuild.bat"/>
+    <arg value="police"/>
+    <arg value="-Dinput.directory=${mybasedir}"/>
+	<arg value="-Dcheckpii.clean=${REPORTING_DIR}\checkpii-clean.txt"/>
+    <arg value="-Dcheckpii.clean.verbose=false"/>		
+    </exec>
+	
+    <errorsfound logFile="${errorlog}" >  
+	    <Ignore name="ignore" value="delete"/>
+        <Error name="error" value="CHKPII failed"/>  	 
+    </errorsfound>
+	 
+    <condition property="the.machineid" value="${sysenv.COMPUTERNAME}">
+       <and>
+         <isset property="sysenv.COMPUTERNAME"/>        
+       </and>
+    </condition>
+    <property name="the.machineid" value="LOCALHOST"/>
+	
+   <copy verbose="false" todir="\\${sysenv.CURAMBI_FILESERVER}/ProductDevelopment/CuramApps/DataWarehouse/devtestresults/${the.machineid}">
+     <fileset dir="${REPORTING_DIR}/GlbnTools/pre-processing/build">
+       <include name="chkpii/*.TXT"/>
+     </fileset>
+    </copy>
+	
+   </target>	
+
+	
+  <target name="properties.validate" depends="declareTasks">
+
+    <tstamp>
+      <format
+        pattern="MMddyyyy-hh"
+        property="time.now"
+      />
+    </tstamp>
+	
+    <property
+      name="initialdata.log"
+      value="${dir.logs}${file.separator}${time.now}InitialDataPropertiesValidate.log"
+    />
+	
+    <property
+      name="demodata.log"
+      value="${dir.logs}${file.separator}${time.now}DemoDataPropertiesValidate.log"
+    />	
+	<delete file="${initialdata.log}">
+    </delete>
+    
+	<delete file="${demodata.log}">
+    </delete>
+  
+  	<echo message="checking initial data"/>
+    <AntValidatePropertiesFileData  reportingDir="${REPORTING_DIR}" fileset="data_manager/initialdata" logfile="${initialdata.log}"/>
+	
+	 <errorsfound logFile="${initialdata.log}" >  
+           <Error name="error" value="Error"/>      
+     </errorsfound>  
+	 
+    <echo message="checking demo data"/>	 
+    <AntValidatePropertiesFileData reportingDir="${REPORTING_DIR}" fileset="data_manager/demodata" logfile="${demodata.log}"/>
+	
+	<errorsfound logFile="${demodata.log}" >  
+           <Error name="error" value="Error"/>      
+     </errorsfound>  
+
+    </target>
+	  
+	
+	
+</project>

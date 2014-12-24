@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows the user to search taxonomy terms by keyword and code -->
+<!-- and allows to add the taxonomy terms to a related concept.             -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_providerServicesByTerm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="TaxonomyTermSearch"
+    NAME="ACTION"
+    OPERATION="retrieveProviderService"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Title.SearchCriteria.Description"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.SearchCriteria">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="THIS"
+        />
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Reset"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_providerServicesByTerm"
+        />
+
+
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.ProviderDetails">
+    <LIST TITLE="Cluster.Title.ProviderDetails">
+      <FIELD LABEL="Field.Label.ProviderName">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="poDtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ServiceName">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="poDtls$poName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.EmailID">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="primaryEmailAddress"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.PhoneNumber">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="primaryPhone"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.ServiceCenterDetails">
+    <LIST TITLE="Cluster.Title.ServiceCenterDetails">
+      <FIELD LABEL="Field.Label.ServiceCenterName">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="scDtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ServiceName">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="scDtls$poName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ServiceEmailID">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="emailAddress"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ServicePhoneNumber">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="phoneNumber"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+</PAGE>

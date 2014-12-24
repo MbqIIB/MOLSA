@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file for updating webservices location.
+
+-->
+<project name="app_wsconnector" default="main">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <import file="./app_macros.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Common Classpath  ***  -->
+  <!--  **************************  -->
+  <path id="connector.classpath">
+    <pathelement location="${dir.bld.svr.wsc}"/>
+    <pathelement path="${jar.log4j}"/>
+    <pathelement path="${jar.commonslogging}"/>
+    <pathelement path="${jar.commonsdiscovery}"/>
+    <pathelement path="${jar.commonscollections}"/>
+    <pathelement path="${jar.commonsbeanutils}"/>
+    <pathelement path="${jar.commonsdigester}"/>
+    <pathelement path="${jar.commonsvalidator}"/>
+    <pathelement path="${jar.axis}"/>
+    <pathelement path="${jar.wsdl4j}"/>
+    <pathelement path="${jar.tools}"/>
+    <pathelement path="${jar.j2ee}"/>
+  </path>
+
+  <target name="wsdl2java.uptodate" unless="disable.uptodate.check">
+
+    <condition property="wsdl2java.required">
+      <and>
+        <available file="${webservices.config.file}" />
+        <or>
+          <not>
+            <uptodate targetfile="${dir.bld.svr}/wsdl2java.marker"
+              srcfile="${webservices.config.file}"/>
+          </not>
+          <not>
+            <uptodate targetfile="${dir.bld.svr}/wsdl2java.marker">
+              <srcfiles dir="${dir.base.components}"
+                includes="*/axis/**/*.wsdl"/>
+            </uptodate>
+          </not>
+        </or>
+      </and>
+    </condition>
+
+  </target>
+
+  <target name="wsdl2java.echo" unless="wsdl2java.required">
+    <echo level="info" message="Skipping wsdl2java generation because all files are up-to-date."/>
+  </target>
+
+  <!--  *************  -->
+  <!--  ***  MAIN ***  -->
+  <!--  *************  -->
+  <target name="main" depends="wsdl2java.uptodate, wsdl2java.echo" if="wsdl2java.required">
+
+    <delete dir="${dir.bld.svr.wsc}"/>
+    <mkdir dir="${dir.bld.svr.wsc.jav}"/>
+    <mkdir dir="${dir.bld.svr.wsc.mdl}"/>
+
+    <mkdir dir="${dir.bld.jar}"/>
+
+    <delete file="${dir.bld}/wsdl2java.xml" />
+    <!-- Generate an ANT file: -->
+    <xslt basedir="${dir.bld.svr.wsc}"
+           destdir="${dir.bld}"
+           extension=".xml"
+           style="${dir.sde.bin}/wsconnector.xsl"
+           in="${webservices.config.file}"
+           out="${dir.bld}/wsdl2java.xml" />
+
+    <taskdef name="wsdl2java" classname="curam.util.tools.wsdl.WsdlToJavaAntTask"
+      classpath="${jar.tools}:${jar.axis}:${jar.wsdl4j}:${jar.commonslogging}:
+                 ${jar.commonsdiscovery}:${jar.commonscollections}:${jar.commonsbeanutils}:
+                 ${jar.commonsdigester}:${jar.commonsvalidator}:${jar.j2ee}"/>
+
+    <ant
+      antfile="${dir.bld}/wsdl2java.xml"
+      target="main"
+      inheritAll="true"
+      inheritRefs="true">
+    </ant>
+
+    <jar destfile="${jar.wsc.proxy}" filesonly="true" level="${jar.compression}">
+      <fileset dir="${dir.bld.svr.wsc.mdl}" includes="**/*.class"/>
+      <fileset dir="${dir.bld.svr.wsc.jav}" includes="**/*.class"/>
+    </jar>
+
+    <touch file="${dir.bld.svr}/wsdl2java.marker"/>
+
+  </target>
+
+</project>

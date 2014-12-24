@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                               -->
+<!-- All rights reserved.                                                                                                 -->
+<!-- This software is the confidential and proprietary information of Curam                -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                       -->
+<!-- such Confidential Information and shall use it only in accordance with                 -->
+<!-- the terms of the license agreement you entered into with Curam                        -->
+<!-- Software.                                                                                                               -->
+<!-- Description                                                                                                             -->
+<!-- ===============================================                             -->
+<!-- This pop-up page allows the user to search service offerings and                       -->
+<!-- service groups.                                                                                                      -->
+<PAGE
+  PAGE_ID="PME_searchSOPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292877, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292877 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="ACTION"
+    OPERATION="searchServiceOfferings"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.SearchCriteria"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchByServiceOffering"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceOfferingName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceOfferingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.UnitOfMeasure"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="23"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchCriteria$unitOfMeasure"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ServiceOfferingCode"
+      WIDTH="30"
+    >
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchCriteria$serviceOfferingReference"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchByServiceGroup"
+  >
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchServiceOfferingPopup"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceGroupName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchCriteria$serviceGroupName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ServiceGroupCode"
+      WIDTH="30"
+    >
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchCriteria$serviceGroupReference"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST
+    SCROLL_HEIGHT="125"
+    TITLE="List.Title.SearchResults"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="ACTION"
+        PROPERTY="searchByServiceOffering"
+      />
+    </CONDITION>
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Title.ServiceOfferingName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ServiceOfferingCode"
+      WIDTH="30"
+    >
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="detailsList$serviceOfferingReference"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.UnitOfMeasure"
+      WIDTH="23"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="detailsList$unitOfMeasure"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Title.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST
+    SCROLL_HEIGHT="125"
+    TITLE="List.Title.SearchResults"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="ACTION"
+        PROPERTY="searchByServiceGroup"
+      />
+    </CONDITION>
+
+
+    <FIELD
+      LABEL="Field.Label.ServiceGroupName"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="detailsList$serviceGroupName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ServiceGroupCode"
+      WIDTH="30"
+    >
+
+
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="detailsList$serviceGroupReference"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+</PAGE>

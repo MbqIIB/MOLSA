@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is search Training Page                                           -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchTrainingPopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTraining"
+    NAME="ACTION"
+    OPERATION="searchTraining"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00187976, SS -->
+  <!-- BEGIN, CR00197766, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00197766 -->
+    <!-- END, CR00187976 -->
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchTrainingPopup"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- BEGIN, CR00236707, PS -->
+    <FIELD
+      LABEL="Field.Label.Training.TrainingName"
+      WIDTH="90"
+    >
+      <!-- END, CR00236707 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00187899, PS -->
+    <!-- BEGIN, CR00236707, PS -->
+    <FIELD
+      LABEL="Field.Label.Training.TrainingType"
+      USE_BLANK="true"
+      WIDTH="90"
+    >
+      <!-- END, CR00236707 -->
+      <!-- END, CR00187899 -->
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$trainingType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00245942, PS -->
+  <LIST
+    SCROLL_HEIGHT="170"
+    TITLE="List.Title.SearchResults"
+  >
+    <!-- END, CR00245942 -->
+    <!-- BEGIN, CR00206310, PS -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="8"
+    >
+      <!-- END, CR00206310 -->
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$details$dtls$trainingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$trainingName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Title.Training.TrainingName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.Training.TrainingType">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$trainingType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206310, PS -->
+    <FIELD
+      LABEL="Field.Title.Training.StartDate"
+      WIDTH="15"
+    >
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206310, PS -->
+    <FIELD
+      LABEL="Field.Title.Training.EndDate"
+      WIDTH="15"
+    >
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <!-- BEGIN, CR00245942, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="DISMISS"
+    />
+  </ACTION_SET>
+  <!-- END, CR00245942 -->
+
+
+</PAGE>

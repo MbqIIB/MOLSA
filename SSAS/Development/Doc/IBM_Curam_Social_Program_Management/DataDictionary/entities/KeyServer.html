@@ -1,0 +1,82 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>KeyServer</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Key Server:</b>
+<i> A key-set available for assigning unique identifiers.</i>
+<P>This table is used by the C&uacute;ram Key Server mechanism when creating unique identifiers (which are assigned to primary key fields).</P>
+<P>The nextUniqueIdBlock holds a number which allows the key server to generate up to 256 distinct keys; once these keys are used up, the nextUniqueIdBlock for the key-set is incremented (so that the key-set will never be used again).</P>
+<p><b>Example</b></p><P><a href=Users.html>User</a> Ronan Rooney registers a <a href=Person.html>Person</a>.  The C&uacute;ram server application requests a key for the new <a href=Person.html>Person</a> record from the key server.  To produce this key, the key server increments the nextUniqueIdBlock for the requested key set and creates a new key from the block's range.</P>
+<P><a href=Users.html>User</a> Ronan Rooney registers another <a href=Person.html>Person</a>.  The C&uacute;ram server application again requests a key for the new <a href=Person.html>Person</a> record from the key server; however, to produce this key, the key server does not need to increment the nextUniqueIdBlock for the requested key set, and creates a new key from the block's range without needing to access the Key Server table.</P>
+<P>Eventually all keys from the block's range will be exhausted and a subsequent call to the key server will cause the key set's row on the Key Server table to be modified.</P>
+<p><b>Technical Notes</b></p><P>This table is always modified within a transaction which is separate from the main transaction which controls the changes to business tables.  This provides for a low level of locking on the Key Server table but at the expense of allowing 'holes' in the key range should the key assigned be unused (e.g. if the business transaction fails and is rolled back).</P>
+<P>For more information see the C&uacute;ram Server Developer's Guide.</P>
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (7)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">keySetCode</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique ID key set code.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">nextUniqueIdBlock</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Unique ID Key Set next high key in key set.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">humanReadable</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Unique ID key set human readable flag.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastUpdated</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Unique ID key set last updated date and time.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">annotation</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">KeyControl annotation.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">strategy</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Represents strategy used to generate next unique id block for a given key set.</td><td class="dataLast">SVR_STRING&lt;6&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<PAGE
+  PAGE_ID="CreateServiceDeliveryWizard_details1"
+  WINDOW_OPTIONS="width=800,height=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="CreateServiceDeliveryWizard"
+    NAME="DISPLAY"
+    OPERATION="getDetailsPage"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="CreateServiceDeliveryWizard"
+    NAME="ACTION"
+    OPERATION="setDetailsPage"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseIDOpt"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+    <ACTION_CONTROL LABEL="ActionControl.Label.Back">
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="hideBackButtonInd"
+        />
+      </CONDITION>
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="CreateServiceDeliveryWizard_service1"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="CreateServiceDeliveryWizard_schedule"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="singleParticipantRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="singleParticipantRoleID"
+    />
+  </CONNECT>
+
+
+  <LIST
+    SCROLL_HEIGHT="100"
+    TITLE="List.Title.SelectClients"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="multiSelectClientsInd"
+      />
+    </CONDITION>
+    <CONTAINER>
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="participantRoleIDs"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="caseParticipantRoleID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="participantRoleIDs"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="75"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$caseClientList$participantName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Age"
+      WIDTH="25"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="ageLocalisableStringOpt"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="singleSelectClientInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.Client"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="participantRoleIDs"
+        />
+      </CONNECT>
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="caseParticipantRoleID"
+          NAME="DISPLAY"
+          PROPERTY="result$caseClientList$participantDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="participantRoleIDs"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="readOnlyClientInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Client">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$participantName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="authorizedUnitsInd"
+      />
+    </CONDITION>
+    <FIELD
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <LABEL>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Label.Units"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="unitsAuthorizedLabel"
+          />
+        </CONNECT>
+      </LABEL>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitsAuthorized"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="unitsAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="authorizedRateInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.AuthorizedRate"
+      WIDTH="10"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="authorizedRate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="authorizedRate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="captureFrequencyInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Frequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="frequency"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="frequency"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="displayFrequencyInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Field.Label.Frequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="frequency"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="nomineeInd"
+      />
+    </CONDITION>
+    <CONTAINER LABEL="Container.Label.Nominee">
+      <FIELD WIDTH="25">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="nomineeType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="60">
+        <CONNECT>
+          <INITIAL
+            NAME="DISPLAY"
+            PROPERTY="nomineeConcernRoleName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="nomineeConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="nomineeConcernRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="fedAllowableComponentsInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.FederalAllowableComponent"
+      USE_BLANK="true"
+      WIDTH="50"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$data$federalAllowableComponentID"
+        />
+      </CONNECT>
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="result$fedComponents$dtls$federalAllowableComponentID"
+          NAME="DISPLAY"
+          PROPERTY="result$fedComponents$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="federalAllowableComponentID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    NUM_COLS="3"
+    SHOW_LABELS="false"
+    STYLE="cluster-no-bottom-margin-border"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="ownerInd"
+      />
+    </CONDITION>
+    <CLUSTER LABEL_WIDTH="47">
+      <FIELD LABEL="Field.Label.Me">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="loggedInUserOwnerInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="loggedInUserOwnerInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- BEGIN, CR00349727, PB -->
+    <CLUSTER LABEL_WIDTH="30">
+      <!-- END, CR00349727 -->
+      <FIELD
+        LABEL="Field.Label.Or"
+        USE_BLANK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="caseUserOwner"
+          />
+        </CONNECT>
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="username"
+            NAME="DISPLAY"
+            PROPERTY="fullname"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="caseUserOwner"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <!-- BEGIN, CR00349727, PB -->
+    <CLUSTER LABEL_WIDTH="50">
+      <!-- END, CR00349727 -->
+      <FIELD LABEL="Field.Label.User">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="otherUserOwner"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="otherUserOwner"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    LABEL_WIDTH="15"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="sensitivityInd"
+      />
+    </CONDITION>
+    <FIELD
+      LABEL="Field.Label.Sensitivity"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="sensitivity"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="sensitivity"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Reason"
+  >
+    <FIELD HEIGHT="150">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reason"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reason"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

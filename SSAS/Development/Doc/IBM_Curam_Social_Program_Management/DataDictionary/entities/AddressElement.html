@@ -1,0 +1,208 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>AddressElement</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Address Element:</b>
+<i> A named part of an <a href=Address.html>address</a>.</i>
+<P>Address formats differ from country to country.  The <a href=Address.html>address</a> holds the full address for a location; however to facilitate searching of addresses by some part of the address (e.g. zip code), rows can be stored on this table holding the values for various named parts of the <a href=Address.html>address</a>.</P>
+<p><b>Example</b></p><P><a href=Users.html>User</a> Ronan Rooney records the following address (in US address format) for <a href=Concern.html>participant</a> James Smith:</P>
+<UL>
+<LI>1074 Park Terrace</LI>
+<LI>Fairfield</LI>
+<LI>Midway</LI>
+<LI>Utah 12345</LI>
+</UL> <P>The Curam serve stores this <a href=Address.html>address</a> and creates these rows on this table containing type/value pairs:</P>
+<UL>
+<LI>ADD1=1074</LI>
+<LI>CITY=Midway</LI>
+<LI>STATE=UT</LI>
+<LI>ZIP=12345</LI>
+</UL> <P>You write a custom query to retrieve each <a href=Concern.html>participant</a> whose address has a city of 'Midway'.  Your query uses this table to identify such addresses.</P>
+<p><b>Technical Notes</b></p><P>Not all parts of the <a href=Address.html>address</a> are replicated on this table.  You can customize Curam functionality to store additional parts as required.  By default, Curam stores rows on this table for:</P>
+<UL>
+<LI>US addresses:</LI>
+<UL>
+<LI>Line 1;</LI>
+<LI>City;</LI>
+<LI>State; and </LI>
+<LI>Zip</LI>
+</UL> <LI>UK addresses:</LI>
+<UL>
+<LI>Line 1;</LI>
+<LI>City; and </LI>
+<LI>Postcode.</LI>
+</UL> </UL> <P>This table does not require optimistic locking. All writes to this table will be performed in tandem with the parent <a href=Address.html>address</a> record, which holds the optimistic lock.</P> 
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::Core::Reference Model::Concern::Entity Objects::AddressElement::AddressElement</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">core\model\Packages\Concern\AddressElement_cat.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">no</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="addressElementID">addressElementID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique identifier for the AddressElement record.</td><td class="data"><a href="../domains/ADDRESS_ELEMENT_ID.html">ADDRESS_ELEMENT_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="addressID">addressID</a></td><td class="data">details</td><td class="data">no</td><td class="data">Identifier for related Address record.</td><td class="data"><a href="../domains/ADDRESS_ID.html">ADDRESS_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="elementType">elementType</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Describes the type of the address element - e.g. zip code, state, etc.</td><td class="data"><a href="../domains/ADDRESS_ELEMENT_TYPE_CODE.html">ADDRESS_ELEMENT_TYPE_CODE</a></td><td class="data"><a href="../codetables/ct-AddressElementType.html">AddressElementType</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="elementValue">elementValue</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Contains the value of the address element - e.g. the zip code for the address, the code table code for the state for the address, etc.</td><td class="data"><a href="../domains/ADDRESS_ELEMENT_VALUE_STRING.html">ADDRESS_ELEMENT_VALUE_STRING</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="upperElementValue">upperElementValue</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Contains the upper case format of the value of the address element - e.g. the zip code for the address, the code table code for the state for the address, etc. This support searching in a case independent manner on address data.</td><td class="data"><a href="../domains/ADDRESS_ELEMENT_VALUE_STRING.html">ADDRESS_ELEMENT_VALUE_STRING</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;256&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">AddressElement.addressID</td><td class="dataLast"><a href="Address.html#addressID">Address.addressID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (3)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">AddElAddIDTypeIdx</td><td class="dataLast">addressID, elementType</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">upperElemValIndex</td><td class="dataLast">upperElementValue</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">AddressElementAddressIDIdx</td><td class="dataLast">addressID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">POST_DATA_ACCESS: yes</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">standard operation.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">removeByAddressID</td><td class="data">nsremove</td><td class="data"><span style="white-space:nowrap;">POST_DATA_ACCESS: no</span>
+<br>
+<span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">removes all AddressElement records bearing the given address ID.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readAddressElementDetails</td><td class="data">readmulti</td><td class="data">&nbsp;</td><td class="data">Called to retrieve the address Element Details for a given address.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">convertDetailsToUpper</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Method to convert the address element details to upper.</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

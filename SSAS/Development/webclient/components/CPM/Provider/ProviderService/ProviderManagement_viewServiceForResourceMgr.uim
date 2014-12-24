@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search provider groups  page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceForResourceMgr"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- BEGIN, CR00225696, ASN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="viewServiceOffering"
+  />
+  <!-- END, CR00225696 -->
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <!-- BEGIN, CR00225696, ASN -->
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+    <!-- END, CR00225696 -->
+  </CONNECT>
+  <!-- BEGIN, CR00249314, PS -->
+  <CLUSTER
+    LABEL_WIDTH="60"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00249314 -->
+    <FIELD LABEL="Field.Label.ServiceOffering.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceOffering.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceOffering.MaximumUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00249314, PS -->
+    <FIELD LABEL="Field.Label.ServiceOffering.PlacementBasedPayment">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="placementPmtInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ServiceOffering.InhibitAuthorizationViaPlacement">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="saPlmtInhibitInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00249314 -->
+
+
+    <FIELD LABEL="Field.Label.ServiceOffering.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceOffering.UnitOfMeasure">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$unitOfMeasure"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceOffering.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ServiceOffering.UnitFrequency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$unitFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00249314, PS -->
+    <FIELD LABEL="Field.Label.ServiceOffering.PayBasedOnAttendanceIndicator">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="payBasedOnAttendanceInd"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CheckAvailabilityExcludeIndicator">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="availabilityCheckExcludeInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00249314 -->
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.ServiceRate">
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.ServiceRate.StartDate"
+      WIDTH="10"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceRateDetailsList$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.ServiceRate.EndDate"
+      WIDTH="10"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceRateDetailsList$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.ServiceRate.FixedAmount"
+      WIDTH="12"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceRateDetailsList$fixedAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.ServiceRate.MinimumAmount"
+      WIDTH="20"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceRateDetailsList$minAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00233823 -->
+    <FIELD
+      LABEL="Field.Label.ServiceRate.MaximumAmount"
+      WIDTH="20"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceRateDetailsList$maxAmountString"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <CLUSTER
+    NUM_COLS="2"
+    STYLE="outer-cluster-borderless"
+  >
+    <LIST TITLE="Cluster.Label.ServiceGroup">
+      <FIELD LABEL="Field.Label.ServiceGroup.Name">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceGroupDtlsList$dtls$name"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Field.Label.ServiceOffering.Description"
+    >
+      <FIELD HEIGHT="3">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceOfferingDtls$description"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Comments"
+  >
+    <FIELD HEIGHT="3">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$serviceOfferingDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00234497, PS -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close"/>
+  </ACTION_SET>
+  <!-- END, CR00234497 -->
+</PAGE>

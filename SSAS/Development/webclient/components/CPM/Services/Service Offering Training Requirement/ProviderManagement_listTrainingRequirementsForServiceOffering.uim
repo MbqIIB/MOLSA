@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is list Training Requirements  for a service offering page        -->
+<PAGE
+  PAGE_ID="ProviderManagement_listTrainingRequirementsForServiceOffering"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- BEGIN, CR00117630, ASB -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+  <!-- END, CR00117630-->
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="listTrainingRequirementForServiceOffering"
+    PHASE="DISPLAY"
+  />
+  
+  <!-- BEGIN, CR00225696, ASN -->
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY1"
+    OPERATION="viewServiceOffering"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00225696 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <!-- BEGIN, CR00225696, ASN -->
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$serviceOfferingID"
+    />
+    <!-- END, CR00225696 -->
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00199014, PS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00199014 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <!-- BEGIN, CR00197208, PS -->
+      <!-- BEGIN, CR00197766, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createTrainingRequirementForServiceOffering"
+        WINDOW_OPTIONS="width=340"
+      >
+        <!-- END, CR00197766 -->
+        <!-- END, CR00197208 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00117630, ASB -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$serviceOfferingDtls$name"
+          />
+          <!-- END, CR00117630-->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingName"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST SORTABLE="true">
+    <!-- BEGIN, CR00199014, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00199014 -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197766, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_editTrainingRequirementForServiceOffering"
+          WINDOW_OPTIONS="width=340"
+        >
+          <!-- END, CR00197766 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soTrainingRequirementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soTrainingRequirementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$dtls$serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00197766, PS -->
+        <!-- BEGIN, CR00205039, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeTrainingRequirementFromServiceOffering"
+          WINDOW_OPTIONS="width=340"
+        >
+          <!-- END, CR00205039 -->
+          <!-- END, CR00197766 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="soTrainingRequirementID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soTrainingRequirementID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$dtls$serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00117630, ASB -->
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="result$serviceOfferingDtls$name"
+            />
+            <!-- END, CR00117630-->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00199014, PS -->
+    </ACTION_SET>
+    <!-- END, CR00199014 -->
+    <!-- BEGIN, CR00206310, PS -->
+    <FIELD LABEL="Field.Label.TrainingRequirement.Name">
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206310, PS -->
+    <FIELD LABEL="Field.Label.TrainingRequirement.Completion">
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="completion"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206310, PS -->
+    <FIELD LABEL="Field.Label.TrainingRequirement.RemovalReason">
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="removalReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.TrainingRequirement.Status"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

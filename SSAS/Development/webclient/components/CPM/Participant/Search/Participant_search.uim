@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to search for a participant including         -->
+<!-- provider participant registered on the system. -->
+<PAGE
+  PAGE_ID="Participant_search"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainParticipant"
+    NAME="ACTION"
+    OPERATION="searchAllParticipant"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="DISPLAY"
+    OPERATION="getAddressRegionList"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="28"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="28"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AdditionalSearchCriteria"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="displayDistrictInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressDtls$addressLine1"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressDtls$city"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.AddressLineTwo">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressDtls$addressLine2"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.District">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$key$addressDtls$district"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="28"
+    NUM_COLS="2"
+    STYLE="cluster-cpr-no-internal-padding"
+    TITLE="Cluster.Title.AdditionalSearchCriteria"
+  >
+
+
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="displayDistrictInd"
+      />
+    </CONDITION>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AddressLineOne">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressDtls$addressLine1"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.City">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressDtls$city"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <FIELD LABEL="Field.Label.AddressLineTwo">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$addressDtls$addressLine2"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <CLUSTER
+      LABEL_WIDTH="28"
+      NUM_COLS="1"
+      STYLE="cluster-cpr-no-border"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="displayRegionListInd"
+        />
+      </CONDITION>
+
+
+      <FIELD
+        LABEL="Field.Label.State"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="code"
+            NAME="DISPLAY"
+            PROPERTY="description"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$key$addressDtls$regionOpt"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Participant_search"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE
+        URI_SOURCE_NAME="ACTION"
+        URI_SOURCE_PROPERTY="dtlsList$participantTabDetailsURL"
+      />
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="33"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$xmlParticipantData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Role"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$roleTypeList"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.DateOfBirth"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Address"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$formattedAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

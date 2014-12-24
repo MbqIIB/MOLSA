@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.		        					        -->
+<!-- All rights reserved.                                                		-->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with 	-->
+<!-- the terms of the license agreement you entered into with Curam         	-->
+<!-- Software.                                                              	-->
+<!-- Description                                                            	-->
+<!-- ===========                                                            	-->
+<!-- This page allows the user to view in edit taxonomy versions.     -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_viewInEditTaxonomyVersion"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="taxonomyVersionID"/>
+  <PAGE_PARAMETER NAME="pageNo"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyInEditData"
+    NAME="DISPLAY"
+    OPERATION="listInEditTaxonomyTerms"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="listTaxonomyTermDetails$actionString"
+    CLASS="MaintainTaxonomyInEditData"
+    NAME="ACTION"
+    OPERATION="getPageNumber"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="pageNo"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="listTaxonomyTermDetails$pageNo"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="pageNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="listTaxonomyTermDetails$pageNo"
+    />
+  </CONNECT>
+
+
+  <CLUSTER STYLE="outer-cluster-borderless">
+    <ACTION_SET
+      ALIGNMENT="RIGHT"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Back"
+        LABEL="ActionControl.Label.Previous"
+        TYPE="SUBMIT"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$hasPrevious"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="ProviderManagement_viewInEditTaxonomyVersion">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$pageNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageNo"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        ACTION_ID="Next"
+        LABEL="ActionControl.Label.Next"
+        TYPE="SUBMIT"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$hasNext"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="ProviderManagement_viewInEditTaxonomyVersion">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$pageNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST
+    DEFAULT_PAGE_SIZE="500"
+    PAGINATION_THRESHOLD="500"
+  >
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_updateInEditTaxonomyTerm"
+          WINDOW_OPTIONS="width=750"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$taxonomyTermID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyInEditDataID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeInEditTaxonomyTerm"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$taxonomyTermID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyInEditDataID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Label.Code"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="false"
+        PAGE_ID="ProviderManagement_viewInEditTaxonomyTerm"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyInEditDataID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </LIST>
+  <CLUSTER STYLE="outer-cluster-borderless">
+
+
+    <ACTION_SET
+      ALIGNMENT="RIGHT"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Back1"
+        LABEL="ActionControl.Label.Previous"
+        TYPE="SUBMIT"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$hasPrevious"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="ProviderManagement_viewInEditTaxonomyVersion">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$pageNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageNo"
+            />
+          </CONNECT>
+        </LINK>
+
+
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        ACTION_ID="Next1"
+        LABEL="ActionControl.Label.Next"
+        TYPE="SUBMIT"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$hasNext"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="ProviderManagement_viewInEditTaxonomyVersion">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$pageNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+</PAGE>

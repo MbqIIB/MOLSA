@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2003 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the status history of a provider-->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationBudgetInformation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="serviceAuthorizationReferenceNumber"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="STATIC">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorization"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorization">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationLineItems"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationLineItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="Menu.ViewServiceAuthorizationBudget"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationBudgetInformation">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationReferenceNumber"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceAuthorization"
+    NAME="DISPLAY"
+    OPERATION="viewServiceAuthorizationBudgetInformation"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+  <PAGE_PARAMETER NAME="serviceAuthorizationReferenceNumber"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceAuthorizationID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+
+
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$budgetInformation$serviceName"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitsAuthorized">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$budgetInformation$unitsAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitCost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$budgetInformation$unitCost"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalCost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$budgetInformation$totaCost"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TotalBilled">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$budgetInformation$actualServiceDeliveryDetails$totalBilled"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitsConsumed">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$budgetInformation$actualServiceDeliveryDetails$unitsConsumed"
+        />
+      </CONNECT>
+
+
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

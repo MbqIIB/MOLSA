@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to cancel a reservation.                     -->
+<PAGE
+  PAGE_ID="ProviderManagement_cancelReservation"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="ACTION"
+    OPERATION="cancelReservation"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainReservation"
+    NAME="DISPLAY"
+    OPERATION="viewReservation"
+  />
+  <PAGE_PARAMETER NAME="reservationID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <!-- BEGIN, CR00143953, JSP -->
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <!-- END, CR00143953 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="reservationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$reservationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="reservationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$reservationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00205039, PS -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- END, CR00205039 -->
+    <!-- BEGIN, CR00228688, PS -->
+    <!-- BEGIN, CR00247606, GP -->
+    <CLUSTER
+      LABEL_WIDTH="45"
+      WIDTH="100"
+    >
+      <!-- END, CR00228688 -->
+      <!-- BEGIN, CR00236219, PS -->
+      <FIELD
+        LABEL="Field.Label.Reason"
+        WIDTH="87"
+      >
+        <!-- END, CR00247606 -->
+        <!-- END, CR00236219 -->
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="cancellationReason"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <!-- BEGIN, CR00236219, PS -->
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Comments.Title"
+  >
+    <!-- END, CR00236219 -->
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+    <!-- BEGIN, CR00143953, JSP -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.No">
+     </ACTION_CONTROL>
+    <!-- END, CR00143953 -->
+  </ACTION_SET>
+
+
+</PAGE>

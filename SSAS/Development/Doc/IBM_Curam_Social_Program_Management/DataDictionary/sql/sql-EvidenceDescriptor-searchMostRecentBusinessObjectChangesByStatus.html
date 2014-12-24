@@ -1,0 +1,92 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>EvidenceDescriptor.searchMostRecentBusinessObjectChangesByStatus</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Retrieves&amp;nbsp;most&amp;nbsp;recent&amp;nbsp;business&amp;nbsp;object&amp;nbsp;change&amp;nbsp;list for the status code
+
+specified.&amp;nbsp;In&amp;nbsp;most&amp;nbsp;cases&amp;nbsp;it&amp;nbsp;will&amp;nbsp;return&amp;nbsp;just&amp;nbsp;a&amp;nbsp;single&amp;nbsp;record.&amp;nbsp;In&amp;nbsp;some&amp;nbsp;instances&lt;br /&gt;
+
+(for&amp;nbsp;example&amp;nbsp;when&amp;nbsp;there&amp;nbsp;are&amp;nbsp;a&amp;nbsp;few&amp;nbsp;records&amp;nbsp;in&amp;nbsp;succession,&amp;nbsp;and&amp;nbsp;their&amp;nbsp;changes&amp;nbsp;are&amp;nbsp;applied&amp;nbsp;at&amp;nbsp;the&amp;nbsp;same&amp;nbsp;time)&amp;nbsp;it&amp;nbsp;may&amp;nbsp;return&amp;nbsp;a&lt;br /&gt;
+
+few&amp;nbsp;records.</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>SELECT 
+EVIDENCECHANGEHISTORY.EVIDENCEDESCRIPTORID, 
+EVIDENCECHANGEHISTORY.CHANGEUSER,
+EVIDENCECHANGEHISTORY.CHANGEDATETIME,
+EVIDENCEDESCRIPTOR.STATUSCODE,
+EVIDENCEDESCRIPTOR.PENDINGREMOVALIND
+INTO 
+:evidenceDescriptorID, 
+:changeUser,
+:changeDateTime,
+:statusCode,
+:pendingRemovalInd
+FROM 
+EVIDENCECHANGEHISTORY,
+EVIDENCEDESCRIPTOR
+WHERE 
+EVIDENCECHANGEHISTORY.CHANGEDATETIME = 
+  (SELECT 
+  MAX(CHANGEDATETIME) 
+  FROM 
+  EVIDENCECHANGEHISTORY  
+  WHERE 
+  EVIDENCECHANGEHISTORY.EVIDENCEDESCRIPTORID IN 
+    (SELECT 
+    EVIDENCEDESCRIPTORID 
+    FROM 
+    EVIDENCEDESCRIPTOR 
+    WHERE 
+    SUCCESSIONID = :successionID AND
+    STATUSCODE = :statusCode)) AND
+EVIDENCECHANGEHISTORY.EVIDENCEDESCRIPTORID = EVIDENCEDESCRIPTOR.EVIDENCEDESCRIPTORID AND
+EVIDENCEDESCRIPTOR.SUCCESSIONID = :successionID AND
+EVIDENCEDESCRIPTOR.STATUSCODE = :statusCode</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

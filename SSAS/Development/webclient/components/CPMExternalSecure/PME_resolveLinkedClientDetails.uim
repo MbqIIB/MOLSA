@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2005-2006 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver to find the evidence view page for the customer evidence      -->
+<PAGE
+  PAGE_ID="PME_resolveLinkedClientDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+        
+        curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        
+        // need to call server method and then get concernRoleID, or whatever
+        // ID is needed for particular page
+        String concernRoleID = request.getParameter("concernRoleID");
+        
+        // call the server function
+        
+        curam.interfaces.ExternalUserPkg.ExternalUser_getExternalRelationshipDetails_TH 
+          th = new curam.interfaces.ExternalUserPkg.ExternalUser_getExternalRelationshipDetails_TH();
+ 
+        String url = "";
+               
+        th.setFieldValue(th.key$concernRoleID_idx,concernRoleID);      
+        th.callServer(); 
+      
+
+        String memberID = th.getFieldValue(th.result$providerMemberID_idx);
+        String memberType = th.getFieldValue(th.result$memberType_idx);
+        String providerID = th.getFieldValue(th.result$providerConcernRoleID_idx);
+        String providerType = th.getFieldValue(th.result$providerType_idx);
+        String pageContextDescription = th.getFieldValue(th.result$pageContextDescription_idx);
+        
+
+        
+        if (!providerID.equals("0")) {
+          if (providerType.equals("RL15")) {
+            url = context + "PME_providerHomePage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(providerID) ;
+          } else {
+            // must be provider group
+            url = context + "PME_providerGroupHomePage.do?concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(providerID) ;
+          }
+          
+        } else {
+          // must be a member
+          if (memberType.equals("RL15")) {
+            url = context + "PME_viewProviderMemberPage.do?pageContextDescription="+ curam.omega3.request.RequestUtils.escapeURL(pageContextDescription) +
+            "&amp;providerMemberID=" +curam.omega3.request.RequestUtils.escapeURL(memberID) ;
+          } else {
+            url = context + "PME_viewProviderGroupMemberPage.do?pageContextDescription="+ curam.omega3.request.RequestUtils.escapeURL(pageContextDescription) +
+      "&amp;providerGroupMemberId=" +curam.omega3.request.RequestUtils.escapeURL(memberID) + "&amp;providerGroupID=" +curam.omega3.request.RequestUtils.escapeURL(providerID);
+          }
+        }
+        
+        url += "&amp;" + rh.getSystemParameters();  
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+        
+        
+    </JSP_SCRIPTLET>
+</PAGE>

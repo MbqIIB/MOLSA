@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Using an Editor</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Manual"><link rel="up" href="DMN12086.html" title="Editing DocBook XML Documents"><link rel="previous" href="DMN12095.html" title="Choosing an Editor"><link rel="next" href="DMN12250.html" title="Summary"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN12095.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN12250.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN12185"></a>Using an Editor</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN1218A"></a>Overview</h3></div></div><div></div></div><p>All the editors described above, and many others, are suitable for
+      use when editing DocBook XML files. However, there are a number of
+      issues that arise in their daily use that must be understood. Unless you
+      are careful, you can make life considerably harder for yourself and
+      other authors. Most of the issues relate to document encoding and
+      formatting and how these affect the interactions with the source code
+      management (<span class="acronym">SCM</span>) system.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12196"></a>Encoding</h3></div></div><div></div></div><p>The encoding of a document is critically important. The encoding
+      defines the character set that the document uses; knowledge of the
+      encoding allows other systems to correctly interpret the character data
+      that makes up a DocBook XML file. As the file is in XML, the standard
+      XML processing instruction at the top of the file can be used to declare
+      the encoding used by the file. If you use an XML editor, it will
+      recognize this encoding declaration and interpret the file in that
+      manner. Similarly, XML editors can either save the data in the declared
+      encoding, or can be configured to save all files using a specific
+      encoding, changing the encoding declaration in the file to the
+      appropriate value in the process. However, few text editors recognize
+      the declared encoding of an XML file and will not necessarily respect
+      that encoding when saving a file. It possible for an author to use a
+      text editor to open a file that uses one encoding and then save it using
+      an encoding different to the one declared in the file. The data in the
+      file is now corrupt, though the degree of corruption may vary depending
+      on the characters used. It is important, therefore, that the author is
+      aware of the encoding that should be used at all times.</p><p>If document files use many different encodings and text editors
+      make managing the encoding a bit hit-and-miss (or tedious, at best), it
+      makes sense to simplify the process. By using a single encoding for all
+      files, the process becomes less error-prone. As all C&uacute;ram documents are
+      written in English (US or GB variants), the Western European language
+      encoding defined in the ISO-8859-1 (&ldquo;<span class="quote">ISO Latin 1</span>&rdquo;) standard
+      is a good compromise. This character set defines the encoding of nearly
+      all of the characters (including the commonly used &ldquo;<span class="quote">&uacute;</span>&rdquo;)
+      that you will need for C&uacute;ram documents. It is also one of the most
+      widely used encodings and almost every text editor that can handle
+      multiple encodings can handle this character set.</p><p>You might wonder why the equally well supported and more versatile
+      UTF-8 encoding is not a better solution. The answer is simple: try
+      typing an em-dash, right or left double-quotes, or any Chinese
+      characters using your keyboard. Unless you have a non-English keyboard
+      setup, or know the codes for these characters, you will not be able to
+      do it. While the Chinese characters might not be very relevant to you,
+      the other punctuation characters may be. Microsoft though them important
+      enough that it embraced the ISO Latin 1 character set and extended it to
+      include the left and right variants of the single and double quotation
+      marks, the em-dash, the en-dash, the Euro symbol, the trademark symbol,
+      the bullet mark, and several others. This character encoding is dubbed
+      &ldquo;<span class="quote">Windows Latin 1</span>&rdquo;, &ldquo;<span class="quote">Windows ANSI</span>&rdquo;,
+      &ldquo;<span class="quote">windows-1252</span>&rdquo;, or &ldquo;<span class="quote">CP1252</span>&rdquo;, though that list
+      of names is not exhaustive. The problem is that this encoding does not
+      have the same level of cross-platform support as ISO Latin 1. As it is
+      difficult to type most of the extended characters on the keyboard, it is
+      of little extra benefit in any event.</p><p>ISO Latin 1 is a subset of Windows Latin 1, so it is safe to allow
+      it to be interpreted as Windows Latin 1, though care must be taken not
+      to enter any of the extended characters when editing. DocBook XML
+      documents should use the <tt class="sgmltag-element">quote</tt> element instead of
+      quotation marks, use the itemizedlist where bullet marks are needed, and
+      use the product element when a trademark symbol is required, this leaves
+      only the fairly common em-dash and Euro symbol, and the less common
+      en-dash to be handled. The Euro symbol is supported by ISO-8859-15
+      (&ldquo;<span class="quote">ISO Latin 9</span>&rdquo;<sup>[<a href="#ftn.N11A4D" name="N11A4D">2</a>]</sup>, a small extension to ISO Latin 1), but that is not widely
+      supported and it still does not provide the em-dash or en-dash
+      characters.</p><p>The solution to all this lies in the fact that a program that
+      manipulates the XML will interpret the character data using the declared
+      encoding, but process it internally using a full Unicode encoding.
+      Therefore, you can use XML &ldquo;<span class="quote">character entities</span>&rdquo; when
+      entering characters that are not in the ISO Latin 1 character set. For
+      example, the Unicode code for the em-dash is 8212, so, if you enter
+      <tt class="sgmltag-genentity">&amp;#8212;</tt> in your document, it will be
+      interpreted as an em-dash and, as all the characters in the character
+      entity itself are in ISO Latin 1, it is safe to use this method. As life
+      is too short to learn what code to use for what character, DocBook XML
+      defines named entities for many commonly used characters. Instead of
+      entering <tt class="sgmltag-genentity">&amp;#8212;</tt>, you can use
+      <tt class="sgmltag-genentity">&amp;mdash;</tt> instead. Similarly, you can
+      also use <tt class="sgmltag-genentity">&amp;ndash;</tt> and <tt class="sgmltag-genentity">&amp;euro;</tt> and many others. The codes used are not
+      those defined by the Windows Latin 1 encoding, they are the Unicode
+      (UTF-16) codes. You can even enter those Chinese characters in this
+      manner. It is perfectly valid to write an XML document in Chinese that
+      uses the ISO Latin 1 encoding as long as you use the character entities.
+      The character data is all in the ISO Latin 1 encoding, but the
+      information conveyed using that character set is actually in
+      Chinese.</p><div class="tip"><table border="0" summary="Tip: 
+          XXE and Character Encodings"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Tip]" src="../images/tip.gif"></td><th align="left"><a name="DMN121E4"></a>
+          XXE and Character Encodings</th></tr><tr><td valign="top" align="left" colspan="2"><p>One of the nicer features of <span class="application">XXE</span> is
+        the help it provides when entering characters that do not appear on
+        your keyboard. It provides a list of Unicode characters and allows you
+        to choose any and insert it into the document. If the character is
+        defined in the ISO Latin 1 encoding, it will insert it literally. If
+        the character is not defined by the encoding, it will insert a
+        character entity instead. If the DocBook XML DTD defines a named
+        character entity for that character code,
+        <span class="application">XXE</span> will automatically insert the entity
+        name instead of the code.</p><p>Unless you look at the actual XML file, you will be oblivious to
+        all this; <span class="application">XXE</span> displays the actual character
+        glyph on the screen and not the character entity, so you can forget
+        about character sets and encodings and just keep writing.</p></td></tr></table></div><p>If ISO Latin 1 is accepted as the standard encoding for all
+      documents, all the documents are in English, and few characters outside
+      of this character set are required, the compromise is a good one: it is
+      well supported, easy to enter at the keyboard, cross-platform, and is
+      reasonably immune to mistakes that arise when it is confused with
+      Windows Latin 1.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN12204"></a>Formatting</h3></div></div><div></div></div><p>One of the benefits of using a plain text format like DocBook XML,
+      rather than a proprietary binary format, is the easy of integration with
+      <span class="acronym">SCM</span> systems. <span class="acronym">CVS</span> is used to manage
+      C&uacute;ram documents and its facilities for automatic merging can be utilized
+      for DocBook XML files. Unlike the former
+      <span class="application">FrameMaker</span> documents, it is now possible to
+      edit an single file from a book without locking all the other files and
+      it is even practical for more than one person to edit the same file
+      concurrently. The former is possible because there is no data about page
+      numbers, paragraph numbering, cross-references, etc. in DocBook XML that
+      causes dependencies between files in a book; all this information is
+      calculated during rendering. The latter is now practical because
+      <span class="acronym">CVS</span> can automatically merge the changes from two
+      authors by comparing the content of the files. Using change histories,
+      it is also possible to select two versions of a file and compare them
+      using a suitable tool to identify the changes that were made between
+      those versions.</p><p>Most of this newly enabled functionality depends on the way
+      <span class="acronym">CVS</span> merges two versions of a file: it cannot merge
+      two files if each contains changes made to the same lines of the
+      original version (the &ldquo;<span class="quote">common ancestor</span>&rdquo;). Most of the time,
+      these conflicts will be unavoidable and relatively easy to resolve.
+      However, if an author's editor reformats the XML file (and most XML
+      editors do this), it will likely change every line in the file and may
+      cause a merge conflict if the file is also being edited by someone else,
+      or, more likely, will render the change history unusable. The author may
+      only have edited a single line, but by using an editor that reformatted
+      the file, <span class="acronym">CVS</span> will consider every line
+      changed.</p><p>Several ways to avoid this problem are:</p><div class="itemizedlist"><ul type="disc"><li><p>Use an editor that does not reformat the file (almost any text
+          editor fits this bill, but few XML editors preserve the
+          formatting).</p></li><li><p>Standardize on an XML editor that can be configured to format
+          the file in the same manner for all authors (you can still use a
+          text editor for changes).</p></li><li><p>Only support XML editors that can be configured to format
+          files in an identical manner (no two editors allow such
+          control).</p></li><li><p>Reformat all the files to a standard format before submission
+          using a separate tool.</p></li></ul></div><p>For now, only the second option is supported. Bot text and XML
+      editors are desirable, so any text editor can be used,
+      <span class="application">XXE</span> is the recommended XML editor, and the
+      commonly used <span class="application">Eclipse</span> XML editor can be used
+      as it does not force you to reformat files. The last option is likely to
+      be introduced at some point in the future and will include the added
+      benefit that authors using text editors are not forced to deal with
+      poorly formatted content created by other authors using text
+      editors!</p></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN12095.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN12250.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

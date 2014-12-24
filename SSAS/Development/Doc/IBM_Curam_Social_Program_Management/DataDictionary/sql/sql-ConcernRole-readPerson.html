@@ -1,0 +1,241 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>ConcernRole.readPerson</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">&nbsp;</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">ns</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>SELECT
+  ConcernRole.primaryAlternateID,
+  Person.dateOfBirth,
+  Person.dateOfDeath,
+  Person.gender,
+  Address.addressID,
+  Address.addressData,
+  PhoneNumber.phoneNumberID,
+  EmailAddress.emailAddress,
+  IncPartRoleResult.incidentCount,
+  IssPartRole.issueCount,
+  ConRoleDuplicate.duplicateCount,
+  ConRoleDuplicate.originalConcernRoleID,
+  InvPartRole.investigationRoleCount
+INTO
+  :primaryAlternateID,
+  :dateOfBirth,
+  :dateOfDeath,
+  :gender,
+  :addressID,
+  :addressData,
+  :phoneNumberID,
+  :emailAddress,
+  :numIncidents,
+  :numIssues,
+  :numDuplicates,
+  :originalConcernRoleID,
+  :numInvestigations
+FROM
+  ConcernRole 
+  
+  LEFT OUTER JOIN
+  
+  Person 
+  ON (ConcernRole.concernRoleID = Person.concernRoleID) 
+
+  LEFT OUTER JOIN
+  
+  Address 
+  ON (ConcernRole.primaryAddressID = Address.addressID) 
+  
+  LEFT OUTER JOIN
+  
+  PhoneNumber 
+  ON (ConcernRole.primaryPhoneNumberID = PhoneNumber.phoneNumberID) 
+  
+  LEFT OUTER JOIN
+  
+  EmailAddress 
+  ON (ConcernRole.primaryEmailAddressID = EmailAddress.emailAddressID)
+  
+  LEFT OUTER JOIN
+  (
+  Select 
+    ConcernRoleDuplicate.duplicateConcernRoleID,
+    ConcernRoleDuplicate.originalConcernRoleID,
+    COUNT(ConcernRoleDuplicate.duplicateConcernRoleID) as duplicateCount
+  FROM 
+    ConcernRoleDuplicate
+  WHERE
+    ConcernRoleDuplicate.duplicateConcernRoleID = :concernRoleID
+    AND 
+  ConcernRoleDuplicate.statusCode = :duplicateStatusCode
+  GROUP
+  BY ConcernRoleDuplicate.duplicateConcernRoleID, ConcernRoleDuplicate.originalConcernRoleID     
+  ) ConRoleDuplicate
+  ON (ConRoleDuplicate.duplicateConcernRoleID = ConcernRole.concernRoleID)
+   
+  
+  LEFT OUTER JOIN
+  
+  (
+  Select
+    IncidentParticipantRole.concernRoleID,
+    COUNT(IncidentParticipantRole.concernRoleID) as incidentCount
+  FROM 
+    IncidentParticipantRole,
+    Incident
+  WHERE
+    IncidentParticipantRole.concernRoleID = :concernRoleID
+    AND
+    IncidentParticipantRole.role = :incidentParticipantRole
+    AND 
+    IncidentParticipantRole.recordStatus = :recordStatusCode
+    AND
+    IncidentParticipantRole.incidentID = Incident.incidentID
+    AND 
+    Incident.status = :incidentStatusCode    
+  GROUP
+  BY IncidentParticipantRole.concernRoleID  
+  ) IncPartRoleResult
+  ON (IncPartRoleResult.concernRoleID = ConcernRole.concernRoleID)
+  
+  LEFT OUTER JOIN
+  (
+  Select 
+    CaseParticipantRole.participantRoleID,
+    COUNT(CaseHeader.caseID) as issueCount
+  FROM 
+    CaseHeader,
+    CaseParticipantRole
+  WHERE
+    CaseHeader.caseTypeCode = :issueCaseTypeCode
+    AND
+    CaseHeader.statusCode <> :cancelledCaseStatus
+    AND
+    CaseHeader.statusCode <> :closedCaseStatus    
+    AND
+    CaseHeader.caseID = CaseParticipantRole.caseID
+    AND
+    CaseParticipantRole.participantRoleID = :concernRoleID
+    AND 
+    CaseParticipantRole.typeCode = :primaryClientTypeCode
+  GROUP
+  BY CaseParticipantRole.participantRoleID     
+  ) IssPartRole
+  ON (IssPartRole.participantRoleID = ConcernRole.concernRoleID)
+  
+  LEFT OUTER JOIN
+  (
+  
+  
+  Select
+  COUNT(investigationCount.caseID) as investigationRoleCount,
+  investigationCount.participantRoleID
+  FROM
+  (
+  
+  Select 
+  investigationRoles.caseID,
+  investigationRoles.participantRoleID,
+  SUM(investigationRoles.investDelCount)
+  From 
+  (
+  
+  Select 
+    COUNT(CaseHeader.caseID) as investDelCount,
+    CaseHeader.caseID,
+    CaseParticipantRole.participantRoleID
+  FROM 
+    CaseHeader,
+    CaseParticipantRole
+  WHERE
+    CaseHeader.caseTypeCode = :investigationCaseTypeCode
+    AND
+    CaseHeader.statusCode <> :cancelledCaseStatus
+    AND
+    CaseHeader.statusCode <> :closedCaseStatus
+    AND
+    CaseHeader.caseID = CaseParticipantRole.caseID
+    AND
+    CaseParticipantRole.participantRoleID = :concernRoleID
+    AND 
+    CaseParticipantRole.typeCode = :primaryClientTypeCode
+    GROUP
+    BY CaseHeader.caseID, CaseParticipantRole.participantRoleID
+UNION
+  Select 
+    COUNT(AllegationRole.allegationID) as investDelCount,
+    CaseHeader.caseID,
+    CaseParticipantRole.participantRoleID
+  From
+    Allegation,
+    AllegationRole,
+    CaseParticipantRole,
+    CaseHeader
+  WHERE
+    AllegationRole.allegationID = Allegation.allegationID
+    AND 
+    Allegation.caseID = CaseHeader.caseID
+    AND 
+    CaseHeader.caseID = CaseParticipantRole.caseID
+    AND
+    CaseHeader.caseTypeCode = :investigationCaseTypeCode
+    AND
+    CaseHeader.statusCode <> :cancelledCaseStatus
+    AND
+    CaseHeader.statusCode <> :closedCaseStatus
+    AND
+    CaseParticipantRole.participantRoleID = :concernRoleID
+    GROUP
+    BY CaseHeader.caseID, CaseParticipantRole.participantRoleID) investigationRoles
+    GROUP BY
+    investigationRoles.caseID, investigationRoles.participantRoleID) investigationCount GROUP BY investigationCount.participantRoleID  
+  ) InvPartRole
+    ON (InvPartRole.participantRoleID = ConcernRole.concernRoleID)  
+
+    WHERE ConcernRole.concernRoleID = :concernRoleID</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

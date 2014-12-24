@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to list the enquiries for resource manager.  -->
+<PAGE
+  PAGE_ID="ProviderManagement_listEnquiriesForResourceManager"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00206443, SS -->
+  <SERVER_INTERFACE
+    CLASS="ProviderEnquiry"
+    NAME="DISPLAY"
+    OPERATION="listProviderEnquiryDetails"
+  />
+
+
+  <!-- BEGIN, CR00234082, GP -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.New">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_searchOpenEnquiry"
+        WINDOW_OPTIONS="width=750"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00234082 -->
+
+
+  <LIST>
+    <!-- BEGIN, CR00206443, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyProviderEnquiry"
+          WINDOW_OPTIONS="width=800"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$providerEnquiryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerEnquiryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerEnquiryName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$categoryVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="categoryVersionNo"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$typeVersionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="typeVersionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.ViewRelatedProvider">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnquiryViewDetails$relatedProviderExist"
+          />
+        </CONDITION>
+        <LINK PAGE_ID="ProviderManagement_providerHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$providerID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00246089, PS -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$providerID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <!-- END, CR00246089 -->
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Transfer">
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnquiryViewDetails$relatedProviderExist"
+          />
+        </CONDITION>
+        <!-- BEGIN, CR00208276, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_enrollProviderFromEnquiry"
+          WINDOW_OPTIONS="width=750"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$providerEnquiryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerEnquiryID"
+            />
+          </CONNECT>
+        </LINK>
+        <!-- END, CR00208276 -->
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_closeProviderEnquiry"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$providerEnquiryID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerEnquiryID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerEnquiryViewDetails$name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerEnquiryName"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD
+      LABEL="Field.Title.ReferenceNumber"
+      WIDTH="15"
+    >
+      <!-- END, CR00235795 -->
+      <!-- END, CR00206334 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206334, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnquiryViewDetails$referenceNumber"
+        />
+        <!-- END, CR00206334 -->
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_viewProviderEnquiry">
+        <CONNECT>
+          <!-- BEGIN, CR00206334, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerEnquiryViewDetails$providerEnquiryID"
+          />
+          <!-- END, CR00206334 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerEnquiryID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206334, SS -->
+    <!-- BEGIN, CR00208276, PS -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="20"
+    >
+      <!-- END, CR00208276 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnquiryViewDetails$name"
+        />
+        <!-- END, CR00206334 -->
+      </CONNECT>
+
+
+    </FIELD>
+    <!-- BEGIN, CR00206334, SS -->
+    <!-- BEGIN, CR00235795, PS -->
+
+
+    <FIELD LABEL="Field.Label.Address">
+      <!-- END, CR00235795 -->
+      <!-- BEGIN, CR00293652, ASN -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="addressStringOpt"
+        />
+        <!-- END, CR00293652 -->
+        <!-- END, CR00206334 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206334, SS -->
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD
+      LABEL="Field.Label.EnquiryDate"
+      WIDTH="15"
+    >
+      <!-- END, CR00235795 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnquiryViewDetails$enquiryDate"
+        />
+        <!-- END, CR00206334 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206334, SS -->
+    <!-- BEGIN, CR00208276, PS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <!-- END, CR00208276 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerEnquiryViewDetails$statusCode"
+        />
+        <!-- END, CR00206334 -->
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows the user to search taxonomy terms by keyword and code -->
+<!-- and allows to add the taxonomy terms to a related concept.             -->
+<PAGE
+  PAGE_ID="ProviderManagement_addTaxonomyTermsToRelatedConceptWiz"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRelatedConcept"
+    NAME="DISPLAY"
+    OPERATION="previewTaxonomyTerms"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$actionString"
+    CLASS="MaintainRelatedConcept"
+    NAME="ACTION"
+    OPERATION="searchAddTaxonomyTermsToRelatedConcept"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00261199, SSK -->
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyVersion"
+    NAME="DISPLAY1"
+    OPERATION="viewPublishedTaxonomyVersionDetails"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00261199 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="searchTaxonomyTermsByNameAndCode$wizardStateID"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="searchDetails$wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Title.SearchCriteria.Description"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.Keyword">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$name"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$details$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="details$code"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$details$code"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        ACTION_ID="Search"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <!-- BEGIN, CR00261199, SSK -->
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="THIS"
+          SAVE_LINK="false"
+        />
+        <!-- END, CR00261199 -->
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        ACTION_ID="Reset"
+        LABEL="ActionControl.Label.Reset"
+        TYPE="SUBMIT"
+      >
+        <!-- BEGIN, CR00261199, SSK -->
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_addTaxonomyTermsToRelatedConceptWiz"
+          SAVE_LINK="false"
+        >
+          <!-- END, CR00261199 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="Cluster.Title.SearchResults">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$searchDetails$searchPerformedInd"
+      />
+    </CONDITION>
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_INITIAL">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="searchDetails$wizDetails$taxonomyTermTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$taxonomyTermID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$taxonomyTermTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="Cluster.Title.SearchResults">
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="result$searchDetails$searchPerformedInd"
+      />
+    </CONDITION>
+    <CONTAINER
+      ALIGNMENT="CENTER"
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <WIDGET TYPE="MULTISELECT">
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtls$taxonomyTermID"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+        <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+          <CONNECT>
+            <TARGET
+              NAME="ACTION"
+              PROPERTY="searchTaxonomyTermsByNameAndCode$wizDetails$taxonomyTermTabList"
+            />
+          </CONNECT>
+        </WIDGET_PARAMETER>
+      </WIDGET>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtls$code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="Cluster.Title.SelectedTerms">
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="result$searchDetails$termsSelectedInd"
+      />
+    </CONDITION>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00261199, SSK -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeTermFromRelatedConceptWiz"
+          SAVE_LINK="false"
+          WINDOW_OPTIONS="width=300"
+        >
+          <!-- END, CR00261199 -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="wizardStateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="dtls$taxonomyTermID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyTermID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Code">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dtls$code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="status"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    >
+      <!-- BEGIN, CR00261199, SSK -->
+
+
+      <LINK
+        PAGE_ID="ProviderManagement_listPublishedRelatedConcepts"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="CONSTANT"
+            PROPERTY="Taxonomy.InitialPageNumber"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="taxonomyVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00261199 -->
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Store"
+      LABEL="ActionControl.Label.Back"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00261199, SSK -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_storeRelatedConceptWiz"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=800"
+      >
+        <!-- END, CR00261199 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Add"
+      LABEL="ActionControl.Label.Add"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00261199, SSK -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addTaxonomyTermsToRelatedConceptWiz"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=850"
+      >
+        <!-- END, CR00261199 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="SaveAll"
+      LABEL="ActionControl.Label.Finish"
+      TYPE="SUBMIT"
+    >
+          </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+</PAGE>

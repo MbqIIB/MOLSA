@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2012 Curam Software Ltd.                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="ProviderManagement_createUtilizationContractForProviderGroup"
+  WINDOW_OPTIONS="width=650"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="UtilizationContract"
+    NAME="ACTION"
+    OPERATION="createProviderGroupUtilizationContract"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="LIST_PG_ASSOCIATES"
+    OPERATION="listProviderGroupAssociatesForProviderGroup"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00120238, NK -->
+  <!-- BEGIN, CR00313834, GA -->
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="listProviderServicesAndContactsForUtilizationContract"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00313834 -->
+  <!-- END, CR00120238 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerOrganizationConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="LIST_PG_ASSOCIATES"
+      PROPERTY="providerGroupConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN CR00090002, GP -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END CR00090002 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- Contract Details -->
+  <!-- BEGIN, CR00197352, SS -->
+  <!-- BEGIN, CR00235192, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="100"
+    >
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00197352, SS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_DEFAULT="true"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.LicenseType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="requiredLicenseType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00197352, SS -->
+    <FIELD
+      LABEL="Field.Label.ContractServicesType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="100"
+    >
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contractServicesType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_DEFAULT="false"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00197352, SS -->
+    <FIELD
+      LABEL="Field.Label.Contact"
+      USE_BLANK="true"
+      WIDTH="100"
+    >
+      <!-- END, CR00235192 -->
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="providerPartyID"
+          NAME="DISPLAY"
+          PROPERTY="providerPartyName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactConcernRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- Provider List -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Providers"
+  >
+    <FIELD
+      CONTROL="TRANSFER_LIST"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="code"
+          NAME="LIST_PG_ASSOCIATES"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="tabbedList"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00197352, CR00407812, SS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00197352, CR00407812 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00094433, SP -->
+  <ACTION_SET ALIGNMENT="CENTER">
+    <!-- END, CR00094433 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.SaveAndAddService"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00246209, GP -->
+      <!-- BEGIN, CR00246655, GP -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_addServicesToProviderGroupContract"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00246655 -->
+        <!-- END, CR00246209 -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$contractVersionKey$contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

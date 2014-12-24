@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2011, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveOverUnderPaymentsList"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+        
+  curam.omega3.request.RequestHandler 
+           rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+     
+  String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+      pageContext.getSession()).getLocale() + "/";
+  
+  String serviceDeliveryID = request.getParameter("serviceDeliveryID");
+  String caseID = request.getParameter("caseID");
+  
+  if (null == serviceDeliveryID) {
+  core.ScriptletMissingParamException e = new
+  core.ScriptletMissingParamException(-20002, "serviceDeliveryID");
+  throw e;
+  }
+
+  if (null == caseID) {
+  core.ScriptletMissingParamException e = new
+  core.ScriptletMissingParamException(-20002, "caseID");
+  throw e;
+  }
+
+  String serviceDeliveryType = "";
+  String nomineeType = "";
+  
+  curam.interfaces.ServiceDeliveryPkg.ServiceDelivery_getServiceDeliveryTypeAndNomineeType_TH 
+  serviceDeliveryTH = new curam.interfaces.ServiceDeliveryPkg.ServiceDelivery_getServiceDeliveryTypeAndNomineeType_TH();
+  serviceDeliveryTH.setFieldValue(serviceDeliveryTH.key$serviceDeliveryID_idx, serviceDeliveryID);
+  serviceDeliveryTH.callServer();
+  serviceDeliveryType = serviceDeliveryTH.getFieldValue(serviceDeliveryTH.result$serviceDeliveryType_idx);
+  nomineeType = serviceDeliveryTH.getFieldValue(serviceDeliveryTH.result$nomineeType_idx);
+  
+  String url = "";
+  
+  // BEGIN, CR00376993, PS
+  if (serviceDeliveryType.equals("SODT3004")) {
+    url = context + "ServiceDelivery_listOverUnderPaymentPage.do?" + "serviceDeliveryID=" + 
+    curam.omega3.request.RequestUtils.escapeURL(serviceDeliveryID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+  } else {
+    url = context + "PDServiceDelivery_listOverUnderPaymentPage.do?" + 
+    "serviceDeliveryID=" + curam.omega3.request.RequestUtils.escapeURL(serviceDeliveryID) + "&amp;caseID=" + curam.omega3.request.RequestUtils.escapeURL(caseID);
+  }
+  // END, CR00376993
+  
+  url += "&amp;" + rh.getSystemParameters();
+  
+  response.sendRedirect(response.encodeRedirectURL(url));      
+       
+    </JSP_SCRIPTLET>
+</PAGE>

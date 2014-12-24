@@ -1,0 +1,118 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>Users.searchUsersBySupervisorIDLeadPos</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Returns Users of Organization Units where Supervisor has a lead role</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  Users.userName,
+  Users.fullName,
+  Position.name,
+  OrganisationUnit.name,
+  Users.surname
+INTO
+  :userName,
+  :fullName,
+  :positionName,
+  :orgUnitName,
+  :surName 
+FROM
+  Position,
+  PositionHolderLink,
+  OrganisationUnit,
+  OrgUnitPositionLink,
+  Users 
+WHERE Position.positionID = PositionHolderLink.positionID 
+  AND OrgUnitPositionLink.positionID = PositionHolderLink.positionID 
+  AND OrgUnitPositionLink.organisationUnitID = OrganisationUnit.organisationUnitID 
+  AND PositionHolderLink.userName = Users.userName 
+  AND PositionHolderLink.recordStatus <> :status 
+  AND OrgUnitPositionLink.recordStatus <> :status 
+  AND Position.recordStatus <> :status 
+  AND Position.positionID IN 
+  ( 
+  SELECT
+    OrgUnitPositionLink.positionID 
+  FROM
+    OrgUnitPositionLink 
+  WHERE OrgUnitPositionLink.recordStatus <> :status 
+    AND OrgUnitPositionLink.organisationUnitID IN 
+    ( 
+    SELECT
+      opl.organisationUnitID 
+    FROM
+      OrgUnitPositionLink opl,
+      PositionHolderLink phl,
+      Position pos 
+    WHERE pos.positionID = phl.positionID 
+      AND phl.positionID = opl.positionID 
+      AND pos.leadPositionInd = '1' 
+      AND phl.userName = :userName 
+      AND phl.recordStatus <> :status 
+      AND opl.recordStatus <> :status 
+    ) 
+  
+  UNION
+    
+  SELECT
+    prl.positionID 
+  FROM
+    PositionReportingLink prl,
+    PositionHolderLink phl2,
+    Position pos2 
+  WHERE phl2.positionID = prl.reportsToID 
+    AND pos2.leadPositionInd = '1' 
+    AND phl2.userName = :userName 
+    AND phl2.recordStatus <> :status 
+    AND prl.recordStatus <> :status 
+  ) 
+ORDER BY Users.surname
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

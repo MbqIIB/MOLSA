@@ -1,0 +1,185 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>FailedMessage</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Failed Message
+:</b>
+<i> Workflow recovery data arising from a failure in business application processing.
+</i>
+
+<P>When the Workflow Engine requires to invoke business application processing (e.g. when executing an automatic <a href=ActivityInstance.html>Activity Instance</a>), it raises a JMS message containing data to identify the required business application processing.</P>
+
+<P>The application server detects the new JMS message and creates a transaction for the consumption of this message.  It then forwards the message to the a Workflow handler, which uses the information in the message to invoke the application business processing.</P>
+
+<P>If the business application processing throws any exception, then the transaction is rolled back and control returns to the application server. The application server attempts to redeliver the JMS message a configurable number of times, after which it will forward the message to a Workflow Error Handler.</P>
+
+<P>The Workflow Error Handler creates a Failed Message row containing a copy of the contents of the JMS message.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>system prints out a letter (automatic);</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual).</LI>
+
+</UL> <P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The <a href=ProcessDefinition.html>Process Definition</a> specifies an initial activity ('system prints out a letter') and so the Workflow Engine creates an <a href=ActivityInstance.html>Activity Instance</a> row for this initial activity.  Because this activity is an automatic one, the Workflow Engine asynchronously invokes the business processing defined by the activity by raising a JMS message.</P>
+
+<P>The message is dequeued and the application server calls the business processing to print the letter.  The business processing attempts to invoke the Curam XML Server to format the letter, but because the Curam XML Server is offline, the business processing fails.</P>
+
+<P>The application server detects the failure and invokes an error handler which:</P>
+
+<UL>
+
+<LI>creates a Failed Message to store details of the JMS message that could not be processed; and</LI>
+
+<LI>creates an entry in the server logs.  The logs are configured to notify an operator that such a failure has occurred.</LI>
+
+</UL> <P>The system operator can use the Administration Application to view all Failed Messages and take one of the following actions:</P>
+
+<UL>
+
+<LI>retry the message, e.g. after bringing the Curam XML Server online; or</LI>
+
+<LI>discard the message, which will abort the workflow.</LI>
+
+</UL>
+
+<p><b>Technical Notes</b></p>
+<P>The Workflow Engine is transactionally separate from the business application processing so that the Workflow Engine can take remedial action if business application processing fails.  This is one of the reasons why the Workflow Engine uses JMS messages to invoke business processing (rather than invoking the business application processing directly).</P>
+
+<P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (8)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">failedMessageID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique ID of a failed message.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">processInstanceID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of the process instance, within the workflow engine, that is responsible for the workflow of a particular process instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">messageType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The message type of the dequeued message.</td><td class="dataLast">SVR_STRING&lt;150&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">failureTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The time at which the processed JMS message failed.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">retryCount</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The number of times this failed message has been manually retried by removing it from the failed message table and en-queuing it.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">activityInstanceID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of a workflow activity instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">iterationID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The ID of the loop iteration to which the activity instance belongs.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">FailedMessage.activityInstanceID</td><td class="dataLast"><a href="ActivityInstance.html#activityInstanceID">ActivityInstance.activityInstanceID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">FailedMessage.processInstanceID</td><td class="dataLast"><a href="ProcessInstance.html#processInstanceID">ProcessInstance.processInstanceID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">FailedMessage.iterationID</td><td class="dataLast"><a href="Iteration.html#iterationID">Iteration.iterationID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (2)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">FailedMsgTypeIdx</td><td class="dataLast">messageType</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ProcInstIDIdx</td><td class="dataLast">activityInstanceID, processInstanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

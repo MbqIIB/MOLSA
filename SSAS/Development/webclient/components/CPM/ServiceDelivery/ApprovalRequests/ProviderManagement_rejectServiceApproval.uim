@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2009-2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Rejects the approval request for a delivering a service to a client(s). -->
+<PAGE
+  PAGE_ID="ProviderManagement_rejectServiceApproval"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="serviceDeliveryID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceDeliveryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceDeliveryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceDeliveryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="serviceDeliveryID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNumber"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="key$versionNoKey$versionNo"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceDelivery"
+    NAME="ACTION"
+    OPERATION="reject"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceDelivery"
+    NAME="DISPLAY"
+    OPERATION="readApprovalTaskDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER>
+    <FIELD LABEL="Field.Label.RejectionReason">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rejectionReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.RejectionComments"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="rejectionComments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="Field.Label.Submit"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="Field.Label.Cancel"/>
+  </ACTION_SET>
+
+
+</PAGE>

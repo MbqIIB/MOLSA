@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26  
+  
+  Copyright IBM Corporation 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!--  Confirmation page for canceling a Service Delivery record.  -->
+<PAGE
+  PAGE_ID="ProviderManagement_cancelService1"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="serviceDeliveryID"/>
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="caseIDOpt"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceDeliveryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="serviceDeliveryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceDeliveryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="serviceDeliveryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceDelivery"
+    NAME="DISPLAY"
+    OPERATION="getVersionNo"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ServiceDelivery"
+    NAME="ACTION"
+    OPERATION="cancelServiceDelivery"
+    PHASE="ACTION"
+  />
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="FIELD.TEXT.QUESTION"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET>
+    <ACTION_CONTROL
+      LABEL="Field.Yes"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL LABEL="Field.No"/>
+  </ACTION_SET>
+
+
+</PAGE>

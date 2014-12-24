@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!--  This page allows the user to view the in edit taxonomy term details.                  -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewInEditTaxonomyTermTabDetails"
+  TYPE="DETAILS"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="tabName"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyInEditData"
+    NAME="DISPLAY"
+    OPERATION="viewInEditTaxonomyTerm"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="taxonomyInEditDataID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyInEditDataID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taxonomyInEditKey$taxonomyInEditDataID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER>
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="recordNotFoundExceptionInd"
+      />
+    </CONDITION>
+    <FIELD LABEL="Cluster.Title.ExceptionInformation">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY"
+        PROPERTY="recordNotFoundExceptionInd"
+      />
+    </CONDITION>
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+    >
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="parentPublishedInd"
+        />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.TermName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.DateCreated">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dateCreated"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Facet">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="facet"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="status"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Code">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="code"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.DateLastModified">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dateLastModified"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ParentTerm">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="parentName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="ProviderManagement_viewTaxonomyTerm">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="parentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyTermID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+
+
+    </CLUSTER>
+
+
+    <CLUSTER
+      LABEL_WIDTH="30"
+      NUM_COLS="2"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY"
+          PROPERTY="parentPublishedInd"
+        />
+      </CONDITION>
+      <FIELD LABEL="Field.Label.TermName">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="name"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.DateCreated">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dateCreated"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Facet">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="facet"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="status"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.Code">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="code"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.DateLastModified">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dateLastModified"
+          />
+        </CONNECT>
+      </FIELD>
+
+
+      <FIELD LABEL="Field.Label.ParentTerm">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="parentName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="ProviderManagement_viewInEditTaxonomyTerm">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="parentID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyInEditDataID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+
+
+    </CLUSTER>
+  </CLUSTER>
+</PAGE>

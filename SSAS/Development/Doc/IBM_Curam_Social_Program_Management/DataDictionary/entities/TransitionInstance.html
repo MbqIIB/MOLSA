@@ -1,0 +1,187 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>TransitionInstance</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Transition Instance
+:</b>
+<i> An attempt to navigate from one activity to another.
+</i>
+
+<P>A transition is the path between two activities (a 'from' activity and a 'to' activity) - it specifies that once the 'from' activity has been completed, the 'to' activity should be started.  If you imagine activities as 'boxes', then transitions are the 'lines' between these boxes.</P>
+
+<P>A Transition Instance records the attempt to navigate the transition between two <a href=ActivityInstance.html>Activity Instances</a> (the 'from' <a href=ActivityInstance.html>Activity Instance</a> and the 'to' <a href=ActivityInstance.html>Activity Instance</a>).</P>
+
+<P>Transitions may be conditional, i.e. once the 'from' activity has been completed, the 'to' activity should only be started if some condition (specified by the transition) is met.  A Transition Instance row will be created for each transition evaluated, and for conditional transitions, the Transition Instance records whether the transition's condition was met.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>'Start Process' (a necessary step to start the workflow which is mandated by the Process Definition Tool); and</LI>
+
+<LI>system prints out a letter (automatic);</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual); and</LI>
+
+<LI>'End Process' (a necessary step to end the workflow which is mandated by the Process Definition Tool).</LI>
+
+</UL> <P>The transitions in your workflow are a straightforward progression through the activities in the order listed above.</P>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The Workflow Engine executes the 'Start Process' activity and creates an <a href=ActivityInstance.html>Activity Instance</a>.  This special activity performs initialization of the workflow and completes.</P>
+
+<P>The Workflow Engine identifies the outgoing transition from 'Start Process' and traverses the transition.  The Workflow Engine creates a row on Transition Instance to record this traversal, linking the 'Start Process' activity to the 'system prints out a letter' activity.  The system prints out the letter and completes the activity.</P>
+
+<P>Similarly, upon completion of the relevant <a href=ActivityInstance.html>Activity Instances</a>, the Workflow Engine:</P>
+
+<UL>
+
+<LI>traverses from 'system prints out a letter' to 'user puts the letter in an envelope'; and </LI>
+
+<LI>traverses from 'user puts the letter in an envelope' to 'end process'.</LI>
+
+</UL>
+
+<p><b>Technical Notes</b></p>
+<P>See the Workflow Guide for further information.</P>
+
+<P>There is no 'Activity' database table.  An activity is an XML element defined within the <a href=ProcessDefinition.html>Process Definition</a> metadata.</P>
+
+<P>Straightforward <a href=ActivityInstance.html>Activity Instances</a> will (as the workflow executes) typically have:</P>
+
+<UL>
+
+<LI>a Transition Instance 'coming in', i.e. will be the 'to' <a href=ActivityInstance.html>Activity Instance</a> on a Transition Instance; and</LI>
+
+<LI>a Transition Instance 'going out', i.e. will be the 'from' <a href=ActivityInstance.html>Activity Instance</a> on a Transition Instance.</LI>
+
+</UL> <P>Activities which are associated with split or join points may have multiple such Transition Instances.</P>
+
+<P>A Transition Instance identifies the 'from' and 'to' activities, but does not link (directly) to the <a href=ActivityInstance.html>Activity Instances</a> themselves.</P>
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (8)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">transitionInstID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of a workflow transition instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">transitionID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of a workflow transition as described in the process definition.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processInstanceID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of the workflow process instance that this transition instance is associated with.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">fromActivityID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of the activity that the transition is from.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">toActivityID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of the activity that the transition moves the workflow process to.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">vote</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">A boolean value to indicate whether the transition should be followed or not. Transitions defined in the process definition with no rule condition will always have this value set to true. Other transitions will have their rule conditions evaluated and this value will be based on the result of this evaluation, true if the transition should be followed, otherwise false.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">iterationID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">An Transition contained within a loop may have multiple instances (one for each iteration of the loop) - this ID allows them to be distinguished from one another.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">TransitionInstance.processInstanceID</td><td class="dataLast"><a href="ProcessInstance.html#processInstanceID">ProcessInstance.processInstanceID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">TransitionInstance.iterationID</td><td class="dataLast"><a href="Iteration.html#iterationID">Iteration.iterationID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">TrnsInstPrcInstIdx</td><td class="dataLast">processInstanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

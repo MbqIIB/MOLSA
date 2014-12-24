@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2010 Curam Software Ltd.               				 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- in accordance with the terms of the license agreement you entered into  -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- =======================================                                 -->
+<!-- Reads a training service offering's home page details and further  	 -->
+<!-- details.																												         -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewTrainingServiceOfferingFrmList"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_viewTrainingServiceOfferingView.vim"/>
+
+
+  <!-- BEGIN, CR00117630, ASB -->
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- END, CR00117630-->
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+      <!-- BEGIN, CR00187899, PS -->
+      <!-- BEGIN, CR00198210, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_editTrainingServiceOfferingFrmView"
+        WINDOW_OPTIONS="width=750"
+      >
+        <!-- END, CR00198210 -->
+        <!-- END, CR00187899 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.AddTrainingCredit"
+      TYPE="ACTION"
+    >
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createTrainingCredit"
+      >
+        <CONNECT>
+          <!-- BEGIN, CR00171770, SG -->
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="trainingServiceOffering$trainingID"
+          />
+          <!-- END, CR00171770 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="trainingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+    <!-- BEGIN, CR00187899, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewApprovalCheck">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createServiceOfferingApprovalCheck"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00187899 -->
+    
+    <!-- BEGIN, CR00228079, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+      
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_cancelTrainingServiceOffering"
+        SAVE_LINK="false"
+        >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$serviceOfferingDtls$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00228079 -->
+  </ACTION_SET>
+
+
+</PAGE>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to modify contact details for                -->
+<!-- a provider contract.                                                   -->
+<PAGE
+  PAGE_ID="ProviderManagement_modifyContractContact"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractContactID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractContactID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$contractContactID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractContactID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$contractContactID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$versionNo"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="ACTION"
+    OPERATION="modifyContractContact"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="readContractContact"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00207545, SS -->
+  <!-- BEGIN, CR00197352, SS -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="1"
+  >
+    <!-- END, CR00207545 -->
+    <!-- BEGIN, CR00200179, SS -->
+    <!-- BEGIN, CR00197352, SS -->
+    <FIELD
+      LABEL="Field.Label.Name"
+      WIDTH="90"
+    >
+      <!-- END, CR00197352 -->
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="providerPartyID"
+          NAME="DISPLAY"
+          PROPERTY="providerPartyName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="contactConcernRoleID"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00207545, SS -->
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      USE_BLANK="true"
+    >
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00207545 -->
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

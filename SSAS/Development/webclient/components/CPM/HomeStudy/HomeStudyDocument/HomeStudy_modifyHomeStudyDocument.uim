@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- The page for modifying Home Study Document details.                    -->
+<PAGE
+  PAGE_ID="HomeStudy_modifyHomeStudyDocument"
+  WINDOW_OPTIONS="width=525"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="HomeStudyDocument"
+    NAME="DISPLAY"
+    OPERATION="viewHomeStudyDocument"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="HomeStudyDocument"
+    NAME="ACTION"
+    OPERATION="modifyHomeStudyDocument"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <PAGE_PARAMETER NAME="homeStudyDocumentID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyDocumentID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$homeStudyDocumentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$homeStudyDocumentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$homeStudyDocumentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$homeStudyID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$homeStudyID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$documentTemplateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$documentTemplateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$attachmentID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$attachmentID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$createdBy"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$createdBy"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$dateCreated"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$dateCreated"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$recordStatus"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$recordStatus"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="documentDetails$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="documentDetails$versionNo"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.SaveAndOpenWord"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        PAGE_ID="HomeStudy_controlMSWord"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="homeStudyDocumentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyDocumentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="documentDetails$homeStudyID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="homeStudyID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00248198, GP -->
+  <CLUSTER
+    LABEL_WIDTH="45"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248198 -->
+
+
+    <FIELD LABEL="Field.Label.DateCreated">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.DocumentDescription"
+      WIDTH="75"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentDescription"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="documentDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.CreatedBy"
+      WIDTH="75"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createdBy"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD
+      LABEL="Field.Label.DocumentTemplate"
+      WIDTH="75"
+    >
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="documentTemplateName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

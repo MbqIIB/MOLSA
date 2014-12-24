@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="ProcessApplicationService"
+   xmlns:apachesoap="http://xml.apache.org/xml-soap"
+   xmlns:ia="http://www.curamsoftware.com/WorkspaceServices/IntakeApplication"
+   xmlns:impl="ProcessApplicationService" xmlns:intf="ProcessApplicationService"
+   xmlns:tns1="http://wsintf.externalservices.workspaceservices.curam"
+   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:wr="http://www.curamsoftware.com/WorkspaceServices/WithdrawalRequest"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+   <wsdl:types>
+      <xsd:schema>
+         <xsd:import schemaLocation="IntakeApplication.xsd"
+            namespace="http://www.curamsoftware.com/WorkspaceServices/IntakeApplication"/>
+
+         <xsd:import schemaLocation="WithdrawalRequest.xsd"
+            namespace="http://www.curamsoftware.com/WorkspaceServices/WithdrawalRequest"/>
+      </xsd:schema>
+   </wsdl:types>
+
+   <wsdl:message name="ProcessApplicationException">
+      <wsdl:part element="ia:fault" name="fault"/>
+   </wsdl:message>
+
+   <wsdl:message name="sendApplicationRequest">
+      <wsdl:part element="ia:intakeApplication" name="part"/>
+   </wsdl:message>
+
+   <wsdl:message name="sendApplicationResponse">
+      <wsdl:part element="ia:sendApplicationResponseType" name="sendApplicationReturn"/>
+   </wsdl:message>
+
+   <wsdl:message name="WithdrawalRequestException">
+      <wsdl:part element="wr:withdrawalRequestFault" name="withdrawalRequestFault"/>
+   </wsdl:message>
+
+   <wsdl:message name="sendWithdrawalRequest">
+      <wsdl:part element="wr:withdrawalRequest" name="part"/>
+   </wsdl:message>
+
+   <wsdl:message name="sendWithdrawalRequestResponse">
+      <wsdl:part element="wr:sendWithdrawalRequestResponseType" name="sendWithdrawalRequestReturn"/>
+   </wsdl:message>
+
+   <wsdl:portType name="ProcessApplicationService">
+
+      <wsdl:operation name="sendApplication">
+         <wsdl:input message="intf:sendApplicationRequest" name="sendApplicationRequest"/>
+         <wsdl:output message="intf:sendApplicationResponse" name="sendApplicationResponse"/>
+         <wsdl:fault message="intf:ProcessApplicationException" name="ProcessApplicationException"/>
+      </wsdl:operation>
+
+      <wsdl:operation name="sendWithdrawalRequest">
+         <wsdl:input message="intf:sendWithdrawalRequest" name="sendWithdrawalRequest"/>
+         <wsdl:output message="intf:sendWithdrawalRequestResponse"
+            name="sendWithdrawalRequestResponse"/>
+         <wsdl:fault message="intf:WithdrawalRequestException" name="WithdrawalRequestException"/>
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ProcessApplicationServiceSoapBinding" type="intf:ProcessApplicationService">
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="sendApplication">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="sendApplicationRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+
+         <wsdl:output name="sendApplicationResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+
+         <wsdl:fault name="ProcessApplicationException">
+            <wsdlsoap:fault name="ProcessApplicationException" use="literal"/>
+         </wsdl:fault>
+      </wsdl:operation>
+
+      <wsdl:operation name="sendWithdrawalRequest">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="sendWithdrawalRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+
+         <wsdl:output name="sendWithdrawalRequestResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+
+         <wsdl:fault name="WithdrawalRequestException">
+            <wsdlsoap:fault name="WithdrawalRequestException" use="literal"/>
+         </wsdl:fault>
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <!-- the location of the web service is read from the ExternalSystem configuration 
+        entity, not from the WSDL  -->
+   <wsdl:service name="ProcessApplicationServiceService">
+      <wsdl:port binding="intf:ProcessApplicationServiceSoapBinding"
+         name="ProcessApplicationService">
+         <wsdlsoap:address location="http://www.ValueSpecifiedInConfiguration.com"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

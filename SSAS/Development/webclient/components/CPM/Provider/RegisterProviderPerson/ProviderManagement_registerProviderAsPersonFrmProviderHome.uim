@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2012 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the provider person registration  page  -->
+<!-- BEGIN, CR00314525, SS -->
+<PAGE
+  PAGE_ID="ProviderManagement_registerProviderAsPersonFrmProviderHome"
+  WINDOW_OPTIONS="width=850,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00314525 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+
+
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <PAGE_PARAMETER NAME="relatedConcernID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="relatedConcernID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="relatedConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="registerProviderPerson"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="POPULATE"
+      PROPERTY="key$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="POPULATE"
+    OPERATION="viewProvider"
+    PHASE="DISPLAY"
+  />
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_duplicateRegisterPersonView.vim"/>
+
+
+  <!-- BEGIN, CR00235784, GP -->
+  <ACTION_SET ALIGNMENT="CENTER">
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Register"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00246409, SS -->
+      <LINK PAGE_ID="ProviderManagement_listMembersForProvider">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+
+
+      </LINK>
+      <!-- END, CR00246409 -->
+
+
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+      </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00235784 -->
+
+
+</PAGE>

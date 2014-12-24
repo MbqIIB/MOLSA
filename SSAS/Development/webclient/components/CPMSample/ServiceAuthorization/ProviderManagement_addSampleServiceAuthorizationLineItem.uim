@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007-2009 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_addSampleServiceAuthorizationLineItem"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+
+
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.ServiceAuthorizationLineItemDetails"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceAuthorization"
+    NAME="ACTION"
+    OPERATION="addServiceAuthorizationLineItem"
+    PHASE="ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceAuthorizationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$serviceAuthorizationID"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorizationLineItems">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <LINK PAGE_ID="ProviderManagement_viewSampleServiceAuthorization">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceAuthorizationID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </ACTION_SET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+
+
+    <FIELD LABEL="Field.Label.UnitsAuthorized">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$unitsAuthorized"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.FromDate">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$fromDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnits">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Provider">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerID"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Service">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$serviceID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ToDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$toDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.MaximumUnitsFrequency"
+      USE_BLANK="true"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$maximumUnitFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.UnitsAmountFixedInd">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$unitsAmountFixedInd"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00144022, ABS -->
+  <CLUSTER
+    LABEL_WIDTH="25"
+    TITLE="Field.Label.Nominee"
+  >
+    <CONTAINER
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Nominee"
+    >
+
+
+      <!-- BEGIN, CR00142313, KG -->
+      <FIELD
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+        WIDTH="32"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$nomineeType"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00142313 -->
+      <FIELD WIDTH="45">
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="details$nomineeID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <!-- END, CR00144022 -->
+  <!-- BEGIN, CR00117445, SG -->
+  <CLUSTER
+    NUM_COLS="1"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.ProviderCategoryType"
+  >
+
+
+    <!-- BEGIN, CR00137151, AS -->
+    <FIELD
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      WIDTH="70"
+    >
+      <!-- END, CR00137151 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="providerType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00117445 -->
+</PAGE>

@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/ruleset.xsd"
+>
+  <Product
+    comment=""
+    id="PRODUCT_51"
+    legislationbase=""
+    producttype="RT2"
+  >
+    <Label
+      highlightonfailure="true"
+      legislationlink=""
+    >
+      <RuleName>
+        <Text
+          locale="en_US"
+          value="Provider Invoice"
+        />
+      </RuleName>
+      <SuccessText>
+        <Text
+          locale="en_US"
+          value="Provider Invoice succeeded"
+        />
+      </SuccessText>
+      <FailureText>
+        <Text
+          locale="en_US"
+          value="Provider Invoice failed"
+        />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation"/>
+      <DataItem name="deliveryFrequency"/>
+      <DataItem name="personReferenceNumber"/>
+      <DataItem name="claimReferenceNumber"/>
+      <DataItem name="assessmentReferenceNumber"/>
+    </DataAccess>
+    <DataAccess name="ProviderInvoiceEvidence">
+      <DataItem name="paymentAmount"/>
+      <DataItem name="invoiceLineItemID"/>
+    </DataAccess>
+    <DataAccess name="ProviderInvoiceConstants">
+      <DataItem name="paymentAmount"/>
+      <DataItem name="totalCount"/>
+    </DataAccess>
+    <RuleGroup
+      executionmode="stoponresult"
+      id="1"
+    >
+      <Label
+        highlightonfailure="true"
+        legislationlink=""
+      >
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Provider Invoice"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Provider Invoice Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="RuleListGroup for Provider Invoice Failed"
+          />
+        </FailureText>
+      </Label>
+      <RuleListGroup
+        executionmode="executeall"
+        id="2"
+        listgroup="ProviderInvoiceEvidence"
+        operation="and"
+        summaryitem="true"
+      >
+        <Label
+          highlightonfailure="true"
+          legislationlink=""
+        >
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="RuleListGroup for Provider Invoice"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="RuleListGroup for Provider Invoice Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="RuleListGroup for Provider Invoice Failed"
+            />
+          </FailureText>
+        </Label>
+        <DataItemAssignment
+          dataitem="ProviderInvoiceConstants.totalCount"
+          id="3"
+          value="ProviderInvoiceConstants.totalCount + 1"
+        />
+        <DataItemAssignment
+          dataitem="ProviderInvoiceConstants.paymentAmount"
+          id="4"
+          value="ProviderInvoiceConstants.paymentAmount + ProviderInvoiceEvidence.current.paymentAmount"
+        />
+      </RuleListGroup>
+      <RuleGroup
+        executionmode="stoponresult"
+        id="5"
+        operation="and"
+        summaryitem="false"
+      >
+        <Label>
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="RuleGroup for Provider Invoice"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="RuleGroup for Provider Invoice Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="RuleGroup for Provider Invoice Failed"
+            />
+          </FailureText>
+        </Label>
+        <Rule id="6">
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Provider Invoice"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Provider Invoice Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Total Count Rule for Provider Invoice Failed"
+              />
+            </FailureText>
+          </Label>
+          <Condition
+            closingbrackets="0"
+            dataitemlhs="ProviderInvoiceConstants.totalCount"
+            dataitemrhs="0"
+            id="7"
+            openingbrackets="0"
+            operation="&gt;"
+          />
+        </Rule>
+        <Rule id="8">
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Provider Invoice"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Provider Invoice Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Total Amount Rule for Provider Invoice Failed"
+              />
+            </FailureText>
+          </Label>
+          <Condition
+            closingbrackets="0"
+            dataitemlhs="ProviderInvoiceConstants.paymentAmount"
+            dataitemrhs="0"
+            id="9"
+            openingbrackets="0"
+            operation="&gt;"
+          />
+        </Rule>
+      </RuleGroup>
+    </RuleGroup>
+    <ObjectiveGroup
+      id="10"
+      priority="0"
+    >
+      <Label highlightonfailure="true">
+        <RuleName>
+          <Text
+            locale="en_US"
+            value="Provider Invoice Objective Group"
+          />
+        </RuleName>
+        <SuccessText>
+          <Text
+            locale="en_US"
+            value="Provider Invoice Objective Group Succeeded"
+          />
+        </SuccessText>
+        <FailureText>
+          <Text
+            locale="en_US"
+            value="Provider Invoice Objective Group Failed"
+          />
+        </FailureText>
+      </Label>
+      <ObjectiveListGroup
+        conjunction="all"
+        id="11"
+        listgroup="ProviderInvoiceEvidence"
+      >
+        <Label highlightonfailure="true">
+          <RuleName>
+            <Text
+              locale="en_US"
+              value="ProviderInvoiceObjectiveListGroup"
+            />
+          </RuleName>
+          <SuccessText>
+            <Text
+              locale="en_US"
+              value="Provider Invoice Objective List Group Succeeded"
+            />
+          </SuccessText>
+          <FailureText>
+            <Text
+              locale="en_US"
+              value="Provider Invoice Objective List Group Failed"
+            />
+          </FailureText>
+        </Label>
+        <RuleGroup
+          executionmode="stoponresult"
+          id="12"
+          operation="and"
+          summaryitem="false"
+        >
+          <Label>
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="RuleGroup for Provider Invoice"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="RuleGroup for Provider Invoice Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="RuleGroup for Provider Invoice Failed"
+              />
+            </FailureText>
+          </Label>
+          <Rule id="13">
+            <Label>
+              <RuleName>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Invoice"
+                />
+              </RuleName>
+              <SuccessText>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Invoice Succeeded"
+                />
+              </SuccessText>
+              <FailureText>
+                <Text
+                  locale="en_US"
+                  value="Total Amount Rule for Provider Invoice Failed"
+                />
+              </FailureText>
+            </Label>
+            <Condition
+              closingbrackets="0"
+              dataitemlhs="ProviderInvoiceEvidence.current.paymentAmount"
+              dataitemrhs="0"
+              id="14"
+              openingbrackets="0"
+              operation="&gt;"
+            />
+          </Rule>
+        </RuleGroup>
+        <Objective
+          deductionallowable="true"
+          description=""
+          id="15"
+          priority="0"
+          ratefctype="CT1"
+          ratetarget="RC1"
+          ratetype="PC501"
+          recordid="10"
+          relatedreference="ProviderInvoiceEvidence.current.invoiceLineItemID"
+          targetid="Globals.personReferenceNumber"
+        >
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text
+                locale="en_US"
+                value="Provider Invoice Objective"
+              />
+            </RuleName>
+            <SuccessText>
+              <Text
+                locale="en_US"
+                value="Provider Invoice Objective Succeeded"
+              />
+            </SuccessText>
+            <FailureText>
+              <Text
+                locale="en_US"
+                value="Provider Invoice Objective Failed"
+              />
+            </FailureText>
+          </Label>
+          <ObjectiveTag
+            id="16"
+            name="Provider Invoice Payment"
+            pattern="000020100"
+            recordid="120"
+            type="RTT3"
+            value="ProviderInvoiceEvidence.current.paymentAmount"
+          />
+        </Objective>
+      </ObjectiveListGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>

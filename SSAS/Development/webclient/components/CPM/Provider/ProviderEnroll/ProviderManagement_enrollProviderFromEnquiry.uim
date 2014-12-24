@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is page is used to register a provider from enquiry -->
+<PAGE
+  PAGE_ID="ProviderManagement_enrollProviderFromEnquiry"
+  WINDOW_OPTIONS="width=750"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderEnquiry"
+    NAME="DISPLAY"
+    OPERATION="transferEnquiryToProvider"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="createProviderEnrollment"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00379189, SS -->
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="DISPLAY1"
+    OPERATION="readIban"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00379189 -->
+
+
+  <PAGE_PARAMETER NAME="providerEnquiryID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerEnquiryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerEnquiryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerEnquiryID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$providerEnquiryID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="result$versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$versionNo"
+    />
+  </CONNECT>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00208276, PS -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Finish"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    <!-- END, CR00208276 -->
+  </ACTION_SET>
+
+
+  <!-- BEGIN, CR00233823, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00233823 -->
+
+
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00100280, GYH -->
+    <FIELD LABEL="Field.Label.PreferredLanguage">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="prefLanguage"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$prefLanguage"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00100280 -->
+
+
+    <FIELD CONTROL="SKIP"/>
+
+
+    <!-- BEGIN, CR00100280, GYH -->
+    <FIELD LABEL="Field.Label.PrefferedCommunication">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="prefCommMethod"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$prefCommMethod"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00100280 -->
+
+
+    <!-- BEGIN, CR00378940, SS -->
+    <FIELD
+      LABEL="Field.Label.PreferredSEMethod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$preferredServiceEnquiryMethodOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00378940 -->
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00249047, PS -->
+  <!-- BEGIN, CR00236707, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.PrimaryAddress"
+  >
+    <!-- END, CR00236707 -->
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$addressData"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$addressData"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00236707, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.PhoneNumber"
+  >
+    <!-- END, CR00236707 -->
+    <FIELD
+      LABEL="Field.Label.PhoneType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$phoneType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$phoneType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AreaCode"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$phoneAreaCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$phoneAreaCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Extension"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$phoneExtension"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$phoneExtension"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.CountryCode"
+      WIDTH="5"
+      WIDTH_UNITS="CHARS"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$phoneCountryCode"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$phoneCountryCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Phone">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$phoneNumber"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$phoneNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00236707, PS -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.BankDetails"
+  >
+    <!-- END, CR00236707 -->
+    <!-- END, CR00249047 -->
+
+
+    <!-- BEGIN, CR00379189, SS -->
+    <CONDITION>
+      <IS_FALSE
+        NAME="DISPLAY1"
+        PROPERTY="ibanInd"
+      />
+    </CONDITION>
+    <!-- END, CR00379189 -->
+
+
+    <FIELD
+      LABEL="Field.Label.AccountName"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankAccountName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.BankBranchName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankSortCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.JointAccount"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankJointAccount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AccountNumber"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankAccountNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AccountType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankAccountType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00379189, SS -->
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.BankDetails"
+  >
+
+
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY1"
+        PROPERTY="ibanInd"
+      />
+    </CONDITION>
+
+
+    <FIELD
+      LABEL="Field.Label.IBAN"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$ibanOpt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AccountName"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankAccountName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.BankBranchName">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankSortCode"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.JointAccount"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankJointAccount"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.BIC"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bicOpt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AccountNumber"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankAccountNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AccountType"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$bankAccountType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00379189 -->
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.PaymentDetails"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.MethodOfPayment"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$methodOfPayment"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD LABEL="Field.Label.Currency">
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$currencyType"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.PaymentFrequency"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$paymentFrequency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <!-- BEGIN, CR00140964, AS -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.ProviderCategoryType"
+  >
+    <!-- BEGIN, CR00236707, PS -->
+    <FIELD
+      CONFIG="CT_DISPLAY_LABELS"
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      LABEL="Field.Label.Category"
+      WIDTH="50"
+    >
+      <!-- END, CR00236707 -->
+      <!-- END, CR00140964 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerCategory"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$providerCategory"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00378940, SS -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.AdditionalInformation"
+  >
+
+
+    <FIELD
+      LABEL="Field.Label.PhysicalCapacity"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$physicalCapacityString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ReservationGracePeriod"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$reservationGracePeriodString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.DesignatedCapacity"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$designatedCapacityString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.AcceptCWReferral">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$acceptCWReferral"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="16"
+    NUM_COLS="1"
+  >
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.AreasServedInfo"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$areasServedInformationOpt"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.ClientInfo"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$clientInformationOpt"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <!-- END, CR00378940 -->
+
+
+</PAGE>

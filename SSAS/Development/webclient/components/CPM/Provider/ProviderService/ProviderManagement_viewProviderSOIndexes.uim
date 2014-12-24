@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- This page allows the user to view provider offering  details.           -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewProviderSOIndexes"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerOfferingID"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="DISPLAY2"
+    OPERATION="listTaxonomyTermsByPOID"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="providerOfferingID$providerOfferingKey"
+    />
+  </CONNECT>
+
+
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="Menu.ViewProviderServiceOffering"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewProviderServiceOffering">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOServiceRate"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listProviderServiceRate">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOPlaceLimit"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPOPlaceLimits">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOPerformanceMeasures"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPOPerformanceMeasures">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ViewPOIndexes"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewProviderSOIndexes">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <LIST TITLE="List.Title.TaxonomyIndexing">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addTermsToExistingPOIndex"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="dtls$taxonomyTermIDs"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="indexedTermIds"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="dtls$taxonomyIndexTermName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="selectedTerms"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.RemoveTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_listTermsForRemoval"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="dtls$taxonomyTermIDs"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="indexedTermIds"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.IndexingTerms"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="dtls$taxonomyIndexTermName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServicesIndexed"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="dtls$taxonomyServices"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00262113, GP -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_listProvidersAndServicesByTaxonomyTerm"
+      >
+        <!-- END, CR00262113 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="dtls$taxonomyTermIDs"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyTermID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="dtls$searchInd"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="searchInd"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00262113, GP -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <!-- END, CR00262113 -->
+      </LINK>
+    </FIELD>
+  </LIST>
+
+
+  <LIST TITLE="List.Title.UpdateTaxonomyIndexing">
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.RemoveTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_listInEditTermForRemoval"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY2"
+              PROPERTY="updateddtls$taxonomyTermIDs"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="indexedTermIds"
+            />
+          </CONNECT>
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="contractVersionID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.IndexingTerms"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="updateddtls$taxonomyIndexTermName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.ServicesIndexed"
+      WIDTH="40"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="updateddtls$taxonomyServices"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

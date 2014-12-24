@@ -1,0 +1,195 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>CREOLEAttributeInheritance</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Rule Attribute Inheritance
+
+
+:</b>
+<i>An inheritance relationship between two <a href=CREOLEAttributeAvailability.html>available rule attributes</a>.
+
+
+</i>
+
+
+
+<P>A row on this entity indicates that a <a href=CREOLERuleAttribute.html>Rule Attribute</a> that is "in effect" on a <a href=CREOLERuleClass.html>Rule Class</a> is an ancestor of another <a href=CREOLERuleAttribute.html>Rule Attribute</a> in effect on a descendent <a href=CREOLERuleClass.html>Rule Class</a>.</P>
+
+<P>A <a href=CREOLERuleAttribute.html>Rule Attribute</a> is an ancestor of another if it is:</P>
+
+<UL>
+
+<LI>inherited by a descendent <a href=CREOLERuleClass.html>Rule Class</a>; or</LI>
+
+<LI>overridden by a descendent <a href=CREOLERuleClass.html>Rule Class</a>.</LI>
+
+</UL>
+
+
+
+<p><b>Example</b></p>
+<P>If rule class C extends rule class B, which in turn extends rule class A, with the following rule attributes:</P>
+
+<UL>
+
+<LI>A declares a1 and a2</LI>
+
+<LI>B declares b1 and overrides a2</LI>
+
+<LI>C declares c1 and overrides b1</LI>
+
+</UL>
+
+
+
+<P>...then the following rows will be stored on this entity:</P>
+
+
+
+<UL>
+
+<LI>A.a1 (available on A) ancestor of A.a1 (available on A);</LI>
+
+<LI>A.a1 (available on A) ancestor of A.a1 (available on B);</LI>
+
+<LI>A.a1 (available on A) ancestor of A.a1 (available on C);</LI>
+
+
+
+<LI>A.a2 (available on A) ancestor of A.a2 (available on A);</LI>
+
+<LI>A.a2 (available on A) ancestor of B.a2 (available on B);</LI>
+
+<LI>A.a2 (available on A) ancestor of B.a2 (available on C);</LI>
+
+
+
+<LI>A.a1 (available on B) ancestor of A.a1 (available on B);</LI>
+
+<LI>A.a1 (available on B) ancestor of A.a1 (available on C);</LI>
+
+
+
+<LI>B.a2 (available on B) ancestor of B.a2 (available on B);</LI>
+
+<LI>B.a2 (available on B) ancestor of B.a2 (available on C);</LI>
+
+
+
+<LI>B.b1 (available on B) ancestor of B.b1 (available on B);</LI>
+
+<LI>B.b1 (available on B) ancestor of C.b1 (available on C);</LI>
+
+
+
+<LI>A.a1 (available on C) ancestor of A.a1 (available on C);</LI>
+
+
+
+<LI>B.a2 (available on C) ancestor of B.a2 (available on C);</LI>
+
+
+
+<LI>C.b1 (available on C) ancestor of C.b1 (available on C); and</LI>
+
+
+
+<LI>C.c1 (available on C) ancestor of C.c1 (available on C).</LI>
+
+</UL>
+
+
+
+<p><b>Technical Notes</b></p>
+
+
+<P>This entity contains data which is automatically denormalized from <a href=CREOLERuleSet.html>Rule Set</a>.  All locking is handled by <a href=CREOLERuleSet.html>Rule Set</a> and <a href=CREOLEMigrationControl.html>Rule Set Migration Control</a>.</P>
+
+
+
+<P>The data on this table may only be read or written using CREOLE APIs - no direct access to the underlying data is supported.  DMX files and/or database scripts must not be used to populate this entity.</P>
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">creoleAttributeInheritanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique ID of this database row.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">ancestorAttrAvailabilityID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Identifier of the ancestor attribute availability in the inheritance relationship.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">descendantAttrAvailabilityID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Identifier of the descendent attribute availability in the inheritance relationship.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">migrationAction</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A marker whilst this row is being created or removed as part of rule set migration.  Outside of rule set migration the value will always be NULL.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">CREOLEAttributeInheritance.ancestorAttrAvailabilityID</td><td class="dataLast"><a href="CREOLEAttributeAvailability.html#creoleAttributeAvailabilityID">CREOLEAttributeAvailability.creoleAttributeAvailabilityID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">CREOLEAttributeInheritance.descendantAttrAvailabilityID</td><td class="dataLast"><a href="CREOLEAttributeAvailability.html#creoleAttributeAvailabilityID">CREOLEAttributeAvailability.creoleAttributeAvailabilityID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

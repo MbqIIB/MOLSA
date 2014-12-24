@@ -1,0 +1,302 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>FinancialInstruction</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Financial Instruction:</b>
+<i> A credit or debit transaction relating to a <a href=Concern.html>participant</a>.</i>
+<P>Each financial instruction represents a rolled-up view of one or more <a href=InstructionLineItem.html>instruction line items</a> (ILIs). 'Rolling up' is the process of amalgamating a number of <a href=InstructionLineItem.html>ILIs</a> of the same category, status, deliveryMethod, currencyType, caseNomineeID and concernRoleID in order to create one financial instruction.</P>
+<P>The resultant type of the financial instruction depends on the category of its constituent <a href=InstructionLineItem.html>ILIs</a>.  <a href=InstructionLineItem.html>ILIs</a> are rolled-up to create either payments or liabilities, depending on the <a href=InstructionLineItem.html>ILIs'</a> category, to be issued to particular <a href=Concern.html>participants</a> or <a href=CaseNominee.html>case nominees</a>.</P>
+<P>A rolled-up financial instruction generates a <a href=PaymentInstruction.html>payment instruction</a> or <a href=LiabilityInstruction.html>liability instruction</a> (depending on the financial instruction type), which in turn is used in the issuing of <a href=PaymentInstrument.html>payment instruments</a> and <a href=LiabilityInstrument.html>liability instruments</a>.</P>
+<P>Rolling up prevents multiple payments/liabilities and financial advice notices being issued for every product component payable/billable to a <a href=Concern.html>participant</a> or <a href=CaseNominee.html>case nominee</a>.</P>
+<p><b>Example</b></p><P>When a <a href=Utility.html>utility</a> company is being paid, creating a payment for every utility deduction created on a <a href=Concern.html>participant</a> or <a href=CaseNominee.html>case nominee</a> account is not desirable as this would result in multiple checks being issued.</P>
+<P>The <a href=Utility.html>utility</a> is only interested in receiving a check for the total amount deducted from one or more accounts over a certain period of time.</P> 
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::Core::Reference Model::Financial::Entity Objects::FinancialInstruction::FinancialInstruction</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">core\model\Packages\Financial Manager Packages\FinancialInstruction_cat.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">yes</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">LAST_UPDATED_FIELD</td><td class="dataLast">yes</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (12)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="finInstructionID">finInstructionID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique reference number assigned by the system to a Financial Instruction record</td><td class="data"><a href="../domains/FINANCIAL_INSTRUCTION_ID.html">FINANCIAL_INSTRUCTION_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="typeCode">typeCode</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Code value to denote the type of the Financial Instruction. Populated from the FinancialInstruction code table.</td><td class="data"><a href="../domains/FINANCIAL_INSTRUCTION_CODE.html">FINANCIAL_INSTRUCTION_CODE</a></td><td class="data"><a href="../codetables/ct-FinancialInstruction.html">FinancialInstruction</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="concernRoleID">concernRoleID</a></td><td class="data">details</td><td class="data">no</td><td class="data">concernRoleID for the ConcernRole in respect of which this FinancialInstruction was issued</td><td class="data"><a href="../domains/CONCERN_ROLE_ID.html">CONCERN_ROLE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="statusCode">statusCode</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Code value to indicate the current status of the Financial Instruction. Populated from the FinancialInstructionStatus code table.</td><td class="data"><a href="../domains/FIN_INSTRUCTION_STATUS_CODE.html">FIN_INSTRUCTION_STATUS_CODE</a></td><td class="data"><a href="../codetables/ct-FinInstructionStatus.html">FinInstructionStatus</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="amount">amount</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">A financial amount associated with the Financial Instruction.  'This consists of the total of the Instruction Line Items associated with the Financial Instruction ID.</td><td class="data"><a href="../domains/CURAM_AMOUNT.html">CURAM_AMOUNT</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_MONEY</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="effectiveDate">effectiveDate</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Date Financial Instruction is valid from.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="postingDate">postingDate</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Creation Date of the Financial Instruction on the system.  'Date on which the Financial Instruction is 'Posted' to the Concern Role Account.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="creditDebitType">creditDebitType</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Code value to indicate whether the Instruction/Line Item is a credit or debit transaction. Populated from the CreditDebit code table.</td><td class="data"><a href="../domains/CREDIT_DEBIT_CODE.html">CREDIT_DEBIT_CODE</a></td><td class="data"><a href="../codetables/ct-CreditDebit.html">CreditDebit</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="currencyTypeCode">currencyTypeCode</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Code value to denote the type of currency.</td><td class="data"><a href="../domains/CURRENCY_CODE.html">CURRENCY_CODE</a></td><td class="data"><a href="../codetables/ct-Currency.html">Currency</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="currencyExchangeID">currencyExchangeID</a></td><td class="data">details</td><td class="data">yes</td><td class="data">Unique identifier assigned by the system to the foreign exchange rate for a specific currency type for a specific time period.</td><td class="data"><a href="../domains/CURRENCY_EXCHANGE_ID.html">CURRENCY_EXCHANGE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="instrumentGenInd">instrumentGenInd</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Indicator value to denote whether or not a Payment or Liability Instrument is to be generated.</td><td class="data"><a href="../domains/CURAM_INDICATOR.html">CURAM_INDICATOR</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="comments">comments</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Free text registered by the User</td><td class="data"><a href="../domains/COMMENTS.html">COMMENTS</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;300&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">FinancialInstruction.concernRoleID</td><td class="dataLast"><a href="ConcernRole.html#concernRoleID">ConcernRole.concernRoleID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">FinancialInstruction.currencyExchangeID</td><td class="dataLast"><a href="CurrencyExchange.html#currencyExchangeID">CurrencyExchange.currencyExchangeID</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="AdjustmentInstruction.html#finInstructionID">AdjustmentInstruction.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="FinancialInstructionStatus.html#finInstructionID">FinancialInstructionStatus.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="InstructionLineItem.html#finInstructionID">InstructionLineItem.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="LiabilityInstruction.html#finInstructionID">LiabilityInstruction.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="PaymentInstruction.html#finInstructionID">PaymentInstruction.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="PaymentReceivedInstruction.html#finInstructionID">PaymentReceivedInstruction.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="PaymentRegenerationRequest.html#regenFinInstructID">PaymentRegenerationRequest.regenFinInstructID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ReversalInstruction.html#finInstructionID">ReversalInstruction.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="WMInstanceData.html#financialInstructionID">WMInstanceData.financialInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="WriteOffInstruction.html#finInstructionID">WriteOffInstruction.finInstructionID</a></td><td class="dataLast">FinancialInstruction.finInstructionID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (3)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">FIConRoleEffDate</td><td class="dataLast">concernRoleID, effectiveDate</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">FIConRoleIdTypeSta</td><td class="dataLast">concernRoleID, typeCode, statusCode</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">FiancInstrIdx</td><td class="dataLast">currencyExchangeID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (19)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modifyStatus</td><td class="data">nsmodify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+</td><td class="data">To modify the statusCode by optimistic locking on a Financial Instruction record.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByConcernRoleIDTypeStatus</td><td class="data">nsreadmulti</td><td class="data">&nbsp;</td><td class="data">To get a list of financial instructions of one type with a particular status, for a specified concern role.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByConcernRoleIDDateRange</td><td class="data">nsmulti</td><td class="data">&nbsp;</td><td class="data">To get a list of financial instructions for a Concern Role.</td><td class="dataLast"><a href="../sql/sql-FinancialInstruction-searchByConcernRoleIDDateRange.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">modifyStatusAmountEffectDate</td><td class="data">nsmodify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+</td><td class="data">To update the statusCode, effectiveDate and amount by optimistic locking on a financial instruction record.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByConcernRoleIDStatusDateRange</td><td class="data">nsmulti</td><td class="data">&nbsp;</td><td class="data">To get a list of financial instructions for a Concern Role.</td><td class="dataLast"><a href="../sql/sql-FinancialInstruction-searchByConcernRoleIDStatusDateRange.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByEffectiveDateRange</td><td class="data">readmulti</td><td class="data"><span style="white-space:nowrap;">ORDER_BY: effectiveDate</span>
+<br>
+<span>WHERE: financialInstruction.effectiveDate &gt;=
+:effectiveDateFrom
+and financialInstruction.effectiveDate &lt;=
+:effectiveDateTo
+</span>
+<br>
+</td><td class="data">To retrieve all records from the FinancialInstruction entity  where the effectiveDate is greater than the effectiveDateFrom and less than the effectiveDateTo.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modifyAmountEffectDate</td><td class="data">nsmodify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: yes</span>
+<br>
+</td><td class="data">To update the effectiveDate and amount by optimistic locking on a financial instruction record.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readLatestEffDateByConcernRoleID</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">To get the maximum effective Date from the FinancialInstruction entity using concernRoleID.</td><td class="dataLast"><a href="../sql/sql-FinancialInstruction-readLatestEffDateByConcernRoleID.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByCreationDateRange</td><td class="data">readmulti</td><td class="data"><span style="white-space:nowrap;">ORDER_BY: postingDate</span>
+<br>
+<span>WHERE: financialInstruction.postingDate &gt;=
+:creationDateFrom
+and financialInstruction.postingDate &lt;=
+:creationDateTo
+</span>
+<br>
+</td><td class="data">Searches FinancialInstruction table and returns all  records created in the date range supplied</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">getLatestEffDateByConcernRoleID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">@superseded - replaced by readLatestEffDateByConcernRoleID</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchAmountByStatusTypeAndCaseID</td><td class="data">nsmulti</td><td class="data">&nbsp;</td><td class="data">Returns amounts from all Financial Instruction records of specified type that have one of the two statuses required and belong to the specified case.</td><td class="dataLast"><a href="../sql/sql-FinancialInstruction-searchAmountByStatusTypeAndCaseID.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readFinInstructIDEffDateTypeAmt</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Returns financial instruction details for case instruction details list.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readStatus</td><td class="data">nsread</td><td class="data">&nbsp;</td><td class="data">Returns the status code for a financial instruction.</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">modifyCurExchgIDEffectiveDatebyKey</td><td class="data">nsmodify</td><td class="data">&nbsp;</td><td class="data">To update the currency exchange id and effective date  by optimistic locking on a financial instruction record</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readPaymentDateDetailsByCaseAndInstructionID</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">Reads the payment date for a financial instruction. The payment date is the latest due date on the instruction line items for an instruction.</td><td class="dataLast"><a href="../sql/sql-FinancialInstruction-readPaymentDateDetailsByCaseAndInstructionID.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readFinInstructListDetail</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">Reads the amount, effective date, type code, posting date and status code for a financial instruction.</td><td class="dataLast"><a href="../sql/sql-FinancialInstruction-readFinInstructListDetail.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">readPaymentDateDetailsByInstructionID</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">Reads the payment date for a financial instruction. The payment date is the latest due date on the instruction line items for an instruction.</td><td class="dataLast"><a href="../sql/sql-FinancialInstruction-readPaymentDateDetailsByInstructionID.html">SQL</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

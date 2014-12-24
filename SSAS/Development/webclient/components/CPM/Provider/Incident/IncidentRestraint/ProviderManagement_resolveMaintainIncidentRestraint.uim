@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2011, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This script opens the Maintain Incident Restraint pages.                      -->
+<PAGE PAGE_ID="ProviderManagement_resolveMaintainIncidentRestraint">
+  <JSP_SCRIPTLET>
+    
+
+    curam.omega3.request.RequestHandler 
+      rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+       
+    String url = context;
+    
+    String incidentID = request.getParameter("incidentID");
+    String concernRoleID = request.getParameter("concernRoleID");
+    String incidentRestraintID = request.getParameter("incidentRestraintID");
+    String pageDescription=request.getParameter("pageDescription");
+    
+    String onWhomParticipantRoleID = request.getParameter("onWhomParticipantRoleID");
+    
+    if(onWhomParticipantRoleID.equals("0")){
+      url += "ProviderManagement_maintainIncidentRestraintNM";
+    }else{
+      url += "ProviderManagement_maintainIncidentRestraint";
+    }
+    
+    // BEGIN, CR00376993, PS
+    url += "Page.do?incidentID=" + curam.omega3.request.RequestUtils.escapeURL(incidentID) + "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription) + "&amp;incidentRestraintID=" + curam.omega3.request.RequestUtils.escapeURL(incidentRestraintID);
+    // END, CR00376993
+    
+    // Append the system parameters to the URL string. This is required to ensure the modal
+    // dialog boxes work correctly.
+    url += "&amp;" + rh.getSystemParameters();
+    
+    response.sendRedirect(response.encodeRedirectURL(url));
+  
+  </JSP_SCRIPTLET>
+</PAGE>

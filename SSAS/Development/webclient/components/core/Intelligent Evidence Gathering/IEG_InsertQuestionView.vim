@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006-2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- with Curam Software.                                                   -->
+<VIEW
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MaintainIEG"
+    NAME="getQuestionGroupBean"
+    OPERATION="getQuestionGroupByID"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainIEG"
+    NAME="areGroupsOrRDOsAvailableBean"
+    OPERATION="areGroupsOrRDOsAvailable"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainIEG"
+    NAME="insertQuestionBean"
+    OPERATION="insertQuestion"
+    PHASE="ACTION"
+  />
+  <PAGE_PARAMETER NAME="questionScriptIDParam"/>
+  <PAGE_PARAMETER NAME="questionGroupIDParam"/>
+  <PAGE_PARAMETER NAME="questionPageIDParam"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionGroupIDParam"
+    />
+    <TARGET
+      NAME="getQuestionGroupBean"
+      PROPERTY="questionGroupID$questionGroupID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionScriptIDParam"
+    />
+    <TARGET
+      NAME="getQuestionGroupBean"
+      PROPERTY="questionGroupID$scriptId"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionGroupIDParam"
+    />
+    <TARGET
+      NAME="insertQuestionBean"
+      PROPERTY="groupId"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionScriptIDParam"
+    />
+    <TARGET
+      NAME="insertQuestionBean"
+      PROPERTY="scriptId"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionScriptIDParam"
+    />
+    <TARGET
+      NAME="areGroupsOrRDOsAvailableBean"
+      PROPERTY="questionScriptID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionPageIDParam"
+    />
+    <TARGET
+      NAME="areGroupsOrRDOsAvailableBean"
+      PROPERTY="questionPageID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="Constant.False"
+    />
+    <TARGET
+      NAME="areGroupsOrRDOsAvailableBean"
+      PROPERTY="includeCurrentPage"
+    />
+  </CONNECT>
+  <!-- Only display this cluster if there are dependant scriptRelationships -->
+  <JSP_SCRIPTLET>
+  <![CDATA[
+    curam.omega3.texthelper.TextHelper th =
+      (curam.omega3.texthelper.TextHelper)pageContext.findAttribute("getQuestionGroupBean");
+    String scriptRelationships = th.getFieldValue("result$scriptRelationships");
+    
+    if (scriptRelationships.length() > 0) {
+  ]]>
+  </JSP_SCRIPTLET>
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="getQuestionGroupBean"
+          PROPERTY="scriptRelationships"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <JSP_SCRIPTLET>
+  <![CDATA[
+    }
+  ]]>
+  </JSP_SCRIPTLET>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.QuestionDetails"
+  >
+    <FIELD LABEL="Field.Label.QuestionID">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="id"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Mandatory">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="mandatory"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AnswerDataType">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="answerDataTypeWithTypeCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RecordUnanswered">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="recordUnanswered"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="20"
+    TITLE="Cluster.Title.Question"
+  >
+    <FIELD
+      LABEL="Field.Label.Question"
+      WIDTH="100"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="question"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.ScriptText"
+    >
+      <FIELD HEIGHT="3">
+        <CONNECT>
+          <TARGET
+            NAME="insertQuestionBean"
+            PROPERTY="scriptText"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.QuestionHelpText"
+    >
+      <FIELD HEIGHT="3">
+        <CONNECT>
+          <TARGET
+            NAME="insertQuestionBean"
+            PROPERTY="helpText"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.DefaultValue"
+  >
+    <CONDITION>
+      <IS_TRUE
+        NAME="areGroupsOrRDOsAvailableBean"
+        PROPERTY="groupOrRdoAvailable"
+      />
+    </CONDITION>
+    <CONTAINER>
+      <ACTION_CONTROL
+        IMAGE="FormulaHelperIcon"
+        LABEL="ActionControl.Label.FormulaHelper"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_NEW="true"
+          PAGE_ID="IEG_FormulaHelper"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.True"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="includeCurrentPage"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.True"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="isLoopsizeExpression"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.FormulaHelper"
+        TYPE="ACTION"
+      >
+        <LINK
+          OPEN_NEW="true"
+          PAGE_ID="IEG_FormulaHelper"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.True"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="includeCurrentPage"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.True"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="isLoopsizeExpression"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="defaultAnswer"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.DefaultValue"
+  >
+    <CONDITION>
+      <IS_FALSE
+        NAME="areGroupsOrRDOsAvailableBean"
+        PROPERTY="groupOrRdoAvailable"
+      />
+    </CONDITION>
+    <FIELD HEIGHT="4">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="defaultAnswer"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="40"
+    TITLE="Cluster.Title.Links"
+  >
+    <FIELD LABEL="Field.Label.Legislation">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="legislationLink"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Policy">
+      <CONNECT>
+        <TARGET
+          NAME="insertQuestionBean"
+          PROPERTY="policyLink"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</VIEW>

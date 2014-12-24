@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows user to view the utilization contract details for provider group. -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewUtilizationContractForProviderGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewUtilizationContract"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ProviderManagement_viewUtilizationContractForProviderGroup"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="viewUtilizationContractDtls$contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00208430, PS -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewUtilizationContractProviderOfferings"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ProviderManagement_listUtilizationContractProviderOfferingsForProviderGroup"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="viewUtilizationContractDtls$contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00208430 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.AmendmentHistory"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ProviderManagement_viewUtilizationContractAmendmentHistoryForProviderGroup"
+        SAVE_LINK="true"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="viewUtilizationContractDtls$contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- BEGIN, CR00208430, PS -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.MenuAttachments"
+      STYLE="in-page-link"
+    >
+      <!-- END, CR00208430 -->
+      <LINK PAGE_ID="ProviderManagement_listAttachmentForPGUtilizationContract">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="PAGE"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="UtilizationContract"
+    NAME="DISPLAY"
+    OPERATION="viewProviderGroupUtilizationContract"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00235795, PS -->
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY2"
+    OPERATION="getContractOwnerDetails"
+    PHASE="DISPLAY"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="contractVersionKey$contractVersionID"
+    />
+  </CONNECT>
+  <!-- END, CR00235795 -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$contractVersionID"
+    />
+  </CONNECT>
+
+
+  <!-- Contract Details -->
+  <!-- BEGIN, CR00248318, PS -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248318 -->
+    <FIELD LABEL="Field.Label.LicenseType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="requiredLicenseType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.GenerationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="generationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TerminationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="terminationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreatedBy">
+      <!-- BEGIN, CR00235795, PS -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="createdByFullName"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00180249, SK -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <!-- END, CR00180249 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY2"
+            PROPERTY="createdBy"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+        <!-- END, CR00235795 -->
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00208430, PS -->
+    <FIELD LABEL="Field.Label.GenerationReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="generationReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.TerminationReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="terminationReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00208430 -->
+  </CLUSTER>
+  <!-- BEGIN, CR00200333, SS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00200333 -->
+    <!-- List of Provider names -->
+    <!-- BEGIN, CR00235192, PS -->
+    <LIST
+      TITLE="List.Title.Providers"
+      WIDTH="90"
+    >
+      <!-- END, CR00235192 -->
+      <FIELD
+        LABEL="Field.Label.ProviderName"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerGroupAssociateName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="ProviderManagement_providerHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerGroupAssociateDtls$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00246089, PS -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerGroupAssociateDtls$providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <!-- END, CR00246089 -->
+        </LINK>
+      </FIELD>
+    </LIST>
+    <!-- List of Contract Contacts -->
+    <LIST TITLE="List.Title.Contacts">
+      <!-- BEGIN, CR00198612, SS -->
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <!-- END, CR00198612 -->
+        <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+          <!-- BEGIN, CR00197352, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_modifyContractContact"
+            WINDOW_OPTIONS="width=450"
+          >
+            <!-- END, CR00197352 -->
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="concernRoleID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="concernRoleID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <!-- BEGIN, CR00200333, SS -->
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$viewContractContactDetailsList$viewContractContactDetails$contractContactID"
+              />
+              <!-- END, CR00200333 -->
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="contractContactID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Contact.Delete">
+          <!-- BEGIN, CR00200333, SS -->
+          <!-- BEGIN, CR00198612, SS -->
+          <!-- BEGIN, CR00197352, SS -->
+          <!-- BEGIN, CR00187417, PS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_deleteContractContact"
+          >
+            <!-- END, CR00187417 -->
+            <!-- END, CR00197352 -->
+            <!-- END, CR00198612 -->
+            <!-- END, CR00200333 -->
+            <CONNECT>
+              <!-- BEGIN, CR00200333, SS -->
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$viewContractContactDetailsList$viewContractContactDetails$contractContactID"
+              />
+              <!-- END, CR00200333 -->
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="contractContactID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="viewContractContactDetails$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <!-- BEGIN, CR00198612, SS -->
+      </ACTION_SET>
+      <!-- END, CR00198612 -->
+      <!-- Contract Contact Link Page -->
+      <FIELD
+        LABEL="Field.Label.ContactName"
+        USE_BLANK="true"
+        USE_DEFAULT="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contactName"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00180249, SK -->
+        <LINK PAGE_ID="Participant_resolveRoleHome">
+          <!-- END, CR00180249 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contactConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="concernRoleType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="participantType"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ContactStartDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="viewContractContactDetails$startDate"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ContactEndDate">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="viewContractContactDetails$endDate"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <!-- Comments -->
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

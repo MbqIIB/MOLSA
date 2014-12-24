@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- This page allows the user to view provider offering  details.           -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewProviderServiceOffering"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00178272, AK -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="providerOfferingID"/>
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$providerOfferingKey$providerOfferingID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderOffering"
+    NAME="DISPLAY"
+    OPERATION="viewProviderOfferingDetails"
+  />
+
+
+  <!-- BEGIN, CR00157444, KR -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderOfferingApprovalCheck"
+    NAME="DISPLAY1"
+    OPERATION="listProviderOfferingApprovalChecks"
+  />
+
+
+  <!-- BEGIN, CR00228084, VR -->
+  <SERVER_INTERFACE
+    CLASS="POTaxonomyIndexing"
+    NAME="DISPLAY2"
+    OPERATION="listTaxonomyTermsByPOID"
+  />
+  <!-- END, CR00228084 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$providerOfferingKey$providerOfferingID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="providerOfferingID$providerOfferingKey"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00157444 -->
+
+
+  <!-- BEGIN, CR00168337, JSP -->
+
+
+  <!-- BEGIN, CR00229065, PS -->
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <!-- BEGIN, CR00199327, SS -->
+    <ACTION_CONTROL
+      LABEL="Menu.ViewProviderServiceOffering"
+      STYLE="in-page-current-link"
+      TYPE="ACTION"
+    >
+      <!-- END, CR00199327 -->
+      <LINK PAGE_ID="ProviderManagement_viewProviderServiceOffering">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOServiceRate"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listProviderServiceRate">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOPlaceLimit"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPOPlaceLimits">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ListPOPerformanceMeasures"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_listPOPerformanceMeasures">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="Menu.ViewPOIndexes"
+      STYLE="in-page-link"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewProviderSOIndexes">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="contractVersionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <!-- END, CR00229065 -->
+
+
+  <!-- END, CR00168337 -->
+
+
+  <!-- BEGIN, CR00207380, SS -->
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <!-- END, CR00207380 -->
+    <!-- BEGIN, CR00157444, KR -->
+    <LIST TITLE="List.Title.ProviderServiceApprovalCheck">
+      <!-- BEGIN, CR00199327, SS -->
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+        <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+          <!-- BEGIN, CR00207380, SS -->
+          <!-- BEGIN, CR00199327, SS -->
+          <!-- BEGIN, CR00197352, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_modifyProviderOfferingApprovalCheck"
+          >
+            <!-- END, CR00197352 -->
+            <!-- END, CR00199327-->
+            <!-- END, CR00207380 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY1"
+                PROPERTY="approvalCheckID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="approvalCheckID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="pageContextDescription"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="pageContextDescription"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$serviceOfferingName"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY1"
+                PROPERTY="versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <!-- BEGIN, CR00199327, SS -->
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <!-- BEGIN, CR00207545, SS -->
+          <!-- BEGIN, CR00200179, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_deleteProviderOfferingApprovalCheck"
+            WINDOW_OPTIONS="width=310"
+          >
+            <!-- END, CR00200179 -->
+            <!-- END, CR00207545 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY1"
+                PROPERTY="result$approvalCheckDtls$approvalCheckDtls$approvalCheckID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="approvalCheckID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY1"
+                PROPERTY="result$approvalCheckDtls$serviceOfferingName"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingName"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY1"
+                PROPERTY="result$approvalCheckDtls$approvalCheckDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <!-- END, CR00199327 -->
+      <FIELD LABEL="Field.Label.Percentage">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="percentage"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.Status">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="recordStatus"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00199327, SS -->
+      <DETAILS_ROW>
+        <INLINE_PAGE PAGE_ID="ProviderManagement_viewProviderOfferingApprovalCheck">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY1"
+              PROPERTY="approvalCheckID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="approvalCheckID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerOfferingDetails$serviceOfferingName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerOfferingName"
+            />
+          </CONNECT>
+        </INLINE_PAGE>
+      </DETAILS_ROW>
+      <!-- END, CR00199327 -->
+    </LIST>
+    <!-- END, CR00157444 -->
+    <!-- BEGIN, CR00207380, SS -->
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Comments"
+    >
+      <!-- BEGIN, CR00417165, GK -->
+      <FIELD
+        HEIGHT="3"
+        LABEL="Field.Label.Comments"
+      >
+        <!-- END, CR00417165 -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerOfferingDetails$providerOfferingDtls$comments"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
+  <!-- END, CR00207380 -->
+  <!-- BEGIN, CR00186815, GP -->
+  <!-- BEGIN, CR00246368, PS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00246368 -->
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.IntakeProcedure"
+    >
+      <CONTAINER LABEL="Field.Label.IntakeProcedureInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$intakeProcedureInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$intakeProcInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addIntakeInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="intakeProcAddInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$intkProcInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="intakeProcViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$intkProcInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.ClientFee"
+    >
+      <CONTAINER LABEL="Field.Label.ClientFeeInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$clientFeeInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$clientFeeInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addClientFeeInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="clientFeeAddInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$clientFeeInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="clientFeeViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$clientFeeInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.Eligibility"
+    >
+      <CONTAINER LABEL="Field.Label.EligibilityInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$eligibilityInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$eligibilityInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addEligibilityInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="eligibilityAddInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$eligibilityInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+
+
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="eligibilityViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$eligibilityInfoTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+
+
+    <CLUSTER
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.DocumentsRequired"
+    >
+      <CONTAINER LABEL="Field.Label.DocumentsRequiredInfo">
+        <FIELD HEIGHT="3">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$documentsRequiredInfo"
+            />
+          </CONNECT>
+        </FIELD>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_FALSE
+              NAME="DISPLAY"
+              PROPERTY="result$documentsReqInfoTranslationExistsInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addDocumentsRequiredInfoTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="key$providerOfferingKey$providerOfferingID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="providerOfferingID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="docReqdAddInd"
+            />
+          </CONDITION>
+          <!-- BEGIN, CR00206671, SS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_addLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=350"
+          >
+            <!-- END, CR00206671 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$docsReqdInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+          IMAGE="LocalizableTextTranslation"
+          LABEL="ActionControl.Label.TextTranslation"
+        >
+          <CONDITION>
+            <IS_TRUE
+              NAME="DISPLAY"
+              PROPERTY="docReqdViewInd"
+            />
+          </CONDITION>
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_viewLocalizableTextTranslation"
+            WINDOW_OPTIONS="width=700"
+          >
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$providerOfferingDetails$providerOfferingDtls$docsReqdInfTextID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="localizableTextID"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </CONTAINER>
+    </CLUSTER>
+  </CLUSTER>
+  <!-- END, CR00186815 -->
+
+
+  <!-- END, CR00178272 -->
+
+
+</PAGE>

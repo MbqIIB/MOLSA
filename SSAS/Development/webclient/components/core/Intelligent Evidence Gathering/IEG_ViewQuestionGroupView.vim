@@ -1,0 +1,1010 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2006-2008 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of       -->
+<!-- Curam Software, Ltd. ("Confidential Information"). You                 -->
+<!-- shall not disclose such Confidential Information and shall use it only -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<VIEW
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="getQuestionGroupBean"
+        PROPERTY="name"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <MENU MODE="NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ListQuestionGroups"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="IEG_ListQuestionGroups">
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainIEG"
+    NAME="getQuestionGroupBean"
+    OPERATION="getQuestionGroupByID"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainIEG"
+    NAME="listQuestionGroupChildrenBean"
+    OPERATION="listQuestionGroupChildren"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MaintainIEG"
+    NAME="listQuestionGroupTranslationsBean"
+    OPERATION="listQuestionGroupTranslations"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="questionGroupIDParam"/>
+  <PAGE_PARAMETER NAME="questionScriptIDParam"/>
+  <PAGE_PARAMETER NAME="questionDirectionParam"/>
+  <PAGE_PARAMETER NAME="questionGroupChildIDParam"/>
+  <PAGE_PARAMETER NAME="questionPageIDParam"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionGroupIDParam"
+    />
+    <TARGET
+      NAME="getQuestionGroupBean"
+      PROPERTY="questionGroupID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionScriptIDParam"
+    />
+    <TARGET
+      NAME="getQuestionGroupBean"
+      PROPERTY="scriptId"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionGroupIDParam"
+    />
+    <TARGET
+      NAME="listQuestionGroupChildrenBean"
+      PROPERTY="questionGroupID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionScriptIDParam"
+    />
+    <TARGET
+      NAME="listQuestionGroupChildrenBean"
+      PROPERTY="scriptId"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionDirectionParam"
+    />
+    <TARGET
+      NAME="listQuestionGroupChildrenBean"
+      PROPERTY="questionDirection"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionGroupChildIDParam"
+    />
+    <TARGET
+      NAME="listQuestionGroupChildrenBean"
+      PROPERTY="questionGroupChildId"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="questionGroupIDParam"
+    />
+    <TARGET
+      NAME="listQuestionGroupTranslationsBean"
+      PROPERTY="questionGroupByID$questionGroupID"
+    />
+  </CONNECT>
+
+
+  <!-- Only display this cluster if there are dependant scriptRelationships -->
+  <JSP_SCRIPTLET>
+  <![CDATA[
+    curam.omega3.texthelper.TextHelper th =
+      (curam.omega3.texthelper.TextHelper)pageContext.findAttribute("getQuestionGroupBean");
+    String scriptRelationships = th.getFieldValue("result$scriptRelationships");
+    
+    if (scriptRelationships.length() > 0) {
+  ]]>
+  </JSP_SCRIPTLET>
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="getQuestionGroupBean"
+          PROPERTY="scriptRelationships"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <JSP_SCRIPTLET>
+  <![CDATA[
+    }
+  ]]>
+  </JSP_SCRIPTLET>
+
+
+  <CLUSTER
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Label.Actions"
+  >
+    <CONTAINER>
+      <ACTION_CONTROL
+        IMAGE="CreateQuestionIcon"
+        LABEL="ActionControl.Label.CreateQuestion"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IEG_InsertQuestion"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateQuestion">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IEG_InsertQuestion"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER>
+      <ACTION_CONTROL
+        IMAGE="CreateTranslationIcon"
+        LABEL="ActionControl.Label.CreateQGTranslation"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IEG_InsertQuestionGroupTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="getQuestionGroupBean"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateQGTranslation">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IEG_InsertQuestionGroupTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="getQuestionGroupBean"
+              PROPERTY="name"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <CONTAINER>
+      <ACTION_CONTROL
+        IMAGE="CreateHyperlinkLabelIcon"
+        LABEL="ActionControl.Label.CreateHyperlinkLabel"
+      >
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IEG_InsertHyperlinkLabel"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.CreateHyperlinkLabel">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IEG_InsertHyperlinkLabel"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    LABEL_WIDTH="30"
+    TITLE="Cluster.Label.Details"
+  >
+    <FIELD LABEL="Field.Label.GroupID">
+      <CONNECT>
+        <SOURCE
+          NAME="getQuestionGroupBean"
+          PROPERTY="id"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="getQuestionGroupBean"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="getQuestionGroupBean"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <JSP_SCRIPTLET>
+  <![CDATA[
+    String scriptID = request.getParameter("questionScriptIDParam");
+    
+    if (scriptID.length() <= 0) {
+  ]]>
+  </JSP_SCRIPTLET>
+  <LIST
+    SORTABLE="false"
+    TITLE="List.Title.QuestionsAndLabels"
+  >
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="20"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.QuestionView">
+        <LINK PAGE_ID="IEG_resolveViewQuestionGroupChild">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="idParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="type"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="typeParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.QuestionEdit">
+        <LINK PAGE_ID="IEG_resolveModifyQuestionGroupChild">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="idParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="type"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="typeParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.QuestionMoveUp">
+        <LINK PAGE_ID="IEG_resolveViewQuestionGroup">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.Up"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionDirectionParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupChildIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.QuestionMoveDown">
+        <LINK PAGE_ID="IEG_resolveViewQuestionGroup">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.Down"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionDirectionParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupChildIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="listQuestionGroupChildrenBean"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Text"
+      WIDTH="70"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="listQuestionGroupChildrenBean"
+          PROPERTY="question"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <JSP_SCRIPTLET>
+  <![CDATA[
+    } else {
+  ]]>
+  </JSP_SCRIPTLET>
+
+
+  <LIST
+    SORTABLE="false"
+    TITLE="List.Title.QuestionsAndLabels"
+  >
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.QuestionMoveUp">
+        <LINK PAGE_ID="IEG_resolveViewQuestionGroup">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.Up"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionDirectionParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupChildIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.QuestionMoveDown">
+        <LINK PAGE_ID="IEG_resolveViewQuestionGroup">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="CONSTANT"
+              PROPERTY="Constant.Down"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionDirectionParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupChildrenBean"
+              PROPERTY="id"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupChildIDParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Type">
+      <CONNECT>
+        <SOURCE
+          NAME="listQuestionGroupChildrenBean"
+          PROPERTY="type"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.Text"
+      WIDTH="80"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="listQuestionGroupChildrenBean"
+          PROPERTY="question"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <JSP_SCRIPTLET>
+  <![CDATA[
+    }
+  ]]>
+  </JSP_SCRIPTLET>
+
+
+  <LIST TITLE="List.Title.Translations">
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      SEPARATOR="Container.Separator"
+      WIDTH="15"
+    >
+      <ACTION_CONTROL LABEL="ActionControl.Label.TranslationView">
+        <LINK PAGE_ID="IEG_ViewQuestionGroupTranslation">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupTranslationsBean"
+              PROPERTY="result$questionGroupByIDDtls$locale"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localeParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.TranslationEdit">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="IEG_ModifyQuestionGroupTranslation"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionScriptIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionPageIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="questionGroupIDParam"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="listQuestionGroupTranslationsBean"
+              PROPERTY="result$questionGroupByIDDtls$locale"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="localeParam"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <FIELD LABEL="Field.Label.Language">
+      <CONNECT>
+        <SOURCE
+          NAME="listQuestionGroupTranslationsBean"
+          PROPERTY="result$questionGroupByIDDtls$locale"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</VIEW>

@@ -1,0 +1,106 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>IssueDelivery.searchByIssueCaseRefRelatedCaseRefConcernRoleID</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Operation to return issue cases based on the optional search criteria entered. At least one search criteria must be entered (can enter all the three fields). Case Reference can be an Integrated Case or a Product Delivery case. In case of Integrated Case all the Issues that exists on the Integrated Cases are displayed. In the case of Product Delivery case all the Issues that are applied to Product Delivery are displayed. If all or a combination of the search criteria are entered then the result is narrowed down.
+
+</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  IssueDelivery.caseID,
+  IssueDelivery.issueType,
+  IssueCaseHeader.caseReference,
+  RelatedCaseHeader.caseID,
+  RelatedCaseHeader.caseReference,
+  ConcernRole.concernRoleID,
+  ConcernRole.concernRoleName,
+  ConcernRole.concernRoleType
+INTO
+  :issueDeliveryCaseID,
+  :issueType,
+  :issueCaseReference,
+  :relatedCaseID,
+  :relatedCaseReference,
+  :concernRoleID,
+  :concernRoleName,
+  :concernRoleType 
+FROM
+  CaseHeader IssueCaseHeader,
+  CaseHeader RelatedCaseHeader,
+  ConcernRole,
+  IssueDelivery 
+WHERE 
+  (
+    :caseReference IS NULL 
+    OR RelatedCaseHeader.caseReference = :caseReference 
+    AND IssueDelivery.relatedCaseID = RelatedCaseHeader.caseID 
+    AND IssueCaseHeader.caseID = IssueDelivery.caseID 
+  ) 
+  AND 
+  (
+    :issueReference IS NULL 
+    OR IssueCaseHeader.caseReference = :issueReference 
+    AND IssueDelivery.caseID = IssueCaseHeader.caseID 
+    AND RelatedCaseHeader.caseID = IssueDelivery.relatedCaseID 
+  ) 
+  AND 
+  (
+    :concernRoleIDIsNull <>'0' 
+    OR IssueCaseHeader.concernRoleID = :concernRoleID 
+    AND IssueCaseHeader.caseTypeCode = 'CT10' 
+    AND IssueDelivery.caseID = IssueCaseHeader.caseID 
+    AND RelatedCaseHeader.caseID = IssueDelivery.relatedCaseID 
+  ) 
+  AND 
+  (
+    ConcernRole.concernRoleID = IssueCaseHeader.concernRoleID 
+  )
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

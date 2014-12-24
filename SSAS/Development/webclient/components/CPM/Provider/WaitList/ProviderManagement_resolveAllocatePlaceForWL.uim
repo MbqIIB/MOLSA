@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- Resolver page that allows to allocate a place for the waitlisted client     -->
+<!--                                                           -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveAllocatePlaceForWL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+    
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/"; 
+    String cancelOverlappingRsrvInd = request.getParameter("cancelOverlappingRsrvInd");
+    String existingPlmtPrdChangeInd = request.getParameter("existingPlmtPrdChangeInd");
+    String removeOpenWLInd = request.getParameter("removeOpenWLInd");
+    String openWLInd = request.getParameter("openWLInd");
+    String overlappingRsrvInd = request.getParameter("overlappingRsrvInd");
+    String plmtPrdChangeInd = request.getParameter("plmtPrdChangeInd");
+    String from = request.getParameter("from");
+    String to = request.getParameter("to");
+    String waitListID = request.getParameter("waitListID");
+    String versionNo = request.getParameter("versionNo");
+    String placeID = request.getParameter("placeID");
+    String soID = request.getParameter("soID");
+    String waitListAllocatedID = request.getParameter("waitListAllocatedID");
+    String waitListTypeInd = request.getParameter("waitListTypeInd"); 
+    String url = "";
+    
+    //Get the description here and pass as page parameter, because the pages are expecting it to be passed.
+    
+    // BEGIN, CR00248553, GP
+    if (overlappingRsrvInd.equals("false") &amp;&amp; openWLInd.equals("false") &amp;&amp; plmtPrdChangeInd.equals("false") &amp;&amp; waitListTypeInd.equals("true")) {
+      url = context + "ProviderManagement_dismissResolverPage.do?"+"&amp;pageParameter=" + curam.omega3.request.RequestUtils.escapeURL(waitListID);
+    
+    } else if (overlappingRsrvInd.equals("false") &amp;&amp; openWLInd.equals("false") &amp;&amp; plmtPrdChangeInd.equals("false") &amp;&amp; waitListTypeInd.equals("false")) {
+      url = context + "ProviderManagement_dismissResolverPage.do?"+"&amp;pageParameter=" + curam.omega3.request.RequestUtils.escapeURL(waitListID);
+      // END, CR00248553
+    } else if (plmtPrdChangeInd.equals("true")){
+    url = context + 
+    "ProviderManagement_confirmModifyPlacementPrdForWLPage.do?cancelOverlappingRsrvInd="+curam.omega3.request.RequestUtils.escapeURL(cancelOverlappingRsrvInd)+
+    "&amp;existingPlmtPrdChangeInd="+curam.omega3.request.RequestUtils.escapeURL(existingPlmtPrdChangeInd) +
+    "&amp;removeOpenWLInd="+curam.omega3.request.RequestUtils.escapeURL(removeOpenWLInd) +
+    "&amp;openWLInd="+curam.omega3.request.RequestUtils.escapeURL(openWLInd) +
+    "&amp;overlappingRsrvInd="+curam.omega3.request.RequestUtils.escapeURL(overlappingRsrvInd) +
+    "&amp;plmtPrdChangeInd="+curam.omega3.request.RequestUtils.escapeURL(plmtPrdChangeInd) +
+    "&amp;from="+curam.omega3.request.RequestUtils.escapeURL(from)+
+    "&amp;to="+curam.omega3.request.RequestUtils.escapeURL(to) +
+    "&amp;waitListID="+curam.omega3.request.RequestUtils.escapeURL(waitListID) +
+    "&amp;versionNo="+curam.omega3.request.RequestUtils.escapeURL(versionNo) +
+    "&amp;placeID="+curam.omega3.request.RequestUtils.escapeURL(placeID) +
+    "&amp;soID="+curam.omega3.request.RequestUtils.escapeURL(soID) +
+    "&amp;waitListAllocatedID="+curam.omega3.request.RequestUtils.escapeURL(waitListAllocatedID) +
+    "&amp;waitListTypeInd="+curam.omega3.request.RequestUtils.escapeURL(waitListTypeInd) ;
+    
+    } else if (overlappingRsrvInd.equals("true")){
+    url = context + 
+    "ProviderManagement_confirmCancelActiveRsrvPage.do?cancelOverlappingRsrvInd="+curam.omega3.request.RequestUtils.escapeURL(cancelOverlappingRsrvInd)+
+    "&amp;existingPlmtPrdChangeInd="+curam.omega3.request.RequestUtils.escapeURL(existingPlmtPrdChangeInd) +
+    "&amp;removeOpenWLInd="+curam.omega3.request.RequestUtils.escapeURL(removeOpenWLInd) +
+    "&amp;openWLInd="+curam.omega3.request.RequestUtils.escapeURL(openWLInd) +
+    "&amp;overlappingRsrvInd="+curam.omega3.request.RequestUtils.escapeURL(overlappingRsrvInd) +
+    "&amp;plmtPrdChangeInd="+curam.omega3.request.RequestUtils.escapeURL(plmtPrdChangeInd) +
+    "&amp;from="+curam.omega3.request.RequestUtils.escapeURL(from) +
+    "&amp;to="+curam.omega3.request.RequestUtils.escapeURL(to) +
+    "&amp;waitListID="+curam.omega3.request.RequestUtils.escapeURL(waitListID) +
+    "&amp;versionNo="+curam.omega3.request.RequestUtils.escapeURL(versionNo) +
+    "&amp;placeID="+curam.omega3.request.RequestUtils.escapeURL(placeID) +
+    "&amp;soID="+curam.omega3.request.RequestUtils.escapeURL(soID)+
+    "&amp;waitListAllocatedID="+curam.omega3.request.RequestUtils.escapeURL(waitListAllocatedID) +
+    "&amp;waitListTypeInd="+curam.omega3.request.RequestUtils.escapeURL(waitListTypeInd);
+    
+    } else {
+    url = context + 
+    "ProviderManagement_confirmRemoveOpenWLPage.do?cancelOverlappingRsrvInd="+curam.omega3.request.RequestUtils.escapeURL(cancelOverlappingRsrvInd)+
+    "&amp;existingPlmtPrdChangeInd="+curam.omega3.request.RequestUtils.escapeURL(existingPlmtPrdChangeInd) +
+    "&amp;removeOpenWLInd="+curam.omega3.request.RequestUtils.escapeURL(removeOpenWLInd) +
+    "&amp;openWLInd="+curam.omega3.request.RequestUtils.escapeURL(openWLInd) +
+    "&amp;overlappingRsrvInd="+curam.omega3.request.RequestUtils.escapeURL(overlappingRsrvInd) +
+    "&amp;plmtPrdChangeInd="+curam.omega3.request.RequestUtils.escapeURL(plmtPrdChangeInd) +
+    "&amp;from="+curam.omega3.request.RequestUtils.escapeURL(from) +
+    "&amp;to="+curam.omega3.request.RequestUtils.escapeURL(to) +
+    "&amp;waitListID="+curam.omega3.request.RequestUtils.escapeURL(waitListID) +
+    "&amp;versionNo="+curam.omega3.request.RequestUtils.escapeURL(versionNo) +
+    "&amp;placeID="+curam.omega3.request.RequestUtils.escapeURL(placeID) +
+    "&amp;soID="+curam.omega3.request.RequestUtils.escapeURL(soID)+
+    "&amp;waitListAllocatedID="+curam.omega3.request.RequestUtils.escapeURL(waitListAllocatedID) +
+    "&amp;waitListTypeInd="+curam.omega3.request.RequestUtils.escapeURL(waitListTypeInd);
+    
+    }
+    
+    url += "&amp;" + rh.getSystemParameters();
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+    
+    
+  </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright © 2003-2005 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose such
+Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<project name="docmaker-internal">
+
+
+  <!--
+  Ant targets for operations that are not officially supported. These include
+  FrameMaker conversion, plain HTML generation, and error message targets.
+  This script is included in the main DocMaker script optionally, so if this
+  file is not found, it will not be missed. This allows this file to be simply
+  omitted from the files released to external users.
+  -->
+
+
+  <property
+    name="html.dir"
+    value="${out.dir}/html"
+  />
+
+
+  <property
+    name="fm1.xsl"
+    value="${lib.dir}/fm-assemble.xsl"
+  />
+  <property
+    name="fm2.xsl"
+    value="${lib.dir}/fm2docbook.xsl"
+  />
+
+
+  <property
+    name="html.xsl"
+    value="${xsl.dir}/html/docbook.xsl"
+  />
+
+
+  <property
+    name="fm.db.dir"
+    value="dboutput"
+  />
+  <property
+    name="fm.xml.dir"
+    value="xmloutput"
+  />
+  <property
+    name="fm.book"
+    value="${fm.xml.dir}/book.xml"
+  />
+
+
+  <taskdef
+    classname="curam.docmaker.tools.anttasks.Properties2XML"
+    classpathref="cp.tasks"
+    name="properties2xml"
+  />
+
+
+  <!-- =================================================================== -->
+  <!-- ============================= H T M L ============================= -->
+  <!-- =================================================================== -->
+  <target
+    depends="-online-only-filter,-mkdirs-html"
+    description="Generates HTML documentation"
+    name="generate-html"
+  >
+    <parallel>
+      <!--
+      Transform the filtered "online-only" content.
+      -->
+      <transform
+        basedir="${online.dir}"
+        classpathref="cp.transform"
+        destdir="${html.dir}"
+        extension=".html"
+        style="${html.xsl}"
+        taskname="html-gen"
+        xmlcatalogref="cat.docbook"
+      >
+        <include name="**/book.xml"/>
+      </transform>
+      <!--
+      Copy the resources files.
+      -->
+      <copy todir="${html.dir}">
+        <fileset dir="${tmp.dir}">
+          <patternset refid="ps.resources"/>
+        </fileset>
+      </copy>
+    </parallel>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ==================== F I L E   C R E A T I O N ==================== -->
+  <!-- =================================================================== -->
+
+
+  <!--
+  Creates new error chapter files in the current folder.
+  -->
+  <target name="new-error-chapters">
+    <properties2xml extension="xmlprops">
+      <fileset dir="${basedir}">
+        <include name="*.properties"/>
+      </fileset>
+    </properties2xml>
+    <transform
+      classpathref="cp.transform"
+      destdir="${basedir}"
+      extension=".xmlerrors"
+      style="${errors.xsl}"
+    >
+      <include name="*.xmlprops"/>
+    </transform>
+    <delete>
+      <fileset dir="${basedir}">
+        <include name="*.xmlprops"/>
+      </fileset>
+    </delete>
+    <move todir="${basedir}">
+      <fileset dir="${basedir}">
+        <include name="*.xmlerrors"/>
+      </fileset>
+      <mapper
+        from="*.xmlerrors"
+        to="c_*.xml"
+        type="glob"
+      />
+    </move>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ============ F R A M E M A K E R   C O N V E R S I O N ============ -->
+  <!-- =================================================================== -->
+  <!--
+  Generates a temporary book file needed to pre-process the FrameMaker
+  XML files.
+  -->
+  <target
+    depends="-check-fm-input"
+    description="Prepares FrameMaker XML files for conversion"
+    name="prepare-fm"
+  >
+    <path id="fm.xml.files">
+      <fileset dir="${fm.xml.dir}">
+        <include name="*.xml"/>
+        <exclude name="book.xml"/>
+        <exclude name="*.backup.xml"/>
+        <exclude name="*cover.xml"/>
+        <exclude name="*Cover.xml"/>
+        <exclude name="*printhistory.xml"/>
+        <exclude name="*PrintHistory.xml"/>
+        <exclude name="*toc.xml"/>
+        <exclude name="*TOC.xml"/>
+        <exclude name="*ix.xml"/>
+        <exclude name="*IX.xml"/>
+      </fileset>
+      <!--
+      A separate fileset is needed to include files that end in "unix"
+      that were excluded by trying to exclude "index" files ending in "IX".
+      -->
+      <fileset dir="${fm.xml.dir}">
+        <include name="*Unix.xml"/>
+        <include name="*UNIX.xml"/>
+        <include name="*unix.xml"/>
+      </fileset>
+    </path>
+    <echo file="${fm.book}">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE book
+  PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+         "http://docbook.org/xml/4.2/docbookx.dtd"&gt;&lt;!--COMMENTED_OUT_DOCTYPE &lt;!DOCTYPE book
+  PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+         "http://docbook.org/xml/4.2/docbookx.dtd"&gt;--&gt;
+&lt;book&gt;
+
+  &lt;title&gt;Unknown&lt;/title&gt;
+</echo>
+    <foreach
+      param="fm.xml.file"
+      target="-include-fm-xml-file"
+    >
+      <path refid="fm.xml.files"/>
+    </foreach>
+    <echo
+      append="true"
+      file="${fm.book}"
+    >
+
+&lt;/book&gt;</echo>
+    <echo>
+-------------------------------------------------------------
+You must edit the file ${fm.book} to reorder chapters and
+set the book title.
+    </echo>
+  </target>
+
+
+  <target name="-include-fm-xml-file">
+    <basename
+      file="${fm.xml.file}"
+      property="file"
+    />
+    <echo message="Adding reference to ${file}."/>
+    <echo
+      append="true"
+      file="${fm.book}"
+    >
+  &lt;xi:include href="${file}"
+              xmlns:xi="http://www.w3.org/2003/XInclude" /&gt;
+</echo>
+  </target>
+
+
+  <!--
+  Converts XML extracted from FrameMaker into DocBook XML format. This is
+  done in two passes.
+  -->
+  <target
+    depends="-check-fm-book,-mkdirs-fm-db"
+    description="Converts FrameMaker XML files to DocBook XML format"
+    name="convert-fm"
+  >
+    <!-- Create a temporary single-file book from the inputs. -->
+    <transform
+      basedir="${fm.xml.dir}"
+      classpathref="cp.transform"
+      destdir="${fm.db.dir}"
+      extension=".tmp"
+      force="true"
+      style="${fm1.xsl}"
+      xinclude="true"
+      xmlcatalogref="cat.docbook"
+    >
+      <include name="book.xml"/>
+    </transform>
+    <!-- Split the temporary file into a new structure. -->
+    <transform
+      basedir="${fm.db.dir}"
+      classpathref="cp.transform"
+      destdir="${fm.db.dir}"
+      extension=".xml"
+      force="true"
+      style="${fm2.xsl}"
+      xmlcatalogref="cat.docbook"
+    >
+      <include name="book.tmp"/>
+    </transform>
+    <delete file="${fm.db.dir}/book.tmp"/>
+    <copy todir="${fm.db.dir}/images">
+      <fileset dir="${fm.xml.dir}">
+        <include name="*.*"/>
+        <exclude name="*.xml"/>
+        <exclude name="*.book"/>
+      </fileset>
+    </copy>
+    <echo>
+-------------------------------------------------------------
+If your documents contain any graphics, you must rename the
+graphic files created in the ${fm.db.dir}/images folder as
+appropriate. References in the document to any graphic files
+that are not in the GIF format, must be changed to specify
+the correct file extension and format.
+    </echo>
+  </target>
+
+
+  <target name="-check-fm-input">
+    <available
+      file="${fm.xml.dir}"
+      property="fm.xml.dir.avalilable"
+    />
+    <fail
+      message="ERROR: Cannot find folder: ${fm.xml.dir}."
+      unless="fm.xml.dir.avalilable"
+    />
+  </target>
+
+
+  <target name="-check-fm-book">
+    <available
+      file="${fm.book}"
+      property="fm.book.avalilable"
+    />
+    <fail
+      message="ERROR: Cannot find file: ${fm.book}."
+      unless="fm.book.avalilable"
+    />
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- ================== U T I L I T Y   T A R G E T S ================== -->
+  <!-- =================================================================== -->
+  <target
+    depends="-mkdirs-out"
+    name="-mkdirs-html"
+  >
+    <mkdir dir="${html.dir}"/>
+  </target>
+
+
+  <target name="-mkdirs-fm-db">
+    <mkdir dir="${fm.db.dir}"/>
+    <mkdir dir="${fm.db.dir}/images"/>
+  </target>
+
+
+</project>

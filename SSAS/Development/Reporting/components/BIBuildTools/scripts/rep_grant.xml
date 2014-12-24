@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant utilities file for Reporting project.
+  It contains any configuration test tasks used by the reporting build.
+
+-->
+<project>
+
+
+
+  <!--  *******************************  -->
+  <!--  ***  Import common targets  ***  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_utilities.xml"/>
+
+  
+    <!--  *******************************  -->
+    <!--  ***  Import tasks definitions**  -->
+    <!--  *******************************  -->
+  <import file="${REPORTING_ENV}/scripts/rep_tasks.xml"/>
+  
+  
+
+  <!--  *****************************************************************  -->
+  <!--  ***  Grant necessary permissions from all databases to public ***  -->
+  <!--  *****************************************************************  -->
+  <target
+    depends="init,declareTasks"
+   description="grant table permissions (-Dgrant.failonerror.action=[continue|abort|stop] to continure on data failures)"
+   name="grant.all"
+  >
+    <antcall target="grant.generate" />
+    
+    <antcall target="grant.curamsource"/> 
+    <antcall target="grant.staging"/>
+    <antcall target="grant.dw"/>
+    <antcall target="grant.dm"/>
+    
+  </target>
+  
+
+  <!--  ***********************************************************  -->
+  <!--  ***  Generate the  privilages                           ***  -->
+  <!--  ***********************************************************  -->
+  <target
+    depends="init, check.db.type,  set.db.staging, set.database.ora"
+    name="grant.generate"
+    description="generates grants"
+  >
+    <property name="properties.set.true" value="true"/>
+      <AntGenerateGrantScripts runDirectory="${dir.bin.grant}" reportingDir="${REPORTING_DIR}" >
+         <reportingproperty name="staging.db.username" value="${staging.db.username}"/>
+         <reportingproperty name="curamsource.db.username" value="${curamsource.db.username}"/>
+         <reportingproperty name="central.db.username" value="${central.db.username}"/>
+         <reportingproperty name="centraldm.db.username" value="${centraldm.db.username}"/>         
+      </AntGenerateGrantScripts>
+      
+   </target>
+  
+      <!--  **************************************************************  -->
+      <!--  ***  Grant necessary permissions from central and datamart ***  -->
+      <!--  **************************************************************  -->
+      <target
+        depends="init, check.db.type,  set.db.staging, set.database.ora"
+        name="grant.dm" if="execute.grants.bi">
+        
+          <antcall target="grant.generate" />
+  
+        <sql encoding="UTF-8" 
+          classpath="${environment.jdbc.jars}"     
+          append="true"
+          driver="${db.driver}"
+          onerror="${grant.failonerror.action}"
+          password="${decrypted.centraldm.db.password}"
+          output="${dir.bin.grant}${file.separator}${file.grant.dm}.result"        
+          print="true"
+          rdbms="oracle"
+          showheaders="false"
+          url="${db.url}"
+          userid="${centraldm.db.username}"          
+        >
+          <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>		
+          <transaction  src="${dir.bin.grant}${file.separator}${file.grant.dm}"/>
+  
+   </sql> 
+
+         <echo/>
+        <echo message="Check the privileges in the database - ensure ${central.db.username} has privileges to grant permissions, refer to the Reporting Developer's Guide for more information."/>
+    
+    </target>
+    <!--  **************************************************************  -->
+    <!--  ***  Grant necessary permissions from central and datamart ***  -->
+    <!--  **************************************************************  -->
+    <target
+      depends="init, check.db.type,  set.db.staging, set.database.ora"
+      name="grant.dw" if="execute.grants.bi">
+
+        <antcall target="grant.generate" />
+
+      <sql encoding="UTF-8"   classpath="${environment.jdbc.jars}"     
+        append="true"
+        driver="${db.driver}"
+        onerror="${grant.failonerror.action}"
+        password="${decrypted.central.db.password}"
+        output="${dir.bin.grant}${file.separator}${file.grant.dw}.result"        
+        print="true"
+        rdbms="oracle"
+        showheaders="true"
+        showtrailers="true"
+        url="${db.url}"
+        userid="${central.db.username}"
+      >
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>	  
+        <transaction  src="${dir.bin.grant}${file.separator}${file.grant.dw}"/>
+
+    </sql>
+    <echo/>
+    <echo message="Check the privileges in the database - ensure ${central.db.username} has privileges to grant permissions, refer to the Reporting Developer's Guide for more information."/>
+  
+    </target>
+  <!--  **************************************************************  -->
+  <!--  ***  Grant necessary permissions from central and datamart ***  -->
+  <!--  **************************************************************  -->
+  <target
+    depends="init, check.db.type,  set.db.staging, set.database.ora"
+    name="grant.staging" if="execute.grants.bi"  >
+        <antcall target="grant.generate" />
+      
+  <sql encoding="UTF-8" 
+    classpath="${environment.jdbc.jars}"
+    append="true"
+    driver="${db.driver}"
+    onerror="${grant.failonerror.action}"
+    password="${decrypted.staging.db.password}"
+          output="${dir.bin.grant}${file.separator}${file.grant.staging}.result"
+    print="true"
+    rdbms="oracle"
+    showheaders="false"
+    url="${db.url}"
+    userid="${staging.db.username}"          
+  >
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>  
+        <transaction  src="${dir.bin.grant}${file.separator}${file.grant.staging}"/>
+
+  </sql>
+     <echo/>
+    <echo message="Check the privileges in the database - ensure ${central.db.username} has privileges to grant permissions, refer to the Reporting Developer's Guide for more information."/>
+
+    </target>
+
+
+
+  <!--  ***************************************************************  -->
+  <!--  ***  Grant necessary permissions from curamsource to staging***  -->
+  <!--  ***************************************************************  -->
+  <target
+    depends="init, check.db.type, set.db.source, set.database.ora"
+    name="grant.curamsource" if="execute.grants.curam">
+         <antcall target="grant.generate" />
+
+  <sql encoding="UTF-8" 
+    classpath="${environment.jdbc.jars}"        
+    append="true"
+    driver="${db.driver}"
+    onerror="${grant.failonerror.action}"
+    password="${db.password}"
+    print="true"
+          output="${dir.bin.grant}${file.separator}${file.grant.curam}.result"
+    rdbms="oracle"
+    showheaders="false"
+    url="${db.url}"
+    userid="${db.username}"           
+  >
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>  
+        <transaction  src="${dir.bin.grant}${file.separator}${file.grant.curam}"/>
+
+  </sql>
+
+    <echo/>
+    <echo message="Check the privileges in the database - ensure ${curamsource.db.username} has privileges to grant permissions, refer to the Reporting Developer's Guide for more information."/>
+    
+  </target>
+
+  <!--  ***************************************************************  -->
+  <!--  ***  Grant necessary permissions to directory objects       ***  -->
+  <!--  ***************************************************************  -->
+
+   <target if="usingoracle"
+  depends="check.db.type, set.db.staging, set.database.ora, get.decrypted.db.password"
+  description="grants read permission on directory objects to BI roles or users"
+  name="grant.postdeploy">
+
+     <tstamp>
+        <format
+          pattern="MMddyyyy"
+          property="time.now"
+        />
+      </tstamp>
+
+      <property
+        name="grantaccesssql.file"
+        value="${dir.logs}${file.separator}${time.now}sql.log"
+      />
+      
+      <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+        output="${grantaccesssql.file}" append="true" showheaders="true" 
+        showtrailers="true" print="true" onerror="continue"      
+        driver="${db.driver}" 
+        password="${decrypted.staging.db.password}" 
+        url="jdbc:oracle:thin:@${staging.db.server}:${staging.db.port}/${staging.db.name}" 
+        userid="${staging.db.username}">
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+        <transaction src="${REPORTING_DIR}/components/core/run/oracle/s_grantpostdeploy.sql"/>
+
+      </sql>
+  
+  <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+  output="${grantaccesssql.file}" append="true" showheaders="true" showtrailers="true"  print="true" 
+  driver="${db.driver}" onerror="continue"
+        password="${decrypted.central.db.password}" 
+        url="jdbc:oracle:thin:@${central.db.server}:${central.db.port}/${central.db.name}" 
+
+        userid="${central.db.username}">
+        <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+        <transaction src="${REPORTING_DIR}/components/core/run/oracle/dw_grantpostdeploy.sql"/>
+
+  </sql>
+  <sql encoding="UTF-8"  classpath="${environment.jdbc.jars}"   
+      output="${grantaccesssql.file}" append="true" showheaders="true" 
+      showtrailers="true" print="true" onerror="continue"
+      driver="${db.driver}" 
+      password="${decrypted.centraldm.db.password}" 
+      url="jdbc:oracle:thin:@${centraldm.db.server}:${centraldm.db.port}/${centraldm.db.name}" 
+        userid="${centraldm.db.username}">
+		
+      <connectionProperty name="sslConnection" value="${curam.db.bi.ssl}"/>
+      <transaction src="${REPORTING_DIR}/components/core/run/oracle/dm_grantpostdeploy.sql"/>
+
+  </sql>
+  
+  <loadfile
+        property="testresults"
+        srcFile="${grantaccesssql.file}"
+         />
+    
+    <!-- debug point, add back in when required
+      <echo message="Grant access right results" />
+      <echo message="${testresults}" />
+     -->
+     
+    </target>   
+  
+</project>

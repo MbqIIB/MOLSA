@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search external access requests page  -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchExternalAccessRequests"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="Request"
+    NAME="ACTION"
+    OPERATION="searchByTypeDateCreatedOwner"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00205479, PS -->
+  <CLUSTER>
+    <!-- BEGIN, CR00236707, PS -->
+    <!-- BEGIN, CR00137151, AS -->
+    <CLUSTER
+      NUM_COLS="2"
+      SHOW_LABELS="false"
+      TITLE="Cluster.Title.SearchCriteria"
+    >
+      <!-- END, CR00137151 -->
+
+
+      <FIELD
+        CONFIG="CT_DISPLAY_LABELS"
+        CONTROL="CT_HIERARCHY_VERTICAL"
+        LABEL="Field.Label.RequestType"
+      >
+        <!-- END, CR00236707 -->
+
+
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$requestType"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00236707, PS -->
+      <FIELD
+        LABEL="Field.Label.DateCreated"
+        WIDTH="30"
+      >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="key$dateCreated"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00236707 -->
+    </CLUSTER>
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+
+
+      <ACTION_CONTROL
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchExternalAccessRequests"/>
+      </ACTION_CONTROL>
+
+
+    </ACTION_SET>
+  </CLUSTER>
+  <!-- END, CR00205479 -->
+
+
+  <LIST TITLE="List.Title">
+
+
+    <!-- BEGIN, CR00205479, PS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Accept">
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_acceptRequest"
+          WINDOW_OPTIONS="width=400"
+        >
+
+
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$requestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="requestID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reject">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_rejectRequest"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$requestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="requestID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+        <!-- BEGIN, CR00249047, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelRequest"
+          WINDOW_OPTIONS="width=400"
+        >
+          <!-- END, CR00205479 -->
+          <!-- END, CR00249047 -->
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$requestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="requestID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$pageContextDescription"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContextDescription"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$requestDetails$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00205479, PS -->
+    </ACTION_SET>
+    <!-- END, CR00205479 -->
+
+
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD LABEL="Field.Title.RequestType">
+      <!-- END, CR00205479 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$requestDetails$requestType"
+        />
+      </CONNECT>
+      <!-- BEGIN, CR00205479, PS -->
+      <LINK PAGE_ID="ProviderManagement_viewExternalAccessRequest">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$requestDetails$requestID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="requestID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00205479 -->
+    </FIELD>
+
+
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD LABEL="Field.Title.DateCreated">
+      <!-- END, CR00205479 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$requestDetails$dateCreated"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD LABEL="Field.Title.CreatedBy">
+      <!-- END, CR00205479 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$requestDetails$createdBy"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD LABEL="Field.Title.DateSubmitted">
+      <!-- END, CR00205479 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$requestDetails$dateSubmitted"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD LABEL="Field.Title.Status">
+      <!-- END, CR00205479 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$requestDetails$requestStatus"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

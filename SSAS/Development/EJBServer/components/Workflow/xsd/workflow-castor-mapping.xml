@@ -1,0 +1,1275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<mapping>
+  <description>Mapping of XML file to Workflow Processes in Castor</description>
+  <class name="curam.util.internal.workflow.metadata.impl.ProcessDefinition">
+    <map-to xml="workflow-process"/>
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="version">
+      <bind-xml name="process-version" node="attribute"/>
+    </field>
+    <field name="languageVersion">
+      <bind-xml name="language-version" node="attribute"/>
+    </field>
+    <field name="released">
+      <bind-xml name="released" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="createdBy">
+      <bind-xml name="createdBy" node="attribute"/>
+    </field>
+    <field name="creationDate" set-method="setCreationDateTimeAsString" get-method="getCreationDateTimeAsString">
+      <bind-xml name="creationDate" node="attribute"/>
+    </field>
+    <field name="name">
+      <bind-xml name="name" node="element"/>
+    </field>
+    <field name="displayName">
+      <bind-xml name="process-display-name" node="element"/>
+    </field>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="documentation">
+      <bind-xml name="documentation" node="element"/>
+    </field>
+    <field name="webService">
+      <bind-xml name="web-service" node="element"/>
+    </field>
+    <field name="failureAllocationStrategy">
+      <bind-xml name="allocation-strategy" node="element" location="failure-allocation-strategy"/>
+    </field>   
+    <field name="enactmentMappings" collection="arraylist" set-method="setEnactmentMappings" get-method="getEnactmentMappings" type="curam.util.internal.workflow.metadata.impl.Mapping">
+      <bind-xml name="mapping" node="element" location="enactment-mappings"/>
+    </field>
+    <field name="wdos" collection="arraylist" set-method="setWDOs" get-method="getWDOs" type="curam.util.internal.workflow.metadata.impl.WDODefinition">
+      <bind-xml name="wdo" node="element" location="wdos"/>
+    </field>
+    <!-- ACTIVITY TYPES -->
+    <field name="startProcessActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.StartProcessActivity">
+      <bind-xml name="start-process-activity" node="element" location="activities"/>
+    </field>
+    <field name="endProcessActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.EndProcessActivity">
+      <bind-xml name="end-process-activity" node="element" location="activities"/>
+    </field>
+    <field name="automaticActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.AutomaticActivity">
+      <bind-xml name="automatic-activity" node="element" location="activities"/>
+    </field>
+    <field name="manualActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.ManualActivity">
+      <bind-xml name="manual-activity" node="element" location="activities"/>
+    </field>
+    <field name="decisionActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.DecisionActivity">
+      <bind-xml name="decision-activity" node="element" location="activities"/>
+    </field>
+    <field name="subflowActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.SubflowActivity">
+      <bind-xml name="subflow-activity" node="element" location="activities"/>
+    </field>
+    <field name="routeActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.RouteActivity">
+      <bind-xml name="route-activity" node="element" location="activities"/>
+    </field>
+    <field name="loopBeginActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.LoopBeginActivity">
+      <bind-xml name="loop-begin-activity" node="element" location="activities"/>
+    </field>
+    <field name="loopEndActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.LoopEndActivity">
+      <bind-xml name="loop-end-activity" node="element" location="activities"/>
+    </field>
+    <field name="eventWaitActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.EventWaitActivity">
+      <bind-xml name="event-wait-activity" node="element" location="activities"/>
+    </field>
+    <field name="parallelActivities" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.ParallelActivity">
+      <bind-xml name="parallel-activity" node="element" location="activities"/>
+    </field>
+    <!-- END ACTIVITY TYPES -->
+    <field name="transitions" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.Transition">
+      <bind-xml name="transition" node="element" location="transitions"/>
+    </field>
+  </class>
+  <!-- AUTOMATIC ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.AutomaticActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+    <field name="mapping">
+      <bind-xml name="bpo-mapping" node="element"/>
+    </field>
+  </class>
+  <!-- END AUTOMATIC ACTIVITY -->
+  <!-- MANUAL ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.ManualActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+    <field name="activityTask">
+      <bind-xml name="task"/>
+    </field>
+    <field name="allocationStrategyData">
+      <bind-xml name="allocation-strategy"/>
+    </field>
+    <field name="eventWaitData">
+      <bind-xml name="event-wait"/>
+    </field>
+    <field name="bizObjectAssociations" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.BizObjectAssociation">
+      <bind-xml name="biz-object-association" node="element" location="biz-object-associations"/>
+    </field>
+  </class>
+  <!-- END MANUAL ACTIVITY -->
+  <!-- DECISION ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.DecisionActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+    <field name="allocationStrategyData">
+      <bind-xml name="allocation-strategy"/>
+    </field>
+    <field name="message"/>
+    <field name="decisionAction">
+      <bind-xml name="decision-action"/>
+    </field>
+    <field name="secondaryActions" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.SecondaryAction">
+      <bind-xml name="secondary-action" node="element" location="secondary-actions"/>
+    </field>
+    <field name="question">
+      <bind-xml name="question"/>
+    </field>
+    <field name="deadline">
+      <bind-xml name="deadline" node="element"/>
+    </field>
+    <field name="reminders" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.Reminder">
+      <bind-xml name="reminder" node="element" location="reminders"/>
+    </field>
+  </class>
+  <!-- END DECISION ACTIVITY -->
+  <!-- DECISION ACTION -->
+  <class name="curam.util.internal.workflow.metadata.impl.DecisionAction">
+    <map-to xml="decision-action"/>
+    <field name="message"/>
+  </class>
+  <!-- END DECISION ACTION -->
+  <!-- SECONDARY ACTION -->
+  <class name="curam.util.internal.workflow.metadata.impl.SecondaryAction">
+    <field name="pageId">
+      <bind-xml name="page-id" node="attribute"/>
+    </field>
+    <field name="openModalInd">
+      <bind-xml name="open-modal" node="attribute"/>
+    </field>    
+    <field name="message"/>
+    <field name="linkParameters" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.LinkParameter">
+      <bind-xml name="link-parameter" node="element"/>
+    </field>
+    <field name="multipleOccurringAction">
+      <bind-xml name="multiple-occurring-action" node="element"/>
+    </field>
+  </class>
+  <!-- END SECONDARY ACTION -->  
+  <!-- QUESTION -->
+  <class name="curam.util.internal.workflow.metadata.impl.Question">
+    <map-to xml="question"/>
+    <field name="message"/>
+    <field name="freeTextAnswer">
+      <bind-xml name="free-text" node="element"/>
+    </field>
+    <field name="multipleChoiceAnswer">
+      <bind-xml name="answers" node="element"/>
+    </field>
+  </class>
+  <!-- END QUESTION -->
+  <!-- FREE TEXT ANSWER -->
+  <class name="curam.util.internal.workflow.metadata.impl.FreeTextAnswer">
+    <map-to xml="free-text"/>
+    <field name="type">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="wdoAttribute" set-method="setWDOAttribute" get-method="getWDOAttribute">
+      <bind-xml name="wdo-attribute" node="element"/>
+    </field>
+  </class>
+  <!-- END FREE TEXT ANSWER -->
+  <!-- MULTIPLE CHOICE ANSWER -->
+  <class name="curam.util.internal.workflow.metadata.impl.MultipleChoiceAnswer">
+    <map-to xml="answers"/>
+    <field name="multipleSelection">
+      <bind-xml name="multiple-selection" node="attribute"/>
+    </field>
+    <field name="answers" collection="arraylist" set-method="setAnswers" get-method="getAnswers" type="curam.util.internal.workflow.metadata.impl.Answer">
+      <bind-xml name="answer" node="element"/>
+    </field>
+  </class>
+  <!-- END MULTIPLE CHOICE ANSWER -->
+  <!-- CHOICE OUTPUT MAPPING -->
+  <class name="curam.util.internal.workflow.metadata.impl.ChoiceOutputMapping">
+    <map-to xml="choice-output-mapping"/>
+    <field name="wdoAttribute" set-method="setWDOAttribute" get-method="getWDOAttribute">
+      <bind-xml name="wdo-attribute" node="element"/>
+    </field>
+    <field name="selectedValue">
+      <bind-xml name="selected-value" node="element"/>
+    </field>
+    <field name="notSelectedValue">
+      <bind-xml name="not-selected-value" node="element"/>
+    </field>
+  </class>
+  <!-- END CHOICE OUTPUT MAPPING -->
+  <!-- ANSWER -->
+  <class name="curam.util.internal.workflow.metadata.impl.Answer">
+    <map-to xml="answer"/>
+    <field name="answerText"/>
+    <field name="name">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="choiceOutputMapping"/>
+  </class>
+  <!-- END ANSWER -->
+  <!-- ALLOCATION STRATEGY -->
+  <class name="curam.util.internal.workflow.metadata.impl.AllocationStrategy">
+    <map-to xml="allocation-strategy"/>
+    <field name="type" set-method="setType" get-method="getAllocationTypeAsString">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="castorType" set-method="setType" get-method="getNullType"/>
+    <field name="identifier">
+      <bind-xml name="identifier" node="attribute"/>
+    </field>
+    <field name="rulesetMappings" collection="arraylist"
+           type="curam.util.internal.workflow.metadata.impl.RDOMapping">
+      <bind-xml name="rdo-mapping" node="element"
+                location="ruleset-mappings"/>
+    </field>
+    <field name="cerSetMappings" set-method="setCERSetMappings" get-method="getCERSetMappings">
+      <bind-xml name="cer-set-mappings" node="element"/>
+    </field>    
+    <field name="functionMappings">
+      <bind-xml name="function-mappings" node="element"/>
+    </field>
+  </class>
+  <!-- END ALLOCATION STRATEGY -->
+  <!-- FUNCTION MAPPINGS -->
+  <class name="curam.util.internal.workflow.metadata.impl.FunctionMappings">
+    <field name="formalParameters" collection="arraylist"
+           type="curam.util.internal.workflow.metadata.impl.FormalParameter">
+      <bind-xml name="formal-parameter" node="element"
+                location="formal-parameters"/>
+    </field>
+  </class>
+  <!-- END FUNCTION MAPPINGS -->
+  <!-- CER SET MAPPINGS -->
+  <class name="curam.util.internal.workflow.metadata.impl.CERSetMappings">
+    <field name="primaryClass">
+      <bind-xml name="primary-class" node="attribute"/>
+    </field>  
+    <field name="cerClassMappings" collection="arraylist"
+      type="curam.util.internal.workflow.metadata.impl.CERClassMapping"
+      set-method="setCERClassMappings" get-method="getCERClassMappings">
+      <bind-xml name="cer-class-mapping" node="element"/>
+    </field>
+  </class>
+  <!-- END CER SET MAPPINGS -->  
+  <!-- END RULESET MAPPINGS -->
+  <!-- RDO MAPPING -->
+  <class name="curam.util.internal.workflow.metadata.impl.RDOMapping">
+    <field name="sourceAttribute">
+      <bind-xml name="source-attribute" node="element"/>
+    </field>
+    <field name="rdoTargetAttribute">
+      <bind-xml name="target-attribute" node="element"/>
+    </field>
+  </class>
+  <!-- END RDO MAPPING -->
+  <!-- CER CLASS MAPPING -->
+  <class name="curam.util.internal.workflow.metadata.impl.CERClassMapping">
+    <field name="sourceAttribute">
+      <bind-xml name="source-attribute" node="element"/>
+    </field>
+    <field name="cerClassTargetAttribute" 
+      set-method="setCERClassTargetAttribute" get-method="getCERClassTargetAttribute">
+      <bind-xml name="target-attribute" node="element"/>
+    </field>
+  </class>
+  <!-- END CER CLASS MAPPING -->  
+  <!-- EVENT WAIT -->
+  <class name="curam.util.internal.workflow.metadata.impl.EventWaitData">
+    <map-to xml="event-wait"/>
+    <field name="waitOnAllEvents">
+      <bind-xml name="wait-on-all-events" node="attribute"/>
+    </field>    
+    <field name="events" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.Event">
+      <bind-xml name="event" node="element" location="events"/>
+    </field>
+    <field name="eventOutputMappings">
+      <bind-xml name="event-output-mappings" node="element"/>
+    </field>
+    <field name="eventWaitDeadlineData">
+      <bind-xml name="deadline" node="element"/>
+    </field>
+    <field name="reminders" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.Reminder">
+       <bind-xml name="reminder" node="element" location="reminders"/>
+    </field>
+  </class>
+  <!-- END EVENT WAIT -->
+  <!-- EVENT -->
+  <class name="curam.util.internal.workflow.metadata.impl.Event">
+    <map-to xml="event"/>
+    <field name="identifier">
+      <bind-xml name="identifier" node="attribute"/>
+    </field>
+    <field name="eventClass">
+      <bind-xml name="event-class" node="attribute"/>
+    </field>
+    <field name="eventType">
+      <bind-xml name="event-type" node="attribute"/>
+    </field>
+    <field name="eventData">
+      <bind-xml name="event-match-attribute" node="element"/>
+    </field>
+    <field name="multipleOccurringEvent">
+      <bind-xml name="multiple-occurring-event" node="element"/>
+    </field>    
+  </class>
+  <!-- END EVENT -->
+  <!-- EVENT OUTPUT MAPPINGS -->
+  <class name="curam.util.internal.workflow.metadata.impl.EventOutputMappings">
+    <map-to xml="event-output-mappings"/>
+    <field name="eventType">
+      <bind-xml name="event-type" node="element"/>
+    </field>
+    <field name="eventOutputData">
+      <bind-xml name="output-data" node="element"/>
+    </field>
+    <field name="eventRaisedBy">
+      <bind-xml name="raised-by" node="element"/>
+    </field>
+    <field name="eventTimeRaised">
+      <bind-xml name="time-raised" node="element"/>
+    </field>
+  </class>
+  <!-- END EVENT OUTPUT MAPPINGS -->
+   <!-- REMINDER -->
+    <class name="curam.util.internal.workflow.metadata.impl.Reminder">
+      <map-to xml="reminder"/>
+      <field name="identifier">
+        <bind-xml name="id" node="attribute"/>
+      </field>
+      <field name="deliveryOffset">
+        <bind-xml name="delivery-offset" node="attribute"/>
+      </field>
+      <field name="deliveryTime">
+         <bind-xml name="delivery-time" node="element"/>
+      </field>
+      <field name="notification">
+        <bind-xml name="notification" node="element"/>
+      </field>
+    </class>
+  <!-- REMINDER -->  
+  <!-- DELIVERY TIME -->
+    <class name="curam.util.internal.workflow.metadata.impl.DeliveryTime">
+      <map-to xml="delivery-time"/>
+      <field name="deliveryTime" get-method="getDeliveryTimeAsString" set-method="setDeliveryTimeFromString">
+        <bind-xml name="seconds" node="element"/>
+      </field>
+      <field name="mappedDeliveryTime">
+        <bind-xml name="wdo-attribute" node="element" location="mapped-delivery-time"/>
+      </field>
+    </class>
+  <!-- DELIVERY TIME-->
+  <!-- MULTIPLE OCCURRING EVENT -->
+  <class name="curam.util.internal.workflow.metadata.impl.MultipleOccurringEvent">
+    <map-to xml="multiple-occurring-event"/>
+    <field name="listWDOName">
+      <bind-xml name="list-wdo-name" node="element"/>
+    </field>
+  </class>
+  <!-- END MULTIPLE OCCURRING EVENT -->
+  <!-- MESSAGE -->
+  <class name="curam.util.internal.workflow.metadata.impl.Message">
+    <field name="messageText">
+      <bind-xml name="message-text" node="element"/>
+    </field>
+    <field name="parameters" collection="arraylist" set-method="setParameters" get-method="getParameters" type="curam.util.internal.workflow.metadata.impl.QualifiedWDOAttributeName">
+      <bind-xml name="wdo-attribute" node="element" location="message-parameters"/>
+    </field>
+  </class>
+  <!-- END MESSAGE -->
+  <!-- DEADLINE -->
+  <class name="curam.util.internal.workflow.metadata.impl.Deadline">
+    <field name="deadlineDuration">
+      <bind-xml name="duration" node="element"/>
+    </field>
+    <field name="deadlineHandler">
+      <bind-xml name="deadline-handler" node="element"/>
+    </field>
+     <field name="completeActivity">
+        <bind-xml name="complete-activity" node="attribute"/>
+    </field>
+    <field name="deadlineOutputMappings">
+            <bind-xml name="deadline-output-mappings" node="element"/>
+    </field>
+  </class>
+  <!-- END DEADLINE -->
+  <!-- DEADLINE HANDLER -->
+  <class name="curam.util.internal.workflow.metadata.impl.DeadlineHandler">
+    <field name="formalParameters" collection="arraylist"
+           type="curam.util.internal.workflow.metadata.impl.FormalParameter">
+      <bind-xml name="formal-parameter" node="element"
+                location="formal-parameters"/>
+    </field>
+    <field name="interfaceName">
+      <bind-xml name="interface-name" node="attribute"/>
+    </field>
+    <field name="methodName">
+      <bind-xml name="method-name" node="attribute"/>
+    </field>
+  </class>
+  <!-- END DEADLINE HANDLER -->
+  <!-- DEADLINE DURATION -->
+  <class name="curam.util.internal.workflow.metadata.impl.DeadlineDuration">
+    <field name="duration" get-method="getDurationAsString" set-method="setDurationFromString">
+      <bind-xml name="seconds" node="element"/>
+    </field>
+    <field name="mappedDuration">
+      <bind-xml name="wdo-attribute" node="element" location="mapped-duration"/>
+    </field>
+  </class>
+  <!-- DEADLINE DURATION-->
+   <!-- DEADLINE OUTPUT MAPPINGS -->
+   <class name="curam.util.internal.workflow.metadata.impl.DeadlineOutputMappings">
+     <field name="durationExpired">
+       <bind-xml name="duration-expired" node="element"/>
+     </field>      
+     <field name="deadlineExpiryTime">
+       <bind-xml name="deadline-expiry-time" node="element"/>
+     </field>            
+  </class>
+   <!-- DEADLINE OUTPUT MAPPINGS-->
+  <!-- SUBFLOW ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.SubflowActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+    <field name="subflow">
+      <bind-xml name="subflow" node="element"/>
+    </field>
+    <field name="inputMappings" set-method="setSubflowInputMappings" get-method="getSubflowInputMappings">
+      <bind-xml name="input-mappings" node="element"/>
+    </field>
+    <field name="outputMappings" set-method="setSubflowOutputMappings" get-method="getSubflowOutputMappings">
+       <bind-xml name="output-mappings" node="element"/>
+    </field>
+  </class>
+  <!-- END SUBFLOW ACTIVITY -->
+  <!-- ROUTE ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.RouteActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+  </class>
+  <!-- END ROUTE ACTIVITY -->
+  <!-- LOOP BEGIN ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.LoopBeginActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+    <field name="loopType">
+      <bind-xml name="loop-type" node="element"/>
+    </field>
+    <field name="condition">
+      <bind-xml name="condition" node="element"/>
+    </field>
+    <field name="blockEndpointRef">
+      <bind-xml name="block-endpoint-ref" node="element"/>
+    </field>
+  </class>
+  <!-- END LOOP BEGIN ACTIVITY -->
+  <!-- LOOP END ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.LoopEndActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+    <field name="blockEndpointRef">
+      <bind-xml name="block-endpoint-ref" node="element"/>
+    </field>
+  </class>
+  <!-- END LOOP END ACTIVITY -->
+  <!-- EVENT WAIT ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.EventWaitActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+    <field name="eventWaitData">
+      <bind-xml name="event-wait" node="element"/>
+    </field>
+  </class>
+  <!-- END EVENT WAIT ACTIVITY -->
+  <!-- START PROCESS ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.StartProcessActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="split" node="element"/>
+    </field>
+  </class>
+  <!-- END START PROCESS ACTIVITY -->
+  <!-- END PROCESS ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.EndProcessActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="name"/>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="notification">
+      <bind-xml name="notification" node="element"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="join" node="element"/>
+    </field>
+  </class>
+  <!-- END END PROCESS ACTIVITY -->
+  <!-- PARALLEL ACTIVITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.ParallelActivity">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="category">
+      <bind-xml name="category" node="attribute"/>
+    </field>
+    <field name="listWDOName">
+      <bind-xml name="list-wdo-name" node="element"/>
+    </field>
+    <field name="manualActivity">
+      <bind-xml name="manual-activity" node="element"/>
+    </field>
+    <field name="decisionActivity">
+      <bind-xml name="decision-activity" node="element"/> 
+    </field>
+  </class>
+  <!-- END PARALLEL ACTIVITY -->
+  <!-- SPLIT TYPE -->
+  <class name="curam.util.internal.workflow.metadata.impl.SplitType">
+    <field name="logicalOperator" set-method="setLogicalOperator" get-method="getLogicalOperator">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="transitionIds" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.TransitionIdentifier" set-method="setTransitionIds" get-method="getTransitionIds">
+      <bind-xml name="transition-id"/>
+    </field>
+  </class>
+  <class name="curam.util.internal.workflow.metadata.impl.TransitionIdentifier">
+    <field name="identifierRef">
+      <bind-xml name="idref" node="attribute"/>
+    </field>
+  </class>
+  <!-- END SPLIT TYPE -->
+  <!-- JOIN TYPE -->
+  <class name="curam.util.internal.workflow.metadata.impl.JoinType">
+    <field name="logicalOperator" set-method="setLogicalOperator" get-method="getLogicalOperator">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+  </class>
+  <!-- END JOIN TYPE -->
+  <!-- RULE CONDITION -->
+  <class name="curam.util.internal.workflow.metadata.impl.RuleCondition">
+    <field name="expressions" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.RuleExpression">
+      <bind-xml name="expression" node="element"/>
+    </field>
+  </class>
+  <!-- END RULE CONDITION -->
+  <!-- RULE EXPRESSION -->
+  <class name="curam.util.internal.workflow.metadata.impl.RuleExpression">
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="dataItemLhs">
+      <bind-xml name="data-item-lhs" node="attribute"/>
+    </field>
+    <field name="operation">
+      <bind-xml name="operation" node="attribute"/>
+    </field>
+    <field name="dataItemRhs">
+      <bind-xml name="data-item-rhs" node="attribute"/>
+    </field>
+    <field name="conjunction">
+      <bind-xml name="conjunction" node="attribute"/>
+    </field>
+    <field name="function">
+      <bind-xml name="function" node="attribute"/>
+    </field>
+    <field name="openingBrackets">
+      <bind-xml name="opening-brackets" node="attribute"/>
+    </field>
+    <field name="closingBrackets">
+      <bind-xml name="closing-brackets" node="attribute"/>
+    </field>
+  </class>
+  <!-- END RULE EXPRESSION -->
+  <!-- MAPPING -->
+  <class name="curam.util.internal.workflow.metadata.impl.BPOMapping">
+    <field name="formalParameters" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.FormalParameter">
+      <bind-xml name="formal-parameter" node="element" location="formal-parameters"/>
+    </field>
+    <field name="interfaceName">
+      <bind-xml name="interface-name" node="attribute"/>
+    </field>
+    <field name="methodName">
+      <bind-xml name="method-name" node="attribute"/>
+    </field>
+    <field name="returnValue">
+      <bind-xml name="return" node="element"/>
+    </field>
+  </class>
+  <!-- END MAPPING -->
+  <!-- FORMAL PARAMETERS -->
+  <class name="curam.util.internal.workflow.metadata.impl.FormalParameter">
+    <field name="index">
+      <bind-xml name="index" node="attribute"/>
+    </field>
+    <field name="structParameter">
+      <bind-xml name="struct" node="element"/>
+    </field>
+    <field name="baseTypeParameter">
+      <bind-xml name="base-type" node="element"/>
+    </field>
+  </class>
+  <!-- END FORMAL PARAMETERS -->
+  <!-- RETURN VALUE -->
+  <class name="curam.util.internal.workflow.metadata.impl.ReturnValue">
+    <field name="structParameter">
+      <bind-xml name="struct" node="element"/>
+    </field>
+    <field name="baseTypeParameter">
+      <bind-xml name="base-type" node="element"/>
+    </field>
+  </class>
+  <!-- END RETURN VALUE -->
+  <!-- BASE TYPE PARAMETER -->
+  <class name="curam.util.internal.workflow.metadata.impl.BaseTypeParameter">
+    <field name="type">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="wdoAttribute" set-method="setWDOAttribute" get-method="getWDOAttribute">
+      <bind-xml name="wdo-attribute" node="element"/>
+    </field>
+  </class>
+  <!-- END BASE TYPE PARAMETER -->
+  <!-- STRUCT PARAMETER -->
+  <class name="curam.util.internal.workflow.metadata.impl.StructParameter">
+    <field name="type">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="fields" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.Field">
+      <bind-xml name="field"/>
+    </field>
+  </class>
+  <!-- END STRUCT PARAMETER -->
+  <!-- FIELD -->
+  <class name="curam.util.internal.workflow.metadata.impl.Field">
+    <field name="name">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="structParameter">
+      <bind-xml name="struct" node="element"/>
+    </field>
+    <field name="baseTypeParameter">
+      <bind-xml name="base-type" node="element"/>
+    </field>
+  </class>
+  <!-- END FIELD -->
+  <!-- TRANSITION -->
+  <class name="curam.util.internal.workflow.metadata.impl.Transition">
+    <map-to xml="transition"/>
+    <field name="identifier">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="fromActivityId">
+      <bind-xml name="from-activity-idref" node="attribute"/>
+    </field>
+    <field name="toActivityId">
+      <bind-xml name="to-activity-idref" node="attribute"/>
+    </field>
+    <field name="transitionCondition">
+      <bind-xml name="condition"/>
+    </field>
+  </class>
+  <!-- END TRANSITION -->
+  <!-- WDO ATTRBIUTE -->
+  <class name="curam.util.internal.workflow.metadata.impl.QualifiedWDOAttributeName">
+    <map-to xml="wdo-attribute"/>
+    <field name="WDOName" set-method="setWDOName" get-method="getWDOName">
+      <bind-xml name="wdo-name" node="attribute"/>
+    </field>
+    <field name="name" set-method="setName" get-method="getName">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+  </class>
+  <!-- END WDO ATTRIBUTE -->
+  <!-- SUBFLOW -->
+  <class name="curam.util.internal.workflow.metadata.impl.Subflow">
+    <field name="processDefinitionReference">
+      <bind-xml name="workflow-process" node="attribute"/>
+    </field>
+    <field name="isSubflowSynchronous">
+      <bind-xml name="synchronous" node="attribute"/>
+    </field>
+  </class>
+  <!-- END SUBFLOW -->  
+  <!-- WEB SERVICE -->
+  <class name="curam.util.internal.workflow.metadata.impl.WebService">
+    <map-to xml="web-service"/>
+    <field name="expose">
+      <bind-xml name="expose" node="attribute"/>
+    </field>
+    <field name="callbackService">
+      <bind-xml name="callback-service" node="element"/>
+    </field>    
+  </class>
+  <!-- END WEB SERVICE -->
+  <!-- ACTION -->
+  <class name="curam.util.internal.workflow.metadata.impl.Action">
+    <field name="pageId">
+      <bind-xml name="page-id" node="attribute"/>
+    </field>
+    <field name="principalActionInd">
+      <bind-xml name="principal-action" node="attribute"/>
+    </field>
+    <field name="openModalInd">
+      <bind-xml name="open-modal" node="attribute"/>
+    </field>    
+    <field name="message"/>
+    <field name="linkParameters" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.LinkParameter">
+      <bind-xml name="link-parameter" node="element"/>
+    </field>
+    <field name="multipleOccurringAction">
+       <bind-xml name="multiple-occurring-action" node="element"/>
+    </field>
+  </class>
+  <!-- END ACTION -->
+   <!-- MULTIPLE OCCURRING ACTION -->
+    <class name="curam.util.internal.workflow.metadata.impl.MultipleOccurringAction">
+      <field name="multipleOccurringAction" set-method="setListWDOName" get-method="getListWDOName">
+        <bind-xml name="list-wdo-name" node="element"/>
+      </field>
+    </class>
+  <!-- MULTIPLE OCCURRING ACTION -->
+  <!-- LINK PARAMETER -->
+  <class name="curam.util.internal.workflow.metadata.impl.LinkParameter">
+    <field name="name">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="wdoAttribute" set-method="setWDOAttribute" get-method="getWDOAttribute">
+      <bind-xml name="wdo-attribute" node="element"/>
+    </field>
+  </class>
+  <!-- LINK PARAMETER -->
+  <!-- LOCALIZED TEXT -->
+  <class name="curam.util.internal.workflow.metadata.impl.LocalizedText">
+    <field name="localizedText" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.LocaleText">
+      <bind-xml name="locale" node="element" location="localized-text"/>
+    </field>
+  </class>
+  <!-- END LOCALIZED TEXT -->
+  <!-- LOCALE TEXT -->
+  <class name="curam.util.internal.workflow.metadata.impl.LocaleText">
+    <field name="language">
+      <bind-xml name="language" node="attribute"/>
+    </field>
+    <field name="country">
+      <bind-xml name="country" node="attribute"/>
+    </field>
+    <field name="text">
+      <bind-xml name="locale" node="text"/>
+    </field>
+  </class>
+  <!-- END LOCALE TEXT -->
+  <!-- WDO METADATA -->
+  <class name="curam.util.internal.workflow.metadata.impl.WDODefinition">
+    <map-to xml="wdo"/>
+    <field name="name">
+      <bind-xml name="wdo-name" node="element"/>
+    </field>
+    <field name="isListWDO" set-method="setIsListWDO" get-method="getIsListWDO">
+      <bind-xml name="is-list-wdo" node="attribute"/>
+    </field>
+    <field name="initializeAttributes" set-method="setInitializeAttributes" get-method="getInitializeAttributes">
+      <bind-xml name="initialize-attributes" node="attribute"/>
+    </field>
+    <field name="displayName">
+      <bind-xml name="display-name" node="element"/>
+    </field>
+    <field name="description">
+      <bind-xml name="description" node="element"/>
+    </field>
+    <field name="attributes" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.WDOAttributeDefinition">
+      <bind-xml name="attribute" node="element" location="attributes"/>
+    </field>   
+  </class>
+  <!-- END WDO METADATA -->
+  <!-- WDO ATTRIBUTE METADATA -->
+  <class name="curam.util.internal.workflow.metadata.impl.WDOAttributeDefinition">
+    <field name="name">
+      <bind-xml name="attribute-name" node="element"/>
+    </field>
+    <field name="displayName">
+      <bind-xml name="display-name" node="element"/>
+    </field>
+    <field name="type">
+      <bind-xml name="type" node="element"/>
+    </field>
+    <field name="requiredAtEnactment">
+      <bind-xml name="required-at-enactment" node="element"/>
+    </field>
+    <field name="processOutput">
+      <bind-xml name="process-output" node="element"/>
+    </field>
+    <field name="constantValue">
+      <bind-xml name="constant-value" node="element"/>
+    </field>
+    <field name="initialValue">
+      <bind-xml name="initial-value" node="element"/>
+    </field>
+  </class>
+  <!-- END WDO ATTRIBUTE METADATA -->
+  <!-- BIZ OBJECT ASSOCIATION -->
+  <class name="curam.util.internal.workflow.metadata.impl.BizObjectAssociation">
+    <map-to xml="biz-object-association"/>
+    <field name="bizObjectType">
+      <bind-xml name="biz-object-type" node="attribute"/>
+    </field>
+    <field name="wdoAttribute" set-method="setWDOAttribute" get-method="getWDOAttribute">
+      <bind-xml name="wdo-attribute" node="element"/>
+    </field>
+  </class>
+  <!-- END BIZ OBJECT ASSOCIATION -->
+  <!-- CONSTANT VALUE -->
+  <class name="curam.util.internal.workflow.metadata.impl.ConstantValue">
+    <field name="value">
+      <bind-xml name="constant-value" node="text"/>
+    </field>
+  </class>
+  <!-- END CONSTANT VALUE -->
+  <!-- INITIAL VALUE -->
+  <class name="curam.util.internal.workflow.metadata.impl.InitialValue">
+    <field name="value">
+      <bind-xml name="initial-value" node="text"/>
+    </field>
+  </class>
+  <!-- END INITIAL VALUE -->
+  <!-- WDO MAPPING -->
+  <class name="curam.util.internal.workflow.metadata.impl.Mapping">
+    <field name="sourceAttribute">
+      <bind-xml name="source-attribute" node="element"/>
+    </field>
+    <field name="targetAttribute">
+      <bind-xml name="target-attribute" node="element"/>
+    </field>
+  </class>
+  <!-- END WDO MAPPING -->
+  <!-- SUBFLOW INPUT MAPPINGS -->
+  <class name="curam.util.internal.workflow.metadata.impl.SubflowInputMappings">
+    <field name="WDOMappings" collection="arraylist" set-method="setWDOMappings" get-method="getWDOMappings" type="curam.util.internal.workflow.metadata.impl.Mapping">
+      <bind-xml name="mapping" node="element"/>
+    </field>
+  </class>
+  <!-- END SUBFLOW INPUT MAPPING -->
+  <!-- SUBFLOW OUTPUT MAPPINGS -->
+  <class name="curam.util.internal.workflow.metadata.impl.SubflowOutputMappings">
+    <field name="WDOMappings" collection="arraylist" set-method="setWDOMappings" get-method="getWDOMappings" type="curam.util.internal.workflow.metadata.impl.Mapping">
+      <bind-xml name="mapping" node="element"/>
+    </field>
+  </class>
+  <!-- END SUBFLOW OUTPUT MAPPING -->  
+  <!-- SOURCE ATTRIBUTE -->
+  <class name="curam.util.internal.workflow.metadata.impl.SourceAttribute">
+    <field name="structName">
+      <bind-xml name="struct-name" node="attribute"/>
+    </field>
+    <field name="WDOName" set-method="setWDOName" get-method="getWDOName">
+      <bind-xml name="wdo-name" node="attribute"/>
+    </field>
+    <field name="name">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+  </class>
+  <!-- END SOURCE ATTRIBUTE -->
+  <!-- TARGET ATTRIBUTE -->
+  <class name="curam.util.internal.workflow.metadata.impl.TargetAttribute">
+    <field name="WDOName" set-method="setWDOName" get-method="getWDOName">
+      <bind-xml name="wdo-name" node="attribute"/>
+    </field>
+    <field name="name">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+  </class>
+  <!-- END TARGET ATTRIBUTE -->
+  <!-- RDO TARGET ATTRIBUTE -->
+  <class name="curam.util.internal.workflow.metadata.impl.RDOTargetAttribute">
+    <field name="RDOName" set-method="setRDOName" get-method="getRDOName">
+      <bind-xml name="rdo-name" node="attribute"/>
+    </field>
+    <field name="name">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+  </class>
+  <!-- END RDO TARGET ATTRIBUTE -->
+  <!-- CER CLASS TARGET ATTRIBUTE -->
+  <class name="curam.util.internal.workflow.metadata.impl.CERClassTargetAttribute">
+    <field name="CERClassName" set-method="setCERClassName" get-method="getCERClassName">
+      <bind-xml name="cer-class-name" node="attribute"/>
+    </field>
+    <field name="name">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+  </class>
+  <!-- END CER CLASS TARGET ATTRIBUTE -->  
+  <!-- NOTIFICATION -->
+  <class name="curam.util.internal.workflow.metadata.impl.Notification">
+    <map-to xml="notification"/>
+    <field name="deliveryMechanism">
+      <bind-xml name="delivery-mechanism" node="attribute"/>
+    </field>
+    <field name="subject">
+      <bind-xml name="subject" node="element"/>
+    </field>
+    <field name="body">
+      <bind-xml name="body" node="element"/>
+    </field>
+    <field name="allocationStrategyData">
+      <bind-xml name="allocation-strategy"/>
+    </field>
+    <field name="actions" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.Action">
+      <bind-xml name="action" node="element" location="actions"/>
+    </field>
+  </class>
+  <!-- END NOTIFICATION -->
+
+  <!-- SUBJECT -->
+  <class name="curam.util.internal.workflow.metadata.impl.Subject">
+    <map-to xml="subject"/>
+    <field name="message"/>
+  </class>
+  <!-- END SUBJECT -->
+
+  <!-- BODY -->
+  <class name="curam.util.internal.workflow.metadata.impl.Body">
+    <map-to xml="body"/>
+    <field name="message"/>
+  </class>
+  <!-- END BODY -->
+
+  <!-- BLOCK ENDPOINT REF -->
+  <class name="curam.util.internal.workflow.metadata.impl.BlockEndpointRef">
+    <map-to xml="block-endpoint-ref"/>
+    <field name="activityID">
+      <bind-xml name="activity-id" node="attribute"/>
+    </field>
+  </class>
+  <!-- END BLOCK ENDPOINT REF -->
+
+  <!-- LOOP TYPE -->
+  <class name="curam.util.internal.workflow.metadata.impl.LoopType">
+    <field name="name" set-method="setName" get-method="getName">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+  </class>
+  <!-- END LOOP TYPE -->
+  <!-- ACTIVITY TASK-->
+  <class name="curam.util.internal.workflow.metadata.impl.ActivityTask">
+    <map-to xml="task"/>
+    <field name="message"/>
+    <field name="actions" collection="arraylist" type="curam.util.internal.workflow.metadata.impl.Action">
+      <bind-xml name="action" node="element" location="actions"/>
+    </field>
+    <field name="taskPriority">
+      <bind-xml name="task-priority" node="element"/>
+    </field>
+    <field name="deadlineOverrideIndicator">
+      <bind-xml name="allow-deadline-override" node="element"/>
+    </field>
+    <field name="allowForwardIndicator">
+      <bind-xml name="allow-task-forwarding" node="element"/>
+    </field>
+    <field name="administrationSID">
+      <bind-xml name="administration-sid" node="element"/>
+    </field>
+    <field name="initialComment">
+      <bind-xml name="wdo-attribute" node="element" location="initial-comment"/>
+    </field>
+  </class>
+  <!-- END EVENT WAIT -->
+  <!-- TASK PRIORITY -->
+  <class name="curam.util.internal.workflow.metadata.impl.TaskPriority">
+    <field name="priority">
+      <bind-xml name="priority" node="element"/>
+    </field>
+    <field name="mappedPriority">
+      <bind-xml name="wdo-attribute" node="element" location="mapped-priority"/>
+    </field>
+  </class>
+  <!-- END TASK PRIORITY-->
+  <!-- GRAPHICAL PDT REPRESENTATION -->
+  <class name="curam.util.internal.workflow.graph.impl.GraphLoader">
+    <map-to xml="WORKFLOW"/>
+    <field name="processDefinitionID">
+      <bind-xml name="ID" node="attribute"/>
+    </field>
+    <field name="processDefinitionVersion">
+      <bind-xml name="PROCESS-VERSION" node="attribute"/>
+    </field>
+    <field name="nodes" collection="arraylist" type="curam.util.internal.workflow.graph.impl.Node">
+      <bind-xml name="NODE" node="element"/>
+    </field>
+    <field name="edges" collection="arraylist" type="curam.util.internal.workflow.graph.impl.Edge">
+      <bind-xml name="EDGE" node="element"/>
+    </field>
+  </class>
+  <class name="curam.util.internal.workflow.graph.impl.Node">
+    <field name="identifier">
+      <bind-xml name="ID" node="attribute"/>
+    </field>
+    <field name="x">
+      <bind-xml name="X" node="attribute"/>
+    </field>
+    <field name="y">
+      <bind-xml name="Y" node="attribute"/>
+    </field>
+    <field name="label">
+      <bind-xml name="TEXT" node="attribute"/>
+    </field>
+    <field name="dummyNode">
+      <bind-xml name="HIDDEN" node="attribute"/>
+    </field>
+    <field name="activityTypeCode">
+      <bind-xml name="ACTIVITY-TYPE-CODE" node="attribute"/>
+    </field>
+    <field name="hasNotification">
+      <bind-xml name="HAS-NOTIFICATION" node="attribute"/>
+    </field>
+    <field name="executed">
+      <bind-xml name="IS-EXECUTED" node="attribute"/>
+    </field>
+    <field name="splitType">
+      <bind-xml name="SPLIT-TYPE" node="attribute"/>
+    </field>
+    <field name="joinType">
+      <bind-xml name="JOIN-TYPE" node="attribute"/>
+    </field>
+    <field name="startDateTime">
+      <bind-xml name="START-DATE-TIME" node="attribute"/>
+    </field>
+    <field name="endDateTime">
+      <bind-xml name="END-DATE-TIME" node="attribute"/>
+    </field>
+    <field name="status">
+      <bind-xml name="STATUS" node="attribute"/>
+    </field>
+    <field name="numberOfIterations">
+      <bind-xml name="NUMBER-ITERATIONS" node="attribute"/>
+    </field>
+    <field name="taskID">
+      <bind-xml name="TASK-ID" node="attribute"/>
+    </field>
+    <field name="alertID">
+      <bind-xml name="ALERT-ID" node="attribute"/>
+    </field>
+    <field name="raisedByUser">
+      <bind-xml name="RAISED-BY-USER" node="attribute"/>
+    </field>
+    <field name="taskStatus">
+      <bind-xml name="TASK-STATUS" node="attribute"/>
+    </field>
+    <field name="taskReservedBy">
+      <bind-xml name="TASK-RESERVED-BY" node="attribute"/>
+    </field>
+    <field name="taskTotalTimeWorked">
+      <bind-xml name="TASK-TOTAL-TIME-WORKED" node="attribute"/>
+    </field>
+  </class>
+  <class name="curam.util.internal.workflow.graph.impl.Edge">
+    <field name="fromID">
+      <bind-xml name="FROM" node="attribute"/>
+    </field>
+    <field name="toID">
+      <bind-xml name="TO" node="attribute"/>
+    </field>
+    <field name="finalFromID">
+      <bind-xml name="REAL-FROM" node="attribute"/>
+    </field>
+    <field name="finalToID">
+      <bind-xml name="REAL-TO" node="attribute"/>
+    </field>
+    <field name="dummyEdge">
+      <bind-xml name="HIDDEN" node="attribute"/>
+    </field>
+    <field name="transitionID">
+      <bind-xml name="TRANSITION-ID" node="attribute"/>
+    </field>
+    <field name="executed">
+      <bind-xml name="IS-EXECUTED" node="attribute"/>
+    </field>
+    <field name="reverseArrow">
+      <bind-xml name="REVERSE-ARROW" node="attribute"/>
+    </field>
+    <field name="enabled">
+      <bind-xml name="ENABLED" node="attribute"/>
+    </field>
+    <field name="xorSplitOrder">
+      <bind-xml name="ORDER" node="attribute"/>
+    </field>
+    <field name="transitionCondition">
+      <bind-xml name="TRANSITION-CONDITION" node="attribute"/>
+    </field>
+  </class>
+  <!-- END GRAPHICAL PDT REPRESENTATION -->
+
+</mapping>

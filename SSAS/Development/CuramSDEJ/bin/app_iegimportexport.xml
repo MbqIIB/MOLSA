@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  This is the ant build file for IEG import and export.
+  It contains any utility tasks used by this purpose.
+-->
+<project name="app_iegimportexport" default="listiegscripts">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  ***********************************  -->
+  <!--  ***  Check component property   ***  -->
+  <!--  ***********************************  -->
+  <target name="check.component.available" unless="component">
+    <fail message="The property 'component' must be set. Please use -Dcomponent"/>
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  Check script ID property     ***  -->
+  <!--  **************************************  -->
+  <target name="check.scriptid.available" unless="scriptid">
+    <fail message="The property 'scriptid' must be set. Please use -Dscriptid"/>
+  </target>
+
+  <!--  **********************************************  -->
+  <!--  ***  Check question group ID property     ***  -->
+  <!--  **********************************************  -->
+  <target name="check.groupid.available" unless="groupid">
+    <fail message="The property 'groupid' must be set. Please use -Dgroupid"/>
+  </target>
+
+  <!--  ******************************************  -->
+  <!--  ***  Check import directory property   ***  -->
+  <!--  ******************************************  -->
+  <target name="check.directory.available" unless="directory">
+    <fail message="The property 'directory' must be set. Please use -Ddirectory"/>
+  </target>
+
+  <!--  ******************************************  -->
+  <!--  ***  Check import file name property   ***  -->
+  <!--  ******************************************  -->
+  <target name="check.ieg.filename.available" unless="ieg.file">
+    <fail message="The property 'ieg.file' must be set. Please use -Dieg.file"/>
+  </target>
+
+  <!--  *******************************************************  -->
+  <!--  ***  Check ieg import overwrite indicator property  ***  -->
+  <!--  *******************************************************  -->
+  <target name="check.ieg.import.overwriteInd.available" unless="overwrite.ieg">
+
+    <condition property="overwrite.ieg" value="true">
+       <istrue value="${overwrite}"/>
+    </condition>
+    <property name="overwrite.ieg" value="false"/>
+
+  </target>
+
+  <!--  ***********************************  -->
+  <!--  ***  Import script information  ***  -->
+  <!--  ***********************************  -->
+  <target name="importiegscript" depends="build.scriptimport.properties"
+    description="Import an IEG script definition from file to database
+      (specify script file to be imported using -Dieg.file,
+       and overwrite indicator using -Doverwrite)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The script file ${ieg.file} has been imported into the database
+    </echo>
+
+  </target>
+
+  <!--  *****************************************  -->
+  <!--  ***  Build script import properties   ***  -->
+  <!--  *****************************************  -->
+  <target name="build.scriptimport.properties" depends="check.scriptimport.env">
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.ScriptImport.importScript"/>
+
+    <property name="batch.parameters"
+      value="fileName=${ieg.file},overwriteInd=${overwrite.ieg}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  *****************************************  -->
+  <!--  ***  Check script import environment  ***  -->
+  <!--  *****************************************  -->
+  <target name="check.scriptimport.env"
+    depends="check.ieg.filename.available, check.ieg.import.overwriteInd.available">
+
+    <!-- check if the specified script file exists -->
+    <available property="ieg.file.exists"
+      file="${ieg.file}" type="file"/>
+
+    <fail unless="ieg.file.exists"
+       message="The specified file ${ieg.file} does not exist."/>
+  </target>
+
+  <!--  ***********************************  -->
+  <!--  ***  Export script information  ***  -->
+  <!--  ***********************************  -->
+  <target name="exportiegscript" depends="build.scriptexport.properties"
+    description="Export an IEG script definition from database to file
+      system (specify script to be extracted using -Dscriptid
+      and component using -Dcomponent)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The script has been exported to
+      ${file.script} in ${dir.script.export}
+    </echo>
+
+  </target>
+
+    <!--  ***********************************************  -->
+    <!--  ***  Export script information to directory ***  -->
+    <!--  ***********************************************  -->
+    <target name="exportiegscripttodir" depends="build.scriptexporttodir.properties"
+      description="Export an IEG script definition from database to file
+        system (specify script to be extracted using -Dscriptid
+        and component using -Dexportdirectory)">
+
+      <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+      <ant
+        antfile="${dir.sde.bin}/app_batchlauncher.xml"
+        target="main"
+        inheritall="false">
+        <property name="batch.program" value="${batch.program}"/>
+        <property name="batch.parameters" value="${batch.parameters}"/>
+        <property name="batch.username" value="${batch.username}"/>
+        <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+        <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+      </ant>
+
+      <echo>The script has been exported to
+        ${file.script} in ${dir.script.export}
+      </echo>
+
+  </target>
+
+  <!--  ****************************************  -->
+  <!--  ***  Export full script information  ***  -->
+  <!--  ****************************************  -->
+  <target name="exportfulliegscript" depends="build.fullscriptexport.properties"
+    description="Export an IEG script definition and associated subscripts and question groups
+      from database to file system (specify script to be extracted using -Dscriptid
+      and component using -Dcomponent)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The script ${file.script} and associated subscripts and question groups have been exported
+      to ${dir.script.export}
+    </echo>
+
+  </target>
+
+  <!--  ****************************************************  -->
+  <!--  ***  Export full script information to directory ***  -->
+  <!--  ****************************************************  -->
+  <target name="exportfulliegscripttodir" depends="build.fullscriptexporttodirectory.properties"
+    description="Export an IEG script definition and associated subscripts and question groups
+      from database to file system (specify script to be extracted using -Dscriptid
+      and directory using -Dexportdirectory)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The script ${file.script} and associated subscripts and question groups have been exported
+      to ${dir.script.export}
+    </echo>
+
+  </target>
+
+
+  <!--  *****************************************  -->
+  <!--  ***  Build script export properties   ***  -->
+  <!--  *****************************************  -->
+  <target name="build.scriptexport.properties" depends="check.scriptexport.env">
+
+    <property name="exportFullScriptInd"  value="false"/>
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.ScriptExport.exportScript"/>
+
+    <property name="batch.parameters"
+      value="fileName=${file.script.export},scriptID=${scriptid},exportFullScriptInd=${exportFullScriptInd}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  ******************************************************  -->
+  <!--  ***  Build script export to directory properties   ***  -->
+  <!--  ******************************************************  -->
+  <target name="build.scriptexporttodir.properties" depends="check.scriptexporttodir.env">
+
+    <property name="exportFullScriptInd"  value="false"/>
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.ScriptExport.exportScript"/>
+
+    <property name="batch.parameters"
+      value="fileName=${file.script.export},scriptID=${scriptid},exportFullScriptInd=${exportFullScriptInd}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  **********************************************  -->
+  <!--  ***  Build full script export properties   ***  -->
+  <!--  **********************************************  -->
+  <target name="build.fullscriptexport.properties" depends="check.scriptexport.env">
+
+    <property name="exportFullScriptInd"  value="true"/>
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.ScriptExport.exportScript"/>
+
+    <property name="batch.parameters"
+      value="fileName=${file.script.export},scriptID=${scriptid},exportFullScriptInd=${exportFullScriptInd}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  ***********************************************************  -->
+  <!--  ***  Build full script export to directory properties   ***  -->
+  <!--  ***********************************************************  -->
+  <target name="build.fullscriptexporttodirectory.properties" depends="check.scriptexporttodir.env">
+
+    <property name="exportFullScriptInd"  value="true"/>
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.ScriptExport.exportScript"/>
+
+    <property name="batch.parameters"
+      value="fileName=${file.script.export},scriptID=${scriptid},exportFullScriptInd=${exportFullScriptInd}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  *****************************************  -->
+  <!--  ***  Check script export environment  ***  -->
+  <!--  *****************************************  -->
+  <target name="check.scriptexport.env"
+    depends="check.component.available, check.scriptid.available">
+
+    <!-- set script export dir property -->
+    <property name="dir.script.export"
+      value="${dir.base.components}/${component}/ieg"/>
+
+    <!-- set script file property -->
+    <property name="file.script"
+      value="${scriptid}.sx"/>
+
+    <!-- set script export file property -->
+    <property name="file.script.export"
+      value="${dir.base.components}/${component}/ieg/${scriptid}.sx"/>
+
+    <!-- check if the specified component directory exists -->
+    <available property="component.exists"
+      file="${dir.base.components}/${component}" type="dir"/>
+
+    <fail unless="component.exists" message="Component directory must exist in advance."/>
+
+    <!-- check if the ieg directory exists -->
+    <available property="component.ieg.exists"
+      file="${dir.base.components}/${component}/ieg" type="dir"/>
+
+    <fail unless="component.ieg.exists"
+      message="Directory ieg must exist in the component directory."/>
+
+  </target>
+
+    <!--  ***********************************************  -->
+    <!--  ***  Import IEG from component information  ***  -->
+    <!--  ***********************************************  -->
+    <target name="importiegcomponent" depends="build.importiegcomponent.properties"
+      description="Import IEG data from specified component to database
+        (specify directory from which to import data using -Dcomponent
+         and overwrite indicator using -Doverwrite)">
+
+      <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+      <ant
+        antfile="${dir.sde.bin}/app_batchlauncher.xml"
+        target="main"
+        inheritall="false">
+        <property name="batch.program" value="${batch.program}"/>
+        <property name="batch.parameters" value="${batch.parameters}"/>
+        <property name="batch.username" value="${batch.username}"/>
+        <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+        <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+      </ant>
+
+      <echo>IEG data from the component ${component} has been imported into the database.
+      </echo>
+
+  </target>
+
+  <!--  ******************************************************  -->
+  <!--  ***  Check script export to directory environment  ***  -->
+  <!--  ******************************************************  -->
+  <target name="check.scriptexporttodir.env" depends="check.scriptid.available">
+
+    <!-- set script export dir property -->
+    <property name="dir.script.export"
+      value="${exportdirectory}"/>
+
+    <!-- set script file property -->
+    <property name="file.script"
+      value="${scriptid}.sx"/>
+
+    <!-- set script export file property -->
+    <property name="file.script.export"
+      value="${exportdirectory}/${scriptid}.sx"/>
+
+    <!-- check if the specified export directory exists -->
+    <available property="exportdirectory.exists" file="${exportdirectory}" type="dir"/>
+
+    <fail unless="exportdirectory.exists" message="Export directory must exist in advance."/>
+
+  </target>
+
+
+  <!--  ********************************  -->
+  <!--  ***  Import IEG information  ***  -->
+  <!--  ********************************  -->
+  <target name="importieg" depends="build.importieg.properties"
+    description="Import IEG data from specified directory to database
+      (specify directory from which to import data using -Ddirectory
+       and overwrite indicator using -Doverwrite)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>IEG data from the directory ${directory} has been imported into the database
+    </echo>
+
+  </target>
+
+  <!--  ****************************************************  -->
+  <!--  ***  Import IEG multiple components information  ***  -->
+  <!--  ****************************************************  -->
+  <target name="importiegsubdirs" depends="build.importiegsubdirs.properties"
+    description="Import IEG components from specified directory to database
+      (specify directory from which to import data using -Ddirectory
+       and overwrite indicator using -Doverwrite)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>IEG data from the components of ${directory} has been imported into the database
+    </echo>
+
+  </target>
+
+  <!--  *******************************************  -->
+  <!--  ***  Import question group information  ***  -->
+  <!--  *******************************************  -->
+  <target name="importquestiongroup" depends="build.questiongroupimport.properties"
+    description="Import a question group definition from file to database
+      (specify question group file to be imported using -Dieg.file,
+       and overwrite indicator using -Doverwrite)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The question group file ${ieg.file} has been imported into the database
+    </echo>
+
+  </target>
+
+  <!--  *****************************************************  -->
+  <!--  ***  Build import IEG from component properties   ***  -->
+  <!--  *****************************************************  -->
+  <target name="build.importiegcomponent.properties" depends="check.importiegcomponent.env">
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.IEGImportComponent.importIEGComponent"/>
+
+    <property name="batch.parameters"
+      value="directory=${dir.base.components}/${component},overwriteInd=${overwrite.ieg}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  Build import IEG properties   ***  -->
+  <!--  **************************************  -->
+  <target name="build.importieg.properties" depends="check.importieg.env">
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.IEGImport.importIEGData"/>
+
+    <property name="batch.parameters"
+      value="directory=${directory},overwriteInd=${overwrite.ieg}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  **********************************************************  -->
+  <!--  ***  Build import IEG multiple components properties   ***  -->
+  <!--  **********************************************************  -->
+  <target name="build.importiegsubdirs.properties" depends="check.importieg.env">
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.IEGImportSubDirectories.importIEGSubDirectories"/>
+
+    <property name="batch.parameters"
+      value="directory=${directory},overwriteInd=${overwrite.ieg}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+
+  <!--  *************************************************  -->
+  <!--  ***  Build question group import properties   ***  -->
+  <!--  *************************************************  -->
+  <target name="build.questiongroupimport.properties" depends="check.questiongroupimport.env">
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.QuestionGroupImport.importQuestionGroup"/>
+
+    <property name="batch.parameters"
+      value="fileName=${ieg.file},overwriteInd=${overwrite.ieg}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+
+  <!--  *****************************************************  -->
+  <!--  ***  Check IEG import from component environment  ***  -->
+  <!--  *****************************************************  -->
+  <target name="check.importiegcomponent.env"
+    depends="check.component.available, check.ieg.import.overwriteInd.available">
+
+    <!-- check if the specified component exists -->
+    <available property="component.exists"
+      file="${dir.base.components}/${component}" type="dir"/>
+
+    <fail unless="component.exists"
+       message="The specified component ${component} does not exist."/>
+
+  </target>
+
+  <!--  **************************************  -->
+  <!--  ***  Check IEG import environment  ***  -->
+  <!--  **************************************  -->
+  <target name="check.importieg.env"
+    depends="check.directory.available, check.ieg.import.overwriteInd.available">
+
+    <!-- check if the specified directory exists -->
+    <available property="directory.exists"
+      file="${directory}" type="dir"/>
+
+    <fail unless="directory.exists"
+       message="The specified directory ${directory} does not exist."/>
+  </target>
+
+  <!--  *************************************************  -->
+  <!--  ***  Check question group import environment  ***  -->
+  <!--  *************************************************  -->
+  <target name="check.questiongroupimport.env"
+    depends="check.ieg.filename.available, check.ieg.import.overwriteInd.available">
+
+    <!-- check if the specified question group file exists -->
+    <available property="ieg.file.exists"
+      file="${ieg.file}" type="file"/>
+
+    <fail unless="ieg.file.exists"
+       message="The specified file ${ieg.file} does not exist."/>
+  </target>
+
+  <!--  *******************************************  -->
+  <!--  ***  Export question group information  ***  -->
+  <!--  *******************************************  -->
+  <target name="exportquestiongroup" depends="build.questiongroupexport.properties"
+    description="Export a question group definition from database to file
+      system (specify question group to be extracted using -Dgroupid
+      and component using -Dcomponent)">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+    <echo>The question group has been exported to
+      ${file.questiongroup} in ${dir.questiongroup.export}
+    </echo>
+
+  </target>
+
+  <!--  *************************************************  -->
+  <!--  ***  Build question group export properties   ***  -->
+  <!--  *************************************************  -->
+  <target name="build.questiongroupexport.properties" depends="check.questiongroupexport.env">
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.QuestionGroupExport.exportQuestionGroup"/>
+
+    <property name="batch.parameters"
+      value="fileName=${file.questiongroup.export},groupID=${groupid}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+  <!--  *************************************************  -->
+  <!--  ***  Check question group export environment  ***  -->
+  <!--  *************************************************  -->
+  <target name="check.questiongroupexport.env"
+    depends="check.component.available, check.groupid.available">
+
+    <!-- set question group export dir property -->
+    <property name="dir.questiongroup.export"
+      value="${dir.base.components}/${component}/ieg"/>
+
+    <!-- set question group export file property -->
+    <property name="file.questiongroup.export"
+      value="${dir.base.components}/${component}/ieg/${groupid}.gx"/>
+
+    <!-- set question group file property -->
+    <property name="file.questiongroup"
+      value="${groupid}.gx"/>
+
+    <!-- check if the specified component directory exists -->
+    <available property="component.exists"
+      file="${dir.base.components}/${component}" type="dir"/>
+
+    <fail unless="component.exists" message="Component directory must exist in advance."/>
+
+    <!-- check if the ieg directory exists -->
+    <available property="component.ieg.exists"
+      file="${dir.base.components}/${component}/ieg" type="dir"/>
+
+    <fail unless="component.ieg.exists"
+      message="Directory ieg must exist in the component's directory."/>
+
+  </target>
+
+  <!--  *********************************  -->
+  <!--  ***  List script information  ***  -->
+  <!--  *********************************  -->
+  <target name="listiegscripts"
+    depends="check.db.type, run.database.db2, run.database.ora, run.database.zos, run.database.h2,
+             get.decrypted.db.password"
+    description="List IEG script information in database">
+
+    <echo>List of IEG scripts available in the database</echo>
+
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      print="yes"
+      onerror="continue">
+
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+
+      Select SCRIPTID, NAME from SCRIPTINFORMATION;
+    </sql>
+  </target>
+
+  <!--  *****************************************  -->
+  <!--  ***  List question group information  ***  -->
+  <!--  *****************************************  -->
+  <target name="listquestiongroups"
+    depends="check.db.type, run.database.db2, run.database.ora, run.database.zos, run.database.h2,
+             get.decrypted.db.password, listquestiongroups.no.script,
+             listquestiongroups.for.script"
+    description="List IEG question group information in database">
+
+    <echo>List of IEG question groups available in the database</echo>
+
+  </target>
+
+  <!--  ***************************************************  -->
+  <!--  ***  List question group information no script  ***  -->
+  <!--  ***************************************************  -->
+  <target name="listquestiongroups.no.script" unless="scriptid">
+    <sql
+      driver="${db.driver}"
+      url="${db.url}"
+      userid="${curam.db.username}"
+      password="${decrypted.db.password}"
+      print="yes"
+      onerror="continue">
+
+      <connectionProperty name="sslConnection" value="${curam.db2.ssl}"/>
+      <classpath>
+        <path refid="database.common.classpath"/>
+      </classpath>
+
+       Select GROUPID, NAME from GROUPINFORMATION;
+    </sql>
+  </target>
+
+  <!--  ****************************************************  -->
+  <!--  ***  List question groups information for script  ***  -->
+  <!--  ****************************************************  -->
+  <target name="listquestiongroups.for.script" depends="build.questiongroupslist.properties"
+   if="scriptid">
+
+    <!-- Call app_batchlauncher.xml to launch the Batch Launcher -->
+    <ant
+      antfile="${dir.sde.bin}/app_batchlauncher.xml"
+      target="main"
+      inheritall="false">
+      <property name="batch.program" value="${batch.program}"/>
+      <property name="batch.parameters" value="${batch.parameters}"/>
+      <property name="batch.username" value="${batch.username}"/>
+      <property name="disable.database.callback" value="${disable.database.callback.flag}"/>
+      <property name="force.disable.in.standalone" value="${force.disable.in.standalone.flag}"/>
+    </ant>
+
+  </target>
+
+  <!--  ************************************************  -->
+  <!--  ***  Build question groups list properties   ***  -->
+  <!--  ************************************************  -->
+  <target name="build.questiongroupslist.properties">
+
+    <property name="batch.program"
+      value="curam.util.internal.ieg.intf.QuestionGroupList.listQuestionGroup"/>
+
+    <property name="batch.parameters"
+      value="scriptID=${scriptid}"/>
+
+    <property name="batch.username"  value="superuser"/>
+
+  </target>
+
+</project>
+
+
+
+

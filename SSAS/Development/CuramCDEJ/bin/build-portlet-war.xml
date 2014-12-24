@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+Copyright 2011 Curam Software Ltd.
+All rights reserved.
+
+This software is the confidential and proprietary information of Curam
+Software, Ltd. ("Confidential Information"). You shall not disclose
+such Confidential Information and shall use it only in accordance with the
+terms of the license agreement you entered into with Curam Software.
+-->
+<!--
+  The build script to generate a WAR file containing Curam Portlets
+
+  Modification History
+  ====================
+  30-Mar-2012  JY  [CR00316072]  Added the code to pick up the localization
+                   properties files for the portlets in the localized core 
+                   components from the language packs when they exists by using
+                   the supported locales from the locale list. 
+  22-Dec-2011  JY  [CR00299955]  Added support for WAS portal server and
+                   further validations to properties files for localization
+                   purpose.
+  25-Nov-2011  JY  [CR00298230]  Initial Version
+-->
+<project name="build-portlet-war" default="portlet-war">
+  <import file="build-properties.xml"/>
+
+	
+	<!-- ******************************************************************* -->
+	<!-- *** Method to check if a mandatory property is defined in its   *** -->
+	<!-- *** properties file. If not, fail.                              *** --> 
+	<!-- *** Parameters: propname - Mandatory. The name of the property  *** -->
+	<!-- ***                        to be checked.                       *** -->
+	<!-- ***             filename - Mandatory. The name of the file that *** -->
+	<!-- ***                        contains that property.              *** -->
+	<!-- ***             prefix   - Optional. The prefix for 'propname'.  *** -->
+	<!-- ******************************************************************* -->
+  <macrodef name="checkmandatory">
+    <attribute name="propname"/>
+  	<attribute name="filename" />
+  	<attribute name="prefix" default=""/>
+    
+  	<sequential>
+    	<if>
+    		<!-- Check if the prefix is specified or not -->
+    	  <equals arg1="@{prefix}" arg2="" />
+    		<then>
+    	    <!-- Fail if the @{propname} property is missing -->
+    			<fail message="@{propname} property is not set in @{filename}.properties file" 
+    				    unless="@{propname}"/>
+    			          
+    			<!-- Fail if the @{propname} property is empty -->
+    			<if>
+    			  <equals arg1="${@{propname}}" arg2=""/>
+    			  <then>
+    			    <fail message="@{propname} property must not be empty in @{filename}.properties file"/>
+    			  </then>
+    			</if>
+    		</then>
+    		<else>
+    		  <!-- Fail if the @{propname} property is missing -->
+    		  <fail message="@{propname} property is not set in @{filename}.properties file" 
+    		  	    unless="@{prefix}.@{propname}"/>
+    		                              
+    		  <!-- Fail if the @{propname} property is empty -->
+    		  <if>
+    		    <equals arg1="${@{prefix}.@{propname}}" arg2=""/>
+    		    <then>
+    		      <fail message="@{propname} property must not be empty in @{filename}.properties file"/>
+    		    </then>
+    		  </if>
+    		</else>
+      </if>
+    </sequential>
+  	
+  </macrodef>
+	
+	
+  <!--=====================================
+	    Clean all outputs in the build folder
+      ======================================-->
+  <target name="-clean">
+    <delete dir="${dir.bld.portlet}" />
+  </target>
+
+
+	
+  <!--=================================================
+	    Load settings from PortletsConfig.properties file
+      =================================================-->
+  <target name="-parse-config-props">
+  	<echo>${dir.core.portlet}</echo>
+  	<property file="${dir.core.portlet}/PortletsConfig.properties" />
+
+  	<!-- 
+  	Check if the mandatory properties are defined POrtletConfig.properties file: 
+  	(1) 'portlet.ids' 
+  	(2) 'base.url'
+  	-->
+  	<checkmandatory propname="portlet.ids" 
+  		              filename="PortletsConfig" />
+  	<checkmandatory propname="base.url" 
+  	  		              filename="PortletsConfig" />
+
+  	<copy todir="${dir.bld.portlet.resources}" 
+  		    file="${dir.core.portlet}/PortletsConfig.properties" />
+  </target>
+
+	
+	
+  <!--========================================
+	    Generate the directories for the outputs
+      ========================================-->
+  <target name="-init" depends="-parse-config-props">
+  	<mkdir dir="${dir.bld.portlet}" />
+  	<mkdir dir="${dir.bld.portlet.meta-inf}"/>
+  	<mkdir dir="${dir.bld.portlet.web-inf}"/>
+  	<mkdir dir="${dir.bld.portlet.classes}"/>
+  	<mkdir dir="${dir.bld.portlet.resources}"/>
+    <mkdir dir="${dir.bld.curam.portlets}"/>
+  </target>
+
+	
+	
+  <!--==========================
+	    Generate portlet.xml
+      ==========================-->
+  <target name="-gen-portlet-xml" depends="-init">
+  	<copy file="${dir.web.template}/portlet.xml" 
+  		    todir="${dir.bld.portlet.web-inf}"/>
+    
+  	<!-- Output supported locales into a temporary xml file -->
+  	<echo message="Setting supported locales ${prp.locale.list} for portlets"/>
+  	<for param="locale" list="${prp.locale.list}" trim="true" delimiter=",">
+  	  <sequential>
+  	  	<echoxml file="${dir.bld.portlet.web-inf}/locales.xml" append="true">
+  	  		<supported-locale>@{locale}</supported-locale>
+  	  	</echoxml>
+  	  </sequential>
+  	</for>
+  	
+  	<!-- parse all portlets into a temporary xml file -->
+    <for param="portletID" list="${portlet.ids}" trim="true" delimiter=",">
+      <sequential>
+      	<echo message="Configurating '@{portletID}' portlet"/>
+      	<!-- Load the corresponding portlet properties file from the resource directory -->
+      	<available file="${dir.core.portlet.resources}/@{portletID}.properties" 
+      		         property="hasPropertyFile" />
+      	<fail message="Portlet ID '@{portletID}' is not valid. You should provide a correct portlet ID or associate the localization files with this portlet ID"
+		          unless="hasPropertyFile"/>
+      	<property file="${dir.core.portlet.resources}/@{portletID}.properties" 
+      		        prefix="@{portletID}"/>
+      	
+      	<!-- 
+      	Check if a list of the following mandatory properties are defined:
+      	  1. portlet.height
+      	  2. javax.portlet.description
+      	  3. javax.portlet.display-name
+      	  4. javax.portlet.title
+      	  5. javax.portlet.short-title
+      	-->
+      	<checkmandatory propname="portlet.height" 
+      		              filename="@{portletID}" 
+      		              prefix="@{portletID}" />
+      	<checkmandatory propname="javax.portlet.description" 
+      		              filename="@{portletID}" 
+      		              prefix="@{portletID}" />
+      	<checkmandatory propname="javax.portlet.display-name" 
+      	                filename="@{portletID}" 
+      		              prefix="@{portletID}" />
+      	<checkmandatory propname="javax.portlet.title" 
+      	                filename="@{portletID}" 
+      	                prefix="@{portletID}" />
+      	<checkmandatory propname="javax.portlet.short-title" 
+      	                filename="@{portletID}" 
+      	                prefix="@{portletID}" />
+      	
+      	
+      	<!-- 
+      	Always picking up the default localization files for the 
+      	portlets from the core component directory.
+      	-->
+      	<copy todir="${dir.bld.portlet.resources}">
+      	  <fileset dir="${dir.core.portlet.resources}">
+      	  	<filename name="@{portletID}*.properties"/>
+      	  </fileset>
+        </copy>
+      	
+      	<!-- 
+      	Also picking up other localization files for the portlets
+      	from the localized components if they exists in the language
+      	packages by using the supported locales specifed in the
+      	locale list.
+      	E.g. 
+      	     One of the supported locale is 'fr_CA',
+      	     all the localization properties files in its corresponding
+      	     localized core component 'core_fr_CA' will be picked up.
+      	     There is a fallback mechanism here. It will be described in
+      	     details below.
+      	-->
+      	<for param="locale" list="${prp.locale.list}" trim="true" delimiter=",">
+      		<sequential>
+      			<!-- 
+      			check if the corresponding localized core component exists
+      			for each locale from the locale list. 
+      			-->
+      			<if>
+      				<available file="${dir.src.components}/core_@{locale}" 
+      					type="dir"/>
+      	      <then>
+      	      	<!-- 
+      	      	Copy each localization properties file using its portlet
+      	      	id when the localized core compoent for the current locale
+      	      	is found.
+      	      	-->
+      	      	<copy todir="${dir.bld.portlet.resources}" overwrite="yes">
+      	      	  <fileset 
+      	      	  	dir="${dir.src.components}/core_@{locale}/PortletsConfig/resources">
+      	      	      <filename name="@{portletID}*.properties"/>
+      	      	  </fileset>
+      	      	</copy>
+      	      </then>
+      				<else>
+      					<!-- 
+      					Otherwise, we do a fallback here. We will use the fallback
+      					locale of the current locale to find the corresponding
+      					localized core component if its fallback locale exists. 
+      					E.g.
+      					     The current locale is 'fr_CA',
+      					     its fallback locale will be 'fr'.
+      					     And 'fr' will be used to find the correponding localized
+      					     core component 'core_fr'.
+      					 -->
+      					<propertyregex property="@{portletID}.@{locale}.fallback"
+      					              input="@{locale}"
+      					              regexp="(\w*)\_(\w*)"
+      					              select="\1"
+      					              casesensitive="false" />
+      					<if>
+      						<isset property="@{portletID}.@{locale}.fallback" />
+      						<then>
+      							<if>
+      								<available 
+      									file="${dir.src.components}/core_${@{portletID}.@{locale}.fallback}"
+      									type="dir"/>
+      								<then>
+      									<!-- 
+      									The fallback locale exists and the corresponding 
+      									localized core component exists for it. So, copy
+      									each the localization properties file from this
+      									localized component using its portlet id. 
+      									Otherwise, do nothing.
+      									-->
+      									<copy todir="${dir.bld.portlet.resources}" overwrite="yes">
+      									  <fileset 
+      										  dir="${dir.src.components}/core_${@{portletID}.@{locale}.fallback}/PortletsConfig/resources">
+      									     <filename name="@{portletID}*.properties"/>
+      									  </fileset>
+      									</copy>
+      								</then>
+      							</if>
+      						</then>
+      					</if>
+      				</else>
+      	    </if>
+      	  </sequential>
+      	</for>
+
+      	<echoxml file="${dir.bld.portlet.web-inf}/temp.xml" append="true">
+      	  <portlet>
+      	    <portlet-name>@{portletID}</portlet-name>
+      	  	<display-name>${@{portletID}.javax.portlet.display-name}</display-name>
+      	  	<portlet-class>curam.util.portlet.CuramPortletContainer</portlet-class>
+      	  	<init-param>
+      	      <name>portletID</name>
+      	  	  <value>@{portletID}</value>
+      	    </init-param>
+      	  	<init-param>
+      	      <name>portletHeight</name>
+      	  	  <value>${@{portletID}.portlet.height}</value>
+            </init-param>
+      	  	<supports>
+      	  	  <mime-type>text/html</mime-type>
+      	  	  <portlet-mode>view</portlet-mode>
+      	  	</supports>
+      	  	<supported-locale>@LOCALE@</supported-locale>
+      	  	<resource-bundle>curam.portlet.resources.@{portletID}</resource-bundle>
+      	  	<portlet-info>
+      	  	  <title>${@{portletID}.javax.portlet.title}</title>
+      	      <short-title>${@{portletID}.javax.portlet.short-title}</short-title>
+      	  	</portlet-info>
+      	  </portlet>
+        </echoxml>
+      </sequential>
+    </for>
+  	
+  	<loadfile property="allPortlets" 
+  		        srcFile="${dir.bld.portlet.web-inf}/temp.xml" 
+  		        encoding="UTF-8"/>
+  	<replace file="${dir.bld.portlet.web-inf}/portlet.xml" 
+		  		   token="@PORTLET-APPLICATION-ID@" 
+	  		       value="CuramPortletLibrary"/>
+  	<replace file="${dir.bld.portlet.web-inf}/portlet.xml" 
+  		       value="${allPortlets}" 
+  		       token="@PORTLET@" 
+  		       encoding="UTF-8"/>
+  	<delete file="${dir.bld.portlet.web-inf}/temp.xml"/>
+  	
+  	<loadfile property="locales" 
+  		        srcFile="${dir.bld.portlet.web-inf}/locales.xml" 
+  		        encoding="UTF-8"/>
+  	<replace file="${dir.bld.portlet.web-inf}/portlet.xml" 
+  		       value="${locales}" 
+  		       encoding="UTF-8">
+  		<replacetoken><![CDATA[<supported-locale>@LOCALE@</supported-locale>]]></replacetoken>
+  	</replace>
+    <delete file="${dir.bld.portlet.web-inf}/locales.xml"/>
+  </target>
+
+
+	
+  <!--==========================
+	      Generate web.xml
+      ==========================-->
+  <target name="-gen-web-xml" depends="-init">
+  	<copy file="${dir.web.template}/web.xml" 
+  		    todir="${dir.bld.portlet.web-inf}" />
+  	
+  	<replace file="${dir.bld.portlet.web-inf}/web.xml" 
+  		       token="@DISPLAY-NAME@" 
+  		       value="Curam Portlet Library"/>
+  	<replace file="${dir.bld.portlet.web-inf}/web.xml" 
+  		       token="@DESCRIPTION@" 
+  		       value="Provides access to Curam portlet as JSR 268 Portlets"/>
+  </target>
+
+	
+
+  <!--=======================================
+	    Unzip the CuramPortletContainer class
+	    from portlet-coreInf.jar archive
+      ========================================-->
+  <target name="-porting-container-class" depends="-init">
+  	<unjar src="${dir.curam.jar}/portlet-coreInf.jar" 
+  		     dest="${dir.bld.portlet.classes}"/>
+  	<delete dir="${dir.bld.portlet.classes}/META-INF"/>
+  </target>
+
+
+	
+  <!--==============================================
+	    Package up a war file containing all resources
+	    for Curam portlets
+      ==============================================-->
+  <target name="portlet-war" 
+  	      depends="-clean, -porting-container-class, -gen-portlet-xml, -gen-web-xml" 
+  	      description="builds the Curam portket WAR file">
+  	<jar destfile="${dir.bld.curam.portlets}/CuramPortlets.war" 
+  		   basedir="${dir.bld.portlet}">
+  	  <manifest>
+  	  	<attribute name="Extension-Name"   value="CuramPortlets"/>
+  	  	<attribute name="Specification-Version" value="1.0"/>
+  	  	<attribute name="Implementation-Version" value="1.0"/>
+        <attribute name="Specification-Vendor"  value="IBM Corporation"/>
+  	  </manifest>
+  	</jar>
+  </target>
+
+</project>

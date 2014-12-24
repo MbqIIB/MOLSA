@@ -1,0 +1,126 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>PrecedentChangeSetBatchCtrl</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Precedent Change Set Batch Control
+
+
+:</b>
+<i> Controls the currently-open and submitted <a href=PrecedentChangeSet.html>Precedent Change Sets</a> for batch processing.
+
+
+</i>
+
+
+
+<P>When a client of the Dependency Manager identifies that data that may have been used in a calculation has changed, then that client can request that the Dependency Manager must identify and recalculate dependent values affected by the change.<P>
+
+
+
+<P>If the Dependency Manager is configured to defer the identification/recalculation work to the next run of the Dependency Manager batch suite, then the Dependency Manager stores new <a href=PrecedentChangeItem.html>Precedent Change Items</a> in the currently-open <a href=PrecedentChangeSet.html>Precedent Change Set</a> for batch processing.  This <a href=PrecedentChangeSet.html>Precedent Change Set</a> is identified by the row on this entity which has the key value for the "Open" status.</P>
+
+
+
+
+
+<P>When the Dependency Manager batch suite starts, then:</P>
+
+<UL>
+
+<LI>the currently-open batch <a href=PrecedentChangeSet.html>Precedent Change Set</a> becomes submitted, and the "Submitted" row on this entity is updated to point to it; and</LI>
+
+<LI>a new open batch <a href=PrecedentChangeSet.html>Precedent Change Set</a> is stored, and the "Open" row on this entity is updated to point to it.</LI>
+
+</UL>
+
+
+
+<P>The dependent identification phase of the Dependency Manager batch suite can now identify the submitted batch <a href=PrecedentChangeSet.html>Precedent Change Set</a> by retrieving the "Submitted" row from this entity.</P>
+
+
+
+<P>When the Dependency Manager batch suite completes, the submitted  <a href=PrecedentChangeSet.html>Precedent Change Set</a>  transitions to "Complete", and the "Submitted" row on this entity is updated so that it no longer points to any <a href=PrecedentChangeSet.html>Precedent Change Set</a>.</P>
+
+
+
+<p><b>Technical Notes</b></p>
+
+
+<P>The data on this table may only be read or written using Dependency Manager APIs - no direct access to the underlying data is supported.  Custom DMX files and/or database scripts must not be used to populate this entity.  The DMX file for this entity included with the application MUST be used to create the initial control rows required by the application.</P>
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (3)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">status</td><td class="data">Yes</td><td class="data">No</td><td class="data">The status of the batch Precedent Change Set.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">precedentChangeSetID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The identifier of the current Precedent Change Set for batch processing in this status, if any.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">PrecedentChangeSetBatchCtrl.precedentChangeSetID</td><td class="dataLast"><a href="PrecedentChangeSet.html#precedentChangeSetID">PrecedentChangeSet.precedentChangeSetID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

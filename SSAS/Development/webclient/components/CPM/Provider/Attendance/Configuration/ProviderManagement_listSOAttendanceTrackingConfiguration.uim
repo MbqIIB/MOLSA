@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2010 Curam Software Ltd.                                    -->
+<!-- All rights reserved.                                                       -->
+<!-- This software is the confidential and proprietary information of Curam     -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose        -->
+<!-- such Confidential Information and shall use it only in accordance with     -->
+<!-- in accordance with the terms of the license agreement you entered into     -->
+<!-- Software.                                                                  -->
+<!-- Description                                                                -->
+<!-- ===========                                                                -->
+<!-- This page allows the user to list all the service offering attendance      -->
+<!--  configuration.                                                            -->
+<PAGE
+  PAGE_ID="ProviderManagement_listSOAttendanceTrackingConfiguration"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="viewServiceOfferingMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00199755, SSK -->
+  <SERVER_INTERFACE
+    CLASS="MaintainAttendanceConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listSOAttendanceConfigurations"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00199755 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="serviceOfferingID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$serviceOfferingID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.AciveAttendanceTrackingConfiguration"
+  >
+
+
+    <ACTION_SET
+      ALIGNMENT="RIGHT"
+      BOTTOM="false"
+    >
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.New">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createSOAttendanceTrackingConfiguration"
+          WINDOW_OPTIONS="width=670"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00199755, SSK -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$live$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+            />
+            <!-- END, CR00199755 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendanceConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.AttendanceTrackingEnabled"
+    >
+      <!-- BEGIN, CR00199755, SSK -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$live$soAttendanceConfigurationDetails$attendanceTrackingEnabledInd"
+        />
+      </CONNECT>
+      <!-- END, CR00199755 -->
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.DailyAttendanceTrackingRequired"
+    >
+      <!-- BEGIN, CR00199755, SSK -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$live$soAttendanceConfigurationDetails$dailyAttendanceTrackingReqInd"
+        />
+      </CONNECT>
+      <!-- END, CR00199755 -->
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.ReportingMethod"
+    >
+      <!-- BEGIN, CR00199755, SSK -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$live$soAttendanceConfigurationDetails$reportingMethod"
+        />
+      </CONNECT>
+      <!-- END, CR00199755 -->
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.Status"
+    >
+      <!-- BEGIN, CR00199755, SSK -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$live$derivedStatus$derivedStatus"
+        />
+      </CONNECT>
+      <!-- END, CR00199755 -->
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.RosterGenerationFrequency"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$live$soAttendanceConfigurationDetails$rosterGenerationFrequency"
+        />
+        <!-- END, CR00199755 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.HoursEnabled"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$live$soAttendanceConfigurationDetails$hoursEnabled"
+        />
+        <!-- END, CR00199755, SSK -->
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      ALIGNMENT="LEFT"
+      LABEL="Field.Label.EffectiveDate"
+    >
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$live$soAttendanceConfigurationDetails$effectiveDate"
+        />
+      </CONNECT>
+      <!-- END, CR00199755 -->
+    </FIELD>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.AttendanceConfigurationHistory">
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00199755, SSK -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$details$isCancelledIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00199755 -->
+
+
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifySOAttendanceTrackingConfiguration"
+          WINDOW_OPTIONS="width=670"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00199755, SSK -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+            />
+            <!-- END, CR00199755 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendanceConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$pageContext"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageContext"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <CONDITION>
+          <!-- BEGIN, CR00199755, SSK -->
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="result$details$isCancelledIndicator"
+          />
+        </CONDITION>
+        <!-- END, CR00199755 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteSOAttendanceConfiguration"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00199755, SSK -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+            />
+            <!-- END, CR00199755 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="soAttendanceConfigurationID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00199755, SSK -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$details$soAttendanceConfigurationDetails$versionNo"
+            />
+            <!-- END, CR00199755 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD LABEL="Field.Label.EffectiveDates">
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$soAttendanceConfigurationDetails$effectiveDate"
+        />
+        <!-- END, CR00199755 -->
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <!-- BEGIN, CR00199755, SSK -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$derivedStatus$derivedStatus"
+        />
+        <!-- END, CR00199755 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewSOAttendanceTrackingConfiguration">
+        <CONNECT>
+          <!-- BEGIN, CR00199755, SSK -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$soAttendanceConfigurationDetails$soAttendanceConfigurationID"
+          />
+          <!-- END, CR00199755 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="soAttendanceConfigurationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00199755, SSK -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$details$derivedStatus$isSupersededInd"
+          />
+          <!-- END, CR00199755 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="isSupersededInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContext"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContext"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+  </LIST>
+
+
+</PAGE>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2007, 2010 Curam Software Ltd.                           -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- View the history of changes to an insurance return.                    -->
+<PAGE
+  PAGE_ID="Employer_viewInsuranceReturnHistory"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewInsurRet"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Employer_viewInsuranceReturn"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.History"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="Employer_viewInsuranceReturnHistory"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrDetailsID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrDetailsID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.FurtherDetails"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="Employer_viewInsuranceReturnFurtherDetails"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="Contribution"
+    NAME="DISPLAY"
+    OPERATION="readReturnHeaderHistory"
+  />
+  <PAGE_PARAMETER NAME="insuranceRetHdrID"/>
+  <PAGE_PARAMETER NAME="insuranceRetHdrDetailsID"/>
+  <PAGE_PARAMETER NAME="pageDescription"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="insuranceRetHdrID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="insRetHeaderHistoryReadKey$insuranceRetHdrID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="insuranceRetHdrDetailsID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="insRetHeaderHistoryReadKey$insuranceRetHdrDetailsID"
+    />
+  </CONNECT>
+  <LIST>
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE PAGE_ID="Employer_viewInsuranceReturnHistoryDetails">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="dtls$insuranceRetHdrDtlsID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrDetailsID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="insuranceRetHdrID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="periodName"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Label.Period"
+      WIDTH="34"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="periodName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      ALIGNMENT="RIGHT"
+      LABEL="Field.Label.TotalContributionAmount"
+      WIDTH="33"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalContribAmt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ReceiptDate"
+      WIDTH="33"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="receiptDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</PAGE>

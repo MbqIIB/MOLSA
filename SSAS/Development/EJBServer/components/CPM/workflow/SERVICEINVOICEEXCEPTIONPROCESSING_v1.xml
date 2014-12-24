@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process
+  category="PC21"
+  id="14"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/Workflow.xsd"
+>
+  <!--END, CR00235681-->
+  <name>SERVICEINVOICEEXCEPTIONPROCESSING</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Service invoice exception processing</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00248687, NS -->
+  <description>
+    <localized-text>
+      <locale language="en">This process creates a task to a work queue when there is insufficient data to match a service invoice line item with a service authorisation line item. Any user who has subscribed to this work queue can view and reserve the task.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00248687 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="serviceInvoiceLineItemID"
+        struct-name="curam.cpm.workflowprocesses.financial.struct.ServiceInvoiceLineItemExceptionProcessingDescriptor"
+      />
+      <target-attribute
+        name="serviceInvoiceLineItemID"
+        wdo-name="SILIExceptionProcessingDescriptor"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="exception"
+        struct-name="curam.cpm.workflowprocesses.financial.struct.ServiceInvoiceLineItemExceptionProcessingDescriptor"
+      />
+      <target-attribute
+        name="exception"
+        wdo-name="SILIExceptionProcessingDescriptor"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="referenceNumber"
+        struct-name="curam.cpm.workflowprocesses.financial.struct.ServiceInvoiceLineItemExceptionProcessingDescriptor"
+      />
+      <target-attribute
+        name="referenceNumber"
+        wdo-name="SILIExceptionProcessingDescriptor"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>SILIExceptionProcessingDescriptor</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">SILI Exception Processing Descriptor</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>serviceInvoiceLineItemID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Service Invoice Line Item ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>exception</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Description of the exception that happened</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+        <attribute>
+          <attribute-name>referenceNumber</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Reference Number of the Service Invoice Line Item</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity
+      category="AC1"
+      id="3"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Address exception raised while processing Service Invoice Line Item</locale>
+        </localized-text>
+      </name>
+      <notification delivery-mechanism="DM1">
+        <subject>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="en">Service Invoice Line Item submitted for exception processing</locale>
+              </localized-text>
+            </message-text>
+          </message>
+        </subject>
+        <body>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="en">The Service invoice line item with reference number %1s, has been submitted for exception processing.</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute
+                name="referenceNumber"
+                wdo-name="SILIExceptionProcessingDescriptor"
+              />
+            </message-parameters>
+          </message>
+        </body>
+        <allocation-strategy
+          identifier="curam.cpm.workflowprocesses.intf.WorkflowAllocationFunction.siliExceptionProcessingAllocationStrategy"
+          type="function"
+        >
+          <function-mappings>
+            <formal-parameters>
+              <formal-parameter index="0">
+                <struct type="curam.cpm.sl.entity.struct.ServiceInvoiceLineItemKey">
+                  <field name="serviceInvoiceLineItemID">
+                    <base-type type="INT64">
+                      <wdo-attribute
+                        name="serviceInvoiceLineItemID"
+                        wdo-name="SILIExceptionProcessingDescriptor"
+                      />
+                    </base-type>
+                  </field>
+                </struct>
+              </formal-parameter>
+            </formal-parameters>
+          </function-mappings>
+        </allocation-strategy>
+      </notification>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="2"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">%1s</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute
+              name="exception"
+              wdo-name="SILIExceptionProcessingDescriptor"
+            />
+          </message-parameters>
+        </message>
+        <actions>
+          <action
+            page-id="ProviderManagement_processSILIException"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Invoice Data Correction: Proceed to indicate that the service invoice line item should be re-evaluated. If it is determined that correction of the service invoice line item is not possible, the service invoice line item may also be denied or deleted.</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="serviceInvoiceLineItemID">
+              <wdo-attribute
+                name="serviceInvoiceLineItemID"
+                wdo-name="SILIExceptionProcessingDescriptor"
+              />
+            </link-parameter>
+            <!-- BEGIN, CR00130727, RPB -->
+            <link-parameter name="taskID">
+              <wdo-attribute
+                name="taskID"
+                wdo-name="Context_Task"
+              />
+            </link-parameter>
+            <!-- END, CR00130727 -->
+          </action>
+          <action
+            page-id="ProviderManagement_viewEPServiceInvoiceLineItem"
+            principal-action="false"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Service Invoice Line Item Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="serviceInvoiceLineItemID">
+              <wdo-attribute
+                name="serviceInvoiceLineItemID"
+                wdo-name="SILIExceptionProcessingDescriptor"
+              />
+            </link-parameter>
+          </action>
+        </actions>
+      </task>
+      <allocation-strategy
+        identifier="curam.cpm.workflowprocesses.intf.WorkflowAllocationFunction.siliExceptionProcessingAllocationStrategy"
+        type="function"
+      >
+        <function-mappings>
+          <formal-parameters>
+            <formal-parameter index="0">
+              <struct type="curam.cpm.sl.entity.struct.ServiceInvoiceLineItemKey">
+                <field name="serviceInvoiceLineItemID">
+                  <base-type type="INT64">
+                    <wdo-attribute
+                      name="serviceInvoiceLineItemID"
+                      wdo-name="SILIExceptionProcessingDescriptor"
+                    />
+                  </base-type>
+                </field>
+              </struct>
+            </formal-parameter>
+          </formal-parameters>
+        </function-mappings>
+      </allocation-strategy>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="PROVIDERMANAGEMENT"
+            event-type="SILIPROCESSED"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="serviceInvoiceLineItemID"
+              wdo-name="SILIExceptionProcessingDescriptor"
+            />
+          </event>
+          <event
+            event-class="PROVIDERMANAGEMENT"
+            event-type="SILICANCELED"
+            identifier="2"
+          >
+            <event-match-attribute
+              name="serviceInvoiceLineItemID"
+              wdo-name="SILIExceptionProcessingDescriptor"
+            />
+          </event>
+          <event
+            event-class="PROVIDERMANAGEMENT"
+            event-type="SILIDENIED"
+            identifier="3"
+          >
+            <event-match-attribute
+              name="serviceInvoiceLineItemID"
+              wdo-name="SILIExceptionProcessingDescriptor"
+            />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="3"
+      id="2"
+      to-activity-idref="2"
+    />
+  </transitions>
+</workflow-process>

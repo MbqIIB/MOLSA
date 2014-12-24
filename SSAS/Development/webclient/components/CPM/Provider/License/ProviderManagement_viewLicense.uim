@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a License                            -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewLicense"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ViewLicense"
+      STYLE="in-page-current-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_viewLicense">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <!-- BEGIN, CR00273521, MR -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <!-- END, CR00273521 -->
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ServiceOfferings"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_listLicenseServiceOfferings">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Attachments"
+      STYLE="in-page-link"
+    >
+      <LINK PAGE_ID="ProviderManagement_listAttachmentsByLicense">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="licenseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="pageContextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="License"
+    NAME="DISPLAY"
+    OPERATION="viewLicense"
+  />
+  <PAGE_PARAMETER NAME="licenseID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="licenseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$licenseID"
+    />
+  </CONNECT>
+  <!-- BEGIN, CR00229065, PS -->
+  <CLUSTER
+    LABEL_WIDTH="38"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00229065 -->
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD LABEL="Field.Label.Renewed">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$dtls$renewedInd"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00207959 -->
+    <FIELD LABEL="Field.Label.RejectionReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="rejectionReason"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumPlaces">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumPlacesStr"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.SuspensionReason">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="suspensionReason"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="38"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.RenewalDetails"
+  >
+    <FIELD LABEL="Field.Label.RenewalCompliant">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="renewalCompliant"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RenewalDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="renewalDate"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    LABEL_WIDTH="25"
+    TITLE="Cluster.Title.ReasonForNonCompliance"
+  >
+    <!-- BEGIN, CR00207959, SS -->
+    <FIELD>
+      <!-- END, CR00207959 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reasonsForNonCompliance"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00197352, SS -->
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00417165 -->
+      <!-- END, CR00197352 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

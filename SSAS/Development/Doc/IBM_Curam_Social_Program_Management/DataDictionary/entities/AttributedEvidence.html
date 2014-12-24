@@ -1,0 +1,214 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>AttributedEvidence</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Attributed Evidence:</b>
+<i> The period during which an <a href=EvidenceDescriptor.html>evidence record</a> is used in eligibility determination on a particular <a href=CaseHeader.html>case</a>.
+  </i>
+<P>Part of evidence maintenance requires <a href=Users.html>users</a> to capture and maintain business dates for evidence e.g. the loan drawdown date, last date of employment, date of admission to hospital, date of release from hospital etc. These dates will influence the period of applicability for the piece of evidence but other factors may also apply, e.g. organization business rules or program specific business rules in relation to lowest level of granularity for period of applicability, aligning to full weeks, months or quarters.
+    Using temporal evidence solution the <a href=Users.html>user</a> takes responsibility for the capture and maintenance of the business dates only and the system uses these in combination with the business rules to calculate the period of applicability for the evidence i.e. the attribution period.
+    </P>
+<P>
+    Note that separating the attribution period from the piece of evidence allows for a different attribution period to be calculated for each different <a href=ProductDelivery.html>product delivery case</a> using this piece of <a href=EvidenceDescriptor.html>evidence</a>, as the business rules used in calculating the attribution period may be product specific.
+    </P>
+<p><b>Example</b></p><P>Income evidence is captured on an <a href=CaseHeader.html>Integrated Case</a> and used by both Income Support and Carers Allowance <a href=Product.html>products</a> on the <a href=CaseHeader.html>Integrated Case</a>. Business rules exist that all income support cases are delivered weekly on Monday's in advance, carers allowance cases are delivered Tuesday's in arrears. 
+      <a href=ConcernRole.html>Participant</a> Linda Smith has claimed for both income support and carers allowance and these are actively in payment on the system. Linda Smith informs the <a href=Organisation.html>organization</a> of new income. Once this income evidence is activated, two attribution periods will be calculated by the system for this piece of evidence; one based on income support attribution rules and one based on carers allowance rules. 
+    </P> 
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::Core::Reference Model::Service Layer::Infrastructure::Temporal Evidence::Entity::Evidence Attribution::AttributedEvidence</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">core\model\Packages\Reference Model\Service Layer\Temporal Evidence\Entity\EvidenceAttribution\EvidenceAttribution_cat.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Options</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('TOps');" id="iconTOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyTOps">
+<tr class="listValueOdd">
+<td class="data">ALLOW_OPTIMISTIC_LOCKING</td><td class="dataLast">no</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">LAST_UPDATED_FIELD</td><td class="dataLast">yes</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="evidenceDescriptorID">evidenceDescriptorID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique reference number of the evidence record for which the attribution period applies.</td><td class="data"><a href="../domains/EVIDENCE_DESCRIPTOR_ID.html">EVIDENCE_DESCRIPTOR_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="caseID">caseID</a></td><td class="data">key</td><td class="data">no</td><td class="data">Unique reference number of the case for which the attribution period applies. Together caseID and evidenceDescriptorID forms the key for attributed evidence. This is the period during which the related case can use this evidence during eligibility determination.</td><td class="data"><a href="../domains/CASE_ID.html">CASE_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="attributedFromDate">attributedFromDate</a></td><td class="data">details</td><td class="data">&nbsp;</td><td class="data">Start date of the period during which the evidence is attributed to the case.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="attributedToDate">attributedToDate</a></td><td class="data">details</td><td class="data">yes</td><td class="data">End date of the period during which the evidence is attributed to the case.</td><td class="data"><a href="../domains/CURAM_DATE.html">CURAM_DATE</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATE</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">AttributedEvidence.caseID</td><td class="dataLast"><a href="CaseHeader.html#caseID">CaseHeader.caseID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">AttributedEvidence.evidenceDescriptorID</td><td class="dataLast"><a href="EvidenceDescriptor.html#evidenceDescriptorID">EvidenceDescriptor.evidenceDescriptorID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">AECaseIDIdx</td><td class="dataLast">caseID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (13)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">POST_DATA_ACCESS: yes</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByEvidenceDescriptorID</td><td class="data">nsreadmulti</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">readByCaseAndEvidenceDescriptorID</td><td class="data">ns</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-readByCaseAndEvidenceDescriptorID.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">modify</td><td class="data">modify</td><td class="data"><span style="white-space:nowrap;">OPTIMISTIC_LOCKING: no</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByCaseIDStatusTypeAndDate</td><td class="data">nsmulti</td><td class="data">&nbsp;</td><td class="data">Performs a search across the Attributed Evidence and Evidence Descriptor entities for evidence by type, case, status and date.</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-searchByCaseIDStatusTypeAndDate.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchActiveEvidenceByCaseIDTypeAndDate</td><td class="data">nsmulti</td><td class="data"><span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>&nbsp;</td><td class="data">This operation returns a list of evidence identifiers for which there are not related 'In Edit' records.</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-searchActiveEvidenceByCaseIDTypeAndDate.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchAttributionEvidenceByEvidenceDescriptorID</td><td class="data">nsmulti</td><td class="data">&nbsp;</td><td class="data">Reads a list of attribution dates details for an evidence descriptor identifier.</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-searchAttributionEvidenceByEvidenceDescriptorID.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchActiveEvidenceByCaseIDTypeAndDateRange</td><td class="data">nsmulti</td><td class="data"><span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>&nbsp;</td><td class="data">This operation returns a list of evidence identifiers for which there are not related 'In Edit' records.</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-searchActiveEvidenceByCaseIDTypeAndDateRange.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByCaseIDStatusTypeAndDateRange</td><td class="data">nsmulti</td><td class="data"><span style="white-space:nowrap;">PRE_DATA_ACCESS: no</span>
+<br>&nbsp;</td><td class="data">Performs a search across the Attributed Evidence and Evidence Descriptor entities for evidence by type, case, status and date range.</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-searchByCaseIDStatusTypeAndDateRange.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">searchByCaseIDAndStatus</td><td class="data">nsmulti</td><td class="data">&nbsp;</td><td class="data">Performs a search across the Attributed Evidence and Evidence Descriptor entities by case and status. This operation was added purely for use within the attributed evidence caching mechanism.</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-searchByCaseIDAndStatus.html">SQL</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchActiveEvidenceByCaseID</td><td class="data">nsmulti</td><td class="data"><span style="white-space:nowrap;">PRE_DATA_ACCESS: yes</span>
+<br>&nbsp;</td><td class="data">This operation returns a list of evidence identifiers for which there are not related 'In Edit' records. This operation was added purely for use within the attributed evidence caching mechanism.</td><td class="dataLast"><a href="../sql/sql-AttributedEvidence-searchActiveEvidenceByCaseID.html">SQL</a></td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">remove</td><td class="data">remove</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

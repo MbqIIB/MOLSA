@@ -1,0 +1,159 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body onload="javascript:Toggle('ModelDtls');">
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ServiceDeliveryStatusHistory</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Service Delivery Status History
+:</b>
+<i>A history of <a href=ServiceDelivery.html>service</a> states changes. 
+</i>
+<p>When a service is first created the status of the <a href=ServiceDelivery.html>service</a> is 'Open'. The <a href=ServiceDelivery.html>service</a> is then submitted by the <a href=Users.html>case worker</a> and if approval is required the status is 'Submitted'. If approval is not required, the status of the <a href=ServiceDelivery.html>service</a> is 'In Progress' if the start date of the <a href=ServiceDelivery.html>service</a> is effective or 'Not Started' if the start date is in the future. When the <a href=CaseParticipantRoleNote.html>client</a> completes the <a href=ServiceDelivery.html>service</a> the status of the <a href=ServiceDelivery.html>service</a> is 'Completed'. This entity stores a record of each of these state changes. </p>
+
+<p><b>Example</b></p><a href=CaseParticipantRoleNote.html>James Smith</a>  was assessed for substance abuse issues and as a result the <a href=Users.html>case worker</a> scheduled 10 sessions of counseling from 01/01/2011 to 02/15/2011 provided by <a href=Provider.html>Dr. John Kelly</a>. An authorized rate of $50 per session was specified. The service is submitted for approval and the status is set to submitted as rates specified by a case worker must always be approved by a supervisor which sets the status of the service to 'Not Started'. The supervisor approves the service. This table stores a history record for the states of 'Open', 'Submitted' and 'Not Started'. 
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Model Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ModelDtls');" id="iconModelDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyModelDtls">
+<tr>
+<td class="label">Location in Model: </td><td class="value">Logical View::MetaModel::Curam::CPM::Service Layer::ServiceDelivery::ServiceDelivery::Entity::ServiceDeliveryStatusHistory</td>
+</tr>
+<tr>
+<td class="label">Controlling File: </td><td class="value">CPM\model\Packages\Service Layer\Service Delivery\ServiceDelivery.efx</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="7"></colgroup>
+<thead>
+<tr>
+<td colspan="6" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Stereotype</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="heading">Domain Definition</td><td class="heading">Codetable</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="serviceDeliveryStatusHistoryID">serviceDeliveryStatusHistoryID</a></td><td class="data">key</td><td class="data">no</td><td class="data">The unique identifier for the status history record.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="effectiveDateTime">effectiveDateTime</a></td><td class="data">details</td><td class="data">no</td><td class="data">Timestamp for when the status became effective.</td><td class="data"><a href="../domains/CURAM_DATETIME.html">CURAM_DATETIME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="status">status</a></td><td class="data">details</td><td class="data">no</td><td class="data">The actual status represented by the status history record.</td><td class="data"><a href="../domains/SERVICE_DEL_STATUS.html">SERVICE_DEL_STATUS</a></td><td class="data"><a href="../codetables/ct-ServiceDeliveryStatus.html">ServiceDeliveryStatus</a></td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a id="createdBy">createdBy</a></td><td class="data">details</td><td class="data">no</td><td class="data">The name of the user who performed the status change.</td><td class="data"><a href="../domains/USER_NAME.html">USER_NAME</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a id="serviceDeliveryID">serviceDeliveryID</a></td><td class="data">details</td><td class="data">no</td><td class="data">The unqiue identifier of the related service delivery.</td><td class="data"><a href="../domains/INTERNAL_ID.html">INTERNAL_ID</a></td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT64</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ServiceDeliveryStatusHistory.serviceDeliveryID</td><td class="dataLast"><a href="ServiceDelivery.html#serviceDeliveryID">ServiceDelivery.serviceDeliveryID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ServDelStatHsServDelivryIDIdx</td><td class="dataLast">serviceDeliveryID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Operations (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Ops');" id="iconOps"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOps">
+<tr>
+<td class="heading">Operation</td><td class="heading">Stereotype</td><td class="heading">Options</td><td class="heading">Description</td><td class="headingLast">SQL</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">insert</td><td class="data">insert</td><td class="data"><span style="white-space:nowrap;">AUTO_ID: serviceDeliveryStatusHistoryID</span>
+<br>
+</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">modify</td><td class="data">modify</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">read</td><td class="data">read</td><td class="data">&nbsp;</td><td class="data">Standard Operation</td><td class="dataLast">&nbsp;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">searchByServiceDelivery</td><td class="data">readmulti</td><td class="data"><span style="white-space:nowrap;">ORDER_BY: effectiveDateTime</span>
+<br>
+</td><td class="data">Returns a list of service delivery status history records for the specified service delivery.</td><td class="dataLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

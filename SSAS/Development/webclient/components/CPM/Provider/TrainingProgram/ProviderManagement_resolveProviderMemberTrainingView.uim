@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. Ltd. ("Confidential Information"). You shall not disclose  -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===============                                                        -->
+<!-- Redirects to corresponding View Provider Member Training Program page. -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveProviderMemberTrainingView"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <JSP_SCRIPTLET>
+        
+        curam.omega3.request.RequestHandler 
+        requestHandler = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+        
+        String context = request.getContextPath() + "/";
+        context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+        String url = "";
+		
+		String concernRoleID = request.getParameter("concernRoleID");
+		String trainingProgramID = request.getParameter("trainingProgramID");
+		String trainingProgramMemberID = request.getParameter("trainingProgramMemberID");
+		String managedThroughAgency = request.getParameter("managedThroughAgency");
+		String memberConcernRoleID = request.getParameter("memberConcernRoleID");
+		String trainingProgramOwnerType = request.getParameter("trainingProgramOwnerType");
+		
+		if(null == concernRoleID) 
+		{
+		core.ScriptletMissingParamException e = new
+		core.ScriptletMissingParamException(-20002, "concernRoleID");
+		System.out.println(e);
+		throw e;
+		} 
+		
+		if(null == trainingProgramID) 
+		{
+		core.ScriptletMissingParamException e = new
+		core.ScriptletMissingParamException(-20002, "trainingProgramID");
+		System.out.println(e);
+		throw e;
+		} 
+		
+		if(null == trainingProgramMemberID) 
+		{
+		core.ScriptletMissingParamException e = new
+		core.ScriptletMissingParamException(-20002, "trainingProgramMemberID");
+		System.out.println(e);
+		throw e;
+		} 
+		
+		if(null == managedThroughAgency) 
+		{
+		core.ScriptletMissingParamException e = new
+		core.ScriptletMissingParamException(-20002, "managedThroughAgency");
+		System.out.println(e);
+		throw e;
+		} 
+		
+		if(null == memberConcernRoleID) 
+		{
+		core.ScriptletMissingParamException e = new
+		core.ScriptletMissingParamException(-20002, "memberConcernRoleID");
+		System.out.println(e);
+		throw e;
+		} 
+		
+		if(null == trainingProgramOwnerType) 
+		{
+		core.ScriptletMissingParamException e = new
+		core.ScriptletMissingParamException(-20002, "trainingProgramOwnerType");
+		System.out.println(e);
+		throw e;
+		} 
+		
+        // If it's a managed training program.
+        if("true".equals(managedThroughAgency)) {
+          url = context + "ProviderManagement_resolveViewTrainingProgramDetailsPage.do?" +
+          "&amp;trainingProgramOwnerType=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramOwnerType) +
+          "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) +
+		  "&amp;trainingProgramMemberID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramMemberID) +
+		  "&amp;memberConcernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(memberConcernRoleID) +
+          "&amp;trainingProgramID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramID);
+        } else { 
+          // If it's a non-managed training program.
+          url = context + "ProviderManagement_viewCompletedProviderMemberTrainingDetailsPage.do?" +
+          "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID) +
+		  "&amp;trainingProgramMemberID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramMemberID) +
+		  "&amp;memberConcernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(memberConcernRoleID) +
+          "&amp;trainingProgramID=" + curam.omega3.request.RequestUtils.escapeURL(trainingProgramID);
+        }
+                      
+        url += "&amp;" + requestHandler.getSystemParameters();
+        response.sendRedirect(response.encodeRedirectURL(url));
+        
+    </JSP_SCRIPTLET>
+
+
+</PAGE>

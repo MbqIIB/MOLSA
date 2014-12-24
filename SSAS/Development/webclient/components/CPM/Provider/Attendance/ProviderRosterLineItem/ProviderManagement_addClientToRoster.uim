@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2008, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description 						                            	    -->
+<!-- ===========						                            	    -->
+<!-- This Page allows the user to add a new client to the roster.	        -->
+<PAGE
+  PAGE_ID="ProviderManagement_addClientToRoster"
+  WINDOW_OPTIONS="width=600"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="rosterID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainRoster"
+    NAME="ACTION"
+    OPERATION="addClient"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="rosterID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="rosterID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$rosterLineItemDtls$concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00200179, SS -->
+  <!-- BEGIN, CR00233823, PS -->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00233823 -->
+    <FIELD
+      LABEL="Field.Label.Roster.AuthorizationReferenceNo"
+      WIDTH="50"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.Roster.CaseReferenceNo"
+      WIDTH="50"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00249047, PS -->
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.Roster.ServiceFromDate"
+      USE_DEFAULT="false"
+      WIDTH="67"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00249047 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceFrom"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206334, SS -->
+    <FIELD
+      LABEL="Field.Label.Roster.VoucherNo"
+      WIDTH="50"
+    >
+      <!-- END, CR00206334 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="voucherNumber"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00200179, SS -->
+    <FIELD
+      LABEL="Field.Label.Roster.UnitsDelivered"
+      USE_BLANK="true"
+      WIDTH="50"
+    >
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="unitsDeliveredString"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00249047, PS -->
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.Roster.ServiceToDate"
+      USE_DEFAULT="false"
+      WIDTH="64"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00249047 -->
+
+
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="serviceTo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00233823, PS -->
+  <CLUSTER
+    LABEL_WIDTH="32"
+    NUM_COLS="2"
+    TITLE="Cluster.Label.ClientDetails"
+  >
+    <FIELD
+      LABEL="Field.Label.Roster.ClientReferenceNo"
+      WIDTH="100"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.Roster.ClientFirstName"
+      WIDTH="100"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00249047, PS -->
+
+
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.Roster.ClientDateOfBirth"
+      USE_DEFAULT="false"
+      WIDTH="44"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00249047 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientDOB"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00233823, PS -->
+    <FIELD
+      LABEL="Field.Label.Roster.ClientLastName"
+      WIDTH="92"
+    >
+      <!-- END, CR00233823 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="clientLastName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00200179, SS -->
+  <!-- BEGIN, CR00233823, PS -->
+  <CLUSTER
+    LABEL_WIDTH="32"
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Label.ClientAddress"
+  >
+    <!-- END, CR00233823 -->
+    <FIELD WIDTH="100">
+      <!-- END, CR00200179 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="addressData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+
+
+</PAGE>

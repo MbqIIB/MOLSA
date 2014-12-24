@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2007-2008, 2010 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information"). You shall not disclose
+  such Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!-- This page allows the user to view compartment characteristics of provider facility. -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewCompartmentCharacteristics"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="DISPLAY"
+    OPERATION="viewCompartmentCharacteristic"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="characteristicID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="characteristicID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$characteristicID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00235192, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00235192 -->
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.MinimumAge">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$minimumAge"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.Gender">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$genderTypeDescription"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.MaximumAge">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$maximumAge"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.CompartmentCharacteristics.Service">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$serviceName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00235192, PS -->
+  <CLUSTER TITLE="Cluster.Title.Language">
+    <FIELD LABEL="Cluster.Field.Language">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$sameLanguageType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER>
+    <LIST TITLE="Cluster.List.Title.Language">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <!-- BEGIN, CR00187417, PS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_deleteLanguageCharacteristic"
+            WINDOW_OPTIONS="width=400"
+          >
+            <!-- END, CR00187417 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$languageCharList$languageCharacteristicID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="compartmentCharacteristicID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$languageCharList$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD LABEL="Field.Label.Language">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$languageCharList$language"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.Ethnicity">
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="ethnicityIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <FIELD LABEL="Cluster.Field.Ethinicity">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$sameEthinicityType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER>
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="ethnicityIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <LIST TITLE="Cluster.List.Title.Ethinicity">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <!-- BEGIN, CR00187417, PS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_deleteEthnicityCharacteristic"
+            WINDOW_OPTIONS="width=400"
+          >
+            <!-- END, CR00187417 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$ethnicityCharList$ethnicityCharacteristicID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="compartmentCharacteristicID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$ethnicityCharList$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD LABEL="Field.Label.Ethnicity">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$ethnicityCharList$ethnicity"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.GangAffiliation">
+    <FIELD LABEL="Cluster.Field.Gang">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$sameGangType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER>
+    <LIST TITLE="Cluster.List.Title.Gang">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <!-- BEGIN, CR00187417, PS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_deleteGangAffiliationCharacteristic"
+            WINDOW_OPTIONS="width=400"
+          >
+            <!-- END, CR00187417 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$gangAffiliationCharList$gangAffiliationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="compartmentCharacteristicID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$gangAffiliationCharList$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD LABEL="Field.Label.GangAffiliation">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$gangAffiliationCharList$gangAffiliation"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+  <CLUSTER TITLE="Cluster.Title.Religion">
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="religionIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <FIELD LABEL="Cluster.Field.Religion">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$placementCharDetails$placementCharacteristic$sameReligionType"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER>
+    <!-- BEGIN, CR00351356, SS -->
+    <CONDITION>
+      <IS_TRUE
+        NAME="DISPLAY"
+        PROPERTY="religionIndicatorOpt"
+      />
+    </CONDITION>
+    <!-- END, CR00351356 -->
+    <LIST TITLE="Cluster.List.Title.Religion">
+      <ACTION_SET TYPE="LIST_ROW_MENU">
+        <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+          <!-- BEGIN, CR00187417, PS -->
+          <LINK
+            OPEN_MODAL="true"
+            PAGE_ID="ProviderManagement_deleteReligionCharacteristic"
+            WINDOW_OPTIONS="width=400"
+          >
+            <!-- END, CR00187417 -->
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$religionCharList$religionCharacteristicID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="compartmentCharacteristicID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="DISPLAY"
+                PROPERTY="result$religionCharList$versionNo"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="versionNo"
+              />
+            </CONNECT>
+          </LINK>
+        </ACTION_CONTROL>
+      </ACTION_SET>
+      <FIELD LABEL="Field.Label.Religion">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$religionCharList$religion"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+
+
+</PAGE>

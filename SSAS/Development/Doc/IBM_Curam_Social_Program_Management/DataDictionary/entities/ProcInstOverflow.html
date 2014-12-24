@@ -1,0 +1,123 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ProcInstOverflow</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Process Instance WDO Data Overflow
+:</b>
+<i> One element of a sequence that, when combined, form a complete instance of a Workflow Data Object for a <a href=ProcessInstance.html>Process Instance</a>.
+</i>
+
+<P>The Workflow Engine stores Workflow Data Object values in <a href=ProcInstWDOData.html>Process Instance WDO Data</a> records.  These records contain an XML string describing the Workflow Data Object, its attributes and the current values of those attributes for a given <a href=ProcessInstance.html>Process Instance</a>.  If the XML string exceeds 3900 characters, it is broken up into a sequence of strings, each with a maximum length of 3900 characters.  These strings are then stored as overflow records.</P>
+
+<P>When the Workflow Engine attempts to retrieve a Workflow Data Object value, it reads the XML string from a Process Instance WDO Data record and appends any associated overflow records.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>system prints out a letter (automatic); and</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual).</LI>
+
+</UL>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The Process Definition defines values that are required in order to enact a Process Instance.  These provide initial values for some Workflow Data Objects.  The system constructs an XML string for one of these Workflow Data Objects.  The string is 8,000 characters long.  The system breaks this string up into two blocks of 3900 characters and one of 200 characters.  It persists the first block in a Process Instance WDO Data record.  It then persists the second and third block as sequential overflow records.</P>
+
+<P>The system transitions to the first activity definition in your workflow -  printing out a letter.  This activity calls a method that prints the letter.  The method requires the Person's name (John Smith) to be passed in. The Workflow Engine reads the Process Definition and establishes that this information is held in the PersonInfo Workflow Data Object.  It reads the first part of the PersonInfo XML string from the corresponding Process Instance WDO Data record. It then appends the two overflow records in sequence.  This re-forms the original XML string, thereby allowing the Workflow Engine to access the PersonInfo Workflow Data Object and retrieve the value for the personName attribute.
+
+</P>
+
+<p><b>Technical Notes</b></p>
+<P>See the Workflow Reference Guide for further information.</P>
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processInstanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of a workflow process instance within the workflow engine.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">wdoName</td><td class="data">Yes</td><td class="data">No</td><td class="data">The name of a workflow data object.</td><td class="dataLast">SVR_STRING&lt;75&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">sequenceNo</td><td class="data">Yes</td><td class="data">No</td><td class="data">The sequence number used when compiling WDO snapshot data from the overflow table.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">wdoSnapshot</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The XML string representing the WDO attributes and their values associated with this WDO.</td><td class="dataLast">SVR_STRING&lt;3900&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ProcInstOverflow.processInstanceID</td><td class="dataLast"><a href="ProcessInstance.html#processInstanceID">ProcessInstance.processInstanceID</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

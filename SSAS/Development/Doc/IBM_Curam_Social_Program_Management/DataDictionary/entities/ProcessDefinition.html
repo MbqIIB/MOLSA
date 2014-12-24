@@ -1,0 +1,150 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ProcessDefinition</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Process Definition
+:</b>
+<i> A business process that is automated in Curam.
+</i>
+
+<P>The status of a Process Definition is governed by the 'released' attribute:</P>
+
+<UL>
+
+<LI>false - the Process Definition is being edited and has not yet been enacted; or</LI>
+
+<LI>true - the Process Definition has been released and can be enacted.</LI>
+
+</UL>
+
+<p><b>Example</b></p>
+<P>You define a process using the Process Definition Tool (PDT).  Curam creates a row on this table to store your process definition.</P>
+
+<P>You edit the process and when you are happy that the definition reflects your desired business process, you 'release' your Process Definition.</P>
+
+<P>The Curam application raises an event which you have configured to enact your business process.  The workflow engine creates a <a href=ProcessInstance.html>Process Instance</a> based on the most recent released version of your Process Definition.</P>
+
+<p><b>Technical Notes</b></p>
+<P>The terms 'business process' and 'workflow' are interchangeable in Curam.</P>
+
+<P>There is no 'Activity' database table.  An activity is an XML element defined within the Process Definition metadata.</P>
+
+<P>Once a Process Definition has been released, it can never be edited; however, a new version of the Process Definition can be cloned and edited. Once released, the newer version of the Process Definition will be used for any new enactments of the process; however, existing <a href=ProcessInstance.html>Process Instances</a> will continue to execute using the version of the Process Definition in place when they were enacted.</P>
+
+<P>Rows for Process Definitions which have been enacted are never deleted.</P>
+
+<P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (10)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The identifier of a workflow process definition.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">processVersion</td><td class="data">Yes</td><td class="data">No</td><td class="data">The version of the workflow process definition.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processName</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The workflow process definition name. This field, once set, may not be updated. This is necessary to maintain the integrity of the table as a repository for 'live' workflow data.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">category</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The category the process definition belongs to.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">released</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">A boolean value indicating the (non)readiness of the workflow process definition for release. Only workflow definitions with a release setting of true are considered for instantiation.</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">definition</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">Contains a XML workflow process definition serialized to a string form.</td><td class="dataLast">SVR_STRING&lt;25165824&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">creationTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date on which this version of the workflow process was created.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">createdByUsername</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The system username of the creator of this version of the workflow process.</td><td class="dataLast">SVR_STRING&lt;50&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (4)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ProcDefIDRelVerIdx</td><td class="dataLast">processID, released, processVersion</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ProcDefRelNameIndx</td><td class="dataLast">released, processName</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ProcDefNameRelIdx</td><td class="dataLast">processName, released</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ProcDefNameIndex</td><td class="dataLast">processName</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

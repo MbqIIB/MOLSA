@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All rights reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp. 
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This is the search person pop-up page                                -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchPersonRepresentativePopup"
+  POPUP_PAGE="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderMember"
+    NAME="ACTION"
+    OPERATION="searchPersonAndRepresentative1"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="35"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+
+
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+
+
+        <!-- BEGIN, CR00322266, MR -->
+        <LINK
+          PAGE_ID="THIS"
+          SAVE_LINK="false"
+        />
+
+
+        <!-- END, CR00322266 -->
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <!-- BEGIN, CR00154489, ASN -->
+
+
+        <!-- BEGIN, CR00322266, MR -->
+        <LINK
+          PAGE_ID="ProviderManagement_searchPersonRepresentativePopup"
+          SAVE_LINK="false"
+        />
+
+
+        <!-- END, CR00322266 -->
+        <!-- END, CR00154489 -->
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.ReferenceNumber"
+      WIDTH="60"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchKey$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.FirstName"
+      WIDTH="60"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="firstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.AddressLine1"
+      WIDTH="60"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <!-- BEGIN, CR00131081, ASN -->
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchKey$addressLine1"
+        />
+        <!-- END, CR00131081 -->
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.LastName"
+      WIDTH="60"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="lastName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00136547, ASN -->
+  <LIST
+    SCROLL_HEIGHT="125"
+    TITLE="List.Title.SearchPersonResults"
+  >
+    <!-- END, CR00136547 -->
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <!-- BEGIN, CR00136547, ASN -->
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="personDetails$searchDetails$concernRoleID"
+            />
+            <!-- END, CR00136547 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00136547, ASN -->
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="personDetails$searchDetails$concernRoleName"
+            />
+            <!-- END, CR00136547 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <!-- BEGIN, CR00131081, ASN -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="personDetails$searchDetails$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00131081 -->
+    <FIELD LABEL="Field.Label.PersonName">
+      <CONNECT>
+        <!-- BEGIN, CR00136547, ASN -->
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="personDetails$searchDetails$concernRoleName"
+        />
+        <!-- END, CR00136547 -->
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00417548, SS -->
+    <FIELD LABEL="Field.Title.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="personDetails$searchDetails$addressOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.DateOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="personDetails$searchDetails$dateOfBirthOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00417548, SS -->
+  </LIST>
+  <!-- BEGIN, CR00136547, ASN -->
+  <LIST
+    SCROLL_HEIGHT="125"
+    TITLE="List.Title.SearchUnassginedProviderMemberResults"
+  >
+
+
+    <CONTAINER
+      LABEL="Container.Label.Action"
+      WIDTH="10"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Select"
+        TYPE="DISMISS"
+      >
+        <LINK>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$representative$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="value"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="result$representative$concernRoleName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="description"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$representative$referenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PersonName">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$representative$concernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00417548, SS -->
+    <FIELD LABEL="Field.Title.Address">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$representative$addressOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.DateOfBirth">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="result$representative$dateOfBirthOpt"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00417548 -->
+  </LIST>
+  <!-- END, CR00136547 -->
+
+
+  <!-- BEGIN, CR00248011, GP -->
+  <ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+  </ACTION_SET>
+  <!-- END, CR00248011 -->
+
+
+</PAGE>

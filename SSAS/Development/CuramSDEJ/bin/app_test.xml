@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant test file for Curam projects.
+  It contains a skeleton task to run junit tests
+
+-->
+<project name="app_test" default="test">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <!--  **************************  -->
+  <!--  ***  Import Utilities  ***  -->
+  <!--  **************************  -->
+  <import file="./app_utilities.xml" />
+
+  <!--  *****************  -->
+  <!--  ***  T E S T  ***  -->
+  <!--  *****************  -->
+  <target name="test" description="Run unit tests">
+
+    <delete dir="${dir.test.results}"/>
+    <mkdir dir="${dir.test.results}"/>
+
+    <condition property="prop.file.inside.available">
+      <and>
+        <isset property="curam.db.type"/>
+        <isset property="curam.environment.bindings.location"/>
+        <isset property="curam.db.username"/>
+        <isset property="curam.db.password"/>
+        <or>
+    <isset property="curam.db.name"/>
+    <isset property="curam.db.oracle.servicename"/>
+        </or>
+      </and>
+    </condition>
+    <antcall target="check.props.inside.file"/>
+
+    <echo message="Running unit tests..."/>
+
+    <!-- Use default supplement value if not set -->
+    <property name="supplement" value="tests"/>
+    <property name="java.extra.jvmargs" value="-Dfake.property=1"/>
+  <property name="junit.timeout" value="1200000"/>
+
+    <junit fork="yes"
+      forkmode="${junit.fork.mode}"
+      dir="${base.dir}"
+      errorproperty="junit.error"
+      failureproperty="junit.failure"
+      showoutput="true"
+      timeout="${junit.timeout}"
+      tempdir="${dir.test.results}">
+      <jvmarg value="${java.jvmargs}" />
+      <jvmarg value="${java.extra.jvmargs}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+      <sysproperty key="curam.environment.bindings.location" value="${curam.environment.bindings.location}"/>
+      <sysproperty key="curam.db.db2.single.connection" value="true"/>
+      <sysproperty key="server.dir" value="${SERVER_DIR}"/>
+
+      <classpath>
+        <pathelement location="${dir.bld.svr}/${supplement}/cls"/>
+        <pathelement path="${jar.junit}"/>
+        <pathelement path="${dir.bld.jar}/tests.jar"/>
+        <path refid="j.cp"/>
+        <pathelement path="${java.class.path}"/>
+      </classpath>
+      <formatter type="plain" usefile="false"/>
+      <formatter type="xml"/>
+      <batchtest todir="${dir.test.results}">
+        <fileset dir="${dir.bld.svr}/${supplement}/cls">
+           <includesfile name="${include.test.file}"/>
+           <excludesfile name="${exclude.test.file}"/>
+        </fileset>
+      </batchtest>
+    </junit>
+
+    <antcall target="test.report" inheritAll="false"/>
+
+    <fail message="At least one JUnit test has some errors."
+      if="junit.error" unless="override.test.failures"/>
+    <fail message="At least one JUnit test has some failures."
+      if="junit.failure" unless="override.test.failures"/>
+  </target>
+
+  <!--  *******************************  -->
+  <!--  ***  T E S T   R E P O R T  ***  -->
+  <!--  *******************************  -->
+  <target name="test.report" unless="notest.report">
+
+    <junitreport>
+      <fileset dir="${dir.test.results}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${dir.test.results}/html"/>
+    </junitreport>
+
+    <echo>The JUnit Test results have been created in ${dir.test.results}/html</echo>
+
+  </target>
+
+  <!--  *****************  -->
+  <!--  ***  THE END  ***  -->
+  <!--  *****************  -->
+
+</project>

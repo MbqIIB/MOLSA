@@ -1,0 +1,127 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>GSSBatchProcessChunk</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Batch Process Chunk:</b>
+<i> A chunk of records for processing by a parallel-enabled batch program.</i>
+<p><b>Example</b></p><P>You schedule the batch program Determine Initial Product Delivery Eligibility (which is parallel-enabled) to run every night.</P>
+<P>The program consists of two executable processes:</P>
+<UL>
+<LI>Determine Initial Product Delivery Eligibility, which identifies the records to be processed, groups them into chunks and monitors the processing of these chunks; and</LI>
+<LI>Determine Initial Product Delivery Eligibility Stream, which processes these chunks.</LI>
+</UL> <P>The scheduler starts the Determine Initial Product Delivery Eligibility process which scans the database to identify records to be processed and divides these into chunks of 100 records.  For each chunk a row is created on this table storing the IDs of the records in the chunk.</P>
+<P>In the meantime, your scheduler starts 10 instances of the Determine Initial Product Delivery Eligibility Stream process.  Each of these:</P>
+<UL>
+<LI>reads the <a href=BatchChunkKey.html>Batch Chunk Key</a> table to obtain an unprocessed chunk to work on;</LI>
+<LI>reads this table to retrieve the chunk;</LI>
+<LI>processes the 100 records held in this chunk; and</LI>
+<LI>updates this row with the successful completion of the chunk.</LI>
+</UL> <P>When all chunks have been processed, the Determine Initial Product Delivery Eligibility process reads all the rows on this table for this batch instance, writes a summary report and deletes these rows from this table.</P>
+<p><b>Technical Notes</b></p><P>The number of records in each chunk is configurable for each batch program.  There may be one chunk which has fewer records than this number in the (likely) case that the total number of records is not evenly divisible by the chunk size.</P> 
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">batchProcessChunkID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique ID for this chunk of records.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">instanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Unique ID for this instance of a parallel-enabled batch program.</td><td class="dataLast">SVR_STRING&lt;60&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">details</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The IDs for each record in the chunk, formatted as a tab-delimited string.</td><td class="dataLast">SVR_BLOB</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">status</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The status for this chunk of records, e.g. processed or unprocessed.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">resultSummary</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A summary of the results of processing this chunk of records.</td><td class="dataLast">SVR_STRING&lt;8000&gt;</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">GSSBatchProcessChunk.instanceID</td><td class="dataLast"><a href="GSSBatchProcess.html#instanceID">GSSBatchProcess.instanceID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (2)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">GSSBPCStatIdx</td><td class="dataLast">instanceID, status</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">GSSInstIDIdx</td><td class="dataLast">instanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ProcEnactEvtData</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Process Enactment Event Data
+:</b>
+<i> The data to be mapped from a business event to a Workflow being enacted when the specified event occurs.
+</i>
+
+<P>A Workflow that is being enacted in response to a business event can map data from the business event raised to the Workflow as enactment data.</P>
+
+<P>This table stores mappings for data from a business event raised that is then used to enact the required workflow.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.
+
+      </P>
+
+<P>The payment business processing has already been modified to raise a 'payment increase' event whenever payments increase on a <a href=CaseHeader.html>case</a>.</P>
+
+<P>You use the Admin application to configure your workflow to start whenever the 'payment increase' event occurs.  As part of this configuration, you specify that the <a href=CaseHeader.html>case</a> identifier associated with the 'payment increase' event be used as enactment data for the specified workflow. Curam creates a Process Enactment Event Data row to record the event data mapping used to enact the workflow.</P>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises a 'payment increase' event.  The Workflow Engine
+
+      reads this table and determines that the <a href=CaseHeader.html>case</a> identifier
+
+      used in the business event raised is to be used to enact the associated workflow <a href=ProcessInstance.html>Process Instance</a> for this event.  The case identifier is then passed as enactment data to the workflow <a href=ProcessInstance.html>Process Instance</a> as it is being enacted.
+
+    </P>
+
+<p><b>Technical Notes</b></p>
+<UL>
+
+<LI>The event data mapped must be sufficient to fully populate the enactment data of the associated <a href=ProcessDefinition.html>Process Definition</a>.</LI>
+
+<LI>Any updates to the enactment data of a <a href=ProcessDefinition.html>Process Definition</a> must remain fully satisfied by any Process Enactment Event Data records defined for it.</LI>
+
+</UL>
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">procEvtMappingID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of a process enactment event data mapping.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">procStartEventID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of a process event association.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">eventField</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The event data being mapped when a process is enacted.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">wdoAttribute</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The fully qualified name of a workflow data object attribute to populate with data from the given event field when a process is enacted.</td><td class="dataLast">SVR_STRING&lt;254&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">ProcEnactEvtData.procStartEventID</td><td class="dataLast"><a href="ProcEnactmentEvt.html#procStartEventID">ProcEnactmentEvt.procStartEventID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">ProcEnactEvtDatIdx</td><td class="dataLast">procStartEventID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

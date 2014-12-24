@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file for running the Rule Objects Extractor Tool.
+  This will extract rule objects data for a given CREOLECaseDetermination record 
+  to the specified output folder. 
+  The output will appear in html format similar in style to Session Doc output.
+
+-->
+<project name="app_ruleobjectsdataextractor" default="creole.extract.ruleobjects">
+
+  <!--  ********************************************************************************  -->
+  <!--  *** E X T R A C T  R U L E  O B J E C T S  F O R  D E T E R M I N A T I O N  ***  -->
+  <!--  ********************************************************************************  -->
+  <target name="creole.extract.ruleobjects">
+
+    <!-- Start recording progress to a log file -->
+    <mkdir dir="${dir.bld.log}"/>
+
+    <!-- Set the starting time stamp for use in file names -->
+    <tstamp><format property="tim.start.sort" pattern="yyyyMMddHHmmss"/></tstamp>
+    <record name="${dir.bld.log}/ExtractData${tim.start.sort}.log" loglevel="info" />
+
+    <antcall target="dispmsg" inheritAll="false">
+      <param name="prm.msg" value="Invoking the Rule Objects Data Extractor"/>
+    </antcall>
+
+    <!-- Start the data extraction -->
+    <antcall target="extractruleobjectsforcasedetermination"/>
+
+  </target>
+
+  <target name="extractruleobjectsforcasedetermination">
+  
+    <condition property="extra.args" value="-logfiledir ${logFileDir}">
+      <and>
+        <isset property="logFileDir"/>
+      </and>
+    </condition>
+    <property name="extra.args" value=""/>
+	
+    <property name="deleteOutputDir" value="true"/>
+    <condition property="deleteset" value="true">
+      <equals arg1="${deleteOutputDir}" arg2="true"/>
+    </condition>
+
+    <antcall target="deletedataextractoutput" />
+    <java
+      classname="curam.core.sl.util.impl.ExtractRuleObjectsTool"
+      classpathref="j.cp"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="dataextractor"
+    >
+      <sysproperty key="curam.disable.dynamic.properties"     value="true"/>
+      <jvmarg value="${java.jvmargs}" />
+      <jvmarg value="-Xms${java.maxmemory}" />
+      <jvmarg value="-Xbootclasspath/p:${jars.allxml}" />
+	  <arg line="-outdir ${outputDir}" />
+      <arg line="-determinationID ${caseDeterminationID}"/>
+      <arg line="${extra.args}" />
+    </java>
+
+    <echo>The output file/s have been created</echo>
+
+  </target>
+
+  <target name="deletedataextractoutput"  if="deleteset">
+     <delete dir="${outputDir}"/>
+  </target>
+
+  <!--  *****************  -->
+  <!--  ***  THE END  ***  -->
+  <!--  *****************  -->
+
+</project>
+

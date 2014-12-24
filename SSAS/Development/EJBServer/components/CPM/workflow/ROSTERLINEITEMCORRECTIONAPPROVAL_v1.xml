@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2009, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2009, 2011-2012 Curam Software Ltd.
+  All rights reserved.
+  
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information"). You shall not disclose
+  such Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<!--BEGIN, CR00235681, PM-->
+<workflow-process
+  category="PC21"
+  createdBy="admin"
+  creationDate="20080923T111317"
+  id="13"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <!--  END, CR00235681-->
+  <name>ROSTERLINEITEMCORRECTIONAPPROVAL</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Roster Line Item Correction Approval</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00248687, NS -->
+  <description>
+    <localized-text>
+      <locale language="en">
+        
+        
+        <!-- BEGIN, CR00306765, AKr -->
+        This workflow process is not being called by any out of the box 
+        processing. It has been replaced by the 
+        ROSTERLINEITEMCORRECTIONAPPROVALWORKFLOW workflow process.
+        <!-- END, CR00306765 -->
+      </locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00248687 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="prliCorrectionID"
+        struct-name="curam.cpm.workflowprocesses.attendancetracking.struct.RosterLineItemCorrectionApprovalDescriptor"
+      />
+      <target-attribute
+        name="prliCorrectionID"
+        wdo-name="PRLICorrectionApprovalDescriptor"
+      />
+    </mapping>
+    <mapping>
+      <source-attribute
+        name="referenceNumber"
+        struct-name="curam.cpm.workflowprocesses.attendancetracking.struct.RosterLineItemCorrectionApprovalDescriptor"
+      />
+      <target-attribute
+        name="referenceNumber"
+        wdo-name="PRLICorrectionApprovalDescriptor"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>PRLICorrectionApprovalDescriptor</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">PRLI Correction Approval Descriptor</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>prliCorrectionID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Provider Roster Line Item Correction ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>referenceNumber</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Reference Number of the Provider Roster Line Item</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+    </end-process-activity>
+    <manual-activity
+      category="AC1"
+      id="3"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Choose to approve or deny Roster Line Item Correction</locale>
+        </localized-text>
+      </name>
+      <notification delivery-mechanism="DM1">
+        <subject>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="en">Roster Line Item Correction submitted for approval</locale>
+              </localized-text>
+            </message-text>
+          </message>
+        </subject>
+        <body>
+          <message>
+            <message-text>
+              <localized-text>
+                <!-- BEGIN, CR00130882, RD -->
+                <locale language="en">A correction for Provider Roster line item with reference number %1s, has been submitted for approval.</locale>
+                <!-- END, CR00130882 -->
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute
+                name="referenceNumber"
+                wdo-name="PRLICorrectionApprovalDescriptor"
+              />
+            </message-parameters>
+          </message>
+        </body>
+        <allocation-strategy
+          identifier="curam.cpm.workflowprocesses.intf.WorkflowAllocationFunction.prliExceptionProcessingAllocationStrategy"
+          type="function"
+        >
+          <function-mappings>
+            <formal-parameters>
+              <formal-parameter index="0">
+                <struct type="curam.core.sl.entity.struct.RosterLineItemKey">
+                  <field name="rosterLineItemID">
+                    <base-type type="INT64">
+                      <wdo-attribute
+                        name="prliCorrectionID"
+                        wdo-name="PRLICorrectionApprovalDescriptor"
+                      />
+                    </base-type>
+                  </field>
+                </struct>
+              </formal-parameter>
+            </formal-parameters>
+          </function-mappings>
+        </allocation-strategy>
+      </notification>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="2"/>
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="en">A correction for Provider Roster line item with reference number. %1s, has been submitted for approval.</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute
+              name="referenceNumber"
+              wdo-name="PRLICorrectionApprovalDescriptor"
+            />
+          </message-parameters>
+        </message>
+        <actions>
+          <action
+            page-id="ProviderManagement_approveordenyPRLICorrection"
+            principal-action="true"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Roster Line Item Correction Approval: Proceed to indicate that the roster line item correction should be approved or denied.</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="prliCorrectionID">
+              <wdo-attribute
+                name="prliCorrectionID"
+                wdo-name="PRLICorrectionApprovalDescriptor"
+              />
+            </link-parameter>
+            <!-- BEGIN, CR00130882, RD -->
+            <link-parameter name="taskID">
+              <wdo-attribute
+                name="taskID"
+                wdo-name="Context_Task"
+              />
+            </link-parameter>
+            <!-- END, CR00130882 -->
+          </action>
+          <action
+            page-id="ProviderManagement_viewPRLICorrectionFromTask"
+            principal-action="false"
+          >
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Roster Line Item Correction Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="prliCorrectionID">
+              <wdo-attribute
+                name="prliCorrectionID"
+                wdo-name="PRLICorrectionApprovalDescriptor"
+              />
+            </link-parameter>
+            <!-- BEGIN, CR00129363, RD -->
+            <link-parameter name="taskID">
+              <wdo-attribute
+                name="taskID"
+                wdo-name="Context_Task"
+              />
+            </link-parameter>
+            <!-- END, CR00129363 -->
+          </action>
+        </actions>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>false</allow-task-forwarding>
+      </task>
+      <!-- BEGIN, CR00150082, ABS -->
+      <allocation-strategy
+        identifier="Roster Line Item Approval Work Queue"
+        type="target"
+      />
+      <!-- END, CR00150082 -->
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="ROSTER"
+            event-type="PRLIC_APPROVED"
+            identifier="3"
+          >
+            <event-match-attribute
+              name="prliCorrectionID"
+              wdo-name="PRLICorrectionApprovalDescriptor"
+            />
+          </event>
+          <event
+            event-class="ROSTER"
+            event-type="PRLIC_DENIED"
+            identifier="4"
+          >
+            <event-match-attribute
+              name="prliCorrectionID"
+              wdo-name="PRLICorrectionApprovalDescriptor"
+            />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="1"
+      id="1"
+      to-activity-idref="3"
+    />
+    <transition
+      from-activity-idref="3"
+      id="2"
+      to-activity-idref="2"
+    />
+  </transitions>
+</workflow-process>

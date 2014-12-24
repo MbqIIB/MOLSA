@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2013. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- This page allows the user to register provider details. -->
+<!-- BEGIN, CR00235318, GP -->
+<!-- BEGIN, CR00291325, SS -->
+<PAGE
+  PAGE_ID="ProviderManagement_enrollProvider"
+  WINDOW_OPTIONS="width=850,height=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00235318 -->
+  <!-- END, CR00291325 -->
+
+
+  <!-- BEGIN, CR00235784, GP -->
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <!-- END, CR00235784 -->
+
+
+  <!-- BEGIN, CR00178272, AK -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="ACTION"
+    OPERATION="enrollProviderDetails"
+    PHASE="ACTION"
+  />
+
+
+  <!-- BEGIN, CR00377006, GA -->
+  <SERVER_INTERFACE
+    CLASS="Participant"
+    NAME="DISPLAY1"
+    OPERATION="readIban"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00377006 -->
+
+
+  <!-- BEGIN, CR00234082, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="DISPLAY"
+    OPERATION="getProviderWizardMenuDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+  <!-- END, CR00234082 -->
+
+
+  <INCLUDE FILE_NAME="ProviderManagement_enrollProviderView.vim"/>
+
+
+  <!-- BEGIN, CR00234082, GP -->
+  <ACTION_SET>
+
+
+    <!-- BEGIN, CR00236233, GP -->
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Previous">
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_searchConfirmProviderNotRegistered"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=750"
+      />
+    </ACTION_CONTROL>
+    <!-- END, CR00236233 -->
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Finish"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$providerEnrollmentReferenceKey$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$providerEnrollmentReferenceKey$concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00234082 -->
+
+
+</PAGE>

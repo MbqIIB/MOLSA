@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2008,2013. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Description -->
+<!-- =========== -->
+<!-- Page used to launch the Datastore Schema Editor to allow a datastore schema -->
+<!-- to be edited.                                                               -->
+<PAGE PAGE_ID="System_editSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+  <JSP_SCRIPTLET>
+    <![CDATA[
+    
+    curam.omega3.request.RequestHandler rh
+       = curam.omega3.request.RequestHandlerFactory
+         .getRequestHandler(request);
+
+    String schemaName = request.getParameter("schemaName");
+    
+    if (schemaName != null && schemaName.length() > 0) {
+    
+      String scriptID = request.getParameter("scriptID");
+      String scriptType = request.getParameter("scriptType");
+      String scriptVersion = request.getParameter("scriptVersion");
+      String __o3rpu = request.getParameter("__o3rpu");
+      String contextFromRequest = request.getParameter("o3ctx");
+      
+      StringBuffer flashVars = new StringBuffer();
+        
+      // scriptType
+      flashVars.append("schemaName")
+        .append("=")
+        .append(curam.omega3.request.RequestUtils.escapeURL(schemaName))
+        .append("&");
+             
+      // locale
+      flashVars.append("locale")
+        .append("=")
+        .append(curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+           pageContext.getSession()).getLocale().toString())
+        .append("&");              
+
+      // entryURL               
+      StringBuffer entryUri = new StringBuffer(); 
+      entryUri.append("../");
+      entryUri.append(curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale());
+      entryUri.append("/");
+      entryUri.append(curam.omega3.request.RequestUtils.escapeURL(__o3rpu));
+
+      flashVars.append("entryUri")
+        .append("=")
+        .append(entryUri);             
+             
+            
+      out.print("<html lang=\"en\">");
+      out.print("<head>");
+
+      out.print("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>");
+      out.print("<title>Data Schema Editor</title>");
+
+      out.println("<script type=\"text/javascript\" src=\"../CDEJ/jscript/dojotk/dojo/dojo.js\" djConfig=\"parseOnLoad:true\">// script content</script>");
+      out.println("<script type=\"text/javascript\" src=\"../CDEJ/jscript/dojotk/dijit/dijit.js\">//script content</script>");
+
+      out.println("<script type=\"text/javascript\">");
+      out.println("  dojo.registerModulePath(\"curam\", \"../../curam\");");
+      out.println("  dojo.registerModulePath(\"cm\", \"../../cm\");");
+      out.println("</script>");
+
+      out.println("<script type=\"text/javascript\" src=\"../CDEJ/jscript/cdej.js\">// script content</script>");
+      out.println("<script type=\"text/javascript\" src=\"../CDEJ/jscript/cdej-cm.js\">// script content</script>");
+
+      out.println("<script type=\"text/javascript\">");
+      out.println("dojo.require('curam.core-uim');");
+      out.println("var sc = new curam.util.ScreenContext();");
+      out.println("sc.setContext(" + curam.omega3.request.RequestUtils.escapeURL(contextFromRequest) + ");");
+      out.println("if (sc.hasContextBits('MODAL')) {");
+      out.println("dojo.require('curam.util.Dialog');");
+      out.println("curam.util.Dialog.init();");
+      out.println("dojo.ready(curam.util.Dialog.pageLoadFinished);");
+      out.println("dojo.ready(function() {curam.util.Dialog.close();});");
+      out.println("}");
+      out.println("</script>");
+
+      out.print("<script  type=\"text/javascript\" src=\"../ieg/flex/AC_OETags.js\"></script><style>");
+      out.print("body { margin: 0px; overflow:hidden }</style>");
+
+
+      out.print("<script type=\"text/javascript\">");
+
+      out.print(" var requiredMajorVersion = 9;");
+      out.print(" var requiredMinorVersion = 0;");
+      out.print(" var requiredRevision = 0;");
+
+      out.print("</script></head>");
+
+      out.print("<body scroll=\"no\">");
+
+      out.print("<script type=\"text/javascript\">");
+
+      out.print(" var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);");
+
+      out.print(" if (hasRequestedVersion) {");
+
+      out.print("AC_FL_RunContent(\"src\", \"../ieg/flex/DatastoreEditor\",");
+      out.print("\"movie\",\"../ieg/flex/DatastoreEditor\",");      
+      out.print("\"flashvars\",\"" + flashVars + "\",");          
+      out.print("\"width\",\"100%\",");
+      out.print("\"height\",\"100%\",");
+      out.print("\"align\",\"middle\",");
+      out.print("\"id\",\"DatastoreEditor\",");
+      out.print("\"quality\",\"high\",");
+      out.print("\"bgcolor\",\"white\",");
+      out.print("\"name\",\"DatastoreEditor\",");
+      out.print("\"allowScriptAccess\",\"sameDomain\",");
+      out.print("\"type\",\"application/x-shockwave-flash\",");
+      out.print("\"pluginspage\",\"http://www.adobe.com/go/getflashplayer\",");
+      out.print("\"wmode\",\"opaque\""); 
+      out.print(");");
+
+      out.print("} else {");
+      out.print("var alternateContent = 'Alternate HTML content should be placed here.");
+      out.print(" This content requires the Adobe Flash Player.");
+      out.print(" <a href=\"http://www.adobe.com/go/getflash\">Get Flash</a>';");
+      out.print("document.write(alternateContent);");
+      out.print("}"); 
+      out.print("</script>");
+
+
+      // EMBEDDING THE DATASTORE EDITOR SWF
+      out.print("<noscript>");
+      out.print("<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\"");
+      out.print(" id=\"DatastoreEditor\" width=\"100%\" height=\"100%\"");
+      out.print(" codebase=\"http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab\">");
+      out.print("<param name=\"movie\" value=\"DatastoreEditor.swf\" />");
+      out.print("<param name=\"quality\" value=\"high\" />");
+      out.print("<param name=\"wmode\" value=\"opaque\" />");      
+      out.print("<param name=\"bgcolor\" value=\"white\" />");
+      out.print("<param name=\"allowScriptAccess\" value=\"sameDomain\" />");
+      out.print("<embed src=\"../ieg/flex/DatastoreEditor.swf\" wmode=\"opaque\" quality=\"high\" bgcolor=\"white\"");
+      out.print(" width=\"100%\" height=\"100%\" name=\"DatastoreEditor\" align=\"middle\"");
+      out.print(" play=\"true\"");
+      out.print(" loop=\"false\"");
+      out.print(" quality=\"high\"");
+      out.print(" allowScriptAccess=\"sameDomain\"");
+      out.print(" type=\"application/x-shockwave-flash\"");
+      out.print(" pluginspage=\"http://www.adobe.com/go/getflashplayer\">");
+      out.print("</embed></object>");
+      out.print("</noscript>");
+      out.print("</body></html>");      
+      
+    }
+    
+   ]]>
+  </JSP_SCRIPTLET>
+  
+</PAGE>

@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2008, 2010-2011 Curam Software Ltd.                                  -->
+<!-- All rights reserved.                                                           -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;).                         -->
+<!--  You shall not disclose                                                        -->
+<!-- such Confidential Information and shall use it only in accordance with         -->
+<!-- the terms of the license agreement you entered into with Curam                 -->
+<!-- Software.                                                                      -->
+<!-- Description                                                                    -->
+<!-- ===========                                                                    -->
+<!-- This page allows the user to view the provider group homepage.                 -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_providerGroupHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerGroupKey$providerGroupConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00119621, ASB -->
+  <!-- BEGIN, CR00228981, PS -->
+  <ACTION_SET>
+    <!-- END, CR00228981 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.EditProviderGroup">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="openStatusInd"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <!-- BEGIN, CR00206505, SS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_modifyProviderGroup"
+        WINDOW_OPTIONS="width=725"
+      >
+        <!-- END, CR00206505 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00234497, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddProvider">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="openStatusInd"
+        />
+      </CONDITION>
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_addProviderToPG"
+        WINDOW_OPTIONS="width=380"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00234497 -->
+
+
+    <!-- BEGIN, CR00233746, PS -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Close">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="openStatusInd"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_closeProviderGroup"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerGroupConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageContextDescription"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00233746 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.ReOpen">
+      <!-- BEGIN, CR00234497, PS -->
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY"
+          PROPERTY="closedStatusInd"
+        />
+      </CONDITION>
+      <!-- END, CR00234497 -->
+      <!-- BEGIN, CR00200333, SS -->
+      <!-- BEGIN, CR00199550, SS -->
+      <!-- BEGIN, CR00187417, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_reOpenProviderGroup"
+      >
+        <!-- END, CR00187417 -->
+        <!-- END, CR00199550 -->
+        <!-- END, CR00200333 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerGroupConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$versionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="versionNo"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <!-- BEGIN, CR00228981, PS -->
+  </ACTION_SET>
+  <!-- END, CR00228981 -->
+  <!-- END, CR00119621 -->
+
+
+  <!-- BEGIN, CR00117630, ASB -->
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="MENUCONTEXT"
+    OPERATION="viewProviderGroupMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="MENUCONTEXT"
+      PROPERTY="providerGroupConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- END, CR00117630-->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <!-- BEGIN, CR00206505, SS -->
+  <SERVER_INTERFACE
+    CLASS="ProviderGroup"
+    NAME="DISPLAY"
+    OPERATION="viewProviderGroupDetails"
+  />
+  <!-- END, CR00206505 -->
+
+
+  <!-- BEGIN, CR00229065, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00229065 -->
+    <FIELD LABEL="Field.Label.EnrollmentDate">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$enrollmentDate"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PaymentMethod">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$methodOfPaymentString"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PreferredCommunication">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$prefCommMethod"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Currency">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$currencyType"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.PaymentFrequency">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$paymentFrequency"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00234402, GP -->
+    <CONTAINER LABEL="Field.Label.PreferredLanguage">
+      <FIELD>
+        <CONNECT>
+          <!-- BEGIN, CR00206505, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$prefLanguage"
+          />
+          <!-- END, CR00206505 -->
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00235318, GP -->
+      <ACTION_CONTROL IMAGE="InformationalIcon">
+        <!-- END, CR00235318 -->
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="userSkillsInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewProviderGroupOwnerLanguageSkillInformational"
+          WINDOW_OPTIONS="width=650"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+    <!-- END, CR00234402 -->
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <LIST TITLE="List.Title.Provider">
+    <!-- BEGIN, CR00198612, SS -->
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00197352, SS -->
+        <!-- BEGIN, CR00178886, ASN -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_modifyPGAssociation"
+          WINDOW_OPTIONS="width=500"
+        >
+          <!-- END, CR00178886 -->
+          <!-- END, CR00197352 -->
+          <CONNECT>
+            <!-- BEGIN, CR00206505, SS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerGroupAssociateID"
+            />
+            <!-- END, CR00206505 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociateID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddPaymentConfiguration">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_createProviderGroupAssociatePaymentConfiguration"
+          WINDOW_OPTIONS="width=320"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00206505, SS -->
+            <!-- BEGIN, CR00205479, PS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerGroupAssociateID"
+            />
+            <!-- END, CR00205479 -->
+            <!-- END, CR00206505 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00206505, SS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerGroupConcernRoleID"
+            />
+            <!-- END, CR00206505 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupConcernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00206505, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.Remove">
+        <!-- BEGIN, CR00207959, SS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeProviderFromProviderGroup"
+          WINDOW_OPTIONS="width=305"
+        >
+          <!-- END, CR00207959 -->
+          <CONNECT>
+            <!-- BEGIN, CR00206505, SS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerGroupAssociateID"
+            />
+            <!-- END, CR00206505 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerGroupAssociateID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00206505, SS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$versionNo"
+            />
+            <!-- END, CR00206505 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00206505 -->
+    </ACTION_SET>
+
+
+    <!-- END, CR00198612 -->
+
+
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerName"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+      <!-- BEGIN, CR00198612, SS -->
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <!-- BEGIN, CR00208276, PS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerConcernRoleID"
+          />
+          <!-- END, CR00208276 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+      <!-- END, CR00198612 -->
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$startDate"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$endDate"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00208276, PS -->
+    <FIELD LABEL="Field.Label.ProviderStatus">
+      <!-- END, CR00208276 -->
+      <CONNECT>
+        <!-- BEGIN, CR00093612, MC -->
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerStatus"
+        />
+        <!-- END, CR00093612 -->
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00198612, SS -->
+    <FIELD LABEL="Field.Label.RecordStatus">
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$recordStatus"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_viewProviderGroupAssociation">
+        <CONNECT>
+          <!-- BEGIN, CR00205479, PS -->
+          <!-- BEGIN, CR00206505, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$providerGroupAssociationSummaryDetailsList$providerGroupAssociateSummaryDetails$providerGroupAssociateID"
+          />
+          <!-- END, CR00205479 -->
+          <!-- END, CR00206505 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerGroupAssociateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00206505, SS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$pageContextDescription"
+          />
+          <!-- END, CR00206505 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageContextDescription"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <!-- END, CR00198612 -->
+  </LIST>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00407812, RB -->
+    <FIELD
+      HEIGHT="3"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00407812 -->
+      <CONNECT>
+        <!-- BEGIN, CR00206505, SS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$comments"
+        />
+        <!-- END, CR00206505 -->
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

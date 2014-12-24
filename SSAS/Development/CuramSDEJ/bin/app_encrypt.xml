@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+
+  This is the ant file to encrypt the password.
+
+-->
+<project name="app_encrypt" default="encrypt.password">
+
+  <!--  ***************************  -->
+  <!--  ***  Import Properties  ***  -->
+  <!--  ***************************  -->
+  <import file="./app_properties.xml" />
+
+  <target name="init">
+    <!-- Check to see if the password to be encrypted is set -->
+    <condition property="encryption.password.valid">
+        <isset property="password"/>
+    </condition>
+    <antcall target="check.password.valid"/>
+  </target>
+
+  <!-- Fail if password property is missing. -->
+  <target name="check.password.valid" unless="encryption.password.valid">
+    <fail message="Missing password property."/>
+  </target>
+
+  <target name="encrypt.password" description="Encrypts the given password" depends="init">
+   <echo message="${crypto.prop.file.location}  ${base.dir}"/>
+    <taskdef name="encrypt"
+      classname="curam.util.tools.EncryptPassword"
+      classpath="${crypto.prop.file.location}:${jar.coreinf}:${jar.tools}"/>
+    <encrypt password="${password}"/>
+  </target>
+  
+  
+  
+    <target name="digest.password" description="Creates digest of the given password" depends="init">
+     <java classname="curam.util.security.EncryptionAdmin"
+      classpath="${crypto.prop.file.location}:${jar.coreinf}"
+      fork="${java.fork}"
+      failonerror="${java.failonerror}"
+      maxmemory="${java.maxmemory}"
+      taskname="digest"
+      >
+      <jvmarg value="${java.jvmargs}" />
+      <arg value="${password}"/>
+      <arg value="./digest.txt"/>
+    </java>
+    <loadfile property="echo.digest" srcFile="./digest.txt"/>
+    <delete file="./digest.txt" quiet="true" deleteonexit="true"/> 
+    <echo message="Digest : ${echo.digest}"/>
+    </target>
+
+</project>

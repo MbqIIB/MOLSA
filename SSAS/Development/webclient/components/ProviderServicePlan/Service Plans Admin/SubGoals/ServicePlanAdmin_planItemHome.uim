@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to see the plan item details.                -->
+<PAGE
+  PAGE_ID="ServicePlanAdmin_planItemHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <MENU MODE="IN_PAGE_NAVIGATION">
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.PlanItemHome"
+      STYLE="in-page-current-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_planItemHome"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ContractText"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_listContractTextsForPlanItem"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Outcomes"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_listOutcomesForPlanItem"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.GoodCauses"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_listGoodCausesForPlanItem"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.ApprovalCriteria"
+      STYLE="in-page-link"
+    >
+      <LINK
+        PAGE_ID="ServicePlanAdmin_listApprovalCriteriaForPlanItem"
+        SAVE_LINK="false"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="planItemID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+  </MENU>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY"
+        PROPERTY="contextDescription"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="ProviderServicePlan"
+    NAME="DISPLAY"
+    OPERATION="readProviderPlanItem"
+    PHASE="DISPLAY"
+  />
+  
+  <PAGE_PARAMETER NAME="planItemID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="planItemID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$planItemID"
+    />
+  </CONNECT>
+  
+  <!-- BEGIN, CR00237116, MR -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+  >
+  <!-- END, CR00237116 -->
+    <FIELD LABEL="Field.Label.PlanItemReference">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="planItemReference"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <!-- BEGIN, CR00237116, MR -->
+    <FIELD LABEL="Field.Label.NonEditableName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$details$dtls$nameNotEditableInd"
+        />
+      </CONNECT>
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.AssociatedType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="associatedType"
+        />
+      </CONNECT>
+    </FIELD> 
+    <!-- END, CR00237116 -->
+    <FIELD LABEL="Field.Label.Cost">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="cost"
+        />
+      </CONNECT>
+    </FIELD>
+   
+    <FIELD LABEL="Field.Label.GuidanceURL">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="guidanceURL"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_NEW="true"
+        URI_SOURCE_NAME="DISPLAY"
+        URI_SOURCE_PROPERTY="guidanceURL"
+      />
+    </FIELD>
+    
+    <FIELD LABEL="Field.Label.TaskConfiguration">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="taskName"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <!-- BEGIN, CR00237116, MR -->
+    <!-- associatedType must be replaced with result$details$serviceOfferingName-->
+    <FIELD LABEL="Field.Label.ServiceOffering">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="associatedItemName"
+        />
+      </CONNECT>
+    </FIELD>
+
+  </CLUSTER>
+  
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ApprovalDetails"
+  >
+  <!-- END, CR00237116 -->  
+    <FIELD LABEL="Field.Label.ApprovalSID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="approvalSID"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ApprovalRequired">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="requiresApproval"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  <!-- BEGIN, CR00237116, MR -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.ServiceUnitDetails"
+  >
+  <!-- END, CR00237116 -->
+    <FIELD LABEL="Field.Label.UnitType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.MaximumUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="maximumUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AuthorizedUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="authorizedUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ModifyAuthorizedSID">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="modifyAuthorizedSID"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  
+  <!-- BEGIN, CR00237116, MR -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    TITLE="Cluster.Title.AssociatedPageDetails"
+    >
+  <!-- END, CR00237116 -->
+    <FIELD LABEL="Field.Label.CreatePageName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createPageName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreatePagePlanItemIDParamName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createPagePlanItemIDParamName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CreatePageSubGoalIDParamName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="createPageSubGoalIDParamName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ModifyPageName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="modifyPageName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ModifyPagePlannedItemParamName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="modifyPagePlanItemParamName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ViewPageName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="viewPageName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ViewPagePlannedItemParamName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="viewPagePlanItemParamName"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Description"
+  >
+    <!-- BEGIN, CR00237116, MR -->
+    <FIELD HEIGHT="4">
+    <!-- END, CR00237116 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

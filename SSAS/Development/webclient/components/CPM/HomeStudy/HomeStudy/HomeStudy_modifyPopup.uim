@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2007, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to modify the existing home study details -->
+<PAGE
+  PAGE_ID="HomeStudy_modifyPopup"
+  WINDOW_OPTIONS="width=750"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="HomeStudy"
+    NAME="ACTION"
+    OPERATION="modifyHomeStudy"
+    PHASE="ACTION"
+  />
+  <SERVER_INTERFACE
+    CLASS="HomeStudy"
+    NAME="DISPLAY"
+    OPERATION="viewHomeStudy"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00236219, PS -->
+  <SERVER_INTERFACE
+    CLASS="HomeStudy"
+    NAME="DISPLAY1"
+    OPERATION="getHomeStudyAssessorDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$key$homeStudyID"
+    />
+  </CONNECT>
+  <!-- END, CR00236219 -->
+
+
+  <PAGE_PARAMETER NAME="description"/>
+  <PAGE_PARAMETER NAME="homeStudyID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="homeStudyID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$key$homeStudyID"
+    />
+  </CONNECT>
+
+
+  <!-- view - modify connections, eg. providerID, etc.  -->
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="key$key$homeStudyID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="homeStudyID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="status"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="status"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="DISPLAY"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="versionNo"
+    />
+  </CONNECT>
+
+
+  <!-- Page fields -->
+  <!-- BEGIN, CR00248198, GP -->
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="42"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00248198 -->
+    <FIELD
+      LABEL="Field.Label.HomeStudyType"
+      WIDTH="65"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="homeStudyType"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="homeStudyType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247455, PS -->
+
+
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.DateInitiated"
+      WIDTH="43"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00247455 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="dateInitiated"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="dateInitiated"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247455, PS -->
+    <FIELD
+      LABEL="Field.Label.Assessor"
+      WIDTH="100"
+    >
+      <!-- END, CR00247455 -->
+      <!-- BEGIN, CR00236219, PS -->
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY1"
+          PROPERTY="fullName"
+        />
+      </CONNECT>
+      <!-- END, CR00236219 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="assessorName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="assessorName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247455, PS -->
+    <FIELD
+      LABEL="Field.Label.Purpose"
+      WIDTH="70"
+    >
+      <!-- END, CR00247455 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="purpose"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="purpose"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00247455, PS -->
+
+
+    <!-- BEGIN, CR00341935, MR -->
+    <FIELD
+      LABEL="Field.Label.ReevaluationDate"
+      WIDTH="43"
+    >
+      <!-- END, CR00341935 -->
+      <!-- END, CR00247455 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="reevaluationDate"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="reevaluationDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD
+      LABEL="Field.Label.FinalRecommendation"
+      USE_BLANK="true"
+      WIDTH="95"
+    >
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="finalRecommendation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="finalRecommendation"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.SupportForRecommendation"
+  >
+
+
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD HEIGHT="4">
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="supportForRecommendation"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="supportForRecommendation"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+
+
+    <!-- BEGIN, CR00187976, CR00407812, SS, RB -->
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.Comments"
+    >
+      <!-- END, CR00187976, CR00407812 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+  </ACTION_SET>
+
+
+</PAGE>

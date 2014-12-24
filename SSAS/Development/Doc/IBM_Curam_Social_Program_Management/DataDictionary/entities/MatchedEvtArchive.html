@@ -1,0 +1,176 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>MatchedEvtArchive</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Workflow Event Audit
+:</b>
+<i> A raised event that an <a href=ActivityInstance.html>Activity Instance</a> was waiting on.
+</i>
+
+<P>An <a href=ActivityInstance.html>Activity Instance</a> may wait for one of a number of events to be raised (as specified on its related <a href=EventWait.html>Event Wait</a> rows).  When one of these events is raised, the Workflow Engine creates a Workflow Event Audit row to store details of which event was raised.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>system prints out a letter (automatic); and</LI>
+
+<LI><a href=Users.html>User</a> puts the letter in an envelope and posts it (manual).</LI>
+
+</UL> <P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a <a href=ProcessInstance.html>Process Instance</a>.</P>
+
+<P>The system creates and executes the first (automatic) <a href=ActivityInstance.html>Activity Instance</a> which prints out the letter.</P>
+
+<P>The system transitions to the next activity definition in your workflow and creates the second <a href=ActivityInstance.html>Activity Instance</a>. Because this <a href=ActivityInstance.html>Activity Instance</a> is a manual one, when the Workflow Engine executes the <a href=ActivityInstance.html>Activity Instance</a>, it also creates:</P>
+
+<UL>
+
+<LI>a <a href=Task.html>Task</a> which details the work to be done; and</LI>
+
+<LI>an <a href=EventWait.html>Event Wait</a> which registers the Workflow Engine's 'interest' in the result of the <a href=Task.html>Task</a>.</LI>
+
+</UL> <P>The <a href=Task.html>Task</a> is assigned to <a href=Users.html>User</a> Ronan Rooney.  The <a href=Task.html>Task</a> instructs Ronan to collect the letter from the printer and post it.  Ronan performs this work and in the correspondence screen marks the letter as 'sent'.  Curam raises a 'correspondence sent' event by calling the 'raise event' function.</P>
+
+<P>The Event Match Engine:</P>
+
+<UL>
+
+<LI>receives the event;</LI>
+
+<LI>searches the <a href=EventWait.html>Event Wait</a> table to identify which <a href=ActivityInstance.html>Activity Instance(s)</a> are waiting on the event;</LI>
+
+<LI>finds the <a href=EventWait.html>Event Wait</a> relating to the <a href=ActivityInstance.html>Activity Instance</a> for the 'User puts the letter in an envelope and posts it' activity in the <a href=ProcessInstance.html>Process Instance</a> created for John Smith's payment increase;</LI>
+
+<LI>deletes the <a href=EventWait.html>Event Wait</a> row;</LI>
+
+<LI>creates a Workflow Event Audit row; and</LI>
+
+<LI>instructs the Workflow Engine to continue.</LI>
+
+</UL> <P>The Workflow Engine marks the <a href=ActivityInstance.html>Activity Instance</a> as completed and follows the transition out of it.</P>
+
+<p><b>Technical Notes</b></p>
+<P>The rows on this table exist for auditing purposes only.</P>
+
+<P>The metadata for the activity stored in the <a href=ProcessDefinition.html>Process Definition</a> defines whether an <a href=ActivityInstance.html>Activity Instance</a> will have an associated <a href=EventWait.html>Event Wait</a>.</P>
+
+<P>An <a href=ActivityInstance.html>Activity Instance</a> may wait on multiple events and thus have multiple related <a href=EventWait.html>Event Wait</a> rows.  When any one of these events is raised, the Workflow Engine:</P>
+
+<UL>
+
+<LI>removes all <a href=EventWait.html>Event Wait</a> rows related to the <a href=ActivityInstance.html>Activity Instance</a>;</LI>
+
+<LI>creates a single Workflow Event Audit row detailing which <a href=EventWait.html>Event Wait</a> was actually matched to the event; and</LI>
+
+<LI>continues processing the workflow.</LI>
+
+</UL> <P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (9)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">eventWaitID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of a workflow event wait.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">activityInstanceID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The unique identifier of a workflow activity instance. This is used to allow an event wait to be associated to a specific activity instance in the workflow system. This association then allows the workflow engine to ascertain which activity instance (if any) to complete as a result of an associated event being raised.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">eventClass</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The concept of an event class is used to group related event types. For example, an event class of 'Case' describes a set of events related to the status of a 'Case'.  The corresponding event types for this event class could be  CloseCase,  OpenCase, SuspendCase etc.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">eventType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">An identifier for an event on the event class. For  example, where the  business object type is  'Case', the event type might be 'Case_Open' or Case_Closed etc. The two fields uniquely identify the nature of the event.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">eventMatchData</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">A unique identifier related to the event class for which the event wait is created. The identifier is used by the event handler to find additional information relevant to handling the event. For example, where the business object type specified for an event is equal to  'Case', the event data could be case identifier, i.e. primaryEventData='12345'.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">eventOutputData</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The event output mapping data is optional. It is intended for events that must represent an association between two entities. An example of this would be an event class of RELATIONSHIP with an associated event type of CHANGED. In this case the primary and secondary event data would represent the relationship that has changed between the two entities.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">eventRaisedBy</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The name of the user that raised the event.</td><td class="dataLast">SVR_STRING&lt;64&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">archiveTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The time at which the matched event archive table entry was made.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">MatchedEvtArchive.activityInstanceID</td><td class="dataLast"><a href="ActivityInstance.html#activityInstanceID">ActivityInstance.activityInstanceID</a></td>
+</tr>
+<tr class="listValueEven">
+<td class="data">MatchedEvtArchive.eventClass</td><td class="dataLast"><a href="EventClass.html#eventClass">EventClass.eventClass</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

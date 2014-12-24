@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                     -->
+<!-- This software is the confidential and proprietary information of Curam   -->
+<!-- Software, Ltd. (&quot;Confidential Information&quot;). You shall not     -->
+<!-- disclose such Confidential Information and shall use it only in          -->
+<!-- accordance with the terms of the license agreement you entered into      -->
+<!-- with Curam Software.                                                     -->
+<!-- This page allows user to add service to contracts.                       -->
+<PAGE
+  PAGE_ID="ProviderManagement_addServicesToProviderGroupContract"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_PARAMETER NAME="contractVersionID"/>
+  <PAGE_PARAMETER NAME="pageContextDescription"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="DISPLAY"
+    OPERATION="viewProviderOfferingsForProviderGroupContract"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="ContractManagement"
+    NAME="ACTION"
+    OPERATION="modifyContractProviderOfferingsForProviderGroupContract"
+    PHASE="ACTION"
+  />
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="result$dtls$informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="contractVersionID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="contractVersionID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="contractVersionID"
+    />
+  </CONNECT>
+
+
+  <!-- Contract Services List -->
+  <!-- BEGIN, CR00234235, PS -->
+  <CLUSTER SHOW_LABELS="false">
+    <!-- END, CR00234235 -->
+    <!-- BEGIN, CR00248418, PS -->
+    <FIELD
+      CONTROL="TRANSFER_LIST"
+      HEIGHT="5"
+    >
+      <!-- END, CR00248418 -->
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="code"
+          NAME="DISPLAY"
+          PROPERTY="description"
+        />
+      </CONNECT>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="currentProviderOfferingTabbedList"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="tabbedList"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00246655, GP -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+    <!-- END, CR00246655 -->
+
+
+  </ACTION_SET>
+
+
+</PAGE>

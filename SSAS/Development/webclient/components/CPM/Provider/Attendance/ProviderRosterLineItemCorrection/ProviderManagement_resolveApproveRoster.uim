@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                     				-->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page redirects the user to the appropriate page to approve either -->
+<!--  a roster line item or a roster line item correction.                  -->
+<PAGE
+  PAGE_ID="ProviderManagement_resolveApproveRoster"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+    
+    curam.omega3.request.RequestHandler 
+    rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+    
+    String context = request.getContextPath() + "/";
+    context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+    
+    String concernRoleID = request.getParameter("concernRoleID");
+    String providerRosterLineItemID = request.getParameter("providerRosterLineItemID");
+    String prliVersionNo = request.getParameter("prliVersionNo");
+    String rliVersionNo = request.getParameter("rliVersionNo");
+    String versionNo = request.getParameter("versionNo");
+    String prliCorrectionID = request.getParameter("prliCorrectionID");
+    String rliInPendingApprovalInd = request.getParameter("rliInPendingApprovalInd");
+    String rliInPendingApprovalCorrection = request.getParameter("rliInPendingApprovalCorrection");
+    
+    
+    String url = "";
+    
+    if (("true").equals(rliInPendingApprovalInd)) {
+    
+    url = context + "ProviderManagement_approveRosterLineItemPage.do?providerRosterLineItemID=" + curam.omega3.request.RequestUtils.escapeURL(providerRosterLineItemID)+ "&amp;concernRoleID=" + curam.omega3.request.RequestUtils.escapeURL(concernRoleID)+ "&amp;prliVersionNo="+ curam.omega3.request.RequestUtils.escapeURL(versionNo)+ "&amp;rliVersionNo="+ curam.omega3.request.RequestUtils.escapeURL(rliVersionNo);
+    }
+    else {
+    if (("true").equals(rliInPendingApprovalCorrection)){
+    
+    url = context + "ProviderManagement_approvePRLICorrectionFromViewPage.do?prliCorrectionID=" + curam.omega3.request.RequestUtils.escapeURL(prliCorrectionID)+ "&amp;versionNo="+ curam.omega3.request.RequestUtils.escapeURL(prliVersionNo)+ "&amp;concernRoleID="+ curam.omega3.request.RequestUtils.escapeURL(concernRoleID)+ "&amp;providerRosterLineItemID="+ curam.omega3.request.RequestUtils.escapeURL(providerRosterLineItemID);
+    
+    }
+    }
+    
+    url += "&amp;" + rh.getSystemParameters();  
+    response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

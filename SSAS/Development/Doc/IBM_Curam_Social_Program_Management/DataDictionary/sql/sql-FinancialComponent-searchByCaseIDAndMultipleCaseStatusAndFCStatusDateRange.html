@@ -1,0 +1,142 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>FinancialComponent.searchByCaseIDAndMultipleCaseStatusAndFCStatusDateRange</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">To get a list of financial component records that match the specified caseID, financial status code, and that do not match the specified case status codes, and whose processing date are less than or equal the specified processingDateTo and greater than or equal the specified processingDateFrom.</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  financialCompID,
+  concernRoleID,
+  caseNomineeID,
+  caseID,
+  primaryClientID,
+  categoryCode,
+  typeCode,
+  startDate,
+  endDate,
+  creationDate,
+  creationTypeCode,
+  amount,
+  rate,
+  maxAmount,
+  minAmount,
+  statusCode,
+  fundID,
+  dueDate,
+  coverPeriodType,
+  coverPeriodOffset,
+  nomineeDelivMethod,
+  deliveryMethodOffset,
+  nextProcessingDate,
+  productID,
+  adjustmentInd,
+  caseTypeCode,
+  currencyTypeCode,
+  rulesObjectiveID,
+  frequency,
+  instrumentGenInd,
+  expiryDate,
+  versionNo,
+  inRespectOfID
+INTO
+  :financialCompID,
+  :concernRoleID,
+  :caseNomineeID,
+  :caseID,
+  :primaryClientID,
+  :categoryCode,
+  :typeCode,
+  :startDate,
+  :endDate,
+  :creationDate,
+  :creationTypeCode,
+  :amount,
+  :rate,
+  :maxAmount,
+  :minAmount,
+  :statusCode,
+  :fundID,
+  :dueDate,
+  :coverPeriodType,
+  :coverPeriodOffset,
+  :nomineeDelivMethod,
+  :deliveryMethodOffset,
+  :nextProcessingDate,
+  :productID,
+  :adjustmentInd,
+  :caseTypeCode,
+  :currencyTypeCode,
+  :rulesObjectiveID,
+  :frequency,
+  :instrumentGenInd,
+  :expiryDate,
+  :versionNo,
+  :inRespectOfID 
+FROM
+  FinancialComponent 
+WHERE statusCode = :statusCode 
+  AND nextProcessingDate >= :processingDateFrom 
+  AND nextProcessingDate <= :processingDateTo 
+  AND 
+  (
+    caseID = 
+    ( 
+    SELECT
+      caseID 
+    FROM
+      CaseHeader 
+    WHERE caseID = :caseID 
+      AND statusCode <> :caseStatusCode1 
+      AND statusCode <> :caseStatusCode2 
+    ) 
+  ) 
+ORDER BY startDate DESC 
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

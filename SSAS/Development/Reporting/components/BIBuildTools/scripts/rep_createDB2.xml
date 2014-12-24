@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant file for the DB2 .
+
+-->
+<project name="rep_createDB2Database" default="db2.sample.commands">
+
+  <property environment="sysenv."/>
+  <!-- DB2 command is OS-dependent -->
+  <condition property="db2.command" value="db2cmd" >
+    <os family="windows" />
+  </condition>
+  <!-- UNIX -->
+  <property name="db2.command" value="db2"/>
+
+  <property name="max.wait.seconds" value="15"/>
+    
+
+  <!--  *******************************  -->
+  <!--  ***  Import tasks definitions**  -->
+  <!--  *******************************  -->
+  <import file="${REPORTING_ENV}${file.separator}scripts${file.separator}rep_utilities.xml"/>
+  <import file="${REPORTING_ENV}${file.separator}scripts${file.separator}rep_properties.xml"/>
+  <import file="${REPORTING_ENV}${file.separator}scripts${file.separator}rep_macros.xml"/>
+  <import file="${REPORTING_ENV}${file.separator}scripts${file.separator}rep_tasks.xml"/>
+
+  <taskdef
+      classname="curam.util.reporting.internal.tasks.AntEncrypt"
+      classpath="${jar.reporting.buildenv}"
+      name="EncryptPassword"
+    />
+
+    
+    <taskdef
+        classname="curam.util.reporting.internal.tasks.AntTokenizer"
+        classpath="${jar.reporting.buildenv}"
+        name="AntTokenizer"
+    />      
+	  
+  <!--  *******************************  -->
+  <!--  ***  Imports                 **  -->
+  <!--  *******************************  -->
+  <property name="superuser.file" value="${DEV_scripts}${file.separator}rep_db2schemas.properties"/>
+  <property file="${superuser.file}" />
+
+					
+  <property name="schema.createscript"
+                    value="${DEV_scripts}${file.separator}createDB2Database.sql" />
+
+  <property name="schema.dropscript"
+                  value="${DEV_scripts}${file.separator}dropDB2Database.sql" />
+   
+
+  <property name="schema.rolescript"
+                  value="${DEV_scripts}${file.separator}createDB2DatabaseRole.sql" />
+				  
+				  
+  <!--  *******************************  -->
+  <!--  ***  public tasks            **  -->
+  <!--  *******************************  -->
+				  
+  <target name="db2.sample.database.commands" description="sample tasks and their parameters">
+
+	<echo message="You must enclose passwords in double quotes"/>
+	<echo message="you can store super user detail in a suitable controlled file using -Dsuperuser.file="/>	
+	
+	<echo message="db2.create.role -Ddatabase.name=database  -Dcreate.db2role=true ,to override use -Ddb2.donotexecute=true -Denvironment.db2.dba.password=encrytedpass -Denvironment.db2.dba.userid=sysuserid"/>
+	<echo message=""/>	
+	<echo message="db2.create.database  -Ddatabase.name=database -Ddb2.drive=e:${file.separator} -Ddb2.dir=E:${file.separator}yDB2DBSTEST -Ddatabase.userpassword=hu0l0zb73lbwlMBuz5D6nQ== -Ddatabase.userid=db2admin, to override use -Ddb2.donotexecute=true "/>
+    <echo message=""/>	
+	<echo message="db2.restart.database"/>
+	
+  </target>  
+  
+  <!--  *******************************  -->
+  <!--  ***  to build all databases  **  -->
+  <!--  *******************************  -->
+  <target
+    depends="check.db.type,  set.db.staging, set.database.db2"
+    description="Creates all BI database, not implemented yet"
+    name="db2.create.bischemas"
+    if="usingdb2">
+	
+	<echo message="not implemented yet."/>
+	
+  </target>
+    
+
+   <!--  *******************************  -->
+   <!--  ***  creates one database    **  -->
+   <!--  *******************************  -->  
+  
+   <target name="db2.create.database"
+         description="Create a single DB2 databse, -Ddb2.drive=e:${file.separator} -Ddb2.dir=DB2DIR -Ddatabase.name=curamDW -Ddatabase.userpassword= -Ddatabase.userid=, ensure password is enclosed in double quotes"
+         depends="check.db2.dir,check.db2.drive,check.databasename, check.database.userid, check.database.userpassword" >
+         
+    <tstamp>
+      <format
+        pattern="MMddyyyy-hhmmss"
+        property="time.now"
+      />   
+    </tstamp>
+
+     <property
+       name="createSingleDB.sql"
+       value="${dir.bld.scripts}${file.separator}create${database.name}DB.sql"
+    />
+    <delete file="${createSingleDB.sql}" verbose="true"/>
+    <EncryptPassword
+      password="${database.userpassword}"
+      to="decrypted.database.password"
+    />
+	
+
+	<parallel>
+      <sequential>
+        <antcall target="generate-Database-statements" >      
+           <param name="param.db2.databasename" value="${database.name}"/>   
+		   <param name="param.db2.username" value="${database.userid}"/>  
+		   <param name="param.db2.password" value="${decrypted.database.password}"/> 
+           <param name="param.db2.databasename.filename" value="${createSingleDB.sql}"/>          
+        </antcall>     	 
+        <antcall target="executeDB2command">
+	       <param name="param.db2.filename" value="${createSingleDB.sql}"/>
+	       <param name="param.db2.logfilename" value="${createSingleDB.sql}.log"/>
+       </antcall>	
+       <delete file="${createDB2Role.sql}.log" failonerror="true"/>      </sequential>
+    </parallel>
+	
+    <echo>Please review the log file to ensure there are no issues to resolve, see ${createSingleDB.sql}.log for results.</echo>
+    <errorsfound logFile="${createSingleDB.sql}.log" >    
+      <Ignore name="filter" value="completed successfully"/>
+	  <Ignore name="filter" value="sql authorization id"/>
+      <Ignore name="filter" value="completed successfully"/>
+	  <Ignore name="filter" value="CURAMBIROLE is an undefined name"/>
+	  <Ignore name="filter" value="SQLLIB"/>	  	  
+	  <Ignore name="filter" value="SQL1013N"/>	
+	  <Ignore name="filter" value="SQL1024N"/>	
+	  <Ignore name="filter" value="SQLSTATE=42705"/>	
+	  <Ignore name="filter" value="DB21034E"/>	 
+	  <Ignore name="filter" value="db21034e"/>	 	  
+	  <Ignore name="filter" value="valid Command Line Processor command"/>
+	  <Ignore name="filter" value="valid command line processor command"/>	  
+	  <Ignore name="filter" value="the command was processed as an sql statement because"/>	  	  
+	  <Ignore name="filter" value="SQLSTATE=08003"/>	  	  
+	  <Error name="error" value="SQL"/>
+    </errorsfound>
+	
+    <echo message="Check if Your DB2 database needs to be restarted to complete the configuration changes."/>     
+    <echo message="Ensure the user id and encrypted password are updated into your BIBootstrap.properties file"/>  	
+   </target>
+   
+  <!--  *******************************  -->
+  <!--  *** creates databases role   **  -->
+  <!--  *******************************  -->  
+  
+   <target name="db2.create.role" if="create.db2role"
+         description="Creates a DB2 databse Role, if not defaulted then use -Denvironment.db2.dba.password=userid -Denvironment.db2.dba.password=encryptedpassword, ensure password is enclosed in double quotes"
+         depends="check.db.type, set.db.staging, set.database.db2,check.environment.db2.dba.password,check.environment.db2.dba.userid, check.databasename">
+         
+    <tstamp>
+      <format
+        pattern="MMddyyyy-hhmmss"
+        property="time.now"
+      />   
+    </tstamp>
+     <property
+       name="createDB2Role.sql"
+       value="${dir.bld.scripts}${file.separator}createDB2Role.sql"
+    />
+    <delete file="${createDB2Role.sql}" verbose="true"/>
+    <EncryptPassword
+      password="${environment.db2.dba.password}"
+      to="decrypted.environment.db2.dba.password"
+    />
+   
+ 
+    <loadresource property="messagetokenised">
+       <file file="${schema.rolescript}"/>
+    </loadresource>   
+	
+    <AntTokenizer property="createrole.property.out" tokens="${messagetokenised}" reportingDir="${REPORTING_DIR}" >
+	   <reportingproperty name="%createBIDB%" value="${database.name}"/> 
+       <reportingproperty name="%DB2USER%" value="${staging.db.username}"/> 
+       <reportingproperty name="%DB2SYSUSER%" value="${environment.db2.dba.userid}"/>
+       <reportingproperty name="%DB2SYSUSERP%" value="****************"/>	   
+       <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer>
+
+    <echo file="${dir.bld.scripts}/createDB2RoleExample.sql" append="false">${createrole.property.out}</echo> 
+
+    <AntTokenizer property="createrole.property.in" tokens="${messagetokenised}" reportingDir="${REPORTING_DIR}" >
+	   <reportingproperty name="%createBIDB%" value="${database.name}"/> 	
+       <reportingproperty name="%DB2USER%" value="${staging.db.username}"/>
+       <reportingproperty name="%DB2SYSUSER%" value="${environment.db2.dba.userid}"/>
+       <reportingproperty name="%DB2SYSUSERP%" value="${decrypted.environment.db2.dba.password}"/>
+	   <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer>
+	
+    <echo file="${createDB2Role.sql}" append="false">${createrole.property.in}</echo> 	
+    <delete file="${createDB2Role.sql}.log" failonerror="true"/>
+	<parallel>
+      <sequential>
+        <antcall target="executeDB2command">
+	      <param name="param.db2.filename" value=" ${createDB2Role.sql}"/>
+	      <param name="param.db2.logfilename" value="${createDB2Role.sql}.log"/>	  
+        </antcall>	
+	    <delete file="${createDB2Role.sql}" failonerror="true"/>
+      </sequential>
+    </parallel>
+
+    <echo>Please review the log file to ensure there are no issues to resolve, see ${createDB2Role.sql}.log for results.</echo>
+    <errorsfound logFile="${createDB2Role.sql}.log" >    
+      <Ignore name="filter" value=" completed successfully"/>
+	  <Ignore name="filter" value=" sql authorization id"/>
+	  <Ignore name="filter" value="CURAMBIROLE"/>
+      <Ignore name="filter" value="completed successfully"/>
+	  <Ignore name="filter" value="sql authorization id"/>
+      <Ignore name="filter" value="completed successfully"/>
+	  <Ignore name="filter" value="CURAMBIROLE is an undefined name"/>
+	  <Ignore name="filter" value="SQLLIB"/>	  	  
+	  <Ignore name="filter" value="SQL1013N"/>	
+	  <Ignore name="filter" value="SQL1024N"/>	
+	  <Ignore name="filter" value="SQLSTATE=42705"/>	
+	  <Ignore name="filter" value="DB21034E"/>	 
+	  <Ignore name="filter" value="db21034e"/>	 	  
+	  <Ignore name="filter" value="valid Command Line Processor command"/>
+	  <Ignore name="filter" value="valid command line processor command"/>	  
+	  <Ignore name="filter" value="the command was processed as an sql statement because"/>	  	  
+	  <Ignore name="filter" value="SQLSTATE=08003"/>	  	  
+	  <Error name="error" value="SQL"/>
+    </errorsfound>
+    <echo message="Check your DB2 database has the appropriate permissions."/>     
+   </target>
+   
+   
+  <!--  ******************************  -->
+  <!--  ***  Restart DB2 database  ***  -->
+  <!--  ******************************  -->
+  <target name="db2.restart.database"  description="restarts the db2 instances, use -Drestart.db2=true">
+    <antcall target="restart.db2"/>
+	<antcall target="restart.db2.notify"/>
+  </target>
+  
+   
+  <!--  **************************************  -->
+  <!--  ***   internal tasks               ***  -->
+  <!--  **************************************  -->
+
+   <target name="executeDB2command" unless="db2.donotexecute">   
+
+    <echo>Executing DB2 commands...</echo>
+    <delete file="${param.db2.logfilename}" />
+    <condition property="db2.command.toexecute" value="-t -c -w db2 -vf ${param.db2.filename} -z ${param.db2.logfilename}" >
+      <os family="windows" />
+    </condition>
+    <!-- UNIX -->
+    <property name="db2.command.toexecute" value="-vf ${param.db2.filename} -z '${param.db2.logfilename}'"/>
+	 	
+    <execos command="${db2.command}"
+            fail.required="false"
+            options="${db2.command.toexecute}"/>
+
+	<!--
+    <waitfor maxwait="${max.wait.seconds}" maxwaitunit="second"
+             timeoutproperty="db2.restart.timedout">
+      <available file="${param.db2.logfilename}"/>
+    </waitfor>
+    -->
+    <sleep seconds="7"/>
+	<delete file="${param.db2.filename}" failonerror="true"/>
+    <fail message="The DB2 commands did not run in ${max.wait.seconds}.  Check the ${restartdb2.log} file for results.  Try setting the  max.wait.seconds value to resolve your issue e.g. -Dmax.wait.seconds=60">
+      <condition>
+        <isset property="db2.restart.timedout"/>
+      </condition>
+    </fail>
+   </target>
+
+  <target name="generate-Database-statements"
+        depends="check.db2.dir,check.db2.drive, check.db.type, set.db.staging, set.database.db2" >
+		
+    <property
+          name="db2.database.name"
+          value="${param.db2.databasename}"
+    />  
+
+	
+	<!-- generate the drop part -->
+    <loadresource property="messagetokenised">
+       <file file="${schema.dropscript}"/>
+    </loadresource>   
+
+    <AntTokenizer property="dropdb.property.out" tokens="${messagetokenised}" reportingDir="${REPORTING_DIR}" >
+       <reportingproperty name="%createBIDB%" value="${param.db2.databasename}"/>
+       <reportingproperty name="%DB2USER%" value="${param.db2.username}"/>
+       <reportingproperty name="%DB2USERP%" value="****************"/>	   
+       <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer>
+
+    <AntTokenizer property="dropdb.property.in" tokens="${messagetokenised}" reportingDir="${REPORTING_DIR}" >
+       <reportingproperty name="%createBIDB%" value="${param.db2.databasename}"/>
+       <reportingproperty name="%DB2USER%" value="${param.db2.username}"/>
+       <reportingproperty name="%DB2USERP%" value="${param.db2.password}"/>
+	   <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer> 
+	
+	<!-- generate the create part -->
+    <loadresource property="messagetokenisedcreate">
+       <file file="${schema.createscript}"/>
+    </loadresource>   
+	
+    <AntTokenizer property="createdb.property.out" tokens="${messagetokenisedcreate}" reportingDir="${REPORTING_DIR}" >
+       <reportingproperty name="%createBIDB%" value="${param.db2.databasename}"/>
+       <reportingproperty name="%DB2USER%" value="${param.db2.username}"/>
+       <reportingproperty name="%DB2USERP%" value="****************"/>	   
+       <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer>
+
+    <AntTokenizer property="createdb.property.in" tokens="${messagetokenisedcreate}" reportingDir="${REPORTING_DIR}" >
+       <reportingproperty name="%createBIDB%" value="${param.db2.databasename}"/>
+       <reportingproperty name="%DB2USER%" value="${param.db2.username}"/>
+       <reportingproperty name="%DB2USERP%" value="${param.db2.password}"/>
+	     <reportingproperty name="%DB2DRIVE%" value="${db2.drive}"/>
+	   <reportingproperty name="%DB2DIR%" value="${db2.dir}"/>
+	   <reportingproperty name="%REMARK%" value="${donotcreate.BI.role}"/>      	  
+    </AntTokenizer>
+ 
+    <concat append="true" destfile="${param.db2.databasename.filename}">
+	  <string>${dropdb.property.in}</string>
+      <string>${createdb.property.in}</string>
+    </concat> 
+    <concat append="true" destfile="${dir.bld.scripts}/create${param.db2.databasename}_Example.sql">
+	  <string>${dropdb.property.out}</string>
+      <string>${createdb.property.out}</string>
+    </concat>     
+    
+  </target>
+  
+  <!--  *******************************  -->
+  <!--  *** validate parameters      **  -->
+  <!--  *******************************  -->  
+ 
+ 
+  <target name="check.environment.db2.dba.password" unless="environment.db2.dba.password">
+    <fail message="The property 'environment.db2.dba.password' must be set, e.g. -Denvironment.db2.dba.password=encryptedpassword" />
+  </target>
+  
+  <target name="check.environment.db2.dba.userid" unless="environment.db2.dba.userid">
+    <fail message="The property 'environment.db2.dba.userid' must be set, e.g. -Denvironment.db2.dba.userid=userid" />
+  </target>
+
+    <target name="check.database.userid" unless="database.userid">
+    <fail message="The property 'database.userid' must be set, e.g. -Dcheck.database.userid=userid" />
+  </target>
+
+  <target name="check.database.userpassword" unless="database.userpassword">
+    <fail message="The property 'database.userpassword' must be set, e.g. -Ddatabase.userpassword=" />
+  </target>
+  
+  <target name="check.db2.dir" unless="db2.dir">
+    <fail message="The property 'db2.dir' must be set, e.g. -Ddb2.dir=:e:${file.separator}ibm${file.separator}sqllib" />
+  </target>
+  <target name="check.db2.drive" unless="db2.drive">
+    <fail message="The property 'db2.drive' must be set, e.g. -Ddb2.drive=:e:${file.separator}" />
+  </target>
+
+  <target name="check.databasename" unless="database.name">
+    <fail message="The property 'database.name' must be set, e.g. -Ddatabase.name=:testdb" />
+  </target>
+
+
+  <target name="restart.db2.notify" unless="restart.db2">
+    <echo message="To restart your DB2 databases please use, restart.db2.database -Drestart.db2=true"/>
+  </target>
+  
+  <target name="restart.db2" if="restart.db2">
+    <property name="restartdb2.log"        value="${dir.logs}${file.separator}restartdb2.log"/>
+    <property name="db2restartSample.cmd"        value="${DEV_scripts}${file.separator}db2Restart.sql"/>
+    <property name="db2restart.cmd"        value="${dir.bld.scripts}${file.separator}db2restart.cmd"/>
+	
+    <delete file="${restartdb2.log}" />
+    <delete file="${db2restart.cmd}"/>
+    <loadresource property="db2restartSample.text">
+       <file file="${db2restartSample.cmd}"/>
+    </loadresource>   
+	
+    <echo file="${db2restart.cmd}" append="false">${db2restartSample.text}</echo>	
+    <echo>Restarting DB2...</echo>
+    <antcall target="executeDB2command">
+	  <param name="param.db2.filename" value=" ${db2restart.cmd}"/>
+	  <param name="param.db2.logfilename" value="${restartdb2.log}"/>	  
+    </antcall>	
+  </target>
+</project>
+

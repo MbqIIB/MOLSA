@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Processing Graphics</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN13005.html" title="Converting FrameMaker Documents"><link rel="previous" href="DMN138C6.html" title="Converting to DocBook XML"><link rel="next" href="DMN13AA5.html" title="Final Tasks"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN138C6.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN13AA5.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN13974"></a>Processing Graphics</h2></div></div><div></div></div><p>
+      While <span class="application">FrameMaker</span> exports all the diagrams
+      and images in your document to individual files, it does not embed
+      adequate information in the <span class="acronym">XML</span> documents for
+      DocMaker to create proper references to the graphic files. You will
+      need to rename the graphic files and check the references to these
+      files created by DocMaker. <span class="application">FrameMaker</span>
+      was also instructed to output graphic files only in the
+      <span class="acronym">GIF</span> (Graphics Interchange Format) and
+      <span class="acronym">WMF</span> (Windows Mediafile)
+      formats. The former is used for all images and the latter for diagrams
+      drawn within <span class="application">FrameMaker</span>. The
+      <span class="acronym">WMF</span> files must be converted to
+      <span class="acronym">SVG</span> format to be compatible with DocMaker.
+    </p><div class="tip"><table border="0" summary="Tip: 
+        Converting WMF to SVG
+      "><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Tip]" src="../images/tip.gif"></td><th align="left"><a name="DMN13997"></a>
+        Converting WMF to SVG
+      </th></tr><tr><td valign="top" align="left" colspan="2"><p>
+        The <span class="application">OpenOffice.org Draw</span> application can
+        do this type of conversion. Open the <span class="acronym">WMF</span> file,
+        select the graphic, and then use the
+        <span class="guimenu">File</span>&rarr;<span class="guimenuitem">Export...</span> menu option to export the file to
+        <span class="acronym">SVG</span> format.
+      </p></td></tr></table></div><div class="warning"><table border="0" summary="Warning: 
+        SVG Containing Bitmaps"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Warning]" src="../images/warning.gif"></td><th align="left"><a name="DMN139BC"></a>
+        SVG Containing Bitmaps</th></tr><tr><td valign="top" align="left" colspan="2"><p>
+        If a <span class="acronym">WMF</span> format image file contains both a
+        bitmap (e.g., a screen-shot) and drawing elements (e.g., arrows and
+        text), then DocMaker may not be able to process the
+        <span class="acronym">SVG</span> file created during conversion. It is best
+        to convert these files to <span class="acronym">GIF</span> image files.
+      </p></td></tr></table></div><p>
+      The names of the image files match those of the original
+      <span class="application">FrameMaker</span> file in which they appeared,
+      though with the addition of a &ldquo;<span class="quote">sequence number</span>&rdquo; and
+      a different extension. For example, the fifth image that was in
+      the file <tt class="filename">UserGuide.fm</tt> would be output to a file
+      named <tt class="filename">UserGuide-5.gif</tt>. The sequence numbers begin
+      anew with each file in the book; books that contained only one main
+      content file will result in image files with unique sequence numbers;
+      books that contained many files will result in image files with
+      sequence numbers that repeat as each file is processed. DocMaker can
+      preserve the sequence numbers, but cannot determine the proper file
+      names, so these must be fixed by hand.
+    </p><p>
+      DocMaker must invent file names for its references to the image files
+      because the original file names are unavailable. The names that DocMaker
+      uses are composed from the chapter or appendix name and the image
+      sequence number. If the book contained a single main content file, it
+      is just a matter of finding the <tt class="sgmltag-element">imagedata</tt> elements
+      in the DocBook XML files and renaming the image file with the same
+      sequence number to match the value of the
+      <tt class="sgmltag-attribute">fileref</tt> attribute. For example,
+      the value of the <tt class="sgmltag-attribute">fileref</tt> attribute
+      might be <tt class="sgmltag-attvalue">images/concepts-34.gif</tt>
+      (meaning the &ldquo;<span class="quote">Concepts</span>&rdquo; chapter and the thirty-fourth image
+      that appeared in the file containing that chapter), so you should locate
+      the image file with sequence number <tt class="literal">34</tt> and rename
+      it to <tt class="filename">concepts-34.gif</tt>. If the book contained more
+      than one main content file, you may have more than one image file with
+      the same sequence number and you must ensure both that the sequence
+      numbers match and that the original <span class="application">FrameMaker</span>
+      file, whose name is used in the name of the image file, contained the
+      chapter whose name is used in the
+      <tt class="sgmltag-attribute">fileref</tt> attribute reference.
+    </p><p>
+      This process is relatively simple, but there is a possible cause of
+      confusion. If a chapter was split over several files with sections
+      in these file containing images, then the reference in the DocBook
+      XML file may be ambiguous. In this case, the reference will use the
+      chapter name and sequence number, but as there were several files in
+      the chapter, the sequence number in the image files will have been
+      repeated. For example,
+      <tt class="sgmltag-attvalue">images/development-2.gif</tt> could
+      refer to the second image in <span class="emphasis"><em>any</em></span> of the original
+      files that contributed content to the &ldquo;<span class="quote">Development</span>&rdquo;
+      chapter; you may see this reference repeated more than once if more
+      than one file contained two or more images. To resolve this, you will
+      need to identify the section that contains the reference and then
+      match that to the image file named after the file that contained that
+      section; the sequence numbers will then match as before. However, you
+      will need to assign new numbers and change the value of the
+      <tt class="sgmltag-attribute">fileref</tt> attributes so that all
+      these references are uniquely named. 
+    </p><div class="note"><table border="0" summary="Note"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Note]" src="../images/note.gif"></td><th align="left">Note</th></tr><tr><td valign="top" align="left" colspan="2"><p>
+        When renaming files, there is no need to keep the sequence numbers;
+        these are just a convention used in the conversion process. You can
+        rename the files to anything you like (you could base the name on the
+        title of the figure), as long as you change the value of the
+        <tt class="sgmltag-attribute">fileref</tt> attribute to match.
+        You can also organize the image file in sub-folders of the
+        <tt class="filename">images</tt> folder and, again, update the reference
+        in the <tt class="sgmltag-attribute">fileref</tt> attribute.
+      </p></td></tr></table></div><p>
+      The following steps must be followed for each file in the
+      <tt class="filename">dboutput/images</tt> folder.
+    </p><div class="orderedlist"><ol type="1"><li><p>
+          If the file extension is <tt class="filename">.wmf</tt> convert the
+          file to <span class="acronym">SVG</span> format with an extension of
+          <tt class="filename">.svg</tt> (see above).
+        </p><p>
+          You can keep the <span class="acronym">WMF</span> format file if you wish
+          to use it as the <span class="emphasis"><em>master</em></span> copy of the graphic,
+          but if you change it, you must update the <span class="acronym">SVG</span>
+          file.
+        </p></li><li><p>
+          View the image file and then locate the matching figure in your
+          original <span class="application">FrameMaker</span> document. The
+          exported graphic files have the same name as the original document
+          file and an additional sequence number. This should make it easier
+          to locate. Once located, note the figure title.
+        </p></li><li><p>
+          Open the DocBook <span class="acronym">XML</span> file in
+          <tt class="filename">dboutput</tt> for the chapter or appendix that
+          contains the figure and locate the <tt class="sgmltag-element">figure</tt>
+          element that contains the reference to the graphic file. The file
+          name will be different, so use the figure title that you noted in
+          the previous step to identify the correct <tt class="sgmltag-element">figure</tt>
+          element.
+        </p><p>
+          For figures without titles, you will have to locate the corresponding
+          <tt class="sgmltag-element">informalfigure</tt> element. As there is no title, use
+          the sequence number and the context as a guide.
+        </p></li><li><p>
+          Within the <tt class="sgmltag-element">figure</tt> element you will see an
+          <tt class="sgmltag-element">imagedata</tt> element containing a reference
+          to an image file. Note the value of this
+          <tt class="sgmltag-attribute">fileref</tt> attribute. If the
+          extension on the file name is <tt class="filename">.gif</tt>, but the
+          graphic file is in <span class="acronym">SVG</span> format, change the
+          extension to <tt class="filename">.svg</tt> and change the value of
+          the <tt class="sgmltag-attribute">format</tt> attribute to
+          <tt class="sgmltag-attvalue">SVG</tt>.
+        </p></li><li><p>
+          Rename the graphic file to match the name in the
+          <tt class="sgmltag-attribute">fileref</tt> attribute. Note,
+          however, that if the original document file contained only
+          sections and no chapter or appendix title, that you may need to
+          assign a new sequence number as described above.
+        </p></li></ol></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN138C6.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN13AA5.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

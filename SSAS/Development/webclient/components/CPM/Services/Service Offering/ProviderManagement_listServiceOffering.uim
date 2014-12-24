@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2010-2011 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view a list of service                    -->
+<!-- offerings available.                                                   -->
+<PAGE
+  PAGE_ID="ProviderManagement_listServiceOffering"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00117630, ASB -->
+  <SERVER_INTERFACE
+    CLASS="ServiceOffering"
+    NAME="MENUCONTEXT"
+    OPERATION="listServiceOfferingsMenuContextDescription"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00117630-->
+
+
+  <!-- BEGIN, CR00199435, PS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainServiceOffering"
+    NAME="DISPLAY"
+    OPERATION="listServiceOfferings"
+  />
+  <!-- END, CR00199435 -->
+
+
+  <!-- BEGIN, CR00236300, PS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewSO">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createServiceOffering"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=780"
+      />
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewTrainingSO">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createTrainingServiceOffering"
+        SAVE_LINK="false"
+        WINDOW_OPTIONS="width=780"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  <!-- END, CR00236300 -->
+  
+  <LIST SORTABLE="true">
+
+
+    <!-- BEGIN, CR00198609, PS -->
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <!-- END, CR00198609 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+        <!-- BEGIN, CR00187899, PS -->
+        <!-- BEGIN, CR00198210, PS -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_resolveServiceOfferingEdit"
+          WINDOW_OPTIONS="width=750"
+        >
+          <!-- END, CR00198210 -->
+          <!-- END, CR00187899 -->
+          <CONNECT>
+            <!-- BEGIN, CR00199435, PS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$trainingInd"
+            />
+            <!-- END, CR00199435 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingInd"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00199435, PS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$serviceOfferingID"
+            />
+            <!-- END, CR00199435 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00198609, PS -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddTraining">
+        <!-- BEGIN, CR00199435, PS -->
+        <CONDITION>
+          <IS_FALSE
+            NAME="DISPLAY"
+            PROPERTY="trainingInd"
+          />
+        </CONDITION>
+        <!-- END, CR00199435 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addTrainingForServiceOffering"
+          WINDOW_OPTIONS="width=450"
+        >
+          <CONNECT>
+            <!-- BEGIN, CR00199435, PS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$serviceOfferingID"
+            />
+            <!-- END, CR00199435 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00199435, PS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$versionNo"
+            />
+            <!-- END, CR00199435 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_cancelServiceOfferingFrmList"
+          SAVE_LINK="false"
+          WINDOW_OPTIONS="width=350"
+        >
+
+
+          <CONNECT>
+            <!-- BEGIN, CR00199435, PS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$serviceOfferingID"
+            />
+            <!-- END, CR00199435 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="serviceOfferingID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00199435, PS -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$versionNo"
+            />
+            <!-- END, CR00199435 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <!-- END, CR00198609 -->
+
+
+    <!-- BEGIN, CR00206310, PS -->
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.Name"
+      WIDTH="35"
+    >
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <!-- BEGIN, CR00199435, PS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$name"
+        />
+        <!-- END, CR00199435 -->
+      </CONNECT>
+
+
+      <!-- BEGIN, CR00198609, PS -->
+      <!-- BEGIN, CR00199633, GP -->
+      <LINK PAGE_ID="ProviderManagement_resolveServiceOffering">
+        <CONNECT>
+          <!-- BEGIN, CR00199435, PS -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$serviceOfferingID"
+          />
+          <!-- END, CR00199435 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="serviceOfferingID"
+          />
+        </CONNECT>
+      </LINK>
+      <!-- END, CR00199633 -->
+      <!-- END, CR00198609 -->
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206310, PS -->
+    <!-- BEGIN, CR00340702, GA -->
+
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.TrainingService"
+      WIDTH="15"
+    >
+    <!-- END, CR00340702-->
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <!-- BEGIN, CR00199435, PS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$trainingInd"
+        />
+        <!-- END, CR00199435 -->
+      </CONNECT>
+
+
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206310, PS -->
+    <!-- BEGIN, CR00340702, GA -->
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.StartDate"
+      WIDTH="18"
+      
+    >
+     <!-- END, CR00340702 -->
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <!-- BEGIN, CR00199435, PS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$startDate"
+        />
+        <!-- END, CR00199435 -->
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206310, PS -->
+    <!-- BEGIN, CR00340702, GA -->
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.EndDate"
+      WIDTH="18"
+    >
+      <!-- END, CR00340702 -->
+      <!-- END, CR00206310 -->
+      <CONNECT>
+        <!-- BEGIN, CR00199435, PS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$endDate"
+        />
+        <!-- END, CR00199435 -->
+      </CONNECT>
+    </FIELD>
+
+   <!-- BEGIN, CR00340702, GA -->
+    <FIELD
+      LABEL="Field.Label.ServiceOffering.Status"
+      WIDTH="14"
+    >
+      <!-- END, CR00340702 -->
+      <CONNECT>
+        <!-- BEGIN, CR00199435, PS -->
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$trainingAndServiceDetailsList$trainingAndServiceDetails$serviceOfferingDtls$recordStatus"
+        />
+        <!-- END, CR00199435 -->
+      </CONNECT>
+    </FIELD>
+
+
+  </LIST>
+
+
+</PAGE>

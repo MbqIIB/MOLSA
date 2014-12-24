@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010, 2012 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This workflow is used to generate a service invoice exception task.    -->
+<workflow-process
+  category="PC21"
+  createdBy="admin"
+  creationDate="20090224T181806"
+  id="28676"
+  language-version="1.0"
+  process-version="1"
+  released="true"
+>
+  <name>Follow_Up_Alerts_Process</name>
+
+
+  <process-display-name>
+    <localized-text>
+      <locale language="en">Follow up Alerts Process</locale>
+    </localized-text>
+  </process-display-name>
+
+
+  <!-- BEGIN, CR00306765, AKr -->
+  <description>
+    <localized-text>
+      <locale language="en">This workflow process is not being called by any out of the box processing.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00306765 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute
+        name="referralID"
+        struct-name="curam.cpm.sl.struct.ReferralDtls"
+      />
+      <target-attribute
+        name="referralID"
+        wdo-name="ReferralDetails"
+      />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>ReferralDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">Referral Details</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>referralID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">referralID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+          <initial-value>0</initial-value>
+        </attribute>
+      </attributes>
+    </wdo>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>followUpAlertDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">Follow Up Alert Details</locale>
+        </localized-text>
+      </display-name>
+      <description>
+        <localized-text>
+          <locale language="en">Hold the follow up alert details.  The details relate to the amount of time that must passed before an warning alert is raised and the amount of time that must pass before an escalation alert is raised.</locale>
+        </localized-text>
+      </description>
+      <attributes>
+        <attribute>
+          <attribute-name>followUpWarningDaysInSeconds</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Follow Up Warning Days In Seconds</locale>
+            </localized-text>
+          </display-name>
+          <type>INT32</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>followUpEscalationDaysInSeconds</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Follow Up Escalation Days In Seconds</locale>
+            </localized-text>
+          </display-name>
+          <type>INT32</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>followUpWarningDays</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">follow up warning days</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>pastCreateFollowUpWarningDate</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Past Create Follow Up Warning Date</locale>
+            </localized-text>
+          </display-name>
+          <type>BOOLEAN</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>pastCreateFollowUpEscalationDate</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Past Create Follow Up Escalation Date</locale>
+            </localized-text>
+          </display-name>
+          <type>BOOLEAN</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+    <wdo
+      initialize-attributes="false"
+      is-list-wdo="false"
+    >
+      <wdo-name>deadlineHandlerDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">Deadline Handler Details</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>referralDetailsModified</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">Referral Details Modified</locale>
+            </localized-text>
+          </display-name>
+          <type>BOOLEAN</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+          <initial-value>false</initial-value>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="20"/>
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="xor"/>
+    </end-process-activity>
+    <automatic-activity id="16">
+      <name>
+        <localized-text>
+          <locale language="en">populateWorkflowDetails</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">Populates the Workflow Data Object follow up details required for the workflow.</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="19"/>
+      </split>
+      <bpo-mapping
+        interface-name="curam.referral.workflowprocesses.intf.Referral"
+        method-name="getFollwoUpAlertDetails"
+      >
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.cpm.sl.struct.ReferralKey">
+              <field name="referralID">
+                <base-type type="INT64">
+                  <wdo-attribute
+                    name="referralID"
+                    wdo-name="ReferralDetails"
+                  />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="followUpWarningDays">
+              <base-type>
+                <wdo-attribute
+                  name="followUpWarningDaysInSeconds"
+                  wdo-name="followUpAlertDetails"
+                />
+              </base-type>
+            </field>
+            <field name="followUpEscalationDays">
+              <base-type>
+                <wdo-attribute
+                  name="followUpEscalationDaysInSeconds"
+                  wdo-name="followUpAlertDetails"
+                />
+              </base-type>
+            </field>
+            <field name="pastCreateFollowUpWarningDate">
+              <base-type>
+                <wdo-attribute
+                  name="pastCreateFollowUpWarningDate"
+                  wdo-name="followUpAlertDetails"
+                />
+              </base-type>
+            </field>
+            <field name="pastCreateFollowUpEscalationDate">
+              <base-type>
+                <wdo-attribute
+                  name="pastCreateFollowUpEscalationDate"
+                  wdo-name="followUpAlertDetails"
+                />
+              </base-type>
+            </field>
+          </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+    <route-activity id="6">
+      <name>
+        <localized-text>
+          <locale language="en">Notification: Warning Client Contacted Provider not Selected</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="4"/>
+      </split>
+    </route-activity>
+    <route-activity id="7">
+      <name>
+        <localized-text>
+          <locale language="en">Notification: Escalation - Client not Contacted Provider</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="7"/>
+      </split>
+    </route-activity>
+    <route-activity
+      category="AC1"
+      id="8"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">End Route One</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="9"/>
+      </split>
+    </route-activity>
+    <route-activity
+      category="AC1"
+      id="9"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">End Route Two</locale>
+        </localized-text>
+      </name>
+      <join type="xor"/>
+      <split type="none">
+        <transition-id idref="8"/>
+      </split>
+    </route-activity>
+    <route-activity id="10">
+      <name>
+        <localized-text>
+          <locale language="en">DetermineWorkflowDirectionOne</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="1"/>
+        <transition-id idref="11"/>
+        <transition-id idref="13"/>
+      </split>
+    </route-activity>
+    <route-activity id="11">
+      <name>
+        <localized-text>
+          <locale language="en">End Route Three</locale>
+        </localized-text>
+      </name>
+      <join type="xor"/>
+      <split type="none">
+        <transition-id idref="12"/>
+      </split>
+    </route-activity>
+    <route-activity id="13">
+      <name>
+        <localized-text>
+          <locale language="en">Notification: Escalation - Client not Contacted Provider Two</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="15"/>
+      </split>
+    </route-activity>
+    <route-activity id="14">
+      <name>
+        <localized-text>
+          <locale language="en">End Route Zero</locale>
+        </localized-text>
+      </name>
+      <join type="xor"/>
+      <split type="none">
+        <transition-id idref="16"/>
+      </split>
+    </route-activity>
+    <route-activity id="15">
+      <name>
+        <localized-text>
+          <locale language="en">End Route Minus One</locale>
+        </localized-text>
+      </name>
+      <join type="none"/>
+      <split type="none">
+        <transition-id idref="18"/>
+      </split>
+    </route-activity>
+    <event-wait-activity
+      category="AC1"
+      id="4"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Client Contacted Provider Deadline One</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">Will wait for either a the create warning event or client contacted provider event to be raised. If an create warning event is raised a notification is created and sent to the case worker.  If a client contacted provider event is raised the workflow will proceed to the end process and complete.</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="2"/>
+        <transition-id idref="3"/>
+      </split>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="REFERRAL"
+            event-type="REFERRAL_CLIENTCONTACTEDPROVIDER"
+            identifier="2"
+          >
+            <event-match-attribute
+              name="referralID"
+              wdo-name="ReferralDetails"
+            />
+          </event>
+        </events>
+        <deadline complete-activity="true">
+          <duration>
+            <mapped-duration>
+              <wdo-attribute
+                name="followUpWarningDaysInSeconds"
+                wdo-name="followUpAlertDetails"
+              />
+            </mapped-duration>
+          </duration>
+          <deadline-output-mappings/>
+        </deadline>
+      </event-wait>
+    </event-wait-activity>
+    <event-wait-activity
+      category="AC1"
+      id="5"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Client Contacted Provider Deadline Two</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">Will wait for either a the create escalation event or client contacted provider event to be raised.  If an create escalation event is raised a notification is created and sent to the supervisor for the case worker.  If a client contacted provider event is raised the workflow will proceed to the end process and complete.</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="6"/>
+        <transition-id idref="5"/>
+      </split>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="REFERRAL"
+            event-type="REFERRAL_CLIENTCONTACTEDPROVIDER"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="referralID"
+              wdo-name="ReferralDetails"
+            />
+          </event>
+        </events>
+        <deadline complete-activity="true">
+          <duration>
+            <mapped-duration>
+              <wdo-attribute
+                name="followUpEscalationDaysInSeconds"
+                wdo-name="followUpAlertDetails"
+              />
+            </mapped-duration>
+          </duration>
+          <deadline-output-mappings/>
+        </deadline>
+      </event-wait>
+    </event-wait-activity>
+    <event-wait-activity
+      category="AC1"
+      id="12"
+    >
+      <name>
+        <localized-text>
+          <locale language="en">Client Contacted Provider Deadline three</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The event wait activity will only be entered if, the date created for the warning alert to be enacted has already passed when the workflow was initiated and the escalation alert has not been raised.  Will wait for either a the create escalation event or client contacted provider event to be raised. If an create escalation event is raised a notification is created and sent to the supervisor for the case worker. If a client contacted provider event is raised the workflow will proceed to the end process and complete.</locale>
+        </localized-text>
+      </description>
+      <join type="none"/>
+      <split type="xor">
+        <transition-id idref="17"/>
+        <transition-id idref="14"/>
+      </split>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event
+            event-class="REFERRAL"
+            event-type="REFERRAL_CLIENTCONTACTEDPROVIDER"
+            identifier="1"
+          >
+            <event-match-attribute
+              name="referralID"
+              wdo-name="ReferralDetails"
+            />
+          </event>
+        </events>
+        <deadline complete-activity="true">
+          <duration>
+            <mapped-duration>
+              <wdo-attribute
+                name="followUpEscalationDaysInSeconds"
+                wdo-name="followUpAlertDetails"
+              />
+            </mapped-duration>
+          </duration>
+          <deadline-output-mappings/>
+        </deadline>
+      </event-wait>
+    </event-wait-activity>
+  </activities>
+  <transitions>
+    <transition
+      from-activity-idref="10"
+      id="1"
+      to-activity-idref="4"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="followUpAlertDetails.pastCreateFollowUpWarningDate"
+          data-item-rhs="false"
+          id="1"
+          operation="=="
+        />
+        <expression
+          conjunction="and"
+          data-item-lhs="followUpAlertDetails.pastCreateFollowUpEscalationDate"
+          data-item-rhs="false"
+          id="2"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="4"
+      id="2"
+      to-activity-idref="11"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="Context_Deadline.deadlineExpired"
+          data-item-rhs="false"
+          id="1"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="4"
+      id="3"
+      to-activity-idref="6"
+    />
+    <transition
+      from-activity-idref="6"
+      id="4"
+      to-activity-idref="5"
+    />
+    <transition
+      from-activity-idref="5"
+      id="5"
+      to-activity-idref="7"
+    />
+    <transition
+      from-activity-idref="5"
+      id="6"
+      to-activity-idref="9"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="Context_Deadline.deadlineExpired"
+          data-item-rhs="false"
+          id="1"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="7"
+      id="7"
+      to-activity-idref="8"
+    />
+    <transition
+      from-activity-idref="9"
+      id="8"
+      to-activity-idref="11"
+    />
+    <transition
+      from-activity-idref="8"
+      id="9"
+      to-activity-idref="9"
+    />
+    <transition
+      from-activity-idref="10"
+      id="11"
+      to-activity-idref="2"
+    />
+    <transition
+      from-activity-idref="11"
+      id="12"
+      to-activity-idref="2"
+    />
+    <transition
+      from-activity-idref="10"
+      id="13"
+      to-activity-idref="12"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="followUpAlertDetails.pastCreateFollowUpWarningDate"
+          data-item-rhs="true"
+          id="1"
+          operation="=="
+        />
+        <expression
+          conjunction="and"
+          data-item-lhs="followUpAlertDetails.pastCreateFollowUpEscalationDate"
+          data-item-rhs="false"
+          id="2"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="12"
+      id="14"
+      to-activity-idref="13"
+    />
+    <transition
+      from-activity-idref="13"
+      id="15"
+      to-activity-idref="14"
+    />
+    <transition
+      from-activity-idref="14"
+      id="16"
+      to-activity-idref="2"
+    />
+    <transition
+      from-activity-idref="12"
+      id="17"
+      to-activity-idref="15"
+    >
+      <condition>
+        <expression
+          conjunction="and"
+          data-item-lhs="Context_Deadline.deadlineExpired"
+          data-item-rhs="false"
+          id="1"
+          operation="=="
+        />
+      </condition>
+    </transition>
+    <transition
+      from-activity-idref="15"
+      id="18"
+      to-activity-idref="14"
+    />
+    <transition
+      from-activity-idref="16"
+      id="19"
+      to-activity-idref="10"
+    />
+    <transition
+      from-activity-idref="1"
+      id="20"
+      to-activity-idref="16"
+    />
+  </transitions>
+</workflow-process>

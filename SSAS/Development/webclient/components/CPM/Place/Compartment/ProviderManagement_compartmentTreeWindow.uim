@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2007, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007, 2012 Curam Software Ltd.                                                        -->
+<!-- All rights reserved.                                                                                          -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                -->
+<!-- such Confidential Information and shall use it only in accordance with          -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                        -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                           -->
+<!-- Closes a compartment   -->
+<!-- BEGIN, CR00303745, SSK -->
+<?curam-deprecated Since Curam 6.0.3.0, as this page has performance issue for high volume  
+of compartment which is resolved by lazy loading tree view page ProviderManagement_browseCompartments. 
+As this page is redundant hence the page is deprecated. See release note: CR00303745 ?>
+<!-- END, CR00303745 -->
+<PAGE
+  PAGE_ID="ProviderManagement_compartmentTreeWindow"
+  POPUP_PAGE="true"
+  TYPE="SPLIT_WINDOW"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Compartment"
+    NAME="DISPLAY"
+    OPERATION="viewCompartment"
+    PHASE="DISPLAY"
+  />
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="compartmentKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CLUSTER SHOW_LABELS="false">
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$XMLString"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+</PAGE>

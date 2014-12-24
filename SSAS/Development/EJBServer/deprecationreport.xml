@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <!--  ***********************************  -->
+    <!--  ***  Deprecation Report Target  ***  -->
+    <!--  ***********************************  -->
+    <target 
+      description="Generates the deprecation report for the application. (NB does a full clean client, server and database rebuild.)"
+      name="deprecationreport"
+    >
+
+        <mkdir dir="${dir.bld.log}"/>
+        <tstamp><format property="tim.start.sort" pattern="yyyyMMddHHmmss"/></tstamp>
+        <record name="${dir.bld.log}/Deprecation${tim.start.sort}.log" loglevel="info" />
+        
+        <exec executable="build.bat" dir="${sysenv.SERVER_DIR}" failonerror="true">
+            <arg value="serverbuild.clean"/>
+            <arg value="server"/>
+        </exec>
+        <exec executable="build.bat" dir="${sysenv.CLIENT_DIR}" failonerror="true">
+            <arg value="clean"/>
+            <arg value="client"/>
+        </exec>
+        <exec executable="build.bat" dir="${sysenv.SERVER_DIR}" failonerror="false"
+            resultproperty="db.result">
+            <arg value="database"/>
+        </exec>
+        <exec executable="build.bat" dir="${sysenv.SERVER_DIR}" failonerror="false"
+            resultproperty="rules.result">
+            <arg value="validateallrulesets"/>
+        </exec>
+        <exec executable="build.bat" dir="${sysenv.SERVER_DIR}" failonerror="false"
+            resultproperty="wf.result">
+            <arg value="validateallworkflows"/>
+        </exec>
+        <antcall target="ieg2scriptsdeprecation"/>
+
+        <fail message="A sub target of build failed, the deprecation report may not be complete.">
+            <condition>
+                <or>
+                    <equals arg1="${db.result}" arg2="1"/>
+                    <equals arg1="${rules.result}" arg2="1"/>
+                    <equals arg1="${wf.result}" arg2="1"/>
+                </or>
+            </condition>
+        </fail>
+
+
+    </target>
+
+    <!--
+      Optional Target for IEG2 deprecation report.
+  -->
+    <target name="ieg2scriptsdeprecation" if="scripts.dir">
+        <exec executable="build.bat" dir="${sysenv.SERVER_DIR}" failonerror="false"
+            resultproperty="ieg.result">
+            <arg value="validateieg2scripts"/>
+            <arg value="-Dscripts.dir=${scripts.dir}"/>
+        </exec>
+
+        <fail message="A sub target of build failed, the deprecation report may not be complete.">
+            <condition>
+                <equals arg1="${ieg.result}" arg2="1"/>
+            </condition>
+        </fail>
+    </target>
+
+</project>

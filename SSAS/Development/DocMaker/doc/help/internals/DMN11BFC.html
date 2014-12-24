@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Program Source Code</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN11725.html" title="Inline Elements"><link rel="previous" href="DMN1178D.html" title="Basic Inline Elements"><link rel="next" href="DMN11E93.html" title="Command-line Environments"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN1178D.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN11E93.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN11BFC"></a>Program Source Code</h2></div></div><div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11C01"></a>Overview</h3></div></div><div></div></div><p>Documentation may include <tt class="sgmltag-element">programlisting</tt> block
+      elements containing samples of program source code. In C&uacute;ram documents,
+      this source code will <span class="emphasis"><em>not</em></span> be marked up with inline
+      elements defining the elements of the code (though markup can be added
+      to emphasize code). However, where the body of the text refers to
+      keywords, identifiers, or values in the source code presented, or in
+      documentation for <span class="acronym">API</span>s, appropriate inline elements
+      should be used.</p><p>DocBook supports two major sets of markup elements for program
+      source code. One is suited to object-oriented programming languages
+      (e.g., Java or C++), and the other to procedural languages (e.g., C).
+      There are too many elements to be easily manageable, however, so a
+      generalized subset of all the elements will be used in C&uacute;ram documents
+      as defined below.</p><p>When describing XML or HTML markup, a single
+      <tt class="sgmltag-element">sgmltag</tt> element is used for all references to syntax
+      components.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11C1C"></a>
+        <tt class="sgmltag-element">sgmltag</tt>
+      </h3></div></div><div></div></div><p>Use this element when documenting the syntax of SGML, XML, or HTML
+      documents. The DocBook format was originally defined in terms of SGML,
+      and XML is a subset of SGML, so the <tt class="sgmltag-element">sgmltag</tt> element
+      is used when describing any related markup languages. The DocBook XML
+      standard may be extended in future with more explicit support for
+      XML-specific markup. The <tt class="sgmltag-element">sgmltag</tt> element can be used
+      to mark element names, attribute names, attribute values, etc., by
+      setting the value of the <tt class="sgmltag-attribute">class</tt>
+      attribute appropriately.</p><div class="tip"><table border="0" summary="Tip: The Default Class for sgmltag"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Tip]" src="../images/tip.gif"></td><th align="left"><a name="DMN11C31"></a>The Default Class for sgmltag</th></tr><tr><td valign="top" align="left" colspan="2"><p>For C&uacute;ram documents, the convention is to omit the <tt class="sgmltag-attribute">class</tt> attribute when just marking an
+        element name, but to set an appropriate value of the attribute for
+        everything else. This convention is supported by DocMaker; the DocBook
+        standard defines no such default value.</p></td></tr></table></div><p>The available values of the <tt class="sgmltag-attribute">class</tt> attribute are as follows:</p><div class="table"><a name="DMN11C47"></a><table summary="Values of the class
+        Attribute of sgmltag" border="1"><colgroup><col width="33%"><col width="67%"></colgroup><thead><tr><th>Attribute Value</th><th>Usage</th></tr></thead><tbody><tr><td><tt class="sgmltag-attvalue">attribute</tt></td><td><p>The name of an attribute. For example, the <tt class="sgmltag-attribute">class</tt> attribute.</p></td></tr><tr><td><tt class="sgmltag-attvalue">attvalue</tt></td><td><p>The value of an attribute. For example, this is the
+              <tt class="sgmltag-attvalue">attvalue</tt> value of the
+              <tt class="sgmltag-attribute">class</tt>
+              attribute.</p></td></tr><tr><td><tt class="sgmltag-attvalue">element</tt></td><td><p>The name of an element. DocMaker will assume this
+              value if you omit the <tt class="sgmltag-attribute">class</tt>
+              attribute.</p></td></tr><tr><td><tt class="sgmltag-attvalue">emptytag</tt></td><td><p>A tag used for an element with no body content. For
+              example, the <span class="acronym">HTML</span> element <tt class="sgmltag-emptytag">&lt;br/&gt;</tt> used for a
+              line-break.</p></td></tr><tr><td><tt class="sgmltag-attvalue">endtag</tt></td><td><p>A closing tag used for an element with body
+              content. For example, <tt class="sgmltag-endtag">&lt;/para&gt;</tt>.</p></td></tr><tr><td><tt class="sgmltag-attvalue">genentity</tt></td><td><p>The name of a general entity. These can be external
+              general entities used to include the content of external files
+              into a document, or internal general entities that associate a
+              name with a character or string. For example, the internal
+              general entity <tt class="sgmltag-genentity">&amp;euro;</tt> is used
+              to represent a Euro currency symbol.</p></td></tr><tr><td><tt class="sgmltag-attvalue">numcharref</tt></td><td><p>A numeric character reference. These are an
+              alternative to named entities for characters. For example,
+              <tt class="sgmltag-numcharref">&amp;#169;</tt> is the reference for
+              the copyright symbol.</p></td></tr><tr><td><tt class="sgmltag-attvalue">paramentity</tt></td><td><p>The name of a parameter entity. These are used for
+              advanced DTD authoring, so you should find little use for them
+              in C&uacute;ram documents.</p></td></tr><tr><td><tt class="sgmltag-attvalue">pi</tt></td><td><p>An SGML processing instruction. As C&uacute;ram does not
+              include any SGML content, you probably want to use <tt class="sgmltag-attvalue">xmlpi</tt>, not this class.</p></td></tr><tr><td><tt class="sgmltag-attvalue">sgmlcomment</tt></td><td><p>A comment in an SGML or XML document. For example,
+              <tt class="sgmltag-sgmlcomment">&lt;!--My
+              comment--&gt;</tt>.</p></td></tr><tr><td><tt class="sgmltag-attvalue">starttag</tt></td><td><p>An opening tag used for an element with body
+              content. For example, <tt class="sgmltag-starttag">&lt;para&gt;</tt>.</p></td></tr><tr><td><tt class="sgmltag-attvalue">xmlpi</tt></td><td><p>An XML processing instruction. Processing
+              instructions look a bit like elements with attributes, but the
+              attributes are only pseudo-attributes: they are not separate
+              document nodes. Everything between the opening
+              &ldquo;<span class="quote">&lt;?</span>&rdquo; and closing &ldquo;<span class="quote">?&gt;</span>&rdquo; of a
+              processing instruction is the processing instruction
+              &ldquo;<span class="quote">data</span>&rdquo;. You should type in this data, including the
+              equals signs and quotation marks for the attributes, and mark
+              everything with a single <tt class="sgmltag-element">sgmltag</tt> element. For
+              example, <tt class="sgmltag-xmlpi">&lt;?dbhh
+              topicname="HomePage"?&gt;</tt>.</p></td></tr></tbody></table><p class="title"><b>Table:&nbsp;Values of the <tt class="sgmltag-attribute">class</tt>
+        Attribute of <tt class="sgmltag-element">sgmltag</tt></b></p></div><p>You should not add extra, syntax-related characters to the content
+      of document when using the sgmltag element; angle brackets, quotation
+      marks, ampersands, hashes, slashes, and other characters will be added
+      automatically during rendering. Here are some examples:</p><div class="informalexample"><pre class="programlisting">&lt;para&gt;
+  The &lt;sgmltag&gt;book&lt;/sgmltag&gt; element starts with an opening
+  &lt;sgmltag class="starttag"&gt;book&lt;/sgmltag&gt; tag. You should set
+  the value of the &lt;sgmltag class="attribute"&gt;role&lt;/sgmltag&gt;
+  attribute to &lt;sgmltag class="attvalue"&gt;user&lt;/sgmltag&gt; if the
+  book is a user guide. If there is an ampersand in the text,
+  use the &lt;sgmltag class="genentity"&gt;amp&lt;/sgmltag&gt; entity in
+  its place.
+&lt;/para&gt;</pre><div class="blockquote"><blockquote class="blockquote"><p>The <tt class="sgmltag-element">book</tt> element starts with an opening
+          <tt class="sgmltag-starttag">&lt;book&gt;</tt> tag. You should set the
+          value of the <tt class="sgmltag-attribute">role</tt> attribute to
+          <tt class="sgmltag-attvalue">user</tt> if the book is a user
+          guide. If there is an ampersand in the text, use the <tt class="sgmltag-genentity">&amp;amp;</tt> entity in its place.</p></blockquote></div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11D91"></a>
+        <tt class="sgmltag-element">classname</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of an object-oriented class or exception; or
+      the name of a C or C++ <tt class="symbol">struct</tt>.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11DA0"></a>
+        <tt class="sgmltag-element">interfacename</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of an object-oriented interface.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11DAC"></a>
+        <tt class="sgmltag-element">methodname</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a method, member function, function,
+      procedure, subroutine, or other equivalent for the programming language
+      in question.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11DB8"></a>
+        <tt class="sgmltag-element">type</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a type. This should be used for primitive
+      data types such as <tt class="type">int</tt> or <tt class="type">float</tt>, or for C or
+      C++ <tt class="symbol">typedef</tt>s. You can also use this for the names of
+      domain definitions. Use the <tt class="sgmltag-element">classname</tt> element for
+      types implemented as classes.</p><p>For stereotype names used in UML modeling, DocMaker supports the
+      use of the <tt class="sgmltag-attribute">role</tt> attribute with the
+      value <tt class="sgmltag-attvalue">stereotype</tt>. This will render
+      the conventional angle bracket characters around the stereotype name as
+      in this example:</p><div class="informalexample"><pre class="programlisting">&lt;para&gt;
+  A standard readmulti operation has a stereotype
+  &lt;type role="stereotype"&gt;readmulti&lt;/type&gt;.
+&lt;/para&gt;</pre><div class="blockquote"><blockquote class="blockquote"><p>A standard readmulti operation has a stereotype <tt class="type">&lt;&lt;readmulti&gt;&gt;</tt>.</p></blockquote></div></div></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11DEC"></a>
+        <tt class="sgmltag-element">parameter</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a parameter or argument to a method,
+      member function, procedure, subroutine, or other equivalent for the
+      programming language in question.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11DF8"></a>
+        <tt class="sgmltag-element">varname</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a local variable, member variable (C++),
+      <tt class="symbol">struct</tt> field (C), or field (Java). Environment
+      variables should use the <tt class="sgmltag-element">envar</tt> element, not this
+      element.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E0A"></a>
+        <tt class="sgmltag-element">constant</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a constant. For constants related to
+      error messages, use the <tt class="sgmltag-element">errorname</tt> element
+      instead.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E19"></a>
+        <tt class="sgmltag-element">property</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of a property. This could be a property in a
+      configuration file or resource file, a JavaBeans property, or a system
+      registry key name.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E25"></a>
+        <tt class="sgmltag-element">literal</tt>
+      </h3></div></div><div></div></div><p>Use this for a literal value. This could be a primitive data
+      value, a return value from a function, or the value of a variable,
+      property, or constant, etc. For example, &ldquo;<span class="quote">set the
+      <tt class="property">width</tt> property to <tt class="literal">17px</tt></span>&rdquo;.
+      Do not use this for anything other than these values. It is not a
+      generic element for something related to programming!</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E3B"></a>
+        <tt class="sgmltag-element">symbol</tt>
+      </h3></div></div><div></div></div><p>Use this for a keyword in a programming language (other than
+      primitive type names).</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E47"></a>
+        <tt class="sgmltag-element">errorcode</tt>
+      </h3></div></div><div></div></div><p>Use this for the unique number identifying an error.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E53"></a>
+        <tt class="sgmltag-element">errortext</tt>
+      </h3></div></div><div></div></div><p>Use this for the text of an error message. Many C&uacute;ram error
+      messages use placeholders like &ldquo;<span class="quote">%1s</span>&rdquo;, these placeholders
+      should be marked with the <tt class="sgmltag-element">replaceable</tt> element and the
+      whole message marked with the <tt class="sgmltag-element">errortext</tt>
+      element.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E68"></a>
+        <tt class="sgmltag-element">errorname</tt>
+      </h3></div></div><div></div></div><p>Use this for the name of an error. This is not the same as the
+      <tt class="sgmltag-element">errortext</tt> element. For example, you can have a
+      <span class="errorname">File Not Found</span> error (that is its name) with the
+      error text, <span class="errortext">ERROR: File not found: hello.txt</span>. In
+      C&uacute;ram documents, you should also use this element to mark the constants
+      associated with error messages.</p></div><div class="section" lang="en"><div class="section_titlepage"><div><div><h3 class="title"><a name="DMN11E7D"></a>
+        <tt class="sgmltag-element">errortype</tt>
+      </h3></div></div><div></div></div><p>Use this for the type or category of an error. For example, errors
+      might fall into the categories <span class="errortype">warning</span>,
+      <span class="errortype">error</span>, or <span class="errortype">fatal</span>.</p></div></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN1178D.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN11E93.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

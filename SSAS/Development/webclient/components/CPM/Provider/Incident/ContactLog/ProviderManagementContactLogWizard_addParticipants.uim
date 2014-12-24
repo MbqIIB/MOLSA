@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2010, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd..                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to add participant details.                  -->
+<PAGE
+  PAGE_ID="ProviderManagementContactLogWizard_addParticipants"
+  WINDOW_OPTIONS="width=760,height=410"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAY"
+    OPERATION="readWizardDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAYWIZARD"
+    OPERATION="readWizardMenu"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00321084, GA -->
+  <SERVER_INTERFACE
+    CLASS="Incidents"
+    NAME="PARTICIPANTSDISPLAY"
+    OPERATION="listIncidentActiveParticipantRole"
+  />
+  <!-- END, CR00321084 -->
+
+
+  <SERVER_INTERFACE
+    ACTION_ID_PROPERTY="participantDetails$actionString"
+    CLASS="MaintainProviderIncident"
+    NAME="ACTION"
+    OPERATION="storeParticipantsDetails"
+    PHASE="ACTION"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="DISPLAYPROVIDER"
+    OPERATION="listActiveProviderMember"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00377674, SS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderIncident"
+    NAME="GETDEFAULTDETAILS"
+    OPERATION="getDefaultContactLogParticipant"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00377674 -->
+
+
+  <MENU MODE="WIZARD_PROGRESS_BAR">
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAYWIZARD"
+        PROPERTY="wizardMenu"
+      />
+    </CONNECT>
+  </MENU>
+
+
+  <PAGE_PARAMETER NAME="wizardStateID"/>
+  <PAGE_PARAMETER NAME="incidentID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="participantDetails$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAYPROVIDER"
+      PROPERTY="key$concernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="DISPLAYWIZARD"
+      PROPERTY="wizardStateID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="incidentID"
+    />
+    <TARGET
+      NAME="PARTICIPANTSDISPLAY"
+      PROPERTY="incidentID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00377674, SS -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="wizardStateID"
+    />
+    <TARGET
+      NAME="GETDEFAULTDETAILS"
+      PROPERTY="wizardStateID$wizardStateID"
+    />
+  </CONNECT>
+  <!-- END, CR00377674 -->
+
+
+  <!-- BEGIN, CR00321084, GA -->
+  <CLUSTER NUM_COLS="2">
+    <CONTAINER LABEL="Field.Label.CurrentUserIsParticipant">
+      <FIELD USE_BLANK="true">
+        <CONNECT>
+          <SOURCE
+            NAME="GETDEFAULTDETAILS"
+            PROPERTY="currentUserIsAttendeeInd"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="currentUserIsAttendeeInd"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Description.IncidentParticipant"
+    NUM_COLS="2"
+  >
+
+
+    <FIELD
+      CONTROL="CHECKBOXED_LIST"
+      HEIGHT="3"
+      LABEL="Field.Label.IncidentParticipant"
+      USE_BLANK="false"
+      WIDTH="90"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseParticipantRoleIDTabList"
+        />
+      </CONNECT>
+      <CONNECT>
+        <INITIAL
+          HIDDEN_PROPERTY="incidentParticipantRoleID"
+          NAME="PARTICIPANTSDISPLAY"
+          PROPERTY="participantName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="incidentParticipantRoleIDTabList"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <CLUSTER
+    DESCRIPTION="Cluster.Description.ProviderMember"
+    NUM_COLS="2"
+  >
+    <CONTAINER LABEL="Field.Label.ProviderMember">
+      <FIELD>
+        <CONNECT>
+          <INITIAL
+            HIDDEN_PROPERTY="details$concernRoleID"
+            NAME="DISPLAYPROVIDER"
+            PROPERTY="providerMemberName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerMemberConcernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="providerMemberConcernRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    DESCRIPTION="Cluster.Description.RegisteredParticipant"
+    LABEL_WIDTH="25"
+    NUM_COLS="1"
+    SHOW_LABELS="true"
+  >
+    <CONTAINER LABEL="Field.Label.RegisteredParticipant">
+      <FIELD WIDTH="25">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="participantDetails$concernRoleType"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="participantDetails$concernRoleType"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD WIDTH="40">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="participantDetails$concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <INITIAL
+            NAME="DISPLAY"
+            PROPERTY="participantName"
+          />
+        </CONNECT>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="participantDetails$concernRoleID"
+          />
+        </CONNECT>
+      </FIELD>
+    </CONTAINER>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    DESCRIPTION="Cluster.Description.UnRegisteredParticipant"
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+  >
+    <FIELD
+      LABEL="Field.Label.ParticipantName"
+      WIDTH="82"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="newConcernRoleName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="newConcernRoleName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+
+
+  <CLUSTER
+    BEHAVIOR="NONE"
+    DESCRIPTION="Cluster.Description.User"
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    SHOW_LABELS="true"
+  >
+    <FIELD
+      HEIGHT="1"
+      LABEL="Field.Label.User"
+      WIDTH="110"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="participantDetails$userName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <INITIAL
+          NAME="DISPLAY"
+          PROPERTY="participantDetails$userName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="participantDetails$userName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD CONTROL="SKIP"/>
+  </CLUSTER>
+  <!-- END, CR00321084 -->
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    BOTTOM="true"
+  >
+
+
+    <ACTION_CONTROL
+      ALIGNMENT="LEFT"
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Save"
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <!-- BEGIN, CR00414039, KRK -->
+    <ACTION_CONTROL
+      ACTION_ID="Back"
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.Back"
+      TYPE="SUBMIT"
+    >
+      <!-- END, CR00414039 -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagementContactLogWizard_addNarrative"
+        SAVE_LINK="FALSE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL
+      ACTION_ID="Next"
+      ALIGNMENT="RIGHT"
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagementContactLogWizard_addAttachments"
+        SAVE_LINK="FALSE"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="wizardStateID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="incidentID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+</PAGE>

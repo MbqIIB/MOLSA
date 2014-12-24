@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2012 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view the list of trainings for            -->
+<!-- a provider group.                                                      -->
+<!-- BEGIN, CR00282026, SSK -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_listTrainingProgramForProviderGroup"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00282026 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="DISPLAY2"
+    OPERATION="listCompletedTrainingProgramForProviderGroup"
+  />
+
+
+  <!-- BEGIN, CR00235795, PS -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProviderGroupTrainingProgram"
+    NAME="DISPLAY4"
+    OPERATION="listTrainingProgramForProviderGroup"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY4"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+  <!-- END, CR00235795 -->
+
+
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY2"
+        PROPERTY="messageTest"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="concernRoleID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00198612, SS -->
+  <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00198612 -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.NewTrainingProgram"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY4"
+          PROPERTY="createTrainingProgramInd"
+        />
+      </CONDITION>
+      <!-- BEGIN, CR00229065, PS -->
+      <LINK
+        DISMISS_MODAL="false"
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createTrainingProgramForProviderGroup"
+        WINDOW_OPTIONS="width=400"
+      >
+        <!-- END, CR00229065 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.RecordCompletedTraining"
+      TYPE="ACTION"
+    >
+      <CONDITION>
+        <IS_FALSE
+          NAME="DISPLAY4"
+          PROPERTY="createTrainingProgramInd"
+        />
+      </CONDITION>
+      <!-- BEGIN, CR00229065, PS -->
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_recordCompletedTrainingForProviderGroup"
+        WINDOW_OPTIONS="width=550"
+      >
+        <!-- END, CR00229065 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+
+
+        <!-- BEGIN, CR00306259, MR -->
+        <LINK
+          OPEN_MODAL="true"
+          URI_SOURCE_NAME="DISPLAY4"
+          URI_SOURCE_PROPERTY="editActionURL"
+        >
+
+
+          <!-- END, CR00306259 -->
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY4"
+              PROPERTY="trainingProgramID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- BEGIN, CR00198612, SS -->
+      <ACTION_CONTROL LABEL="ActionControl.Label.AddProviderGroupMember">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY4"
+            PROPERTY="managedThroughAgency"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_addProviderGroupMemberToATrainingProgram"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY4"
+              PROPERTY="trainingProgramID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+
+
+      <!-- BEGIN, CR00279651, MR -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.ViewTrainingPlan"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY4"
+            PROPERTY="trainingRegisteredInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_viewTrainingDetails"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY4"
+              PROPERTY="trainingID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <!-- END, CR00279651 -->
+
+
+      <ACTION_CONTROL LABEL="ActionControl.Label.Delete">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_deleteTrainingProgramForProviderGroup"
+          WINDOW_OPTIONS="width=400"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY4"
+              PROPERTY="trainingProgramID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="trainingProgramID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <!-- END, CR00198612 -->
+
+
+    <!-- BEGIN, CR00130428, KR -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY4"
+          PROPERTY="referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00130428 -->
+
+
+    <FIELD LABEL="Field.Label.ManagedThroughAgency">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY4"
+          PROPERTY="managedThroughAgency"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.TrainingName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY4"
+          PROPERTY="trainingName"
+        />
+      </CONNECT>
+    </FIELD>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="ProviderManagement_resolveViewProviderGroupTraining">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY4"
+            PROPERTY="trainingProgramID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="trainingProgramID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00279651, MR -->
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY4"
+            PROPERTY="managedThroughAgency"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="managedThroughAgency"
+          />
+        </CONNECT>
+        <!-- END, CR00279651 -->
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+  </LIST>
+
+
+</PAGE>

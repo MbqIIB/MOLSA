@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<mapping>
+
+  <!-- Mapping for Text class-->
+  <class name="curam.util.internal.ieg.impl.definition.Text">
+    <field name="id" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="value" type="string" get-method="getValue" set-method="setValue">
+      <bind-xml name="value" node="attribute"/>
+    </field>
+  </class>
+
+
+  <!-- Mapping for MultiLanguageTextList class-->
+  <class name="curam.util.internal.ieg.impl.definition.MultiLanguageTextList">
+    <field name="Translation" type="curam.util.internal.ieg.impl.definition.Text" collection="arraylist" get-method="getTranslations" set-method="setTranslations">
+      <bind-xml name="Translation" node="element"/>
+    </field>
+  </class>
+
+  <!-- Mapping for IEGSubScriptAdaptor class-->
+  <class name="curam.util.internal.ieg.impl.definition.IEGSubScriptAdaptor">
+    <map-to xml="IEGSubScript"/>
+    <field name="id" type="long" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="scriptID" type="string" get-method="getElementID" set-method="setElementID">
+      <bind-xml name="scriptID" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for IEGScriptDefinition class-->
+  <class name="curam.util.internal.ieg.impl.definition.IEGScriptDefinition">
+    <map-to xml="IEGScript"/>
+    <field name="id" type="long" get-method="getID" set-method="setID">
+      <bind-xml name="editorid" node="attribute"/>
+    </field>
+    <field name="scriptID" type="string" get-method="getElementID" set-method="setElementID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="pages" type="curam.util.internal.ieg.impl.definition.QuestionPageDefinition" collection="arraylist" get-method="getChildren" set-method="setChildren">
+      <bind-xml auto-naming="deriveByClass" node="element"/>
+    </field>
+    <field name="names" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getNames" set-method="setNames">
+      <bind-xml name="ScriptName" node="element"/>
+    </field>
+    <field name="descriptions" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getDescriptions" set-method="setDescriptions">
+      <bind-xml name="ScriptDescription" node="element"/>
+    </field>
+    <field name="rdos" type="string" collection="arraylist" get-method="getRDOs" set-method="setRDOs">
+      <bind-xml name="RDO" node="element"/>
+    </field>
+    <field name="schemaVersionNumber" type="string" get-method="getSchemaVersionNumber" set-method="setSchemaVersionNumber">
+      <bind-xml name="schemaversionnumber" node="attribute"/>
+    </field>
+    <field name="scriptType" type="string" get-method="getType" set-method="setType" required="false">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for QuestionPageDefinition class-->
+  <class name="curam.util.internal.ieg.impl.definition.QuestionPageDefinition">
+     <map-to xml="QuestionPageDefinition"/>
+    <field name="id" type="long" get-method="getID" set-method="setID">
+      <bind-xml name="questionpageid" node="attribute"/>
+    </field>
+    <field name="questionGroupID" type="string" get-method="getElementID" set-method="setElementID">
+      <bind-xml name="questiongroupid" node="attribute"/>
+    </field>
+    <field name="precondition" type="string" get-method="getPrecondition" set-method="setPrecondition">
+      <bind-xml name="precondition" node="attribute"/>
+    </field>
+    <field name="postconditionExpressions" type="curam.util.internal.ieg.impl.definition.PostconditionExpression" collection="arraylist" get-method="getPostconditionExpressions" set-method="setPostconditionExpressions">
+      <bind-xml name="postcondition" node="element"/>
+    </field>
+    <field name="loopSize" type="string" get-method="getLoopSizeExpression" set-method="setLoopSizeExpression" required="false">
+      <bind-xml name="loopsize" node="attribute"/>
+    </field>
+    <field name="names" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getNames" set-method="setNames">
+      <bind-xml name="Names" node="element"/>
+    </field>
+    <field name="legislationLinks" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getLegislationLinks" set-method="setLegislationLinks">
+      <bind-xml name="LegislationLinks" node="element"/>
+    </field>
+    <field name="policyLinks" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getPolicyLinks" set-method="setPolicyLinks">
+      <bind-xml name="PolicyLinks" node="element"/>
+    </field>
+    <field name="notes" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getNotes" set-method="setNotes">
+      <bind-xml name="Notes" node="element"/>
+    </field>
+    <field name="children" type="curam.util.internal.ieg.impl.definition.QuestionPageDefinition" collection="arraylist" get-method="getChildren" set-method="setChildren">
+      <bind-xml auto-naming="deriveByClass" node="element"/>
+    </field>
+  </class>
+  
+  <!-- Mapping for QuestionDefinition class-->
+  <class name="curam.util.internal.ieg.impl.definition.QuestionDefinition">
+    <map-to xml="Question"/>
+    <field name="questionID" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="recordUnanswered" type="boolean" get-method="getRecordUnanswered" set-method="setRecordUnanswered">
+      <bind-xml name="recordunanswered" node="attribute"/>
+    </field>
+    <field name="expectedAnswerType" type="string" get-method="getExpectedAnswerType" set-method="setExpectedAnswerType">
+      <bind-xml name="answertype" node="attribute"/>
+    </field>
+    <field name="answerTypeCode" type="int" get-method="getAnswerTypeCode" set-method="setAnswerTypeCode">
+      <bind-xml name="answertypecode" node="attribute"/>
+    </field>
+    <field name="defaultAnswerExpression" type="string" get-method="getDefaultAnswerExpression" set-method="setDefaultAnswerExpression">
+      <bind-xml name="defaultanswer" node="attribute"/>
+    </field>
+    <field name="mandatory" type="boolean" get-method="getMandatory" set-method="setMandatory">
+      <bind-xml name="mandatory" node="attribute"/>
+    </field>
+    <field name="questions" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getQuestions" set-method="setQuestions">
+      <bind-xml name="Questions" node="element"/>
+    </field>
+    <field name="scriptTexts" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getScriptTexts" set-method="setScriptTexts">
+      <bind-xml name="ScriptTexts" node="element"/>
+    </field>
+    <field name="helpTexts" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getHelpTexts" set-method="setHelpTexts">
+      <bind-xml name="HelpTexts" node="element"/>
+    </field>
+    <field name="legislationLinks" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getLegislationLinks" set-method="setLegislationLinks">
+      <bind-xml name="LegislationLinks" node="element"/>
+    </field>
+    <field name="policyLinks" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getPolicyLinks" set-method="setPolicyLinks">
+      <bind-xml name="PolicyLinks" node="element"/>
+    </field>
+    <field name="listMetaData" type="curam.util.internal.ieg.impl.definition.ListMetaDataDefinition" get-method="getListMetaData" set-method="setListMetaData" required="false">
+      <bind-xml name="ListMetaData" node="element"/>
+    </field>
+    <field name="stringMetaData" type="curam.util.internal.ieg.impl.definition.StringMetaDataDefinition" get-method="getStringMetaData" set-method="setStringMetaData" required="false">
+      <bind-xml name="StringMetaData" node="element"/>
+    </field>
+    <field name="aliases" type="curam.util.internal.ieg.impl.QuestionAlias" collection="arraylist" get-method="getAliases" set-method="setAliases" required="false">
+      <bind-xml name="Alias" node="element"/>
+    </field>
+  </class>
+  
+  <!-- Mapping for QuestionAlias class -->
+  <class name="curam.util.internal.ieg.impl.QuestionAlias">
+    <map-to xml="Alias"/>
+    <field name="type" type="string" get-method="getType" set-method="setType">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="questions" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getQuestions" set-method="setQuestions">
+      <bind-xml name="Questions" node="element"/>
+    </field>
+    <field name="scriptTexts" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getScriptTexts" set-method="setScriptTexts">
+      <bind-xml name="ScriptTexts" node="element"/>
+    </field>
+    <field name="helpTexts" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getHelpTexts" set-method="setHelpTexts">
+      <bind-xml name="HelpTexts" node="element"/>
+    </field>
+  </class>
+
+  <!-- Mapping for QuestionGroup class-->
+  <class name="curam.util.internal.ieg.impl.QuestionGroup">
+    <map-to xml="QuestionGroup"/>
+    <field name="groupID" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="groupType" type="string" get-method="getType" set-method="setType" required="false">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="questions" collection="arraylist" get-method="getQuestionGroupChildren" set-method="setQuestionGroupChildren">
+      <bind-xml node="element" auto-naming="deriveByClass" />
+    </field>
+    <field name="names" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getNames" set-method="setNames">
+      <bind-xml name="GroupName" node="element"/>
+    </field>
+    <field name="descriptions" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getDescriptions" set-method="setDescriptions">
+      <bind-xml name="GroupDescription" node="element"/>
+    </field>
+    <field name="schemaVersionNumber" type="string" get-method="getSchemaVersionNumber" set-method="setSchemaVersionNumber">
+      <bind-xml name="schemaversionnumber" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for ItemValue class-->
+  <class name="curam.util.internal.ieg.impl.ItemValue">
+    <field name="value" type="string" get-method="getValue" set-method="setValue" required="true">
+      <bind-xml name="value" node="attribute"/>
+    </field>
+  </class>
+  
+  <!-- Mapping for AnswerItem class-->
+  <class name="curam.util.internal.ieg.impl.AnswerItem">
+    <map-to xml="AnswerItem"/>
+    <field name="ItemValue" type="curam.util.internal.ieg.impl.ItemValue" get-method="getItemValue" set-method="setItemValue" required="true">
+      <bind-xml name="ItemValue" node="element"/>
+    </field>
+  </class>
+  
+  <!-- Mapping for Answer class-->
+  <class name="curam.util.internal.ieg.impl.Answer">
+    <field name="questionID" type="string" get-method="getQuestionID" set-method="setQuestionID" required="false">
+      <bind-xml name="questionid" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex" required="false">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="unanswered" type="boolean" get-method="isUnanswered" set-method="setUnanswered" required="false">
+      <bind-xml name="unanswered" node="attribute"/>
+    </field>
+    <field name="AnswerItem" type="curam.util.internal.ieg.impl.AnswerItem" collection="arraylist" get-method="getAnswerItems" set-method="setAnswerItems">
+      <bind-xml name="AnswerItem" node="element"/>
+    </field>
+  </class>
+  
+  <!-- Mapping for HyperlinkLabelDefinition class-->
+  <class name="curam.util.internal.ieg.impl.definition.HyperlinkLabelDefinition">
+    <map-to xml="HyperlinkLabel"/>
+    <field name="hyperlinkLabelID" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="hyperlink" type="boolean" get-method="isHyperlink" set-method="setHyperlink">
+      <bind-xml name="hyperlink" node="attribute"/>
+    </field>
+    <field name="url" type="string" get-method="getURL" set-method="setURL">
+      <bind-xml name="url" node="attribute"/>
+    </field>
+    <field name="text" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getTexts" set-method="setTexts">
+      <bind-xml name="Texts" node="element"/>
+    </field>
+  </class>
+
+  <!-- Mapping for PostconditionExpression class-->
+    <class name="curam.util.internal.ieg.impl.definition.PostconditionExpression">
+      <field name="id" type="string" get-method="getID" set-method="setID">
+        <bind-xml name="id" node="attribute"/>
+      </field>
+      <field name="expression" type="string" get-method="getExpression" set-method="setExpression">
+        <bind-xml name="expression" node="attribute"/>
+      </field>
+      <field name="message" type="curam.util.internal.ieg.impl.definition.MultiLanguageTextList" get-method="getMessage" set-method="setMessage">
+        <bind-xml name="message" node="element"/>
+      </field>
+  </class>
+
+  <!-- Mapping for AnswerList class-->
+  <class name="curam.util.internal.ieg.impl.AnswerList">
+    <map-to xml="AnswerList"/>
+    <field name="questionGroupID" type="string" get-method="getQuestionGroupID" set-method="setQuestionGroupID">
+      <bind-xml name="questiongroupid" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="Answer" type="curam.util.internal.ieg.impl.Answer" collection="arraylist" get-method="getAnswers" set-method="setAnswers">
+      <bind-xml name="Answer" node="element"/>
+    </field>
+    <field name="scriptNotes" type="string" get-method="getScriptNotes" set-method="setScriptNotes" required="false">
+      <bind-xml name="scriptnotes" node="attribute"/>
+    </field>
+  </class>
+
+
+  <!-- Mapping for Question class-->
+  <class name="curam.util.internal.ieg.impl.Question">
+    <map-to xml="QuestionRuntime"/>
+    <field name="questionID" type="string" get-method="getQuestionID" set-method="setQuestionID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="question" type="string" get-method="getQuestion" set-method="setQuestion">
+      <bind-xml name="question" node="attribute"/>
+    </field>
+    <field name="scriptText" type="string" get-method="getScriptText" set-method="setScriptText">
+      <bind-xml name="scripttext" node="attribute"/>
+    </field>
+    <field name="helpText" type="string" get-method="getHelpText" set-method="setHelpText">
+      <bind-xml name="helptext" node="attribute"/>
+    </field>
+    <field name="expectedType" type="string" get-method="getExpectedAnswerType" set-method="setExpectedAnswerType">
+      <bind-xml name="expectedtype" node="attribute"/>
+    </field>
+    <field name="answerTypeCode" type="int" get-method="getAnswerTypeCode" set-method="setAnswerTypeCode">
+      <bind-xml name="answertypecode" node="attribute"/>
+    </field>
+    <field name="recordUnanswered" type="boolean" get-method="getRecordUnanswered" set-method="setRecordUnanswered" required="false">
+      <bind-xml name="recordunanswered" node="attribute"/>
+    </field>
+    <field name="unansweredValue" type="boolean" get-method="getUnansweredValue" set-method="setUnansweredValue">
+      <bind-xml name="unanswered" node="attribute"/>
+    </field>    
+    <field name="legislationLink" type="string" get-method="getLegislationLink" set-method="setLegislationLink">
+      <bind-xml name="legislationlink" node="attribute"/>
+    </field>
+    <field name="policyLink" type="string" get-method="getPolicyLink" set-method="setPolicyLink">
+      <bind-xml name="policylink" node="attribute"/>
+    </field>
+    <field name="mandatory" type="boolean" get-method="getMandatory" set-method="setMandatory">
+      <bind-xml name="mandatory" node="attribute"/>
+    </field>
+    <field name="listType" type="string" get-method="getListType" set-method="setListType" required="false">
+      <bind-xml name="listtype" node="attribute"/>
+    </field>
+    <field name="numberOfVisibleRows" type="int" get-method="getNumberOfVisibleRows" set-method="setNumberOfVisibleRows" required="false">
+      <bind-xml name="numberofvisiblerows" node="attribute"/>
+    </field>
+    <field name="blankDefaultEntry" type="boolean" get-method="getBlankDefaultEntry" set-method="setBlankDefaultEntry" required="false">
+      <bind-xml name="blankdefaultentry" node="attribute"/>
+    </field>
+    <field name="Answer" type="curam.util.internal.ieg.impl.Answer" get-method="getAnswerObject" set-method="setAnswerObject" required="false">
+      <bind-xml name="Answer" node="element"/>
+    </field>
+  </class>
+
+  <!-- Mapping for HyperlinkLabel class-->
+  <class name="curam.util.internal.ieg.impl.HyperlinkLabel">
+    <map-to xml="HyperlinkLabelRuntime"/>
+    <field name="hyperlinkLabelID" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="url" type="string" get-method="getURL" set-method="setURL">
+      <bind-xml name="url" node="attribute"/>
+    </field>
+    <field name="text" type="string" get-method="getText" set-method="setText">
+      <bind-xml name="text" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for PreviousPageInfo class-->
+  <class name="curam.util.internal.ieg.impl.PreviousPageInfo">
+    <field name="questionGroupID" type="string" get-method="getQuestionGroupID" set-method="setQuestionGroupID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="name" type="string" get-method="getName" set-method="setName">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="description" type="string" get-method="getDescription" set-method="setDescription">
+      <bind-xml name="description" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="childLoopIndex" type="integer" get-method="getChildLoopIndex" set-method="setChildLoopIndex">
+      <bind-xml name="childloopindex" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for UnansweredQuestionInfo class-->
+  <class name="curam.util.internal.ieg.impl.UnansweredQuestionInfo">
+    <field name="questionPageExecutionID" type="long" get-method="getQuestionPageExecutionID" set-method="setQuestionPageExecutionID">
+      <bind-xml name="pageid" node="attribute"/>
+    </field>
+    <field name="pageName" type="string" get-method="getPageName" set-method="setPageName">
+      <bind-xml name="pagename" node="attribute"/>
+    </field>
+    <field name="questionID" type="string" get-method="getQuestionID" set-method="setQuestionID">
+      <bind-xml name="questionid" node="attribute"/>
+    </field>
+    <field name="theQuestion" type="string" get-method="getQuestion" set-method="setQuestion">
+      <bind-xml name="question" node="attribute"/>
+    </field>
+    <field name="scriptText" type="string" get-method="getScriptText" set-method="setScriptText">
+      <bind-xml name="scripttext" node="attribute"/>
+    </field>
+    <field name="questionLoopIndex" type="integer" get-method="getQuestionLoopIndex" set-method="setQuestionLoopIndex">
+      <bind-xml name="questionloopindex" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for QuestionPage class-->
+  <class name="curam.util.internal.ieg.impl.QuestionPage">
+    <map-to xml="QuestionPage"/>
+    <field name="questionGroupID" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="executionID" type="long" get-method="getExecutionID" set-method="setExecutionID">
+      <bind-xml name="executionid" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>    
+    <field name="childLoopIndex" type="integer" get-method="getChildLoopIndex" set-method="setChildLoopIndex">
+      <bind-xml name="childLoopindex" node="attribute"/>
+    </field>
+    <field name="name" type="string" get-method="getName" set-method="setName">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="description" type="string" get-method="getDescription" set-method="setDescription">
+      <bind-xml name="description" node="attribute"/>
+    </field>
+    <field name="Question" type="curam.util.internal.ieg.impl.Question" collection="arraylist" get-method="getElements" set-method="setElements">
+      <bind-xml node="element" auto-naming="deriveByClass" />
+    </field>
+    <field name="PreviousPage" type="curam.util.internal.ieg.impl.PreviousPageInfo" collection="arraylist" get-method="getPreviousPages" set-method="setPreviousPages">
+      <bind-xml name="PreviousPage" node="element"/>
+    </field>
+    <field name="UnansweredQuestions" type="curam.util.internal.ieg.impl.UnansweredQuestionInfo" collection="arraylist" get-method="getUnansweredQuestionDetails" set-method="setUnansweredQuestionDetails">
+      <bind-xml name="UnansweredQuestion" node="element"/>
+    </field>
+    <field name="legislationLink" type="string" get-method="getLegislationLink" set-method="setLegislationLink">
+      <bind-xml name="legislationlink" node="attribute"/>
+    </field>
+    <field name="policyLink" type="string" get-method="getPolicyLink" set-method="setPolicyLink">
+      <bind-xml name="policylink" node="attribute"/>
+    </field>
+    <field name="notes" type="string" get-method="getNotes" set-method="setNotes">
+      <bind-xml name="notes" node="attribute"/>
+    </field>
+    <field name="scriptNotes" type="string" get-method="getScriptNotes" set-method="setScriptNotes" required="false">
+      <bind-xml name="scriptnotes" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for ForLoopQuestionPage class-->
+  <class name="curam.util.internal.ieg.impl.ForLoopQuestionPage">
+    <map-to xml="QuestionPage"/>
+    <field name="questionGroupID" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="executionID" type="long" get-method="getExecutionID" set-method="setExecutionID">
+      <bind-xml name="executionid" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="name" type="string" get-method="getName" set-method="setName">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="description" type="string" get-method="getDescription" set-method="setDescription">
+      <bind-xml name="description" node="attribute"/>
+    </field>
+    <field name="Question" type="curam.util.internal.ieg.impl.Question" collection="arraylist" get-method="getElements" set-method="setElements">
+      <bind-xml node="element" auto-naming="deriveByClass" />
+    </field>
+    <field name="PreviousPage" type="curam.util.internal.ieg.impl.PreviousPageInfo" collection="arraylist" get-method="getPreviousPages" set-method="setPreviousPages">
+      <bind-xml name="PreviousPage" node="element"/>
+    </field>
+    <field name="UnansweredQuestions" type="curam.util.internal.ieg.impl.UnansweredQuestionInfo" collection="arraylist" get-method="getUnansweredQuestionDetails" set-method="setUnansweredQuestionDetails">
+      <bind-xml name="UnansweredQuestion" node="element"/>
+    </field>
+    <field name="legislationLink" type="string" get-method="getLegislationLink" set-method="setLegislationLink">
+      <bind-xml name="legislationlink" node="attribute"/>
+    </field>
+    <field name="policyLink" type="string" get-method="getPolicyLink" set-method="setPolicyLink">
+      <bind-xml name="policylink" node="attribute"/>
+    </field>
+    <field name="notes" type="string" get-method="getNotes" set-method="setNotes">
+      <bind-xml name="notes" node="attribute"/>
+    </field>
+    <field name="scriptNotes" type="string" get-method="getScriptNotes" set-method="setScriptNotes" required="false">
+      <bind-xml name="scriptnotes" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for AnswerSummary class-->
+  <class name="curam.util.internal.ieg.impl.AnswerSummary">
+    <map-to xml="Answer"/>
+    <field name="AnswerItem" type="curam.util.internal.ieg.impl.AnswerItem" collection="arraylist" get-method="getAnswerItems" set-method="setAnswerItems">
+      <bind-xml name="AnswerItem" node="element"/>
+    </field>
+  </class>
+
+  <!-- Mapping for QuestionSummary class-->
+  <class name="curam.util.internal.ieg.impl.QuestionSummary">
+    <field name="questionID" type="string" get-method="getQuestionID" set-method="setQuestionID">
+      <bind-xml name="questionid" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="question" type="string" get-method="getQuestion" set-method="setQuestion">
+      <bind-xml name="question" node="attribute"/>
+    </field>
+    <field name="scriptText" type="string" get-method="getScriptText" set-method="setScriptText">
+      <bind-xml name="scripttext" node="attribute"/>
+    </field>
+    <field name="expectedAnswerType" type="string" get-method="getAnswerType" set-method="setAnswerType">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="unanswered" type="boolean" get-method="isUnanswered" set-method="setUnanswered">
+      <bind-xml name="unanswered" node="attribute"/>
+    </field>
+    <field name="answerTypeCode" type="int" get-method="getAnswerTypeCode" set-method="setAnswerTypeCode">
+      <bind-xml name="answertypecode" node="attribute"/>
+    </field>
+    <field name="Answer" type="curam.util.internal.ieg.impl.AnswerSummary" get-method="getAnswers" set-method="setAnswers" required="false">
+      <bind-xml name="Answer" node="element"/>
+    </field>
+  </class>
+
+
+  <!-- Mapping for QuestionPageSummary class-->
+  <class name="curam.util.internal.ieg.impl.QuestionPageSummary">
+    <field name="executionID" type="string" get-method="getID" set-method="setID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="questionGroupID" type="string" get-method="getQuestionGroupID" set-method="setQuestionGroupID">
+      <bind-xml name="questiongroupid" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="name" type="string" get-method="getName" set-method="setName">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="Question" type="curam.util.internal.ieg.impl.QuestionSummary" collection="arraylist" get-method="getQuestions" set-method="setQuestions">
+      <bind-xml name="Question" node="element"/>
+    </field>
+  </class>
+
+
+  <!-- Mapping for IEGScriptSummary class-->
+  <class name="curam.util.internal.ieg.impl.IEGScriptSummary">
+    <map-to xml="IEGScriptSummary"/>
+    <field name="scriptID" type="string" get-method="getScriptID" set-method="setScriptID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="name" type="string" get-method="getName" set-method="setName">
+      <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="summaryPages" type="curam.util.internal.ieg.impl.QuestionPageSummary" collection="arraylist" get-method="getPages" set-method="setPages">
+      <bind-xml name="QuestionPage" node="element"/>
+    </field>
+    <field name="scriptNotes" type="string" get-method="getScriptNotes" set-method="setScriptNotes" required="false">
+      <bind-xml name="scriptnotes" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for AnswerResult class-->
+  <class name="curam.util.ieg.impl.AnswerResult">
+    <map-to xml="Answer"/>
+    <field name="AnswerItem" type="curam.util.internal.ieg.impl.AnswerItem" collection="arraylist" get-method="getAnswerItems" set-method="setAnswerItems">
+      <bind-xml name="AnswerItem" node="element"/>
+    </field>
+  </class>
+
+  <!-- Mapping for QuestionResult class-->
+  <class name="curam.util.ieg.impl.QuestionResult">
+    <field name="questionID" type="string" get-method="getQuestionID" set-method="setQuestionID">
+      <bind-xml name="questionid" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="answerType" type="string" get-method="getAnswerType" set-method="setAnswerType">
+      <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="answerTypeCode" type="int" get-method="getAnswerTypeCode" set-method="setAnswerTypeCode">
+      <bind-xml name="answertypecode" node="attribute"/>
+    </field>
+    <field name="unanswered" type="boolean" get-method="isUnanswered" set-method="setUnanswered">
+      <bind-xml name="unanswered" node="attribute"/>
+    </field>
+    <field name="Answer" type="curam.util.ieg.impl.AnswerResult" get-method="getAnswers" set-method="setAnswers" required="false">
+      <bind-xml name="Answer" node="element"/>
+    </field>
+  </class>
+
+  <!-- Mapping for QuestionPageResult class-->
+  <class name="curam.util.ieg.impl.QuestionPageResult">
+    <field name="questionGroupID" type="string" get-method="getQuestionGroupID" set-method="setQuestionGroupID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="loopIndex" type="integer" get-method="getLoopIndex" set-method="setLoopIndex">
+      <bind-xml name="loopindex" node="attribute"/>
+    </field>
+    <field name="loopSize" type="int" get-method="getLoopSize" set-method="setLoopSize">
+      <bind-xml name="loopsize" node="attribute"/>
+    </field>
+    <field name="isList" type="boolean" get-method="isList" set-method="setList">
+      <bind-xml name="list" node="attribute"/>
+    </field>
+    <field name="Question" type="curam.util.ieg.impl.QuestionResult" collection="arraylist" get-method="getQuestions" set-method="setQuestions">
+      <bind-xml name="Question" node="element"/>
+    </field>
+    <field name="childResults" type="curam.util.ieg.impl.QuestionPageResult" collection="arraylist" get-method="getChildren" set-method="setChildren">
+      <bind-xml name="QuestionPageResult" node="element"/>
+    </field>
+  </class>
+
+
+  <!-- Mapping for IEGScriptResult class-->
+  <class name="curam.util.ieg.impl.IEGScriptResult">
+    <map-to xml="IEGScriptResult"/>
+    <field name="scriptID" type="string" get-method="getScriptID" set-method="setScriptID">
+      <bind-xml name="id" node="attribute"/>
+    </field>
+    <field name="pages" type="curam.util.ieg.impl.QuestionPageResult" collection="arraylist" get-method="getPages" set-method="setPages">
+      <bind-xml name="QuestionPageResult" node="element"/>
+    </field>
+    <field name="scriptNotes" type="string" get-method="getScriptNotes" set-method="setScriptNotes" required="false">
+      <bind-xml name="scriptnotes" node="attribute"/>
+    </field>
+    <field name="executionCompleted" type="boolean" get-method="isExecutionCompleted" set-method="setExecutionCompleted">
+      <bind-xml name="executioncomplete" node="attribute"/>
+    </field>
+    <field name="schemaVersionNumber" type="string" get-method="getSchemaVersionNumber" set-method="setSchemaVersionNumber">
+      <bind-xml name="schemaversionnumber" node="attribute"/>
+    </field>
+  </class>
+
+  <!-- Mapping for ListMetaDataDefinition class-->
+  <class name="curam.util.internal.ieg.impl.definition.ListMetaDataDefinition">
+    <map-to xml="ListMetaData"/>
+    <field name="listType" type="string" get-method="getListType" set-method="setListType">
+      <bind-xml name="listtype" node="attribute"/>
+    </field>
+    <field name="numberOfVisibleRows" type="int" get-method="getNumberOfVisibleRows" set-method="setNumberOfVisibleRows">
+      <bind-xml name="numberofvisiblerows" node="attribute"/>
+    </field>
+    <field name="blankDefaultEntry" type="boolean" get-method="getBlankDefaultEntry" set-method="setBlankDefaultEntry" required="false">
+      <bind-xml name="blankdefaultentry" node="attribute"/>
+    </field>
+  </class>
+  
+  <!-- Mapping for StringMetaDataDefinition class-->
+  <class name="curam.util.internal.ieg.impl.definition.StringMetaDataDefinition">
+    <map-to xml="StringMetaData"/>
+    <field name="numberOfVisibleRows" type="int" get-method="getNumberOfVisibleRows" set-method="setNumberOfVisibleRows">
+      <bind-xml name="numberofvisiblerows" node="attribute"/>
+    </field>
+  </class>
+
+</mapping>

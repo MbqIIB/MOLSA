@@ -1,0 +1,17 @@
+SERVER_LOCALE_LIST=en_US,en_GB,en
+LOCALE_LIST=en_US,en_GB,en
+SERVER_MODEL_NAME=Curam
+SERVER_DIR=E:\repos\SSAS\Development\EJBServer
+CURAM_DIR=E:\repos\SSAS\Development
+CURAMSDEJ=E:\repos\SSAS\Development\CuramSDEJ
+CLIENT_PROJECT_NAME=Curam
+CLIENT_DIR=E:\repos\SSAS\Development\webclient
+CURAMCDEJ=E:\repos\SSAS\Development\CuramCDEJ
+DOCMAKER_HOME=E:\repos\SSAS\Development\DocMaker
+
+
+
+CLIENT_COMPONENT_ORDER=custom,PlatformConfig,CommonIntake,Intake,ReferralsLite,CPMReferralsLite,PCR,CREOLEProgramRecommendation,SummaryViews,CitizenContextViewer,CitizenAccount,WorkspaceServices,CitizenWorkspace,CitizenWorkspaceAdmin,FundPM,DecisionAssist,CPM,CPMExternalSecure,CPMExternalNonSecure,CPMSample,ProviderServicePlan,DynamicEvidence,CEFWidgets,IntelligentEvidenceGathering,Datastore,Editors,SupervisorWorkspace,Verification,ServicePlans,sample,CTMInfrastructure,SamplePublicAccess,SamplePublicAccessExternal,EvidenceBroker,CuramFinancialAdapter,CuramMDAdapter,Advisor,EvidenceSharing,PDC,EvidenceFlow,EventAdaptor,ValidationManager
+SERVER_COMPONENT_ORDER=custom,PlatformConfig,CommonIntake,Intake,ReferralsLite,CPMReferralsLite,PCR,CREOLEProgramRecommendation,SummaryViews,CitizenWorkspace,CitizenContextViewer,WorkspaceServices,CitizenWorkspaceAdmin,FundPM,DecisionAssist,CPMSample,CPM,ProviderServicePlan,DynamicEvidence,CEFWidgets,CMISInfrastructure,CMIS,IntelligentEvidenceGathering,Datastore,Editors,SupervisorWorkspace,Verification,ServicePlans,sample,CTMInfrastructure,SamplePublicAccess,PersistenceInfrastructure,EvidenceBroker,CuramFinancialAdapter,CuramMDAdapter,CREOLEInfrastructure,Advisor,EvidenceSharing,PDC,EvidenceFlow,PFMAppViews,Workflow,ValidationManager,EventAdaptor
+
+if exist %CURAM_DIR%\CustomEnvironment.bat call %CURAM_DIR%\CustomEnvironment.bat

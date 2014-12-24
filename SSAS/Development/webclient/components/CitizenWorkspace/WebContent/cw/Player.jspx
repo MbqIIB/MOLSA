@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:curam="http://www.curamsoftware.com/curam"
+  xmlns:cw="http://www.curamsoftware.com/curam/jde/client/curam-cw"
+  xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page import="curam.omega3.texthelper.TextHelper"/>
+  <jsp:directive.page isErrorPage="false" pageEncoding="UTF-8"
+    contentType="text/html;charset=UTF-8" isELIgnored="false"
+    language="java" buffer="32kb" errorPage="/cw/ErrorPage.do"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></jsp:text>
+  <jsp:scriptlet>
+    pageContext.setAttribute("pageLocale", 
+      curam.omega3.user.UserPreferencesFactory.getUserPreferences(
+        pageContext.getSession()).getLocale().toString());
+  </jsp:scriptlet>
+  <curam:userPreferences localeCode="${pageScope.pageLocale}"/>
+  <curam:useTextHelper className="curam.interfaces.PagePlayerEnginePkg.PagePlayerEngine_getPage_TH" beanName="DISPLAY" />
+  <jsp:scriptlet>
+    <![CDATA[
+        // Only set the parameters for the display bean if they have been passed in
+        curam.interfaces.PagePlayerEnginePkg.PagePlayerEngine_getPage_TH getPage_TH = 
+          (curam.interfaces.PagePlayerEnginePkg.PagePlayerEngine_getPage_TH) pageContext.findAttribute("DISPLAY");
+          
+        javax.servlet.http.HttpServletRequest hsRequest;
+        javax.servlet.http.HttpSession httpSession;
+        hsRequest = (javax.servlet.http.HttpServletRequest) request;
+        httpSession = hsRequest.getSession();
+        java.security.Principal userPrincipal = hsRequest.getUserPrincipal();          
+          
+        curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getUserTypeInvalidateSessionHomePage_TH th = 
+          new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getUserTypeInvalidateSessionHomePage_TH();
+        
+        String userName = null;
+              
+        if(userPrincipal != null) {
+          userName = userPrincipal.getName();
+        }
+              
+        th.setFieldValue(th.key$username_idx, userName);
+        
+        th.callServer();
+        
+        String homePage = th.getFieldValue(th.result$homePage_idx);
+
+        String id = request.getParameter("id");
+        String playerpage = request.getParameter("page");
+        
+        String reloadBanner = request.getParameter("reloadBanner");
+        
+        if(null != reloadBanner && reloadBanner.equalsIgnoreCase("true")) {
+            out.print("<script>top.CuramExternalApp._reloadBanner();</script>");
+        }        
+        
+        // ensure that public user can only play the following pages
+        if (playerpage != null 
+            && !playerpage.equals(homePage) 
+            && !playerpage.equals("Logon")
+            && !playerpage.equals("AuthenticationFailed")
+            && !playerpage.equals("ForgottenPassword")
+            && !playerpage.equals("PasswordResetConfirmation")
+            && !playerpage.equals("ResetPassword")
+            && !playerpage.equals("IntakeMandatoryLogin")
+			&& !playerpage.equals("LoginFactors")) {
+              
+          // get the value of the property  
+          String publicUsername = citizenworkspace.pageplayer.PagePlayerProperties.getPublicUsername();
+  
+          if (publicUsername == null) {
+            System.out.println("ERROR: Page player misconfiguration - public.user.name not defined in properties file.");
+            return;
+          }      
+          
+          if (userPrincipal != null && userPrincipal.getName().equals(publicUsername)) {
+            System.out.println("Player.jspx - Tried to play page " + playerpage + " as " + publicUsername);
+            response.sendRedirect(response.encodeRedirectURL("../logonerror.jsp"));
+            return; 
+          }
+        }
+
+        if(playerpage != null 
+            && playerpage.equals("Logon")
+            && Boolean.valueOf(
+              curam.omega3.util.CDEJResources.getApplicationDataProperty("curam.citizenworkspace.use.external.login.page"))) {
+              
+          curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getCWSessionToken_TH getCWSessionToken_TH = 
+            new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getCWSessionToken_TH(); 
+          
+          getCWSessionToken_TH.setFieldValue(getCWSessionToken_TH.key$playerID_idx, id);
+          
+          getCWSessionToken_TH.callServer();
+          
+          String token = getCWSessionToken_TH.getFieldValue(getCWSessionToken_TH.result$token_idx); 
+
+          out.print("<script>window.parent.displayContent({pageID:'CitizenAccount_startProcess', param: [{paramKey:\"token\", paramValue:\""
+            + curam.omega3.request.RequestUtils.escapeURL(token) + "\"}]})" + "</script>");
+
+          return;
+        }      
+        
+        if(playerpage!= null && playerpage.equals(homePage)) {
+          
+          if(userPrincipal != null) {
+            
+            String userTypeCode = th.getFieldValue(th.result$userType_idx);
+            
+            boolean invalidateSessionInd = Boolean.parseBoolean(th.getFieldValue(th.result$invalidateHTTPSession_idx));
+            
+            if(userTypeCode.equals("ANONYMOUS") && invalidateSessionInd) {
+              
+              httpSession.invalidate();
+              
+              response.sendRedirect(response.encodeRedirectURL("../logon.jsp"));
+              return; 
+            }
+          }                   
+        }
+        
+        getPage_TH.callServer();
+        
+        if (id != null) {
+          getPage_TH.setFieldValue(getPage_TH.key$playerExecutionID_idx, id);
+        }
+        if (page != null) {
+          getPage_TH.setFieldValue(getPage_TH.key$pageName_idx, playerpage);
+        }
+
+      ]]>
+  </jsp:scriptlet>   
+  
+  <cw:field domain="PAGE_PLAYER_PAGE_DATA"
+    targetPath="/data/si/ACTION/key$pageData"
+    sourcePath="/data/si/DISPLAY/result$pageData"/>
+</jsp:root>

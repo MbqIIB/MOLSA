@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                                    -->
+<!-- All rights reserved.                                                                                          -->
+<!-- This software is the confidential and proprietary information of Curam         -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose                -->
+<!-- such Confidential Information and shall use it only in accordance with           -->
+<!-- the terms of the license agreement you entered into with Curam                  -->
+<!-- Software.                                                                                                         -->
+<!-- Description                                                                                                       -->
+<!-- ===========                                                                                           -->
+<!-- This page allows user to transfer client from one place to another.               -->
+<PAGE
+  PAGE_ID="ProviderManagement_transferClient"
+  WINDOW_OPTIONS="width=400"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Home"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="Placement"
+    NAME="DISPLAY"
+    OPERATION="viewPlacement"
+    PHASE="DISPLAY"
+  />
+
+
+  <!-- BEGIN, CR00293856, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE
+    CLASS="Placement"
+    NAME="ACTION"
+    OPERATION="solveTransferClient"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00293856 -->
+
+
+  <PAGE_PARAMETER NAME="placementID"/>
+  <PAGE_PARAMETER NAME="placeID"/>
+  <PAGE_PARAMETER NAME="oldPlaceID"/>
+  <PAGE_PARAMETER NAME="versionNo"/>
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="placementKey$placementID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placementID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$placementID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="placeID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$placeID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="versionNo"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="details$placementVersionNo"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00228688, PS -->
+  <CLUSTER LABEL_WIDTH="30">
+    <!-- END, CR00228688 -->
+    <FIELD LABEL="Field.Label.Placement.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$clientName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00248198, GP -->
+    <FIELD
+      LABEL="Field.Label.Placement.FromDate"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+      WIDTH="65"
+    >
+      <!-- END, CR00248198 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="details$startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    >
+      <!-- BEGIN, CR00248553, GP -->
+      <LINK
+        DISMISS_MODAL="false"
+        PAGE_ID="ProviderManagement_resolveTransferClient"
+        SAVE_LINK="false"
+      >
+        <!-- END, CR00248553 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placeID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placeID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placementID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placementID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placementTransferred"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placementTransferred"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$placementVersionNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="placementVersionNo"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00247132, VR -->
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="details$startDate"
+          />
+          <!-- END, CR00247132  -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="startDate"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"/>
+
+
+  </ACTION_SET>
+</PAGE>

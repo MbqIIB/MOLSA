@@ -1,0 +1,199 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ProcessInstance</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Process Instance
+:</b>
+<i> The runtime data for an enacted workflow.
+</i>
+
+<P>
+
+</P>
+
+<P>A new workflow Process Instance row is created for each enactment of a workflow <a href=ProcessDefinition.html>Process Definition</a>.</P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to allow correspondence to be sent to customers whenever their payment details change.  The workflow contains several activities.</P>
+
+<P><a href=Person.html>Person</a> John Smith's payment details change due to an increase in rates.  This increase raises an event which causes the Workflow Engine to enact your workflow and create a row on this table.  All subsequent processing of the workflow for John Smith acts on data which is ultimately tied back to this row.</P>
+
+<P><a href=Person.html>Person</a> Mary Smith's payment details also change; the Workflow Engine enacts the same workflow as for John, but creates a separate Process Instance.
+
+</P>
+
+<p><b>Technical Notes</b></p>
+<P>Processes may be enacted by:</P>
+
+<UL>
+
+<LI>an explicit call to the enactment service (i.e. an explicit call that you write in your customized server application);</LI>
+
+<LI>the occurrence of a system event which you have configured (using the Admin Application) to start your process; or</LI>
+
+<LI>a sub-flow activity in a parent Process Instance.</LI>
+
+</UL> <P>You can customize the Curam server application to raise new system events which you can then configure to trigger the enactment of your workflow(s).</P>
+
+<P>See the Workflow Guide for further information.</P>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (10)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processInstanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">The unique identifier of the process instance, within the workflow engine, that is responsible for the workflow of a particular process instance.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">processID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The unique identifier of the workflow process definition being used.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">processVersion</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The version number of the workflow process definition being used.</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">processType</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The type of the workflow process instance. The valid entries for this field are Normal, Synchronous, and Asynchronous, and this value indicates the type of subflow associated with this process instance.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">status</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The status of the process instance.</td><td class="dataLast">SVR_STRING&lt;10&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">synchronousMode</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">Indicates whether or not the process instance should be executed in synchronous mode (i.e. without the use of messaging).</td><td class="dataLast">SVR_BOOLEAN</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">parentActInstID</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The value of this field indicates the activity instance id of the parent workflow process that executed this process, if this workflow process is a subflow.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">startDateTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time that the process instance was enacted.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">endDateTime</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">The date and time that the process instance was completed.</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ActivityInstance.html#processInstanceID">ActivityInstance.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="FailedMessage.html#processInstanceID">FailedMessage.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="Iteration.html#processInstanceID">Iteration.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="JoinInstance.html#processInstanceID">JoinInstance.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="ProcInstOverflow.html#processInstanceID">ProcInstOverflow.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ProcInstWDOData.html#processInstanceID">ProcInstWDOData.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="SuspendedActivity.html#processInstanceID">SuspendedActivity.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="TransitionInstance.html#processInstanceID">TransitionInstance.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="WDOValuesHistory.html#processInstanceID">WDOValuesHistory.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="WorkflowHistory.html#processInstanceID">WorkflowHistory.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="Alert.html#processInstanceID">Alert.processInstanceID</a></td><td class="dataLast">ProcessInstance.processInstanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (2)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">PIPrntActInstIDIdx</td><td class="dataLast">parentActInstID</td>
+</tr>
+<tr class="indexListValueEven">
+<td class="data">ProcInstPIDVerIdx</td><td class="dataLast">processID, processVersion</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

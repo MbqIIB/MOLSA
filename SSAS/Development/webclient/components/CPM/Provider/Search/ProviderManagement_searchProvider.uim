@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows you to search for a provider using provider name      -->
+<!-- or their reference number.                                             -->
+<PAGE
+  PAGE_ID="ProviderManagement_searchProvider"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <!-- BEGIN, CR00292696, IBM -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <!-- END, CR00292696 -->
+
+
+  <!-- BEGIN, CR00246409, SS -->
+  <!-- BEGIN, CR00237067, GP -->
+  <SERVER_INTERFACE
+    CLASS="MaintainProvider"
+    NAME="ACTION"
+    OPERATION="searchProviders1"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00246409 -->
+  <!-- END, CR00237067 -->
+
+
+  <!-- BEGIN, CR00282506, MR -->
+  <!-- BEGIN, CR00187976, SS -->
+  <CLUSTER
+    LABEL_WIDTH="30"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <!-- END, CR00205479, PS -->
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$referenceNumber"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD LABEL="Field.Label.OwnerName">
+      <!-- END, CR00205479, PS -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="ownerName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00187976, SS -->
+    <FIELD LABEL="Field.Label.ProviderName">
+      <!-- END, CR00187976 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$name"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00235795, PS -->
+  <CLUSTER
+    LABEL_WIDTH="52"
+    NUM_COLS="2"
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Category"
+  >
+    <!-- END, CR00235795 -->
+
+
+    <!-- BEGIN, CR00236707, PS -->
+    <!-- BEGIN, CR00137151, AS -->
+    <FIELD
+      CONFIG="CT_DISPLAY_LABELS"
+      CONTROL="CT_HIERARCHY_VERTICAL"
+      LABEL="Field.Label.ProviderType"
+      WIDTH="70"
+    >
+      <!-- END, CR00137151 -->
+      <!-- END, CR00236707 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="key$providerCategoryType"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00235795, PS -->
+    <FIELD CONTROL="SKIP"/>
+    <!-- END, CR00235795 -->
+  </CLUSTER>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Reset">
+        <LINK PAGE_ID="ProviderManagement_searchProvider"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <!-- END, CR00282506 -->
+
+
+  <!-- BEGIN, CR00237067, GP -->
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <!-- BEGIN, CR00282506, MR -->
+    <DETAILS_ROW MINIMUM_EXPANDED_HEIGHT="10">
+      <INLINE_PAGE PAGE_ID="ProviderManagement_providerHomeTabDetailsPreview">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD
+      LABEL="Field.Label.ProviderName"
+      WIDTH="35"
+    >
+      <!-- END, CR00205479 -->
+      <!-- END, CR00187976 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="providerSummaryVersionDetails$nameReferenceNumberOpt"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00206896, SS -->
+    <FIELD
+      LABEL="Field.Label.PrimaryCategory"
+      WIDTH="25"
+    >
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="primaryCategory"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD
+      LABEL="Field.Label.OwnerName"
+      WIDTH="30"
+    >
+      <!-- END, CR00205479 -->
+      <!-- END, CR00187976 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="ownerFullName"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Organization_viewUserDetails"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="owner"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="userName"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00206896, SS -->
+    <!-- BEGIN, CR00187976, SS -->
+    <!-- BEGIN, CR00205479, PS -->
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="15"
+    >
+      <!-- END, CR00282506 -->
+      <!-- END, CR00205479 -->
+      <!-- END, CR00187976 -->
+      <!-- END, CR00206896 -->
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="recordStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00237067 -->
+</PAGE>

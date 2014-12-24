@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	
+	This is the ant utilities file for Reporting project.
+	It contains any configuration test tasks used by the reporting build.
+	
+-->
+<project default="cognos.all">
+
+
+	<!--  ***************************  -->
+	<!--  ***  Import Properties  ***  -->
+	<!--  ***************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_properties.xml" />
+
+
+	<!--  *******************************  -->
+	<!--  ***  Import initialization  ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_init.xml" />
+
+
+	<!--  *******************************  -->
+	<!--  ***  Import utilities       ***  -->
+	<!--  *******************************  -->
+	<import file="${REPORTING_ENV}/scripts/rep_utilities.xml" />
+
+
+	
+	<!--  **********************************************************************-->
+	<!--  ***  all cognos file to the deployment preperation folder and        *-->
+	<!--  ***  then to the cognos home webcontent folder                       *-->
+	<!--  **********************************************************************  -->
+	<target depends="init"
+		description="Copy cognos zips, images and maps  to the Cognos deployment preperation folder, and then to the cognos home web content folders"
+		name="cognos.all">
+		
+		<!-- add a test here to verfiy Cognos home is set 
+		   <AntUtilities propertyName="COGNOSHOMECHECK" operation="EnvVarCheckAndFail" 
+                      value="${sysenv.COGNOS_HOME}"/>
+                -->
+
+		<mkdir dir="${sysenv.COGNOS_HOME}${file.separator}webcontent${file.separator}samples${file.separator}deployment" />
+		<mkdir dir="${sysenv.COGNOS_HOME}${file.separator}webcontent${file.separator}samples${file.separator}images" />
+		
+		<antcall target="cognos.preparezips" />
+		<antcall target="cognos.prepareimages" />
+		<antcall target="cognos.preparemaps" />
+	
+		
+		<antcall target="cognos.zipstocognos" />
+		<antcall target="cognos.imagestocognos" />
+		<antcall target="cognos.mapstocognos" />
+		
+		<echo message="----Report-----"/>
+		<echo
+		message="Cognos deployment preperation folders created here" />
+		<echo message="${dir.bld.cognos}"/>
+		<echo message=""/>
+		<echo message="Cognos zips copied from preparation folder to ${sysenv.COGNOS_HOME}${file.separator}webcontent${file.separator}samples${file.separator}deployment" />
+		
+		<echo	message="Cognos images/map copied from preparation folder to ${sysenv.COGNOS_HOME}${file.separator}webcontent${file.separator}samples${file.separator}images" />
+
+	</target>
+
+	<!--  **********************************************************************  -->
+	<!--  ***  copy cognos zips to the deployment preperation folder         ***  -->
+	<!--  **********************************************************************  -->
+	<target  
+		name="cognos.preparezips">
+		
+		<copy flatten="true" verbose="false" todir="${dir.bld.cognos.deployment}">
+			<fileset dir="${dir.bicontent}">
+				<include name="**/cognos/deployment/*.zip" />
+			</fileset>
+		</copy>
+	</target>
+	
+	
+	<!--  **************************************************************************  -->
+	<!--  ***  copy cognos images to the deployment preperation folder           ***  -->
+	<!--  **************************************************************************  -->
+	<target  
+		name="cognos.prepareimages">
+		
+		<copy flatten="true" verbose="false"
+			todir="${dir.bld.cognos.images}">
+			<fileset dir="${dir.bicontent}">
+				<exclude name="**/cognos/images/*.cmf" />
+				<include name="**/cognos/images/*.*" />
+				
+			</fileset>
+		</copy>
+		
+	</target>
+	
+	<!--  **************************************************************************  -->
+	<!--  ***  copy cognos maps  to the deployment preperation folder            ***  -->
+	<!--  **************************************************************************  -->
+	<target  
+		name="cognos.preparemaps">
+		<copy flatten="true" verbose="false"
+			todir="${dir.bld.cognos.maps}">
+			<fileset dir="${dir.bicontent}">
+				<include name="**/cognos/images/*.cmf" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<!--  **************************************************************************  -->
+	<!--  ***  copy cognos zips  to cognos home                                  ***  -->
+	<!--  **************************************************************************  -->
+	<target if="sysenv.COGNOS_HOME" name="cognos.zipstocognos">
+		<copy flatten="true" verbose="false" todir="${sysenv.COGNOS_HOME}${file.separator}webcontent${file.separator}samples${file.separator}deployment">
+			<fileset dir="${dir.bld.cognos.deployment}">
+				<include name="*.zip" />
+			</fileset>
+		</copy>
+		
+	</target>
+	
+	<!--  ****************************************************************************************************  -->
+	<!--  ***  copy cognos images  to the cognos home  web content images folder                           ***  -->
+	<!--  ****************************************************************************************************  -->
+	<target  if="sysenv.COGNOS_HOME" name="cognos.imagestocognos">
+			<copy flatten="true" verbose="false"
+				todir="${sysenv.COGNOS_HOME}${file.separator}webcontent${file.separator}samples${file.separator}images">
+				<fileset dir="${dir.bld.cognos.images}">
+					<include name="*.*" />
+					<exclude name="*.cmf" />
+				</fileset>
+			</copy>
+		</target>
+	
+	<!--  ****************************************************************************************************  -->
+	<!--  ***  copy cognos maps  to the default maps folder                                                ***  -->
+	<!--  ****************************************************************************************************  -->
+	<target if="sysenv.COGNOS_HOME"
+		description="Copy cognos maps to the Cognos deployment folder"
+			name="cognos.mapstocognos">
+		<copy flatten="true" verbose="false"
+			todir="${sysenv.COGNOS_HOME}${file.separator}maps">
+			<fileset dir="${dir.bld.cognos.maps}">
+				<include name="*.cmf" />
+			</fileset>
+		</copy>
+	</target>
+
+
+
+</project>

@@ -1,0 +1,168 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>JoinInstance</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>Join Instance
+:</b>
+<i> A count of the number of parallel branches remaining to be synchronized at an instance of a workflow join (synchronization point) in a <a href=ProcessInstance.html>Process Instance</a>.
+</i>
+
+<P>
+
+      When a <a href=ProcessInstance.html>Process Instance</a> reaches a Parallel (AND) Split, it creates multiple threads of execution that must be synchronized at a corresponding Parallel (AND) Join.  The workflow engine creates a Join Instance row once it has determined the number of outbound transitions that can be followed out of the Parallel (AND) Split.  This row contains a count of the number of threads that must terminate before the Join Instance is satisfied and the engine can execute the activity associated with the join.
+
+    </P>
+
+<P>
+
+      As each inbound thread on the join completes, it decrements the waitCount (the number of remaining threads).  When the waitCount reaches 0, the synchronization is complete and the engine executes the activity associated with the join.
+
+    </P>
+
+<p><b>Example</b></p>
+<P>
+
+    You define a workflow (<a href=ProcessDefinition.html>Process Definition</a>) to obtain vetting information about candidates for employment as teachers.  The activities defined in your workflow are:
+
+      </P>
+
+<UL>
+
+<LI>a Parallel (AND) split that executes the following two activities in parallel:</LI>
+
+<UL>
+
+<LI>a police background check on the candidate; and</LI>
+
+<LI>a references check with all referees listed on the candidate's resume.  This activity is not executed if the candidate has had no previous employment (e.g. a recent graduate).</LI>
+
+</UL> <LI>a Parallel (AND) join that synchronizes the completion of the previous parallel activities; and</LI>
+
+<LI>an activity that adds the candidate's name to the list of candidates eligible for interview.  This activity only executes if all previously executed checks passed.</LI>
+
+</UL> <P>
+
+      John Smith's applies for a job as a teacher in a local school.  An employee at the school board enters his application details into the system.  This triggers the enactment of your workflow and creates a <a href=ProcessInstance.html>Process Instance</a>.
+
+    </P>
+
+<P>
+
+      The workflow engine executes the <a href=ProcessInstance.html>Process Instance</a>.  The first thing it encounters is the Parallel (AND) split.  It checks the two parallel activities for pre-conditions.  The first (police check) has no pre-condition, so it is added to the list of executable activities.  The second (resume check) has a pre-condition which evaluates 'true' (as John has worked in another school before).  The workflow engine creates two parallel threads for execution of the two activities.  It also creates a Join Instance record with a wait count of 2, to denote that the join should synchronize two threads.
+
+    </P>
+
+<P>
+
+      The 'police check' activity completes (John has no record) and the workflow engine decrements the wait count on the Parallel (AND) Join; which becomes 1.  The 'resume check' activity completes (all references checked out OK) and the workflow engine decrements the wait count on the Parallel (AND) Join; which becomes 0.  The workflow engine detects that the Join is satisfied and executes the activity that adds the candidate's name to the list of candidates eligible for interview.
+
+    </P>
+
+<p><b>Technical Notes</b></p>
+<P>At runtime, any arbitrary number of paths can be taken out of a Parallel (AND) split, from the number of available paths to 0.  The JoinInstance will reflect the number of paths taken, as long as it is greater than 0.  If no paths are taken, the workflow engine detects that the <a href=ProcessInstance.html>Process Instance</a> has stalled and creates a <a href=FailedMessage.html>Failed Message</a> for the attention of an administrator.</P>
+
+
+
+
+
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">joinInstanceID</td><td class="data">Yes</td><td class="data">No</td><td class="data">Uniquely identifies ID a runtime instance of a join in a workflow.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">processInstanceID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The primary key of the Process Instance in which the join instance was created.</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">joinMetaID</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The ID of a join in the Process Definition metadata (currently the ID of the activity to which the join is connected).</td><td class="dataLast">SVR_INT64</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">waitCount</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">The number of threads that remain to be synchronized by this workflow join.</td><td class="dataLast">SVR_INT8</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">JoinInstance.processInstanceID</td><td class="dataLast"><a href="ProcessInstance.html#processInstanceID">ProcessInstance.processInstanceID</a></td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Indices (1)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Indices');" id="iconIndices"></td>
+</tr>
+</thead>
+<tbody id="tableBodyIndices">
+<tr>
+<td class="heading">Index Name</td><td class="headingLast">Attributes</td>
+</tr>
+<tr class="indexListValueOdd">
+<td class="data">JoinInstanceIndex1</td><td class="dataLast">joinMetaID, processInstanceID</td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+This file defined the set of test for the Reporting infastructure project.
+it depends on a tests/buildtests.xml and writes result to a test results folder
+-->
+<project name="ReportingInfastructureTestFramework" default="tests.jar.infa">
+<property environment="sysenv." />
+
+<!--  ******************************************************************  -->
+<!--  ***  Import Properties                                         ***  -->
+<!--  ******************************************************************  -->
+
+<import file="${sysenv.REPORTING_ENV}/scripts/rep_properties.xml"/>
+<import file="${sysenv.REPORTING_ENV}/scripts/rep_tasks.xml"/>
+
+
+<property name="jar.testinfastructure" value="${jar.reporting.internaltestinfra}"/>
+
+  <!--  **************************  -->
+  <!--  ***  TASK DEFINITIONS  ***  -->
+  <!--  **************************  -->
+  <!--  **************************  -->
+  <!--  ***  task definitions  ***  -->
+  <!--  **************************  -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${jar.ant.contrib}"/>
+    </classpath>
+  </taskdef>
+  
+  <!-- Load the System environment variables -->
+
+
+    <mkdir dir="${sysenv.REPORTING_DIR}/build/jar" />
+
+  <!--======================= test classpath ===========================--> 
+  <path id="test.classpath">
+    <pathelement path="${sysenv.PRE_CLASSPATH}"/>
+    <pathelement location="${prop.file.location}"/>
+    <pathelement path="${jar.testinfastructure}"/>
+    <pathelement path="${jar.reporting.defaulttransforms}"/>
+
+    <path refid="ExternalCompile.path"/>
+
+    <pathelement path="${jar.reporting.buildtasks}"/>
+    <pathelement path="${jar.reporting.helpersexternaluse}"/>
+    <fileset dir="${dir.bld.jar}">
+       <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${sysenv.REPORTING_ENV}/lib">
+       <include name="*.jar"/>
+    </fileset>    
+    <fileset dir="${sysenv.REPORTING_ENV}/lib-ext">
+       <include name="*.jar"/>
+    </fileset>       
+    <pathelement path="${environment.jdbc.jars}"/>
+
+    <pathelement path="${sysenv.POST_CLASSPATH}"/>
+
+  </path>
+
+  <property name="prop.test.classpath" refid="test.classpath"/>
+  <property name="dir.test.alternatename" value="testresults"/>
+
+
+  <!--======================= test classpath ===========================--> 
+
+
+<!--  ******************************************************************  -->
+<!--  ***  bootstrap the test folders                                ***  -->
+<!--  ******************************************************************  -->
+
+ <target description=" copies in the required jars "
+  name="init"
+  >
+
+   
+   <mkdir dir="${DEV_jar}"/>
+   <mkdir dir="${sysenv.REPORTING_ENV}/build/tasks"/>
+   <mkdir dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests"/>
+   <mkdir dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build"/>
+   <mkdir dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/cls"/>
+ 
+   <mkdir dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/gen"/>
+   <mkdir dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/gen/source"/>
+   
+</target>
+
+
+  
+  <!--  ***  DUMMY  ***  -->
+  <target name="dummy">
+  
+    <echo message="use: jar.tests"/>
+  
+    <echo message="use: execute.tests [-Dexclude.etl.test=true] to exclude ETL based tests "/>
+  
+  
+  </target>
+
+<target description="Cleans the test build environment "
+  name="clean">
+  
+  <delete failonerror="false"  dir="${${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/${dir.test.alternatename}"/>
+
+
+  <delete failonerror="false" dir="${sysenv.REPORTING_ENV}/build/tasks/curam/util/reporting/testcases">
+  </delete>
+  <delete failonerror="false" file="${jar.reporting.internaltestinfra}"/>
+  <delete failonerror="false" dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/cls"/>
+  <delete failonerror="false" file="${${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/jar/${thecomponentpath}Tests.jar}"/>  
+</target>
+
+<!--  ************************************************************************ -->
+<!--  * runs all tests,                                                   ***  -->
+<!--  ***********************************************************************  -->
+
+<target  depends="tests.jar.infa" name="execute.tests" description="executes tests for each component[-Dexclude.etl.test=true] to exclude ETL based tests">
+
+    <echo message="info:running tests for each of ${BI_COMPONENT_ORDER}"/>
+
+          <foreach     
+            target="execute.thetest"     
+            list="${BI_COMPONENT_ORDER}"     
+            delimiter=","     
+            param="thecomponentpath"/>    
+          <antcall target="test.report" />  
+</target>
+
+<!--  ******************************************************************  -->
+<!--  *compiles and jars  one test component                         ***  -->
+<!--  ******************************************************************  -->
+
+<target    name="execute.thetest" >
+    <echo message="info:Executing tests for ${thecomponentpath}"/>
+      <ant antfile="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/runtests.xml"
+        target="execute.test" inheritAll="true" />
+
+</target>
+<!--  ************************************************************************ -->
+<!--  * build all tests,                                                      ***  -->
+<!--  ***********************************************************************  -->
+
+<target  depends="tests.jar.infa" name="jar.tests"  description="generates, compiles and jars tests for each component">
+        
+    <echo message="info:building tests for each of ${BI_COMPONENT_ORDER}"/>
+    <!--<echo message="info:building tests for each of ${prop.test.classpath}"/>-->
+        
+
+          <foreach     
+            target="init"     
+            list="${BI_COMPONENT_ORDER}"     
+            delimiter=","     
+            param="thecomponentpath"/> 
+            
+          <foreach     
+            target="jar.test"     
+            list="${BI_COMPONENT_ORDER}"     
+            delimiter=","     
+            param="thecomponentpath"/>    
+</target>
+
+<!--  ******************************************************************  -->
+<!--  *compiles and jars  one test component                         ***  -->
+<!--  ******************************************************************  -->
+
+<target    name="jar.test" >
+    <echo message="info:=========================================================="/>
+    <echo message="info:Jar tests for ${thecomponentpath}"/>
+    <echo message="info:Jar tests for ${prop.test.classpath}"/>
+    
+    <echo message="info:=========================================================="/>
+
+    <!--  delete class file ensuring the jars are used -->
+    <delete includeemptydirs="true">
+      <fileset dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/cls" includes="**/*"/>
+    </delete>
+    <mkdir dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/source"/>
+
+    <antcall target="tests.generate">
+          <param name="thecomponentpath" value="${thecomponentpath}"/>        
+    </antcall>
+    <javac 
+		 source="${compile.sourceversion}"
+		 target="${compile.targetversion}"
+         executable="${sysenv.JAVA_HOME}${file.separator}bin${file.separator}javac.exe"
+         debug="${compile.debug}"
+         fork="${compile.fork}"
+         memoryMaximumSize="${compile.maxmemory}"
+         memoryInitialSize="${compile.maxmemory}"
+         nowarn="${compile.nowarn}"
+         optimize="${compile.optimize}"
+         deprecation="${compile.deprecation}"
+         verbose="${compile.verbose}"
+         includeAntRuntime="${compile.includeAntRuntime}"
+         includeJavaRuntime="${compile.includeJavaRuntime}"
+         failonerror="${compile.failonerror}"
+         
+         listfiles="${compile.listfiles}"
+		 
+      destdir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/cls"
+      excludes="curam/util/**/*.java "
+      includes="curam/test/**/*.java"
+      srcdir=";${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/source;${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/gen/source">
+
+    <classpath>
+       <path refid="test.classpath"/>
+       <pathelement location="${jar.testinfastructure}"/>  
+       <fileset dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/jar">
+        <include name="*.jar"/>
+       </fileset>
+       <fileset dir="${sysenv.REPORTING_DIR}/components/bibuildtools/jar">
+        <include name="*.jar"/>
+       </fileset>
+
+    </classpath>                 
+    </javac>
+
+    <jar 
+    compress="${compile.compress}"
+    basedir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/cls"
+    destfile="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/jar/${thecomponentpath}Tests.jar" 
+    excludes="curam/util/**/*.class"
+    includes="curam/test/**/*.class " update="false"/>
+
+    <!--  delete class file ensuring the jars are used -->
+    <delete verbose="false" includeemptydirs="true">
+      <fileset dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/cls" includes="**/*"/>
+    </delete>
+    
+    <echo message="info:creating ${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/jar/${thecomponentpath}Tests.jar"/>  
+</target>
+
+<!--  ******************************************************************  -->
+<!--  *compiles and jars  test infastructure                                      ***  -->
+<!--  ******************************************************************  -->
+
+<target  description="Jar's reporting test infastructure classes" name="tests.jar.infa">
+
+    <echo message="test infrastructure build, see BIBuildTools/jar/BIBuildToolsTestInf.jar"/>
+    <!-- assume the component is bootstrapped-->
+    <!--<ant inheritAll="false" antfile="${sysenv.REPORTING_ENV}/build.xml" target="jar"/>
+    
+
+   <javac 
+		 source="${compile.sourceversion}"
+		 target="${compile.targetversion}"
+         executable="${sysenv.JAVA_HOME_RDBMS}${file.separator}bin${file.separator}javac.exe"
+         debug="${compile.debug}"
+         fork="${compile.fork}"
+         memoryMaximumSize="${compile.maxmemory}"
+         memoryInitialSize="${compile.maxmemory}"
+         nowarn="${compile.nowarn}"
+         optimize="${compile.optimize}"
+         deprecation="${compile.deprecation}"
+         verbose="${compile.verbose}"
+         includeAntRuntime="${compile.includeAntRuntime}"
+         includeJavaRuntime="${compile.includeJavaRuntime}"
+         failonerror="${compile.failonerror}"
+         listfiles="${compile.listfiles}"
+	
+	     destdir="${sysenv.REPORTING_ENV}/build/tasks"
+         excludes="curam/util/reporting/internal/**/*.java "
+         includes="curam/util/reporting/testcases/**/*.java"
+         srcdir="${DEV_src}/"> 
+    <classpath>
+     <path refid="test.classpath"/>
+      <pathelement location="${sysenv.REPORTING_DIR}/components/BIBuildTools/tests/build/cls"/>         
+    </classpath>                 
+    
+      <compilerarg value="-version"/>
+    </javac>
+
+    <jar compress="${compile.compress}" basedir="${sysenv.REPORTING_ENV}/build/tasks"
+            destfile="${jar.testinfastructure}" excludes="curam/util/reporting/internal/**/*.class"
+            includes="curam/util/reporting/testcases/**/*.class " update="true"/>
+	-->
+</target>
+
+<!--  ******************************************************************  -->
+<!--  *compiles and jars  test infastructure                                      ***  -->
+<!--  ******************************************************************  -->
+
+<target  name="tests.generate">
+    <echo message="info:=========================================================="/>
+    <echo message="info:Generating tests for ${thecomponentpath}"/>
+    <echo message="info:=========================================================="/>
+    
+    <property name="jar.ant" value="${ant.home}/lib/ant.jar"/>
+    
+
+    <delete verbose="false" failonerror="true"  includeemptydirs="true"
+      dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/gen/source"/>
+    <mkdir dir="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/gen/source"/>
+    
+    <java
+        classname="curam.util.reporting.testcases.buildenvironment.ControlTableTestGenerator"
+        failonerror="true"
+        fork="true"
+      >
+      <classpath>
+         <path refid="test.classpath"/>
+         <pathelement location="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests"/>                  
+         <pathelement location="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/build/cls"/>         
+         <pathelement location="${jar.ant}"/>         
+         <pathelement location="${environment.jdbc.jars}"/>
+         <pathelement location="${prop.file.location}"/>
+
+      </classpath>       
+        <arg value="${thecomponentpath}"/>
+        <env key="REPORTING_DIR" value="${sysenv.REPORTING_DIR}"/>    
+
+        <jvmarg value="-DTEST_COMPONENT_NAME=${thecomponentpath}"/>        
+        <jvmarg value="-Djdbc.drivers=${environment.jdbc.drivers}"/>  
+      </java>
+      
+
+    
+</target>
+ 
+
+
+<!--  ******************************************************************  -->
+<!--  * executes the tests for ${teststoinclude} for a named         ***  -->
+<!--  * component and generates a test report                               ***  -->
+<!--  ******************************************************************  -->
+<target  name="tests.run">
+
+    <echo message="info:=========================================================="/>
+    <echo message="info:Executing tests for ${thecomponentpath}"/>
+    <echo>info:test results ${dir.test.results}/tests/build/${dir.test.alternatename}/xml</echo> 
+    <echo>info:test jar file ${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/jar/${thecomponentpath}Tests.jar</echo> 
+    <echo>info:classapth ${prop.test.classpath}</echo>     
+    <echo message="info:=========================================================="/>
+
+   <!-- create the command file which will run against db2 -->
+   <tstamp>
+     <format pattern="EEE-dd-MMM-yyyy-hha" property="time.now"/>
+   </tstamp>
+   
+   <mkdir dir="${dir.test.results}/${dir.test.alternatename}/"/>
+   <mkdir dir="${dir.test.results}/${dir.test.alternatename}/html"/>
+   <mkdir dir="${dir.test.results}/${dir.test.alternatename}/xml"/>
+   
+
+
+    <junit showoutput="true" fork="true" newenvironment="true"  printsummary="true" haltonfailure="false" haltonerror="false">
+      <classpath>
+         <path refid="test.classpath"/>
+          <pathelement location="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/jar/${thecomponentpath}Tests.jar"/>        
+          
+      </classpath>
+
+      <jvmarg value="-DREPORTING_DIR=${sysenv.REPORTING_DIR}"/>
+      <jvmarg value="-DREPORTING_ENV=${sysenv.REPORTING_ENV}"/>
+      <jvmarg value="-DTEST_COMPONENT_NAME=${thecomponentpath}"/>
+      <formatter type="brief"/>
+      <formatter type="xml"/>
+      <batchtest todir="${dir.test.results}/${dir.test.alternatename}/xml">
+        <zipfileset src="${sysenv.REPORTING_DIR}/components/${thecomponentpath}/tests/jar/${thecomponentpath}Tests.jar">                        
+          <patternset refid="${teststtoinclude}">
+            
+          </patternset>
+
+        </zipfileset>
+      </batchtest>
+    </junit>
+
+</target>
+
+<!--  ******************************************************************  -->
+<!--  *builds the html test report                                   ***  -->
+<!--  ******************************************************************  -->
+<target  depends="declareTasks" name="test.report">
+
+
+  <junitreport todir="${dir.test.results}/${dir.test.alternatename}/xml">
+      <fileset dir="${dir.test.results}/${dir.test.alternatename}/xml">
+      <include name="TEST-*.xml"/>
+  </fileset>
+                <report format="frames" todir="${dir.test.results}/${dir.test.alternatename}/html"/>
+  </junitreport>
+
+   <!-- create the command file which will run against db2 -->
+   <tstamp>
+     <format pattern="EEE-dd-MMM-yyyy-hh.mma" property="time.now"/>
+   </tstamp>
+    
+      <property name="CURAMBI_FILESERVER"
+                  value="TINY.CURAMSOFTWARE.COM" />
+   
+   <condition property="the.machineid" value="${sysenv.COMPUTERNAME}">
+      <and>
+        <isset property="sysenv.COMPUTERNAME"/>        
+      </and>
+    </condition>
+    <property name="the.machineid" value="LOCALHOST"/>
+   
+    <echo message="About to copy test results from ${the.machineid} to ${the.remote.url}" />
+    
+   <copy verbose="false" todir="\\${sysenv.CURAMBI_FILESERVER}/ProductDevelopment/CuramApps/DataWarehouse/devtestresults/${the.machineid}/${dir.test.alternatename}${time.now}">
+     <fileset dir="${dir.test.results}/${dir.test.alternatename}">
+       <include name="**"/>
+     </fileset>
+    </copy>
+
+    <property name="lanuch.file" value="${dir.test.results}/${dir.test.alternatename}${file.separator}html${file.separator}index.html"/>
+    <property name="the.remote.url" value="\\${sysenv.CURAMBI_FILESERVER}/ProductDevelopment/CuramApps/DataWarehouse/devtestresults/${the.machineid}/${dir.test.alternatename}${time.now}${file.separator}html${file.separator}index.html"/>
+ 
+    <AntUtilities sourceProperty="lanuch.file" propertyName="lanuch.file.windows"   
+    operation="replace" value="/" replace="\"/>
+
+    <AntUtilities sourceProperty="the.remote.url" propertyName="tiny.lanuch.file.windows"   
+    operation="replace" value="/" replace="\"/>
+    
+    <echo message=" url will be (hopefully) file:///${lanuch.file.windows}"/>
+    <echo message=" url will be (hopefully) file:///${file.separator}${tiny.lanuch.file.windows}"/>
+
+
+    <antcall target="lanuchtestresults" >
+    <param name="param.lanuch.file" value="${lanuch.file.windows}"/>
+    </antcall>
+    
+</target>
+
+ <target description="lanuch test results" if="launch.test.results"
+  name="lanuchtestresults"
+  >   
+  <exec
+    dir="${dir.test.results}"
+    error="${errorlog}"
+    executable="cmd"
+    failonerror="false" >
+      <arg value="/c start explorer.exe file:///${param.lanuch.file}"/>     
+  </exec>
+  </target>
+  
+</project>

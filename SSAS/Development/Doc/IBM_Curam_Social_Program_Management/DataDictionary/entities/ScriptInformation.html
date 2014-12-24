@@ -1,0 +1,118 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database Table: <i>ScriptInformation</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">Table Description</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Doc');" id="iconDoc"></td>
+</tr>
+</thead>
+<tbody id="tableBodyDoc">
+<tr>
+<td class="singleValue" colspan="2"><b>IEG Script:</b>
+<i> A controlled flow through one or more <a href=GroupInformation.html>Question Groups</a>.</i>
+<P>An Intelligent Evidence Gathering (IEG) script contains one or more groups of questions.  The flow of the script is stored on an IEG Script row.</P>
+<P>An IEG Script can control the flow of questions based on the answer(s) to previous questions.</P>
+<p><b>Example</b></p><P>You implement new application functionality to screen claims for your unemployment <a href=Product.html>Product</a>.  Your functionality requires to execute an IEG Script to gather basic evidence for the claim.</P>
+<P>You use the IEG Editor to define a new IEG Script to gather this evidence.  Your IEG Script contains the following <a href=GroupInformation.html>Question Groups</a>:</P>
+<UL>
+<LI>personal details - the claimant's name, address and date of birth;</LI>
+<LI>cessation reason - the reason why the claimant left their last employment; and</LI>
+<LI>last employment details - the name and address of the claimant's last employer and the date that the claimant's employment ceased.</LI>
+</UL>
+<P>You specify that if the reason why the claimant left their last employment was 'voluntary quit' then the script should end (since the claimant will not be eligible for your unemployment <a href=Product.html>Product</a>); otherwise the script should continue on to gather the last employment details.</P>
+<P>The IEG Editor creates an IEG Script row to specify which <a href=GroupInformation.html>Question Groups</a> are used by the script and the logical/conditional flow between them.</P>
+<P><a href=Person.html>Person</a> John Smith applies for your unemployment <a href=Product.html>Product</a> and is interviewed by <a href=Users.html>User</a> Ronan Rooney.  Ronan navigates to your screening application functionality which invokes the IEG Execution Infrastructure to start your script.</P>
+<P>The IEG Execution Infrastructure reads the IEG Script row to identify which <a href=GroupInformation.html>Question Groups</a> to use, and:</P>
+<UL>
+<LI>creates a web page asking Ronan to enter John Smith's name, address and date of birth.  Ronan enters this information and clicks 'Next';</LI>
+<LI>creates a web page asking Ronan to choose from a list of reasons why John Smith left his last employment.  Ronan chooses 'Lack of work' and clicks 'Next';</LI>
+<LI>creates a web page asking Ronan to enter details of John Smith's last employment.  Ronan enters these details and clicks 'Next'; and</LI>
+<LI>displays an 'End of Script' page.  Ronan clicks 'Finish'.</LI>
+</UL>
+<P>The script ends and control returns to your application functionality, which assesses that John may be eligible for your unemployment <a href=Product.html>Product</a> and proceeds to gather further evidence required by your <a href=Product.html>Product's</a> rules.</P>
+<P><a href=Person.html>Person</a> Mary Smith also applies for your unemployment <a href=Product.html>Product</a> and is interviewed by <a href=Users.html>User</a> Ronan Rooney.  Ronan navigates to your screening application functionality which invokes the IEG Execution Infrastructure to start your script.</P>
+<P>The IEG Execution Infrastructure:</P>
+<UL>
+<LI>creates a web page asking Ronan to enter  Mary Smith's name, address and date of birth.  Ronan enters this information and clicks 'Next';</LI>
+<LI>creates a web page asking Ronan to choose from a list of reasons why Mary Smith left her last employment.  Ronan chooses 'Voluntary quit' and clicks 'Next'; and</LI>
+<LI>displays an 'End of Script' page.  Ronan clicks 'Finish'.</LI>
+</UL>
+<P>The script ends and control returns to your application functionality, which assesses that Mary is not eligible for your unemployment <a href=Product.html>Product</a>.</P>
+<p><b>Technical Notes</b></p><P>See the Intelligent Evidence Gathering Guide.</P>
+
+
+
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="5"></colgroup>
+<thead>
+<tr>
+<td colspan="4" class="collapse">Attributes (5)</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Atts');" id="iconAtts"></td>
+</tr>
+</thead>
+<tbody id="tableBodyAtts">
+<tr>
+<td class="heading">Attribute</td><td class="heading">Key</td><td class="heading">Nullable</td><td class="heading">Description</td><td class="headingLast">DDL Type</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">scriptID</td><td class="data">Yes</td><td class="data">No</td><td class="data">IEG script ID.</td><td class="dataLast">SVR_STRING&lt;100&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">name</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">IEG script name.</td><td class="dataLast">SVR_STRING&lt;200&gt;</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">scriptDefinition</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">IEG script xml data.</td><td class="dataLast">SVR_STRING&lt;1048576&gt;</td>
+</tr>
+<tr class="listValueEven">
+<td class="data">versionNo</td><td class="data">&nbsp;</td><td class="data">No</td><td class="data">&nbsp;</td><td class="dataLast">SVR_INT32</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data">lastWritten</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="data">&nbsp;</td><td class="dataLast">SVR_DATETIME</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="list" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Foreign Keys</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('ForeignKeys');" id="iconForeignKeys"></td>
+</tr>
+</thead>
+<tbody id="tableBodyForeignKeys">
+<tr>
+<td class="heading">Child</td><td class="headingLast">Parent</td>
+</tr>
+<tr class="listValueOdd">
+<td class="data"><a href="IEGExecutionInfo.html#scriptID">IEGExecutionInfo.scriptID</a></td><td class="dataLast">ScriptInformation.scriptID</td>
+</tr>
+<tr class="listValueEven">
+<td class="data"><a href="ScriptGroupRels.html#scriptID">ScriptGroupRels.scriptID</a></td><td class="dataLast">ScriptInformation.scriptID</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

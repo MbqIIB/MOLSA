@@ -1,0 +1,38 @@
+# patterns explained at http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
+
+log4j.rootLogger=DEBUG, A1, ROLLINGFILE
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+
+# Print the date in ISO 8601 format, e.g. %d{dd MMM yyyy HH:mm:ss,SSS}
+# %t  Name of the thread making the log request 
+# %#c Name of the logger associated with the log request 
+# %-60c Left-justify the logger name within 60 spaces minimum 
+# %r Number of milliseconds elapsed since start of the application  
+# %p Level of the log statement  
+# %m 
+#log4j.appender.A1.layout.ConversionPattern=%d{dd MMM yyyy HH:mm:ss} %-21c %-5p %m 
+
+log4j.appender.A1.layout.ConversionPattern=%d{dd MMM yyyy HH:mm:ss} %-5p %m 
+
+# Print only messages of level WARN or above in the package com.foo
+# Loggers may be assigned levels. The set of possible levels, that is:
+#
+# TRACE,
+# DEBUG,
+# INFO,
+# WARN,
+# ERROR 
+# FATAL
+log4j.logger.curam.util.reporting=INFO
+ 
+## -- append to file also
+log4j.appender.ROLLINGFILE=org.apache.log4j.RollingFileAppender
+log4j.appender.ROLLINGFILE.File=%BI_LOG_FILE%
+log4j.appender.ROLLINGFILE.MaxFileSize=500KB
+log4j.appender.ROLLINGFILE.MaxBackupIndex=1
+log4j.appender.ROLLINGFILE.append=false
+log4j.appender.ROLLINGFILE.layout=org.apache.log4j.PatternLayout
+log4j.appender.ROLLINGFILE.layout.ConversionPattern=%d{dd MMM yyyy HH:mm:ss} %-5p %m %n
+ 
+

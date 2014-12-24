@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.                                     -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ====================================================================== -->
+<!-- This page allows the user to search taxonomy terms by keyword and code -->
+<!-- and allows to add the taxonomy terms to a related concept.             -->
+<!-- BEGIN, CR00248676, FM -->
+<?curam-deprecated Since Curam 6.0.
+  This page is deprecated as it is not supported and is implemented for 
+  internal use only. See release note: CR00248676 ?>
+<!-- END, CR00248676 -->
+<PAGE
+  PAGE_ID="ProviderManagement_taxonomySearchDetails"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="TaxonomyTermSearch"
+    NAME="ACTION"
+    OPERATION="search"
+    PHASE="ACTION"
+  />
+  <CLUSTER
+    DESCRIPTION="Cluster.Title.SearchCriteria.Description"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.SearchCriteria"
+  >
+    <FIELD LABEL="Field.Label.SearchCriteria">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="name"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="searchCriteria"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      TOP="false"
+    >
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="THIS"
+        />
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        LABEL="ActionControl.Label.Reset"
+        TYPE="SUBMIT"
+      >
+        <LINK
+          DISMISS_MODAL="false"
+          PAGE_ID="ProviderManagement_taxonomySearchDetails"
+        />
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+  <CLUSTER
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Counts"
+  >
+    <FIELD LABEL="Field.Label.NumberOfTaxonomyTerms">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="taxonomyTerm"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.NumberOfRelatedConcept">
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="relatedConcept"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.TermSearchResults">
+    <LIST>
+      <FIELD LABEL="Field.Label.Term">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="termName"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.IndexedServices">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="noOfServices"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD LABEL="Field.Label.ReferralServices">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="noOfReferalServices"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_referralServicesByTerm"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="termID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyTermID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <FIELD LABEL="Field.Label.NonReferralServices">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="noOfNonReferralServices"
+          />
+        </CONNECT>
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_nonReferralServicesByTerm"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="termID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyTermID"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+  <CLUSTER TITLE="Cluster.Title.RelatedConceptSearchResults">
+    <LIST>
+      <FIELD LABEL="Field.Label.RelatedConcept">
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="relatedConceptName"
+          />
+        </CONNECT>
+      </FIELD>
+    </LIST>
+  </CLUSTER>
+</PAGE>

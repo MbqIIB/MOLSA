@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view the home study details.                  -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewServiceInvoiceLineItemModifications"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="SILIHistoryID"/>
+
+
+  <!-- BEGIN, CR00200393, SSK -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY"
+    OPERATION="viewSILIAndCorrectionModifications"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00200393 -->
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <SERVER_INTERFACE
+    CLASS="ServiceInvoice"
+    NAME="DISPLAY2"
+    OPERATION="listClientsForServiceInvoiceLineItemHistory"
+    PHASE="DISPLAY"
+  />
+  <!-- END, CR00158345 -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="SILIHistoryID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$siliHistoryID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="SILIHistoryID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="key$siliHistoryID"
+    />
+  </CONNECT>
+  <!-- END, CR00158345 -->
+
+
+  <!-- BEGIN, CR00246368, PS -->
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+  >
+    <!-- END, CR00246368 -->
+
+
+    <FIELD LABEL="Field.Label.ServiceAuthorizationReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="saReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.NumberofUnits">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="noOfUnits"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00206955, PS -->
+    <FIELD LABEL="Field.Label.AmountInvoiced">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="amountInvoiced"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00206955 -->
+
+
+    <FIELD LABEL="Field.Label.CaseReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.UnitAmount">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="unitAmount"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00197955, PS -->
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.PayeeDetails"
+  >
+    <!-- END, CR00197955 -->
+    <FIELD LABEL="Field.Label.PayeeReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="payeeReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PayeeName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="payeeName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00197955, PS -->
+  <CLUSTER
+    LABEL_WIDTH="55"
+    NUM_COLS="2"
+    TAB_ORDER="ROW"
+    TITLE="Cluster.Title.ProviderDetails"
+  >
+    <!-- END, CR00197955 -->
+
+
+    <FIELD LABEL="Field.Label.ProviderReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.ProviderName">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="providerName"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <!-- BEGIN, CR00158345, GP -->
+  <LIST TITLE="List.Label.ClientDetails">
+    <FIELD LABEL="Field.Label.ClientReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientReferenceNo"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00197955, PS -->
+    <FIELD
+      LABEL="Field.Label.ClientFirstName"
+      WIDTH="20"
+    >
+      <!-- END, CR00197955 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientFirstName"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- BEGIN, CR00197955, PS -->
+    <FIELD
+      LABEL="Field.Label.ClientLastName"
+      WIDTH="20"
+    >
+      <!-- END, CR00197955 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientLastName"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="Field.Label.ClientDateofBirth"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY2"
+          PROPERTY="clientDOB"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+  <!-- END, CR00158345 -->
+
+
+</PAGE>

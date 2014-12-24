@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010-2011 Curam Software Ltd.		        	                     -->
+<!-- All rights reserved.                                           		 -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description                                                             -->
+<!-- ===========                                                             -->
+<!-- This page allows the user to view import statistics after importing a   -->
+<!-- taxonomy version data.                                                  -->
+<PAGE
+  PAGE_ID="ProviderManagement_viewImportLogStatistics"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="taxonomyVersionDataID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="taxonomyVersionDataID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="taxonomyVersionDataID"
+    />
+  </CONNECT>
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyVersion"
+    NAME="DISPLAY"
+    OPERATION="viewTaxonomyImportStats"
+    PHASE="DISPLAY"
+  />
+
+
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+    TITLE="Cluster.Title.Details"
+  >
+    <FIELD LABEL="Field.Label.AllTerms">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="totalTerms"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ModifiedTerms">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="modifiedTerms"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_listImportLogsForModifiedTerms"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageNo"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NotImportedTerms">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="notImportedTerms"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_listImportLogsForNotImportedTerms"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageNo"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.NewTerms">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="newTerms"
+        />
+      </CONNECT>
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_listImportLogsForNewTerms"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageNo"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.ReplacedTerms">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="replacedTerms"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_listImportLogsForReplacedTerms"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageNo"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.DeletedTerms">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="deletedTerms"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_listImportLogsForDeletedTerms"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyVersionDataID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="pageNo"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageNo"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+
+
+  </CLUSTER>
+</PAGE>

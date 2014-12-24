@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008, 2010-2012 Curam Software Ltd.                               -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page creates the absence details correction                       -->
+<PAGE
+  PAGE_ID="ProviderManagement_createAbsencePeriodCorrection"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="prliCorrectionID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <!-- BEGIN, CR00129138, RD -->
+  <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
+  <!-- END, CR00129138 -->
+
+
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+
+
+  <SERVER_INTERFACE
+    CLASS="MaintainPRLICorrection"
+    NAME="ACTION"
+    OPERATION="createAbsenceCorrectionDetails"
+    PHASE="ACTION"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="prliCorrectionID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="absenceCorrectionDetails$details$prliCorrectionID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00282462, SS -->
+  <!-- BEGIN, CR00306535, SS -->
+  <CLUSTER
+    LABEL_WIDTH="40"
+    NUM_COLS="1"
+  >
+    <!-- END, CR00306535 -->
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceCorrection.AbsenceReason"
+      USE_BLANK="true"
+      WIDTH="95"
+    >
+      <!-- END, CR00282462 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="absenceCorrectionDetails$details$absenceReason"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.AbsenceCorrection.AbsenceDate"
+      USE_DEFAULT="false"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="absenceCorrectionDetails$details$absenceDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <!-- BEGIN, CR00132620, GYH -->
+    <!-- BEGIN, CR00282462, SS -->
+    <FIELD
+      LABEL="Field.Label.AbsenceCorrection.UnitsNotAttended"
+      USE_DEFAULT="false"
+      WIDTH="33"
+    >
+      <!-- END, CR00132620 -->
+      <!-- END, CR00282462 -->
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="absenceCorrectionDetails$details$unitsUnattended"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <!-- BEGIN, CR00247865, ASN -->
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Cancel"
+      TYPE="ACTION"
+    />
+    <!-- END, CR00247865 -->
+  </ACTION_SET>
+</PAGE>

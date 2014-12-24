@@ -1,0 +1,110 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" TYPE="text/css" REL="stylesheet" media="screen">
+<link href="../css/print_style.css" type="text/css" rel="stylesheet" media="print">
+</head>
+<script language="javascript" src="../js/tabletoggle.js"></script>
+<body>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+<hr>
+<h2>Database SQL Operation: <i>WaitListEntry.searchBy</i><img class="ibm_logo" src="../images/ibmlogo.png"></h2>
+<hr>
+<table class="cbb" cellspacing="0">
+<colgroup span="2">
+<col width="25%">
+<col width="75%">
+</colgroup>
+<thead>
+<tr>
+<td colspan="1" class="collapse">Operation Details</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('OpDtls');" id="iconOpDtls"></td>
+</tr>
+</thead>
+<tbody id="tableBodyOpDtls">
+<tr>
+<td class="label">Description: </td><td class="value">Searches the wait list entries for a provider for the search criteria entered. Search criterion can be Client Name, Priority, Expiry Date and/or Status. Search is performed based on partial match of the client name criteria.</td>
+</tr>
+<tr>
+<td class="label">Sterotype: </td><td class="value">nsmulti</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table class="cbb" cellspacing="0">
+<thead>
+<tr>
+<td colspan="1" class="collapse">SQL</td><td class="collapseImg"><img src="../images/collapse.bmp" onclick="javascript:Toggle('Sql');" id="iconSql"></td>
+</tr>
+</thead>
+<tbody id="tableBodySql">
+<tr>
+<td class="singleValue" colspan="2">
+<pre>
+SELECT
+  WaitListEntry.waitListEntryID,
+  WaitListEntry.waitListID,
+  WaitListEntry.caseParticipantRoleID,
+  WaitListEntry.position,
+  WaitListEntry.priority,
+  WaitListEntry.expiryDate,
+  WaitListEntry.removalReason,
+  WaitListEntry.status,
+  WaitListEntry.versionNo,
+  WaitListEntry.reviewDate,
+  WaitListEntry.comments
+INTO
+  :waitListEntryID,
+  :waitListID,
+  :caseParticipantRoleID,
+  :position,
+  :priority,
+  :expiryDate,
+  :removalReason,
+  :status,
+  :versionNo,
+  :reviewDate,
+  :comments 
+FROM
+  ConcernRole,
+  WaitListEntry,
+  WaitList,
+  CaseParticipantRole 
+WHERE 
+  (
+    :searchByName = '0' 
+    OR upper(ConcernRole.concernRoleName) like :name 
+  ) 
+  AND 
+  (
+    :searchByPriority = '0' 
+    OR WaitListEntry.priority = :priority 
+  ) 
+  AND 
+  (
+    :searchByExpiryDate = '0' 
+    OR WaitListEntry.expiryDate = :expiryDate 
+  ) 
+  AND 
+  (
+    :searchByStatus = '0' 
+    OR WaitListEntry.status = :status 
+  ) 
+  AND WaitList.waitListID = WaitListEntry.waitListID 
+  AND WaitList.resourceID = :resourceID 
+  AND WaitList.type = :waitListType 
+  AND WaitListEntry.caseParticipantRoleID = CaseParticipantRole.caseParticipantRoleID 
+  AND CaseParticipantRole.participantRoleID = ConcernRole.concernRoleID 
+ORDER BY WaitListEntry.position ASC
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="menu">
+<a href="../index.html">Home</a> | <a href="../entities/index-entity.html">Application Database Tables</a> | <a href="../entities/index-inf-entity.html">Infrastructure Database Tables</a> | <a href="../index-domain.html">Domain Definitions</a> | <a href="../index-codetable.html">Code Tables</a> | <a href="../index-message.html">Messages</a> | <a href="../index-properties.html">Application Properties</a>
+</div>
+</body>
+</html>

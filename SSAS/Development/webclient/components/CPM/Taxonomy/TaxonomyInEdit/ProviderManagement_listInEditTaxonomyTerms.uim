@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2010 Curam Software Ltd.                                      -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows the user to view a list of in edit taxonomy terms -->
+<PAGE
+  PAGE_ID="ProviderManagement_listInEditTaxonomyTerms"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <SERVER_INTERFACE
+    CLASS="MaintainTaxonomyTerm"
+    NAME="DISPLAY"
+    OPERATION="listUpdatedTaxonomyTerms"
+    PHASE="DISPLAY"
+  />
+
+
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL LABEL="ActionControl.Label.Add">
+
+
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_createTaxonomyTerm"
+        WINDOW_OPTIONS="width=700,height=700"
+      />
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.Publish">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="ProviderManagement_publishInEditTaxonomyTerms"
+        WINDOW_OPTIONS="width=350"
+      />
+    </ACTION_CONTROL>
+  </ACTION_SET>
+
+
+  <LIST
+    DEFAULT_PAGE_SIZE="500"
+    PAGINATION_THRESHOLD="500"
+  >
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.EditTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_updateInEditTaxonomyTerm"
+          WINDOW_OPTIONS="width=750"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$taxonomyTermID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyInEditDataID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.DeleteTerm">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProviderManagement_removeInEditTaxonomyTerm"
+          WINDOW_OPTIONS="width=350"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$taxonomyTermID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="taxonomyInEditDataID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$dtls$versionNo"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="versionNo"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="Field.Label.Code"
+      WIDTH="30"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="code"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD LABEL="Field.Label.Name">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="name"
+        />
+      </CONNECT>
+      <LINK
+        OPEN_MODAL="false"
+        PAGE_ID="ProviderManagement_viewPublishedTermInEdit"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="result$dtls$taxonomyTermID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="taxonomyInEditDataID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+  </LIST>
+</PAGE>

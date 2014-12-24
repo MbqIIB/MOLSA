@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- Copyright 2006 Curam Software Ltd. --><html lang="en"><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Dependency Checking</title><link href="help-style.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.64.1" name="generator"><link rel="home" href="book-index.html" title="C&uacute;ram DocMaker Internals"><link rel="up" href="DMN105BC.html" title="Using DocMaker"><link rel="previous" href="DMN106CB.html" title="Running DocMaker"><link rel="next" href="DMN10A8F.html" title="The Document Hierarchy"><script src="help-util.js" type="text/javascript"></script></head><body onload="pageOpened();" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN106CB.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN10A8F.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div><div id="spacer"></div><div class="content"><div class="section" lang="en"><div class="section_titlepage"><div><div><h2 class="title"><a name="DMN10A70"></a>Dependency Checking</h2></div></div><div></div></div><p>Before rendering documents, DocMaker performs some dependency
+    checking to ensure that the documents need to be rendered again. There is
+    no need, for example, to render a document again if the content has not
+    changed. DocMaker detects these changes by comparing the modification time
+    stamps of your content files to the modification time stamps of the output
+    files created when the content was last rendered. This can save
+    considerable time when you are working on one book in a large group of
+    books. The first time you perform a rendering operation such as
+    <tt class="option">generate-pdf</tt>, all of the PDF documents are created for
+    all of the books. If you change one book and run
+    <tt class="option">generate-pdf</tt> again, only the book you changed will be
+    rendered to a new PDF document, as all of the other PDF documents are
+    already up to date.</p><p>This dependency checking is limited in two ways: dependencies on
+    resource files are not calculated, and dependencies caused by XML
+    inclusions are only calculated from the book files. If your book file
+    includes a chapter file and you change the chapter file, DocMaker will
+    render your book again, as the content has probably changed. However, if a
+    book file includes a chapter file and that chapter file includes a section
+    file, a change to the section file will not be detected and DocMaker will
+    not render the book again. Similarly, changes to resources such as image
+    files are not detected. Most C&uacute;ram books include few images and are
+    organized as book files that include only chapter files, so this
+    limitation is not too severe.</p><p>If you find that DocMaker has not detected a change and has not
+    rendered a document as expected, then you can run the
+    <tt class="option">clean</tt> target to remove the old generated output and run
+    the rendering process again, or you can update the time stamp on the
+    relevant book file. If you have a large number of books in a group, the
+    latter option will save you time. You may have a utility like the
+    <span><b class="command">touch</b></span> command available to update the time stamp of the
+    book file, or you can just open the book file in an editor and save it
+    again. Some editors do not save the file if you have not changed it, so
+    making a simple change and then reversing that change (for example, typing
+    a character and then deleting it again) before saving the file is usually
+    sufficient to update the modification time stamp. Once this is done,
+    DocMaker should detect the change and render your document again.</p></div></div><div class="footer"><p class="copyright">Licensed Materials - Property of IBM Corp, IBM Corporation and other(s) 1999,2012. IBM is a registered trademark of IBM Corporation, in the United States, other countries or both.</p></div><div class="navfooter"><table summary="Navigation"><tr><td class="navbarright"><span class="navprev"><a accesskey="p" href="DMN106CB.html"><img class="navigation" src="../images/prev.gif" alt="Previous Page" title="Previous Page"></a></span> <span class="navnext"><a accesskey="n" href="DMN10A8F.html"><img class="navigation" src="../images/next.gif" alt="Next Page" title="Next Page"></a></span></td></tr></table></div></body></html>

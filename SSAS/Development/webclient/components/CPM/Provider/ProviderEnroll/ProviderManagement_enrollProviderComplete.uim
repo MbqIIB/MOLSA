@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2007-2009, 2011 Curam Software Ltd.                            -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- successful provider registration page                  -->
+<?curam-deprecated Since Curam 6.0, This page is not used in v6 
+  as part of provider enrollment process. This is replaced by Enroll Provider wizard.?>
+<PAGE
+  PAGE_ID="ProviderManagement_enrollProviderComplete"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+    <!--
+        <CONNECT>
+            <SOURCE
+                NAME="TEXT"
+                PROPERTY="PageTitle.Description"
+            />
+        </CONNECT>
+        -->
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="result$details$providerName"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Hyphen"
+      />
+    </CONNECT>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY1"
+        PROPERTY="result$details$referenceNumber"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerConcernRoleKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerConcernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY2"
+      PROPERTY="ProviderKey$providerConcernRoleID"
+    />
+  </CONNECT>
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY1"
+    OPERATION="readProviderSummaryDetails"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="DISPLAY2"
+    OPERATION="getProviderInformationals"
+    PHASE="DISPLAY"
+  />
+  <!-- BEGIN, CR00138625, AS -->
+  <SERVER_INTERFACE
+    CLASS="Provider"
+    NAME="ACTION"
+    OPERATION="providerRegistrationAsPersonOption"
+    PHASE="ACTION"
+  />
+  <!-- END, CR00138625 -->
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="DISPLAY2"
+        PROPERTY="messageTest"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.RegistrationComplete"
+        />
+      </CONNECT>
+    </FIELD>
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.StaticText.ReferenceNumber"
+          />
+        </CONNECT>
+      </FIELD>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$details$referenceNumber"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="ProviderManagement_providerHome">
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <!-- BEGIN, CR00246089, PS -->
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerConcernRoleID"
+            />
+          </CONNECT>
+          <!-- END, CR00246089 -->
+        </LINK>
+      </FIELD>
+    </CONTAINER>
+  </CLUSTER>
+  <CLUSTER SHOW_LABELS="false">
+    <CONTAINER>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.StaticText.Confirmation"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- BEGIN, CR00138625, AS -->
+      <FIELD>
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="providerOptionAnswerType"
+          />
+        </CONNECT>
+      </FIELD>
+      <!-- END, CR00138625 -->
+    </CONTAINER>
+  </CLUSTER>
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Previous"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_searchConfirmProviderNotRegistered"/>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Next"
+      TYPE="SUBMIT"
+    >
+      <LINK PAGE_ID="ProviderManagement_resolveRegPersonAsProvider">
+        <!-- BEGIN, CR00138625, AS -->
+        <CONNECT>
+          <SOURCE
+            NAME="ACTION"
+            PROPERTY="providerOptionAnswerType"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerOptionAnswerType"
+          />
+        </CONNECT>
+        <!-- END, CR00138625 -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL
+      LABEL="ActionControl.Label.Finish"
+      TYPE="ACTION"
+    >
+      <LINK PAGE_ID="ProviderManagement_providerHome">
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+        <!-- BEGIN, CR00246089, PS -->
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerConcernRoleID"
+          />
+        </CONNECT>
+        <!-- END, CR00246089 -->
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+</PAGE>

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  PID 5725-H26
+  
+  Copyright IBM Corporation 2008, 2014. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2008-2011 Curam Software Ltd.                                -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<!-- This page allows the user to view Provider Investigation Delivery Case -->
+<!-- details.                                                               -->
+<!-- BEGIN, CR00261227, SSK -->
+<PAGE
+  HIDE_CONDITIONAL_LINKS="false"
+  PAGE_ID="ProviderManagement_investigationHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <!-- END, CR00261227 -->
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="ProviderInvestigation"
+    NAME="DISPLAY"
+    OPERATION="readProviderInvestigationHomeDetails"
+  />
+
+
+  <!-- BEGIN, CR00260693, SSK -->
+  <SERVER_INTERFACE
+    CLASS="InvestigationDelivery"
+    NAME="DISPLAY1"
+    OPERATION="readHomePageDetails1"
+  />
+  <!-- END, CR00260693 -->
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+  <!-- BEGIN, CR00249720, VR -->
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  <!-- END, CR00249720 -->
+
+
+  <!-- BEGIN, CR00260693, SSK -->
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+  <!-- END, CR00260693 -->
+
+
+  <MENU>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewTask">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_createTask"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00158370, SK -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contextDtls$description"
+          />
+          <!-- END, CR00158370 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="description"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.NewActivity">
+      <LINK
+        OPEN_MODAL="true"
+        PAGE_ID="Case_createStandardActivity"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <!-- BEGIN, CR00158370, SK -->
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="contextDtls$description"
+          />
+          <!-- END, CR00158370 -->
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="pageDescription"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </MENU>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <!-- BEGIN, CR00229065, PS -->
+  <ACTION_SET>
+    <!-- BEGIN, CR00260693, SSK -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.AddResolution">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY1"
+          PROPERTY="displayAddInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="InvestigationDelivery_createResolution"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+
+
+    <ACTION_CONTROL LABEL="ActionControl.Label.EditResolution">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY1"
+          PROPERTY="displayEditInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="InvestigationDelivery_modifyResolution"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="resolutionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="resolutionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.ViewResolutionHistory">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY1"
+          PROPERTY="displayHistoryInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="InvestigationDelivery_listResolutionChangeHistory"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <ACTION_CONTROL LABEL="ActionControl.Label.RemoveResolution">
+      <CONDITION>
+        <IS_TRUE
+          NAME="DISPLAY1"
+          PROPERTY="displayCancelInd"
+        />
+      </CONDITION>
+      <LINK
+        OPEN_MODAL="TRUE"
+        PAGE_ID="InvestigationDelivery_cancelInvestigationResolution"
+      >
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="caseID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="resolutionID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="resolutionID"
+          />
+        </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+    <!-- END, CR00260693 -->
+  </ACTION_SET>
+  <!-- END, CR00229065 -->
+
+
+  <!-- BEGIN, CR00233616, PS -->
+  <CLUSTER NUM_COLS="2">
+    <!-- END, CR00233616 -->
+    <FIELD LABEL="Field.Label.ReferenceNumber">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseDtls$caseReference"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.StartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseStartDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InvestigationType">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="investigationType"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.InvestigationSubtype">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="investigationSubtype"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Priority">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="priorityCode"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.RegistrationDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="registrationDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.EndDate">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseEndDate"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.PrimaryClient">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="concernRoleName"
+        />
+      </CONNECT>
+      <LINK PAGE_ID="Participant_resolve">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+        </CONNECT>
+      </LINK>
+    </FIELD>
+    <!-- BEGIN, CR00233616, PS -->
+    <FIELD LABEL="Field.Label.Status">
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    <!-- END, CR00233616 -->
+
+
+    <CONTAINER LABEL="Field.Label.Owner">
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="orgObjectReferenceName"
+          />
+        </CONNECT>
+        <LINK PAGE_ID="Case_resolveOrgObjectTypeHome">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="userName"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="userName"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgObjectReference"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="orgObjectReference"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="orgObjectType"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="orgObjectType"
+            />
+          </CONNECT>
+        </LINK>
+      </FIELD>
+      <!-- BEGIN, CR00229065, PS -->
+      <ACTION_CONTROL
+        APPEND_ELLIPSIS="false"
+        LABEL="ActionControl.Label.Change"
+      >
+        <!-- END, CR00229065 -->
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="Case_modifyCaseOwner"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <!-- BEGIN, CR00158370, SK -->
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="contextDtls$description"
+            />
+            <!-- END, CR00158370 -->
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="pageDescription"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+  </CLUSTER>
+
+
+  <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Comments"
+  >
+    <!-- BEGIN, CR00417165, GK -->
+    <FIELD LABEL="Field.Label.Comments">
+      <!-- END, CR00417165 -->
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseDtls$comments"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!-- Add Resolutions to the home page -->
+  <INCLUDE FILE_NAME="InvestigationDelivery_homeResolutionsView.vim"/>
+
+
+  <!-- Add Incidents to the home page -->
+  <INCLUDE FILE_NAME="ProviderInvestigation_homeIncidentsView.vim"/>
+
+
+</PAGE>
