@@ -1,0 +1,4080 @@
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+	name="SocialAssistanceRuleSet">
+	<Class extends="DefaultProgramRecommender" extendsRuleSet="DefaultProgramRecommendationRuleSet"
+		name="SocialAssistanceProgramRecommender"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="caseID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="simulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SocialAssistanceSimulatedDetermination" />
+				</javaclass>
+			</type>
+			<derivation>
+				<joinlists>
+					<fixedlist>
+						<listof>
+							<javaclass name="List">
+								<ruleclass name="SocialAssistanceSimulatedDetermination" />
+							</javaclass>
+						</listof>
+						<members>
+							<reference attribute="simulatedDeterminationsWithoutMaidAssistance" />
+							<reference attribute="maidAssistanceSimulatedDeterminations" />
+						</members>
+					</fixedlist>
+				</joinlists>
+			</derivation>
+		</Attribute>
+		<Attribute name="simulatedDeterminationsWithoutMaidAssistance">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SocialAssistanceSimulatedDetermination" />
+				</javaclass>
+			</type>
+			<derivation>
+				<joinlists>
+					<fixedlist>
+						<listof>
+							<javaclass name="List">
+								<ruleclass name="SocialAssistanceSimulatedDetermination" />
+							</javaclass>
+						</listof>
+						<members>
+							<reference attribute="seniorCitizenSimulatedDeterminations" />
+							<reference attribute="handicapSimulatedDeterminations" />
+							<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+							<reference attribute="familyInNeedSimulatedDeterminations" />
+							<reference attribute="familyOfMissingSimulatedDeterminations" />
+							<reference attribute="familyOfPrisonerSimulatedDeterminations" />
+							<reference attribute="divorcedLadySimulatedDeterminations" />
+							<reference attribute="widowSimulatedDeterminations" />
+							<reference attribute="desertedWifeSimulatedDeterminations" />
+							<reference attribute="orphanSimulatedDeterminations" />
+							<reference attribute="anonymousParentsSimulatedDeterminations" />
+						</members>
+					</fixedlist>
+				</joinlists>
+			</derivation>
+		</Attribute>
+		<Attribute name="unableToWorkCPRRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<dynamiclist>
+					<list>
+						<readall ruleclass="UnableToWork" ruleset="UnableToWorkDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID" />
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<reference attribute="related_participant">
+							<current />
+						</reference>
+					</listitemexpression>
+				</dynamiclist>
+			</derivation>
+		</Attribute>
+		<Attribute name="eligibleMembersFromSimDet">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<filter>
+						<list>
+							<joinlists>
+								<dynamiclist>
+									<list alias="simdet">
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistance" />
+									</list>
+									<listitemexpression>
+										<dynamiclist>
+											<list alias="member">
+												<reference attribute="mandatoryMembers">
+													<reference attribute="unit">
+														<current alias="simdet" />
+													</reference>
+												</reference>
+											</list>
+											<listitemexpression>
+												<choose>
+													<type>
+														<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+													</type>
+													<when>
+														<condition>
+															<intervalvalue>
+																<reference attribute="isEligibleTimeline">
+																	<reference attribute="programRecommendationCase">
+																		<current alias="simdet" />
+																	</reference>
+																</reference>
+															</intervalvalue>
+														</condition>
+														<value>
+															<reference attribute="caseParticipantRoleRecord">
+																<current alias="member" />
+															</reference>
+														</value>
+													</when>
+													<otherwise>
+														<value>
+															<null />
+														</value>
+													</otherwise>
+												</choose>
+											</listitemexpression>
+										</dynamiclist>
+									</listitemexpression>
+								</dynamiclist>
+							</joinlists>
+						</list>
+						<listitemexpression>
+							<not>
+								<equals>
+									<null />
+									<current />
+								</equals>
+							</not>
+						</listitemexpression>
+					</filter>
+
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="membersEligibleInOtherSimDetermination">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<joinlists>
+						<dynamiclist>
+							<list alias="unabletoWorkMember">
+								<reference attribute="unableToWorkCPRRecords" />
+							</list>
+							<listitemexpression>
+								<filter>
+									<list alias="eligibleMember">
+										<intervalvalue>
+											<reference attribute="eligibleMembersFromSimDet" />
+										</intervalvalue>
+									</list>
+									<listitemexpression>
+										<equals>
+											<reference attribute="caseParticipantRoleID">
+												<current alias="unabletoWorkMember" />
+											</reference>
+											<reference attribute="caseParticipantRoleID">
+												<current alias="eligibleMember" />
+											</reference>
+										</equals>
+									</listitemexpression>
+								</filter>
+							</listitemexpression>
+						</dynamiclist>
+					</joinlists>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="orphanSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="OrphanSimulatedDetermination" ruleset="OrphanRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="orphanSimulatedDeterminations">
+					<create ruleclass="OrphanDetermination" ruleset="OrphanRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+										<reference attribute="familyOfMissingSimulatedDeterminations" />
+										<reference attribute="familyOfPrisonerSimulatedDeterminations" />
+										<reference attribute="divorcedLadySimulatedDeterminations" />
+										<reference attribute="widowSimulatedDeterminations" />
+										<reference attribute="desertedWifeSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="widowSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="WidowSimulatedDetermination" ruleset="WidowEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="widowSimulatedDeterminations">
+					<create ruleclass="WidowDetermination" ruleset="WidowEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+										<reference attribute="familyOfMissingSimulatedDeterminations" />
+										<reference attribute="familyOfPrisonerSimulatedDeterminations" />
+										<reference attribute="divorcedLadySimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="handicapSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="HandicapSimulatedDetermination"
+						ruleset="HandicapEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="handicapSimulatedDeterminations">
+					<create ruleclass="HandicapDetermination" ruleset="HandicapEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="anonymousParentsSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="AnonymousParentsSimulatedDetermination"
+						ruleset="AnonymousParentsEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="anonymousParentsSimulatedDeterminations">
+					<create ruleclass="AnonymousParentsDetermination"
+						ruleset="AnonymousParentsEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+										<reference attribute="familyOfMissingSimulatedDeterminations" />
+										<reference attribute="familyOfPrisonerSimulatedDeterminations" />
+										<reference attribute="divorcedLadySimulatedDeterminations" />
+										<reference attribute="widowSimulatedDeterminations" />
+										<reference attribute="desertedWifeSimulatedDeterminations" />
+										<reference attribute="orphanSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="desertedWifeSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="DesertedWifeSimulatedDetermination"
+						ruleset="DesertedWifeEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="desertedWifeSimulatedDeterminations">
+					<create ruleclass="DesertedWifeDetermination"
+						ruleset="DesertedWifeEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+										<reference attribute="familyOfMissingSimulatedDeterminations" />
+										<reference attribute="familyOfPrisonerSimulatedDeterminations" />
+										<reference attribute="divorcedLadySimulatedDeterminations" />
+										<reference attribute="widowSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="divorcedLadySimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="DivorcedLadySimulatedDetermination"
+						ruleset="DivorcedLadyEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="divorcedLadySimulatedDeterminations">
+					<create ruleclass="DivorcedLadyDetermination"
+						ruleset="DivorcedLadyEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+										<reference attribute="familyOfMissingSimulatedDeterminations" />
+										<reference attribute="familyOfPrisonerSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="familyInNeedSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="FamilyInNeedSimulatedDetermination"
+						ruleset="FamilyInNeedEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="familyInNeedSimulatedDeterminations">
+					<create ruleclass="FamilyInNeedDetermination"
+						ruleset="FamilyInNeedEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="incapableOfWorkingSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="IncapableOfWorkingSimulatedDetermination"
+						ruleset="IncapableOfWorkingEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="incapableOfWorkingSimulatedDeterminations">
+					<create ruleclass="IncapableOfWorkingDetermination"
+						ruleset="IncapableOfWorkingEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="familyOfMissingSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="FamilyOfMissingSimulatedDetermination"
+						ruleset="FamilyOfMissingEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="familyOfMissingSimulatedDeterminations">
+					<create ruleclass="FamilyOfMissingDetermination"
+						ruleset="FamilyOfMissingEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="familyOfPrisonerSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="FamilyOfPrisonerSimulatedDetermination"
+						ruleset="FamilyOfPrisonerEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="familyOfPrisonerSimulatedDeterminations">
+					<create ruleclass="FamilyOfPrisonerDetermination"
+						ruleset="FamilyOfPrisonerEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+										<reference attribute="familyOfMissingSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="seniorCitizenSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SeniorCitizenSimulatedDetermination"
+						ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="seniorCitizenSimulatedDeterminations">
+					<create ruleclass="SeniorCitizenDetermination"
+						ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members />
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="maidAssistanceSimulatedDeterminations">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="MaidAssistanceSimulatedDetermination"
+						ruleset="MaidAssistanceEligibilityAndEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="maidAssistanceSimulatedDeterminations">
+					<create ruleclass="MaidAssistanceDetermination"
+						ruleset="MaidAssistanceEligibilityAndEntitlementRuleSet">
+						<specify attribute="caseID">
+							<reference attribute="caseID" />
+						</specify>
+						<specify attribute="membersEligibleInOtherSimDetermination">
+							<reference attribute="membersEligibleInOtherSimDetermination" />
+						</specify>
+						<specify attribute="simulatedDeterminationsForFilter">
+							<joinlists>
+								<fixedlist>
+									<listof>
+										<javaclass name="List">
+											<ruleclass name="SocialAssistanceSimulatedDetermination" />
+										</javaclass>
+									</listof>
+									<members>
+										<reference attribute="seniorCitizenSimulatedDeterminations" />
+										<reference attribute="handicapSimulatedDeterminations" />
+										<reference attribute="incapableOfWorkingSimulatedDeterminations" />
+										<reference attribute="familyInNeedSimulatedDeterminations" />
+										<reference attribute="familyOfMissingSimulatedDeterminations" />
+										<reference attribute="familyOfPrisonerSimulatedDeterminations" />
+										<reference attribute="divorcedLadySimulatedDeterminations" />
+										<reference attribute="widowSimulatedDeterminations" />
+										<reference attribute="desertedWifeSimulatedDeterminations" />
+										<reference attribute="orphanSimulatedDeterminations" />
+										<reference attribute="anonymousParentsSimulatedDeterminations" />
+									</members>
+								</fixedlist>
+							</joinlists>
+						</specify>
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="SimulatedDetermination" extendsRuleSet="MOLSARuleSet"
+		name="SocialAssistanceSimulatedDetermination"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<reference attribute="description">
+					<reference attribute="unit" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="caseID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="unit">
+			<type>
+				<ruleclass name="SAHouseholdUnitCalculator" />
+			</type>
+			<derivation>
+				<create ruleclass="SAHouseholdUnitCalculator" />
+			</derivation>
+		</Attribute>
+		<Attribute name="isValidUnitTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<false />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="members">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Member" ruleset="ProgramRecommendationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="mandatoryMemberList" />
+			</derivation>
+		</Attribute>
+		<Attribute name="mandatoryMemberList">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Member" ruleset="ProgramRecommendationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call class="curam.socialassistance.creole.statics.impl.Statics"
+					method="getUniqueRuleObjects">
+					<type>
+						<javaclass name="List">
+							<ruleclass name="Member" ruleset="ProgramRecommendationRuleSet" />
+						</javaclass>
+					</type>
+					<arguments>
+						<timelineoperation>
+							<dynamiclist>
+								<list>
+									<filter>
+										<list>
+											<intervalvalue>
+												<reference attribute="eligibleMembersTimeline">
+													<reference attribute="unit" />
+												</reference>
+											</intervalvalue>
+										</list>
+										<listitemexpression>
+											<not>
+												<equals>
+													<null />
+													<reference attribute="caseParticipantRoleRecord">
+														<current />
+													</reference>
+												</equals>
+											</not>
+										</listitemexpression>
+									</filter>
+								</list>
+								<listitemexpression>
+									<create ruleclass="Member" ruleset="ProgramRecommendationRuleSet">
+										<specify attribute="caseParticipantRoleID">
+											<reference attribute="caseParticipantRoleID">
+												<current />
+											</reference>
+										</specify>
+										<specify attribute="mandatoryMemberIndicator">
+											<true />
+										</specify>
+									</create>
+								</listitemexpression>
+							</dynamiclist>
+						</timelineoperation>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		<Attribute name="programRecommendationCase">
+			<type>
+				<ruleclass name="SocialAssistanceProductCase" />
+			</type>
+			<derivation>
+				<create ruleclass="SocialAssistanceProductCase">
+					<specify attribute="productDeliveryCase">
+						<reference attribute="simulatedProductDeliveryCase" />
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="programRecommendationDisplayCases">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="ProgramRecommendationDisplayCase"
+						ruleset="ProgramRecommendationDisplayRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="ProgramRecommendationDisplayCase"
+							ruleset="ProgramRecommendationDisplayRuleSet" />
+					</listof>
+					<members />
+				</fixedlist>
+			</derivation>
+		</Attribute>
+		<Attribute name="simulatedProductDeliveryCase">
+			<type>
+				<ruleclass name="ProductDeliveryCase" ruleset="ProductEligibilityEntitlementRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="ProductDeliveryCase" ruleset="ProductEligibilityEntitlementRuleSet">
+					<specify attribute="caseID">
+						<reference attribute="caseID" />
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="MOLSAProductCase" extendsRuleSet="MOLSARuleSet"
+		name="SocialAssistanceProductCase" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="caseID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="caseID">
+					<reference attribute="productDeliveryCase" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="eligibilityUnit">
+			<type>
+				<ruleclass name="SAHouseholdUnitCalculator" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="isValidUnitTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<true />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isEligibleTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<false />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isProductDelivery">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<true />
+			</derivation>
+		</Attribute>
+		<Attribute name="objectiveTimelines">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="AbstractObjectiveTimeline" ruleset="ProductEligibilityEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="AbstractObjectiveTimeline" ruleset="ProductEligibilityEntitlementRuleSet" />
+					</listof>
+					<members />
+				</fixedlist>
+			</derivation>
+		</Attribute>
+		<Attribute name="programRecommendationEligibilityTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="isEligibleTimeline" />
+			</derivation>
+		</Attribute>
+		<Attribute name="programRecommendationObjectiveTimelines">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="AbstractObjectiveTimeline" ruleset="ProductEligibilityEntitlementRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="AbstractObjectiveTimeline" ruleset="ProductEligibilityEntitlementRuleSet" />
+					</listof>
+					<members />
+				</fixedlist>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="DefaultProduct" extendsRuleSet="DefaultProductEligibilityEntitlementRuleSet"
+		name="SocialAssistanceProduct" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<XmlMessage>Social Assistance Product</XmlMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="objectiveTypes">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SocialAssistanceObjectiveType" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="SocialAssistanceObjectiveType" />
+					</listof>
+					<members>
+						<reference attribute="socialAssistanceBenefitObjectiveType" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+		<Attribute name="socialAssistanceBenefitObjectiveType">
+			<type>
+				<ruleclass name="SocialAssistanceObjectiveType" />
+			</type>
+			<derivation>
+				<create ruleclass="SocialAssistanceObjectiveType">
+					<specify attribute="objectiveTypeID">
+						<String value="BenefitAmount" />
+					</specify>
+					<specify attribute="comments">
+						<XmlMessage>BenefitAmount</XmlMessage>
+					</specify>
+					<specify attribute="name">
+						<Code table="RulesComponentType">
+							<String value="PC17000" />
+						</Code>
+					</specify>
+					<specify attribute="financialComponentType">
+						<Code table="RulesComponentFCType">
+							<String value="CT1" />
+						</Code>
+					</specify>
+					<specify attribute="rateTarget">
+						<Code table="RulesComponentTarget">
+							<String value="RC1" />
+						</Code>
+					</specify>
+					<specify attribute="isDeductionAllowable">
+						<true />
+					</specify>
+					<specify attribute="tagTypes">
+						<fixedlist>
+							<listof>
+								<ruleclass name="SocialAssistanceTagType" />
+							</listof>
+							<members>
+								<reference attribute="socialAssistanceBenefitTagType" />
+							</members>
+						</fixedlist>
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="socialAssistanceBenefitTagType">
+			<type>
+				<ruleclass name="SocialAssistanceTagType" />
+			</type>
+			<derivation>
+				<create ruleclass="SocialAssistanceTagType">
+					<specify attribute="tagTypeID">
+						<Number value="21" />
+					</specify>
+					<specify attribute="name">
+						<XmlMessage>Benefit</XmlMessage>
+					</specify>
+					<specify attribute="pattern">
+						<FrequencyPattern value="000100000" />
+					</specify>
+					<specify attribute="valueType">
+						<Code table="RulesTagType">
+							<String value="RTT3" />
+						</Code>
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="HouseholdUnit" extendsRuleSet="MOLSARuleSet"
+		name="SAHouseholdUnitCalculator" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<concat>
+					<dynamiclist>
+						<list alias="eligibleMandatoryMember">
+							<filter>
+								<list alias="inner">
+									<call class="curam.socialassistance.creole.statics.impl.Statics"
+										method="getUniqueRuleObjects">
+										<type>
+											<javaclass name="List">
+												<ruleclass name="SAHouseholdUnitMember" />
+											</javaclass>
+										</type>
+										<arguments>
+											<reference attribute="eligibleMembersTimeline" />
+										</arguments>
+									</call>
+								</list>
+								<listitemexpression>
+									<not>
+										<equals>
+											<null />
+											<reference attribute="caseParticipantRoleRecord">
+												<current alias="inner" />
+											</reference>
+										</equals>
+									</not>
+								</listitemexpression>
+							</filter>
+						</list>
+						<listitemexpression>
+							<ResourceMessage key="HouseholdUnit.MandatoryMembers"
+								resourceBundle="curam.molsa.rules.ProductDisplay">
+								<reference attribute="description">
+									<current alias="eligibleMandatoryMember" />
+								</reference>
+							</ResourceMessage>
+						</listitemexpression>
+					</dynamiclist>
+				</concat>
+			</derivation>
+		</Attribute>
+		<Attribute name="mandatoryMembers">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SAHouseholdUnitMember" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="SAHouseholdUnitMember" />
+					</listof>
+					<members />
+				</fixedlist>
+			</derivation>
+		</Attribute>
+		<Attribute name="eligibleMembersTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="SAHouseholdUnitMember" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<filter>
+						<list>
+							<intervalvalue>
+								<reference attribute="mandatoryEligibleMembersTimeline" />
+							</intervalvalue>
+						</list>
+						<listitemexpression>
+							<equals>
+								<intervalvalue>
+									<reference attribute="filterTypeTimeline">
+										<current />
+									</reference>
+								</intervalvalue>
+								<String value="EligibleMember" />
+							</equals>
+						</listitemexpression>
+					</filter>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="mandatoryEligibleMembersTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="SAHouseholdUnitMember" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<filter>
+						<list>
+							<reference attribute="mandatoryMembers" />
+						</list>
+						<listitemexpression>
+							<equals>
+								<intervalvalue>
+									<reference attribute="filterTypeTimeline">
+										<current />
+									</reference>
+								</intervalvalue>
+								<String value="EligibleMember" />
+							</equals>
+						</listitemexpression>
+					</filter>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="HouseholdUnitMember" extendsRuleSet="MOLSARuleSet"
+		name="SAHouseholdUnitMember" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Initialization>
+			<Attribute name="caseID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+			<Attribute name="caseParticipantRoleRecord">
+				<type>
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="HouseholdUnit.Member"
+					resourceBundle="curam.molsa.rules.ProductDisplay">
+					<reference attribute="concernRoleName">
+						<reference attribute="participantRole">
+							<reference attribute="caseParticipantRoleRecord" />
+						</reference>
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="caseParticipantRoleID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleID">
+					<reference attribute="caseParticipantRoleRecord" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="participantRoleID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<reference attribute="concernRoleID">
+					<reference attribute="participantRole">
+						<reference attribute="caseParticipantRoleRecord" />
+					</reference>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="isPrimaryCaseParticipantRole">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<equals>
+					<reference attribute="typeCode">
+						<reference attribute="caseParticipantRoleRecord" />
+					</reference>
+					<Code table="CaseParticipantRoleType">
+						<String value="PRI" />
+					</Code>
+				</equals>
+			</derivation>
+		</Attribute>
+		<Attribute name="isHeadOfHouseholdTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="headOfHouseholdTimeline">
+					<reference attribute="memberCPRCalculator" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="filterTypeTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="String" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="String" />
+						</type>
+						<when>
+							<condition>
+								<not>
+									<intervalvalue>
+										<reference attribute="hasPassedNonFinancialTestTimeline">
+											<create ruleclass="SANonFinancialCPRCalculator"
+												ruleset="SocialAssistanceRuleSet">
+												<reference attribute="caseParticipantRoleRecord" />
+											</create>
+										</reference>
+									</intervalvalue>
+								</not>
+							</condition>
+							<value>
+								<String value="ExcludedMember" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<choose>
+									<type>
+										<javaclass name="String" />
+									</type>
+									<when>
+										<condition>
+											<intervalvalue>
+												<reference attribute="hasEarnedIncomeTimeline">
+													<reference attribute="memberCPRCalculator" />
+												</reference>
+											</intervalvalue>
+										</condition>
+										<value>
+											<String value="InEligibleMember" />
+										</value>
+									</when>
+									<otherwise>
+										<value>
+											<String value="EligibleMember" />
+										</value>
+									</otherwise>
+								</choose>
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="memberCPRCalculator">
+			<type>
+				<ruleclass name="MemberCPRCalculator" />
+			</type>
+			<derivation>
+				<create ruleclass="MemberCPRCalculator">
+					<reference attribute="caseParticipantRoleRecord" />
+				</create>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="MembersForHCDetermination"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Initialization>
+			<Attribute name="caseID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+			<Attribute name="simulatedDeterminationsForFilter">
+				<type>
+					<javaclass name="List">
+						<ruleclass name="SocialAssistanceSimulatedDetermination" />
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="allCaseParticipantRoleRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<readall ruleclass="CaseParticipantRole" ruleset="CaseEntitiesRuleSet">
+					<match retrievedattribute="caseID">
+						<reference attribute="caseID" />
+					</match>
+				</readall>
+			</derivation>
+		</Attribute>
+		<Attribute name="allHouseholdMemberCPRRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<reference attribute="allCaseParticipantRoleRecords" />
+					</list>
+					<listitemexpression>
+						<any>
+							<fixedlist>
+								<listof>
+									<javaclass name="Boolean" />
+								</listof>
+								<members>
+									<equals>
+										<reference attribute="typeCode">
+											<current />
+										</reference>
+										<Code table="CaseParticipantRoleType">
+											<String value="PRI" />
+										</Code>
+									</equals>
+									<equals>
+										<reference attribute="typeCode">
+											<current />
+										</reference>
+										<Code table="CaseParticipantRoleType">
+											<String value="MEM" />
+										</Code>
+									</equals>
+								</members>
+							</fixedlist>
+						</any>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="householdMembers">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SAHouseholdUnitMember" />
+				</javaclass>
+			</type>
+			<derivation>
+				<dynamiclist>
+					<list>
+						<reference attribute="allHouseholdMemberCPRRecords" />
+					</list>
+					<listitemexpression>
+						<create ruleclass="SAHouseholdUnitMember">
+							<reference attribute="caseID" />
+							<current />
+						</create>
+					</listitemexpression>
+				</dynamiclist>
+			</derivation>
+		</Attribute>
+		<Attribute name="membersToFilterTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="SAHouseholdUnitMember" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<joinlists>
+						<dynamiclist>
+							<list>
+								<reference attribute="simulatedDeterminationsForFilter" />
+							</list>
+							<listitemexpression>
+								<choose>
+									<type>
+										<javaclass name="List">
+											<ruleclass name="SAHouseholdUnitMember" />
+										</javaclass>
+									</type>
+									<when>
+										<condition>
+											<intervalvalue>
+												<reference attribute="programRecommendationEligibilityTimeline">
+													<reference attribute="programRecommendationCase">
+														<current />
+													</reference>
+												</reference>
+											</intervalvalue>
+										</condition>
+										<value>
+											<intervalvalue>
+												<reference attribute="mandatoryEligibleMembersTimeline">
+													<reference attribute="unit">
+														<current />
+													</reference>
+												</reference>
+											</intervalvalue>
+										</value>
+									</when>
+									<otherwise>
+										<value>
+											<fixedlist>
+												<listof>
+													<ruleclass name="SAHouseholdUnitMember" />
+												</listof>
+												<members />
+											</fixedlist>
+										</value>
+									</otherwise>
+								</choose>
+							</listitemexpression>
+						</dynamiclist>
+					</joinlists>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="membersForHouseholdComposition">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="SAHouseholdUnitMember" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<filter>
+						<list>
+							<reference attribute="householdMembers" />
+						</list>
+						<listitemexpression>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean" />
+									</listof>
+									<members>
+										<not>
+											<property name="contains">
+												<object>
+													<dynamiclist>
+														<list>
+															<intervalvalue>
+																<reference attribute="membersToFilterTimeline" />
+															</intervalvalue>
+														</list>
+														<listitemexpression>
+															<reference attribute="caseParticipantRoleID">
+																<current />
+															</reference>
+														</listitemexpression>
+													</dynamiclist>
+												</object>
+												<arguments>
+													<reference attribute="caseParticipantRoleID">
+														<current />
+													</reference>
+												</arguments>
+											</property>
+										</not>
+										<intervalvalue>
+											<reference attribute="householdMemberRecordsExists">
+												<reference attribute="memberCPRCalculator">
+													<current />
+												</reference>
+											</reference>
+										</intervalvalue>
+									</members>
+								</fixedlist>
+							</all>
+
+						</listitemexpression>
+					</filter>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="HouseholdUnitsFilterCalculator">
+		<Initialization>
+			<Attribute name="householdUnits">
+				<type>
+					<javaclass name="curam.creole.value.Timeline">
+						<javaclass name="List">
+							<ruleclass name="SAHouseholdUnitCalculator" />
+						</javaclass>
+					</javaclass>
+				</type>
+			</Attribute>
+			<Attribute name="caseID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="filingDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<min>
+					<dynamiclist>
+						<list>
+							<readall ruleclass="Application" ruleset="MOLSARuleSet">
+								<match retrievedattribute="caseID">
+									<reference attribute="caseID" />
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<reference attribute="filingDate">
+								<current />
+							</reference>
+						</listitemexpression>
+					</dynamiclist>
+				</min>
+			</derivation>
+		</Attribute>
+		<Attribute name="filterFromFilingDateTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Boolean" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<reference attribute="filingDate" />
+									<null />
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<call class="curam.socialassistance.creole.statics.impl.Statics"
+								method="createSpecificPeriodTimeline">
+								<type>
+									<javaclass name="curam.creole.value.Timeline">
+										<javaclass name="Boolean" />
+									</javaclass>
+								</type>
+								<arguments>
+									<reference attribute="filingDate" />
+									<null />
+								</arguments>
+							</call>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<timelineoperation>
+								<true />
+							</timelineoperation>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="filteredHouseholdUnits">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="SAHouseholdUnitCalculator" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="List">
+								<ruleclass name="SAHouseholdUnitCalculator" />
+							</javaclass>
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="filterFromFilingDateTimeline" />
+								</intervalvalue>
+							</condition>
+							<value>
+								<intervalvalue>
+									<reference attribute="householdUnits" />
+								</intervalvalue>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<fixedlist>
+									<listof>
+										<ruleclass name="SAHouseholdUnitCalculator" />
+									</listof>
+									<members />
+								</fixedlist>
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="filterFromFilingDateToCurrentDateTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call class="curam.socialassistance.creole.statics.impl.Statics"
+					method="createSpecificPeriodTimeline">
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Boolean" />
+						</javaclass>
+					</type>
+					<arguments>
+						<reference attribute="filingDate" />
+						<call class="curam.socialassistance.creole.statics.impl.Statics"
+							method="getDate">
+							<type>
+								<javaclass name="curam.util.type.Date" />
+							</type>
+							<arguments>
+								<null />
+							</arguments>
+						</call>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		<Attribute name="filteredHouseholdUnitsFromFilingDateToCurrentDate">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="SAHouseholdUnitCalculator" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="List">
+								<ruleclass name="SAHouseholdUnitCalculator" />
+							</javaclass>
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="filterFromFilingDateToCurrentDateTimeline" />
+								</intervalvalue>
+							</condition>
+							<value>
+								<intervalvalue>
+									<reference attribute="householdUnits" />
+								</intervalvalue>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<fixedlist>
+									<listof>
+										<ruleclass name="SAHouseholdUnitCalculator" />
+									</listof>
+									<members />
+								</fixedlist>
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="SocialAssistanceHouseholdComposition">
+		<Attribute name="caseID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="householdUnits">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="SAHouseholdUnitCalculator" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<fixedlist>
+						<listof>
+							<ruleclass name="SAHouseholdUnitCalculator" />
+						</listof>
+						<members>
+							<create ruleclass="SAHouseholdUnitCalculator" />
+						</members>
+					</fixedlist>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="SocialAssistanceEligibilityUnitCalculator">
+		<Initialization>
+			<Attribute name="caseID">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+			<Attribute name="eligibilityUnit">
+				<type>
+					<ruleclass name="SAHouseholdUnitCalculator" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="isEligibleTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<true />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isValidUnitTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<false />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="monthlyAmountTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<Number value="0" />
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="MemberCPRCalculator">
+		<Initialization>
+			<Attribute name="caseParticipantRoleRecord">
+				<type>
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="householdMemberRecord">
+			<type>
+				<ruleclass name="HouseholdMember" ruleset="HouseholdMemberDataRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+					<filter>
+						<list>
+							<readall ruleclass="HouseholdMember" ruleset="HouseholdMemberDataRuleSet">
+								<match retrievedattribute="caseID">
+									<reference attribute="caseID">
+										<reference attribute="caseParticipantRoleRecord" />
+									</reference>
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<equals>
+								<reference attribute="participant">
+									<current />
+								</reference>
+								<reference attribute="caseParticipantRoleID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</equals>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="householdMemberRecordsExists">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<not>
+												<equals>
+													<null />
+													<reference attribute="householdMemberRecord" />
+												</equals>
+											</not>
+											<intervalvalue>
+												<reference attribute="exists">
+													<reference attribute="householdMemberRecord" />
+												</reference>
+											</intervalvalue>
+										</members>
+									</fixedlist>
+								</all>
+							</condition>
+							<value>
+								<true />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="pdcBirthAndDeathRecord">
+			<type>
+				<ruleclass name="PDCBirthAndDeath" ruleset="PDCBirthAndDeathDataRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+					<filter>
+						<list>
+							<readall ruleclass="PDCBirthAndDeath" ruleset="PDCBirthAndDeathDataRuleSet">
+								<match retrievedattribute="caseID">
+									<reference attribute="caseID">
+										<reference attribute="caseParticipantRoleRecord" />
+									</reference>
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<equals>
+								<reference attribute="person">
+									<current />
+								</reference>
+								<reference attribute="caseParticipantRoleID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</equals>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="pdcBirthAndDeathRecordExists">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<not>
+												<equals>
+													<null />
+													<reference attribute="pdcBirthAndDeathRecord" />
+												</equals>
+											</not>
+											<intervalvalue>
+												<reference attribute="exists">
+													<reference attribute="pdcBirthAndDeathRecord" />
+												</reference>
+											</intervalvalue>
+										</members>
+									</fixedlist>
+								</all>
+							</condition>
+							<value>
+								<true />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="allrelationshipRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="participant">
+								<current />
+							</reference>
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="caseParticipantRoleRecord" />
+							</reference>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="pdcGenderRecord">
+			<type>
+				<ruleclass name="PDCGender" ruleset="PDCGenderDataRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+					<filter>
+						<list>
+							<readall ruleclass="PDCGender" ruleset="PDCGenderDataRuleSet">
+								<match retrievedattribute="caseID">
+									<reference attribute="caseID">
+										<reference attribute="caseParticipantRoleRecord" />
+									</reference>
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<equals>
+								<reference attribute="person">
+									<current />
+								</reference>
+								<reference attribute="caseParticipantRoleID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</equals>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="maritalStatusRecord">
+			<type>
+				<ruleclass name="MaritalStatus" ruleset="MaritalStatusDataRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+					<filter>
+						<list>
+							<readall ruleclass="MaritalStatus" ruleset="MaritalStatusDataRuleSet">
+								<match retrievedattribute="caseID">
+									<reference attribute="caseID">
+										<reference attribute="caseParticipantRoleRecord" />
+									</reference>
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<equals>
+								<reference attribute="participant">
+									<current />
+								</reference>
+								<reference attribute="caseParticipantRoleID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</equals>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="isWifeTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<not>
+									<equals>
+										<null />
+										<reference attribute="pdcGenderRecord" />
+									</equals>
+								</not>
+							</condition>
+							<value>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<equals>
+												<intervalvalue>
+													<reference attribute="gender">
+														<reference attribute="pdcGenderRecord" />
+													</reference>
+												</intervalvalue>
+												<Code table="Gender">
+													<String value="SX2" />
+												</Code>
+											</equals>
+											<equals>
+												<intervalvalue>
+													<reference attribute="maritalStatus">
+														<reference attribute="maritalStatusRecord" />
+													</reference>
+												</intervalvalue>
+												<Code table="MaritalStatus">
+													<String value="MS2" />
+												</Code>
+											</equals>
+										</members>
+									</fixedlist>
+								</all>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="headOfHouseholdTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<filter>
+									<list>
+										<readall ruleclass="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet">
+											<match retrievedattribute="caseID">
+												<reference attribute="caseID">
+													<reference attribute="caseParticipantRoleRecord" />
+												</reference>
+											</match>
+										</readall>
+									</list>
+									<listitemexpression>
+										<equals>
+											<reference attribute="participant">
+												<current />
+											</reference>
+											<reference attribute="caseParticipantRoleID">
+												<reference attribute="caseParticipantRoleRecord" />
+											</reference>
+										</equals>
+									</listitemexpression>
+								</filter>
+							</list>
+							<listitemexpression>
+								<intervalvalue>
+									<reference attribute="exists">
+										<current />
+									</reference>
+								</intervalvalue>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="moslaEducationRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="MolsaEducation" ruleset="MolsaEducationDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="MolsaEducation" ruleset="MolsaEducationDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="participant">
+								<current />
+							</reference>
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="caseParticipantRoleRecord" />
+							</reference>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="incomeRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Income" ruleset="IncomeDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="Income" ruleset="IncomeDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="participant">
+								<current />
+							</reference>
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="caseParticipantRoleRecord" />
+							</reference>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="totalIncomeAmounntTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<sum>
+						<dynamiclist>
+							<list>
+								<reference attribute="incomeRecords" />
+							</list>
+							<listitemexpression>
+								<reference attribute="monthlyAmount">
+									<create ruleclass="FrequencyConverter">
+										<reference attribute="frequency">
+											<current />
+										</reference>
+										<intervalvalue>
+											<reference attribute="amount">
+												<current />
+											</reference>
+										</intervalvalue>
+									</create>
+								</reference>
+							</listitemexpression>
+						</dynamiclist>
+					</sum>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="expenseRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Expense" ruleset="ExpenseDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="Expense" ruleset="ExpenseDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="participant">
+								<current />
+							</reference>
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="caseParticipantRoleRecord" />
+							</reference>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="totalMonthlyExpenseAmountTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<sum>
+						<dynamiclist>
+							<list>
+								<reference attribute="expenseRecords" />
+							</list>
+							<listitemexpression>
+								<reference attribute="monthlyAmount">
+									<create ruleclass="FrequencyConverter">
+										<reference attribute="frequency">
+											<current />
+										</reference>
+										<intervalvalue>
+											<reference attribute="rentAmount">
+												<current />
+											</reference>
+										</intervalvalue>
+									</create>
+								</reference>
+							</listitemexpression>
+						</dynamiclist>
+					</sum>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="ageTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<call class="curam.socialassistance.creole.statics.impl.Statics"
+					method="yearlyAnniversaryTimeline">
+					<type>
+						<javaclass name="curam.creole.value.Timeline">
+							<javaclass name="Number" />
+						</javaclass>
+					</type>
+					<arguments>
+						<reference attribute="dateOfBirth">
+							<reference attribute="pdcBirthAndDeathRecord" />
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		<Attribute name="absentFatherRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="AbsentFather" ruleset="AbsentFatherDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="AbsentFather" ruleset="AbsentFatherDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="caseParticipantRoleRecord" />
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="related_participant">
+								<current />
+							</reference>
+							<reference attribute="caseParticipantRoleRecord" />
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="hasAbsentFatherRecordofMissing">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="absentFatherRecords" />
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="absenceReason">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MOLSAAbsentFatherReason">
+										<String value="MAF17003" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="hasAbentFatherRecordofPrisoner">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="absentFatherRecords" />
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="absenceReason">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MOLSAAbsentFatherReason">
+										<String value="MAF17002" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="hasEnrolledForEducation">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="moslaEducationRecords" />
+							</list>
+							<listitemexpression>
+								<equals>
+									<reference attribute="studentStatus">
+										<current />
+									</reference>
+									<Code table="MOLSAEducation">
+										<String value="MED17000" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="hasEarnedIncomeTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<compare comparison="&gt;">
+									<property name="size">
+										<object>
+											<reference attribute="incomeRecords" />
+										</object>
+									</property>
+									<Number value="0" />
+								</compare>
+							</condition>
+							<value>
+								<any>
+									<dynamiclist>
+										<list>
+											<reference attribute="incomeRecords" />
+										</list>
+										<listitemexpression>
+											<any>
+												<fixedlist>
+													<listof>
+														<javaclass name="Boolean" />
+													</listof>
+													<members>
+														<equals>
+															<reference attribute="incomeType">
+																<current />
+															</reference>
+															<Code table="IncomeTypeCode">
+																<String value="IT17005" />
+															</Code>
+														</equals>
+														<equals>
+															<reference attribute="incomeType">
+																<current />
+															</reference>
+															<Code table="IncomeTypeCode">
+																<String value="IT17006" />
+															</Code>
+														</equals>
+													</members>
+												</fixedlist>
+											</any>
+
+										</listitemexpression>
+									</dynamiclist>
+								</any>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="SANonFinancialCPRCalculator">
+		<Initialization>
+			<Attribute name="caseParticipantRoleRecord">
+				<type>
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="householdMemberRecord">
+			<type>
+				<ruleclass name="HouseholdMember" ruleset="HouseholdMemberDataRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="householdMemberRecord">
+					<create ruleclass="MemberCPRCalculator">
+						<reference attribute="caseParticipantRoleRecord" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="hasPassedCitizenshipTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<not>
+									<equals>
+										<null />
+										<reference attribute="householdMemberRecord" />
+									</equals>
+								</not>
+							</condition>
+							<value>
+								<choose>
+									<type>
+										<javaclass name="Boolean" />
+									</type>
+									<when>
+										<condition>
+											<all>
+												<fixedlist>
+													<listof>
+														<javaclass name="Boolean" />
+													</listof>
+													<members>
+														<intervalvalue>
+															<reference attribute="exists">
+																<reference attribute="householdMemberRecord" />
+															</reference>
+														</intervalvalue>
+														<equals>
+															<intervalvalue>
+																<reference attribute="citizenship">
+																	<reference attribute="householdMemberRecord" />
+																</reference>
+															</intervalvalue>
+															<Code table="CitizenshipCode">
+																<String value="CC17000" />
+															</Code>
+														</equals>
+													</members>
+												</fixedlist>
+											</all>
+										</condition>
+										<value>
+											<true />
+										</value>
+									</when>
+									<otherwise>
+										<value>
+											<false />
+										</value>
+									</otherwise>
+								</choose>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="hasPassedResiencyTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<not>
+									<equals>
+										<null />
+										<reference attribute="householdMemberRecord" />
+									</equals>
+								</not>
+							</condition>
+							<value>
+								<choose>
+									<type>
+										<javaclass name="Boolean" />
+									</type>
+									<when>
+										<condition>
+											<all>
+												<fixedlist>
+													<listof>
+														<javaclass name="Boolean" />
+													</listof>
+													<members>
+														<intervalvalue>
+															<reference attribute="exists">
+																<reference attribute="householdMemberRecord" />
+															</reference>
+														</intervalvalue>
+														<equals>
+															<intervalvalue>
+																<reference attribute="residency">
+																	<reference attribute="householdMemberRecord" />
+																</reference>
+															</intervalvalue>
+															<Code table="MOLSAResidency">
+																<String value="RD17000" />
+															</Code>
+														</equals>
+													</members>
+												</fixedlist>
+											</all>
+										</condition>
+										<value>
+											<true />
+										</value>
+									</when>
+									<otherwise>
+										<value>
+											<false />
+										</value>
+									</otherwise>
+								</choose>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="hasPassedNonFinancialTestTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<all>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<intervalvalue>
+									<reference attribute="hasPassedCitizenshipTimeline" />
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="hasPassedResiencyTimeline" />
+								</intervalvalue>
+							</members>
+						</fixedlist>
+					</all>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="DependentChildCalculator">
+		<Initialization>
+			<Attribute name="caseParticipantRoleRecord">
+				<type>
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="memberCPRCalculator">
+			<type>
+				<ruleclass name="MemberCPRCalculator" />
+			</type>
+			<derivation>
+				<create ruleclass="MemberCPRCalculator">
+					<reference attribute="caseParticipantRoleRecord" />
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="isAgeUnderSixTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<intervalvalue>
+												<reference attribute="pdcBirthAndDeathRecordExists">
+													<reference attribute="memberCPRCalculator" />
+												</reference>
+											</intervalvalue>
+										</members>
+									</fixedlist>
+								</all>
+							</condition>
+							<value>
+								<compare comparison="&lt;">
+									<intervalvalue>
+										<reference attribute="ageTimeline">
+											<reference attribute="memberCPRCalculator" />
+										</reference>
+									</intervalvalue>
+									<Number value="6" />
+								</compare>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isUnmarriedMaleStudentChild">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<all>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<reference attribute="maritalStatusRecord">
+												<reference attribute="memberCPRCalculator" />
+											</reference>
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS1" />
+									</Code>
+								</equals>
+								<equals>
+									<intervalvalue>
+										<reference attribute="gender">
+											<reference attribute="pdcGenderRecord">
+												<reference attribute="memberCPRCalculator" />
+											</reference>
+										</reference>
+									</intervalvalue>
+									<Code table="Gender">
+										<String value="SX1" />
+									</Code>
+								</equals>
+								<not>
+									<intervalvalue>
+										<reference attribute="isAgeUnderSixTimeline" />
+									</intervalvalue>
+								</not>
+								<intervalvalue>
+									<reference attribute="hasEnrolledForEducation">
+										<reference attribute="memberCPRCalculator" />
+									</reference>
+								</intervalvalue>
+								<not>
+									<intervalvalue>
+										<reference attribute="hasEarnedIncomeTimeline">
+											<reference attribute="memberCPRCalculator" />
+										</reference>
+									</intervalvalue>
+								</not>
+							</members>
+						</fixedlist>
+					</all>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isUnmarriedFemaleStudent">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<all>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<reference attribute="maritalStatusRecord">
+												<reference attribute="memberCPRCalculator" />
+											</reference>
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS1" />
+									</Code>
+								</equals>
+								<equals>
+									<intervalvalue>
+										<reference attribute="gender">
+											<reference attribute="pdcGenderRecord">
+												<reference attribute="memberCPRCalculator" />
+											</reference>
+										</reference>
+									</intervalvalue>
+									<Code table="Gender">
+										<String value="SX2" />
+									</Code>
+								</equals>
+								<not>
+									<intervalvalue>
+										<reference attribute="isAgeUnderSixTimeline" />
+									</intervalvalue>
+								</not>
+								<compare comparison="&lt;">
+									<intervalvalue>
+										<reference attribute="ageTimeline">
+											<reference attribute="memberCPRCalculator" />
+										</reference>
+									</intervalvalue>
+									<Number value="18" />
+								</compare>
+								<intervalvalue>
+									<reference attribute="hasEnrolledForEducation">
+										<reference attribute="memberCPRCalculator" />
+									</reference>
+								</intervalvalue>
+								<not>
+									<intervalvalue>
+										<reference attribute="hasEarnedIncomeTimeline">
+											<reference attribute="memberCPRCalculator" />
+										</reference>
+									</intervalvalue>
+								</not>
+							</members>
+						</fixedlist>
+					</all>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isUnmarriedFemaleNonWorking">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<all>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<reference attribute="maritalStatusRecord">
+												<reference attribute="memberCPRCalculator" />
+											</reference>
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS1" />
+									</Code>
+								</equals>
+								<equals>
+									<intervalvalue>
+										<reference attribute="gender">
+											<reference attribute="pdcGenderRecord">
+												<reference attribute="memberCPRCalculator" />
+											</reference>
+										</reference>
+									</intervalvalue>
+									<Code table="Gender">
+										<String value="SX2" />
+									</Code>
+								</equals>
+								<intervalvalue>
+									<reference attribute="pdcBirthAndDeathRecordExists">
+										<reference attribute="memberCPRCalculator" />
+									</reference>
+								</intervalvalue>
+								<compare comparison="&gt;=">
+									<intervalvalue>
+										<reference attribute="ageTimeline">
+											<reference attribute="memberCPRCalculator" />
+										</reference>
+									</intervalvalue>
+									<Number value="18" />
+								</compare>
+								<not>
+									<intervalvalue>
+										<reference attribute="hasEarnedIncomeTimeline">
+											<reference attribute="memberCPRCalculator" />
+										</reference>
+									</intervalvalue>
+								</not>
+							</members>
+						</fixedlist>
+					</all>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isDependentChildTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean" />
+							</listof>
+							<members>
+								<intervalvalue>
+									<reference attribute="pdcBirthAndDeathRecordExists">
+										<reference attribute="memberCPRCalculator" />
+									</reference>
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="householdMemberRecordsExists">
+										<reference attribute="memberCPRCalculator" />
+									</reference>
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="isAgeUnderSixTimeline" />
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="isUnmarriedMaleStudentChild" />
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="isUnmarriedFemaleStudent" />
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="isUnmarriedFemaleNonWorking" />
+								</intervalvalue>
+							</members>
+						</fixedlist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="DisplayRulesMessage">
+		<Initialization>
+			<Attribute name="timelineToCovert">
+				<type>
+					<javaclass name="curam.creole.value.Timeline">
+						<javaclass name="Boolean" />
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="passFailMessageTimeline">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="timelineToCovert" />
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="DisplayRules.pass"
+									resourceBundle="curam.molsa.rules.ProductDisplay" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="DisplayRules.fail"
+									resourceBundle="curam.molsa.rules.ProductDisplay" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="yesNoMessageTimeline">
+			<Annotations>
+				<Display />
+			</Annotations>
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<intervalvalue>
+									<reference attribute="timelineToCovert" />
+								</intervalvalue>
+							</condition>
+							<value>
+								<ResourceMessage key="DisplayRules.yes"
+									resourceBundle="curam.molsa.rules.ProductDisplay" />
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="DisplayRules.no"
+									resourceBundle="curam.molsa.rules.ProductDisplay" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="AmountCalculator">
+		<Initialization>
+			<Attribute name="primaryClientCPRRecord">
+				<type>
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</type>
+			</Attribute>
+			<Attribute name="householdMembersCPRRecords">
+				<type>
+					<javaclass name="curam.creole.value.Timeline">
+						<javaclass name="List">
+							<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+						</javaclass>
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="allRelationshipRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="primaryClientCPRRecord" />
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="primaryClientCPRRecord" />
+							</reference>
+							<reference attribute="participant">
+								<current />
+							</reference>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="householdMemberAmountList">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<javaclass name="Number" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="List">
+								<javaclass name="Number" />
+							</javaclass>
+						</type>
+						<when>
+							<condition>
+								<compare comparison="&gt;">
+									<property name="size">
+										<object>
+											<intervalvalue>
+												<reference attribute="householdMembersCPRRecords" />
+											</intervalvalue>
+										</object>
+									</property>
+									<Number value="0" />
+								</compare>
+							</condition>
+							<value>
+								<filter>
+									<list>
+										<dynamiclist>
+											<list>
+												<intervalvalue>
+													<reference attribute="householdMembersCPRRecords" />
+												</intervalvalue>
+											</list>
+											<listitemexpression>
+												<choose>
+													<type>
+														<javaclass name="Number" />
+													</type>
+													<when>
+														<condition>
+															<equals>
+																<reference attribute="caseParticipantRoleID">
+																	<reference attribute="primaryClientCPRRecord" />
+																</reference>
+																<reference attribute="caseParticipantRoleID">
+																	<current />
+																</reference>
+															</equals>
+														</condition>
+														<value>
+															<intervalvalue>
+																<rate table="RTT17000" row="RR17002" column="RC17000" />
+															</intervalvalue>
+														</value>
+													</when>
+													<otherwise>
+														<value>
+															<intervalvalue>
+																<reference attribute="amountTimeline">
+																	<create ruleclass="RelationshipAmount">
+																		<reference attribute="primaryClientCPRRecord" />
+																		<current />
+																	</create>
+																</reference>
+															</intervalvalue>
+														</value>
+													</otherwise>
+												</choose>
+											</listitemexpression>
+										</dynamiclist>
+									</list>
+									<listitemexpression>
+										<not>
+											<equals>
+												<current />
+												<Number value="0" />
+											</equals>
+										</not>
+									</listitemexpression>
+								</filter>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<fixedlist>
+									<listof>
+										<javaclass name="Number" />
+									</listof>
+									<members>
+										<intervalvalue>
+											<rate table="RTT17000" row="RR17002" column="RC17000" />
+										</intervalvalue>
+									</members>
+								</fixedlist>
+							</value>
+						</otherwise>
+					</choose>
+
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="amountList">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<javaclass name="Number" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<reference attribute="householdMemberAmountList" />
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="RelationshipAmount">
+		<Initialization>
+			<Attribute name="primaryClientCPRRecord">
+				<type>
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</type>
+			</Attribute>
+			<Attribute name="householdMemberCPRRecord">
+				<type>
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="relationshipRecord">
+			<type>
+				<ruleclass name="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+					<filter>
+						<list>
+							<readall ruleclass="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet">
+								<match retrievedattribute="caseID">
+									<reference attribute="caseID">
+										<reference attribute="primaryClientCPRRecord" />
+									</reference>
+								</match>
+							</readall>
+						</list>
+						<listitemexpression>
+							<all>
+								<fixedlist>
+									<listof>
+										<javaclass name="Boolean" />
+									</listof>
+									<members>
+										<equals>
+											<reference attribute="caseParticipantRoleID">
+												<reference attribute="primaryClientCPRRecord" />
+											</reference>
+											<reference attribute="participant">
+												<current />
+											</reference>
+										</equals>
+										<equals>
+											<reference attribute="caseParticipantRoleID">
+												<reference attribute="householdMemberCPRRecord" />
+											</reference>
+											<reference attribute="relatedParticipant">
+												<current />
+											</reference>
+										</equals>
+									</members>
+								</fixedlist>
+							</all>
+						</listitemexpression>
+					</filter>
+				</singleitem>
+			</derivation>
+		</Attribute>
+		<Attribute name="isRelationshipExistsTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<not>
+									<equals>
+										<null />
+										<reference attribute="relationshipRecord" />
+									</equals>
+								</not>
+							</condition>
+							<value>
+								<intervalvalue>
+									<reference attribute="exists">
+										<reference attribute="relationshipRecord" />
+									</reference>
+								</intervalvalue>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="amountTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Number" />
+						</type>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<not>
+												<equals>
+													<null />
+													<reference attribute="relationshipRecord" />
+												</equals>
+											</not>
+											<equals>
+												<intervalvalue>
+													<reference attribute="relationshipType">
+														<reference attribute="relationshipRecord" />
+													</reference>
+												</intervalvalue>
+												<Code table="RelationshipTypeCode">
+													<String value="RT2" />
+												</Code>
+											</equals>
+										</members>
+									</fixedlist>
+								</all>
+							</condition>
+							<value>
+								<intervalvalue>
+									<rate table="RTT17000" row="RR17002" column="RC17002" />
+								</intervalvalue>
+							</value>
+						</when>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<not>
+												<equals>
+													<null />
+													<reference attribute="relationshipRecord" />
+												</equals>
+											</not>
+											<equals>
+												<intervalvalue>
+													<reference attribute="relationshipType">
+														<reference attribute="relationshipRecord" />
+													</reference>
+												</intervalvalue>
+												<Code table="RelationshipTypeCode">
+													<String value="RT6" />
+												</Code>
+											</equals>
+										</members>
+									</fixedlist>
+								</all>
+							</condition>
+							<value>
+								<intervalvalue>
+									<rate table="RTT17000" row="RR17002" column="RC17001" />
+								</intervalvalue>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<Number value="0" />
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="AbstractObjectiveTimeline" extendsRuleSet="ProductEligibilityEntitlementRuleSet"
+		name="SocialAssistanceObjectiveTimeline"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="objectiveType">
+			<type>
+				<ruleclass name="SocialAssistanceObjectiveType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="isEntitledTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="relatedReferenceTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="String" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="targetIDTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Number" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="tagTimelines">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SocialAssistanceTagTimeline" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="AbstractTagTimeline" extendsRuleSet="ProductEligibilityEntitlementRuleSet"
+		name="SocialAssistanceTagTimeline" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="tagType">
+			<type>
+				<ruleclass name="SocialAssistanceTagType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="valueTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Object" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="AbstractTagType" extendsRuleSet="ProductEligibilityEntitlementRuleSet"
+		name="SocialAssistanceTagType" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="tagTypeID">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="name">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="pattern">
+			<type>
+				<javaclass name="curam.util.type.FrequencyPattern" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="valueType">
+			<type>
+				<codetableentry table="RulesTagType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class extends="AbstractObjectiveType" extendsRuleSet="ProductEligibilityEntitlementRuleSet"
+		name="SocialAssistanceObjectiveType" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Attribute name="objectiveTypeID">
+			<type>
+				<javaclass name="String" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="comments">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="name">
+			<type>
+				<codetableentry table="RulesComponentType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="financialComponentType">
+			<type>
+				<codetableentry table="RulesComponentFCType" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="rateTarget">
+			<type>
+				<codetableentry table="RulesComponentTarget" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="isDeductionAllowable">
+			<type>
+				<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="tagTypes">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SocialAssistanceTagType" />
+				</javaclass>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="SocialAssistanceBenefitAmountObjectives"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Initialization>
+			<Attribute name="socialAssistanceEligibilityUnitCalculator">
+				<type>
+					<javaclass name="curam.creole.value.Timeline">
+						<ruleclass name="SocialAssistanceEligibilityUnitCalculator" />
+					</javaclass>
+				</type>
+			</Attribute>
+			<Attribute name="primaryAndMemberCaseParticipantRoleRecords">
+				<type>
+					<javaclass name="List">
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="socialAssistanceBenefitTagType">
+			<type>
+				<ruleclass name="SocialAssistanceTagType" />
+			</type>
+			<derivation>
+				<create ruleclass="SocialAssistanceTagType">
+					<specify attribute="tagTypeID">
+						<Number value="21" />
+					</specify>
+					<specify attribute="name">
+						<XmlMessage>Benefit</XmlMessage>
+					</specify>
+					<specify attribute="pattern">
+						<FrequencyPattern value="200100000" />
+					</specify>
+					<specify attribute="valueType">
+						<Code table="RulesTagType">
+							<String value="RTT3" />
+						</Code>
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="socialAssistanceBenefitTagTimeline">
+			<type>
+				<ruleclass name="SocialAssistanceTagTimeline" />
+			</type>
+			<derivation>
+				<create ruleclass="SocialAssistanceTagTimeline">
+					<specify attribute="tagType">
+						<reference attribute="socialAssistanceBenefitTagType" />
+					</specify>
+					<specify attribute="valueTimeline">
+						<timelineoperation>
+							<arithmetic decimalPlaces="2" operation="*" rounding="half_up">
+								<intervalvalue>
+									<reference attribute="monthlyAmountTimeline">
+										<intervalvalue>
+											<reference attribute="socialAssistanceEligibilityUnitCalculator" />
+										</intervalvalue>
+									</reference>
+								</intervalvalue>
+								<Number value="1" />
+							</arithmetic>
+						</timelineoperation>
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="socialAssistanceBenefitObjectiveType">
+			<type>
+				<ruleclass name="SocialAssistanceObjectiveType" />
+			</type>
+			<derivation>
+				<create ruleclass="SocialAssistanceObjectiveType">
+					<specify attribute="objectiveTypeID">
+						<String value="BenefitAmount" />
+					</specify>
+					<specify attribute="comments">
+						<XmlMessage>BenefitAmount</XmlMessage>
+					</specify>
+					<specify attribute="name">
+						<Code table="RulesComponentType">
+							<String value="PC17000" />
+						</Code>
+					</specify>
+					<specify attribute="financialComponentType">
+						<Code table="RulesComponentFCType">
+							<String value="CT1" />
+						</Code>
+					</specify>
+					<specify attribute="rateTarget">
+						<Code table="RulesComponentTarget">
+							<String value="RC1" />
+						</Code>
+					</specify>
+					<specify attribute="isDeductionAllowable">
+						<true />
+					</specify>
+					<specify attribute="tagTypes">
+						<fixedlist>
+							<listof>
+								<ruleclass name="SocialAssistanceTagType" />
+							</listof>
+							<members>
+								<reference attribute="socialAssistanceBenefitTagType" />
+							</members>
+						</fixedlist>
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="socialAssistanceBenefitObjectiveTimeline">
+			<type>
+				<ruleclass name="SocialAssistanceObjectiveTimeline" />
+			</type>
+			<derivation>
+				<create ruleclass="SocialAssistanceObjectiveTimeline">
+					<specify attribute="objectiveType">
+						<reference attribute="socialAssistanceBenefitObjectiveType" />
+					</specify>
+					<specify attribute="isEntitledTimeline">
+						<timelineoperation>
+							<true />
+						</timelineoperation>
+					</specify>
+					<specify attribute="relatedReferenceTimeline">
+						<timelineoperation>
+							<String value="SocialAssistanceBenefitAmount" />
+						</timelineoperation>
+					</specify>
+					<specify attribute="targetIDTimeline">
+						<timelineoperation>
+							<reference attribute="participantRoleID">
+								<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+									<reference attribute="primaryAndMemberCaseParticipantRoleRecords" />
+								</singleitem>
+							</reference>
+						</timelineoperation>
+					</specify>
+					<specify attribute="tagTimelines">
+						<fixedlist>
+							<listof>
+								<ruleclass name="SocialAssistanceTagTimeline" />
+							</listof>
+							<members>
+								<reference attribute="socialAssistanceBenefitTagTimeline" />
+							</members>
+						</fixedlist>
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="SocialAssistanceObjectiveCalculator"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Initialization>
+			<Attribute name="socialAssistanceEligibilityUnitCalculator">
+				<type>
+					<javaclass name="curam.creole.value.Timeline">
+						<ruleclass name="SocialAssistanceEligibilityUnitCalculator" />
+					</javaclass>
+				</type>
+			</Attribute>
+			<Attribute name="primaryAndMemberCaseParticipantRoleRecords">
+				<type>
+					<javaclass name="List">
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					</javaclass>
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="objectiveTimelines">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="SocialAssistanceObjectiveTimeline" />
+				</javaclass>
+			</type>
+			<derivation>
+				<joinlists>
+					<fixedlist>
+						<listof>
+							<javaclass name="List">
+								<ruleclass name="SocialAssistanceObjectiveTimeline" />
+							</javaclass>
+						</listof>
+						<members>
+							<fixedlist>
+								<listof>
+									<ruleclass name="SocialAssistanceObjectiveTimeline" />
+								</listof>
+								<members>
+									<reference attribute="socialAssistanceBenefitObjectiveTimeline" />
+								</members>
+							</fixedlist>
+						</members>
+					</fixedlist>
+				</joinlists>
+			</derivation>
+		</Attribute>
+		<Attribute name="socialAssistanceBenefitObjectiveTimeline">
+			<type>
+				<ruleclass name="SocialAssistanceObjectiveTimeline" />
+			</type>
+			<derivation>
+				<reference attribute="socialAssistanceBenefitObjectiveTimeline">
+					<create ruleclass="SocialAssistanceBenefitAmountObjectives">
+						<reference attribute="socialAssistanceEligibilityUnitCalculator" />
+						<reference attribute="primaryAndMemberCaseParticipantRoleRecords" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+	</Class>
+	<Class name="FrequencyConverter" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		<Initialization>
+			<Attribute name="frequencyCode">
+				<type>
+					<codetableentry table="FrequencyCode" />
+				</type>
+			</Attribute>
+			<Attribute name="amount">
+				<type>
+					<javaclass name="Number" />
+				</type>
+			</Attribute>
+		</Initialization>
+		<Attribute name="description">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<XmlMessage>Frequency Converter</XmlMessage>
+			</derivation>
+		</Attribute>
+		<Attribute name="monthlyAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic decimalPlaces="2" operation="*" rounding="down">
+					<reference attribute="amount" />
+					<reference attribute="monthlyConversionRatio" />
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		<Attribute name="dailyAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic decimalPlaces="2" operation="/" rounding="down">
+					<reference attribute="amount" />
+					<reference attribute="dailyConversionRatio" />
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		<Attribute name="yearlyAmount">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<arithmetic decimalPlaces="2" operation="*" rounding="down">
+					<reference attribute="amount" />
+					<reference attribute="yearlyConversionRatio" />
+				</arithmetic>
+			</derivation>
+		</Attribute>
+		<Attribute name="monthlyConversionRatio">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<test>
+						<reference attribute="frequencyCode" />
+					</test>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC1" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="30" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC2" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="4.3" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC6" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="2.15" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC5" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="0.333333" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC8" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="0.166666" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC7" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="0.083333" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="1" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="dailyConversionRatio">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<test>
+						<reference attribute="frequencyCode" />
+					</test>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC2" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="7" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC3" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="30" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC6" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="14" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC5" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="90" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC8" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="180" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC7" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="365" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="1" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+		<Attribute name="yearlyConversionRatio">
+			<type>
+				<javaclass name="Number" />
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Number" />
+					</type>
+					<test>
+						<reference attribute="frequencyCode" />
+					</test>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC1" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="361.2" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC2" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="51.6" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC6" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="25.8" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC3" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="12" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC5" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="4" />
+						</value>
+					</when>
+					<when>
+						<condition>
+							<Code table="FrequencyCode">
+								<String value="FC8" />
+							</Code>
+						</condition>
+						<value>
+							<Number value="2" />
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<Number value="1" />
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

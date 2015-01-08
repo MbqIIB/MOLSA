@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../../../../../../../../Curam/catalog/RuleSet.xsd"
+ extends="SAHouseholdIncomeCategory"
+ extendsRuleSet="SocialAssistanceDisplayRuleSet" name="WidowHouseholdIncomeCategory">
+  <!-- 
+    The eligibility rule object for the case.    
+    At program recommendation level, this attribute will be specified. 
+    
+  -->
+  <Attribute name="productCase">
+    <type>
+      <ruleclass name="WidowProductCase" ruleset="WidowEligibilityAndEntitlementRuleSet"/>
+    </type>
+    <derivation>
+      <create
+        ruleclass="WidowProductCase"
+        ruleset="WidowEligibilityAndEntitlementRuleSet"
+        >
+        <specify attribute="productDeliveryCase">
+          <reference attribute="productDeliveryCase"/>
+        </specify>
+      </create>
+    </derivation>
+  </Attribute>
+  <Attribute name="primaryClientCPRRecord">
+    <type>
+      <ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
+    </type>
+    <derivation>
+      <reference attribute="primaryClientCPRRecord">
+        <reference attribute="productCase"/>
+      </reference>
+    </derivation>
+  </Attribute>
+  <Attribute name="eligibilityUnitMembers">
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <filter>
+          <list>
+            <dynamiclist>
+              <list>
+                <intervalvalue>
+                  <reference attribute="eligibleMembersTimeline">
+                    <reference attribute="eligibilityUnit">
+                      <reference attribute="productCase"/>
+                    </reference>
+                  </reference>
+                </intervalvalue>
+              </list>
+              <listitemexpression>
+                <reference attribute="caseParticipantRoleRecord">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </list>
+          <listitemexpression>
+            <not>
+              <equals>
+                <null/>
+                <current/>
+              </equals>
+            </not>
+          </listitemexpression>
+        </filter>
+        
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+  
+  <Attribute name="totalGrossBenefitAmount">
+    <Annotations>
+      <Display domain="CURAM_AMOUNT"/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="Number"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <sum>
+          <intervalvalue>
+            <reference attribute="amountList"/>
+          </intervalvalue>
+        </sum>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+  
+  <Attribute name="totalIncomeTimeline">
+    <Annotations>
+      <Display domain="CURAM_AMOUNT"/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="Number"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <intervalvalue>
+          <reference attribute="unearnedIncomeAmount">
+            <intervalvalue>
+              <reference attribute="widowEligibilityUnitCalculator">
+                <reference attribute="widowProgramCalculator">
+                  <reference attribute="productCase"/>
+                </reference>
+              </reference>
+            </intervalvalue>
+          </reference>
+        </intervalvalue>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+  <Attribute name="totalExpenseAmountTimeline">
+    <Annotations>
+      <Display domain="CURAM_AMOUNT"/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="Number"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <intervalvalue>
+          <reference attribute="totalExpenseAmountTimeline">
+            <intervalvalue>
+              <reference attribute="widowEligibilityUnitCalculator">
+                <reference attribute="widowProgramCalculator">
+                  <reference attribute="productCase"/>
+                </reference>
+              </reference>
+            </intervalvalue>
+          </reference>
+        </intervalvalue>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+  <Attribute name="totalCountableIncomeTimeline">
+    <Annotations>
+      <Display domain="CURAM_AMOUNT"/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="Number"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <intervalvalue>
+          <reference attribute="totalCountableIncomeTimeline">
+            <intervalvalue>
+              <reference attribute="widowEligibilityUnitCalculator">
+                <reference attribute="widowProgramCalculator">
+                  <reference attribute="productCase"/>
+                </reference>
+              </reference>
+            </intervalvalue>
+          </reference>
+        </intervalvalue>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+  
+  <Attribute name="monthlyAmountTimeline">
+    <Annotations>
+      <Display domain="CURAM_AMOUNT"/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="Number"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <intervalvalue>
+          <reference attribute="monthlyAmountTimeline">
+            <intervalvalue>
+              <reference attribute="widowEligibilityUnitCalculator">
+                <reference attribute="widowProgramCalculator">
+                  <reference attribute="productCase"/>
+                </reference>
+              </reference>
+            </intervalvalue>
+          </reference>
+        </intervalvalue>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+  <Attribute name="amountList">
+    <Annotations>
+      <Display domain="CURAM_AMOUNT"/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="Number"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <filter>
+          <list>
+            <intervalvalue>
+              <reference attribute="amountList">
+                <create ruleclass="AmountCalculator" ruleset="SocialAssistanceRuleSet">
+                  <reference attribute="primaryClientCPRRecord"/>
+                  <reference attribute="eligibilityUnitMembers"/>
+                </create>
+              </reference>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <not>
+              <equals>
+                <null/>
+                <current/>
+              </equals>
+            </not>
+          </listitemexpression>
+        </filter>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+</Class>

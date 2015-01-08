@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    
+    Class used to retrieve concern role information for the various sets of people used in the eligibility determination rules.
+    
+    NB The information returned in this display class is used to populate CaseGroups etc. Any updates to this class may adversely affect this processing.
+    
+-->
+<Class
+  extends="DefaultCase"
+  extendsRuleSet="DefaultProductDecisionDetailsRuleSet"
+  name="SeniorCitizenUnitInformation"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <!-- 
+        The eligibility rule object associated with this case.
+        
+    -->
+  <Attribute name="seniorCitizenProductCase">
+    <type>
+      <ruleclass
+        name="SeniorCitizenProductCase"
+        ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet"
+      />
+    </type>
+    <derivation>
+      <create
+        ruleclass="SeniorCitizenProductCase"
+        ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet"
+      >
+        <specify attribute="productDeliveryCase">
+          <reference attribute="productDeliveryCase"/>
+        </specify>
+      </create>
+    </derivation>
+  </Attribute>
+
+  <Attribute name="mandatoryMemberConcernRoles">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="Number"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+		  <intervalvalue>
+		    <reference attribute="mandatoryEligibleMembersTimeline">
+                <reference attribute="eligibilityUnit">
+                  <reference attribute="seniorCitizenProductCase"/>
+                </reference>
+            </reference>
+		  </intervalvalue> 
+          </list>
+          <listitemexpression>
+            <reference attribute="participantRoleID">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+  <Attribute name="eligibleMemberConcernRoles">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="Number"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <choose>
+          <type>
+            <javaclass name="List">
+              <javaclass name="Number"/>
+            </javaclass>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="isEligibleTimeline">
+                  <reference attribute="seniorCitizenProductCase"/>
+                </reference>
+              </intervalvalue>
+            </condition>
+            <value>
+              <dynamiclist>
+                <list>
+                  <intervalvalue>
+                    <reference attribute="eligibleMembersTimeline">
+                        <reference attribute="eligibilityUnit">
+                          <reference attribute="seniorCitizenProductCase"/>
+                        </reference>
+                    </reference>
+                  </intervalvalue>
+                </list>
+                <listitemexpression>
+                  <reference attribute="participantRoleID">
+                    <current/>
+                  </reference>
+                </listitemexpression>
+              </dynamiclist>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Number"/>
+                </listof>
+                <members/>
+              </fixedlist>
+            </value>
+          </otherwise>
+        </choose>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+</Class>

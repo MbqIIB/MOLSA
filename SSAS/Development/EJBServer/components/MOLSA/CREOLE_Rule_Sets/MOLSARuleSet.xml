@@ -1,0 +1,193 @@
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../../../../../../Curam/catalog/RuleSet.xsd" name="MOLSARuleSet">
+    <Class abstract="true" extends="DefaultSimulatedDetermination"
+        extendsRuleSet="DefaultProgramRecommendationRuleSet" name="SimulatedDetermination"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+        <Attribute name="unit">
+            <type>
+                <ruleclass name="HouseholdUnit"/>
+            </type>
+            <derivation>
+                <abstract/>
+            </derivation>
+        </Attribute>
+    </Class>
+    <Class abstract="true" extends="DefaultProgramRecommendationCase"
+        extendsRuleSet="DefaultProgramRecommendationRuleSet" name="MOLSAProductCase"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+        <Attribute name="caseID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <abstract/>
+            </derivation>
+        </Attribute>
+        <Attribute name="eligibilityUnit">
+            <type>
+                <ruleclass name="HouseholdUnit"/>
+            </type>
+            <derivation>
+                <abstract/>
+            </derivation>
+        </Attribute>
+    </Class>
+    <Class abstract="true" name="HouseholdUnitMember"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+        <Attribute name="caseParticipantRoleID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <abstract/>
+            </derivation>
+        </Attribute>
+    </Class>
+    <Class abstract="true" name="HouseholdUnit"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+        <Attribute name="mandatoryMembers">
+            <type>
+                <javaclass name="List">
+                    <ruleclass name="HouseholdUnitMember"/>
+                </javaclass>
+            </type>
+            <derivation>
+                <abstract/>
+            </derivation>
+        </Attribute>
+    </Class>
+    
+    <Class name="SimDeterminationAuthorization"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+        <Attribute name="simDetermAuthorizationID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="caseID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="dateTime">
+            <type>
+                <javaclass name="curam.util.type.DateTime"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+    </Class>
+    <Class name="Application"
+        xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+        <Attribute name="applicationID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="submittedDateTime">
+            <type>
+                <javaclass name="curam.util.type.DateTime"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="caseID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="filingDate">
+            <type>
+                <javaclass name="curam.util.type.Date"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+    </Class>
+    <Class name="CaseGroups">
+        <Attribute name="caseID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="concernRoleID">
+            <type>
+                <javaclass name="Number"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="groupCode">
+            <type>
+                <codetableentry table="CaseGroupType"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="startDate">
+            <type>
+                <javaclass name="curam.util.type.Date"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="endDate">
+            <type>
+                <javaclass name="curam.util.type.Date"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="exists">
+            <type>
+                <javaclass name="curam.creole.value.Timeline">
+                    <javaclass name="Boolean"/>
+                </javaclass>
+            </type>
+            <derivation>
+                <existencetimeline>
+                    <intervaltype>
+                        <javaclass name="Boolean"/>
+                    </intervaltype>
+                    <intervalfromdate>
+                        <reference attribute="startDate"/>
+                    </intervalfromdate>
+                    <intervaltodate>
+                        <reference attribute="endDate"/>
+                    </intervaltodate>
+                    <preExistenceValue>
+                        <false/>
+                    </preExistenceValue>
+                    <existenceValue>
+                        <true/>
+                    </existenceValue>
+                    <postExistenceValue>
+                        <false/>
+                    </postExistenceValue>
+                </existencetimeline>
+            </derivation>
+        </Attribute>
+    </Class>
+</RuleSet>

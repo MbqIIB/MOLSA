@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../../../../../../../../../Curam/catalog/RuleSet.xsd"
+ extends="DefaultProgramRecommendationSubscreenDisplay"
+ extendsRuleSet="DefaultProgramRecommendationDisplayRuleSet" name="SAContextPanelSubscreen">
+
+
+  <Initialization>
+    <Attribute name="saHouseholdUnitCalculator">
+      <type>
+        <javaclass name="curam.creole.value.Timeline">
+          <ruleclass
+            name="SAHouseholdUnitCalculator"
+            ruleset="SocialAssistanceRuleSet"
+          />
+        </javaclass>
+      </type>
+    </Attribute>
+    <Attribute name="socialAssistanceProductCase">
+      <type>
+        <ruleclass
+          name="SocialAssistanceProductCase"
+          ruleset="SocialAssistanceRuleSet"
+        />
+      </type>
+    </Attribute>
+    <Attribute name="isProductDelivery">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+    </Attribute>
+    <Attribute name="caseID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+    </Attribute>
+  </Initialization>
+
+
+  <Attribute name="businessObjectID">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="Number"/>
+    </type>
+    <derivation>
+      <Number value="1"/>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="mandatoryMembers">
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <ruleclass
+            name="SAHouseholdUnitMember"
+            ruleset="SocialAssistanceRuleSet"
+          />
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <reference attribute="mandatoryMembers">
+          <intervalvalue>
+            <reference attribute="saHouseholdUnitCalculator"/>
+          </intervalvalue>
+        </reference>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+  <Attribute name="primaryHouseholdMemberCPRRecord">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="String"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <reference attribute="concernRoleName">
+          <reference attribute="participantRole">
+        <singleitem
+          onEmpty="returnNull"
+          onMultiple="returnFirst"
+        >
+          <filter>
+            <list>
+              <readall
+                ruleclass="CaseParticipantRole"
+                ruleset="CaseEntitiesRuleSet"
+              >
+                <match retrievedattribute="caseID">
+                  <reference attribute="caseID"/>
+                </match>
+              </readall>
+            </list>
+            <listitemexpression>
+              <equals>
+                <reference attribute="typeCode">
+                  <current/>
+                </reference>
+                <Code table="CaseParticipantRoleType">
+                  <String value="PRI"/>
+                </Code>
+              </equals>
+            </listitemexpression>
+          </filter>
+        </singleitem>
+          </reference>
+        </reference>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+  <Attribute name="isEligibleMessage">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="curam.creole.value.Message"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <choose>
+                <type>
+                  <javaclass name="Boolean"/>
+                </type>
+                <when>
+                  <condition>
+                    <reference attribute="isProductDelivery"/>
+                  </condition>
+                  <value>
+                    <intervalvalue>
+                      <reference attribute="isEligibleTimeline">
+                        <reference attribute="socialAssistanceProductCase"/>
+                      </reference>
+                    </intervalvalue>
+                  </value>
+                </when>
+                <otherwise>
+                  <value>
+                    <intervalvalue>
+                      <reference attribute="programRecommendationEligibilityTimeline">
+                        <reference attribute="socialAssistanceProductCase"/>
+                      </reference>
+                    </intervalvalue>
+                  </value>
+                </otherwise>
+              </choose>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="ContextPanel.Eligible"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage
+                key="ContextPanel.Ineligible"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+            </value>
+          </otherwise>
+        </choose>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="assistanceUnitTimeline">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="curam.creole.value.Message"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <concat>
+          <fixedlist>
+            <listof>
+              <javaclass name="curam.creole.value.Message"/>
+            </listof>
+            <members>
+              <concat>
+                <dynamiclist>
+                  <list alias="eligibleMandatoryMembers">
+                    <filter>
+                      <list alias="mandatoryMembers">
+                        <intervalvalue>
+                          <reference attribute="mandatoryMembers"/>
+                        </intervalvalue>
+                      </list>
+                      <listitemexpression>
+                        <any>
+                          <dynamiclist>
+                            <list alias="eligibleMembers">
+                              <intervalvalue>
+                                <reference attribute="eligibleMembersTimeline">
+                                  <intervalvalue>
+                                    <reference attribute="saHouseholdUnitCalculator"/>
+                                  </intervalvalue>
+                                </reference>
+                              </intervalvalue>
+                            </list>
+                            <listitemexpression>
+                              <equals>
+                                <reference attribute="caseParticipantRoleID">
+                                  <reference attribute="caseParticipantRoleRecord">
+                                    <current alias="eligibleMembers"/>
+                                  </reference>
+                                </reference>
+                                <reference attribute="caseParticipantRoleID">
+                                  <reference attribute="caseParticipantRoleRecord">
+                                    <current alias="mandatoryMembers"/>
+                                  </reference>
+                                </reference>
+                              </equals>
+                            </listitemexpression>
+                          </dynamiclist>
+                        </any>
+                      </listitemexpression>
+                    </filter>
+                  </list>
+                  <listitemexpression>
+                    <ResourceMessage
+                      key="ContextPanel.MandatoryMember"
+                      resourceBundle="curam.molsa.rules.ProductDisplay"
+                    >
+                      <reference attribute="concernRoleName">
+                        <reference attribute="participantRole">
+                          <reference attribute="caseParticipantRoleRecord">
+                            <current alias="eligibleMandatoryMembers"/>
+                          </reference>
+                        </reference>
+                      </reference>
+                    </ResourceMessage>
+                  </listitemexpression>
+                </dynamiclist>
+              </concat>
+            </members>
+          </fixedlist>
+        </concat>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+</Class>

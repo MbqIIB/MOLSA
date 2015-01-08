@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!--
+    Copyright 2011 Curam Software Ltd.
+    All rights reserved.
+    
+    This software is the confidential and proprietary information of Curam
+    Software, Ltd. ("Confidential Information").  You shall not disclose such
+    Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Curam Software.
+-->
+<Class
+  extends="DefaultProgramRecommendationSubscreenDisplay"
+  extendsRuleSet="DefaultProgramRecommendationDisplayRuleSet"
+  name="SANonFinancialSubscreen"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
+>
+
+
+  <Initialization>
+    <Attribute name="saNonFinancialsCPRCalculator">
+      <type>
+        <ruleclass
+          name="SANonFinancialCPRCalculator"
+          ruleset="SocialAssistanceRuleSet"
+        />
+      </type>
+    </Attribute>
+  </Initialization>
+
+
+  <Attribute name="businessObjectID">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="Number"/>
+    </type>
+    <derivation>
+      <Number value="1"/>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="citizenshipRulesMessage">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="curam.creole.value.Message"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="hasPassedCitizenshipTimeline">
+                  <reference attribute="saNonFinancialsCPRCalculator"/>
+                </reference>
+              </intervalvalue>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="NonFinancial.Citizenship.Citizen"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage
+                key="NonFinancial.Citizenship.FailsCitizenRules"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+            </value>
+          </otherwise>
+        </choose>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+  <Attribute name="residencyRulesMessage">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="curam.creole.value.Message"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="hasPassedResiencyTimeline">
+                  <reference attribute="saNonFinancialsCPRCalculator"/>
+                </reference>
+              </intervalvalue>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="NonFinancial.Residency.QatarResident"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage
+                key="NonFinancial.Residency.FailsResidency"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+            </value>
+          </otherwise>
+        </choose>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+</Class>

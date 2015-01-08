@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="AbsentFatherSummaryRuleSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceSummary" extendsRuleSet="EvidenceSummaryRuleSet"
+		name="AbsentFatherSummary">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="AbsentFather" ruleset="AbsentFatherRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="summaryMessage"
+					resourceBundle="curam.evidence.AbsentFatherSummaryRuleSet">
+					 <reference attribute="concernRoleName">
+						<reference attribute="participantRole">
+							<reference attribute="related_absentPerson">
+								<reference attribute="evidence" />
+							</reference>
+							</reference>
+						</reference>
+			
+
+					<reference attribute="absenceReason">
+						<reference attribute="evidence" />
+					</reference>
+				</ResourceMessage>
+			</derivation>
+		</Attribute>
+
+
+	</Class>
+</RuleSet>

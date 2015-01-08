@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../../../../../../../../../../Curam/catalog/RuleSet.xsd"
+ extends="SANonFinancialCategory"
+ extendsRuleSet="SocialAssistanceDisplayRuleSet" name="OrphanNonFinancialCategory">
+
+  <Attribute name="productCase">
+    <type>
+      <ruleclass name="OrphanProductCase" ruleset="OrphanRuleSet"/>
+    </type>
+    <derivation>
+      <create
+        ruleclass="OrphanProductCase"
+        ruleset="OrphanRuleSet"
+        >
+        <specify attribute="productDeliveryCase">
+          <reference attribute="productDeliveryCase"/>
+        </specify>
+      </create>
+    </derivation>
+  </Attribute>
+  
+  <Attribute name="eligibilityUnitMembersTimeline">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <ruleclass
+            name="CaseParticipantRole"
+            ruleset="CaseEntitiesRuleSet"
+          />
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="eligibleMembersTimeline">
+                <reference attribute="eligibilityUnit">
+                  <reference attribute="productCase"/>
+                </reference>
+              </reference>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <reference attribute="caseParticipantRoleRecord">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+<!--
+  <Attribute name="unitCompositionMembersDetails">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="String"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="eligibilityUnitMembersTimeline"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <reference attribute="concernRoleName">
+              <reference attribute="participantRole">
+                <current/>
+              </reference>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="unitCompositionMembersCaseParticipantRoleIDs">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="Number"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="eligibilityUnitMembersTimeline"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <reference attribute="caseParticipantRoleID">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="uniqueCaseParticipants">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="List">
+        <ruleclass
+          name="CaseParticipantRole"
+          ruleset="CaseEntitiesRuleSet"
+        />
+      </javaclass>
+    </type>
+    <derivation>
+      <call
+        class="curam.socialassistance.creole.statics.impl.Statics"
+        method="getUniqueRuleObjects"
+      >
+        <type>
+          <javaclass name="List">
+            <ruleclass
+              name="CaseParticipantRole"
+              ruleset="CaseEntitiesRuleSet"
+            />
+          </javaclass>
+        </type>
+        <arguments>
+          <timelineoperation>
+            <dynamiclist>
+              <list>
+                <intervalvalue>
+                  <reference attribute="eligibilityUnitMembersTimeline"/>
+                </intervalvalue>
+              </list>
+              <listitemexpression>
+                <current/>
+              </listitemexpression>
+            </dynamiclist>
+          </timelineoperation>
+        </arguments>
+      </call>
+    </derivation>
+  </Attribute>
+
+
+  <!-\- Create a subscreen for each member that is in the unit at any time. If at 
+    any time the member is no longer in the unit, then their subscreen will 
+    still exist but not be displayed. -\->
+  <Attribute name="saNonFinancialSubscreens">
+    <Annotations>
+      <DisplaySubscreen/>
+    </Annotations>
+    <type>
+      <javaclass name="List">
+        <ruleclass name="SANonFinancialSubscreen" ruleset="SocialAssistanceDisplayRuleSet"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <dynamiclist>
+        <list>
+          <reference attribute="uniqueCaseParticipants"/>
+        </list>
+        <listitemexpression>
+          <create ruleclass="SANonFinancialSubscreen" ruleset="SocialAssistanceDisplayRuleSet">
+            <create
+              ruleclass="SANonFinancialCPRCalculator"
+              ruleset="SocialAssistanceRuleSet"
+            >
+              <current/>
+            </create>
+          </create>
+        </listitemexpression>
+      </dynamiclist>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="saNonFinancialCPRCalculators">
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <ruleclass
+            name="SANonFinancialCPRCalculator"
+            ruleset="SocialAssistanceRuleSet"
+          />
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="eligibilityUnitMembersTimeline"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <create
+              ruleclass="SANonFinancialCPRCalculator"
+              ruleset="SocialAssistanceRuleSet"
+            >
+              <current/>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="passesResidencyRulesMessageList">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="curam.creole.value.Message"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="saNonFinancialCPRCalculators"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <intervalvalue>
+              <reference attribute="passFailMessageTimeline">
+                <create
+                  ruleclass="DisplayRulesMessage"
+                  ruleset="SocialAssistanceRuleSet"
+                >
+                  <reference attribute="hasPassedResiencyTimeline">
+                      <current/>
+                  </reference>
+                </create>
+              </reference>
+            </intervalvalue>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+
+  <Attribute name="passesCitizenshipRulesMessageList">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="curam.creole.value.Message"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="saNonFinancialCPRCalculators"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <intervalvalue>
+              <reference attribute="passFailMessageTimeline">
+                <create
+                  ruleclass="DisplayRulesMessage"
+                  ruleset="SocialAssistanceRuleSet"
+                >
+                  <reference attribute="hasPassedCitizenshipTimeline">
+                      <current/>
+                  </reference>
+                </create>
+              </reference>
+            </intervalvalue>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+
+
+
+  <Attribute name="isPassingNonFinancialRulesMessageList">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="curam.creole.value.Message"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="saNonFinancialCPRCalculators"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <intervalvalue>
+              <reference attribute="passFailMessageTimeline">
+                <create
+                  ruleclass="DisplayRulesMessage"
+                  ruleset="SocialAssistanceRuleSet"
+                >
+                  <reference attribute="hasPassedNonFinancialTestTimeline">
+                    <current/>
+                  </reference>
+                </create>
+              </reference>
+            </intervalvalue>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+
+-->
+</Class>

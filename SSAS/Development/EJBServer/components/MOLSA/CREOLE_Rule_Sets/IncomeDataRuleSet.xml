@@ -1,0 +1,88 @@
+<RuleSet name="IncomeDataRuleSet">
+    <Class extends="ActiveSuccessionSet" extendsRuleSet="PropagatorRuleSet" name="Income">
+        <Annotations>
+            <SuccessionSetPopulation endDateAttribute="endDate" startDateAttribute="startDate"/>
+        </Annotations>
+        <Attribute name="startDate">
+            <Annotations/>
+            <type>
+                <javaclass name="curam.util.type.Date"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="incomeType">
+            <Annotations/>
+            <type>
+                <codetableentry table="IncomeTypeCode"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="amount">
+            <Annotations/>
+            <type>
+                <javaclass name="curam.creole.value.Timeline">
+                    <javaclass name="java.lang.Number"/>
+                </javaclass>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="endDate">
+            <Annotations/>
+            <type>
+                <javaclass name="curam.util.type.Date"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="frequency">
+            <Annotations/>
+            <type>
+                <codetableentry table="FrequencyCode"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="description">
+            <type>
+                <javaclass name="curam.creole.value.Message"/>
+            </type>
+            <derivation>
+                <ResourceMessage key="DynamicEvidenceSuccessionSet.description"
+                    resourceBundle="curam.dynamicevidence.cer.rules.InfrastructureRules">
+                    <reference attribute="successionID"/>
+                </ResourceMessage>
+            </derivation>
+        </Attribute>
+        <Attribute name="participant">
+            <Annotations/>
+            <type>
+                <javaclass name="java.lang.Number"/>
+            </type>
+            <derivation>
+                <specified/>
+            </derivation>
+        </Attribute>
+        <Attribute name="related_participant">
+            <Annotations/>
+            <type>
+                <ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
+            </type>
+            <derivation>
+                <reference attribute="caseParticipantRoleRecord">
+                    <create ruleclass="CaseParticipantRoleCalculator"
+                        ruleset="DynamicEvidenceRuleSet">
+                        <reference attribute="participant"/>
+                    </create>
+                </reference>
+            </derivation>
+        </Attribute>
+    </Class>
+</RuleSet>

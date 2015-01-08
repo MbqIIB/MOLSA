@@ -1,0 +1,3034 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file:/D:/schema/RuleSet.xsd" name="MOLSAScreeningRuleSet">
+  <!-- Include the rule classes which interface with the Citizen Workspace Screening results -->
+  <Include>
+    <Classpath value="curam/citizenworkspace/rules/impl/CitizenWorkspaceScreeningInterface.xml"/>
+  </Include>
+  <Class extends="AbstractProgram" name="AbstractMOLSAProgram" abstract="true">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="AbstractIndividualProgram.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="AbstractIndividualProgram.explanation.eligible.message"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="allPersonRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="Person" ruleset="MOLSAScreeningRuleSet"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="name">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligible">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="AbstractIndividualProgram" extends="AbstractMOLSAProgram" abstract="true">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="AbstractIndividualProgram.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="AbstractIndividualProgram.explanation.eligible.message"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="name">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <call class="curam.molsa.creole.statics.impl.MOLSAStatics" method="formatNames">
+          <type>
+            <javaclass name="String"/>
+          </type>
+          <arguments>
+            <reference attribute="eligibleMembers"/>
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+    <Attribute name="ineligibleNames">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <call class="curam.molsa.creole.statics.impl.MOLSAStatics" method="formatNames">
+          <type>
+            <javaclass name="String"/>
+          </type>
+          <arguments>
+            <reference attribute="inEligibleMembers"/>
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligible">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <any>
+          <dynamiclist>
+            <list>
+              <reference attribute="programCalculatorList"/>
+            </list>
+            <listitemexpression>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </listitemexpression>
+          </dynamiclist>
+        </any>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleUnits">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="eligibleList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="person">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleUnits">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="inEligibleList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="person">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleMembers">
+      <type>
+        <javaclass name="List">
+          <javaclass name="String"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="eligibleUnits"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="firstName">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleMembers">
+      <type>
+        <javaclass name="List">
+          <javaclass name="String"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="inEligibleUnits"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="firstName">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractEligibilityCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractEligibilityCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractEligibilityCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="AbstractFamilyProgram" extends="AbstractMOLSAProgram" abstract="true">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="AbstractFamilyProgram.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="AbstractFamilyProgram.explanation.eligible.message"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="name">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <call class="curam.molsa.creole.statics.impl.MOLSAStatics" method="formatNames">
+          <type>
+            <javaclass name="String"/>
+          </type>
+          <arguments>
+            <dynamiclist>
+              <list>
+                <reference attribute="allPersonRecords"/>
+              </list>
+              <listitemexpression>
+                <reference attribute="firstName">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </arguments>
+        </call>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligible">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <reference attribute="eligible">
+          <reference attribute="programCalculator"/>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculator">
+      <type>
+        <ruleclass name="AbstractEligibilityCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </type>
+      <derivation>
+        <abstract/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class extends="AbstractScreeningResult" name="MOLSAScreeningRule">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="MOLSAScreeningResult.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <!-- The programs supported by the IS Screening rule set -->
+    <Attribute name="programs">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AbstractProgram"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass name="AbstractProgram"/>
+          </listof>
+          <members>
+            <create ruleclass="DesertedWifeProgram"/>
+            <create ruleclass="DivorcedLadyProgram"/>
+            <create ruleclass="AnonymousParentsProgram"/>
+            <create ruleclass="OrphanProgram"/>
+            <create ruleclass="HandicappedProgram"/>
+            <create ruleclass="IncapableOfWorkingProgram"/>
+            <create ruleclass="SeniorCitizenProgram"/>
+            <create ruleclass="WidowProgram"/>
+            <create ruleclass="FamilyOfMissingProgram"/>
+            <create ruleclass="FamilyOfPrisonerProgram"/>
+            <create ruleclass="FamilyInNeedProgram"/>
+            <create ruleclass="MaidAssistanceProgram"/>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="WidowProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="WidowProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="WidowProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="WidowAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17012"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="WidowProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="WidowProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="WidowProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="WidowProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="DesertedWifeProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="DesertedWifeProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="DesertedWifeProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="DesertedWifeAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17002"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="DesertedWifeProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="DesertedWifeProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="DesertedWifeProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="DesertedWifeProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="DivorcedLadyProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="DivorcedLadyProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="DivorcedLadyProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="DivorcedLadyAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17013"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="DivorcedLadyProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="DivorcedLadyProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="DivorcedLadyProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="DivorcedLadyProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="AnonymousParentsProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="AnonymousParentsProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="AnonymousParentsProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="AnonymousParentsAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17003"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AnonymousParentsProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="AnonymousParentsProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AnonymousParentsProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="AnonymousParentsProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="OrphanProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="OrphanProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="OrphanProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17004"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="OrphanAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="OrphanProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="OrphanProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="OrphanProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="OrphanProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="HandicappedProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="HandicappedProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="HandicappedProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="HandicappedAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17005"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="HandicappedProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="HandicappedProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="HandicappedProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="HandicappedProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="FamilyOfMissingProgram" extends="AbstractFamilyProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="FamilyOfMissingProgram.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="FamilyOfMissingProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="FamilyOfMissingProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="FamilyOfMissingAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17006"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculator">
+      <type>
+        <ruleclass name="FamilyOfMissingProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </type>
+      <derivation>
+        <create ruleclass="FamilyOfMissingProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="FamilyOfPrisonerProgram" extends="AbstractFamilyProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="FamilyOfPrisonerProgram.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="FamilyOfPrisonerProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="FamilyOfPrisonerProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="FamilyOfPrisonerAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17007"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculator">
+      <type>
+        <ruleclass name="FamilyOfPrisonerProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </type>
+      <derivation>
+        <create ruleclass="FamilyOfPrisonerProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="FamilyInNeedProgram" extends="AbstractFamilyProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="FamilyInNeedProgram.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="FamilyInNeedProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="FamilyInNeedProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="FamilyInNeedAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17008"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculator">
+      <type>
+        <ruleclass name="FamilyInNeedProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </type>
+      <derivation>
+        <create ruleclass="FamilyInNeedProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="IncapableOfWorkingProgram" extends="AbstractFamilyProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <ResourceMessage key="IncapableOfWorkingProgram.description"
+          resourceBundle="curam.molsa.rules.Screening"> </ResourceMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="IncapableOfWorkingProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="IncapableOfWorkingProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="IncapableOfWorkingAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17009"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculator">
+      <type>
+        <ruleclass name="IncapableOfWorkingProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </type>
+      <derivation>
+        <create ruleclass="IncapableOfWorkingProgramCalculator"
+          ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="SeniorCitizenProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="SeniorCitizenProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="SeniorCitizenProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="SeniorCitizenAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17011"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="SeniorCitizenProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="SeniorCitizenProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="SeniorCitizenProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="SeniorCitizenProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="MaidAssistanceProgram" extends="AbstractIndividualProgram">
+    <!-- Description -->
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <reference attribute="explanation"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="explanation">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <reference attribute="eligible"/>
+            </condition>
+            <value>
+              <ResourceMessage key="MaidAssistanceProgram.explanation.eligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="name"/>
+              </ResourceMessage>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <ResourceMessage key="MaidAssistanceProgram.explanation.ineligible.message"
+                resourceBundle="curam.molsa.rules.Screening">
+                <reference attribute="ineligibleNames"/>
+              </ResourceMessage>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeReference">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MaidAssistance"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programTypeID">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <String value="MPT17010"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="programCalculatorList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="MaidAssistanceProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="MaidAssistanceProgramCalculator"
+              ruleset="MOLSAScreeningProgramsEligibiltyCalculator">
+              <specify attribute="person">
+                <current/>
+              </specify>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="MaidAssistanceProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="eligible">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleList">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="MaidAssistanceProgramCalculator"
+            ruleset="MOLSAScreeningProgramsEligibiltyCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="programCalculatorList"/>
+          </list>
+          <listitemexpression>
+            <not>
+              <reference attribute="eligible">
+                <current/>
+              </reference>
+            </not>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="Person">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <reference attribute="memberFullName"/>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="personID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="qidNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="memberFullName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <property name="toString">
+          <object>
+            <concat>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Object"/>
+                </listof>
+                <members>
+                  <reference attribute="firstName"/>
+                </members>
+              </fixedlist>
+            </concat>
+          </object>
+        </property>
+      </derivation>
+    </Attribute>
+    <Attribute name="firstName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="lastName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="gender">
+      <type>
+        <codetableentry table="Gender"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isMale">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="gender"/>
+          <Code table="Gender">
+            <String value="SX1"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isFemale">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="gender"/>
+          <Code table="Gender">
+            <String value="SX2"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="dateOfBirth">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="age">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <reference attribute="age">
+          <create ruleclass="AgeCalculator" ruleset="MOLSAScreeningRulesUtilityCalculator">
+            <this/>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="isPrimaryParticipant">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="maritalStatus">
+      <type>
+        <codetableentry table="MaritalStatus"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="citizenshipStatus">
+      <type>
+        <codetableentry table="CitizenshipCode"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="residencyStatus">
+      <type>
+        <codetableentry table="MOLSAResidency"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isMemberEnrolledInSchool">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="hasAbsentFather">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="physicallyChallengedStartDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isPhysicallyChallenged">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isUnfitToWork">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="unfitToWorkStartDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="requiresMaidAssistance">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="absentPersonReason">
+      <type>
+        <codetableentry table="MOLSAAbsentFatherReason"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="householdMemberStartDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isMailingAddressSame">
+      <type>
+        <codetableentry table="IEGYesNo"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isResidingWithPrimaryParticipant">
+      <type>
+        <codetableentry table="IEGYesNo"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="otherMember">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isChild">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isSeniorCitizen">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <compare comparison=">">
+          <reference attribute="age"/>
+          <Number value="60"/>
+        </compare>
+      </derivation>
+    </Attribute>
+    <Attribute name="homePhoneCode">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="homePhoneNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="workPhoneCode">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="workPhoneNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="cellPhoneCode">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="cellPhoneNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="otherPhoneCode">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="otherPhoneNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="hasIncome">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="hasHomeRental">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="educationLevel">
+      <type>
+        <codetableentry table="MOLSAEducationLevel"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="incomeRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Income"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="Income">
+          <match retrievedattribute="parentEntity">
+            <this/>
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+    <Attribute name="expenseRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Expense"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="Expense">
+          <match retrievedattribute="parentEntity">
+            <this/>
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+    <Attribute name="isEmployed">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <any>
+          <dynamiclist>
+            <list>
+              <reference attribute="incomeRecords"/>
+            </list>
+            <listitemexpression>
+              <reference attribute="isEarnedIncome">
+                <current/>
+              </reference>
+            </listitemexpression>
+          </dynamiclist>
+        </any>
+      </derivation>
+    </Attribute>
+    <Attribute name="isSingle">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus"/>
+          <Code table="MaritalStatus">
+            <String value="MS1"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isMarried">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus"/>
+          <Code table="MaritalStatus">
+            <String value="MS2"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isSeparated">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus"/>
+          <Code table="MaritalStatus">
+            <String value="MS3"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isDivorced">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus"/>
+          <Code table="MaritalStatus">
+            <String value="MS4"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isWidowed">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus"/>
+          <Code table="MaritalStatus">
+            <String value="MS17000"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isDeserted">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus"/>
+          <Code table="MaritalStatus">
+            <String value="MS17001"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="ApplicationDetails">
+    <Attribute name="applicationDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="applicationMethod">
+      <type>
+        <codetableentry table="ApplicationMethod"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="Student">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <reference attribute="description">
+              <reference attribute="parentEntity"/>
+            </reference>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="parentEntity">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="studentType">
+      <type>
+        <codetableentry table="StudentStatus"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="schoolType">
+      <type>
+        <codetableentry table="SchoolType"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <!-- BEGIN, CR00414592,KR -->
+    <Attribute name="endDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <Date value="0001-01-01"/>
+      </derivation>
+    </Attribute>
+    <!-- END, CR00414592,KR -->
+  </Class>
+  <Class name="Relationship">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <reference attribute="description">
+              <reference attribute="parentEntity"/>
+            </reference>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="parentEntity">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="relationshipType">
+      <type>
+        <codetableentry table="RelationshipTypeCoreDesc"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="personID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="reciprocalRelationshipType">
+      <type>
+        <codetableentry table="RelationshipTypeCoreDesc"/>
+      </type>
+      <derivation>
+        <choose>
+          <type>
+            <codetableentry table="RelationshipTypeCoreDesc"/>
+          </type>
+          <test>
+            <reference attribute="relationshipType"/>
+          </test>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT1"/>
+              </Code>
+            </condition>
+            <value>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT2"/>
+              </Code>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT2"/>
+              </Code>
+            </condition>
+            <value>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT1"/>
+              </Code>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT4"/>
+              </Code>
+            </condition>
+            <value>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT5"/>
+              </Code>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT5"/>
+              </Code>
+            </condition>
+            <value>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT4"/>
+              </Code>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT11"/>
+              </Code>
+            </condition>
+            <value>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT12"/>
+              </Code>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT12"/>
+              </Code>
+            </condition>
+            <value>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT11"/>
+              </Code>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT13"/>
+              </Code>
+            </condition>
+            <value>
+              <choose>
+                <type>
+                  <codetableentry table="RelationshipTypeCoreDesc"/>
+                </type>
+                <when>
+                  <condition>
+                    <equals>
+                      <reference attribute="gender">
+                        <reference attribute="to"/>
+                      </reference>
+                      <Code table="Gender">
+                        <String value="SX1"/>
+                      </Code>
+                    </equals>
+                  </condition>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT15"/>
+                    </Code>
+                  </value>
+                </when>
+                <otherwise>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT16"/>
+                    </Code>
+                  </value>
+                </otherwise>
+              </choose>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT14"/>
+              </Code>
+            </condition>
+            <value>
+              <choose>
+                <type>
+                  <codetableentry table="RelationshipTypeCoreDesc"/>
+                </type>
+                <when>
+                  <condition>
+                    <equals>
+                      <reference attribute="gender">
+                        <reference attribute="to"/>
+                      </reference>
+                      <Code table="Gender">
+                        <String value="SX1"/>
+                      </Code>
+                    </equals>
+                  </condition>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT15"/>
+                    </Code>
+                  </value>
+                </when>
+                <otherwise>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT16"/>
+                    </Code>
+                  </value>
+                </otherwise>
+              </choose>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT15"/>
+              </Code>
+            </condition>
+            <value>
+              <choose>
+                <type>
+                  <codetableentry table="RelationshipTypeCoreDesc"/>
+                </type>
+                <when>
+                  <condition>
+                    <equals>
+                      <reference attribute="gender">
+                        <reference attribute="to"/>
+                      </reference>
+                      <Code table="Gender">
+                        <String value="SX1"/>
+                      </Code>
+                    </equals>
+                  </condition>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT13"/>
+                    </Code>
+                  </value>
+                </when>
+                <otherwise>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT14"/>
+                    </Code>
+                  </value>
+                </otherwise>
+              </choose>
+            </value>
+          </when>
+          <when>
+            <condition>
+              <Code table="RelationshipTypeCoreDesc">
+                <String value="RT16"/>
+              </Code>
+            </condition>
+            <value>
+              <choose>
+                <type>
+                  <codetableentry table="RelationshipTypeCoreDesc"/>
+                </type>
+                <when>
+                  <condition>
+                    <equals>
+                      <reference attribute="gender">
+                        <reference attribute="to"/>
+                      </reference>
+                      <Code table="Gender">
+                        <String value="SX1"/>
+                      </Code>
+                    </equals>
+                  </condition>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT13"/>
+                    </Code>
+                  </value>
+                </when>
+                <otherwise>
+                  <value>
+                    <Code table="RelationshipTypeCoreDesc">
+                      <String value="RT14"/>
+                    </Code>
+                  </value>
+                </otherwise>
+              </choose>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <reference attribute="relationshipType"/>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="from">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <reference attribute="parentEntity"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="to">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <singleitem onEmpty="error" onMultiple="returnFirst">
+          <filter>
+            <list>
+              <reference attribute="allPersonRecords">
+                <reference attribute="householdCalculator"/>
+              </reference>
+            </list>
+            <listitemexpression>
+              <equals>
+                <reference attribute="personID"/>
+                <reference attribute="personID">
+                  <current/>
+                </reference>
+              </equals>
+            </listitemexpression>
+          </filter>
+        </singleitem>
+      </derivation>
+    </Attribute>
+    <Attribute name="householdCalculator">
+      <type>
+        <ruleclass name="HouseholdCompositionCalculator"
+          ruleset="MOLSAScreeningHouseholdComposition"/>
+      </type>
+      <derivation>
+        <create ruleclass="HouseholdCompositionCalculator"
+          ruleset="MOLSAScreeningHouseholdComposition"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="oneWayRelationshipsPair">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="OneWayRelationship"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <fixedlist>
+          <listof>
+            <ruleclass name="OneWayRelationship"/>
+          </listof>
+          <members>
+            <create ruleclass="OneWayRelationship">
+              <reference attribute="from"/>
+              <reference attribute="relationshipType"/>
+              <reference attribute="to"/>
+              <reference attribute="startDate"/>
+            </create>
+            <create ruleclass="OneWayRelationship">
+              <reference attribute="to"/>
+              <reference attribute="reciprocalRelationshipType"/>
+              <reference attribute="from"/>
+              <reference attribute="startDate"/>
+            </create>
+          </members>
+        </fixedlist>
+      </derivation>
+    </Attribute>
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="OneWayRelationship">
+    <Initialization>
+      <Attribute name="from">
+        <type>
+          <ruleclass name="Person"/>
+        </type>
+      </Attribute>
+      <Attribute name="relationshipType">
+        <type>
+          <codetableentry table="RelationshipTypeCoreDesc"/>
+        </type>
+      </Attribute>
+      <Attribute name="to">
+        <type>
+          <ruleclass name="Person"/>
+        </type>
+      </Attribute>
+      <Attribute name="startDate">
+        <type>
+          <javaclass name="curam.util.type.Date"/>
+        </type>
+      </Attribute>
+    </Initialization>
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <concat>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Object"/>
+                </listof>
+                <members>
+                  <reference attribute="description">
+                    <reference attribute="from"/>
+                  </reference>
+                  <String value=" "/>
+                  <reference attribute="relationshipType"/>
+                  <String value=" "/>
+                  <reference attribute="description">
+                    <reference attribute="to"/>
+                  </reference>
+                </members>
+              </fixedlist>
+            </concat>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="participantsPassFinancials">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="passesNonFinancials">
+                <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
+                  <specify attribute="person">
+                    <reference attribute="from"/>
+                  </specify>
+                </create>
+              </reference>
+              <reference attribute="passesNonFinancials">
+                <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
+                  <specify attribute="person">
+                    <reference attribute="to"/>
+                  </specify>
+                </create>
+              </reference>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="Address">
+    <Attribute name="addressID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="street">
+      <type>
+        <codetableentry table="MOLSAStreet"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="municipality">
+      <type>
+        <codetableentry table="MOLSAMunicipality"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="buildingNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="buildingType">
+      <type>
+        <codetableentry table="MOLSABuildingType"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="zone">
+      <type>
+        <codetableentry table="MOLSAZone"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="country">
+      <type>
+        <codetableentry table="Country"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="poBox">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="postOfficeCode">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="electricityNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="parentEntity">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="MailingAddress">
+    <Attribute name="mailingAddressID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingStreet">
+      <type>
+        <codetableentry table="MOLSAStreet"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingMunicipality">
+      <type>
+        <codetableentry table="MOLSAMunicipality"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingBuildingNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingBuildingType">
+      <type>
+        <codetableentry table="MOLSABuildingType"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingZone">
+      <type>
+        <codetableentry table="MOLSAZone"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingCountry">
+      <type>
+        <codetableentry table="Country"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingPOBox">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingPostOfficeCode">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="mailingElectricityNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="parentEntity">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="HouseHoldInformation">
+    <Attribute name="numberOfHouseholdMembers">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="Income">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <concat>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Object"/>
+                </listof>
+                <members>
+                  <reference attribute="description">
+                    <reference attribute="parentEntity"/>
+                  </reference>
+                </members>
+              </fixedlist>
+            </concat>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="parentEntity">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="incomeType">
+      <type>
+        <codetableentry table="IncomeTypeCode"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="amount">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="frequency">
+      <type>
+        <codetableentry table="FrequencyCode"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isEarnedIncome">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <any>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <equals>
+                <reference attribute="incomeType"/>
+                <Code table="IncomeTypeCode">
+                  <String value="IT17005"/>
+                </Code>
+              </equals>
+              <equals>
+                <reference attribute="incomeType"/>
+                <Code table="IncomeTypeCode">
+                  <String value="IT17006"/>
+                </Code>
+              </equals>
+            </members>
+          </fixedlist>
+        </any>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="Expense">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <reference attribute="description">
+              <reference attribute="parentEntity"/>
+            </reference>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="parentEntity">
+      <type>
+        <ruleclass name="Person"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="expenseType">
+      <type>
+        <codetableentry table="MOLSAExpense"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="amount">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="frequency">
+      <type>
+        <codetableentry table="FrequencyCode"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="AbsentFather">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <reference attribute="firstName"/>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="personID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="qidNumber">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="firstName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="middleInitial">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="lastName">
+      <type>
+        <javaclass name="String"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="dateOfBirth">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="startDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="absentPersonReason">
+      <type>
+        <codetableentry table="MOLSAAbsentFatherReason"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>

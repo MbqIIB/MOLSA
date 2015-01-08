@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file:/D:/Curam/catalog/RuleSet.xsd"
+	name="HouseholdMemberSummaryRuleSet">
+	<Class extends="DefaultEvidenceSummary" extendsRuleSet="EvidenceSummaryRuleSet"
+		name="HouseholdMemberSummary">
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="HouseholdMember" ruleset="HouseholdMemberRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="startDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<reference attribute="startDate">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="endDate">
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<reference attribute="endDate">
+					<reference attribute="evidence" />
+				</reference>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+					<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<equals>
+										<reference attribute="residency">
+											<reference attribute="evidence" />
+										</reference>
+									<Code table="MOLSAResidency">
+										<String value="RD17000" />
+									</Code>
+								</equals>
+							</condition>
+							<value>
+								<ResourceMessage key="SUMMARY_MSG_1"
+									resourceBundle="curam.evidence.HouseholdMemberSummaryRuleSet">
+										<reference attribute="citizenship">
+											<reference attribute="evidence" />
+										</reference>
+								</ResourceMessage>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="SUMMARY_MSG_2"
+									resourceBundle="curam.evidence.HouseholdMemberSummaryRuleSet">
+										<reference attribute="citizenship">
+											<reference attribute="evidence" />
+										</reference>
+								</ResourceMessage>
+							</value>
+						</otherwise>
+					</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

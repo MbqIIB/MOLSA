@@ -1,0 +1,76 @@
+<RuleSet name="AbsentFatherRuleSet">
+	<Class extends="DynamicEvidence" extendsRuleSet="DynamicEvidenceRuleSet"
+		name="AbsentFather">
+		<Attribute name="startDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="absenceReason">
+			<Annotations />
+			<type>
+				<codetableentry table="MOLSAAbsentFatherReason" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="endDate">
+			<Annotations />
+			<type>
+				<javaclass name="curam.util.type.Date" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="absentPerson">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_absentPerson">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator" ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="absentPerson" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+		<Attribute name="participant">
+			<Annotations />
+			<type>
+				<javaclass name="java.lang.Number" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="related_participant">
+			<Annotations />
+			<type>
+				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+			</type>
+			<derivation>
+				<reference attribute="caseParticipantRoleRecord">
+					<create ruleclass="CaseParticipantRoleCalculator" ruleset="DynamicEvidenceRuleSet">
+						<reference attribute="participant" />
+					</create>
+				</reference>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>

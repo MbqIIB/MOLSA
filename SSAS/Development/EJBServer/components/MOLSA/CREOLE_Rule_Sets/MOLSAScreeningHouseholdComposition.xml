@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../../../../Dictionary-V1/RuleSet.xsd"
+  name="MOLSAScreeningHouseholdComposition">
+  <Class name="HouseholdCompositionCalculator">
+    <Attribute name="allPersonRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="Person" ruleset="MOLSAScreeningRuleSet"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="childrenOfAbsentFather">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="allPersonRecords"/>
+          </list>
+          <listitemexpression>
+            <reference attribute="hasAbsentFather">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>
