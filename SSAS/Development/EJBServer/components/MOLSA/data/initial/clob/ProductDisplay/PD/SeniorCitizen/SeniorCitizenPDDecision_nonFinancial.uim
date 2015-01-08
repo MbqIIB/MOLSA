@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGE PAGE_ID="SeniorCitizenPDDecision_nonFinancial">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE
+    CLASS="CaseDetermination"
+    NAME="DISPLAY"
+    OPERATION="viewDecisionDisplayRulesCategoryXML"
+  />
+  
+  
+  <PAGE_PARAMETER NAME="determinationID"/>
+  <PAGE_PARAMETER NAME="displayDate"/>
+  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="determinationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="displayDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="categoryRef"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="categoryRef"
+    />
+  </CONNECT>
+  
+
+  <LIST>
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="FamilyinNeedPDDecision_nonFinancialDetails">
+        <CONNECT>
+          <SOURCE
+            EXTENDED_PATH="/DecisionDetails/FamilyinNeedNonFinancialCategory/unitCompositionMembersCaseParticipantRoleIDs/Item[]"
+            NAME="DISPLAY"
+            PROPERTY="result$xmlData"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="businessObjectID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="determinationID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="determinationID"
+          />
+        </CONNECT>
+        <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="displayDate"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="displayDate"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+    <FIELD LABEL="Field.Label.HouseholdMember">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/FamilyinNeedNonFinancialCategory/unitCompositionMembersDetails/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Residency">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/FamilyinNeedNonFinancialCategory/passesResidencyRulesMessageList/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Citizenship">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/FamilyinNeedNonFinancialCategory/passesCitizenshipRulesMessageList/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.NonFinancial">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/FamilyinNeedNonFinancialCategory/isPassingNonFinancialRulesMessageList/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+</PAGE>

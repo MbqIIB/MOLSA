@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GHandicap ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<PAGE PAGE_ID="HandicapDecision_summary">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLEProgramRecommendation"
+    NAME="DISPLAY"
+    OPERATION="viewDisplayRulesCategoryXML"
+  />
+
+
+  <PAGE_PARAMETER NAME="creoleProgramRecommendationID"/>
+  <PAGE_PARAMETER NAME="simulatedDeterminationID"/>
+  <PAGE_PARAMETER NAME="date"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="creoleProgramRecommendationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="creoleProgramRecommendationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="simulatedDeterminationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="simulatedDeterminationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="date"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="categoryRef"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="categoryRef"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+    <CLUSTER>
+      <CLUSTER TITLE="Cluster.Title.AssistanceUnit">
+        <CONDITION>
+          <IS_TRUE
+            EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/doesHouseholdHaveEligibleMembersTimeline"
+            NAME="DISPLAY"
+            PROPERTY="result$decisionDetailsXML"
+          />
+        </CONDITION>
+        <LIST>
+          <FIELD LABEL="Field.Label.HouseholdMember">
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/eligibilityUnitMemberDetails/Item[]"
+                NAME="DISPLAY"
+                PROPERTY="result$decisionDetailsXML"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD LABEL="Field.Label.Reason">
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/eligibilityUnitMembersReason/Item[]"
+                NAME="DISPLAY"
+                PROPERTY="result$decisionDetailsXML"
+              />
+            </CONNECT>
+          </FIELD>
+        </LIST>
+      </CLUSTER>
+    </CLUSTER>
+	<!--exclude-->
+<CLUSTER TITLE="Cluster.Title.ExcludedHouseholdMember">
+  <CONDITION>
+    <IS_TRUE
+      EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/doesHouseholdHaveExcludedMembersTimeline"
+      NAME="DISPLAY"
+      PROPERTY="result$decisionDetailsXML"
+    />
+  </CONDITION>
+  <LIST >
+    <FIELD LABEL="Field.Label.ExcludedHouseholdMember">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/excludedUnitMemberDetails/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Reason">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/excludedUnitMembersReason/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</CLUSTER>
+
+ <CLUSTER TITLE="Cluster.Title.Eligibility">
+      <CLUSTER STYLE="cgiss-display-removeMargin">
+        <FIELD LABEL="Field.Label.NonFinancial">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/hasHouseholdPassedNonFinancialMessage"
+              NAME="DISPLAY"
+              PROPERTY="result$decisionDetailsXML"
+            />
+          </CONNECT>
+          <LINK PAGE_ID="SADecision_nonFinancial">
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="creoleProgramRecommendationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="creoleProgramRecommendationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="simulatedDeterminationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="simulatedDeterminationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="date"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="date"
+              />
+            </CONNECT>
+          </LINK>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Income">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/hasHouseholdPassedIncomeMessage"
+              NAME="DISPLAY"
+              PROPERTY="result$decisionDetailsXML"
+            />
+          </CONNECT>
+          <LINK PAGE_ID="SADecision_income">
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="creoleProgramRecommendationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="creoleProgramRecommendationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="simulatedDeterminationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="simulatedDeterminationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="date"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="date"
+              />
+            </CONNECT>
+          </LINK>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER>
+<CLUSTER TITLE="Cluster.Title.InEligibleHouseholdMember">
+  <CONDITION>
+    <IS_TRUE
+      EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/doesHouseholdHaveInEligibleMembersTimeline"
+      NAME="DISPLAY"
+      PROPERTY="result$decisionDetailsXML"
+    />
+  </CONDITION>
+  <LIST >
+    <FIELD LABEL="Field.Label.InEligibleHouseholdMember">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/inEligibilityUnitMemberDetails/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Reason">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/HandicapSummaryCategory/inEligibilityUnitMembersReason/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</CLUSTER>
+
+   
+  </CLUSTER>
+
+	
+
+</PAGE>

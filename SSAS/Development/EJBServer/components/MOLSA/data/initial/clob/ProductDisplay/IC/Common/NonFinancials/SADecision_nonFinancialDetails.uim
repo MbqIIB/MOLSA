@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->  
+<!-- Copyright 2011 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- in accordance with the terms of the license agreement you entered into -->
+<!-- Software.                                                              -->
+<!-- Description                                                            -->
+<!-- ===========                                                            -->
+<PAGE PAGE_ID="SADecision_nonFinancialDetails">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CREOLEProgramRecommendation"
+    NAME="DISPLAY"
+    OPERATION="viewDisplayRulesCategorySubscreenXML"
+  />
+
+
+  <PAGE_PARAMETER NAME="creoleProgramRecommendationID"/>
+  <PAGE_PARAMETER NAME="simulatedDeterminationID"/>
+  <PAGE_PARAMETER NAME="date"/>
+  <PAGE_PARAMETER NAME="businessObjectID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="creoleProgramRecommendationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="creoleProgramRecommendationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="simulatedDeterminationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="simulatedDeterminationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="date"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="categoryRef"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="categoryRef"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="subscreenName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="subscreenName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="businessObjectID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="businessObjectID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.Residency">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="Item/residencyRulesMessage"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Citizenship">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="Item/citizenshipRulesMessage"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

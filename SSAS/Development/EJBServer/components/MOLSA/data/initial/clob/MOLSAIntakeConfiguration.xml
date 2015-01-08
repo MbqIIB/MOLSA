@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Intake Process Configuration for the MOLSA Case Worker. This configuration 
+	should be assigned to users fulfilling the MOLSA Case Worker Role. -->
+<IntakeProcess>
+
+
+	<!-- Configuration global to the Intake Process goes in this Section -->
+	<GlobalConfiguration>
+
+
+		<!-- The set of program types available for use within this Intake Process -->
+
+
+		<ProgramType ProgramType="MPT17001" ProgramTypeID="100"/>
+
+
+	</GlobalConfiguration>
+
+
+	<!-- Configuration local to the Individual goes in this Section -->
+	<IndividualConfiguration>
+
+		<!-- Configuration for the Intake Summary section of Intake which is available 
+			at the Individual Level. -->
+		<IntakeSummary ShowCurrentCluster="true" ShowPendingApplicationCluster="true"
+			ShowScreeningCluster="true" ShowTriageCluster="true"/>
+
+		<!-- Configuration options related to the display of cases in the Individual 
+			Tab. -->
+		<ShowExistingCase>
+			<!-- The preview panel to use for cases on the list pages. -->
+			<PreviewPanel CaseType="PC17001" Page="Intake_viewIndividualExistingCasePreviewPanel"/>
+
+
+			<!-- Only cases of the specified types will be displayed. -->
+			<ShowCasesOfType Type="PC17001"/>
+			<!-- Only cases of the specified status will be displayed. -->
+			<ShowCasesOfStatus Status="CS4"/>
+			<ShowCasesOfStatus Status="CS3"/>
+			<!-- Whether or not cases with undisposed applications should be displayed 
+				or not. -->
+			<ShowCasesWithUndisposedApplications Value="false"/>
+		</ShowExistingCase>
+
+
+	</IndividualConfiguration>
+
+
+	<!-- Configuration local to the Application Process goes in this Section -->
+	<ApplicationConfiguration>
+		<ApplicationType ShowPreviewPanel="true" type="AT17001">
+
+
+			<!-- The configuration for whether or not an application can be transferred 
+				to specific cases. -->
+			<TransferToExistingCase>
+				<!-- This type of application may only be transferred to cases of the 
+					specified types -->
+				<CaseType Type="PC17001"/>
+				<!-- This type of application may only be transferred to cases of the 
+					specified status -->
+				<CaseStatus Status="CS4"/>
+				<!-- This type of application may only be transferred when it is in one 
+					of these states -->
+				<ApplicationStatus Status="AS19003"/>
+				<ApplicationStatus Status="AS19004"/>
+			</TransferToExistingCase>
+
+
+			<!-- Configuration options related to the display of cases on this type 
+				of application. -->
+			<ShowExistingCase>
+				<!-- The preview panel to use for cases on the list pages. -->
+				<PreviewPanel Page="Application_viewExistingCasePreviewPanel"/>
+				<!-- Only cases of the specified types will be displayed. -->
+				<ShowCasesOfType Type="PC17001"/>
+				<!-- Only cases of the specified status will be displayed. -->
+				<ShowCasesOfStatus Status="CS4"/>
+				<ShowCasesOfStatus Status="CS3"/>
+				<!-- Whether or not cases with undisposed applications should be displayed 
+					or not. -->
+				<ShowCasesWithUndisposedApplications Value="false"/>
+			</ShowExistingCase>
+
+
+			<!-- Configuration for cases that this application can be added to -->
+			<AddToExistingCase>
+				<!-- This application can be added to cases of these types only -->
+				<AddToCaseOfType Type="PC17001"/>
+				<!-- This application can be added to cases of these statuses only -->
+				<AddToCaseOfStatus Status="CS4"/>
+				<AddToCaseOfStatus Status="CS3"/>
+			</AddToExistingCase>
+
+
+			<!-- The intake application type from workspace services that this application 
+				type maps to. -->
+			<IntakeApplicationType MappedType="4002"/>
+
+
+			<!-- Details about the script used to record applications of this type. -->
+			<ApplicationScript SchemaName="MOLSADataStoreSchema" ScriptName="MOLSAApplication"
+				ScriptVersion="V1" SimpleScriptName="MOLSAApplication"/>
+
+
+			<!-- Program Types captured in this application -->
+
+
+			<ProgramType isReopenAllowed="true" isResumeTimerEnabled="true"
+				MaxNumberReopeningsAllowed="" TimerRestartDate="TRD19001" type="MPT17001">
+				<ProgramMapping IntegratedCaseType="PC17001" MappingXML="MOLSAApplicationMapping"
+					MappingXMLConfiguration="MOLSAEvidenceMappingConfiguration"/>
+				<Milestone ID="45001"/>
+			</ProgramType>
+
+			<!-- The Preview Panel to use when the application is 'in progress'. -->
+			<PreviewPanel Page="ApplicationISInprogressPreviewPanel">
+				<ApplicationStatus status="AS19001"/>
+			</PreviewPanel>
+
+
+			<!-- The Preview Panel to use when the application is 'complete'. -->
+			<PreviewPanel Page="ApplicationISCompletePreviewPanel">
+				<ApplicationStatus status="AS19003"/>
+				<ApplicationStatus status="AS19004"/>
+			</PreviewPanel>
+
+
+			<!-- The Preview Panel to use when the application is 'disposed'. -->
+			<PreviewPanel Page="ApplicationISDisposedPreviewPanel">
+				<ApplicationStatus status="AS19005"/>
+			</PreviewPanel>
+
+
+			<!-- The menu to display when the application is 'in progress'. -->
+			<DisplayMenu Name="DisplayMenuPrimary">
+				<ApplicationStatus status="AS19001"/>
+			</DisplayMenu>
+
+
+			<!-- The menu to display when the application is 'complete'. -->
+			<DisplayMenu Name="DisplayMenuSecondary">
+				<ApplicationStatus status="AS19003"/>
+				<ApplicationStatus status="AS19004"/>
+			</DisplayMenu>
+
+
+			<!-- The status to apply to case when an application of this type has 
+				been transferred to it. -->
+			<CaseStatusAfterTransfer status="CS3">
+				<CaseType status="PC7"/>
+				<CaseType status="PC17001"/>
+			</CaseStatusAfterTransfer>
+
+
+			<!-- The status to apply to case when an application of this type has 
+				had a transfer undone from that case. -->
+			<CaseStatusAfterUndoTransfer status="CS4">
+				<CaseType status="PC7"/>
+				<CaseType status="PC17001"/>
+			</CaseStatusAfterUndoTransfer>
+
+
+			<!-- Configuration for what preview panel to use in the quick search for 
+				applications of this type -->
+			<QuickSearch>
+				<PreviewPanel Page="ApplicationISInprogressPreviewPanel">
+					<ApplicationStatus status="AS19001"/>
+				</PreviewPanel>
+
+
+				<PreviewPanel Page="ApplicationISCompletePreviewPanel">
+					<ApplicationStatus status="AS19003"/>
+					<ApplicationStatus status="AS19004"/>
+				</PreviewPanel>
+
+
+				<PreviewPanel Page="ApplicationISDisposedPreviewPanel">
+					<ApplicationStatus status="AS19005"/>
+				</PreviewPanel>
+			</QuickSearch>
+
+
+			<!-- Configuration for text fields displayed on the Rights and Responsibilities 
+				page at the end of the Application script. -->
+			<RightsAndResponsibilitiesText TextReference="RightsAndResponsibilitiesText"/>
+			<AuthorizationInformationText TextReference="AuthorizationInformationText"/>
+			<DepartmentPolicyText TextReference="DepartmentPolicyText"/>
+
+
+			<WorkFlows>
+
+
+				<OnlineApplicationRecieved name="INTAKEAPPLICATIONRECEIVEDTASK">
+					<AllocationTarget name="19001" type="RL23"/>
+				</OnlineApplicationRecieved>
+
+
+				<WithdrawalRequest name="INTAKEAPPLICATIONWITHDRAWALREQUESTTASK">
+					<AllocationTarget name="19002" type="RL23"/>
+				</WithdrawalRequest>
+
+
+				<ReadyForDetermination name="READYFORDETERMINATIONTASK">
+					<AllocationTarget name="19003" type="RL23"/>
+				</ReadyForDetermination>
+
+
+			</WorkFlows>
+
+
+		</ApplicationType>
+
+
+	</ApplicationConfiguration>
+
+
+	<!-- Configuration for what preview panel to use in the quick search for 
+		existing cases -->
+	<ExistingCase>
+		<QuickSearch>
+			<PreviewPanel caseType="PC17001" Page="Intake_viewIndividualExistingCasePreviewPanel"/>
+
+			<ShowCasesOfType Type="PC17001"/>
+			<ShowCasesOfStatus Status="CS4"/>
+			<ShowCasesOfStatus Status="CS3"/>
+			<ShowCasesWithUndisposedApplications Value="false"/>
+		</QuickSearch>
+
+
+	</ExistingCase>
+</IntakeProcess>

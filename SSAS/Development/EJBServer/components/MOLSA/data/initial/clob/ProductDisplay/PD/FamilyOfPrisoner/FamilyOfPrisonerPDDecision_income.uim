@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGE PAGE_ID="FamilyOfPrisonerPDDecision_income">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE
+    CLASS="CaseDetermination"
+    NAME="DISPLAY"
+    OPERATION="viewDecisionDisplayRulesCategoryXML"
+  />
+  
+  
+  <PAGE_PARAMETER NAME="determinationID"/>
+  <PAGE_PARAMETER NAME="displayDate"/>
+  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="determinationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="displayDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="categoryRef"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="categoryRef"
+    />
+  </CONNECT>
+  
+  <CLUSTER NUM_COLS="2">
+    <CLUSTER TITLE="Cluster.Title.Benefits">
+      <LIST STYLE="dr-standard-list">
+        <CONTAINER ALIGNMENT="LEFT">
+          <FIELD LABEL="Field.Label.HouseholdMember">
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/householdMembersList/Item[]"
+                NAME="DISPLAY" PROPERTY="result$xmlData"/>
+            </CONNECT>
+          </FIELD>
+        </CONTAINER>
+        <CONTAINER ALIGNMENT="CENTER" LABEL="Field.Label.Amount" SEPARATOR="Separator.Plus">
+		<FIELD CONTROL="SKIP"/>
+          <FIELD >
+            <CONNECT>
+              <SOURCE EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/amountList/Item[]"
+                NAME="DISPLAY" PROPERTY="result$xmlData"/>
+            </CONNECT>
+          </FIELD>
+        </CONTAINER>
+      </LIST>
+      <CLUSTER STYLE="cgiss-display-totalAmountCluster">
+        <FIELD LABEL="Field.Label.Benefits" ALIGNMENT="CENTER">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/totalGrossBenefitAmount"
+              NAME="DISPLAY" PROPERTY="result$xmlData"/>
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER>
+
+    <CLUSTER>
+      <CLUSTER TITLE="Cluster.Title.BenefitCalculations" STYLE="cgiss-display-calculationCluster">
+        <CONTAINER LABEL="Field.Label.Benefits" ALIGNMENT="CENTER">
+          <FIELD>
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/totalGrossBenefitAmount"
+                NAME="DISPLAY" PROPERTY="result$xmlData"/>
+            </CONNECT>
+          </FIELD>
+        </CONTAINER>
+        <CONTAINER LABEL="Field.Label.CountableIncome" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
+<FIELD CONTROL="SKIP"/>         
+		 <FIELD>
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/totalCountableIncomeTimeline"
+                NAME="DISPLAY" PROPERTY="result$xmlData"/>
+            </CONNECT>
+          </FIELD>
+        </CONTAINER>
+      </CLUSTER>
+      <CLUSTER STYLE="cgiss-display-totalAmountCluster">
+        <FIELD LABEL="Field.Label.MontlyBenefit" ALIGNMENT="CENTER">
+          <CONNECT>
+            <SOURCE EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/monthlyAmountTimeline"
+              NAME="DISPLAY" PROPERTY="result$xmlData"/>
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER>
+    <CLUSTER>
+      <CLUSTER TITLE="Cluster.Title.IncomeCalculations" STYLE="cgiss-display-calculationCluster">
+        <CONTAINER LABEL="Field.Label.TotalIncome" ALIGNMENT="CENTER">
+          <FIELD>
+            <CONNECT>
+              <SOURCE EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/totalIncomeTimeline"
+                NAME="DISPLAY" PROPERTY="result$xmlData"/>
+            </CONNECT>
+          </FIELD>
+        </CONTAINER>
+        <CONTAINER LABEL="Field.Label.Expense" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
+		<FIELD CONTROL="SKIP"/>
+          <FIELD>
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/totalExpenseAmountTimeline"
+                NAME="DISPLAY" PROPERTY="result$xmlData"/>
+            </CONNECT>
+          </FIELD>
+        </CONTAINER>
+      </CLUSTER>
+      <CLUSTER STYLE="cgiss-display-totalAmountCluster">
+        <FIELD LABEL="Field.Label.TotalCountableIncome" ALIGNMENT="CENTER">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/FamilyOfPrisonerHouseholdIncomeCategory/totalCountableIncomeTimeline"
+              NAME="DISPLAY" PROPERTY="result$xmlData"/>
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>

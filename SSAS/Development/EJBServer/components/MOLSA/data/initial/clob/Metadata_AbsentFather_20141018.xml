@@ -1,0 +1,108 @@
+<EvidenceTypeVersion businessEndDate="endDate" businessStartDate="startDate" enableSaveAndNew="true" modifiable="true" relatedParticipant="participant">
+  <Model>
+    <Attributes>
+      <Attribute>
+        <RelatedCPAttribute cpRoleType="MEM" name="participant" participantType="Person"/>
+      </Attribute>
+      
+      <Attribute>
+        <DataAttribute mandatory="true" name="absenceReason" volatile="true">
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="MOLSAAbsentFatherReason"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute mandatory="true" name="startDate">
+          <DomainType dataType="Date">
+            <DateOptions currentDate="LessThanOrEqualTo"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="endDate">
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+            <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+      <Attribute>
+        <RelatedCPAttribute cpRoleType="SPN" name="absentPerson" participantType="Person">
+          <CPSearchType code="SPN"/>
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+    <PatternValidations>
+      <Validator>
+        <ComparisonValidator operator="LessThan" shallow="false" source="startDate" target="endDate" useClause="false" useLiteral="false"/>
+      </Validator>
+      <Validator>
+        <ParticipantDatesValidator inputDate="startDate" relatedCP="participant"/>
+      </Validator>
+      <Validator>
+        <DuplicateValidator>
+          <DuplicateAttributes conjunction="AND">
+            <DuplicateAttribute name="participant"/>
+            <DuplicateAttribute name="startDate"/>
+            <DuplicateAttribute name="endDate"/>
+          </DuplicateAttributes>
+        </DuplicateValidator>
+      </Validator>
+    </PatternValidations>
+  </Validations>
+   <SummaryInformation>
+    <SummaryRuleset ruleSetName="AbsentFatherSummaryRuleSet"/>
+  </SummaryInformation>
+  <UserInterface>
+    <Cluster>
+      <RelCPCluster fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="multiple" showParticipantTypeFilter="true" useSingleName="false">
+        <StandardField source="participant"/>
+        <LabelName id="Related.Participant.Labels.ID3"/>
+        <FirstName id="First.Name.Label.ID3"/>
+        <SecondName id="Second.Name.Label.ID3"/>
+      </RelCPCluster>
+    </Cluster>  
+    <Cluster>
+      <RelCPCluster fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="multiple" showParticipantTypeFilter="true" useSingleName="false">
+        <StandardField source="absentPerson"/>
+        <LabelName id="Name.Label.ID5"/>
+        <FirstName id="First.Name.Label.ID5"/>
+        <SecondName id="Second.Name.Label.ID5"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="1">
+        <StandardClusterField>
+          <StandardField modifiable="true" source="absenceReason" useBlank="true" useDefault="false">
+            <Label id="Field.Label.ID3"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <StandardClusterField>
+          <StandardField modifiable="true" source="startDate" useDefault="false">
+            <Label id="Field.Label.ID6"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="endDate">
+            <Label id="Field.Label.ID7"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+     <Cluster>
+      <CommentsCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true">
+        <Description id="Description.ID4"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

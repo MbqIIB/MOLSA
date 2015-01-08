@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="SeniorCitizenPDDecision_nonFinancialDetails">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="CaseDetermination"
+    NAME="DISPLAY"
+    OPERATION="viewDecisionDisplayRuleCategorySubscreenXML"
+  />
+  
+  
+  <PAGE_PARAMETER NAME="determinationID"/>
+  <PAGE_PARAMETER NAME="displayDate"/>
+  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="determinationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="displayDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="categoryRef"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="categoryRef"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="subscreenName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="subscreenName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="businessObjectID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="businessObjectID"
+    />
+  </CONNECT>
+
+
+  <CLUSTER NUM_COLS="2">
+
+
+    <FIELD LABEL="Field.Label.Residency">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="Item/residencyRulesMessage"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD LABEL="Field.Label.Citizenship">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="Item/citizenshipRulesMessage"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+  </CLUSTER>
+
+
+</PAGE>

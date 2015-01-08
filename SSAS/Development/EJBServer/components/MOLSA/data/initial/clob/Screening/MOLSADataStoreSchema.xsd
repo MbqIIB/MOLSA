@@ -1,0 +1,790 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:d="http://www.curamsoftware.com/BaseDomains">
+  <xs:import namespace="http://www.curamsoftware.com/BaseDomains"/>
+  <xs:include schemaLocation="IEGDomains"/>
+  <xs:include schemaLocation="CitizenPortalDomains"/>
+  <xs:include schemaLocation="MOLSADomains"/>
+  <xs:element name="Application">
+    <xs:annotation>
+      <xs:documentation>Application details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="Person" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="HouseHoldInformation" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="IntakeApplicationType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="IntakeApplication" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="IntakeProgram" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="ScreeningProgram" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="ScreeningType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="Submission" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="AbsentFather" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="AbsentHusband" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="ApplicationDetails" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="submitDate" type="IEG_DATE"/>
+      <xs:attribute name="applicationMonthStartDate" type="IEG_DATE"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Person">
+    
+    <xs:annotation>
+      <xs:documentation>Person details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="Expense" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="Income" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="Address" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="MailingAddress" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="ContactDetails" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="Relationship" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="ContactPreferences" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="personID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Person ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isPrimaryParticipant" type="IEG_BOOLEAN" default="false">
+        <xs:annotation>
+          <xs:documentation>Primary Claimant</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="qidNumber" type="MOLSA_QATAR_ID">
+        <xs:annotation>
+          <xs:documentation>Qatari ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ssn" type="IEG_NON_FORMATTED_NUMBER"/>
+      <xs:attribute name="hispanicOrLatino" type="IEG_BOOLEAN" default="false"/>
+      <xs:attribute name="homePhoneNumber" type="IEG_STRING"/>
+      <xs:attribute name="firstName" type="MOLSA_FIRSTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>First Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="middleInitial" type="MOLSA_MIDDLENAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Middle Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lastName" type="MOLSA_LASTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Last Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="aliasFirstName" type="MOLSA_FIRSTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Alias First Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="aliasMiddleName" type="MOLSA_MIDDLENAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Alias Middle Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="aliasLastName" type="MOLSA_LASTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Alias Last Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dateOfBirth" type="MOLSA_DOB">
+        <xs:annotation>
+          <xs:documentation>Date of Birth (DD/MM/YYYY)</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="gender" type="IEG_GENDER">
+        <xs:annotation>
+          <xs:documentation>Gender</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="maritalStatus" type="MOLSA_MARITAL_STATUS">
+        <xs:annotation>
+          <xs:documentation>Marital Status</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="citizenshipStatus" type="MOLSA_CITIZEN_STATUS">
+        <xs:annotation>
+          <xs:documentation>Citizenship Status</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="residencyStatus" type="MOLSA_RESIDENCY_STATUS">
+        <xs:annotation>
+          <xs:documentation>Residency Status</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isMemberEnrolledInSchool" type="IEG_BOOLEAN" default="false">
+        <xs:annotation>
+          <xs:documentation>Are you enrolled in school?</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="hasAbsentFather" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>has absent father</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="hasAbsentHusband" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>has absent husband</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="requiresMaidAssistance" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>Requires maid Assistance</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isPhysicallyChallenged" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>Physically Challenged</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="physicallyChallengedStartDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>when did claimant become physically disabled</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="physicallyChallengedEndDate" type="MOLSA_ENDDATE">
+        <xs:annotation>
+          <xs:documentation>If Not a permanent Condition then physically disabled end date</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isUnfitToWork" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>Unable to work</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="unfitToWorkStartDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>when did claimant become physically disabled</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="unfitToWorkEndDate" type="MOLSA_ENDDATE">
+        <xs:annotation>
+          <xs:documentation>If Not a permanent Condition then physically disabled end date</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="absentPersonReason" type="MOLSA_ABSENT_PERSON_REASON">
+        <xs:annotation>
+          <xs:documentation>Reason for being Absent</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="householdMemberStartDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>when did claimant become a member of household</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="absentHusbandReason" type="MOLSA_ABSENT_PERSON_REASON">
+        <xs:annotation>
+          <xs:documentation>Reason for husband Absent</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isMailingAddressSame" type="MOLSA_YESNO" default="YN1">
+        <xs:annotation>
+          <xs:documentation>Is the mailing address same ?</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isResidingWithPrimaryParticipant" type="MOLSA_YESNO">
+        <xs:annotation>
+          <xs:documentation>is residing with Primary Participant</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="otherMember" type="IEG_BOOLEAN"/>
+      <xs:attribute name="isChild" type="IEG_BOOLEAN" default="false"/>
+      <xs:attribute name="calculatedAge" type="IEG_INT8"/>
+      <xs:attribute name="isSeniorCitizen" type="IEG_BOOLEAN" default="false"/>
+   <!--   <xs:attribute name="isDisabilityPermanentCondition" type="IEG_BOOLEAN" default="true"/>
+      <xs:attribute name="isPermanentCondition" type="IEG_BOOLEAN" default="true"/>-->
+      <xs:attribute name="homePhoneCode" type="IEG_STRING"/>
+      <xs:attribute name="workPhoneCode" type="IEG_STRING"/>
+      <xs:attribute name="workPhoneNumber" type="IEG_STRING"/>
+      <xs:attribute name="cellPhoneCode" type="IEG_STRING"/>
+      <xs:attribute name="cellPhoneNumber" type="IEG_STRING"/>
+      <xs:attribute name="otherPhoneCode" type="IEG_STRING"/>
+      <xs:attribute name="otherPhoneNumber" type="IEG_STRING"/>
+      <xs:attribute name="blackOrAfricanAmerican" type="IEG_BOOLEAN" default="false"/>
+      <xs:attribute name="nativeAlaskanOrAmericanIndian" type="IEG_BOOLEAN" default="false"/>
+      <xs:attribute name="asian" type="IEG_BOOLEAN" default="false"/>
+      <xs:attribute name="nativeHawaiianOrPacificIslander" type="IEG_BOOLEAN" default="false"/>
+      <xs:attribute name="whiteOrCaucasian" type="IEG_BOOLEAN" default="false"/>
+      <xs:attribute name="hasIncome" type="IEG_BOOLEAN"/>
+      <xs:attribute name="hasHomeRental" type="IEG_BOOLEAN"/>
+      <xs:attribute name="applicationDate" type="IEG_DATE"/>
+      <xs:attribute name="applicationMethod" type="MOLSA_APPLICATION_METHOD"/>
+      <xs:attribute name="educationLevel" type="MOLSA_EDUCATION_LEVEL">
+        <xs:annotation>
+          <xs:documentation>Education Level</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" type="MOLSA_EMAILADDRESS">
+        <xs:annotation>
+          <xs:documentation>Email Address</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="preferredLanguage" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>Preferred Language</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+    <xs:key name="Person_Key">
+      <xs:selector xpath="./Person"/>
+      <xs:field xpath="@personID"/>
+    </xs:key>
+  </xs:element>
+  <xs:element name="Address">
+    <xs:annotation>
+      <xs:documentation>Address details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="addressID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Address ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="street" type="MOLSA_ADDRESS_STREET">
+        <xs:annotation>
+          <xs:documentation>street</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="municipality" type="MOLSA_ADDRESS_MUNICIPALITY">
+        <xs:annotation>
+          <xs:documentation>Municipality</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="buildingNumber" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>Building Number</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="buildingType" type="MOLSA_ADDRESS_BUILDINGTYPE">
+        <xs:annotation>
+          <xs:documentation>Building Type</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="zone" type="MOLSA_ADDRESS_ZONE">
+        <xs:annotation>
+          <xs:documentation>zone</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="country" type="MOLSA_ADDRESS_COUNTRY">
+        <xs:annotation>
+          <xs:documentation>country</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="poBox" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>poBox</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="postOfficeCode" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>post Office Code</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="electricityNumber" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>Electricity Number</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+    <xs:key name="Address_Key">
+      <xs:selector xpath="./Address"/>
+      <xs:field xpath="@addressID"/>
+    </xs:key>
+  </xs:element>
+  <xs:element name="MailingAddress">
+    <xs:annotation>
+      <xs:documentation>Mailing Address details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="mailingAddressID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Mailing Address ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingStreet" type="MOLSA_ADDRESS_STREET">
+        <xs:annotation>
+          <xs:documentation>street</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingMunicipality" type="MOLSA_ADDRESS_MUNICIPALITY">
+        <xs:annotation>
+          <xs:documentation>Municipality</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingBuildingNumber" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>Building Number</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingBuildingType" type="MOLSA_ADDRESS_BUILDINGTYPE">
+        <xs:annotation>
+          <xs:documentation>BuildingType</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingZone" type="MOLSA_ADDRESS_ZONE">
+        <xs:annotation>
+          <xs:documentation>zone</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingCountry" type="MOLSA_ADDRESS_COUNTRY">
+        <xs:annotation>
+          <xs:documentation>country</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingPOBox" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>poBox</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingPostOfficeCode" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>post Office Code</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mailingElectricityNumber" type="IEG_STRING"/>
+    </xs:complexType>
+    <xs:key name="MailingAddress_Key">
+      <xs:selector xpath="./MailingAddress"/>
+      <xs:field xpath="@mailingAddressID"/>
+    </xs:key>
+  </xs:element>
+  <xs:element name="ContactDetails">
+    <xs:annotation>
+      <xs:documentation>Contact details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="contactDetailsID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Contact Details ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobileNumber" type="MOLSA_PHONENUMBER">
+        <xs:annotation>
+          <xs:documentation>Mobile Number</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="otherPhoneNumber" type="MOLSA_PHONENUMBER">
+        <xs:annotation>
+          <xs:documentation>Other Phone Number</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="homePhoneNumber" type="MOLSA_PHONENUMBER">
+        <xs:annotation>
+          <xs:documentation>Home Phone Number</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="workPhoneNumber" type="MOLSA_PHONENUMBER">
+        <xs:annotation>
+          <xs:documentation>Work Phone Number</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="emailAddress" type="MOLSA_EMAILADDRESS">
+        <xs:annotation>
+          <xs:documentation>email address</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+    <xs:key name="ContactDetails_Key">
+      <xs:selector xpath="./ContactDetails"/>
+      <xs:field xpath="@contactDetailsID"/>
+    </xs:key>
+  </xs:element>
+  <xs:element name="AbsentFather">
+    <xs:annotation>
+      <xs:documentation>@curam.ieg.forced.creation=true</xs:documentation>
+    </xs:annotation>  
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="AbsentParentChildren" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="personID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Absent Person ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="qidNumber" type="MOLSA_QATAR_ID">
+        <xs:annotation>
+          <xs:documentation>Qatari ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="firstName" type="MOLSA_FIRSTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>First Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="middleInitial" type="MOLSA_MIDDLENAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Middle Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lastName" type="MOLSA_LASTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Last Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dateOfBirth" type="MOLSA_DOB">
+        <xs:annotation>
+          <xs:documentation>Date of Birth</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="startDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>Start Date of Evidence</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="absentPersonReason" type="MOLSA_ABSENT_PERSON_REASON">
+        <xs:annotation>
+          <xs:documentation>absent Person reason</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+    
+    <xs:key name="AbsentFatherKey">
+      <xs:selector xpath="./AbsentFather"/>
+      <xs:field xpath="@personID"/>
+    </xs:key>
+    <xs:keyref refer="Person_Key" name="AbsentFatherPersonKey">
+      <xs:selector xpath="./Person"/>
+      <xs:field xpath="@personID"/>
+    </xs:keyref>
+  </xs:element>
+  
+  
+  <xs:element name="AbsentHusband">
+    <xs:annotation>
+      <xs:documentation>@curam.ieg.forced.creation=true</xs:documentation>
+    </xs:annotation>  
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="AbsentHusbandWife" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="personID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Absent Person ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="qidNumber" type="MOLSA_QATAR_ID">
+        <xs:annotation>
+          <xs:documentation>Qatari ID</xs:documentation>
+        </xs:annotation>
+       </xs:attribute>
+      <xs:attribute name="firstName" type="MOLSA_FIRSTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>First Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="middleInitial" type="MOLSA_MIDDLENAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Middle Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lastName" type="MOLSA_LASTNAME" default=" ">
+        <xs:annotation>
+          <xs:documentation>Last Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dateOfBirth" type="MOLSA_DOB">
+        <xs:annotation>
+          <xs:documentation>Date of Birth</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="startDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>Start Date of Evidence</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="absentPersonReason" type="MOLSA_ABSENT_PERSON_REASON">
+        <xs:annotation>
+          <xs:documentation>absent Person reason</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+    <xs:key name="AbsentHusbandKey">
+      <xs:selector xpath="./AbsentHusband"/>
+      <xs:field xpath="@personID"/>
+    </xs:key> 
+    <xs:keyref refer="Person_Key" name="AbsentHusbandPersonKey">
+      <xs:selector xpath="./Person"/>
+      <xs:field xpath="@personID"/>
+    </xs:keyref>
+  </xs:element>
+  
+  <xs:element name="AbsentParentChildren">
+    <xs:annotation>
+      <xs:documentation>Absent Parent Children details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="personID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Person ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="AbsentHusbandWife">
+    <xs:annotation>
+      <xs:documentation>Absent Husband wifes details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="personID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Person ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="HouseHoldInformation">
+    <xs:annotation>
+      <xs:documentation>Household Members Details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="numberOfHouseholdMembers" type="IEG_INT8" default="0">
+        <xs:annotation>
+          <xs:documentation>Total number of people in your household.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="anyOneHasAbsentFatherOrHusband" type="IEG_BOOLEAN" default="false">
+        <xs:annotation>
+          <xs:documentation>Anyone in household Has Absent Father</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="anyOneHasAbsentHusband" type="IEG_BOOLEAN" default="false">
+        <xs:annotation>
+          <xs:documentation>Anyone in household Has Absent Father</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IntakeApplication">
+    <xs:complexType>
+      <xs:attribute name="dateOfApplication" type="IEG_DATE"/>
+      <xs:attribute name="receivedMethod" type="MOLSA_APPLICATION_METHOD" default="AM19004"/>
+      <xs:attribute name="interpreterLanguage" type="MOLSA_LANGUAGE"/>
+      <xs:attribute name="interpreterRequired" type="MOLSA_YESNO" default=""/>
+      <xs:attribute name="assistanceExplanation" type="IEG_STRING"/>  
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IntakeApplicationType">
+    <xs:annotation>
+      <xs:documentation>Intake Application Type</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="intakeApplicationTypeID" type="IEG_STRING"/>
+      <xs:attribute name="dateOfApplication" type="IEG_DATE"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ScreeningType">
+    <xs:annotation>
+      <xs:documentation>Screening Type</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="screeningTypeID" type="d:SVR_INT64"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IntakeProgram">
+    <xs:annotation>
+      <xs:documentation>Intake Program</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="programTypeReference" type="IEG_STRING"/>
+      <xs:attribute name="programTypeID" type="IEG_STRING"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ScreeningProgram">
+    <xs:annotation>
+      <xs:documentation>Screening Programs</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="programTypeID" type="d:SVR_INT64"/>
+      <xs:attribute name="programTypeReference" type="IEG_STRING"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Submission">
+    <xs:annotation>
+      <xs:documentation>Submission Details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="sigFirstName" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>Signature First Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="middleInitial" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>Signature middle initial</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="sigLastName" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>Signature Last Name</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="rightsAndResponsibilitiesInd" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>Rights and Responsibilities Ind</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="interviewDate1" type="IEG_DATE">
+        <xs:annotation>
+          <xs:documentation>Interview Date 1</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="timeAvailable1" type="CP_OA_TIME_SLOT">
+        <xs:annotation>
+          <xs:documentation>Time Available 1</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="interviewDate2" type="IEG_DATE">
+        <xs:annotation>
+          <xs:documentation>interviewDate2</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="timeAvailable2" type="CP_OA_TIME_SLOT">
+        <xs:annotation>
+          <xs:documentation>timeAvailable2</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="interviewDate3" type="IEG_DATE">
+        <xs:annotation>
+          <xs:documentation>interviewDate3</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="timeAvailable3" type="CP_OA_TIME_SLOT">
+        <xs:annotation>
+          <xs:documentation>timeAvailable3</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="trusteeName" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>trusteeName</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="agencyName" type="IEG_STRING">
+        <xs:annotation>
+          <xs:documentation>agencyName</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="managementAndProtectionOfHealthInd" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>Management and Protection of Health</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="authorizeReleaseInformationInd" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>Authorize Release Information Ind</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="applicantSignatureInd" type="IEG_BOOLEAN">
+        <xs:annotation>
+          <xs:documentation>Applicant Signature Ind</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Income">
+    <xs:annotation>
+      <xs:documentation>Income Details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="incomeType" type="MOLSA_INCOME_TYPE">
+        <xs:annotation>
+          <xs:documentation>Income Type</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="frequency" type="MOLSA_INCOME_FREQUENCY">
+        <xs:annotation>
+          <xs:documentation>Frequency</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" type="MOLSA_MONEY">
+        <xs:annotation>
+          <xs:documentation>Amount</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="startDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>Start Date of Income</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" type="MOLSA_ENDDATE">
+        <xs:annotation>
+          <xs:documentation>End Date of Income</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Relationship">
+    <xs:annotation>
+      <xs:documentation>Relationships between Household members</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="personID" type="d:SVR_KEY">
+        <xs:annotation>
+          <xs:documentation>Person ID</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="relationshipType" type="IEG_RELATIONSHIP_TYPE">
+        <xs:annotation>
+          <xs:documentation>Relationship Type for screening</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="startDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>Start Date of Relatioship</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" type="MOLSA_ENDDATE">
+        <xs:annotation>
+          <xs:documentation>End Date of Relationship</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Expense">
+    <xs:annotation>
+      <xs:documentation>Expense Details</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="expenseType" type="MOLSA_EXPENSE_TYPE">
+        <xs:annotation>
+          <xs:documentation>Expense Type</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="frequency" type="MOLSA_INCOME_FREQUENCY">
+        <xs:annotation>
+          <xs:documentation>Frequency</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" type="MOLSA_MONEY">
+        <xs:annotation>
+          <xs:documentation>Amount</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="startDate" type="MOLSA_STARTDATE">
+        <xs:annotation>
+          <xs:documentation>Start Date of Expense</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ApplicationDetails">
+    <xs:annotation>
+      <xs:documentation>Application</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="applicationDate" type="IEG_DATE"/>
+      <xs:attribute name="applicationMethod" type="MOLSA_APPLICATION_METHOD"/>
+    </xs:complexType>
+ </xs:element>
+  <xs:element name="ContactPreferences">
+    <xs:annotation>
+      <xs:documentation>Contact Preferences</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="preferredLanguage" type="MOLSA_LANGUAGE"/>
+      <xs:attribute name="preferredCommunication" type="MOLSA_CONTACT_PREFERENCES"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

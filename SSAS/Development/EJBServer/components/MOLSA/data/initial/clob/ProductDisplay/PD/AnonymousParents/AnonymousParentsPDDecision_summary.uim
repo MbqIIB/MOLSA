@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PAGE PAGE_ID="AnonymousParentsPDDecision_summary">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <SERVER_INTERFACE
+    CLASS="CaseDetermination"
+    NAME="DISPLAY"
+    OPERATION="viewDecisionDisplayRulesCategoryXML"
+  />
+  
+  
+  <PAGE_PARAMETER NAME="determinationID"/>
+  <PAGE_PARAMETER NAME="displayDate"/>
+  
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="determinationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="determinationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="displayDate"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="categoryRef"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="categoryRef"
+    />
+  </CONNECT>
+  
+
+  <CLUSTER NUM_COLS="2">
+    <CLUSTER>
+      <CLUSTER TITLE="Cluster.Title.AssistanceUnit">
+        <CONDITION>
+          <IS_TRUE
+            EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/doesHouseholdHaveEligibleMembersTimeline"
+            NAME="DISPLAY"
+            PROPERTY="result$xmlData"
+          />
+        </CONDITION>
+        <LIST>
+          <FIELD LABEL="Field.Label.HouseholdMember">
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/eligibilityUnitMemberDetails/Item[]"
+                NAME="DISPLAY"
+                PROPERTY="result$xmlData"
+              />
+            </CONNECT>
+          </FIELD>
+          <FIELD LABEL="Field.Label.Reason">
+            <CONNECT>
+              <SOURCE
+                EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/eligibilityUnitMembersReason/Item[]"
+                NAME="DISPLAY"
+                PROPERTY="result$xmlData"
+              />
+            </CONNECT>
+          </FIELD>
+        </LIST>
+      </CLUSTER>
+    </CLUSTER>
+
+	
+	<!--exclude-->
+<CLUSTER TITLE="Cluster.Title.ExcludedHouseholdMember">
+  <CONDITION>
+    <IS_TRUE
+      EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/doesHouseholdHaveExcludedMembersTimeline"
+      NAME="DISPLAY"
+      PROPERTY="result$xmlData"
+    />
+  </CONDITION>
+  <LIST >
+    <FIELD LABEL="Field.Label.ExcludedHouseholdMember">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/excludedUnitMemberDetails/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Reason">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/excludedUnitMembersReason/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</CLUSTER>
+
+ <CLUSTER TITLE="Cluster.Title.Eligibility">
+      <CLUSTER STYLE="cgiss-display-removeMargin">
+        <FIELD LABEL="Field.Label.NonFinancial">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/hasHouseholdPassedNonFinancialMessage"
+              NAME="DISPLAY"
+              PROPERTY="result$xmlData"
+            />
+          </CONNECT>
+          <LINK PAGE_ID="AnonymousParentsPDDecision_nonFinancial">
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="determinationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="determinationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="displayDate"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="displayDate"
+              />
+            </CONNECT>
+          </LINK>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Income">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/hasHouseholdPassedIncomeMessage"
+              NAME="DISPLAY"
+              PROPERTY="result$xmlData"
+            />
+          </CONNECT>
+          <LINK PAGE_ID="AnonymousParentsPDDecision_income">
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="determinationID"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="determinationID"
+              />
+            </CONNECT>
+            <CONNECT>
+              <SOURCE
+                NAME="PAGE"
+                PROPERTY="displayDate"
+              />
+              <TARGET
+                NAME="PAGE"
+                PROPERTY="displayDate"
+              />
+            </CONNECT>
+          </LINK>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER>
+	
+<CLUSTER TITLE="Cluster.Title.InEligibleHouseholdMember">
+  <CONDITION>
+    <IS_TRUE
+      EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/doesHouseholdHaveInEligibleMembersTimeline"
+      NAME="DISPLAY"
+      PROPERTY="result$xmlData"
+    />
+  </CONDITION>
+  <LIST >
+    <FIELD LABEL="Field.Label.InEligibleHouseholdMember">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/inEligibilityUnitMemberDetails/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Reason">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="/DecisionDetails/AnonymousParentsSummaryCategory/inEligibilityUnitMembersReason/Item[]"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+</CLUSTER>
+   
+  </CLUSTER>
+
+
+</PAGE>

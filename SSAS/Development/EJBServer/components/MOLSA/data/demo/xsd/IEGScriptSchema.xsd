@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="ieg-script">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="identifier"/>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element minOccurs="0" maxOccurs="unbounded" ref="ieg-sub-script"/>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" ref="section"/>
+                    <xs:element minOccurs="0" ref="question-page"/>
+                    <xs:element minOccurs="0" ref="loop"/>
+                    <xs:element minOccurs="0" ref="condition"/>
+                    <xs:element minOccurs="0" ref="callout"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="finish-page" use="optional"/>
+            <xs:attribute name="quit-page" use="optional"/>
+            <xs:attribute name="show-sections" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-progress-bar" use="optional" type="xs:boolean"/>
+            <xs:attribute name="config-properties" use="optional"/>
+            <xs:attribute name="validate-save-and-exit" use="optional" type="xs:boolean"/>
+            <xs:attribute name="highlight-validation" use="optional" type="xs:boolean"/>
+        </xs:complexType>
+        <xs:key name="page-id-key">
+            <xs:selector xpath=".//summary-page | .//question-page | .//relationship-page"/>
+            <xs:field xpath="@id"/>
+        </xs:key>
+    </xs:element>
+    <xs:element name="section">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title"/>
+                <xs:element minOccurs="0" ref="icon"/>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element minOccurs="0" ref="question-page"/>
+                    <xs:element minOccurs="0" ref="relationship-page"/>
+                    <xs:element minOccurs="0" ref="loop"/>
+                    <xs:element minOccurs="0" ref="condition"/>
+                    <xs:element minOccurs="0" ref="ieg-sub-script"/>
+                    <xs:element minOccurs="0" ref="callout"/>
+                </xs:choice>
+                <xs:element ref="summary-page" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="visible" use="optional"/>
+            <xs:attribute name="read-only-expression" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="summary-page">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title"/>
+                <xs:element minOccurs="0" ref="description"/>
+                <xs:element minOccurs="0" ref="icon"/>
+                <xs:element minOccurs="0" ref="help-text"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="validation"/>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element ref="cluster"/>
+                    <xs:element ref="condition"/>
+                    <xs:element ref="list"/>
+                    <xs:element ref="relationship-summary-list"/>
+                </xs:choice>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="set-attribute"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attribute ref="entity" use="optional"/>
+            <xs:attribute ref="criteria" use="optional"/>
+            <xs:attributeGroup ref="AttProgressBarGroup"/>
+            <xs:attribute name="show-back-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-exit-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-save-exit-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-next-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="read-only-expression" use="optional" type="xs:string"/>
+            <xs:attribute name="set-focus" use="optional" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="identifier">
+        <xs:sequence>
+            <xs:element ref="identifier"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="identifier">
+        <xs:complexType>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attribute name="scriptversionnumber" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="title">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="icon">
+        <xs:complexType>
+            <xs:attribute name="current-image" type="xs:string"/>
+            <xs:attribute name="disabled-image" type="xs:string"/>
+            <xs:attribute name="enabled-image" type="xs:string"/>
+            <xs:attribute name="hover-image" type="xs:string"/>
+            <xs:attribute name="image" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="set-attribute">
+        <xs:complexType>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attribute name="expression" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="question-page">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title"/>
+                <xs:element minOccurs="0" ref="description"/>
+                <xs:element minOccurs="0" ref="icon"/>
+                <xs:element minOccurs="0" ref="help-text"/>
+                <xs:element minOccurs="0" ref="legislation"/>
+                <xs:element minOccurs="0" ref="policy"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="set-attribute"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="validation"/>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element minOccurs="0" ref="cluster"/>
+                    <xs:element minOccurs="0" ref="list"/>
+                    <xs:element minOccurs="0" ref="condition"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attribute ref="entity" use="optional"/>
+            <xs:attribute ref="criteria" use="optional"/>
+            <xs:attributeGroup ref="AttProgressBarGroup"/>
+            <xs:attribute name="show-person-tabs" use="optional" type="xs:boolean"/>
+            <xs:attribute name="read-only" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-back-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-exit-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-save-exit-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-next-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="read-only-expression" use="optional" type="xs:string"/>
+            <xs:attribute name="set-focus" use="optional" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="relationship-page">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title"/>
+                <xs:element minOccurs="0" ref="description"/>
+                <xs:element minOccurs="0" ref="icon"/>
+                <xs:element minOccurs="0" ref="question"/>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element minOccurs="0" ref="cluster"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attributeGroup ref="AttProgressBarGroup"/>
+            <xs:attribute name="show-person-tabs" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-back-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-exit-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-save-exit-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-next-button" use="optional" type="xs:boolean"/>
+            <xs:attribute name="read-only-expression" use="optional" type="xs:string"/>
+            <xs:attribute name="set-focus" use="optional" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="validation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="message"/>
+            </xs:sequence>
+            <xs:attribute name="expression" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="message">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="loop">
+        <xs:complexType>
+            <xs:choice>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element ref="condition"/>
+                    <xs:element ref="loop"/>
+                    <xs:element ref="question-page"/>
+                    <xs:element ref="callout"/>
+                </xs:choice>
+            </xs:choice>
+            <xs:attribute name="loop-expression" use="optional" type="xs:string"/>
+            <xs:attribute name="loop-type" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="for"/>
+                        <xs:enumeration value="for-each"/>
+                        <xs:enumeration value="while"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute ref="entity" use="optional"/>
+            <xs:attribute ref="criteria" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="condition">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element ref="cluster"/>
+                    <xs:element ref="list"/>
+                    <xs:element ref="condition"/>
+                    <xs:element ref="loop"/>
+                    <xs:element ref="question-page"/>
+                    <xs:element ref="callout"/>
+                    <xs:element ref="summary-page"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="expression" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="callout">
+        <xs:complexType>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attribute name="expression" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ieg-sub-script">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="identifier"/>
+            </xs:sequence>
+            <xs:attribute name="start-progress" use="optional" type="xs:integer"/>
+            <xs:attribute name="end-progress" use="optional" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="cluster">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" ref="title"/>
+                <xs:element minOccurs="0" ref="description"/>
+                <xs:element minOccurs="0" ref="help-text"/>
+                <xs:element minOccurs="0" ref="edit-link"/>
+                <xs:element minOccurs="0" ref="layout"/>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element ref="question"/>
+                    <xs:element ref="list-question"/>
+                    <xs:element ref="container"/>
+                    <xs:element ref="display-text"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute ref="entity" use="optional"/>
+            <xs:attribute ref="criteria" use="optional"/>
+            <xs:attribute name="read-only-expression" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="container">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" ref="title"/>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element minOccurs="0" maxOccurs="unbounded" ref="question"/>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" ref="column"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="question">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" ref="label"/>
+                <xs:element minOccurs="0" ref="help-text"/>
+                <xs:element minOccurs="0" ref="layout"/>
+                <xs:element minOccurs="0" ref="codetable-hierarchy-layout"/>
+                <xs:element minOccurs="0" ref="legislation"/>
+                <xs:element minOccurs="0" ref="policy"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attribute name="mandatory" use="optional" type="xs:boolean"/>
+            <xs:attribute name="control-question" use="optional" type="xs:boolean"/>
+            <xs:attribute name="control-question-type" use="optional" type="xs:string"/>
+            <xs:attribute name="multi-select" use="optional" type="xs:boolean"/> 
+            <xs:attribute name="show-field-help" use="optional" type="xs:boolean"/> 
+            <xs:attribute name="default-value-expression" use="optional" type="xs:string"/>
+            <xs:attribute name="read-only-expression" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="alias">
+        <xs:complexType mixed="true">
+            <xs:attribute name="type" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="list-question">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="label"/>
+                <xs:element minOccurs="0" ref="description"/>
+                <xs:element maxOccurs="unbounded" ref="item-label"/>
+                <xs:element minOccurs="0" ref="help-text"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="optional"/>
+            <xs:attribute name="mandatory" use="optional" type="xs:boolean"/>
+            <xs:attribute ref="criteria" use="optional"/>
+            <xs:attribute ref="entity" use="optional"/>
+            <xs:attribute name="link-entity" use="optional" type="xs:string"/>
+            <xs:attribute name="single-select" use="optional" type="xs:boolean"/>
+            <xs:attribute name="display" use="optional" type="xs:string"/>
+            <xs:attribute name="input-alignment" use="optional" type="xs:string"/>
+            <xs:attribute name="show-field-help" use="optional" type="xs:boolean"/> 
+            <xs:attribute name="read-only-expression" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="item-label">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="label-element"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="label-element">
+        <xs:complexType>
+            <xs:attribute name="attribute-id" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="display-text">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="argument">
+        <xs:complexType>
+            <xs:attribute name="id" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="list">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" ref="title"/>
+                <xs:element minOccurs="0" ref="description"/>
+                <xs:element minOccurs="0" ref="edit-link"/>
+                <xs:element minOccurs="0" ref="delete-link"/>
+                <xs:element minOccurs="0" ref="add-link"/>
+                <xs:choice minOccurs="1" maxOccurs="unbounded">
+                    <xs:element minOccurs="0" maxOccurs="unbounded" ref="container"/>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" ref="column"/>
+                </xs:choice>
+                <xs:element ref="list" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+            <xs:attribute ref="entity" use="optional"/>
+            <xs:attribute ref="criteria" use="optional"/>
+            <xs:attribute name="show-icons" use="optional" type="xs:boolean"/>
+            <xs:attribute name="add-link-image-ref" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="relationship-summary-list">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" ref="title"/>
+                <xs:element minOccurs="0" ref="description"/>
+                <xs:element minOccurs="0" ref="edit-link"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="column"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="column">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+            <xs:attribute ref="entity" use="optional"/>
+            <xs:attribute name="link-entity" use="optional" type="xs:string"/>
+            <xs:attribute ref="criteria" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="edit-link">
+        <xs:complexType>
+            <xs:attribute name="start-page" use="required" type="xs:string"/>
+            <xs:attribute name="end-page" use="optional" type="xs:string"/>
+            <xs:attribute name="skip-to-summary" use="optional" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="delete-link"/>
+    <xs:element name="add-link">
+        <xs:complexType>
+            <xs:attribute name="start-page" use="required" type="xs:string"/>
+            <xs:attribute name="end-page" use="optional" type="xs:string"/>
+            <xs:attribute name="criteria" use="optional" type="xs:string"/>
+            <xs:attribute name="skip-to-summary" use="optional" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="description">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="help-text">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="alias"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="policy">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="legislation">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="layout">
+        <xs:complexType>
+            <xs:choice>
+                <xs:sequence>
+                    <xs:element minOccurs="0" ref="type"/>
+                    <xs:element minOccurs="0" ref="num-cols"/>
+                    <xs:element minOccurs="0" ref="num-rows"/>
+                    <xs:element minOccurs="0" ref="width"/>
+                    <xs:element minOccurs="0" ref="label-width"/>
+                    <xs:element minOccurs="0" ref="label-alignment"/>
+                    <xs:element minOccurs="0" ref="autosize"/>
+                    <xs:element minOccurs="0" ref="input-alignment"/>
+                </xs:sequence>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="codetable-hierarchy-layout">
+        <xs:complexType>
+            <xs:attribute name="vertical" use="optional" type="xs:boolean"/>
+	    <xs:attribute name="hide-description" use="optional" type="xs:boolean"/>
+	    <xs:attribute name="hide-label" use="optional" type="xs:boolean"/>
+            <xs:attribute name="show-path" use="optional" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="type">
+        <xs:simpleType>
+            <xs:restriction base="xs:NCName">
+                <xs:enumeration value="flow"/>
+                <xs:enumeration value="compact-flow"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="num-cols" type="xs:integer"/>
+    <xs:element name="num-rows" type="xs:integer"/>
+    <xs:element name="width" type="xs:integer"/>
+    <xs:element name="label-width" type="xs:integer"/>
+    <xs:element name="autosize" type="xs:boolean"/>
+    <xs:element name="input-alignment">
+        <xs:simpleType>
+            <xs:restriction base="xs:NCName">
+                <xs:enumeration value="left"/>
+                <xs:enumeration value="right"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="label-alignment">
+        <xs:simpleType>
+            <xs:restriction base="xs:NCName">
+                <xs:enumeration value="left"/>
+                <xs:enumeration value="right"/>
+                <xs:enumeration value="center"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="label">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="argument"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="alias"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:attribute name="id">
+        <xs:annotation>
+            <xs:documentation>Represents the identifier for the elements in the
+            schema.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="criteria">
+        <xs:annotation>
+            <xs:documentation>Represents the criteria that may be specified for various elements in
+                the schema.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="entity">
+        <xs:annotation>
+            <xs:documentation>Represents the entity that may be specified for various elements in
+                the schema.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attributeGroup name="AttProgressBarGroup">
+        <xs:attribute name="progress" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="100"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+</xs:schema>

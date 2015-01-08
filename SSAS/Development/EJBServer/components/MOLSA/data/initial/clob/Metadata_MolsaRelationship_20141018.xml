@@ -1,0 +1,142 @@
+<EvidenceTypeVersion businessEndDate="toDate" businessStartDate="fromDate" correctionOnly="true" enableSaveAndNew="true" modifiable="true" relatedParticipant="participant">
+  <Model>
+    <Attributes>
+      <Attribute>
+        <RelatedCPAttribute cpRoleType="MEM" name="participant" participantType="Person">
+          <CPSearchType code="PRI"/>
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+      <Attribute>
+        <RelatedCPAttribute cpRoleType="MEM" name="relatedParticipant" participantType="Person">
+          <CPSearchType code="PRI"/> 
+          <CPSearchType code="MEM"/>
+        </RelatedCPAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute mandatory="true" name="fromDate">
+          <DomainType dataType="Date">
+            <DateOptions currentDate="LessThanOrEqualTo"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="toDate">
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute  mandatory="true" name="relationshipType" volatile="true">
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="RelationshipTypeCode"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="endReason">
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="RelationshipEndReason"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+    <PatternValidations>
+      <Validator>
+        <ComparisonValidator
+          operator="NotEqualTo"
+          shallow="false"
+          source="participant"
+          target="relatedParticipant"
+          useClause="false"
+          useLiteral="false"
+        />
+      </Validator>
+      <Validator>
+        <DependentAttributeValidator
+          dependency="MustEnter"
+          source="participant"
+          target="relatedParticipant"
+          unidirectional="false"
+        />
+      </Validator>
+      <Validator>
+        <ComparisonValidator
+          operator="LessThan"
+          shallow="false"
+          source="fromDate"
+          target="toDate"
+          useClause="false"
+          useLiteral="false"
+        />
+      </Validator>
+      <Validator>
+        <DependentAttributeValidator
+          dependency="MustEnter"
+          source="toDate"
+          target="endReason"
+          unidirectional="false"
+        />
+      </Validator>
+    </PatternValidations>
+     <CustomRulesValidation ruleSetName="MolsaRelationshipValidationRuleSet"/>
+  </Validations>
+ <SummaryInformation>
+    <SummaryRuleset ruleSetName="MolsaRelationshipSummaryRuleSet"/>
+  </SummaryInformation>
+  <UserInterface>
+    <Cluster>
+      <RelCPCluster fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="false" isOnViewPage="true" modifyOption="no" showParticipantTypeFilter="true" useSingleName="false">
+        <StandardField source="participant"/>
+        <LabelName id="Related.Participant.Labels.ID3"/>
+        <FirstName id="First.Name.Label.ID3"/>
+        <SecondName id="Second.Name.Label.ID3"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <RelCPCluster fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="false" isOnViewPage="true" modifyOption="no" showParticipantTypeFilter="true" useSingleName="false">
+        <StandardField source="relatedParticipant"/>
+        <LabelName id="Related.Participant.Labels.ID4"/>
+        
+        <FirstName id="First.Name.Label.ID4"/>
+        <SecondName id="Second.Name.Label.ID4"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <Title id="Cluster.Title.ID2"/>
+        <StandardClusterField>
+          <StandardField modifiable="false" source="relationshipType" useBlank="true" useDefault="false">
+            <Label id="Field.Label.ID3"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="endReason" useBlank="true" useDefault="false">
+            <Label id="Field.Label.ID4"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="fromDate" useDefault="false" >
+            <Label id="Field.Label.ID5"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="toDate" useDefault="false">
+            <Label id="Field.Label.ID6"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <CommentsCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true">
+        <Description id="Description.ID4"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

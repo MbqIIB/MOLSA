@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012-2013. All Rights Reserved.
+ 
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<map xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.curamsoftware.com/schemas/GUMBO/Map ../../../../../WorkspaceServices/lib/Mapping.xsd"
+  xmlns="http://www.curamsoftware.com/schemas/GUMBO/Map" from-schema="GumboDS"
+  name="MOLSAApplicationMapping" to-schema="MOLSADataStoreSchema">
+  <map-code-table source-codetable="RelationshipTypeCoreDesc" target-codetable="RelationshipType">
+    <map-value source="RT1" target="RT1"/>
+    <map-value source="RT2" target="RT2"/>
+    <map-value source="RT3" target="RT3"/>
+    <map-value source="RT4" target="RT4"/>
+    <map-value source="RT5" target="RT5"/>
+    <map-value source="RT6" target="RT6"/>
+    <map-value source="RT7" target="RT7"/>
+    <map-value source="RT8" target="RT8"/>
+    <map-value source="RT9" target="RT9"/>
+    <map-value source="RT10" target="RT10"/>
+    <map-value source="RT11" target="RT11"/>
+    <map-value source="RT12" target="RT12"/>
+    <map-value source="RT13" target="RT13"/>
+    <map-value source="RT14" target="RT14"/>
+    <map-value source="RT15" target="RT15"/>
+    <map-value source="RT16" target="RT16"/>
+    <map-value source="RT17" target="RT17"/>
+    <map-value source="RT18" target="RT18"/>
+    <map-value source="RT19" target="RT19"/>
+    <map-value source="RT20" target="RT20"/>
+    <map-value source="RT21" target="RT21"/>
+    <map-value source="RT22" target="RT22"/>
+    <map-value source="RT23" target="RT23"/>
+    <map-value source="RT24" target="RT24"/>
+    <map-value source="RT25" target="RT25"/>
+    <map-value source="RT26" target="RT26"/>
+    <map-value source="RT27" target="RT27"/>
+    <map-value source="RT17000" target="RT17000"/>
+    <map-value source="RT10000" target="RT10000"/>
+    <map-value source="RT10001" target="RT10001"/>
+
+    <map-value source="RT10002" target="RT10002"/>
+    <map-value source="RT10003" target="RT10003"/>
+    <map-value source="RT10004" target="RT10004"/>
+
+    <map-value source="RT10005" target="RT10005"/>
+    <map-value source="RT10006" target="RT10006"/>
+    <map-value source="RT10007" target="RT10007"/>
+    <map-value source="RT10008" target="RT10008"/>
+    <map-value source="RT10009" target="RT10009"/>
+    <map-value source="RT10010" target="RT10010"/>
+    <map-value source="RT10011" target="RT10011"/>
+    <map-value source="RT10012" target="RT10012"/>
+    <map-value source="RT10013" target="RT10013"/>
+    <map-value source="RT4027" target="RT4027"/>
+  </map-code-table>
+  <map-entity source="Application">
+    <map-entity source="Person">
+      <target-entity id="pdcGender" name="PDCGender">
+        <map-attribute from="gender" to="gender"/>
+      </target-entity>
+      <target-entity id="pdcBirthAndDeath" name="PDCBirthAndDeath">
+        <map-attribute from="dateOfBirth" to="dateOfBirth"/>
+      </target-entity>
+
+      <target-entity id="maritalStatus" name="MaritalStatus">
+        <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+        <map-attribute from="maritalStatus" to="maritalStatus"/>
+      </target-entity>
+
+
+
+      <target-entity id="householdMember" name="HouseholdMember">
+        <map-attribute from="householdMemberStartDate" to="startDate"/>
+        <map-attribute from="citizenshipStatus" to="citizenship"/>
+        <map-attribute from="residencyStatus" to="residency"/>
+      </target-entity>
+
+      <condition expression="Person.isPrimaryParticipant==true">
+        <target-entity id="headOfHousehold" name="HeadOfHouse">
+          <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+          <map-attribute from="personID" to="participant"/>
+        </target-entity>
+      </condition>
+
+      <condition expression="Person.hasIncome==true">
+        <map-entity source="Income">
+          <target-entity id="Income" name="Income">
+            <map-attribute from="incomeType" to="incomeType"/>
+            <map-attribute from="frequency" to="frequency"/>
+            <map-attribute from="amount" to="amount"/>
+            <map-attribute from="startDate" to="startDate"/>
+            <map-attribute from="endDate" to="endDate"/>
+          </target-entity>
+        </map-entity>
+      </condition>
+      <condition expression="Person.hasHomeRental==true">
+        <map-entity source="Expense">
+          <target-entity id="Expense" name="Expense">
+            <map-attribute from="expenseType" to="rentType"/>
+            <map-attribute from="frequency" to="frequency"/>
+            <map-attribute from="amount" to="rentAmount"/>
+            <map-attribute from="startDate" to="startDate"/>
+          </target-entity>
+        </map-entity>
+      </condition>
+      <condition expression="Person.isPhysicallyChallenged==true">
+        <target-entity id="handicappedUnableToWork" name="UnableToWork">
+          <map-attribute from="personID" to="participant"/>
+          <map-attribute from="physicallyChallengedStartDate" to="startDate"/>
+          <!--<map-attribute from="isDisabilityPermanentCondition" to="permanentCondition"/>
+          <map-attribute from="physicallyChallengedEndDate" to="endDate"/>-->
+          <set-attribute name="permanentCondition" value="true"/>
+          <set-attribute name="reason" value="MHUW17000"/>
+        </target-entity>
+      </condition>
+      <condition expression="Person.isSeniorCitizen==true and Person.isPhysicallyChallenged==true">
+        <target-entity id="seniorNeedsAssistance" name="UnableToWork">
+          <map-attribute from="physicallyChallengedStartDate" to="startDate"/>
+          <!--<map-attribute from="isDisabilityPermanentCondition" to="permanentCondition"/>
+          <map-attribute from="physicallyChallengedEndDate" to="endDate"/>-->
+          <set-attribute name="permanentCondition" value="true"/>
+          <set-attribute name="reason" value="MHUW17001"/>
+        </target-entity>
+      </condition>
+      <condition expression="Person.isUnfitToWork==true">
+        <target-entity id="unableToWork" name="UnableToWork">
+          <map-attribute from="unfitToWorkStartDate" to="startDate"/>
+          <!--<map-attribute from="isPermanentCondition" to="permanentCondition"/>
+          <map-attribute from="unfitToWorkEndDate" to="endDate"/>-->
+          <set-attribute name="permanentCondition" value="true"/>
+          <set-attribute name="reason" value="MHUW17002"/>
+        </target-entity>
+      </condition>
+      <condition expression="Person.isUnfitToWork==true and Person.requiresMaidAssistance==true">
+        <target-entity id="unfitAndunableToWork" name="UnableToWork">
+          <map-attribute from="unfitToWorkStartDate" to="startDate"/>
+          <!--<map-attribute from="isPermanentCondition" to="permanentCondition"/>
+          <map-attribute from="unfitToWorkEndDate" to="endDate"/>-->
+          <set-attribute name="permanentCondition" value="true"/>
+          <set-attribute name="reason" value="MHUW17003"/>
+        </target-entity>
+      </condition>
+      <condition expression="Person.requiresMaidAssistance==true">
+        <target-entity id="requiresMaidAssistance" name="UnableToWork">
+          <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+          <set-attribute name="permanentCondition" value="true"/>
+          <set-attribute name="reason" value="MHUW17004"/>
+        </target-entity>
+      </condition>
+      <condition expression="Person.isMemberEnrolledInSchool==true">
+        <target-entity id="molsaEducation" name="MolsaEducation">
+          <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+          <set-attribute name="studentStatus" value="MED17000"/>
+          <set-attribute name="educationLevel" value="educationLevel"/>
+        </target-entity>
+      </condition>
+      <condition expression="Person.isMemberEnrolledInSchool==false">
+        <target-entity id="molsaEducationOther" name="MolsaEducation">
+          <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+          <set-attribute name="studentStatus" value="MED17001"/>
+          <set-attribute name="educationLevel" value="educationLevel"/>
+        </target-entity>
+      </condition>
+
+      <map-entity source="Address">
+        <target-entities>
+          <target-entity id="pdcAddress" name="PDCAddress">
+            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+            <map-attribute from="addressID" to="address"/>
+            <set-attribute name="addressType" value="AT6"/>
+          </target-entity>
+        </target-entities>
+      </map-entity>
+      <map-entity source="MailingAddress">
+        <target-entities>
+          <target-entity id="pdcMailingAddress" name="PDCAddress">
+            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+            <map-attribute from="mailingAddressID" to="address"/>
+            <set-attribute name="addressType" value="AT4"/>
+          </target-entity>
+        </target-entities>
+      </map-entity>
+
+      <map-entity source="Relationship">
+        <target-entity id="molsaRelationship" name="MolsaRelationship">
+          <map-attribute entity="Relationship" from="relationshipType" to="relationshipType"/>
+          <map-attribute from="startDate" to="fromDate"/>
+          <map-attribute from="personID" to="participant"/>
+          <map-attribute entity="Relationship" from="personID" to="relatedParticipant"/>
+        </target-entity>
+      </map-entity>
+      <map-entity source="ContactDetails">
+        <condition expression="ContactDetails.mobileNumber!=&quot;&quot;">
+          <target-entity id="mobilePhoneNumber" name="PDCPhoneNumber">
+            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+            <map-attribute from="mobileNumber" to="phoneNumber"/>
+            <set-attribute name="phoneType" value="PH3"/>
+          </target-entity>
+        </condition>
+        <condition expression="ContactDetails.otherPhoneNumber!=&quot;&quot;">
+          <target-entity id="otherPhoneNumber" name="PDCPhoneNumber">
+            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+            <map-attribute from="otherPhoneNumber" to="phoneNumber"/>
+            <set-attribute name="phoneType" value="PH6"/>
+          </target-entity>
+        </condition>
+        <condition expression="ContactDetails.homePhoneNumber!=&quot;&quot;">
+          <target-entity id="homePhoneNumber" name="PDCPhoneNumber">
+            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+            <map-attribute from="homePhoneNumber" to="phoneNumber"/>
+            <set-attribute name="phoneType" value="PH1"/>
+          </target-entity>
+        </condition>
+        <condition expression="ContactDetails.workPhoneNumber!=&quot;&quot;">
+          <target-entity id="workPhoneNumber" name="PDCPhoneNumber">
+            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+            <map-attribute from="workPhoneNumber" to="phoneNumber"/>
+            <set-attribute name="phoneType" value="PH2"/>
+          </target-entity>
+        </condition>
+        <condition expression="ContactDetails.emailAddress!=&quot;&quot;">
+          <target-entity id="PDCEmailAddress" name="PDCEmailAddress">
+            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+            <map-attribute from="emailAddress" to="emailAddress"/>
+            <set-attribute name="emailAddressType" value="ET2"/>
+          </target-entity>
+        </condition>
+      </map-entity>
+      <map-entity source="ContactPreferences">
+        <target-entity id="contactPreference" name="PDCContactPreferences">
+          <map-attribute from="preferredLanguage" to="preferredLanguage"/>
+          <map-attribute from="preferredCommunication" to="preferredCommunication"/>
+        </target-entity>
+      </map-entity>
+    </map-entity>
+  </map-entity>
+</map>

@@ -1,0 +1,96 @@
+<EvidenceTypeVersion businessEndDate="endDate" businessStartDate="startDate" enableSaveAndNew="true" modifiable="true" relatedParticipant="participant">
+  <Model>
+    <Attributes>
+      <Attribute>
+        <DataAttribute mandatory="true" name="startDate">
+          <DomainType dataType="Date">
+            <DateOptions currentDate="LessThanOrEqualTo"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <RelatedCPAttribute cpRoleType="MEM" name="participant" participantType="Person"/>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="endDate">
+          <DomainType dataType="Date"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute name="permanentCondition" volatile="true">
+          <DomainType dataType="Boolean"/>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <DataAttribute mandatory="true" name="reason" volatile="true">
+          <DomainType dataType="Codetable">
+            <CodetableOptions codetableName="MOLSAHCUnableToWork"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
+      <Attribute>
+        <CommentsAttribute name="comments"/>
+      </Attribute>
+    </Attributes>
+    <Relationships/>
+  </Model>
+  <Validations>
+    <PatternValidations>
+      <Validator>
+        <ParticipantDatesValidator inputDate="startDate" relatedCP="participant"/>
+      </Validator>
+      <Validator>
+        <ComparisonValidator operator="LessThan" shallow="false" source="startDate" target="endDate" useClause="false" useLiteral="false"/>
+      </Validator>
+    </PatternValidations>
+    <CustomRulesValidation ruleSetName="HandicappedValidatorRuleset"/>
+  </Validations>
+  <SummaryInformation>
+    <SummaryMapping endDate="endDate" participantDetails="participant" startDate="startDate">
+      <Summary>
+        <parameter name="reason"/>
+        <SummaryResource id="UnableToWork"/>
+      </Summary>
+    </SummaryMapping>
+  </SummaryInformation>
+  <UserInterface>
+    <Cluster>
+      <RelCPCluster fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="multiple" showParticipantTypeFilter="true" useSingleName="false">
+        <StandardField source="participant"/>
+        <LabelName id="Related.Participant.Labels.ID3"/>
+        <FirstName id="First.Name.Label.ID3"/>
+        <SecondName id="Second.Name.Label.ID3"/>
+      </RelCPCluster>
+    </Cluster>
+    <Cluster>
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <StandardClusterField>
+          <StandardField modifiable="true" source="reason" useBlank="true" useDefault="false">
+            <Label id="Field.Label.ID2"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="permanentCondition" useDefault="true">
+            <Label id="Field.Label.ID3"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="startDate" useDefault="false">
+            <Label id="Field.Label.ID4"/>
+          </StandardField>
+        </StandardClusterField>
+        <StandardClusterField>
+          <StandardField modifiable="true" source="endDate">
+            <Label id="Field.Label.ID5"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+      <Cluster>
+      <CommentsCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true">
+        <Description id="Description.ID4"/>
+        <StandardField source="comments"/>
+      </CommentsCluster>
+    </Cluster>
+  </UserInterface>
+</EvidenceTypeVersion>

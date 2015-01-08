@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ieg-script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../demo/xsd/IEGScriptSchema.xsd"
+	finish-page="cw/FinishIEGScript.jspx" quit-page="cw/ExitIEGScript.jspx" show-sections="true"
+	show-progress-bar="true" config-properties="molsa-ieg-config" validate-save-and-exit="true">
+
+	<identifier id="MOLSA" scriptversionnumber="V1" type="Screening"/>
+
+	<section>
+		<title id="AboutYou.Title">About You</title>
+		<icon enabled-image="icon_genperson_external.png"
+			current-image="icon_genperson_external.png"/>
+		<question-page id="AboutYou" entity="Person" progress="10" show-person-tabs="false"
+			read-only="false" show-back-button="false" show-exit-button="true"
+			show-save-exit-button="false" show-next-button="true" set-focus="true">
+			<title id="Info.Title">Information about you</title>
+			<description id="Info.desc">Let's get started! Please enter your personal details
+				below</description>
+			<icon image="icon_genperson_external.png"/>
+			<set-attribute id="isPrimaryParticipant" expression="true"/>
+			<validation expression="IsValidName(Person.firstName)">
+				<message id="FIRSTNAMEMSGID">Name must be only characters(A-Z)</message>
+			</validation>
+
+			<validation expression="IsValidDate(Person.dateOfBirth)">
+				<message id="DATEMSGID">Date of Birth can not be less than 1900-01-01 or cannot be
+					in future</message>
+			</validation>
+			<validation expression="IsValidNumber(Person.qidNumber)">
+				<message id="QIDMSGID">QID Number entered is not in a valid format.It must be a 1 to
+					11 digit number.</message>
+			</validation>
+			<cluster>
+				<layout>
+					<type>compact-flow</type>
+					<num-cols>1</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<display-text id="RequiredFields.Text">&lt;span class="requiredFieldIndicator"&gt;*
+					indicates a required field&lt;/span&gt;</display-text>
+			</cluster>
+			<cluster>
+				<title id="PersonalDetails.Title">Personal Detail</title>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="qidNumber" mandatory="true" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="QidNumber.Label">What is your QID Number?</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.QIDNumber.Help"/>
+				</question>
+			</cluster>
+			<cluster>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="firstName" mandatory="true" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="FirstName.Label">Name</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.FirstName.Help"/>
+				</question>
+
+				<question id="dateOfBirth" mandatory="true" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="DateOfBirth.Label">Date of Birth</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.DateOfBirth.Help"/>
+				</question>
+				<question id="gender" mandatory="true" control-question="false" multi-select="false"
+					show-field-help="false">
+					<label id="Gender.Label">Gender</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.Gender.Help"/>
+				</question>
+			</cluster>
+			<cluster>
+				<title id="AdditionalDetails.Title">Additional Details</title>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="maritalStatus" mandatory="true" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="MaritalStatus.Label">Martial Status</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.MaritalStatus.Help"/>
+				</question>
+				<question id="residencyStatus" mandatory="true" control-question="false"
+					multi-select="false" show-field-help="true">
+					<label id="ResidencyStatus.Label">Are you are resident of Qatar?</label>
+					<help-text id="PersonalDetails.ResidencyStatus.Help">Please tell us whether or
+						not you have resided in Qatar in the last 180 days.</help-text>
+					<layout>
+						<type>flow</type>
+						<width>60</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+
+				</question>
+				<question id="citizenshipStatus" mandatory="true" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="CitizenshipStatus.Label">Are you a Qatari Citizen?</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.CitizenShipStatus.Help"/>
+				</question>
+				<question id="isMemberEnrolledInSchool" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="IsMemberEnrolledInSchool.Label">Are you enrolled in school?</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.IsMemberEnrolledInSchool.Help"/>
+				</question>
+			</cluster>
+			<cluster>
+				<title id="home.Title">People in Your Home</title>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="otherMember" mandatory="false" control-question="true"
+					control-question-type="IEG_BOOLEAN" multi-select="false" show-field-help="false">
+					<label id="otherMember.Label">Are there any other people living in the
+						home?</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<help-text id="PersonalDetails.OtherPeopleLivingInHome.Help"/>
+				</question>
+			</cluster>
+		</question-page>
+		<summary-page id="AboutYouSummary" entity="Person" criteria="isPrimaryParticipant==true"
+			progress="20" show-back-button="true" show-exit-button="true"
+			show-save-exit-button="false" show-next-button="true" set-focus="true">
+			<title id="AboutYouSummary.Title">Review your Answers</title>
+			<description id="AboutYouSummary.Desc">Here's a summary of what you have told us about
+				you and your situation. If you would like to change your answers click
+				'Change'</description>
+			<icon image="icon_genperson_external.png"/>
+			<cluster>
+				<title id="PersonalDetails.Title">Personal Detail</title>
+				<edit-link start-page="AboutYou" skip-to-summary="false"/>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="qidNumber" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="QidNumber.Label">Your QID Number?</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<cluster>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="firstName" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="FirstName.Label">Name</label>
+
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+				</question>
+				<question id="dateOfBirth" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="DateOfBirth.Label">Date of Birth</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+				</question>
+				<question id="gender" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="Gender.Label">Gender</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<cluster>
+				<title id="AdditionalDetails.Title">Additional Details</title>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="maritalStatus" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="MaritalStatus.Label">Marital Status</label>
+				</question>
+				<question id="residencyStatus" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="ResidencyStatus.Label">Residency Status:</label>
+				</question>
+				<question id="citizenshipStatus" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="CitizenshipStatus.Label">Citizenship Status:</label>
+				</question>
+				<question id="isMemberEnrolledInSchool" mandatory="false" control-question="false"
+					multi-select="false" show-field-help="false">
+					<label id="IisMemberEnrolledInSchool.Label">Enrolled in school:</label>
+				</question>
+			</cluster>
+			<cluster>
+				<title id="home.Title">People in Your Home</title>
+				<layout>
+					<type>flow</type>
+					<num-cols>2</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="otherMember" mandatory="false" control-question="true"
+					control-question-type="IEG_BOOLEAN" multi-select="false" show-field-help="false">
+					<label id="otherMember.Label">Are there any other people living in the
+						home?</label>
+				</question>
+			</cluster>
+		</summary-page>
+	</section>
+	<section>
+		<title id="YourHome.Title">Your Home</title>
+		<icon enabled-image="icon_home.png" disabled-image="icon_home.png"
+			current-image="icon_home.png"/>
+		<condition expression="otherMember==true">
+			<loop loop-expression="anyOtherMember==true" loop-type="while" entity="Person"
+				criteria="isPrimaryParticipant==false">
+				<question-page id="HomeMember" criteria="isPrimaryParticipant==false"
+					entity="Person" progress="30" show-person-tabs="false" read-only="false"
+					show-back-button="true" show-exit-button="true" show-save-exit-button="false"
+					show-next-button="true" set-focus="false">
+					<title id="HomeMember.Title">Home Member Information</title>
+					<description id="HomeMember.Desc">Please enter the details about the next person
+						in your home.</description>
+					<icon image="icon_home.png"/>
+					<validation expression="IsValidName(Person.firstName)">
+						<message id="FIRSTNAMEMSGID">Name must be only characters(A-Z)</message>
+					</validation>
+
+					<validation expression="IsValidDate(Person.dateOfBirth)">
+						<message id="DATEMSGID">Date of Birth can not be less than 1900-01-01 or
+							cannot be in future</message>
+					</validation>
+					<validation expression="IsValidNumber(Person.qidNumber)">
+						<message id="QIDMSGID">QID Number entered is not in a valid format.It must
+							be a 1 to 11 digit number.</message>
+					</validation>
+					<cluster>
+						<title id="PersonalDetails.Title">Personal Detail</title>
+						<layout>
+							<type>flow</type>
+							<num-cols>2</num-cols>
+							<label-alignment>left</label-alignment>
+						</layout>
+						<question id="qidNumber" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="QidNumber.Label">What is your QID Number?</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+					</cluster>
+					<cluster>
+						<layout>
+							<type>flow</type>
+							<num-cols>2</num-cols>
+							<label-alignment>left</label-alignment>
+						</layout>
+						<question id="firstName" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="FirstName.Label">Name</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+
+						<question id="dateOfBirth" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="DateOfBirth.Label">Date of Birth</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="gender" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="Gender.Label">Gender</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+					</cluster>
+					<cluster>
+						<title id="AdditionalDetails.Title">Additional Details</title>
+						<layout>
+							<type>flow</type>
+							<num-cols>2</num-cols>
+							<label-alignment>left</label-alignment>
+						</layout>
+						<question id="maritalStatus" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="MaritalStatus.Label">Marital Status</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="residencyStatus" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="true">
+							<label id="ResidencyStatus.Label">Are you a resident of Qatar?</label>
+							<help-text id="PersonalDetails.ResidencyStatus.Help">Please tell us
+								whether or not you have resided in Qatar in the last 180
+								days.</help-text>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="citizenshipStatus" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="CitizenshipStatus.Label">Are you a Qatari Citizen?</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="isMemberEnrolledInSchool" mandatory="false"
+							control-question="false" multi-select="false" show-field-help="false">
+							<label id="IsMemberEnrolledInSchool.Label">Are you enrolled in
+								school?</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+					</cluster>
+					<cluster>
+						<title id="home.Title">People in Your Home</title>
+						<layout>
+							<type>flow</type>
+							<num-cols>2</num-cols>
+							<label-alignment>left</label-alignment>
+						</layout>
+						<question id="anyOtherMember" mandatory="false" control-question="true"
+							control-question-type="IEG_BOOLEAN" multi-select="false"
+							show-field-help="false">
+							<label id="otherMember.Label">Are there any other people living in the
+								home?</label>
+						</question>
+					</cluster>
+				</question-page>
+			</loop>
+		</condition>
+		<relationship-page id="Relationship" progress="50" show-person-tabs="true"
+			show-back-button="true" show-exit-button="true" show-save-exit-button="false"
+			show-next-button="true" set-focus="false" mandatory="true">
+			<title id="Relationship.Title">Relationships</title>
+			<description id="Relationship.Description">Please provide information about household
+				member's relationships.</description>
+			<icon image="icon_marriage_category.png"/>
+		</relationship-page>
+
+		<question-page id="GeneralInformation" progress="40" show-person-tabs="false"
+			read-only="false" show-back-button="true" show-exit-button="true"
+			show-save-exit-button="false" show-next-button="true" set-focus="false">
+
+			<title id="GeneralInformation.Title">General Information</title>
+			<description id="GeneralInformation.Desc">We need to know a little bit more about your
+				home. Please answer the questions below.</description>
+
+			<icon image="icon_home.png"/>
+			<cluster>
+				<title id="General.Title">General</title>
+				<question id="isFatherAbsent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="true">
+					<label id="hasAbsentFather.Label">Are there any people in your  home whose
+						father\husband is absent?</label>
+					<help-text id="hasAbsentFather.HelpText">Please tell us about any children whose
+						father\husband is absent due to Death, Missing Father, In Prison</help-text>
+					<layout>
+						<type>flow</type>
+						<width>30</width>
+						<label-alignment>center</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="isFatherAbsent==&quot;YN1&quot;">
+				<cluster entity="Person">
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasAbsentFather" mandatory="false"
+						criteria="age&lt;18 or (age&gt;18 and gender==&quot;SX2&quot;)"
+						single-select="false" display="horizontal" show-field-help="false">
+						<label id="Absent.Label">Please check the box for anyone whose
+							father\husband is absent</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<!--<cluster>
+				<question id="isHusbandAbsent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="true">
+					<label id="hasAbsentHusband.Label">Is there anyone in your home whose husband is
+						missing or in Prison?</label>
+					<help-text id="hasAbsentHusband.HelpText">Please tell us about any husband who
+						 is absent due to  Missing or In Prison.</help-text>
+					<layout>
+						<type>flow</type>
+						<width>30</width>
+						<label-alignment>center</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="isHusbandAbsent==&quot;YN1&quot;">
+				<cluster entity="Person">
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasAbsentHusband" mandatory="false" single-select="false"
+						criteria="age&gt;18 and gender==&quot;SX2&quot;" display="horizontal"
+						show-field-help="false">
+						<label id="AbsentHusband.Label">Please check the box for anyone whose
+							Husband is Absent:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>-->
+			<cluster>
+				<question id="isHandicapped" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="false">
+					<label id="isPhysicallyChallenged.Label">Is anyone in your home handicapped
+						?</label>
+					<layout>
+						<type>flow</type>
+						<width>30</width>
+						<label-alignment>center</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="isHandicapped==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="isPhysicallyChallenged" mandatory="false" entity="Person"
+						criteria="age&lt;18" single-select="false" show-field-help="false">
+						<label id="handicapped.Label">Please check the box for anyone who is
+							handicapped:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<cluster>
+				<question id="isUnableToWork" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="false">
+					<label id="isUnableToWork.Label">Is anyone in your home unable to work?</label>
+					<layout>
+						<type>flow</type>
+						<width>30</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="isUnableToWork==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="isUnfitToWork" mandatory="false" entity="Person"
+						criteria="age&gt;17" single-select="false" show-field-help="false">
+						<label id="UnableToWork.Label">Please check the box for anyone who is unable
+							to work:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<cluster>
+				<question id="needMaidAssistance" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="false">
+					<label id="requiresMaidAssistance.Label">Does anyone in your home require Maid
+						Assistance </label>
+					<layout>
+						<type>flow</type>
+						<width>30</width>
+						<label-alignment>center</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="needMaidAssistance==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="requiresMaidAssistance" mandatory="false" entity="Person"
+						single-select="false" show-field-help="false">
+						<label id="MaidAssistance.Label">Please check the box who require Maid
+							Assistance:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+		</question-page>
+		<callout expression="PopulateHouseholdInfo()" id="PopulateHouseholdInfo"/>
+
+		<condition expression="HouseHoldInformation.anyOneHasAbsentFatherOrHusband==true">
+			<question-page id="AbsentFatherDetails" progress="45" show-person-tabs="false"
+				read-only="false" show-back-button="true" show-exit-button="true"
+				show-save-exit-button="false" show-next-button="true" set-focus="true">
+				<title id="AbsentFatherDetails.Title">Absent Father Details</title>
+				<description id="AbsentFatherDetails.Desc">Please tell us a little more about the
+					absent father</description>
+				<icon image="icon_genperson_quest_external.png"/>
+				<cluster entity="AbsentFather">
+					<layout>
+						<type>flow</type>
+						<num-cols>1</num-cols>
+						<label-alignment>left</label-alignment>
+					</layout>
+					<question id="absentPersonReason" mandatory="false" control-question="false"
+						multi-select="false" show-field-help="false">
+						<label id="AbsentFatherReason.Label">Why is this person absent?</label>
+						<layout>
+							<type>flow</type>
+							<width>50</width>
+							<label-alignment>left</label-alignment>
+						</layout>
+					</question>
+				</cluster>
+			</question-page>
+		</condition>
+
+		<summary-page id="HomeSummary" progress="50" show-back-button="true" show-exit-button="true"
+			show-save-exit-button="false" show-next-button="true" set-focus="true">
+
+			<title id="HomeSummary.Title">Review the Claimants Answers</title>
+			<description id="HomeSummary.Desc">Here is a summary of what the claimant has told us
+				about the claimant's home. If the claimant would like to edit his/her answers please
+				click 'Edit'. If the claimant would like to delete information for a home member
+				please click 'delete'</description>
+			<icon image="icon_home.png"/>
+			<list entity="Person" criteria="isPrimaryParticipant==true" show-icons="false">
+				<title id="AboutYouSummary.Title">About Primary Applicant</title>
+				<column id="firstName">
+					<title id="firstName.Title">Name</title>
+				</column>
+				<column id="qidNumber">
+					<title id="qNumber.Title">QID Number</title>
+				</column>
+				<column id="gender">
+					<title id="gender.Title">Gender</title>
+				</column>
+				<column id="dateOfBirth">
+					<title id="DOB.Title">Date Of Birth</title>
+				</column>
+				<column id="maritalStatus">
+					<title id="MaritalStatus.Title">Marital Status</title>
+				</column>
+				<column id="citizenshipStatus">
+					<title id="Citizen.Title">Is the Person a Qatari Citizen</title>
+				</column>
+				<column id="residencyStatus">
+					<title id="Resident.Title">Is the person a Resident of Qatar</title>
+				</column>
+				<column id="isMemberEnrolledInSchool">
+					<title id="Enrolled.Title">Is the person enrolled in school</title>
+				</column>
+			</list>
+			<list entity="Person" criteria="isPrimaryParticipant==false" show-icons="false">
+				<title id="MemberList.Title">People in Your Home</title>
+				<edit-link start-page="HomeMember" end-page="Relationship" skip-to-summary="true"/>
+				<delete-link/>
+				<add-link start-page="HomeMember" end-page="Relationship" skip-to-summary="false"/>
+
+				<column id="firstName">
+					<title id="firstName.Title">Name</title>
+				</column>
+				<column id="qidNumber">
+					<title id="qNumber.Title">QID Number</title>
+				</column>
+				<column id="gender">
+					<title id="gender.Title">Gender</title>
+				</column>
+				<column id="dateOfBirth">
+					<title id="DOB.Title">Date Of Birth</title>
+				</column>
+				<column id="maritalStatus">
+					<title id="MaritalStatus.Title">Marital Status</title>
+				</column>
+				<column id="citizenshipStatus">
+					<title id="Citizen.Title">Is the Person a Qatari Citizen</title>
+				</column>
+				<column id="residencyStatus">
+					<title id="Resident.Title">Is the person a Resident of Qatar</title>
+				</column>
+				<column id="isMemberEnrolledInSchool">
+					<title id="Enrolled.Title">Is the person enrolled in school</title>
+				</column>
+			</list>
+			<relationship-summary-list>
+				<title id="HomeRelationship.Title">Home Relationships</title>
+				<edit-link start-page="Relationship" skip-to-summary="true"/>
+
+			</relationship-summary-list>
+
+			<cluster>
+				<title id="GeneralInformation.Title">General Information</title>
+				<edit-link start-page="GeneralInformation" skip-to-summary="false"/>
+				<question id="isFatherAbsent" mandatory="false" control-question="true"
+					control-question-type="MOLSA_YESNO" multi-select="false" show-field-help="false">
+					<label id="isFatherAbsent.Label">Are there any people in your home whose
+						father/husband is absent?</label>
+				</question>
+			</cluster>
+			<condition expression="isFatherAbsent==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasAbsentFather" mandatory="false" entity="Person"
+						single-select="false" show-field-help="false">
+						<label id="hasAbsentFather.Label">Children whose fathers are absent:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<condition expression="isFatherAbsent==&quot;YN1&quot;">
+				<list entity="AbsentFather" show-icons="false">
+					<title id="AbsentFatherReason.Title">Absent father Reason</title>
+					<column id="absentPersonReason">
+						<title id="AbsentFatherReason.Title">Absent Father Reason</title>
+					</column>
+				</list>
+			</condition>
+
+			<!--	<cluster>
+				<question id="isHusbandAbsent" mandatory="false" control-question="true"
+					control-question-type="MOLSA_YESNO" multi-select="false" show-field-help="false">
+					<label id="isHusbandAbsent.Label">Are there any in your home whose husband is
+						absent?</label>
+				</question>
+			</cluster>
+
+			<condition expression="isHusbandAbsent==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasAbsentHusband" mandatory="false" entity="Person"
+						single-select="false" show-field-help="false">
+						<label id="hasAbsentHusband.Label">Members whose husband is absent:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<condition expression="isHusbandAbsent==&quot;YN1&quot;">
+				<list entity="Person" show-icons="false">
+					<title id="AbsentHusbandReason.Title">Absent husband Reason</title>
+					<column id="absentPersonReason">
+						<title id="AbsentHusbandReason.Title">Absent husband Reason</title>
+					</column>
+				</list>
+			</condition>-->
+
+			<cluster>
+				<question id="isHandicapped" mandatory="false" control-question="true"
+					control-question-type="MOLSA_YESNO" multi-select="false" show-field-help="false">
+					<label id="isPhysicallyChallenged.Label">Is anyone in your home handicapped
+						?</label>
+				</question>
+			</cluster>
+			<condition expression="isHandicapped==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="isPhysicallyChallenged" mandatory="false" entity="Person"
+						single-select="false" show-field-help="false">
+						<label id="IsHandicapped.Label">Members who are handicapped</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<cluster>
+				<question id="isUnableToWork" mandatory="false" control-question="true"
+					control-question-type="MOLSA_YESNO" multi-select="false" show-field-help="false">
+					<label id="isUnableToWork.Label">Is anyone in your home unable to work?</label>
+				</question>
+			</cluster>
+			<condition expression="isUnableToWork==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="isUnfitToWork" mandatory="false" entity="Person"
+						single-select="false" show-field-help="false">
+						<label id="IsUnableToWork.Label">Members who are unable to work:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+			<cluster>
+				<question id="needMaidAssistance" mandatory="false" control-question="true"
+					control-question-type="MOLSA_YESNO" multi-select="false" show-field-help="false">
+					<label id="needMaidAssistance.Label">Does anyone in your home require Maid
+						Assistance ?</label>
+				</question>
+			</cluster>
+			<condition expression="needMaidAssistance==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="requiresMaidAssistance" mandatory="false" entity="Person"
+						single-select="false" show-field-help="false">
+						<label id="requiresMaidAssistance.Label">Members who requires maid
+							assistance:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+
+		</summary-page>
+	</section>
+	<section>
+		<title id="IncomeSection.Title">Income</title>
+		<icon disabled-image="sample_job_income_disabled" current-image="sample_job_income"/>
+		<question-page id="IncomeInfo" progress="60" show-person-tabs="false" read-only="false"
+			show-back-button="true" show-exit-button="true" show-save-exit-button="false"
+			show-next-button="true" set-focus="true">
+
+			<title id="IncomeInfo.Title">Income Information</title>
+			<description id="IncomeInfo.Desc">Please tell us about the people in your home who
+				receive income. Examples of income include Salary, Inheritance, Real Estate,
+				Commercial Property, Earned income from paid employment.</description>
+			<icon image="sample_title_income"/>
+			<cluster>
+				<question id="anyoneHaveIncome" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="false">
+					<label id="AnyoneIncome.Label">Does anyone in your home receive income?</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="anyoneHaveIncome==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasIncome" mandatory="false" entity="Person"
+						single-select="false" show-field-help="false">
+						<label id="HasIncome.Label">Please Check the box for Income Details</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+		</question-page>
+		<loop loop-type="for-each" entity="Person" criteria="hasIncome==true">
+			<loop loop-expression="hasMoreIncome" loop-type="while" entity="Income">
+				<question-page id="IncomeDetails" entity="Income" progress="70"
+					show-person-tabs="true" read-only="false" show-back-button="true"
+					show-exit-button="true" show-save-exit-button="false" show-next-button="true"
+					set-focus="true">
+
+					<title id="IncomePage.Title">Income</title>
+					<description id="IncomePage.Desc">You have told us that %1s has  income, please
+						enter the details below<argument id="Person.firstName"/>
+					</description>
+					<icon image="sample_title_income"/>
+					<validation expression="Income.amount&gt;0">
+						<message id="AMOUNTMSGID">Amount should be greater than 0</message>
+					</validation>
+					<cluster>
+						<title id="IncomeDetails.Title">Income Details</title>
+						<question id="incomeType" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="IncomeType.Label">What type of  Income does %1s
+									receive?<argument id="Person.firstName"/>
+							</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="frequency" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="IncomeFrequency.Label">How often does %1s receive this
+									income?<argument id="Person.firstName"/>
+							</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="amount" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="IncomeAmount.Label">How much does %1s receive?<argument
+									id="Person.firstName"/>
+							</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="hasMoreIncome" mandatory="false" control-question="true"
+							control-question-type="IEG_BOOLEAN" multi-select="false"
+							show-field-help="false">
+							<label id="ContinueQuestion.Label">Does %1s have any more
+									income?<argument id="Person.firstName"/>
+							</label>
+						</question>
+					</cluster>
+				</question-page>
+			</loop>
+		</loop>
+		<summary-page id="IncomeSummary" progress="75" show-back-button="true"
+			show-exit-button="true" show-save-exit-button="false" show-next-button="true"
+			set-focus="true">
+
+			<title id="IncomeSummary.Title">Review the Claimants Answers</title>
+			<description id="Page1.Description">Here is a summary of what the claimant has told us
+				about their income. If the claimant would like to edit his/her answers please click
+				'Edit'. If the claimant would like to delete information for a home member please
+				click 'delete'</description>
+			<icon image="sample_title_income"/>
+			<list entity="Person" criteria="hasIncome==true" show-icons="true">
+				<title id="IncomeList.Title">Income</title>
+				<edit-link start-page="IncomeDetails" skip-to-summary="false"/>
+				<delete-link/>
+				<add-link start-page="IncomeDetails" skip-to-summary="false"/>
+				<column id="firstName">
+					<title id="FirstName.Title">Name</title>
+				</column>
+				<list entity="Income" show-icons="false">
+					<column id="incomeType">
+						<title id="IncomeType.Title">Income Type</title>
+					</column>
+					<column id="frequency">
+						<title id="IncomeFrequency.Title">Income Frequency</title>
+					</column>
+					<column id="amount">
+						<title id="IncomeAmount.Title">Income Amount</title>
+					</column>
+				</list>
+			</list>
+		</summary-page>
+	</section>
+
+	<section>
+		<title id="Expense.Title">Expenses</title>
+		<icon enabled-image="icon_payments.png" disabled-image="icon_payments.png"
+			current-image="icon_payments.png"/>
+		<question-page id="ExpenseInfo" progress="80" show-person-tabs="false" read-only="false"
+			show-back-button="true" show-exit-button="true" show-save-exit-button="false"
+			show-next-button="true" set-focus="false">
+
+			<title id="ExpenseInfo.Title">Expense Information</title>
+			<description id="Expense.Desc">Please tell us about the people in your home who have
+				rental expenses. Examples of rental expenses include residential rent and Commercial
+				Property Rent</description>
+			<icon image="icon_payments.png"/>
+			<cluster>
+				<title id="ExpenseInfo.Title">Expenses Information</title>
+				<question id="homeRent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="false">
+					<label id="homeRent.Title">Does anyone in your home pay rent ?</label>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>left</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="homeRent==&quot;YN1&quot;">
+				<cluster>
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasHomeRental" mandatory="false" entity="Person"
+						single-select="false" display="horizontal" show-field-help="false">
+						<label id="homeRentalCheck.Label">Please check the box for anyone who has a
+							rental expense:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
+		</question-page>
+		<loop loop-type="for-each" entity="Person" criteria="hasHomeRental==true">
+			<loop loop-expression="hasMoreRent" loop-type="while" entity="Expense">
+				<question-page id="ExpenseDetails" progress="90" show-person-tabs="true"
+					read-only="false" show-back-button="true" show-exit-button="true"
+					show-save-exit-button="false" show-next-button="true" set-focus="false">
+
+					<title id="ExpenseDetails.Title">Rent Expense</title>
+					<description id="ExpenseDetails.Desc">You have told us that, %1s pays rent
+						expenses, please enter the details below.<argument id="Person.firstName"/>
+					</description>
+					<icon image="icon_payments.png"/>
+					<validation expression="Expense.amount&gt;0">
+						<message id="AMOUNTMSGID">Amount should be greater than 0</message>
+					</validation>
+					<cluster entity="Expense">
+						<layout>
+							<type>flow</type>
+							<num-cols>1</num-cols>
+							<label-alignment>left</label-alignment>
+						</layout>
+						<question id="expenseType" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="expenseType.Title">What type of rent does %1s pay?<argument
+									id="Person.firstName"/>
+							</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="frequency" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="ExpenseFrequency.Title">How often does %1s pay this
+									expense?<argument id="Person.firstName"/>
+							</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="amount" mandatory="true" control-question="false"
+							multi-select="false" show-field-help="false">
+							<label id="ExpenseAmount.Title">How much does %1s pay?<argument
+									id="Person.firstName"/>
+							</label>
+							<layout>
+								<type>flow</type>
+								<width>50</width>
+								<label-alignment>left</label-alignment>
+							</layout>
+						</question>
+						<question id="hasMoreRent" mandatory="false" control-question="true"
+							control-question-type="IEG_BOOLEAN" multi-select="false"
+							show-field-help="false">
+							<label id="hasMoreRent.Title">Does %1s have any other rent
+									expenses?<argument id="Person.firstName"/>
+							</label>
+						</question>
+					</cluster>
+				</question-page>
+			</loop>
+		</loop>
+		<summary-page id="ExpenseSummary" entity="Person" progress="100" show-back-button="true"
+			show-exit-button="true" show-save-exit-button="false" show-next-button="true"
+			set-focus="true">
+
+			<title id="ExpensesSummary.Title">Review the Claimants Answers</title>
+			<description id="ExpensesSummary.Desc">Here is a summary of what the claimant has told
+				us about their income. If the claimant would like to edit his/her answers please
+				click 'Edit'. If the claimant would like to delete information for a home member
+				please click 'delete'</description>
+			<icon image="icon_payments.png"/>
+			<list entity="Person" criteria="hasHomeRental==true" show-icons="false">
+				<title id="ExpenseList.Title">Home Expenses List</title>
+				<edit-link start-page="ExpenseDetails" skip-to-summary="false"/>
+				<delete-link/>
+				<add-link start-page="ExpenseDetails" skip-to-summary="false"/>
+				<column id="firstName">
+					<title id="fName.Title">Name</title>
+				</column>
+				<list entity="Expense" show-icons="false">
+					<column id="expenseType">
+						<title id="ExpenseType.Title">Expense Type</title>
+					</column>
+					<column id="frequency">
+						<title id="ExpenseFre.Title">Expense  Frequency</title>
+					</column>
+					<column id="amount">
+						<title id="ExpenseAmount.Title">Amount</title>
+					</column>
+				</list>
+			</list>
+		</summary-page>
+	</section>
+</ieg-script>
