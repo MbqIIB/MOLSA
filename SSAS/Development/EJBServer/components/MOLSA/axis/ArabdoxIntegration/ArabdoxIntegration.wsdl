@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="ArabdoxRemoteService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://tempuri.org/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+	<wsp:Policy wsu:Id="NetTcpBinding_IArabdoxRemote_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1"/>
+				<sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+									<msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+								</msf:WindowsTransportSecurity>
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+					</wsp:Policy>
+				</sp:TransportBinding>
+				<msf:Streamed xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy"/>
+				<wsaw:UsingAddressing/>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://tempuri.org/Imports">
+			<xsd:import schemaLocation="xsd0.xsd" namespace="http://tempuri.org/"/>
+			<xsd:import schemaLocation="xsd1.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+			<xsd:import schemaLocation="xsd2.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Messaging.SessionOperation"/>
+			<xsd:import schemaLocation="xsd3.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Domain"/>
+			<xsd:import schemaLocation="xsd4.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Enum"/>
+			<xsd:import schemaLocation="xsd5.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Messaging.FolderOperation"/>
+			<xsd:import schemaLocation="xsd6.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Model"/>
+			<xsd:import schemaLocation="xsd7.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Messaging"/>
+			<xsd:import schemaLocation="xsd8.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Messaging.DocumentOperation"/>
+			<xsd:import schemaLocation="xsd9.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Messaging.IndexFieldOperation"/>
+			<xsd:import schemaLocation="xsd10.xsd" namespace="http://schemas.datacontract.org/2004/07/Sakhr.ArabdoxIntegration.Contract.Messaging.DocumentFileOperation"/>
+			<xsd:import schemaLocation="xsd11.xsd" namespace="http://schemas.microsoft.com/Message"/>
+			<xsd:import schemaLocation="xsd12.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="IArabdoxRemote_LoginToArabdox_InputMessage">
+		<wsdl:part name="parameters" element="tns:LoginToArabdox"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_LoginToArabdox_OutputMessage">
+		<wsdl:part name="parameters" element="tns:LoginToArabdoxResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_LogoutFromArabdox_InputMessage">
+		<wsdl:part name="parameters" element="tns:LogoutFromArabdox"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_LogoutFromArabdox_OutputMessage">
+		<wsdl:part name="parameters" element="tns:LogoutFromArabdoxResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetCabinets_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetCabinets"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetCabinets_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetCabinetsResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetFolders_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetFolders"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetFolders_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetFoldersResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_CreateFolder_InputMessage">
+		<wsdl:part name="parameters" element="tns:CreateFolder"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_CreateFolder_OutputMessage">
+		<wsdl:part name="parameters" element="tns:CreateFolderResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_DeleteFolder_InputMessage">
+		<wsdl:part name="parameters" element="tns:DeleteFolder"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_DeleteFolder_OutputMessage">
+		<wsdl:part name="parameters" element="tns:DeleteFolderResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentClasses_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentClasses"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentClasses_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentClassesResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentClassIndexFields_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentClassIndexFields"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentClassIndexFields_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentClassIndexFieldsResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_CreateDocument_InputMessage">
+		<wsdl:part name="parameters" element="tns:CreateDocument"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_CreateDocument_OutputMessage">
+		<wsdl:part name="parameters" element="tns:CreateDocumentResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocument_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocument"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocument_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_DeleteDocument_InputMessage">
+		<wsdl:part name="parameters" element="tns:DeleteDocument"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_DeleteDocument_OutputMessage">
+		<wsdl:part name="parameters" element="tns:DeleteDocumentResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentIndexFields_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentIndexFields"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentIndexFields_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentIndexFieldsResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_SetIndexFieldsValues_InputMessage">
+		<wsdl:part name="parameters" element="tns:SetIndexFieldsValues"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_SetIndexFieldsValues_OutputMessage">
+		<wsdl:part name="parameters" element="tns:SetIndexFieldsValuesResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentFiles_InputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentFiles"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_GetDocumentFiles_OutputMessage">
+		<wsdl:part name="parameters" element="tns:GetDocumentFilesResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DocumentFileLoadRequest">
+		<wsdl:part name="parameters" element="tns:DocumentFileLoadRequest"/>
+	</wsdl:message>
+	<wsdl:message name="DocumentFileLoadResponse">
+		<wsdl:part name="parameters" element="tns:DocumentFileLoadResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DocumentFileLoadResponse_Headers">
+		<wsdl:part name="LoadResponseInfo" element="tns:LoadResponseInfo"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_LoadDocumentFileThroughWeb_InputMessage">
+		<wsdl:part name="parameters" element="tns:LoadDocumentFileThroughWeb"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_LoadDocumentFileThroughWeb_OutputMessage">
+		<wsdl:part name="parameters" element="tns:LoadDocumentFileThroughWebResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_DeleteDocumentFile_InputMessage">
+		<wsdl:part name="parameters" element="tns:DeleteDocumentFile"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_DeleteDocumentFile_OutputMessage">
+		<wsdl:part name="parameters" element="tns:DeleteDocumentFileResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_CreateDocumentEx_InputMessage">
+		<wsdl:part name="parameters" element="tns:CreateDocumentEx"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_CreateDocumentEx_OutputMessage">
+		<wsdl:part name="parameters" element="tns:CreateDocumentExResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_AddLinkedDocuments_InputMessage">
+		<wsdl:part name="parameters" element="tns:AddLinkedDocuments"/>
+	</wsdl:message>
+	<wsdl:message name="IArabdoxRemote_AddLinkedDocuments_OutputMessage">
+		<wsdl:part name="parameters" element="tns:AddLinkedDocumentsResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DocumentFileAddRequestEx">
+		<wsdl:part name="parameters" element="tns:DocumentFileAddRequestEx"/>
+	</wsdl:message>
+	<wsdl:message name="DocumentFileAddRequestEx_Headers">
+		<wsdl:part name="DocumentInformation" element="tns:DocumentInformation"/>
+	</wsdl:message>
+	<wsdl:message name="DocumentFileAddResponse">
+		<wsdl:part name="parameters" element="tns:DocumentFileAddResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DocumentFileAddResponse_Headers">
+		<wsdl:part name="ResponseType" element="tns:ResponseType"/>
+	</wsdl:message>
+	<wsdl:portType name="IArabdoxRemote">
+		<wsdl:operation name="LoginToArabdox">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/LoginToArabdox" message="tns:IArabdoxRemote_LoginToArabdox_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/LoginToArabdoxResponse" message="tns:IArabdoxRemote_LoginToArabdox_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="LogoutFromArabdox">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/LogoutFromArabdox" message="tns:IArabdoxRemote_LogoutFromArabdox_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/LogoutFromArabdoxResponse" message="tns:IArabdoxRemote_LogoutFromArabdox_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetCabinets">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/GetCabinets" message="tns:IArabdoxRemote_GetCabinets_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/GetCabinetsResponse" message="tns:IArabdoxRemote_GetCabinets_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetFolders">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/GetFolders" message="tns:IArabdoxRemote_GetFolders_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/GetFoldersResponse" message="tns:IArabdoxRemote_GetFolders_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="CreateFolder">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/CreateFolder" message="tns:IArabdoxRemote_CreateFolder_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/CreateFolderResponse" message="tns:IArabdoxRemote_CreateFolder_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteFolder">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/DeleteFolder" message="tns:IArabdoxRemote_DeleteFolder_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/DeleteFolderResponse" message="tns:IArabdoxRemote_DeleteFolder_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentClasses">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentClasses" message="tns:IArabdoxRemote_GetDocumentClasses_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentClassesResponse" message="tns:IArabdoxRemote_GetDocumentClasses_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentClassIndexFields">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentClassIndexFields" message="tns:IArabdoxRemote_GetDocumentClassIndexFields_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentClassIndexFieldsResponse" message="tns:IArabdoxRemote_GetDocumentClassIndexFields_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="CreateDocument">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/CreateDocument" message="tns:IArabdoxRemote_CreateDocument_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/CreateDocumentResponse" message="tns:IArabdoxRemote_CreateDocument_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocument">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocument" message="tns:IArabdoxRemote_GetDocument_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentResponse" message="tns:IArabdoxRemote_GetDocument_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteDocument">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/DeleteDocument" message="tns:IArabdoxRemote_DeleteDocument_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/DeleteDocumentResponse" message="tns:IArabdoxRemote_DeleteDocument_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentIndexFields">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentIndexFields" message="tns:IArabdoxRemote_GetDocumentIndexFields_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentIndexFieldsResponse" message="tns:IArabdoxRemote_GetDocumentIndexFields_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="SetIndexFieldsValues">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/SetIndexFieldsValues" message="tns:IArabdoxRemote_SetIndexFieldsValues_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/SetIndexFieldsValuesResponse" message="tns:IArabdoxRemote_SetIndexFieldsValues_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentFiles">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentFiles" message="tns:IArabdoxRemote_GetDocumentFiles_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/GetDocumentFilesResponse" message="tns:IArabdoxRemote_GetDocumentFiles_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="LoadDocumentFile">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/LoadDocumentFile" name="DocumentFileLoadRequest" message="tns:DocumentFileLoadRequest"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/LoadDocumentFileResponse" name="DocumentFileLoadResponse" message="tns:DocumentFileLoadResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="LoadDocumentFileThroughWeb">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/LoadDocumentFileThroughWeb" message="tns:IArabdoxRemote_LoadDocumentFileThroughWeb_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/LoadDocumentFileThroughWebResponse" message="tns:IArabdoxRemote_LoadDocumentFileThroughWeb_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteDocumentFile">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/DeleteDocumentFile" message="tns:IArabdoxRemote_DeleteDocumentFile_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/DeleteDocumentFileResponse" message="tns:IArabdoxRemote_DeleteDocumentFile_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="CreateDocumentEx">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/CreateDocumentEx" message="tns:IArabdoxRemote_CreateDocumentEx_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/CreateDocumentExResponse" message="tns:IArabdoxRemote_CreateDocumentEx_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="AddLinkedDocuments">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/AddLinkedDocuments" message="tns:IArabdoxRemote_AddLinkedDocuments_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/AddLinkedDocumentsResponse" message="tns:IArabdoxRemote_AddLinkedDocuments_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="AddDocumentFilesEx">
+			<wsdl:input wsaw:Action="http://tempuri.org/IArabdoxRemote/AddDocumentFilesEx" name="DocumentFileAddRequestEx" message="tns:DocumentFileAddRequestEx"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IArabdoxRemote/AddDocumentFilesExResponse" name="DocumentFileAddResponse" message="tns:DocumentFileAddResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BasicHttpBinding_IArabdoxRemote" type="tns:IArabdoxRemote">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="LoginToArabdox">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/LoginToArabdox" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="LogoutFromArabdox">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/LogoutFromArabdox" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCabinets">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/GetCabinets" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetFolders">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/GetFolders" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CreateFolder">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/CreateFolder" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteFolder">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/DeleteFolder" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentClasses">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentClasses" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentClassIndexFields">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentClassIndexFields" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CreateDocument">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/CreateDocument" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocument">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocument" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteDocument">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/DeleteDocument" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentIndexFields">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentIndexFields" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SetIndexFieldsValues">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/SetIndexFieldsValues" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentFiles">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentFiles" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="LoadDocumentFile">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/LoadDocumentFile" style="document"/>
+			<wsdl:input name="DocumentFileLoadRequest">
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="DocumentFileLoadResponse">
+				<soap:header message="tns:DocumentFileLoadResponse_Headers" part="LoadResponseInfo" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="LoadDocumentFileThroughWeb">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/LoadDocumentFileThroughWeb" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteDocumentFile">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/DeleteDocumentFile" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CreateDocumentEx">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/CreateDocumentEx" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="AddLinkedDocuments">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/AddLinkedDocuments" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="AddDocumentFilesEx">
+			<soap:operation soapAction="http://tempuri.org/IArabdoxRemote/AddDocumentFilesEx" style="document"/>
+			<wsdl:input name="DocumentFileAddRequestEx">
+				<soap:header message="tns:DocumentFileAddRequestEx_Headers" part="DocumentInformation" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="DocumentFileAddResponse">
+				<soap:header message="tns:DocumentFileAddResponse_Headers" part="ResponseType" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="NetTcpBinding_IArabdoxRemote" type="tns:IArabdoxRemote">
+		<wsp:PolicyReference URI="#NetTcpBinding_IArabdoxRemote_policy"/>
+		<soap12:binding transport="http://schemas.microsoft.com/soap/tcp"/>
+		<wsdl:operation name="LoginToArabdox">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/LoginToArabdox" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="LogoutFromArabdox">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/LogoutFromArabdox" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCabinets">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/GetCabinets" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetFolders">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/GetFolders" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CreateFolder">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/CreateFolder" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteFolder">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/DeleteFolder" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentClasses">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentClasses" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentClassIndexFields">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentClassIndexFields" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CreateDocument">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/CreateDocument" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocument">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocument" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteDocument">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/DeleteDocument" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentIndexFields">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentIndexFields" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SetIndexFieldsValues">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/SetIndexFieldsValues" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocumentFiles">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/GetDocumentFiles" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="LoadDocumentFile">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/LoadDocumentFile" style="document"/>
+			<wsdl:input name="DocumentFileLoadRequest">
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="DocumentFileLoadResponse">
+				<soap12:header message="tns:DocumentFileLoadResponse_Headers" part="LoadResponseInfo" use="literal"/>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="LoadDocumentFileThroughWeb">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/LoadDocumentFileThroughWeb" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteDocumentFile">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/DeleteDocumentFile" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CreateDocumentEx">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/CreateDocumentEx" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="AddLinkedDocuments">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/AddLinkedDocuments" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="AddDocumentFilesEx">
+			<soap12:operation soapAction="http://tempuri.org/IArabdoxRemote/AddDocumentFilesEx" style="document"/>
+			<wsdl:input name="DocumentFileAddRequestEx">
+				<soap12:header message="tns:DocumentFileAddRequestEx_Headers" part="DocumentInformation" use="literal"/>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="DocumentFileAddResponse">
+				<soap12:header message="tns:DocumentFileAddResponse_Headers" part="ResponseType" use="literal"/>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ArabdoxRemoteService">
+		<wsdl:port name="BasicHttpBinding_IArabdoxRemote" binding="tns:BasicHttpBinding_IArabdoxRemote">
+			<soap:address location="http://172.20.10.124:8080/ArabdoxIntegration"/>
+		</wsdl:port>
+		<wsdl:port name="NetTcpBinding_IArabdoxRemote" binding="tns:NetTcpBinding_IArabdoxRemote">
+			<soap12:address location="net.tcp://localhost:8092/ArabDoxIntegration"/>
+			<wsa10:EndpointReference>
+				<wsa10:Address>net.tcp://localhost:8092/ArabDoxIntegration</wsa10:Address>
+				<Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+					<Upn>SAKHRMOSA@MOLSA.QATAR</Upn>
+				</Identity>
+			</wsa10:EndpointReference>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
