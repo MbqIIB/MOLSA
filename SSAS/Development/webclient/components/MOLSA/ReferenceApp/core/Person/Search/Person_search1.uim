@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Person search page -->
+<PAGE
+  PAGE_ID="Person_search1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.Blank"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+
+  <INFORMATIONAL>
+    <CONNECT>
+      <SOURCE
+        NAME="ACTION"
+        PROPERTY="informationMsgTxt"
+      />
+    </CONNECT>
+  </INFORMATIONAL>
+
+
+  <SERVER_INTERFACE
+    CLASS="MOLSAPersonDA"
+    NAME="ACTION"
+    OPERATION="searchPerson"
+    PHASE="ACTION"
+  />
+
+
+
+  <INCLUDE FILE_NAME="Person_searchCriteriaView.vim"/>
+
+
+  <CLUSTER>
+    <ACTION_SET
+      ALIGNMENT="CENTER"
+      BOTTOM="false"
+    >
+      <ACTION_CONTROL
+        DEFAULT="true"
+        IMAGE="SearchButton"
+        LABEL="ActionControl.Label.Search"
+        TYPE="SUBMIT"
+      >
+        <LINK PAGE_ID="THIS"/>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL
+        IMAGE="ResetButton"
+        LABEL="ActionControl.Label.Reset"
+      >
+        <LINK PAGE_ID="Person_search1"/>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </CLUSTER>
+
+
+  <LIST TITLE="List.Title.SearchResults">
+
+
+    <DETAILS_ROW>
+
+
+      <INLINE_PAGE
+        URI_SOURCE_NAME="ACTION"
+        URI_SOURCE_PROPERTY="dtlsList$personTabDetailsURL"
+      />
+
+
+    </DETAILS_ROW>
+
+
+    <FIELD
+      LABEL="Field.Title.Name"
+      WIDTH="44"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$xmlPersonData"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.Address"
+      WIDTH="44"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$formattedAddress"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Title.DateOfBirth"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="ACTION"
+          PROPERTY="dtlsList$dateOfBirth"
+        />
+      </CONNECT>
+    </FIELD>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.NewCase">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ICSample_selectIntegratedCaseType"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtlsList$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.RegisterAsPerson">
+        <CONDITION>
+          <IS_TRUE
+            NAME="ACTION"
+            PROPERTY="prospectPersonInd"
+          />
+        </CONDITION>
+        
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="ProspectPerson_resolveDuplicateCheckWizard"
+        >
+         
+          <CONNECT>
+            <SOURCE
+              NAME="ACTION"
+              PROPERTY="dtlsList$concernRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+  </LIST>
+</PAGE>

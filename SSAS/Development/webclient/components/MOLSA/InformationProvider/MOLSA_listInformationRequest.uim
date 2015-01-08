@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PAGE
+  PAGE_ID="MOLSA_listInformationRequest"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MOLSAInformationProvider"
+    NAME="DISPLAY"
+    OPERATION="listInformationRequest"
+  />
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="caseID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+
+
+    <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="MOLSA_listInformationResponse">
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="informationRequestID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="informationRequestID"
+          />
+        </CONNECT>
+      </INLINE_PAGE>
+    </DETAILS_ROW>
+
+
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.createInformationResponse">
+        <LINK
+          OPEN_MODAL="true"
+          PAGE_ID="MOLSA_createInformationResponse"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="informationRequestID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="informationRequestID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+
+
+    <FIELD
+      LABEL="Field.Label.InformationProvider"
+      WIDTH="31"
+    >
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="informationProvider"
+          />
+        </CONNECT>
+      </FIELD>
+   
+
+
+    <FIELD
+      LABEL="Field.Label.InformationType"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="informationType"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Label.casemember"
+      WIDTH="15"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="caseMemberName"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Label.StartDate"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="startDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.EndDate"
+      WIDTH="12"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="endDate"
+        />
+      </CONNECT>
+    </FIELD>
+
+    <FIELD
+      LABEL="Field.Label.LastUpdated"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="lastUpdated"
+        />
+      </CONNECT>
+    </FIELD>
+
+
+    <FIELD
+      LABEL="Field.Label.Status"
+      WIDTH="10"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="requestStatus"
+        />
+      </CONNECT>
+    </FIELD>
+  </LIST>
+
+
+</PAGE>

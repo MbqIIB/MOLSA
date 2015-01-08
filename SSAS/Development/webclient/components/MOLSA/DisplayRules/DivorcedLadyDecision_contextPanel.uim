@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGE
+  PAGE_ID="DivorcedLadyDecision_contextPanel"
+  TYPE="DETAILS"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Page.Title"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="creoleProgramRecommendationID"/>
+  <PAGE_PARAMETER NAME="simulatedDeterminationID"/>
+  <PAGE_PARAMETER NAME="date"/>
+
+  <SERVER_INTERFACE
+    CLASS="CREOLEProgramRecommendation"
+    NAME="DISPLAY"
+    OPERATION="viewDisplayRulesCategorySubscreenXML"
+    PHASE="DISPLAY"
+  />
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="creoleProgramRecommendationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="creoleProgramRecommendationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="simulatedDeterminationID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="simulatedDeterminationID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="date"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="date"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="categoryRef"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="categoryRef"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="subscreenName"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="subscreenName"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="TEXT"
+      PROPERTY="businessObjectID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="businessObjectID"
+    />
+  </CONNECT>
+
+
+  <TAB_NAME>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="Tab.Name"
+      />
+    </CONNECT>
+  </TAB_NAME>
+
+
+  <CLUSTER NUM_COLS="2">
+    <FIELD LABEL="Field.Label.Primary">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="Item/primaryHouseholdMemberCPRRecord"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Decision">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="Item/isEligibleMessage"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.AssistanceUnit">
+      <CONNECT>
+        <SOURCE
+          EXTENDED_PATH="Item/assistanceUnitTimeline"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.CoverageStartDate">
+      <CONNECT>
+        <SOURCE
+          NAME="PAGE"
+          PROPERTY="date"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+</PAGE>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="MOLSA_sendSMS" WINDOW_OPTIONS="width=500"
+    SCRIPT_FILE="MOLSAGetSMSMessageText.js"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+        </CONNECT>
+    </PAGE_TITLE>
+    
+    <!--<PAGE_PARAMETER NAME="caseID"/>-->
+    <PAGE_PARAMETER NAME="concernRoleTabbedList"/>
+    
+    
+    <SERVER_INTERFACE CLASS="MOLSAMessageService" NAME="ACTION" OPERATION="sendSMS" PHASE="ACTION"/>
+    
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="concernRoleTabbedList"/>
+        <TARGET NAME="ACTION" PROPERTY="concernRoleTabbedList"/> 
+    </CONNECT>
+    
+    <CLUSTER
+        LABEL_WIDTH="15"
+        NUM_COLS="1"
+        SHOW_LABELS="false"
+        >
+        <FIELD
+            CONFIG="CT_DISPLAY_LABELS"
+            CONTROL="CT_HIERARCHY_VERTICAL"
+            USE_BLANK="true"
+            >
+            
+            <CONNECT>
+                <TARGET PROPERTY="smsMessageType" NAME="ACTION" />
+            </CONNECT>
+            <SCRIPT
+                ACTION="getMessageFormat()"
+                EVENT="ONCHANGE"
+                SCRIPT_FILE="MOLSAGetSMSMessageText.js"
+            />
+        </FIELD>
+        </CLUSTER>
+    
+    <CLUSTER
+        TITLE="Cluster.MessageText.Title"
+        SHOW_LABELS="false"
+        >
+        <FIELD HEIGHT="4" LABEL="Field.Label.MessageText">
+            <CONNECT>
+                <TARGET PROPERTY="smsMessageText" NAME="ACTION"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    
+    
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+        <ACTION_CONTROL IMAGE="NextButton" LABEL="ActionControl.Label.Send" TYPE="SUBMIT">
+        </ACTION_CONTROL>
+        <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+    </ACTION_SET>
+
+    
+    
+</PAGE>

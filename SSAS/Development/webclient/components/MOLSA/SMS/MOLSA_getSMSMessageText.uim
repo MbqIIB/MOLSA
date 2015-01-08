@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="MOLSA_getSMSMessageText">
+    <JSP_SCRIPTLET> 
+        
+        curam.interfaces.MOLSAMessageServicePkg.MOLSAMessageService_getSMSMessageText_TH
+        getSMSMessageText = new curam.interfaces.MOLSAMessageServicePkg.MOLSAMessageService_getSMSMessageText_TH ();
+        
+        String category = request.getParameter("parent");
+        String template = request.getParameter("child");
+        
+        getSMSMessageText.setFieldValue(getSMSMessageText.key$category_idx,category);
+        getSMSMessageText.setFieldValue(getSMSMessageText.key$template_idx,template);
+        
+        
+        getSMSMessageText.callServer(); 
+        String text = getSMSMessageText.getFieldValue(getSMSMessageText.result$smsMessageText_idx);  
+        
+        response.setContentType("text/xml"); 
+        response.setHeader("Cache-Control", "no-cache");
+        out.println(text);
+    </JSP_SCRIPTLET>
+</PAGE>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE
+  PAGE_ID="MOLSAParticipant_resolveViewCommunication1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <JSP_SCRIPTLET>
+    
+
+      curam.omega3.request.RequestHandler 
+        rh = curam.omega3.request.RequestHandlerFactory.getRequestHandler(request);
+
+
+      String context = request.getContextPath() + "/";
+      context += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";
+      String communicationID = request.getParameter("communicationID");
+      String correspondentConcernRoleID = request.getParameter("correspondentConcernRoleID");       
+      String pageDescription = request.getParameter("pageDescription");
+      String status = request.getParameter("status");
+      String communicationFormat = request.getParameter("communicationFormat");
+      String url = "";
+  
+      if (communicationID == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationID");
+       System.out.println(e);
+       throw e;
+      }
+                  
+
+      if (status == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "status");
+       System.out.println(e);
+       throw e;
+      }
+      
+      if (communicationFormat == null) {
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "communicationFormat");
+       System.out.println(e);
+       throw e;
+      }      
+      
+      if (correspondentConcernRoleID == null) {
+
+       core.ScriptletMissingParamException e = new
+                core.ScriptletMissingParamException(-20002, "correspondentConcernRoleID");
+       System.out.println(e);
+       throw e;
+
+      }        
+      
+      // SMS communication
+      if (communicationFormat.equals("CF5")) {
+        // email
+        url = context + "MOLSAParticipant_viewSMSCommunicationPage.do" + "?communicationID=" 
+        + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+        + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)            
+        + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+      }
+      
+      else {
+              
+              url = context + "Participant_resolveViewCommunication1Page.do" + "?communicationID=" 
+              + curam.omega3.request.RequestUtils.escapeURL(communicationID) + "&amp;correspondentConcernRoleID="                                            
+              + curam.omega3.request.RequestUtils.escapeURL(correspondentConcernRoleID)+"&amp;status="     
+              + curam.omega3.request.RequestUtils.escapeURL(status)+"&amp;communicationFormat="
+              + curam.omega3.request.RequestUtils.escapeURL(communicationFormat)
+              + "&amp;pageDescription=" + curam.omega3.request.RequestUtils.escapeURL(pageDescription); 
+      }
+      
+      url += "&amp;" + rh.getSystemParameters();  
+      response.sendRedirect(response.encodeRedirectURL(url));
+    
+  </JSP_SCRIPTLET>
+</PAGE>

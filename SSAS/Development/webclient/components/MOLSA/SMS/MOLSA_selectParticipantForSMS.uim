@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="MOLSA_selectParticipantForSMS" WINDOW_OPTIONS="width=600"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+
+
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+        </CONNECT>
+    </PAGE_TITLE>
+
+
+    <PAGE_PARAMETER NAME="caseID"/>
+
+    
+
+    <SERVER_INTERFACE CLASS="IntegratedCase" NAME="DISPLAY" OPERATION="listCaseParticipantsDetails"/>
+
+
+    <SERVER_INTERFACE CLASS="Communication" NAME="ACTION"
+        OPERATION="getCaseCorrespondentForCommunication" PHASE="ACTION"/>
+
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+        <TARGET NAME="ACTION" PROPERTY="caseID"/> 
+    </CONNECT>
+    
+    
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+        <TARGET NAME="DISPLAY" PROPERTY="caseID"/>
+    </CONNECT>
+
+    <CLUSTER DESCRIPTION="Cluster.ParticipantSearch.Description" LABEL_WIDTH="25"
+        TITLE="Cluster.ParticipantSearch.Title">
+        <FIELD LABEL="Field.Label.CaseParticipant" USE_BLANK="TRUE" WIDTH="35">
+            <CONNECT>
+                <INITIAL HIDDEN_PROPERTY="participantRoleID" NAME="DISPLAY" PROPERTY="name"/>
+            </CONNECT>
+            <CONNECT>
+                <TARGET NAME="ACTION"
+                    PROPERTY="correspondentDetails$details$caseParticipantConcernRoleID"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+
+
+    <CLUSTER DESCRIPTION="Cluster.CorrespondentSearch.Description" LABEL_WIDTH="25">
+
+
+        <CONTAINER LABEL="Field.Label.CorrespondentSearch">
+            <FIELD WIDTH="35">
+                <CONNECT>
+                    <TARGET NAME="ACTION" PROPERTY="correspondentDetails$details$correspondentType"
+                    />
+                </CONNECT>
+            </FIELD>
+            <FIELD>
+                <CONNECT>
+                    <TARGET NAME="ACTION"
+                        PROPERTY="correspondentDetails$details$correspondentConcernRoleID"/>
+                </CONNECT>
+            </FIELD>
+        </CONTAINER>
+    </CLUSTER>
+
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+        <ACTION_CONTROL IMAGE="NextButton" LABEL="ActionControl.Label.Next" TYPE="SUBMIT">
+            <LINK DISMISS_MODAL="false" OPEN_MODAL="true"
+                PAGE_ID="MOLSA_sendSMS" SAVE_LINK="false">
+                <CONNECT>
+                    <SOURCE NAME="PAGE" PROPERTY="caseID"/>
+                    <TARGET NAME="PAGE" PROPERTY="caseID"/>
+                </CONNECT>
+                <CONNECT>
+                    <SOURCE NAME="ACTION" PROPERTY="result$details$correspondentConcernRoleID"/>
+                    <TARGET NAME="PAGE" PROPERTY="concernRoleTabbedList"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+        
+        <ACTION_CONTROL IMAGE="CancelButton" LABEL="ActionControl.Label.Cancel"/>
+    </ACTION_SET>
+
+
+
+
+</PAGE>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PAGE
+  PAGE_ID="MOLSA_createInformationResponse"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE
+    CLASS="MOLSAInformationProvider"
+    NAME="ACTION"
+    OPERATION="createInformationResponse"
+    PHASE = "ACTION"
+  />
+
+
+  <PAGE_PARAMETER NAME="informationRequestID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="informationRequestID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="informationRequestID"
+    />
+  </CONNECT>
+
+
+<ACTION_SET ALIGNMENT="CENTER">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+  
+<CLUSTER LABEL_WIDTH="25">
+    <FIELD
+      LABEL="Field.Label.RecievedDate"
+      WIDTH="31"
+    >
+        <CONNECT>
+          <TARGET
+            NAME="ACTION"
+            PROPERTY="receivedDate"
+          />
+        </CONNECT>
+      </FIELD>
+</CLUSTER>
+
+ <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Cluster.Title.Response"
+  >
+    <FIELD HEIGHT="4" LABEL="Field.Label.Response">
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="response"
+        />
+      </CONNECT>
+    </FIELD>
+ </CLUSTER>
+  
+</PAGE>

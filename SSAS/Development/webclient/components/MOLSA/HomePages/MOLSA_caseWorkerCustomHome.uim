@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PAGE
+  COMPONENT_STYLE="page-omit-sidebar"
+  PAGE_ID="MOLSA_caseWorkerCustomHome"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+   <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+  <!-- Announcements -->
+  <SERVER_INTERFACE
+    CLASS="Organization"
+    NAME="ANNOUNCEMENTDISPLAY"
+    OPERATION="getAnnouncementsAsXML"
+  />
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="announcements-cluster"
+  >
+    <FIELD>
+      <CONNECT>
+        <SOURCE
+          NAME="ANNOUNCEMENTDISPLAY"
+          PROPERTY="result$contentXML"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+
+  <!--End Announcements -->
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="CONSTANT"
+      PROPERTY="MOLSACaseWorkerCustomHome"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="pageID$pageID"
+    />
+  </CONNECT>
+
+
+  <INCLUDE FILE_NAME="PodContainer.vim"/>
+
+
+</PAGE>
