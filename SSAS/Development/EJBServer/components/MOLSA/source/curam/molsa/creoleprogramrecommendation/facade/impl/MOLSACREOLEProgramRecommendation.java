@@ -1,0 +1,123 @@
+package curam.molsa.creoleprogramrecommendation.facade.impl;
+
+import curam.application.entity.struct.ApplicationKey;
+import curam.creoleprogramrecommendation.facade.fact.CREOLEProgramRecommendationFactory;
+import curam.creoleprogramrecommendation.facade.intf.CREOLEProgramRecommendation;
+import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationDetails;
+import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationDetailsList;
+import curam.creoleprogramrecommendation.struct.CREOLEProgramRecommendationKey;
+import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetails;
+import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetailsList;
+import curam.util.exception.AppException;
+import curam.util.exception.InformationalException;
+import curam.util.type.Date;
+
+/**
+ * Facade class used to perform the operations related to eligible programs.
+ */
+
+public class MOLSACREOLEProgramRecommendation
+		extends curam.molsa.creoleprogramrecommendation.facade.base.MOLSACREOLEProgramRecommendation {
+
+	/**
+	 * This method sets the details of eligible programs listed on IC home page
+	 * under check eligibility tab
+	 * 
+	 * @param CREOLEProgramRecommendationKey
+	 *            Contains Program Recommendation identifier
+	 * 
+	 * @return MolsaSimulatedDeterminationDetailsList Contains eligible program
+	 *         details
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
+	@Override
+	public MolsaSimulatedDeterminationDetailsList listEligibleSimulatedDeterminations(
+			CREOLEProgramRecommendationKey key) throws AppException,
+			InformationalException {
+
+		CREOLEProgramRecommendation CreoleProgramRecommendationObj = CREOLEProgramRecommendationFactory
+				.newInstance();
+		SimulatedDeterminationDetailsList SimulatedDeterminationDtlsList = new SimulatedDeterminationDetailsList();
+		MolsaSimulatedDeterminationDetailsList molsaSimulatedDeterminationDtlsList = new MolsaSimulatedDeterminationDetailsList();
+
+		SimulatedDeterminationDtlsList = CreoleProgramRecommendationObj
+				.listEligibleSimulatedDeterminations(key);
+		for (SimulatedDeterminationDetails dtls : SimulatedDeterminationDtlsList.list) {
+			MolsaSimulatedDeterminationDetails molsaSimulatedDeterminationDtls = new MolsaSimulatedDeterminationDetails();
+			molsaSimulatedDeterminationDtls.dtls.assign(dtls);
+			String date = molsaSimulatedDeterminationDtls.dtls.period
+					.substring(134, 144);
+			String dates[] = date.split("-");
+			String one = dates[1];
+			String two = dates[2];
+			String finalDate = dates[0].concat(one);
+			finalDate = finalDate.concat(two);
+			Date fromDate = Date.getDate(finalDate);
+			if ((fromDate.after(Date.getCurrentDate()))
+					&& (molsaSimulatedDeterminationDtls.dtls.isAuthorized)) {
+				molsaSimulatedDeterminationDtls.isPDAuthorized = true;
+			}
+			molsaSimulatedDeterminationDtlsList.dtls
+					.addRef(molsaSimulatedDeterminationDtls);
+
+		}
+		return molsaSimulatedDeterminationDtlsList;
+	}
+
+	/**
+	 * This method sets the details of eligible programs listed on Application
+	 * home page under review eligibility page
+	 * 
+	 * @param ApplicationKey
+	 *            Contains Program Recommendation identifier
+	 * 
+	 * @return MolsaSimulatedDeterminationDetailsList Contains eligible program
+	 *         details
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
+	@Override
+	public MolsaSimulatedDeterminationDetailsList listLatestAppliedForEligibleSimulatedDeterminations(
+			ApplicationKey key) throws AppException, InformationalException {
+		CREOLEProgramRecommendation CreoleProgramRecommendationObj = CREOLEProgramRecommendationFactory
+				.newInstance();
+		SimulatedDeterminationDetailsList SimulatedDeterminationDtlsList = new SimulatedDeterminationDetailsList();
+		MolsaSimulatedDeterminationDetailsList molsaSimulatedDeterminationDtlsList = new MolsaSimulatedDeterminationDetailsList();
+
+		SimulatedDeterminationDtlsList = CreoleProgramRecommendationObj
+				.listLatestAppliedForEligibleSimulatedDeterminations(key);
+		for (SimulatedDeterminationDetails dtls : SimulatedDeterminationDtlsList.list) {
+			MolsaSimulatedDeterminationDetails molsaSimulatedDeterminationDtls = new MolsaSimulatedDeterminationDetails();
+			molsaSimulatedDeterminationDtls.dtls.assign(dtls);
+			String date = molsaSimulatedDeterminationDtls.dtls.period
+					.substring(134, 144);
+			String dates[] = date.split("-");
+			String one = dates[1];
+			String two = dates[2];
+			String finalDate = dates[0].concat(one);
+			finalDate = finalDate.concat(two);
+			Date fromDate = Date.getDate(finalDate);
+			if (molsaSimulatedDeterminationDtls.dtls.isActionPending) {
+				if ((fromDate.after(Date.getCurrentDate()))) {
+					molsaSimulatedDeterminationDtls.isPDAuthorized = false;
+				} else
+					molsaSimulatedDeterminationDtls.isPDAuthorized = true;
+			}
+			molsaSimulatedDeterminationDtlsList.dtls
+					.addRef(molsaSimulatedDeterminationDtls);
+
+		}
+		return molsaSimulatedDeterminationDtlsList;
+
+	}
+
+}
