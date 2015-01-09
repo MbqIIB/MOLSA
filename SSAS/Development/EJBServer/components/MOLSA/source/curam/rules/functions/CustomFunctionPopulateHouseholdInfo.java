@@ -26,15 +26,16 @@ public class CustomFunctionPopulateHouseholdInfo extends CustomFunctor {
     return AdaptorFactory.getBooleanAdaptor(Boolean.TRUE);
   }
 
- /**
-  * Update any household Member attribute on the household entity..
-  * @param ieg2Context
-  * stores IEG2Context value
-  * @throws AppException
-  * Generic Exception
-  * @throws InformationalException
-  * Generic exception
-  */
+  /**
+   * Update any household Member attribute on the household entity..
+   * 
+   * @param ieg2Context
+   *          stores IEG2Context value
+   * @throws AppException
+   *           Generic Exception
+   * @throws InformationalException
+   *           Generic exception
+   */
   private void updateAbsentParentInfo(final IEG2Context ieg2Context)
       throws AppException, InformationalException {
     Datastore datastore = null;
@@ -58,7 +59,9 @@ public class CustomFunctionPopulateHouseholdInfo extends CustomFunctor {
       for (Entity personEntity : personEntities) {
 
         if ((Boolean) personEntity
-            .getTypedAttribute(MOLSADatastoreConst.kHasAbsentFather)) {
+            .getTypedAttribute(MOLSADatastoreConst.kHasAbsentFather)
+            || (Boolean) personEntity
+                .getTypedAttribute(MOLSADatastoreConst.kHasAbsentHusband)) {
           household
               .setTypedAttribute(
                   MOLSADatastoreConst.kAnyOneHasAbsentFatherOrHusband,

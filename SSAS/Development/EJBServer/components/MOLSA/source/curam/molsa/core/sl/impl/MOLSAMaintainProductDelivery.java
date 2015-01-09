@@ -11,6 +11,7 @@ import curam.codetable.CASETRANSACTIONEVENTS;
 import curam.codetable.EVIDENCESTATUS;
 import curam.codetable.PRODUCTNAME;
 import curam.codetable.PRODUCTTYPE;
+import curam.codetable.impl.MILESTONESTATUSCODEEntry;
 import curam.codetable.impl.PRODUCTTYPEEntry;
 import curam.codetable.impl.PROGRAMTYPEEntry;
 import curam.core.facade.fact.IntegratedCaseFactory;
@@ -44,9 +45,12 @@ import curam.core.intf.Product;
 import curam.core.intf.ProductDelivery;
 import curam.core.intf.SystemUser;
 import curam.core.intf.UniqueID;
+import curam.core.sl.fact.MilestoneDeliveryFactory;
 import curam.core.sl.impl.CaseTransactionLogIntf;
 import curam.core.sl.infrastructure.impl.ValidationManagerFactory;
+import curam.core.sl.intf.MilestoneDelivery;
 import curam.core.sl.struct.CaseIDKey;
+import curam.core.sl.struct.MilestoneDeliveryDtls;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.core.struct.CaseEvidenceDtls;
 import curam.core.struct.CaseEvidenceReadNearestEvidenceKey;
@@ -417,99 +421,136 @@ public abstract class MOLSAMaintainProductDelivery extends
 		productDelivery.approve(productdeliveryapprovalkey);
 
 		// Update the certification period.
-		 
-    // Update the certification period Only for Molsa Cases.
-    ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
-    productDeliveryKey.caseID = key.caseID;
-    ProductDeliveryTypeDetails productDeliveryTypeDetails = productDelivery.readProductType(productDeliveryKey);
-    
-    
 
-    if(productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.INCAPABLEOFWORKING)
-        || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.HANDICAP)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.DIVORCEDLADY)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.FAMILYOFPRISONER)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.MAIDALLOWANCE)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.DESERTEDWIFE)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.FAMILYINNEED)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.FAMILYOFMISSING)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.WIDOW)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.SENIORCITIZEN)
-         || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.ORPHAN)
-          || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.ANONYMOUSPARENTS)
-        ) {
+		// Update the certification period Only for Molsa Cases.
+		ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
+		productDeliveryKey.caseID = key.caseID;
+		ProductDeliveryTypeDetails productDeliveryTypeDetails = productDelivery
+				.readProductType(productDeliveryKey);
 
-  		IntegratedCase integratedCaseObj = IntegratedCaseFactory.newInstance();
-  		CertificationCaseIDKey caseIDKey = new CertificationCaseIDKey();
-  		caseIDKey.caseID = key.caseID;
-  		ListICProductDeliveryCertDetailsAndVersionNo certificationsList = integratedCaseObj
-  				.listProductDeliveryCertificationAndVersionNo(caseIDKey);
-  
-  		if (CuramConst.gkZero == certificationsList.dtls.size()) {
-  
-  			MaintainCertification maintainCertificationObj = MaintainCertificationFactory
-  					.newInstance();
-  			Calendar calendar = Calendar.getInstance();
-  			Date certificationStartDate = new Date();
-  			Date certificationEndDate = new Date();
-  			int currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-  			String paymentDateString = Configuration
-  					.getProperty(EnvVars.ENV_MOLSA_PAYMENT_DATE);
-  			int paymentDate = Integer.parseInt(paymentDateString);
-  
-  			MaintainCertificationDetails maintainCertificationDetails = new MaintainCertificationDetails();
-  
-  			if (currentDayOfMonth > paymentDate) {
-  				int nextMonth = calendar.get(Calendar.MONTH) + 1;
-  				int year = calendar.get(Calendar.YEAR);
-  				Calendar cal = Calendar.getInstance();
-  				cal.clear();
-  				cal.set(Calendar.YEAR, year);
-  				cal.set(Calendar.MONTH, nextMonth);
-  				cal.set(Calendar.DAY_OF_MONTH, 1);
-  				certificationStartDate = new Date(cal.getTimeInMillis());
-  
-  				// Update the certification end date.
-  				Calendar cal1 = Calendar.getInstance();
-  				cal1.add(Calendar.YEAR, 1);
-  				cal1.add(Calendar.MONTH, 1);
-  				cal1.set(Calendar.DAY_OF_MONTH, 1);
-  				cal1.add(Calendar.DATE, -1);
-  				certificationEndDate = new Date(cal1.getTimeInMillis());
-  			} else {
-  				calendar.set(Calendar.DAY_OF_MONTH, 1);
-  				certificationStartDate = new Date(calendar.getTimeInMillis());
-  
-  				// Update the certification end date.
-  				Calendar cal1 = Calendar.getInstance();
-  				cal1.add(Calendar.YEAR, 1);
-  				cal1.set(Calendar.DAY_OF_MONTH, 1);
-  				cal1.add(Calendar.DATE, -1);
-  				certificationEndDate = new Date(cal1.getTimeInMillis());
-  			}
-  
-  			maintainCertificationDetails.periodFromDate = certificationStartDate;
-  			maintainCertificationDetails.caseID = key.caseID;
-  			maintainCertificationDetails.certificationReceivedDate = Date
-  					.getCurrentDate();
-  			maintainCertificationDetails.periodToDate = certificationEndDate;
-  			maintainCertificationObj
-  					.createCertification(maintainCertificationDetails);
-  			curam.piwrapper.caseheader.impl.ProductDelivery productDelivery1 = productDeliveryDAO
-  					.get(key.caseID);
-  			MOLSAMilestoneDeliveryCreator deliveryCreator = milestoneDeliveryCreator
-  					.get(productDelivery1.getProductType());
-  			if (null != deliveryCreator) {
-  				deliveryCreator.createMilestoneDelivery(key.caseID);
-  			}
-  		}
-  		Event event = new Event();
-  		event.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventClass;
-  		event.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventType;
-  		event.primaryEventData = key.caseID;
-  		EventService.raiseEvent(event);
-		
-    }
+		if (productDeliveryTypeDetails.productType
+				.equals(PRODUCTTYPE.INCAPABLEOFWORKING)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.HANDICAP)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.DIVORCEDLADY)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.FAMILYOFPRISONER)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.MAIDALLOWANCE)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.DESERTEDWIFE)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.FAMILYINNEED)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.FAMILYOFMISSING)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.WIDOW)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.SENIORCITIZEN)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.ORPHAN)
+				|| productDeliveryTypeDetails.productType
+						.equals(PRODUCTTYPE.ANONYMOUSPARENTS)) {
+
+			IntegratedCase integratedCaseObj = IntegratedCaseFactory
+					.newInstance();
+			CertificationCaseIDKey caseIDKey = new CertificationCaseIDKey();
+			caseIDKey.caseID = key.caseID;
+			ListICProductDeliveryCertDetailsAndVersionNo certificationsList = integratedCaseObj
+					.listProductDeliveryCertificationAndVersionNo(caseIDKey);
+			Date certPriorEndDate = null;
+			if (CuramConst.gkZero == certificationsList.dtls.size()) {
+
+				MaintainCertification maintainCertificationObj = MaintainCertificationFactory
+						.newInstance();
+				Calendar calendar = Calendar.getInstance();
+				Date certificationStartDate = new Date();
+				Date certificationEndDate = new Date();
+				int currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+				String paymentDateString = Configuration
+						.getProperty(EnvVars.ENV_MOLSA_PAYMENT_DATE);
+				int paymentDate = Integer.parseInt(paymentDateString);
+
+				MaintainCertificationDetails maintainCertificationDetails = new MaintainCertificationDetails();
+
+				if (currentDayOfMonth > paymentDate) {
+					int nextMonth = calendar.get(Calendar.MONTH) + 1;
+					int year = calendar.get(Calendar.YEAR);
+					Calendar cal = Calendar.getInstance();
+					cal.clear();
+					cal.set(Calendar.YEAR, year);
+					cal.set(Calendar.MONTH, nextMonth);
+					cal.set(Calendar.DAY_OF_MONTH, 1);
+					certificationStartDate = new Date(cal.getTimeInMillis());
+
+					// Update the certification end date.
+					Calendar cal1 = Calendar.getInstance();
+					cal1.add(Calendar.YEAR, 1);
+					cal1.add(Calendar.MONTH, 1);
+					cal1.set(Calendar.DAY_OF_MONTH, 1);
+					cal1.add(Calendar.DATE, -1);
+					certificationEndDate = new Date(cal1.getTimeInMillis());
+
+				} else {
+					calendar.set(Calendar.DAY_OF_MONTH, 1);
+					certificationStartDate = new Date(
+							calendar.getTimeInMillis());
+
+					// Update the certification end date.
+					Calendar cal1 = Calendar.getInstance();
+					cal1.add(Calendar.YEAR, 1);
+					cal1.set(Calendar.DAY_OF_MONTH, 1);
+					cal1.add(Calendar.DATE, -1);
+					certificationEndDate = new Date(cal1.getTimeInMillis());
+
+				}
+
+				maintainCertificationDetails.periodFromDate = certificationStartDate;
+				maintainCertificationDetails.caseID = key.caseID;
+				maintainCertificationDetails.certificationReceivedDate = Date
+						.getCurrentDate();
+				maintainCertificationDetails.periodToDate = certificationEndDate;
+				maintainCertificationObj
+						.createCertification(maintainCertificationDetails);
+				curam.piwrapper.caseheader.impl.ProductDelivery productDelivery1 = productDeliveryDAO
+						.get(key.caseID);
+				MOLSAMilestoneDeliveryCreator deliveryCreator = milestoneDeliveryCreator
+						.get(productDelivery1.getProductType());
+				if (null != deliveryCreator) {
+					deliveryCreator.createMilestoneDelivery(key.caseID);
+				}
+
+				// Create milestone for Certification End date prior
+				// notification
+				Calendar cal2 = certificationEndDate.getCalendar();
+				cal2.add(Calendar.MONTH, -1);
+				certPriorEndDate = new Date(cal2);
+				final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
+						.newInstance();
+				MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
+				milestoneDeliveryDtls.dtls.caseID = key.caseID;
+				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45005L;
+				milestoneDeliveryDtls.dtls.expectedStartDate = Date
+						.getCurrentDate();
+				milestoneDeliveryDtls.dtls.actualStartDate = Date
+						.getCurrentDate();
+				milestoneDeliveryDtls.dtls.expectedEndDate = certPriorEndDate;
+				milestoneDeliveryDtls.dtls.ownerUserName = TransactionInfo
+						.getProgramUser();
+				milestoneDeliveryDtls.dtls.createdBySystem = true;
+				milestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.INPROGRESS
+						.getCode();
+				milestoneDeliveryObj.create(milestoneDeliveryDtls);
+
+			}
+			Event event = new Event();
+			event.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventClass;
+			event.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventType;
+			event.primaryEventData = key.caseID;
+			EventService.raiseEvent(event);
+
+		}
 
 	}
 

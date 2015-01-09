@@ -46,6 +46,8 @@ public abstract class MOLSAConstants {
 	
 	public static final String middleName="middleName";
 	
+	public static final String amount="amount";
+	
 	public static String kDecisionDetailsXPath_EligibleMembers = "/*/*/eligibleMemberConcernRoles/Item";
 
 	public static String kDecisionDetailsXPath_MandatoryMembers = "/*/*/mandatoryMemberConcernRoles/Item";

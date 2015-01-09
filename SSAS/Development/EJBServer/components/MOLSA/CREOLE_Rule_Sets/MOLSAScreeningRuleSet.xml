@@ -2170,20 +2170,6 @@
     <!-- END, CR00414592,KR -->
   </Class>
   <Class name="Relationship">
-    <Attribute name="description">
-      <type>
-        <javaclass name="curam.creole.value.Message"/>
-      </type>
-      <derivation>
-        <XmlMessage>
-          <replace>
-            <reference attribute="description">
-              <reference attribute="parentEntity"/>
-            </reference>
-          </replace>
-        </XmlMessage>
-      </derivation>
-    </Attribute>
     <Attribute name="parentEntity">
       <type>
         <ruleclass name="Person"/>
@@ -2510,26 +2496,24 @@
               <reference attribute="from"/>
               <reference attribute="relationshipType"/>
               <reference attribute="to"/>
-              <reference attribute="startDate"/>
             </create>
             <create ruleclass="OneWayRelationship">
               <reference attribute="to"/>
               <reference attribute="reciprocalRelationshipType"/>
               <reference attribute="from"/>
-              <reference attribute="startDate"/>
             </create>
           </members>
         </fixedlist>
       </derivation>
     </Attribute>
-    <Attribute name="startDate">
+    <!-- <Attribute name="startDate">
       <type>
         <javaclass name="curam.util.type.Date"/>
       </type>
       <derivation>
         <specified/>
       </derivation>
-    </Attribute>
+    </Attribute>-->
   </Class>
   <Class name="OneWayRelationship">
     <Initialization>
@@ -2548,71 +2532,12 @@
           <ruleclass name="Person"/>
         </type>
       </Attribute>
-      <Attribute name="startDate">
+      <!--<Attribute name="startDate">
         <type>
           <javaclass name="curam.util.type.Date"/>
         </type>
-      </Attribute>
+      </Attribute>-->
     </Initialization>
-    <Attribute name="description">
-      <type>
-        <javaclass name="curam.creole.value.Message"/>
-      </type>
-      <derivation>
-        <XmlMessage>
-          <replace>
-            <concat>
-              <fixedlist>
-                <listof>
-                  <javaclass name="Object"/>
-                </listof>
-                <members>
-                  <reference attribute="description">
-                    <reference attribute="from"/>
-                  </reference>
-                  <String value=" "/>
-                  <reference attribute="relationshipType"/>
-                  <String value=" "/>
-                  <reference attribute="description">
-                    <reference attribute="to"/>
-                  </reference>
-                </members>
-              </fixedlist>
-            </concat>
-          </replace>
-        </XmlMessage>
-      </derivation>
-    </Attribute>
-    <Attribute name="participantsPassFinancials">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <all>
-          <fixedlist>
-            <listof>
-              <javaclass name="Boolean"/>
-            </listof>
-            <members>
-              <reference attribute="passesNonFinancials">
-                <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
-                  <specify attribute="person">
-                    <reference attribute="from"/>
-                  </specify>
-                </create>
-              </reference>
-              <reference attribute="passesNonFinancials">
-                <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
-                  <specify attribute="person">
-                    <reference attribute="to"/>
-                  </specify>
-                </create>
-              </reference>
-            </members>
-          </fixedlist>
-        </all>
-      </derivation>
-    </Attribute>
   </Class>
   <Class name="Address">
     <Attribute name="addressID">
@@ -2805,29 +2730,6 @@
     </Attribute>
   </Class>
   <Class name="Income">
-    <Attribute name="description">
-      <type>
-        <javaclass name="curam.creole.value.Message"/>
-      </type>
-      <derivation>
-        <XmlMessage>
-          <replace>
-            <concat>
-              <fixedlist>
-                <listof>
-                  <javaclass name="Object"/>
-                </listof>
-                <members>
-                  <reference attribute="description">
-                    <reference attribute="parentEntity"/>
-                  </reference>
-                </members>
-              </fixedlist>
-            </concat>
-          </replace>
-        </XmlMessage>
-      </derivation>
-    </Attribute>
     <Attribute name="parentEntity">
       <type>
         <ruleclass name="Person"/>
@@ -2898,20 +2800,6 @@
     </Attribute>
   </Class>
   <Class name="Expense">
-    <Attribute name="description">
-      <type>
-        <javaclass name="curam.creole.value.Message"/>
-      </type>
-      <derivation>
-        <XmlMessage>
-          <replace>
-            <reference attribute="description">
-              <reference attribute="parentEntity"/>
-            </reference>
-          </replace>
-        </XmlMessage>
-      </derivation>
-    </Attribute>
     <Attribute name="parentEntity">
       <type>
         <ruleclass name="Person"/>

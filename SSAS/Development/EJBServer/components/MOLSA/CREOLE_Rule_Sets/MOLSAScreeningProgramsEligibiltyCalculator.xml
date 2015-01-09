@@ -84,6 +84,29 @@
         </reference>
       </derivation>
     </Attribute>
+    <Attribute name="oneWayRelationShipPairs">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="OneWayRelationship" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <readall ruleclass="Relationship" ruleset="MOLSAScreeningRuleSet"/>
+              </list>
+              <listitemexpression>
+                <reference attribute="oneWayRelationshipsPair">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
     <Attribute name="householdCompositionCalculator">
       <type>
         <ruleclass name="HouseholdCompositionCalculator"
@@ -1394,7 +1417,7 @@
                     </reference>
                     <reference attribute="isMale">
                       <reference attribute="headOfHousehold"/>
-                    </reference>                    
+                    </reference>
                   </members>
                 </fixedlist>
               </all>
@@ -2800,7 +2823,7 @@
         <any>
           <dynamiclist>
             <list>
-              <readall ruleclass="OneWayRelationship" ruleset="MOLSAScreeningRuleSet"/>
+              <reference attribute="oneWayRelationShipPairs"/>
             </list>
             <listitemexpression>
               <equals>
@@ -2906,12 +2929,13 @@
               </reference>
               <not>
                 <reference attribute="passesNonFinancials">
-                  <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
+                  <create ruleclass="NonFinancialCalculator"
+                    ruleset="MOLSAScreeningNonFinancialRuleSet">
                     <specify attribute="person">
                       <reference attribute="headOfHousehold"/>
                     </specify>
                   </create>
-                </reference> 
+                </reference>
               </not>
             </members>
           </fixedlist>

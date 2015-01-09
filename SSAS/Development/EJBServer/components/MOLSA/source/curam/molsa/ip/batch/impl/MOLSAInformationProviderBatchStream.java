@@ -506,6 +506,7 @@ public class MOLSAInformationProviderBatchStream extends
 		// set the details to create new evidence
 		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.startDate)
 				.setValue(dateStringInOriginalFormatNew);
+		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.amount).setValue(String.valueOf(informationProviderTmpDtls.amount));
 		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
 				.setValue(MOLSAConstants.kZeroDate);
 		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)

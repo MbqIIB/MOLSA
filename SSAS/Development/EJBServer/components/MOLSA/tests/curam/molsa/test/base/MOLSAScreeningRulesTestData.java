@@ -175,8 +175,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
             this.getSession(),
             firstPerson,
             new CodeTableItem(RELATIONSHIPTYPECOREDESC.TABLENAME,
-                relationshipType), relatedPerson,
-            Date.getCurrentDate().addDays(-100));
+                relationshipType), relatedPerson);
     return oneWayRelationshipRecord;
   }
 

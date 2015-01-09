@@ -38,6 +38,11 @@ public abstract class MOLSAMessageService extends curam.molsa.sms.facade.base.MO
 
 
   public void sendSMS(MOLSAConcernRoleListAndMessageText key) throws AppException, InformationalException {
+		MOLSAConcernRoleListAndMessageTextDetails details = new MOLSAConcernRoleListAndMessageTextDetails();
+		details.dtls.concernRoleTabbedList = key.concernRoleTabbedList;
+		details.dtls.smsMessageText = key.smsMessageText;
+		details.dtls.smsMessageType = key.smsMessageType;
+		MOLSASMSUtilFactory.newInstance().sendSMS(details);
   }
 
   @Override

@@ -1,4 +1,4 @@
-package curam.molsa.test.informationProvider;
+package curam.molsa.test.moi;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,17 +41,20 @@ import curam.molsa.ip.batch.fact.MOLSAInformationProviderBatchStreamFactory;
 import curam.molsa.ip.entity.fact.MOLSAInformationProviderTmpFactory;
 import curam.molsa.ip.entity.intf.MOLSAInformationProviderTmp;
 import curam.molsa.ip.entity.struct.MOLSAInformationProviderTmpDtls;
+import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
+import curam.molsa.moi.fact.MOLSAMoiBatchStreamFactory;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
 import curam.molsa.test.framework.TestHelper;
+import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.type.Date;
 
-public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
+public class MolsaMoiBatchTest001 extends CERScenarioTestBase {
 
-	public MOLSAInformationProviderEducationTest(String arg0) {
+	public MolsaMoiBatchTest001(String arg0) {
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}
@@ -315,38 +318,16 @@ public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
 	protected void preAssertionOnCase(CaseKey caseKey) throws AppException,
 			InformationalException {
 
-		curam.core.facade.infrastructure.struct.CaseKey caseKey1 = new curam.core.facade.infrastructure.struct.CaseKey();
-		caseKey1.caseID = caseKey.caseID;
-
-		long participantid = getParticipantRoleID(MAHEENA_UNIQUE_NAME).participantRoleID;
-		long casePartcipantRoleID = getCaseParticipantRoleID(MAHEENA_UNIQUE_NAME).caseParticipantRoleID;
-
-		Evidence test = EvidenceFactory.newInstance();
-
-		MOLSAInformationProviderTmpDtls details = new MOLSAInformationProviderTmpDtls();
-		details.eventDate = Date.getCurrentDate();
-		details.informationProviderTmpID = 12345;
-		details.schoolName = "Test School";
-		details.receivedDate = Date.getCurrentDate();
-		details.type = RESPONSETYPE.SCHOOL;
-		details.qid = "12345678901";
-
-		MOLSAInformationProviderTmp molsaTmp = MOLSAInformationProviderTmpFactory
+		curam.molsa.moi.intf.MOLSAMoiBatchStream molsaBatchStream = MOLSAMoiBatchStreamFactory
 				.newInstance();
-		molsaTmp.insert(details);
+		BatchProcessingID batchId = new BatchProcessingID();
+		batchId.recordID = 12345678901L;
 
-		curam.molsa.ip.batch.intf.MOLSAInformationProviderBatchStream obj = MOLSAInformationProviderBatchStreamFactory
-				.newInstance();
-		BatchProcessingID bid = new BatchProcessingID();
-		bid.recordID = details.informationProviderTmpID;
+		MOLSAMoiDtls dtls = new MOLSAMoiDtls();
 
-		BatchProcessingSkippedRecord batchProcessSkipped = obj.processRecord(
-				bid, details);
-
-		Evidence test2 = EvidenceFactory.newInstance();
-		curam.core.facade.infrastructure.struct.ListAllEvidenceDtls list2 = test2
-				.listAllEvidence(caseKey1);
-		assertEquals(15, list2.evidenceParticipantDtlsList.dtls.size());
+		BatchProcessingSkippedRecord skippedRecordDtls = molsaBatchStream
+				.processRecord(batchId, dtls);
+		assertEquals(0, skippedRecordDtls.recordID);
 
 	}
 
