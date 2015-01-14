@@ -105,7 +105,7 @@ public class MOLSAMaintainAttachmentDA extends curam.molsa.core.base.MOLSAMainta
       MOLSAArabDoxAttach arabDoxAttachObj = MOLSAArabDoxAttachFactory.newInstance(); 
       MOLSAArabDoxAttachDtls arabDoxAttachDtls = new MOLSAArabDoxAttachDtls();
       arabDoxAttachDtls.attachmentID=attachmentIDAndAttachmentLinkIDStruct.attachmentID;
-      arabDoxAttachDtls.arabDoxFileID=1;
+      arabDoxAttachDtls.arabDoxFileID="1";
       arabDoxAttachObj.insert(arabDoxAttachDtls);
     }
    

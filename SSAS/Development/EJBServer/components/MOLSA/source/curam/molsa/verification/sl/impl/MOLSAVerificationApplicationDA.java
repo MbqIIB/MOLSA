@@ -59,7 +59,7 @@ public class MOLSAVerificationApplicationDA extends curam.molsa.verification.sl.
       MOLSAArabDoxAttach arabDoxAttachObj = MOLSAArabDoxAttachFactory.newInstance(); 
       MOLSAArabDoxAttachDtls arabDoxAttachDtls = new MOLSAArabDoxAttachDtls();
       arabDoxAttachDtls.attachmentID=attachmentID;
-      arabDoxAttachDtls.arabDoxFileID=1;
+      arabDoxAttachDtls.arabDoxFileID="1";
       arabDoxAttachObj.insert(arabDoxAttachDtls);
     }
     
