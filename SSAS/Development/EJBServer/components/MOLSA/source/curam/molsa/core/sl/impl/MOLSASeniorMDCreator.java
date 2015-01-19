@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import curam.codetable.CASEEVIDENCE;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
+import curam.codetable.impl.PRODUCTTYPEEntry;
 import curam.core.fact.MaintainCertificationFactory;
 import curam.core.intf.MaintainCertification;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
@@ -30,6 +31,7 @@ import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.molsa.util.impl.MOLSADateUtil;
 import curam.participant.impl.ConcernRole;
+import curam.piwrapper.caseconfiguration.impl.Product;
 import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
@@ -154,17 +156,27 @@ public class MOLSASeniorMDCreator implements MOLSAMilestoneDeliveryCreator {
 
 		Calendar currentYearCal = Date.getDate(dateOfBirth).getCalendar();
 		currentYearCal.add(Calendar.YEAR, 60);
+		currentYearCal.add(Calendar.MONTH, -1);
 
 		long age = MOLSADateUtil.determineAge(certEndDate,
 				Date.getDate(dateOfBirth));
 
 		if (60 == age) {
 
+			Product product = productDAO.get(caseID);
 			final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
 					.newInstance();
 			MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
 			milestoneDeliveryDtls.dtls.caseID = caseID;
-			milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45003L;
+			if (PRODUCTTYPEEntry.FAMILYINNEED.equals(product.getProductType())) {
+				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45006L;
+			} else if (PRODUCTTYPEEntry.DIVORCEDLADY.equals(product
+					.getProductType())) {
+				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45007L;
+			} else {
+				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45003L;
+			}
+
 			milestoneDeliveryDtls.dtls.expectedStartDate = Date
 					.getCurrentDate();
 			milestoneDeliveryDtls.dtls.actualStartDate = Date.getCurrentDate();

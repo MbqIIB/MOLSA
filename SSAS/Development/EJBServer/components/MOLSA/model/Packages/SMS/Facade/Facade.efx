@@ -24,7 +24,9 @@
         <ownedParameter xmi:id="_RZutIJJlEeSqXfAtlRIsKw" name="key" visibility="public" type="_kzKSwIBYEeSgf9M_2TsBXg" direction="inout"/>
       </ownedOperation>
       <ownedOperation xmi:id="_i3EkEIBZEeSgf9M_2TsBXg" name="listSMSFailuresByDate"/>
-      <ownedOperation xmi:id="_llIs0IBZEeSgf9M_2TsBXg" name="listAllFailedMessages"/>
+      <ownedOperation xmi:id="_llIs0IBZEeSgf9M_2TsBXg" name="listAllFailedMessages">
+        <ownedParameter xmi:id="_DwBgoJZfEeSRNLKnCpWYow" name="Parameter1" type="_KUGHEJZeEeSRNLKnCpWYow" direction="return"/>
+      </ownedOperation>
       <ownedOperation xmi:id="_bQbMwIIPEeS12-BHTCoHIQ" name="getSMSMessageText">
         <ownedParameter xmi:id="_2XEC4IIPEeS12-BHTCoHIQ" name="Parameter1" type="_v0OA8IIPEeS12-BHTCoHIQ" direction="return"/>
         <ownedParameter xmi:id="_HXsu0ISAEeSdh9o32V1i3A" name="key" visibility="public" type="_t1ijMIR_EeSdh9o32V1i3A" direction="inout"/>
@@ -35,7 +37,7 @@
           <type xmi:type="uml:Class" href="../../../../../CitizenWorkspace/model/Packages/CitizenAccount/Facade/CitizenAccount_Facade.efx#_bo4eAEhPEeK-RvGUlZ5SaA?CitizenWorkspace/CitizenAccount/Facade/ConcernRoleKey?"/>
         </ownedParameter>
       </ownedOperation>
- <ownedOperation xmi:id="_8oAPEIprEeSprret9_hqcQ" name="listFilteredCommunication" visibility="public">
+      <ownedOperation xmi:id="_8oAPEIprEeSprret9_hqcQ" name="listFilteredCommunication" visibility="public">
         <ownedComment xmi:id="_8oA2IIprEeSprret9_hqcQ" annotatedElement="_8oAPEIprEeSprret9_hqcQ">
           <body>Returns a list of communications for the primary client (even if they are not the correspondent) or a specified case member. &#xD;
 An 'All' option is also available. This displays all of the communications for the integrated case.&#xD;
@@ -52,6 +54,9 @@ An 'All' option is also available. This displays all of the communications for t
           <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Presentation%20Layer/Integrated%20Case/Communication_cat.efx#_UWXSQFrbEeC_JqzCIfxnLA?Core/Core/Facades/Integrated%20Case/Communication/CommunicationFilterKey?"/>
         </ownedParameter>
       </ownedOperation>
+      <ownedOperation xmi:id="_mXqE4JfREeSFWpg2prPLUw" name="resendSMS">
+        <ownedParameter xmi:id="_AtE5cJfSEeSFWpg2prPLUw" name="key" visibility="public" type="_q6-fEJfREeSFWpg2prPLUw" direction="inout"/>
+      </ownedOperation>
     </packagedElement>
     <packagedElement xmi:type="uml:Class" xmi:id="_kzKSwIBYEeSgf9M_2TsBXg" name="MOLSAConcernRoleListAndMessageText">
       <ownedAttribute xmi:id="_K90g8IIPEeS12-BHTCoHIQ" name="smsMessageText" visibility="private">
@@ -61,7 +66,10 @@ An 'All' option is also available. This displays all of the communications for t
         <type xmi:type="uml:Class" href="../../Domain%20Definition/Domain%20Definition.efx#_JiS-4IAyEeSgf9M_2TsBXg?MOLSA/MOLSA/Domain%20Definition/SMS/MOLSA_SMS_TEXT?"/>
       </ownedAttribute>
       <ownedAttribute xmi:id="_yho6MIRkEeSbw9de6BKOkw" name="smsMessageType" visibility="private">
-        <type xmi:type="uml:Class" href="../../Domain%20Definition/Domain%20Definition.efx#_6zj80IHiEeSoaotq0alEBw?MOLSA/MOLSA/Domain%20Definition/SMS/MOLSA_SMS_MESSAGETYPE?"/>
+        <type xmi:type="uml:Class" href="../../Domain%20Definition/Domain%20Definition.efx#_6zj80IHiEeSoaotq0alEBw?MOLSA/MOLSA/Domain%20Definition/SMS/MOLSA_SMS_MESSAGE_TEMPLATE?"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:id="_X13L8J1OEeSiEZpIOYA00g" name="caseID" visibility="private">
+        <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Case_cat.efx#_3C74D50F032E37D92C240001?Core/Core/Domain%20Definitions/Case/Domain%20Definitions/CASE_ID?"/>
       </ownedAttribute>
     </packagedElement>
     <packagedElement xmi:type="uml:Class" xmi:id="_FN-YQIBZEeSgf9M_2TsBXg" name="MOLSAParticipantDetails">
@@ -97,7 +105,7 @@ An 'All' option is also available. This displays all of the communications for t
         <type xmi:type="uml:Class" href="../../Domain%20Definition/Domain%20Definition.efx#_JiS-4IAyEeSgf9M_2TsBXg?MOLSA/MOLSA/Domain%20Definition/SMS/MOLSA_SMS_TEXT?"/>
       </ownedAttribute>
     </packagedElement>
-<packagedElement xmi:type="uml:Class" xmi:id="_uHztUIpxEeSprret9_hqcQ" name="MOLSACommunicationAndListRowActionDetails">
+    <packagedElement xmi:type="uml:Class" xmi:id="_uHztUIpxEeSprret9_hqcQ" name="MOLSACommunicationAndListRowActionDetails">
       <ownedAttribute xmi:id="_LMWlIIpzEeSprret9_hqcQ" name="smsInd" visibility="public">
         <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Common_cat.efx#_3C74D50F032E37D92B480221?Core/Core/Domain%20Definitions/Common/Domain%20Definitions/CURAM_INDICATOR?"/>
       </ownedAttribute>
@@ -229,6 +237,44 @@ An 'All' option is also available. This displays all of the communications for t
         <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ZcaVhZI2EeSqXfAtlRIsKw" value="1"/>
       </ownedEnd>
     </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_ECrMUJZeEeSRNLKnCpWYow" name="MOLSAFailedSMSDetails">
+      <ownedAttribute xmi:id="_PlHUwZZeEeSRNLKnCpWYow" name="participantName" visibility="private">
+        <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Case_cat.efx#_3C74D50F032E499E6AC50390?Core/Core/Domain%20Definitions/Case/Domain%20Definitions/CASE_PARTICIPANTS_TAB_LIST?"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:id="_VKisMJZeEeSRNLKnCpWYow" name="message" visibility="private">
+        <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Common_cat.efx#_3C74D50F032E37D92B5F0039?Core/Core/Domain%20Definitions/Common/Domain%20Definitions/COMMENTS?"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:id="_a5d94JZeEeSRNLKnCpWYow" name="phoneNumber" visibility="private">
+        <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Common_cat.efx#_3C74D50F032E37D92B5F0039?Core/Core/Domain%20Definitions/Common/Domain%20Definitions/COMMENTS?"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:id="_dfHKcJZeEeSRNLKnCpWYow" name="failedReason" visibility="private">
+        <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Common_cat.efx#_3C74D50F032E37D92B5F0039?Core/Core/Domain%20Definitions/Common/Domain%20Definitions/COMMENTS?"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:id="_hIS3oJZeEeSRNLKnCpWYow" name="failureDate" visibility="private">
+        <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Common_cat.efx#_3C74D50F032E3856A0A20219?Core/Core/Domain%20Definitions/Common/Domain%20Definitions/CURAM_DATETIME?"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:id="_LydGAJZfEeSRNLKnCpWYow" name="smsMessageID" visibility="private">
+        <type xmi:type="uml:Class" href="../../../../../core/model/Packages/Domain%20Definitions/Common_cat.efx#_3C74D50F032E37E0C0380357?Core/Core/Domain%20Definitions/Common/Domain%20Definitions/INTERNAL_ID?"/>
+      </ownedAttribute>
+      <nestedClassifier xmi:type="uml:Class" xmi:id="_PlHUwJZeEeSRNLKnCpWYow" name="MOLSAFailedSMSDetails"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_KUGHEJZeEeSRNLKnCpWYow" name="MOLSAFailedSMSDetailsList"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_6XrRMJZeEeSRNLKnCpWYow" name="aggregation2" memberEnd="_6XrRMZZeEeSRNLKnCpWYow _6XrRNJZeEeSRNLKnCpWYow">
+      <ownedEnd xmi:id="_6XrRMZZeEeSRNLKnCpWYow" name="dtls" visibility="private" type="_ECrMUJZeEeSRNLKnCpWYow" aggregation="composite" association="_6XrRMJZeEeSRNLKnCpWYow">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6XrRM5ZeEeSRNLKnCpWYow" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_6XrRMpZeEeSRNLKnCpWYow"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="_6XrRNJZeEeSRNLKnCpWYow" visibility="private" type="_KUGHEJZeEeSRNLKnCpWYow" association="_6XrRMJZeEeSRNLKnCpWYow">
+        <name xsi:nil="true"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6XrRNpZeEeSRNLKnCpWYow" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_6XrRNZZeEeSRNLKnCpWYow" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_q6-fEJfREeSFWpg2prPLUw" name="MOLSASMSLogKey">
+      <ownedAttribute xmi:id="_5IP2EJfREeSFWpg2prPLUw" name="smsLogIDTabbedList" visibility="private">
+        <type xmi:type="uml:Class" href="../../Domain%20Definition/Domain%20Definition.efx#_JiS-4IAyEeSgf9M_2TsBXg?MOLSA/MOLSA/Domain%20Definition/SMS/MOLSA_SMS_TEXT?"/>
+      </ownedAttribute>
+    </packagedElement>
   </uml:Package>
   <curamprofile:package__Category xmi:id="_iLc1MIBOEeSgf9M_2TsBXg" base_Package="_iLTEMIBOEeSgf9M_2TsBXg" Code_Package="molsa.sms.facade"/>
   <curamprofile:facade__Class xmi:id="_-NppwIBQEeSgf9M_2TsBXg" base_Class="_-Ngf0IBQEeSgf9M_2TsBXg"/>
@@ -239,7 +285,7 @@ An 'All' option is also available. This displays all of the communications for t
   <curamprofile:default__Operation xmi:id="_VUlPcIBZEeSgf9M_2TsBXg" base_Operation="_VUbecIBZEeSgf9M_2TsBXg"/>
   <curamprofile:default__Operation xmi:id="_ZFvM4IBZEeSgf9M_2TsBXg" base_Operation="_ZFmC8IBZEeSgf9M_2TsBXg"/>
   <curamprofile:default__Operation xmi:id="_dZlnsIBZEeSgf9M_2TsBXg" base_Operation="_dZb2sIBZEeSgf9M_2TsBXg"/>
-  <curamprofile:default__Operation xmi:id="_gd00wYBZEeSgf9M_2TsBXg" base_Operation="_gd00wIBZEeSgf9M_2TsBXg"/>
+  <curamprofile:default__Operation xmi:id="_gd00wYBZEeSgf9M_2TsBXg"/>
   <curamprofile:default__Operation xmi:id="_i3EkEYBZEeSgf9M_2TsBXg" base_Operation="_i3EkEIBZEeSgf9M_2TsBXg"/>
   <curamprofile:default__Operation xmi:id="_llSd0IBZEeSgf9M_2TsBXg" base_Operation="_llIs0IBZEeSgf9M_2TsBXg"/>
   <curamprofile:default__Param xmi:id="_3W26gIHkEeSoaotq0alEBw" base_Parameter="_3WtJgIHkEeSoaotq0alEBw"/>
@@ -296,4 +342,19 @@ An 'All' option is also available. This displays all of the communications for t
   <curamprofile:struct__Class xmi:id="_v-HbkJGsEeSqXfAtlRIsKw" base_Class="_v9-RoJGsEeSqXfAtlRIsKw"/>
   <curamprofile:aggregation__Association xmi:id="_ZckGgJI2EeSqXfAtlRIsKw" base_Association="_ZcaVgJI2EeSqXfAtlRIsKw"/>
   <curamprofile:default__Param xmi:id="_RZ4eIJJlEeSqXfAtlRIsKw" base_Parameter="_RZutIJJlEeSqXfAtlRIsKw"/>
+  <curamprofile:struct__Class xmi:id="_EG16oJZeEeSRNLKnCpWYow" base_Class="_ECrMUJZeEeSRNLKnCpWYow"/>
+  <curamprofile:struct__Class xmi:id="_KUP4EJZeEeSRNLKnCpWYow" base_Class="_KUGHEJZeEeSRNLKnCpWYow"/>
+  <curamprofile:struct__Class xmi:id="_PlHUwpZeEeSRNLKnCpWYow" base_Class="_PlHUwJZeEeSRNLKnCpWYow"/>
+  <curamprofile:default__Attribute xmi:id="_PlHUw5ZeEeSRNLKnCpWYow" base_Property="_PlHUwZZeEeSRNLKnCpWYow"/>
+  <curamprofile:default__Attribute xmi:id="_VKisMZZeEeSRNLKnCpWYow" base_Property="_VKisMJZeEeSRNLKnCpWYow"/>
+  <curamprofile:default__Attribute xmi:id="_a5nu4JZeEeSRNLKnCpWYow" base_Property="_a5d94JZeEeSRNLKnCpWYow"/>
+  <curamprofile:default__Attribute xmi:id="_dfHKcZZeEeSRNLKnCpWYow" base_Property="_dfHKcJZeEeSRNLKnCpWYow"/>
+  <curamprofile:default__Attribute xmi:id="_hIS3oZZeEeSRNLKnCpWYow" base_Property="_hIS3oJZeEeSRNLKnCpWYow"/>
+  <curamprofile:aggregation__Association xmi:id="_6XrRN5ZeEeSRNLKnCpWYow" base_Association="_6XrRMJZeEeSRNLKnCpWYow"/>
+  <curamprofile:default__Attribute xmi:id="_LydGAZZfEeSRNLKnCpWYow" base_Property="_LydGAJZfEeSRNLKnCpWYow"/>
+  <curamprofile:default__Operation xmi:id="_mXzO0JfREeSFWpg2prPLUw" base_Operation="_mXqE4JfREeSFWpg2prPLUw"/>
+  <curamprofile:struct__Class xmi:id="_q7IQEJfREeSFWpg2prPLUw" base_Class="_q6-fEJfREeSFWpg2prPLUw"/>
+  <curamprofile:default__Attribute xmi:id="_5IP2EZfREeSFWpg2prPLUw" base_Property="_5IP2EJfREeSFWpg2prPLUw"/>
+  <curamprofile:default__Param xmi:id="_AtODYJfSEeSFWpg2prPLUw" base_Parameter="_AtE5cJfSEeSFWpg2prPLUw"/>
+  <curamprofile:default__Attribute xmi:id="_X2Kt8J1OEeSiEZpIOYA00g" base_Property="_X13L8J1OEeSiEZpIOYA00g"/>
 </xmi:XMI>

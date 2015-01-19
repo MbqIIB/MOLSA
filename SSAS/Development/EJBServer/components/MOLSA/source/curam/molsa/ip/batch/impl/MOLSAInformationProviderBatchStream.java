@@ -24,6 +24,7 @@ import curam.core.facade.struct.PersonSearchDetailsResult;
 import curam.core.facade.struct.PersonSearchKey1;
 import curam.core.facade.struct.TaskCreateDetails;
 import curam.core.impl.BatchStreamHelper;
+import curam.core.impl.EnvVars;
 import curam.core.impl.SecurityImplementationFactory;
 import curam.core.sl.entity.fact.OrgObjectLinkFactory;
 import curam.core.sl.entity.struct.CaseParticipantRoleKey;
@@ -45,7 +46,6 @@ import curam.core.sl.struct.DateTimeInSecondsKey;
 import curam.core.sl.struct.DeadlineDuration;
 import curam.core.sl.struct.EvidenceCaseKey;
 import curam.core.sl.struct.EvidenceTypeKey;
-import curam.core.sl.struct.ReturnEvidenceDetails;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
@@ -68,19 +68,23 @@ import curam.molsa.ip.entity.struct.MOLSAInformationProviderTmpKey;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
+import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.DateTime;
 
 /**
- * This class will maintain Information Provider Batch Stream.
+ * This class has the implementation for Information Provider Batch Stream which
+ * would check evidence details with information provider table.
  * 
  */
+@SuppressWarnings("restriction")
 public class MOLSAInformationProviderBatchStream extends
 		curam.molsa.ip.batch.base.MOLSAInformationProviderBatchStream {
 
 	/**
-	 * This method calls the runStream to process the record
+	 * This method would call the stream helper class and takes Batch process
+	 * stream key as input parameter.
 	 * 
 	 * @param batchProcessStreamKey
 	 * 
@@ -93,15 +97,16 @@ public class MOLSAInformationProviderBatchStream extends
 		MOLSAInformationProviderBatchStreamWrapper molsaInformationProviderBatchStream = new MOLSAInformationProviderBatchStreamWrapper(
 				this);
 		SecurityImplementationFactory.register();
-		if (batchProcessStreamKey.instanceID.length() == 0)
+		if (batchProcessStreamKey.instanceID.length() == 0) {
 			batchProcessStreamKey.instanceID = BATCHPROCESSNAME.MOLSA_INFORMATION_PROVIDER;
-		batchStreamHelper.runStream(batchProcessStreamKey,
-				molsaInformationProviderBatchStream);
-
+			batchStreamHelper.runStream(batchProcessStreamKey,
+					molsaInformationProviderBatchStream);
+		}
 	}
 
 	/**
-	 * This method returns the result of processing this chunk as a string
+	 * This method keeps the count of the number of records processed and not
+	 * processed.
 	 * 
 	 * @param skippedCasesCount
 	 *            The number of cases skipped in this chunk
@@ -109,9 +114,9 @@ public class MOLSAInformationProviderBatchStream extends
 	@Override
 	public String getChunkResult(int skippedCasesCount) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
-		StringBuffer result = new StringBuffer();
 
+		StringBuffer result = new StringBuffer();
+		// Initialise the skip count to 0
 		int skippedRecordsCount = 0;
 		MOLSAInformationProviderProcessChunkResult.recordsSkippedCount += skippedRecordsCount;
 		result.append(MOLSAInformationProviderProcessChunkResult.recordsSkippedCount);
@@ -128,7 +133,7 @@ public class MOLSAInformationProviderBatchStream extends
 	}
 
 	/**
-	 * This method updates the evidence based on the temp table record.
+	 * This method implements the information provider batch functionality.
 	 * 
 	 * @param batchProcessingID
 	 *            The details of the case to be processed
@@ -158,6 +163,7 @@ public class MOLSAInformationProviderBatchStream extends
 			Person person = PersonFactory.newInstance();
 			PersonSearchKey1 paramPersonSearchKey1 = new PersonSearchKey1();
 			paramPersonSearchKey1.personSearchKey.referenceNumber = informationProviderTmpDtls.qid;
+			@SuppressWarnings("unused")
 			InformationalManager informationalManager = new InformationalManager();
 			TransactionInfo.setInformationalManager();
 
@@ -209,15 +215,19 @@ public class MOLSAInformationProviderBatchStream extends
 								CASEEVIDENCEEntry.MARITALSTATUS,
 								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
 								idAndNameDetails.name);
-						if (readEvidenceDetails.dtls != null)
-
-							modifyMaritalStatusEvidence(readEvidenceDetails,
-									integratedCaseID,
+						if (readEvidenceDetails.dtls != null) {
+							boolean result = modifyMaritalStatusEvidence(
+									readEvidenceDetails, integratedCaseID,
 									informationProviderTmpDtls);
-						// Code to send task if evidence is modified
-						sendTaskToCaseOwner(caseDtls,
-								CASEEVIDENCEEntry.MARITALSTATUS,
-								idAndNameDetails.name);
+							// Code to send task if evidence is modified
+							if (result == true) {
+								sendTaskToCaseOwner(caseDtls,
+										CASEEVIDENCEEntry.MARITALSTATUS,
+										idAndNameDetails.name);
+								molsaInformationProviderTmp
+										.remove(informationProviderTmpKey);
+							}
+						}
 
 					} else if (informationProviderTmpDtls.type
 							.equalsIgnoreCase(RESPONSETYPE.BIRTH)
@@ -228,15 +238,19 @@ public class MOLSAInformationProviderBatchStream extends
 								CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
 								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
 								idAndNameDetails.name);
-						if (readEvidenceDetails.dtls != null)
-							modifyBirthDeathDetailsEvidence(
+						if (readEvidenceDetails.dtls != null) {
+							boolean result3 = modifyBirthDeathDetailsEvidence(
 									readEvidenceDetails, integratedCaseID,
 									informationProviderTmpDtls);
-
-						// Code to send task if evidence is modified
-						sendTaskToCaseOwner(caseDtls,
-								CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
-								idAndNameDetails.name);
+							if (result3 == true) {
+								// Code to send task if evidence is modified
+								sendTaskToCaseOwner(caseDtls,
+										CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
+										idAndNameDetails.name);
+								molsaInformationProviderTmp
+										.remove(informationProviderTmpKey);
+							}
+						}
 
 					} else if (informationProviderTmpDtls.type
 							.equalsIgnoreCase(RESPONSETYPE.SCHOOL)) {
@@ -245,15 +259,19 @@ public class MOLSAInformationProviderBatchStream extends
 								CASEEVIDENCEEntry.MOLSAEDUCATION,
 								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
 								idAndNameDetails.name);
-						if (readEvidenceDetails.dtls != null)
-							modifyEducationEvidence(readEvidenceDetails,
-									integratedCaseID,
+						if (readEvidenceDetails.dtls != null) {
+							boolean result1 = modifyEducationEvidence(
+									readEvidenceDetails, integratedCaseID,
 									informationProviderTmpDtls);
-
-						// Code to send task if evidence is modified
-						sendTaskToCaseOwner(caseDtls,
-								CASEEVIDENCEEntry.MOLSAEDUCATION,
-								idAndNameDetails.name);
+							if (result1 == true) {
+								// Code to send task if evidence is modified
+								sendTaskToCaseOwner(caseDtls,
+										CASEEVIDENCEEntry.MOLSAEDUCATION,
+										idAndNameDetails.name);
+								molsaInformationProviderTmp
+										.remove(informationProviderTmpKey);
+							}
+						}
 
 					} else if (informationProviderTmpDtls.type
 							.equalsIgnoreCase(RESPONSETYPE.COMMERCALRECORDS)
@@ -272,18 +290,21 @@ public class MOLSAInformationProviderBatchStream extends
 								CASEEVIDENCEEntry.INCOME,
 								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
 								idAndNameDetails.name);
-						if (readEvidenceDetails.dtls != null)
-							modifyIncomeEvidence(readEvidenceDetails,
-									integratedCaseID,
+						if (readEvidenceDetails.dtls != null) {
+							boolean result2 = modifyIncomeEvidence(
+									readEvidenceDetails, integratedCaseID,
 									informationProviderTmpDtls);
-
-						// Code to send task if evidence is modified
-						sendTaskToCaseOwner(caseDtls,
-								CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
-								idAndNameDetails.name);
+							// Code to send task if evidence is modified
+							if (result2 == true) {
+								sendTaskToCaseOwner(caseDtls,
+										CASEEVIDENCEEntry.INCOME,
+										idAndNameDetails.name);
+								molsaInformationProviderTmp
+										.remove(informationProviderTmpKey);
+							}
+						}
 					}
-					molsaInformationProviderTmp
-							.remove(informationProviderTmpKey);
+
 				}
 			}
 		} catch (Exception e) {
@@ -294,19 +315,24 @@ public class MOLSAInformationProviderBatchStream extends
 	}
 
 	/**
-	 * This Method updates Evidenc End Date.
+	 * This method updates Marital Status evidence based on the input from
+	 * information provider table.
 	 * 
 	 * @param readEvidenceDetails
+	 *            ReadEvidenceDetails
 	 * @param caseID
+	 *            long
 	 * @param informationProviderTmpDtls
-	 * @return list of request
+	 *            MOLSAInformationProviderTmpDtls
 	 * @throws AppException
 	 *             General Exception
 	 * @throws InformationalException
 	 *             General Exception
 	 * @throws ParseException
+	 * @return boolean
 	 */
-	public void modifyMaritalStatusEvidence(
+
+	public boolean modifyMaritalStatusEvidence(
 			ReadEvidenceDetails readEvidenceDetails, long caseID,
 			MOLSAInformationProviderTmpDtls informationProviderTmpDtls)
 			throws AppException, InformationalException, ParseException {
@@ -322,8 +348,12 @@ public class MOLSAInformationProviderBatchStream extends
 		String dateStringInNewFormat = informationProviderTmpDtls.receivedDate
 				.addDays(-1).toString();
 
-		SimpleDateFormat originalFormatter = new SimpleDateFormat("yyyyMMdd");
-		SimpleDateFormat newFormatter = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat originalFormatter = new SimpleDateFormat(
+				MOLSAConstants.kdateRequired);
+		
+		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
+		
+		SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
 
 		// parsing date string using new format
 		ParsePosition pos = new ParsePosition(0);
@@ -335,57 +365,82 @@ public class MOLSAInformationProviderBatchStream extends
 		String dateStringInOriginalFormat = originalFormatter
 				.format(dateFromString);
 
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
-				.setValue(dateStringInOriginalFormat);
-		dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
-		dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
-		evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
+		String dateCompare = informationProviderTmpDtls.receivedDate
+				.addDays(-1).toString();
+		java.util.Date ipDate = new SimpleDateFormat(propertyDateFormat)
+				.parse(dateCompare);
+		String providerDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(ipDate);
 
-		String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
-				.toString();
+		String trDate = dynamicEvidenceDataDetails.getAttribute("startDate")
+				.getValue().toString();
+		java.util.Date tradeDate = new SimpleDateFormat(
+				MOLSAConstants.kdateRequired).parse(trDate);
+		String evidenceDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(tradeDate);
+		// Compare the evidence date with the information provider date
+		if (providerDate.compareTo(evidenceDate) > 0) {
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
+					.setValue(dateStringInOriginalFormat);
+			dynamicEvidenceDetails
+					.setDescriptor(readEvidenceDetails.descriptor);
+			dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
 
-		// parsing date string using new format
-		ParsePosition posNew = new ParsePosition(0);
-		java.util.Date dateFromStringNew = newFormatter.parse(
-				dateStringInNewFormatNew, posNew);
+			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
+					.toString();
 
-		// Now you have a date object and you can convert it to the original
-		// format
-		String dateStringInOriginalFormatNew = originalFormatter
-				.format(dateFromStringNew);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.maritalStatus)
-				.setValue(informationProviderTmpDtls.maritalStatus);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.startDate)
-				.setValue(dateStringInOriginalFormatNew);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
-				.setValue(MOLSAConstants.kZeroDate);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
-				.setValue(
-						"CD Response" + "\n" + "Event Date - "
-								+ informationProviderTmpDtls.eventDate + "\n"
-								+ "Spouse QID - "
-								+ informationProviderTmpDtls.spouseQid);
-		dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
-		final ReturnEvidenceDetails returnEvidenceDetails = evidenceServiceInterface
-				.createEvidence(dynamicEvidenceDetails);
+			// parsing date string using new format
+			ParsePosition posNew = new ParsePosition(0);
+			java.util.Date dateFromStringNew = newFormatter.parse(
+					dateStringInNewFormatNew, posNew);
+
+			AppException message1 = new AppException(
+					MOLSANOTIFICATION.MARITAL_COMMENTS);
+			message1.arg(informationProviderTmpDtls.eventDate.toString());
+			message1.arg(informationProviderTmpDtls.spouseQid);
+
+			// Now you have a date object and you can convert it to the original
+			// format
+			String dateStringInOriginalFormatNew = originalFormatter
+					.format(dateFromStringNew);
+			dynamicEvidenceDataDetails.getAttribute(
+					MOLSAConstants.maritalStatus).setValue(
+					informationProviderTmpDtls.maritalStatus);
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.startDate)
+					.setValue(dateStringInOriginalFormatNew);
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
+					.setValue(MOLSAConstants.kZeroDate);
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
+					.setValue(message1.getLocalizedMessage());
+			dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+			evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
-	 * This Method update education evidence.
+	 * This method updates Education evidence based on the input from
+	 * information provider table.
 	 * 
 	 * @param readEvidenceDetails
+	 *            ReadEvidenceDetails
 	 * @param caseID
+	 *            long
 	 * @param informationProviderTmpDtls
-	 * @return list of request
+	 *            MOLSAInformationProviderTmpDtls
 	 * @throws AppException
 	 *             General Exception
 	 * @throws InformationalException
 	 *             General Exception
+	 * @return boolean
 	 */
-	private void modifyEducationEvidence(
+	private boolean modifyEducationEvidence(
 			ReadEvidenceDetails readEvidenceDetails, long caseID,
 			MOLSAInformationProviderTmpDtls informationProviderTmpDtls)
-			throws AppException, InformationalException {
+			throws AppException, InformationalException, ParseException {
 
 		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
 		evidenceTypeKey.evidenceType = CASEEVIDENCE.MOLSAEDUCATION;
@@ -398,8 +453,11 @@ public class MOLSAInformationProviderBatchStream extends
 		String dateStringInNewFormat = informationProviderTmpDtls.receivedDate
 				.addDays(-1).toString();
 
-		SimpleDateFormat originalFormatter = new SimpleDateFormat("yyyyMMdd");
-		SimpleDateFormat newFormatter = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat originalFormatter = new SimpleDateFormat(
+				MOLSAConstants.kdateRequired);
+		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
+		SimpleDateFormat newFormatter = new SimpleDateFormat(
+				propertyDateFormat);
 
 		// parsing date string using new format
 		ParsePosition pos = new ParsePosition(0);
@@ -410,56 +468,83 @@ public class MOLSAInformationProviderBatchStream extends
 		String dateStringInOriginalFormat = originalFormatter
 				.format(dateFromString);
 
-		// dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate).setValue(informationProviderTmpDtls.receivedDate.toString());
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
-				.setValue(dateStringInOriginalFormat);
-		dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
-		dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
-		evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
+		String dateCompare = informationProviderTmpDtls.receivedDate
+				.addDays(-1).toString();
+		java.util.Date ipDate = new SimpleDateFormat(propertyDateFormat)
+				.parse(dateCompare);
+		String providerDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(ipDate);
 
-		String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
-				.toString();
+		String trDate = dynamicEvidenceDataDetails
+				.getAttribute(MOLSAConstants.startDate).getValue().toString();
+		java.util.Date tradeDate = new SimpleDateFormat(
+				MOLSAConstants.kdateRequired).parse(trDate);
+		String evidenceDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(tradeDate);
+		// Check the evidence date with the information provider date.
+		if (providerDate.compareTo(evidenceDate) > 0) {
 
-		// parsing date string using new format
-		ParsePosition posNew = new ParsePosition(0);
-		java.util.Date dateFromStringNew = newFormatter.parse(
-				dateStringInNewFormatNew, posNew);
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
+					.setValue(dateStringInOriginalFormat);
+			dynamicEvidenceDetails
+					.setDescriptor(readEvidenceDetails.descriptor);
+			dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
 
-		// Now you have a date object and you can convert it to the original
-		// format
-		String dateStringInOriginalFormatNew = originalFormatter
-				.format(dateFromStringNew);
-		// set the details to create new evidence
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.startDate)
-				.setValue(dateStringInOriginalFormatNew);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
-				.setValue(MOLSAConstants.kZeroDate);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
-				.setValue(
-						"CD Response" + "\n" + "School Name is - "
-								+ informationProviderTmpDtls.schoolName);
-		dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
+					.toString();
 
-		final ReturnEvidenceDetails returnEvidenceDetails = evidenceServiceInterface
-				.createEvidence(dynamicEvidenceDetails);
+			// parsing date string using new format
+			ParsePosition posNew = new ParsePosition(0);
+			java.util.Date dateFromStringNew = newFormatter.parse(
+					dateStringInNewFormatNew, posNew);
+
+			AppException message1 = new AppException(
+					MOLSANOTIFICATION.EDUCATION_COMMENTS);
+
+			message1.arg(informationProviderTmpDtls.schoolName);
+
+			// Now you have a date object and you can convert it to the original
+			// format
+			String dateStringInOriginalFormatNew = originalFormatter
+					.format(dateFromStringNew);
+			// set the details to create new evidence
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.startDate)
+					.setValue(dateStringInOriginalFormatNew);
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
+					.setValue(MOLSAConstants.kZeroDate);
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
+					.setValue(message1.getLocalizedMessage());
+
+			dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+
+			evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
-	 * This Method update income evidence.
+	 * This method updates Income evidence based on the input from information
+	 * provider table.
 	 * 
 	 * @param readEvidenceDetails
+	 *            ReadEvidenceDetails
 	 * @param caseID
+	 *            long
 	 * @param informationProviderTmpDtls
-	 * @return list of request
+	 *            MOLSAInformationProviderTmpDtls
 	 * @throws AppException
 	 *             General Exception
 	 * @throws InformationalException
 	 *             General Exception
+	 * @return boolean
 	 */
-	private void modifyIncomeEvidence(ReadEvidenceDetails readEvidenceDetails,
-			long caseID,
+	private boolean modifyIncomeEvidence(
+			ReadEvidenceDetails readEvidenceDetails, long caseID,
 			MOLSAInformationProviderTmpDtls informationProviderTmpDtls)
-			throws AppException, InformationalException {
+			throws AppException, InformationalException, ParseException {
 
 		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
 		evidenceTypeKey.evidenceType = CASEEVIDENCE.INCOME;
@@ -472,8 +557,10 @@ public class MOLSAInformationProviderBatchStream extends
 		String dateStringInNewFormat = informationProviderTmpDtls.receivedDate
 				.addDays(-1).toString();
 
-		SimpleDateFormat originalFormatter = new SimpleDateFormat("yyyyMMdd");
-		SimpleDateFormat newFormatter = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat originalFormatter = new SimpleDateFormat(
+				MOLSAConstants.kdateRequired);
+		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
+		SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
 
 		// parsing date string using new format
 		ParsePosition pos = new ParsePosition(0);
@@ -484,57 +571,85 @@ public class MOLSAInformationProviderBatchStream extends
 		String dateStringInOriginalFormat = originalFormatter
 				.format(dateFromString);
 
-		// dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate).setValue(informationProviderTmpDtls.receivedDate.toString());
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
-				.setValue(dateStringInOriginalFormat);
-		dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
-		dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
-		evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
+		String dateCompare = informationProviderTmpDtls.receivedDate
+				.addDays(-1).toString();
+		java.util.Date ipDate = new SimpleDateFormat(propertyDateFormat)
+				.parse(dateCompare);
+		String providerDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(ipDate);
 
-		String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
-				.toString();
+		String trDate = dynamicEvidenceDataDetails
+				.getAttribute(MOLSAConstants.startDate).getValue().toString();
+		java.util.Date tradeDate = new SimpleDateFormat(
+				MOLSAConstants.kdateRequired).parse(trDate);
+		String evidenceDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(tradeDate);
+		// Check the evidence date with the information provider date.
+		if (providerDate.compareTo(evidenceDate) > 0) {
+			AppException message1 = new AppException(
+					MOLSANOTIFICATION.INCOME_UPDATED);
 
-		// parsing date string using new format
-		ParsePosition posNew = new ParsePosition(0);
-		java.util.Date dateFromStringNew = newFormatter.parse(
-				dateStringInNewFormatNew, posNew);
+			message1.arg(informationProviderTmpDtls.amount);
 
-		// Now you have a date object and you can convert it to the original
-		// format
-		String dateStringInOriginalFormatNew = originalFormatter
-				.format(dateFromStringNew);
-		// set the details to create new evidence
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.startDate)
-				.setValue(dateStringInOriginalFormatNew);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.amount).setValue(String.valueOf(informationProviderTmpDtls.amount));
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
-				.setValue(MOLSAConstants.kZeroDate);
-		dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
-				.setValue(
-						"CD Response" + "\n" + "Income amount is - "
-								+ informationProviderTmpDtls.amount);
-		dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
+					.setValue(dateStringInOriginalFormat);
+			dynamicEvidenceDetails
+					.setDescriptor(readEvidenceDetails.descriptor);
+			dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
 
-		final ReturnEvidenceDetails returnEvidenceDetails = evidenceServiceInterface
-				.createEvidence(dynamicEvidenceDetails);
+			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
+					.toString();
+
+			// parsing date string using new format
+			ParsePosition posNew = new ParsePosition(0);
+			java.util.Date dateFromStringNew = newFormatter.parse(
+					dateStringInNewFormatNew, posNew);
+
+			// Now you have a date object and you can convert it to the original
+			// format
+			String dateStringInOriginalFormatNew = originalFormatter
+					.format(dateFromStringNew);
+			// set the details to create new evidence
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.startDate)
+					.setValue(dateStringInOriginalFormatNew);
+			dynamicEvidenceDataDetails
+					.getAttribute(MOLSAConstants.amount)
+					.setValue(String.valueOf(informationProviderTmpDtls.amount));
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
+					.setValue(MOLSAConstants.kZeroDate);
+			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
+					.setValue(message1.getLocalizedMessage());
+			dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+
+			evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
-	 * This Method update birthanddeathdetails evidence.
+	 * This method updates Birth and Death evidence based on the input from
+	 * information provider table.
 	 * 
 	 * @param readEvidenceDetails
+	 *            ReadEvidenceDetails
 	 * @param caseID
+	 *            long
 	 * @param informationProviderTmpDtls
-	 * @return list of request
+	 *            MOLSAInformationProviderTmpDtls
 	 * @throws AppException
 	 *             General Exception
 	 * @throws InformationalException
 	 *             General Exception
+	 * @return boolean
 	 */
-	private void modifyBirthDeathDetailsEvidence(
+
+	private boolean modifyBirthDeathDetailsEvidence(
 			ReadEvidenceDetails readEvidenceDetails, long caseID,
 			MOLSAInformationProviderTmpDtls informationProviderTmpDtls)
-			throws AppException, InformationalException {
+			throws AppException, InformationalException, ParseException {
 
 		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
 		evidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
@@ -547,54 +662,88 @@ public class MOLSAInformationProviderBatchStream extends
 		String dateStringInNewFormat = informationProviderTmpDtls.eventDate
 				.toString();
 
-		SimpleDateFormat originalFormatter = new SimpleDateFormat("yyyyMMdd");
-		SimpleDateFormat newFormatter = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat originalFormatter = new SimpleDateFormat(
+				MOLSAConstants.kdateRequired);
+		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
+		SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
 
 		// parsing date string using new format
 		ParsePosition pos = new ParsePosition(0);
 		java.util.Date dateFromString = newFormatter.parse(
 				dateStringInNewFormat, pos);
 
+		String dateCompare = informationProviderTmpDtls.eventDate.addDays(-1)
+				.toString();
+		java.util.Date ipDate = new SimpleDateFormat(propertyDateFormat)
+				.parse(dateCompare);
+		String providerDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(ipDate);
+
+		String trDate = Date.getCurrentDate().toString();
+		java.util.Date tradeDate = new SimpleDateFormat(propertyDateFormat)
+				.parse(trDate);
+		String evidenceDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
+				.format(tradeDate);
 		// Now you have a date object and you can convert it to the original
 		// format
 		String dateStringInOriginalFormat = originalFormatter
 				.format(dateFromString);
 
-		// set the attribute value that needs to be changed and update the
-		// evidence
-		if (informationProviderTmpDtls.type
-				.equalsIgnoreCase(RESPONSETYPE.BIRTH)) {
-			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.dateOfBirth)
-					.setValue(dateStringInOriginalFormat);
-			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
-					.setValue(
-							"CD Response" + "\n" + "Date of birth is - "
-									+ informationProviderTmpDtls.eventDate);
-			dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+		if (providerDate.compareTo(evidenceDate) < 0) {
+			AppException message1 = new AppException(
+					MOLSANOTIFICATION.BIRTH_COMMENTS);
 
-		} else if (informationProviderTmpDtls.type
-				.equalsIgnoreCase(RESPONSETYPE.DEATH)) {
-			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.dateOfDeath)
-					.setValue(dateStringInOriginalFormat);
-			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
-					.setValue(
-							"CD Response" + "\n" + "Date of death is - "
-									+ informationProviderTmpDtls.eventDate);
-			dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+			message1.arg(informationProviderTmpDtls.eventDate);
+
+			AppException message2 = new AppException(
+					MOLSANOTIFICATION.DEATH_COMMENTS);
+
+			message2.arg(informationProviderTmpDtls.eventDate);
+
+			// set the attribute value that needs to be changed and update the
+			// evidence
+			if (informationProviderTmpDtls.type
+					.equalsIgnoreCase(RESPONSETYPE.BIRTH)) {
+				dynamicEvidenceDataDetails.getAttribute(
+						MOLSAConstants.dateOfBirth).setValue(
+						dateStringInOriginalFormat);
+				dynamicEvidenceDataDetails
+						.getAttribute(MOLSAConstants.comments).setValue(
+								message1.getLocalizedMessage());
+				dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+
+			} else if (informationProviderTmpDtls.type
+					.equalsIgnoreCase(RESPONSETYPE.DEATH)) {
+				dynamicEvidenceDataDetails.getAttribute(
+						MOLSAConstants.dateOfDeath).setValue(
+						dateStringInOriginalFormat);
+				dynamicEvidenceDataDetails
+						.getAttribute(MOLSAConstants.comments).setValue(
+								message2.getLocalizedMessage());
+				dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
+			}
+			dynamicEvidenceDetails
+					.setDescriptor(readEvidenceDetails.descriptor);
+			dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
+			return true;
+		} else {
+			return false;
 		}
-		dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
-		dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
-		evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
-
 	}
 
 	/**
-	 * This Method update education evidence.
+	 * This method updates Education evidence based on the input from
+	 * information provider table.
 	 * 
 	 * @param caseID
+	 *            Long
 	 * @param caseEvidence
+	 *            CASEEVIDENCEEntry
 	 * @param caseParticipantRoleID
+	 *            Long
 	 * @param participant
+	 *            String
 	 * @return list of request
 	 * @throws AppException
 	 *             General Exception
@@ -658,21 +807,25 @@ public class MOLSAInformationProviderBatchStream extends
 	}
 
 	/**
-	 * This Method to send task to case owner.
+	 * This method sends notification to the case owner after update of evidence
+	 * based on the input from information provider table.
 	 * 
 	 * @param caseDtls
+	 *            CaseHeaderDtls
 	 * @param caseEvidence
-	 * @param participant
+	 *            CASEEVIDENCEEntry
+	 * @param argName
+	 *            String
 	 * @throws AppException
 	 *             General Exception
 	 * @throws InformationalException
 	 *             General Exception
 	 */
 	public void sendTaskToCaseOwner(CaseHeaderDtls caseDtls,
-			final CASEEVIDENCEEntry caseEvidence, String name)
+			final CASEEVIDENCEEntry caseEvidence, String argName)
 			throws AppException, InformationalException {
-		// Code to send task if evidence is modified
 
+		// Code to send task if evidence is modified
 		final CaseIDDetails caseKey = new CaseIDDetails();
 		caseKey.caseID = caseDtls.caseID;
 		final CaseHeader caseHeader = CaseHeaderFactory.newInstance();
@@ -684,14 +837,16 @@ public class MOLSAInformationProviderBatchStream extends
 
 		curam.core.sl.entity.intf.OrgObjectLink orgObjectLink = OrgObjectLinkFactory
 				.newInstance();
-
+		// Assign the case id and assigned to values to the task created to the
+		// case owner
 		final TaskCreateDetails taskCreateDetail = new TaskCreateDetails();
 		taskCreateDetail.taskDetails.caseID = caseDtls.caseID;
 		taskCreateDetail.taskDetails.assignedTo = orgObjectLink
 				.read(orgObjectLinkKey).userName;
 		taskCreateDetail.taskDetails.assigneeType = curam.codetable.ASSIGNEETYPE.USER;
-		String Name = name;
+		String name = argName;
 		AppException message1 = null;
+		// To send notification if evidence is updated.
 		if (caseEvidence.equals(CASEEVIDENCEEntry.MARITALSTATUS)) {
 			message1 = new AppException(
 					MOLSANOTIFICATION.EVIDENCE_MARITALSTATUS_UPDATED);
@@ -706,9 +861,10 @@ public class MOLSAInformationProviderBatchStream extends
 			message1 = new AppException(MOLSANOTIFICATION.INCOME_UPDATED);
 		}
 		message1.arg(caseDtls.caseReference);
-		message1.arg(Name);
+		message1.arg(name);
 
-		final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
+		final SimpleDateFormat sdf = new SimpleDateFormat(propertyDateFormat);
 		message1.arg(sdf.format(Date.getCurrentDate().getCalendar().getTime()));
 		taskCreateDetail.taskDetails.subject = message1.getMessage();
 
@@ -719,12 +875,13 @@ public class MOLSAInformationProviderBatchStream extends
 		dateTimeInSecondsKey.dateTime = DateTime.kZeroDateTime;
 		deadlineDuration.deadlineDuration = taskManagementUtilityObj
 				.convertDateTimeToSeconds(dateTimeInSecondsKey).seconds;
+
 		// Create the list we will pass to the enactment service.
 		final List<Object> enactmentStructs = new ArrayList<Object>();
 		enactmentStructs.add(taskCreateDetail.taskDetails);
 		enactmentStructs.add(deadlineDuration);
 		curam.util.workflow.impl.EnactmentService
-				.startProcessInV3CompatibilityMode("MANUALCASE",
+				.startProcessInV3CompatibilityMode(MOLSAConstants.kmanualCase,
 						enactmentStructs);
 	}
 

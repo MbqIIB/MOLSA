@@ -1,5 +1,8 @@
 package curam.molsa.creoleprogramrecommendation.facade.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import curam.application.entity.struct.ApplicationKey;
 import curam.creoleprogramrecommendation.facade.fact.CREOLEProgramRecommendationFactory;
 import curam.creoleprogramrecommendation.facade.intf.CREOLEProgramRecommendation;
@@ -52,6 +55,7 @@ public class MOLSACREOLEProgramRecommendation
 			molsaSimulatedDeterminationDtls.dtls.assign(dtls);
 			String date = molsaSimulatedDeterminationDtls.dtls.period
 					.substring(134, 144);
+			//DateFormat finald= new SimpleDateFormat("yyyy-MM-dd");
 			String dates[] = date.split("-");
 			String one = dates[1];
 			String two = dates[2];
@@ -59,7 +63,7 @@ public class MOLSACREOLEProgramRecommendation
 			finalDate = finalDate.concat(two);
 			Date fromDate = Date.getDate(finalDate);
 			if ((fromDate.after(Date.getCurrentDate()))
-					&& (molsaSimulatedDeterminationDtls.dtls.isAuthorized)) {
+					|| (molsaSimulatedDeterminationDtls.dtls.isAuthorized)) {
 				molsaSimulatedDeterminationDtls.isPDAuthorized = true;
 			}
 			molsaSimulatedDeterminationDtlsList.dtls

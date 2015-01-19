@@ -56,7 +56,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
   protected Session session;
 
   protected static final String isEligible = "eligible";
-  
+
   private SessionDoc sessionDoc;
 
   /**
@@ -69,7 +69,6 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
     super(name);
   }
 
-  
   @Override
   protected void setUpCuramServerTest() {
     super.setUpCuramServerTest();
@@ -81,7 +80,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
         .getFactory().newInstance(getSession());
     application.applicationDate().specifyValue(Date.getCurrentDate());
   }
-  
+
   @Override
   protected void tearDownCuramServerTest() {
     // TODO Auto-generated method stub
@@ -230,185 +229,69 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
    * 
    */
   @SuppressWarnings("restriction")
-  public List<Person> createFamilyOfMissing(String absentFatherReason) {
+  public List<Person> createFamilyOfMissingBaseScenario(
+      String absentFatherReason) {
     List<Person> personList = new ArrayList<Person>();
-    final Person personRecord = createPersonRecord("Mohammed", 101,
-        Date.fromISO8601("19720101"), Boolean.TRUE,
-        MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.MALE.getCode(),
-        CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    personRecord.hasAbsentFather().specifyValue(Boolean.FALSE);
-
-    final Person wifeOne = createPersonRecord("Wife1", 102,
-        Date.fromISO8601("19820101"), Boolean.FALSE,
+    final Person firdoz = createPersonRecord("Firdoz Mohammad", 101,
+        Date.fromISO8601("19800101"), Boolean.TRUE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    wifeOne.hasAbsentFather().specifyValue(Boolean.FALSE);
+    firdoz.hasAbsentFather().specifyValue(Boolean.FALSE);
+    firdoz.hasAbsentHusband().specifyValue(Boolean.TRUE);
 
-    final Person dependentChildOfWifeOne = createPersonRecord("Wife1Child1",
-        103, Date.fromISO8601("20020101"), Boolean.FALSE,
-        MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
-        CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    dependentChildOfWifeOne.hasAbsentFather().specifyValue(Boolean.FALSE);
-
-    final Person dependentChild2OfWifeOne = createPersonRecord("Wife1Child2",
-        104, Date.fromISO8601("20121010"), Boolean.FALSE,
-        MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
-        CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    dependentChild2OfWifeOne.hasAbsentFather().specifyValue(Boolean.FALSE);
-
-    final Person wifeTwo = createPersonRecord("Wife2", 105,
+    final Person asifa = createPersonRecord("Asifa Mohammed", 102,
         Date.fromISO8601("19950101"), Boolean.FALSE,
+        MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
+        CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
+    asifa.hasAbsentFather().specifyValue(Boolean.FALSE);
+    asifa.hasAbsentHusband().specifyValue(Boolean.FALSE);
+    
+    final Person fathima = createPersonRecord("Fathima Mohammed", 103,
+        Date.fromISO8601("19840101"), Boolean.FALSE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    wifeTwo.hasAbsentFather().specifyValue(Boolean.FALSE);
+    fathima.hasAbsentFather().specifyValue(Boolean.FALSE);
+    fathima.hasAbsentHusband().specifyValue(Boolean.TRUE);
 
-    final Person dependentChildOfWifeTwo = createPersonRecord("Wife2Child1",
-        106, Date.fromISO8601("20100101"), Boolean.FALSE,
-        MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.FEMALE.getCode(),
-        CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    dependentChildOfWifeTwo.hasAbsentFather().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Mohammad", "Hameed", 201,
+        Date.fromISO8601("19740101"), absentFatherReason);
 
-    createAbsentFatherRecord("Abeed", "Khan", 201,
-        Date.fromISO8601("19620101"), absentFatherReason);
+    personList.add(firdoz);
+    personList.add(fathima);
+    personList.add(asifa);
 
-    personList.add(personRecord);
-    personList.add(wifeOne);
-    personList.add(wifeTwo);
-    personList.add(dependentChildOfWifeOne);
-    personList.add(dependentChild2OfWifeOne);
-    personList.add(dependentChildOfWifeTwo);
+    createRelationshipRecord(firdoz,
+        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), asifa.personID()
+            .getValue());
+    createRelationshipRecord(firdoz,
+        RELATIONSHIPTYPECOREDESCEntry.SISTERWIFE.getCode(), fathima.personID()
+            .getValue());
 
-    // Husband Relationships
-    createRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), 103);
-    createRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), 104);
-    createRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), 106);
-    createRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), 102);
-    createRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), 105);
+    createRelationshipRecord(fathima,
+        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), asifa.personID()
+            .getValue());
 
-    createOneWayRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), wifeOne);
-    createOneWayRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), personRecord);
-    createOneWayRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), wifeTwo);
-    createOneWayRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), personRecord);
+    createOneWayRelationshipRecord(firdoz,
+        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), asifa);
+    createOneWayRelationshipRecord(asifa,
+        RELATIONSHIPTYPECOREDESCEntry.CHILD.getCode(), firdoz);
 
-    createOneWayRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), dependentChildOfWifeOne);
-    createOneWayRelationshipRecord(dependentChildOfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.CHILD.getCode(), personRecord);
+    createOneWayRelationshipRecord(firdoz,
+        RELATIONSHIPTYPECOREDESCEntry.SISTERWIFE.getCode(), fathima);
+    createOneWayRelationshipRecord(fathima,
+        RELATIONSHIPTYPECOREDESCEntry.SISTERWIFE.getCode(), firdoz);
 
-    createOneWayRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(),
-        dependentChild2OfWifeOne);
-    createOneWayRelationshipRecord(dependentChild2OfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.CHILD.getCode(), personRecord);
+    createOneWayRelationshipRecord(fathima,
+        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), asifa);
+    createOneWayRelationshipRecord(asifa,
+        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), fathima);
 
-    createOneWayRelationshipRecord(personRecord,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), dependentChildOfWifeTwo);
-    createOneWayRelationshipRecord(dependentChildOfWifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.CHILD.getCode(), personRecord);
-
-    createRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), 103);
-    createRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), 105);
-    createRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), 104);
-    createRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), 106);
-
-    createOneWayRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), dependentChildOfWifeOne);
-    createOneWayRelationshipRecord(dependentChildOfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.CHILD.getCode(), wifeOne);
-
-    createOneWayRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), wifeTwo);
-    createOneWayRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), wifeOne);
-
-    createOneWayRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(),
-        dependentChild2OfWifeOne);
-    createOneWayRelationshipRecord(dependentChild2OfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.CHILD.getCode(), wifeOne);
-
-    createOneWayRelationshipRecord(wifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(),
-        dependentChildOfWifeTwo);
-    createOneWayRelationshipRecord(dependentChildOfWifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), wifeOne);
-
-    createRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), 103);
-    createRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), 104);
-    createRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), 106);
-
-    createOneWayRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(),
-        dependentChildOfWifeOne);
-    createOneWayRelationshipRecord(dependentChildOfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), wifeTwo);
-
-    createOneWayRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(),
-        dependentChild2OfWifeOne);
-    createOneWayRelationshipRecord(dependentChild2OfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), wifeTwo);
-
-    createOneWayRelationshipRecord(wifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), dependentChildOfWifeTwo);
-    createOneWayRelationshipRecord(dependentChildOfWifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), wifeTwo);
-
-    createRelationshipRecord(dependentChildOfWifeOne, "RT10011", 103);
-    createRelationshipRecord(dependentChild2OfWifeOne, "RT3", 104);
-    createRelationshipRecord(dependentChildOfWifeTwo, "RT10011", 106);
-
-    createOneWayRelationshipRecord(dependentChildOfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.SIBLING.getCode(),
-        dependentChild2OfWifeOne);
-    createOneWayRelationshipRecord(dependentChild2OfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.SIBLING.getCode(),
-        dependentChildOfWifeOne);
-    createOneWayRelationshipRecord(dependentChildOfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.SIBLINGINLAW.getCode(),
-        dependentChildOfWifeTwo);
-    createOneWayRelationshipRecord(dependentChildOfWifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.SIBLINGINLAW.getCode(),
-        dependentChildOfWifeOne);
-    createOneWayRelationshipRecord(dependentChild2OfWifeOne,
-        RELATIONSHIPTYPECOREDESCEntry.SIBLINGINLAW.getCode(),
-        dependentChildOfWifeTwo);
-    createOneWayRelationshipRecord(dependentChildOfWifeTwo,
-        RELATIONSHIPTYPECOREDESCEntry.SIBLINGINLAW.getCode(),
-        dependentChild2OfWifeOne);
-
-    createIncomeItemRecord(personRecord, 500,
-        INCOMETYPECODEEntry.CAPITALGAINS.getCode(),
-        FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
-            .addDays(-30));
-
-    createIncomeItemRecord(wifeOne, 500,
+    createIncomeItemRecord(firdoz, 2000,
         INCOMETYPECODEEntry.INHERITANCE.getCode(),
         FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
             .addDays(-30));
 
-    createIncomeItemRecord(wifeTwo, 500,
-        INCOMETYPECODEEntry.INHERITANCE.getCode(),
-        FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
-            .addDays(-30));
-
-    createExpenseRecord(personRecord, 100, EXPENSEEntry.COMMERCIAL.getCode(),
+    createExpenseRecord(firdoz, 500, EXPENSEEntry.RESIDENTIAL.getCode(),
         FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
             .addDays(-50));
 
@@ -418,41 +301,47 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 
   public List<Person> createFamilyOfPrisoner(String absentFatherReason) {
     List<Person> personList = new ArrayList<Person>();
-    final Person personRecord = createPersonRecord("Abdul", 101,
-        Date.fromISO8601("19720101"), Boolean.TRUE,
+    final Person personRecord = createPersonRecord("Grandpa", 101,
+        Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     personRecord.hasAbsentFather().specifyValue(Boolean.FALSE);
+    personRecord.hasAbsentHusband().specifyValue(Boolean.FALSE);
 
     final Person wifeOne = createPersonRecord("Wife1", 102,
         Date.fromISO8601("19820101"), Boolean.FALSE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     wifeOne.hasAbsentFather().specifyValue(Boolean.FALSE);
+    wifeOne.hasAbsentHusband().specifyValue(Boolean.TRUE);
 
     final Person dependentChildOfWifeOne = createPersonRecord("Wife1Child1",
         103, Date.fromISO8601("20020101"), Boolean.FALSE,
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    dependentChildOfWifeOne.hasAbsentFather().specifyValue(Boolean.FALSE);
+    dependentChildOfWifeOne.hasAbsentFather().specifyValue(Boolean.TRUE);
+    dependentChildOfWifeOne.hasAbsentHusband().specifyValue(Boolean.FALSE);
 
     final Person dependentChild2OfWifeOne = createPersonRecord("Wife1Child2",
         104, Date.fromISO8601("20121010"), Boolean.FALSE,
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    dependentChild2OfWifeOne.hasAbsentFather().specifyValue(Boolean.FALSE);
+    dependentChild2OfWifeOne.hasAbsentFather().specifyValue(Boolean.TRUE);
+    dependentChild2OfWifeOne.hasAbsentHusband().specifyValue(Boolean.FALSE);
 
     final Person wifeTwo = createPersonRecord("Wife2", 105,
         Date.fromISO8601("19950101"), Boolean.FALSE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     wifeTwo.hasAbsentFather().specifyValue(Boolean.FALSE);
+    wifeTwo.hasAbsentHusband().specifyValue(Boolean.TRUE);
 
     final Person dependentChildOfWifeTwo = createPersonRecord("Wife2Child1",
         106, Date.fromISO8601("20100101"), Boolean.FALSE,
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     dependentChildOfWifeTwo.hasAbsentFather().specifyValue(Boolean.TRUE);
+    dependentChildOfWifeTwo.hasAbsentHusband().specifyValue(Boolean.FALSE);
 
     createAbsentFatherRecord("Abeed", "Khan", 201,
         Date.fromISO8601("19620101"), absentFatherReason);
@@ -1661,8 +1550,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
-    kidWithAbsentFather.requiresMaidAssistance()
-        .specifyValue(Boolean.FALSE);
+    kidWithAbsentFather.requiresMaidAssistance().specifyValue(Boolean.FALSE);
 
     personList.add(husband);
     personList.add(wife);
@@ -1673,24 +1561,22 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
         RELATIONSHIPTYPECOREDESCEntry.UNCLE.getCode(), kidWithAbsentFatherID);
     createRelationshipRecord(husband,
         RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), wifeID);
-    
+
     createRelationshipRecord(wife,
         RELATIONSHIPTYPECOREDESCEntry.AUNT.getCode(), kidWithAbsentFatherID);
     createRelationshipRecord(wife,
         RELATIONSHIPTYPECOREDESCEntry.NEPHEW.getCode(), wifeID);
-    
+
     createOneWayRelationshipRecord(husband,
         RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), wife);
     createOneWayRelationshipRecord(wife,
         RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), husband);
-    
 
     createOneWayRelationshipRecord(husband,
         RELATIONSHIPTYPECOREDESCEntry.UNCLE.getCode(), kidWithAbsentFather);
     createOneWayRelationshipRecord(kidWithAbsentFather,
         RELATIONSHIPTYPECOREDESCEntry.NEPHEW.getCode(), husband);
 
-  
     createIncomeItemRecord(husband, 500,
         INCOMETYPECODEEntry.CAPITALGAINS.getCode(),
         FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
@@ -1708,13 +1594,14 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
     return personList;
 
   }
-  
+
   /**
    * Positive Family Of Anonmoyous Scenario
    * 
    * @return
    */
-  public List<Person> createFamilyOfAnonymousParentsWithVaryingIncome(int incomeAmount,int expenseAmount) {
+  public List<Person> createFamilyOfAnonymousParentsWithVaryingIncome(
+      int incomeAmount, int expenseAmount) {
     List<Person> personList = new ArrayList<Person>();
     int husbandID = 101;
     int wifeID = 102;
@@ -1745,8 +1632,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
-    kidWithAbsentFather.requiresMaidAssistance()
-        .specifyValue(Boolean.FALSE);
+    kidWithAbsentFather.requiresMaidAssistance().specifyValue(Boolean.FALSE);
 
     personList.add(husband);
     personList.add(wife);
@@ -1757,24 +1643,22 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
         RELATIONSHIPTYPECOREDESCEntry.UNCLE.getCode(), kidWithAbsentFatherID);
     createRelationshipRecord(husband,
         RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), wifeID);
-    
+
     createRelationshipRecord(wife,
         RELATIONSHIPTYPECOREDESCEntry.AUNT.getCode(), kidWithAbsentFatherID);
     createRelationshipRecord(wife,
         RELATIONSHIPTYPECOREDESCEntry.NEPHEW.getCode(), wifeID);
-    
+
     createOneWayRelationshipRecord(husband,
         RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), wife);
     createOneWayRelationshipRecord(wife,
         RELATIONSHIPTYPECOREDESCEntry.SPOUSE.getCode(), husband);
-    
 
     createOneWayRelationshipRecord(husband,
         RELATIONSHIPTYPECOREDESCEntry.UNCLE.getCode(), kidWithAbsentFather);
     createOneWayRelationshipRecord(kidWithAbsentFather,
         RELATIONSHIPTYPECOREDESCEntry.NEPHEW.getCode(), husband);
 
-  
     createIncomeItemRecord(husband, incomeAmount,
         INCOMETYPECODEEntry.CAPITALGAINS.getCode(),
         FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
@@ -1785,7 +1669,8 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
         FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
             .addDays(-30));
 
-    createExpenseRecord(husband, expenseAmount, EXPENSEEntry.COMMERCIAL.getCode(),
+    createExpenseRecord(husband, expenseAmount,
+        EXPENSEEntry.COMMERCIAL.getCode(),
         FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
             .addDays(-50));
 

@@ -1096,6 +1096,9 @@ class IntakeDataMapperImpl implements IntakeDataMapper {
       mappedProspectPerson.setConcernRoleID(registrationResult.registrationIDDetails.concernRoleID);
       mappedProspectPerson.setDataStoreID(prospectPerson.getUniqueID());
       mappedProspectPerson.setReference(registrationResult.registrationIDDetails.alternateID);
+      createIntakeApplicant(application,
+          concernRoleDAO.get(mappedProspectPerson.getConcernRoleID()));
+
       }
 
       else{

@@ -37,54 +37,62 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.type.Date;
 
+/**
+ * 
+ * Tests information provider batch for birth and death evidence update.
+ * 
+ */
 public class MOLSAInformationProviderDeathTest extends CERScenarioTestBase {
-	
-	  public MOLSAInformationProviderDeathTest(String arg0) {
+
+	/**
+	 * 
+	 * Constructor of the class.
+	 * 
+	 * @param arg0
+	 *            String
+	 */
+	public MOLSAInformationProviderDeathTest(String arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
-	  private TestHelper testHelper;
+	private TestHelper testHelper;
 
-	  @Inject
-	  private CaseHeaderDAO caseHeaderDAO;
-
+	@Inject
+	private CaseHeaderDAO caseHeaderDAO;
 
 	@Override
 	protected void addIntakeApplicant(Application application)
 			throws AppException, InformationalException {
 		createIntakeApplicant(application.getID(), ASIFA_UNIQUE_NAME,
 				APPLICANTROLEEntry.PRIMARY_APPLICANT);
-		
-	}
-	
-	 /**
-	   * Test Case used to test the scenario from person registration to product delivery case activation.
-	   * 
-	   * @throws AppException
-	   *           Generic Exception Signature.
-	   * 
-	   * @throws InformationalException
-	   *           Generic Exception Signature.
-	   */
-		public void testScenario() throws AppException, InformationalException {
-		  testHelper.simulateLogin("molsamanager");
-			testScenario(Date.getCurrentDate());
 
-		}
+	}
+
+	/**
+	 * Test Case used to test the scenario from person registration to product
+	 * delivery case activation.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
+	public void testScenario() throws AppException, InformationalException {
+		testHelper.simulateLogin("molsamanager");
+		testScenario(Date.getCurrentDate());
+
+	}
 
 	@Override
 	protected void addCaseMember(Application application) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected List<HouseholdUnit> getExpectedHouseholdUnits()
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		List<HouseholdUnit> householdUnitList = new ArrayList<HouseholdUnit>();
 		List<Long> mandatoryMembers = new ArrayList<Long>();
 		mandatoryMembers
@@ -100,12 +108,12 @@ public class MOLSAInformationProviderDeathTest extends CERScenarioTestBase {
 		eligibilityIntervals.add(new Interval<Boolean>(new Date(calendar),
 				false));
 
-		HouseholdUnit householdUnit = new HouseholdUnit(mandatoryMembers,  new ArrayList<Long>(),
-				45010l, new Timeline<Boolean>(eligibilityIntervals));
+		HouseholdUnit householdUnit = new HouseholdUnit(mandatoryMembers,
+				new ArrayList<Long>(), 45010l, new Timeline<Boolean>(
+						eligibilityIntervals));
 		householdUnitList.add(householdUnit);
 		return householdUnitList;
 	}
-
 
 	@Override
 	protected void addEvidence(CaseKey caseKey) throws AppException,
@@ -115,20 +123,21 @@ public class MOLSAInformationProviderDeathTest extends CERScenarioTestBase {
 
 		long absentFatherParticipantid = getParticipantRoleID(MOHAMMED_UNIQUE_NAME).participantRoleID;
 		long absentFatherCPRID = getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID;
-		
-		int amount=1000;
+
+		int amount = 1000;
 
 		Date currentDate = Date.getCurrentDate();
 		createHouseholdMemberEvidence(caseKey, participantid,
 				caseParticipantRoleID, currentDate, CITIZENSHIPCODE.QATARI,
 				RESIDENCY.YES);
 		createMaritalStatusEvidence(caseKey, participantid,
-				caseParticipantRoleID, Date.fromISO8601("20000101"), MARITALSTATUS.SINGLE);
+				caseParticipantRoleID, Date.fromISO8601("20000101"),
+				MARITALSTATUS.SINGLE);
 		createBirthAndDeathEvidence(caseKey, participantid,
 				caseParticipantRoleID, currentDate, getDate(1, 1, 1998));
-		
+
 	}
-	
+
 	/**
 	 * Set the details of the claimant to be registered.
 	 * 
@@ -136,10 +145,10 @@ public class MOLSAInformationProviderDeathTest extends CERScenarioTestBase {
 	 *            The registration details of the claimant.
 	 * 
 	 * @throws AppException
-	 * Generic Exception Signature.
+	 *             Generic Exception Signature.
 	 * 
 	 * @throws InformationalException
-	 * Generic Exception Signature.
+	 *             Generic Exception Signature.
 	 */
 	protected void setClaimantRegistrationDetails(
 			final PersonRegistrationDetails customerRegistrationDetails)
@@ -163,45 +172,46 @@ public class MOLSAInformationProviderDeathTest extends CERScenarioTestBase {
 	@Override
 	protected void preAssertionOnCase(CaseKey caseKey) throws AppException,
 			InformationalException {
-		
+
 		curam.core.facade.infrastructure.struct.CaseKey caseKey1 = new curam.core.facade.infrastructure.struct.CaseKey();
 		caseKey1.caseID = caseKey.caseID;
-		
+
 		long participantid = getParticipantRoleID(ASIFA_UNIQUE_NAME).participantRoleID;
 		long casePartcipantRoleID = getCaseParticipantRoleID(ASIFA_UNIQUE_NAME).caseParticipantRoleID;
 
 		Evidence test = EvidenceFactory.newInstance();
-		curam.core.facade.infrastructure.struct.ListAllEvidenceDtls list = test.listAllEvidence(caseKey1);
-		
+		curam.core.facade.infrastructure.struct.ListAllEvidenceDtls list = test
+				.listAllEvidence(caseKey1);
+
 		MOLSAInformationProviderTmpDtls details1 = new MOLSAInformationProviderTmpDtls();
 		details1.eventDate = Date.getCurrentDate();
 		details1.informationProviderTmpID = 12346;
 		details1.eventDate = Date.getCurrentDate();
 		details1.receivedDate = Date.getCurrentDate();
 		details1.type = RESPONSETYPE.DEATH;
-		details1.qid = "12345678901";	
-		
-		MOLSAInformationProviderTmp molsaTmp = MOLSAInformationProviderTmpFactory.newInstance();
+		details1.qid = "12345678901";
+
+		MOLSAInformationProviderTmp molsaTmp = MOLSAInformationProviderTmpFactory
+				.newInstance();
 		molsaTmp.insert(details1);
-		
+
 		curam.molsa.ip.batch.intf.MOLSAInformationProviderBatchStream obj = MOLSAInformationProviderBatchStreamFactory
 				.newInstance();
 		BatchProcessingID bid = new BatchProcessingID();
 		bid.recordID = details1.informationProviderTmpID;
-		
-		BatchProcessingSkippedRecord batchProcessSkipped = obj.processRecord(bid, details1);
-		
+
+		BatchProcessingSkippedRecord batchProcessSkipped = obj.processRecord(
+				bid, details1);
+
 		Evidence test2 = EvidenceFactory.newInstance();
-		curam.core.facade.infrastructure.struct.ListAllEvidenceDtls list2 = test2.listAllEvidence(caseKey1);
-		 assertEquals(3, list2.evidenceParticipantDtlsList.dtls.size());
+		curam.core.facade.infrastructure.struct.ListAllEvidenceDtls list2 = test2
+				.listAllEvidence(caseKey1);
+		assertEquals(3, list2.evidenceParticipantDtlsList.dtls.size());
 	}
 
 	@Override
 	protected void postAssertionOnCase(CaseKey caseKey) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
-		
 	}
-
 
 }

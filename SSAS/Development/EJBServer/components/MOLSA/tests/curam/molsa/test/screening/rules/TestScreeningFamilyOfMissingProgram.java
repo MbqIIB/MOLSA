@@ -13,7 +13,7 @@ public class TestScreeningFamilyOfMissingProgram extends
   }
 
   public void testFamilyOfMissingProgram() {
-    createFamilyOfMissing(ABSENTFATHEREntry.MISSING.getCode());
+    createFamilyOfMissingBaseScenario(ABSENTFATHEREntry.MISSING.getCode());
     FamilyOfMissingProgram familyOfMissingProgram = FamilyOfMissingProgram_Factory
         .getFactory().newInstance(getSession());
     assertEquals(Boolean.TRUE,
@@ -22,7 +22,7 @@ public class TestScreeningFamilyOfMissingProgram extends
   }
 
   public void testFamilyOfMissingNegative() {
-    createFamilyOfMissing(ABSENTFATHEREntry.ANONYMOUS.getCode());
+    createFamilyOfMissingBaseScenario(ABSENTFATHEREntry.ANONYMOUS.getCode());
     FamilyOfMissingProgram familyOfMissingProgram = FamilyOfMissingProgram_Factory
         .getFactory().newInstance(getSession());
     assertEquals(Boolean.FALSE,

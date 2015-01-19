@@ -32,6 +32,8 @@ import curam.core.struct.CaseKey;
 import curam.core.struct.PersonRegistrationDetails;
 import curam.creole.value.Interval;
 import curam.creole.value.Timeline;
+import curam.molsa.codetable.EDUCATION;
+import curam.molsa.codetable.EDUCATIONLEVEL;
 import curam.molsa.codetable.EXPENSE;
 import curam.molsa.codetable.RESIDENCY;
 import curam.molsa.codetable.RESPONSETYPE;
@@ -39,7 +41,6 @@ import curam.molsa.ip.batch.fact.MOLSAInformationProviderBatchStreamFactory;
 import curam.molsa.ip.entity.fact.MOLSAInformationProviderTmpFactory;
 import curam.molsa.ip.entity.intf.MOLSAInformationProviderTmp;
 import curam.molsa.ip.entity.struct.MOLSAInformationProviderTmpDtls;
-import curam.molsa.ip.entity.struct.MOLSAInformationProviderTmpDtlsList;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
 import curam.molsa.test.framework.TestHelper;
@@ -48,11 +49,22 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.type.Date;
 
+/**
+ * 
+ * Tests information provider batch for marital status evidence update.
+ * 
+ */
 public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 
+	/**
+	 * 
+	 * Constructor of the class.
+	 * 
+	 * @param arg0
+	 *            String
+	 */
 	public MOLSAInformationProviderMarriageTest(String arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
@@ -93,7 +105,6 @@ public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 	@Override
 	protected void addIntakeApplicant(Application application)
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		createIntakeApplicant(application.getID(), MAHEENA_UNIQUE_NAME,
 				APPLICANTROLEEntry.PRIMARY_APPLICANT);
 
@@ -115,7 +126,6 @@ public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 	@Override
 	protected void addEvidence(CaseKey caseKey) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 		long participantid = getParticipantRoleID(MAHEENA_UNIQUE_NAME).participantRoleID;
 		long caseParticipantRoleID = getCaseParticipantRoleID(MAHEENA_UNIQUE_NAME).caseParticipantRoleID;
 		long sisterwifeparticipantid = getParticipantRoleID(TASNEEM_UNIQUE_NAME).participantRoleID;
@@ -142,6 +152,10 @@ public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 		createMaritalStatusEvidence(caseKey, sisterwifeparticipantid,
 				sisterwifecaseParticipantRoleID, currentDate,
 				MARITALSTATUS.DESERTED);
+
+		createEducationEvidence(caseKey, participantid, caseParticipantRoleID,
+				Date.fromISO8601("20000101"), EDUCATION.ENROLLED,
+				EDUCATIONLEVEL.PRIMARY);
 
 		createGenderEvidence(caseKey, participantid, caseParticipantRoleID,
 				currentDate, GENDER.FEMALE);
@@ -201,7 +215,6 @@ public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 	@Override
 	protected void addCaseMember(Application application) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 		Date currentDate = Date.getCurrentDate();
 		PersonRegistrationDetails registrationIDDetails = new PersonRegistrationDetails();
 		registrationIDDetails.currentMaritalStatus = MARITALSTATUS.DESERTED;
@@ -227,7 +240,6 @@ public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 	@Override
 	protected List<HouseholdUnit> getExpectedHouseholdUnits()
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		List<HouseholdUnit> householdUnitList = new ArrayList<HouseholdUnit>();
 		List<Long> mandatoryMembers = new ArrayList<Long>();
 
@@ -309,10 +321,15 @@ public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 	@Override
 	protected void postAssertionOnCase(CaseKey caseKey) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Asserts and checks the evidence modification after running batch.
+	 * 
+	 * @param caseKey
+	 *            CaseKey
+	 */
 	@Override
 	protected void preAssertionOnCase(CaseKey caseKey) throws AppException,
 			InformationalException {
@@ -351,7 +368,7 @@ public class MOLSAInformationProviderMarriageTest extends CERScenarioTestBase {
 		Evidence test2 = EvidenceFactory.newInstance();
 		curam.core.facade.infrastructure.struct.ListAllEvidenceDtls list2 = test2
 				.listAllEvidence(caseKey1);
-		assertEquals(13, list2.evidenceParticipantDtlsList.dtls.size());
+		assertEquals(14, list2.evidenceParticipantDtlsList.dtls.size());
 	}
 
 }

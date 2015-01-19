@@ -1,14 +1,18 @@
 package curam.molsa.sl.event.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.inject.Inject;
 
 import curam.codetable.TARGETITEMTYPE;
 import curam.codetable.TASKPRIORITY;
-import curam.core.sl.fact.TaskManagementFactory;
-import curam.core.sl.intf.TaskManagement;
+import curam.codetable.impl.CASETYPECODEEntry;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.events.MOLSACoCEvent;
 import curam.message.MOLSABPOCHANGEOFCIRCUMSTANCE;
+import curam.molsa.constants.impl.MOLSAConstants;
+import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.util.events.impl.EventHandler;
@@ -28,6 +32,9 @@ public class MOLSACoCEventHandler implements EventHandler {
 	@Inject
 	private CaseHeaderDAO caseHeaderDAO;
 
+	@Inject
+	private ProductDAO productDAO;
+
 	public MOLSACoCEventHandler() {
 		GuiceWrapper.getInjector().injectMembers(this);
 	}
@@ -36,7 +43,6 @@ public class MOLSACoCEventHandler implements EventHandler {
 	public void eventRaised(Event paramEvent) throws AppException,
 			InformationalException {
 
-		TaskManagement taskManagementObj = TaskManagementFactory.newInstance();
 		CaseHeader caseHeader = caseHeaderDAO
 				.get(paramEvent.secondaryEventData);
 		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
@@ -49,7 +55,12 @@ public class MOLSACoCEventHandler implements EventHandler {
 		final LocalisableString description = new LocalisableString(
 				MOLSABPOCHANGEOFCIRCUMSTANCE.INF_COC_TASK_SUBJECT);
 		description.arg(caseHeader.getConcernRole().getName());
-		description.arg(caseHeader.getCaseReference());
+		if (CASETYPECODEEntry.PRODUCTDELIVERY.equals(caseHeader.getCaseType())) {
+			description.arg(productDAO.get(paramEvent.secondaryEventData)
+					.getProductType().getCode());
+		} else {
+			description.arg(caseHeader.getCaseReference());
+		}
 		taskCreateDetails.subject = description.getMessage(TransactionInfo
 				.getProgramLocale());
 
@@ -64,10 +75,13 @@ public class MOLSACoCEventHandler implements EventHandler {
 		} else if (MOLSACoCEvent.POTENTIAL_SENIOR_BENEFIT
 				.equals(paramEvent.eventKey.eventType)) {
 			taskCreateDetails.assignedTo = String.valueOf(45005);
-
 		}
 
-		taskManagementObj.create(taskCreateDetails);
+		final List<Object> enactmentStructs = new ArrayList<Object>();
+		enactmentStructs.add(taskCreateDetails);
+		curam.util.workflow.impl.EnactmentService
+				.startProcessInV3CompatibilityMode(MOLSAConstants.kmanualCase,
+						enactmentStructs);
 
 	}
 }

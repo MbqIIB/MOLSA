@@ -23,6 +23,8 @@ import curam.core.facade.struct.ReadPersonKey;
 import curam.core.facade.struct.StandardManualTaskDtls;
 import curam.core.fact.NotificationFactory;
 import curam.core.impl.BatchStreamHelper;
+import curam.core.impl.CuramConst;
+import curam.core.impl.EnvVars;
 import curam.core.impl.SecurityImplementationFactory;
 import curam.core.intf.Notification;
 import curam.core.sl.entity.struct.CaseParticipantRoleKey;
@@ -52,20 +54,45 @@ import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.dynamicevidence.type.impl.DynamicEvidenceTypeConverter;
 import curam.message.MOLSANOTIFICATION;
+import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
+import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.ip.batch.impl.MOLSAInformationProviderProcessChunkResult;
 import curam.molsa.moi.entity.fact.MOLSAMoiFactory;
 import curam.molsa.moi.entity.intf.MOLSAMoi;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.molsa.moi.entity.struct.MOLSAMoiKey;
+import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
+import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.exception.InformationalManager;
+import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 
+/**
+ * 
+ * This class has the implementation for MOLSA MOI batch which would compare
+ * evidence data with MOI table data.
+ * 
+ */
+@SuppressWarnings("restriction")
 public class MOLSAMoiBatchStream extends
 		curam.molsa.moi.base.MOLSAMoiBatchStream {
 
+	/**
+	 * This method takes BatchProcessStreamKey and parameter and calls
+	 * batchSreamHelper.
+	 * 
+	 * @param batchProcessStreamKey
+	 *            BatchProcessStreamKey
+	 * @return void
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General Exception
+	 */
 	@Override
 	public void process(BatchProcessStreamKey batchProcessStreamKey)
 			throws AppException, InformationalException {
@@ -73,36 +100,75 @@ public class MOLSAMoiBatchStream extends
 		MOLSAMoiBatchStreamWrapper molsaMoiBatchStream = new MOLSAMoiBatchStreamWrapper(
 				this);
 		SecurityImplementationFactory.register();
-		if (batchProcessStreamKey.instanceID.length() == 0)
+		if (batchProcessStreamKey.instanceID.length() == 0) {
 			batchProcessStreamKey.instanceID = BATCHPROCESSNAME.MOLSA_MOI;
+		}
 		batchStreamHelper.runStream(batchProcessStreamKey, molsaMoiBatchStream);
-
 	}
 
+	/**
+	 * 
+	 * This method collects the skipped record details and updated the skipped
+	 * record count and returns the count.
+	 * 
+	 * @param skippedCasesCount
+	 *            int
+	 * @return String
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General Exception
+	 */
 	@Override
 	public String getChunkResult(int skippedCasesCount) throws AppException,
 			InformationalException {
 		StringBuffer result = new StringBuffer();
-
+		// Initialise the count and keep incrementing upon receiving data
 		int skippedRecordsCount = 0;
 		MOLSAInformationProviderProcessChunkResult.recordsSkippedCount += skippedRecordsCount;
 		result.append(MOLSAInformationProviderProcessChunkResult.recordsSkippedCount);
 		MOLSAInformationProviderProcessChunkResult.recordsSkippedCount = 0;
 		return result.toString();
-
 	}
 
+	/**
+	 * 
+	 * This method is used to process skipped cases it takes
+	 * batchProcessingSkippedCases as parameter.
+	 * 
+	 * @param batchProcessingSkippedRecordList
+	 *            BatchProcessingSkippedRecordList
+	 * @return void
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General Exception
+	 */
 	@Override
 	public void processSkippedCases(
 			BatchProcessingSkippedRecordList batchProcessingSkippedRecordList)
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * This method has the implementation of MOI batch. It would compare the
+	 * details of name, birth and death and gender evidences with the date in
+	 * the MOI table.
+	 * 
+	 * @param batchProcessingID
+	 *            BatchProcessingID
+	 * @param MOLSAMoiDtls
+	 *            MOLSAMoiDtls
+	 * @return BatchProcessingSkippedRecord
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General Exception
+	 */
 	@Override
 	public BatchProcessingSkippedRecord processRecord(
-			BatchProcessingID batchProcessingID, MOLSAMoiDtls MOLSAMoiDtls)
+			BatchProcessingID batchProcessingID, MOLSAMoiDtls moiDtls)
 			throws AppException, InformationalException {
 
 		BatchProcessingSkippedRecord batchProcessingSkippedRecord = new BatchProcessingSkippedRecord();
@@ -110,16 +176,20 @@ public class MOLSAMoiBatchStream extends
 		MOLSAMoiKey moiKey = new MOLSAMoiKey();
 		moiKey.qid = String.valueOf(batchProcessingID.recordID);
 		try {
+			// read the reference number using the qid
 			Person person = PersonFactory.newInstance();
 			PersonSearchKey1 paramPersonSearchKey1 = new PersonSearchKey1();
 			paramPersonSearchKey1.personSearchKey.referenceNumber = moiKey.qid;
 
 			MOLSAMoi molsaMoi = MOLSAMoiFactory.newInstance();
 			MOLSAMoiDtls molsaMoiDtls = molsaMoi.read(moiKey);
-
+			@SuppressWarnings("unused")
+			InformationalManager informationalManager = new InformationalManager();
+			TransactionInfo.setInformationalManager();
 			PersonSearchDetailsResult personDetailsList = person
 					.searchPerson(paramPersonSearchKey1);
 
+			// Get the concern role id from personDetailsList
 			long concernRoleID = 0;
 			for (PersonSearchDetails personDetails : personDetailsList.personSearchResult.dtlsList
 					.items()) {
@@ -173,11 +243,12 @@ public class MOLSAMoiBatchStream extends
 					// To concat the names given by the moi to check with
 					// registration details
 					if (!molsaMoiDtls.secondName_ar.isEmpty()) {
-						middleName = molsaMoiDtls.secondName_ar + " ";
+						middleName = molsaMoiDtls.secondName_ar
+								+ CuramConst.gkSpace;
 					}
 					if (!molsaMoiDtls.thirdName_ar.isEmpty()) {
 						middleName = middleName + molsaMoiDtls.thirdName_ar
-								+ " ";
+								+ CuramConst.gkSpace;
 					}
 
 					if (!molsaMoiDtls.fourthName_ar.isEmpty()) {
@@ -200,15 +271,16 @@ public class MOLSAMoiBatchStream extends
 							idAndNameDetails.name);
 
 					// Compare the person dob details with moi dob details
-					if (!readEvidenceDetails.dtls.equals(null)) {
+					if (!(readEvidenceDetails.dtls == null)) {
 
 						String dateStringInNewFormat = molsaMoiDtls.dateOfBirth
 								.toString();
 
+						String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
+						
 						SimpleDateFormat originalFormatter = new SimpleDateFormat(
-								"yyyyMMdd");
-						SimpleDateFormat newFormatter = new SimpleDateFormat(
-								"MM/dd/yyyy");
+								MOLSAConstants.kdateRequired);
+						SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
 
 						// parsing date string using new format
 						ParsePosition pos = new ParsePosition(0);
@@ -220,23 +292,25 @@ public class MOLSAMoiBatchStream extends
 
 						if (!dateStringInOriginalFormat
 								.equals(readEvidenceDetails.dtls
-										.getAttribute("dateOfBirth").getValue()
-										.toString())) {
+										.getAttribute(
+												MOLSAConstants.dateOfBirth)
+										.getValue().toString())) {
 							result = true;
 						}
 
 					}
 
 					// Compare the gender details with moi gender details
-					if (!readEvidenceDetails2.dtls.equals(null)) {
+					if (!(readEvidenceDetails2.dtls == null)) {
 						if (!genderCode.equals(readEvidenceDetails2.dtls
-								.getAttribute("gender").getValue().toString()) ){
+								.getAttribute(MOLSAConstants.gender).getValue()
+								.toString())) {
 							result = true;
 						}
 					}
 
 					// Compare the person name details with moi name details
-					if (!readPersonDetails.personFurtherDetails.equals(null)) {
+					if (!(readPersonDetails.personFurtherDetails == null)) {
 
 						if (!readPersonDetails.personFurtherDetails.otherForename
 								.equals(middleName)) {
@@ -253,10 +327,11 @@ public class MOLSAMoiBatchStream extends
 							result = true;
 						}
 					}
-
-					if ((!readPersonDetails.personFurtherDetails.equals(null))
-							&& (!readEvidenceDetails.dtls.equals(null))
-							&& (!readEvidenceDetails2.dtls.equals(null))) {
+					// Check if name, birth and death evidence and gender
+					// evidence has been compared with the MOI data.
+					if ((!(readPersonDetails.personFurtherDetails == null))
+							&& (!(readEvidenceDetails.dtls == null))
+							&& (!(readEvidenceDetails2.dtls == null))) {
 
 						// Update the batch run date on the MOI table if the
 						// record
@@ -265,9 +340,10 @@ public class MOLSAMoiBatchStream extends
 								.read(moiKey);
 						molsaMoiDataDtls.batchRunDate = Date.getCurrentDate();
 						molsaMoiData.modify(moiKey, molsaMoiDataDtls);
-
+						// If there is any mismatch of data in the moi and
+						// evidences
 						if (result == true) {
-							String Name = idAndNameDetails.name;
+							String name = idAndNameDetails.name;
 
 							Notification notificationObj = NotificationFactory
 									.newInstance();
@@ -283,13 +359,33 @@ public class MOLSAMoiBatchStream extends
 							AppException message1 = new AppException(
 									MOLSANOTIFICATION.MOI_UPDATED);
 							message1.arg(caseDtls.caseReference);
-							message1.arg(Name);
+							message1.arg(name);
 
 							notificationStruct.taskDtls.subject = message1
 									.getMessage(TransactionInfo
 											.getProgramLocale());
 							struct.dtls = notificationStruct;
 							notificationObj.sendCaseOwnerNotification(struct);
+
+							// Code to send call SMS interface and select a
+							// correct message.
+							curam.molsa.sms.sl.intf.MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory
+									.newInstance();
+							curam.molsa.sms.sl.struct.MOLSAMessageTextKey molsaMessageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
+							molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
+							molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+							curam.molsa.sms.sl.struct.MOLSAMessageText messageText = molsasmsUtilObj
+									.getSMSMessageText(molsaMessageTextKey);
+							MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+							// Set the message details.
+							concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+							concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
+									.valueOf(concernRoleID);
+							// Pointing to the message template.
+							concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+							molsasmsUtilObj
+									.sendSMS(concernRoleListAndMessageTextDetails);
+
 						}
 					}
 
@@ -299,10 +395,27 @@ public class MOLSAMoiBatchStream extends
 			batchProcessingSkippedRecord.recordID = batchProcessingID.recordID;
 			batchProcessingSkippedRecord.errorMessage = e.getMessage();
 		}
-
 		return batchProcessingSkippedRecord;
-
 	}
+
+	/**
+	 * Reads the active case evidence details and evidence type will be
+	 * specified in caseEvidence.
+	 * 
+	 * @param caseID
+	 *            Long
+	 * @param caseEvidence
+	 *            CASEEVIDENCEEntry
+	 * @param caseParticipantRoleID
+	 *            Long
+	 * @param participant
+	 *            String
+	 * @return ReadEvidenceDetails
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General Exception
+	 */
 
 	private ReadEvidenceDetails readCaseEvidenceDetails(final Long caseID,
 			final CASEEVIDENCEEntry caseEvidence,
@@ -356,7 +469,8 @@ public class MOLSAMoiBatchStream extends
 							.convert(dynamicEvidenceDataDetails
 									.getAttribute(MOLSAConstants.participant));
 				}
-
+				// Return the dynamic evidence matching the case participant
+				// role ID
 				if (caseParticipantRoleID.equals(caseparticipantRoleID)) {
 					return evidenceDetails;
 				}

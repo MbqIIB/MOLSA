@@ -96,7 +96,7 @@
       </timelineoperation>
     </derivation>
   </Attribute>
-  <Attribute name="amountList">
+ <Attribute name="amountList">
     <Annotations>
       <Display domain="CURAM_AMOUNT"/>
     </Annotations>
@@ -109,29 +109,28 @@
     </type>
     <derivation>
       <timelineoperation>
-        <filter>
-          <list>
+        <fixedlist>
+          <listof>
+            <javaclass name="Number"/>
+          </listof>
+          <members>
             <intervalvalue>
-              <reference attribute="amountList">
-                <create ruleclass="AmountCalculator" ruleset="SocialAssistanceRuleSet">
-                  <reference attribute="primaryClientCPRRecord"/>
-                  <reference attribute="eligibilityUnitMembers"/>
-                </create>
+              <reference attribute="primaryBeneficiaryAmount">
+                <intervalvalue>
+                  <reference attribute="divorcedLadyEligibilityUnitCalculator">
+                    <reference attribute="divorcedLadyProgramCalculator">
+                      <reference attribute="productCase"/>
+                    </reference>
+                  </reference>
+                </intervalvalue>
               </reference>
             </intervalvalue>
-          </list>
-          <listitemexpression>
-            <not>
-              <equals>
-                <null/>
-                <current/>
-              </equals>
-            </not>
-          </listitemexpression>
-        </filter>
+          </members>
+        </fixedlist>
       </timelineoperation>
     </derivation>
   </Attribute>
+
   <Attribute name="totalIncomeTimeline">
     <Annotations>
       <Display domain="CURAM_AMOUNT"/>

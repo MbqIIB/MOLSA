@@ -2,7 +2,10 @@
   <Model>
     <Attributes>
       <Attribute>
-        <RelatedCPAttribute cpRoleType="MEM" name="participant" participantType="Person"/>
+        <RelatedCPAttribute cpRoleType="MEM" name="participant" participantType="Person"
+        >
+       
+        </RelatedCPAttribute>
       </Attribute>
       
       <Attribute>
@@ -33,6 +36,13 @@
           <CPSearchType code="MEM"/>
         </RelatedCPAttribute>
       </Attribute>
+      <Attribute>
+        <DataAttribute name="qid">
+          <DomainType dataType="String">
+            <StringOptions maxSize="11"/>
+          </DomainType>
+        </DataAttribute>
+      </Attribute>
     </Attributes>
     <Relationships/>
   </Model>
@@ -54,6 +64,7 @@
         </DuplicateValidator>
       </Validator>
     </PatternValidations>
+    <CustomRulesValidation ruleSetName="MolsaAbsentPersonValidationRuleSet"/>
   </Validations>
    <SummaryInformation>
     <SummaryRuleset ruleSetName="AbsentFatherSummaryRuleSet"/>
@@ -68,9 +79,19 @@
       </RelCPCluster>
     </Cluster>  
     <Cluster>
-      <RelCPCluster fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="multiple" showParticipantTypeFilter="true" useSingleName="false">
+      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
+        <StandardClusterField>
+          <StandardField modifiable="true" source="qid" useDefault="true">
+            <Label id="Field.Label.ID256"/>
+          </StandardField>
+        </StandardClusterField>
+      </StandardCluster>
+    </Cluster>
+    <Cluster>
+      <RelCPCluster fullCreateParticipant="true" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="multiple" showParticipantTypeFilter="true" useSingleName="false">
         <StandardField source="absentPerson"/>
         <LabelName id="Name.Label.ID5"/>
+        <DescriptionName id="Name.Description.ID"/>
         <FirstName id="First.Name.Label.ID5"/>
         <SecondName id="Second.Name.Label.ID5"/>
       </RelCPCluster>

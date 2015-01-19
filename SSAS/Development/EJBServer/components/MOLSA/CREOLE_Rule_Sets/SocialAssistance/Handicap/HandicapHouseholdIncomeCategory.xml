@@ -212,27 +212,26 @@
     </type>
     <derivation>
       <timelineoperation>
-        <filter>
-          <list>
+        <fixedlist>
+          <listof>
+            <javaclass name="Number"/>
+          </listof>
+          <members>
             <intervalvalue>
-              <reference attribute="amountList">
-                <create ruleclass="AmountCalculator" ruleset="SocialAssistanceRuleSet">
-                  <reference attribute="primaryClientCPRRecord"/>
-                  <reference attribute="eligibilityUnitMembers"/>
-                </create>
+              <reference attribute="primaryBeneficiaryAmount">
+                <intervalvalue>
+                  <reference attribute="handicapEligibilityUnitCalculator">
+                    <reference attribute="handicapProgramCalculator">
+                      <reference attribute="productCase"/>
+                    </reference>
+                  </reference>
+                </intervalvalue>
               </reference>
             </intervalvalue>
-          </list>
-          <listitemexpression>
-            <not>
-              <equals>
-                <null/>
-                <current/>
-              </equals>
-            </not>
-          </listitemexpression>
-        </filter>
+          </members>
+        </fixedlist>
       </timelineoperation>
     </derivation>
   </Attribute>
+
 </Class>

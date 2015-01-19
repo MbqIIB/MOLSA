@@ -49,11 +49,22 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.type.Date;
 
+/**
+ * 
+ * Tests information provider batch for education evidence update.
+ * 
+ */
 public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
 
+	/**
+	 * 
+	 * Constructor of the class.
+	 * 
+	 * @param arg0
+	 *            String
+	 */
 	public MOLSAInformationProviderEducationTest(String arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
@@ -94,7 +105,6 @@ public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
 	@Override
 	protected void addIntakeApplicant(Application application)
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		createIntakeApplicant(application.getID(), MAHEENA_UNIQUE_NAME,
 				APPLICANTROLEEntry.PRIMARY_APPLICANT);
 
@@ -116,7 +126,6 @@ public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
 	@Override
 	protected void addEvidence(CaseKey caseKey) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 		long participantid = getParticipantRoleID(MAHEENA_UNIQUE_NAME).participantRoleID;
 		long caseParticipantRoleID = getCaseParticipantRoleID(MAHEENA_UNIQUE_NAME).caseParticipantRoleID;
 		long sisterwifeparticipantid = getParticipantRoleID(TASNEEM_UNIQUE_NAME).participantRoleID;
@@ -206,7 +215,6 @@ public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
 	@Override
 	protected void addCaseMember(Application application) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 		Date currentDate = Date.getCurrentDate();
 		PersonRegistrationDetails registrationIDDetails = new PersonRegistrationDetails();
 		registrationIDDetails.currentMaritalStatus = MARITALSTATUS.DESERTED;
@@ -232,7 +240,6 @@ public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
 	@Override
 	protected List<HouseholdUnit> getExpectedHouseholdUnits()
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		List<HouseholdUnit> householdUnitList = new ArrayList<HouseholdUnit>();
 		List<Long> mandatoryMembers = new ArrayList<Long>();
 
@@ -353,7 +360,6 @@ public class MOLSAInformationProviderEducationTest extends CERScenarioTestBase {
 	@Override
 	protected void postAssertionOnCase(CaseKey caseKey) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -1626,9 +1626,17 @@
         <javaclass name="curam.creole.value.Message"/>
       </type>
       <derivation>
+        <reference attribute="descriptionNew"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="descriptionNew">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
         <XmlMessage>
           <replace>
-            <reference attribute="memberFullName"/>
+            <reference attribute="firstName"/>
           </replace>
         </XmlMessage>
       </derivation>
@@ -1649,36 +1657,7 @@
         <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="memberFullName">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <property name="toString">
-          <object>
-            <concat>
-              <fixedlist>
-                <listof>
-                  <javaclass name="Object"/>
-                </listof>
-                <members>
-                  <reference attribute="firstName"/>
-                </members>
-              </fixedlist>
-            </concat>
-          </object>
-        </property>
-      </derivation>
-    </Attribute>
     <Attribute name="firstName">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="lastName">
       <type>
         <javaclass name="String"/>
       </type>
@@ -1788,6 +1767,14 @@
         <specified/>
       </derivation>
     </Attribute>
+    <Attribute name="hasAbsentHusband">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
     <Attribute name="physicallyChallengedStartDate">
       <type>
         <javaclass name="curam.util.type.Date"/>
@@ -1854,7 +1841,7 @@
     </Attribute>
     <Attribute name="isResidingWithPrimaryParticipant">
       <type>
-        <codetableentry table="IEGYesNo"/>
+        <javaclass name="Boolean"/>
       </type>
       <derivation>
         <specified/>
@@ -1874,17 +1861,6 @@
       </type>
       <derivation>
         <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="isSeniorCitizen">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <compare comparison=">">
-          <reference attribute="age"/>
-          <Number value="60"/>
-        </compare>
       </derivation>
     </Attribute>
     <Attribute name="homePhoneCode">
@@ -2074,30 +2050,32 @@
         </equals>
       </derivation>
     </Attribute>
-    <Attribute name="isWidowed">
+    <Attribute name="passesNonFinancials">
       <type>
         <javaclass name="Boolean"/>
       </type>
       <derivation>
-        <equals>
-          <reference attribute="maritalStatus"/>
-          <Code table="MaritalStatus">
-            <String value="MS17000"/>
-          </Code>
-        </equals>
-      </derivation>
-    </Attribute>
-    <Attribute name="isDeserted">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <equals>
-          <reference attribute="maritalStatus"/>
-          <Code table="MaritalStatus">
-            <String value="MS17001"/>
-          </Code>
-        </equals>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <equals>
+                <reference attribute="citizenshipStatus"/>
+                <Code table="CitizenshipCode">
+                  <String value="CC17000"/>
+                </Code>
+              </equals>
+              <equals>
+                <reference attribute="residencyStatus"/>
+                <Code table="MOLSAResidency">
+                  <String value="RD17000"/>
+                </Code>
+              </equals>
+            </members>
+          </fixedlist>
+        </all>
       </derivation>
     </Attribute>
   </Class>
@@ -2532,11 +2510,6 @@
           <ruleclass name="Person"/>
         </type>
       </Attribute>
-      <!--<Attribute name="startDate">
-        <type>
-          <javaclass name="curam.util.type.Date"/>
-        </type>
-      </Attribute>-->
     </Initialization>
   </Class>
   <Class name="Address">

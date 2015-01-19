@@ -581,6 +581,11 @@ public class MOLSADatastoreConst {
    * String representing last endDate.
    */
   public static final String qidNumber = "qidNumber";
+  
+  /**
+   * String representing last endDate.
+   */
+  public static final String qid = "qid";
 
   /**
    * String representing preferred language.
@@ -769,5 +774,10 @@ public class MOLSADatastoreConst {
    * Date representing a min date
    */
   public static final Date KValidMinDate = Date.fromISO8601("19000101");
+  /**
+   * Residing with Primary participant
+   */
+  public static String kIsResidingWithPrimaryParticipant="isResidingWithPrimaryParticipant";
+
   
 }

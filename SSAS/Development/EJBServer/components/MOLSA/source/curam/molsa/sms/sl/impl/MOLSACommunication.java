@@ -147,7 +147,10 @@ public class MOLSACommunication {
 		communicationDetails.concernRoleID = smsDetails.clientParticipantRoleID;
 		communicationDetails.subjectText = smsDetails.subject;
 		communicationDetails.communicationText = smsDetails.smsText;
+		communicationDetails.correspondentTypeCode = smsDetails.correspondentType;
+		communicationDetails.communicationStatus = smsDetails.communicationStatus;
 		communicationDetails.caseID = smsDetails.caseID;
+		communicationDetails.phoneNumber = smsDetails.phoneNumber;
 		// populate the user name
 		communicationDetails.userName = curam.util.transaction.TransactionInfo
 				.getProgramUser();
@@ -158,8 +161,7 @@ public class MOLSACommunication {
 		ConcernRoleKey roleKey = new ConcernRoleKey();
 		roleKey.concernRoleID = smsDetails.clientParticipantRoleID;
 		long phNumberID = 0l;
-		String phNumber = (getPersonPreferredPhoneNumber(String
-				.valueOf(smsDetails.clientParticipantRoleID)));
+		String phNumber = smsDetails.phoneNumber;
 		PhoneNumber retrievedPhNumber = null;
 		ConcernRolePhoneNumberDtlsList concernRolePhoneNumberDtlsList = ConcernRolePhoneNumberFactory
 				.newInstance().searchByConcernRole(roleKey);
@@ -167,9 +169,11 @@ public class MOLSACommunication {
 		for (ConcernRolePhoneNumberDtls concernRolePhoneNumberDtls : concernRolePhoneNumberDtlsList.dtls) {
 			retrievedPhNumber = phoneNumberDAO
 					.get(concernRolePhoneNumberDtls.phoneNumberID);
+			if(!phNumber.equals("")){
 			if (Long.parseLong(phNumber) == Long.parseLong(retrievedPhNumber
 					.getNumber())) {
-				phNumberID = retrievedPhNumber.getID();
+				phNumberID = concernRolePhoneNumberDtls.phoneNumberID;
+			}
 			}
 		}
 		communicationContactKey.phoneNumberID = phNumberID;
@@ -290,11 +294,12 @@ public class MOLSACommunication {
 		concernRoleCommunicationDtls.caseID = commKey.caseID;
 		concernRoleCommunicationDtls.concernRoleID = commDetails.concernRoleID;
 		concernRoleCommunicationDtls.correspondentConcernRoleID = commDetails.concernRoleID;
+		concernRoleCommunicationDtls.correspondentTypeCode = commDetails.correspondentTypeCode;
 		concernRoleCommunicationDtls.attachmentInd = commDetails.attachmentInd;
 		concernRoleCommunicationDtls.communicationFormat = commDetails.communicationFormat;
 		concernRoleCommunicationDtls.addressID = contactKey.addressID;
 		concernRoleCommunicationDtls.phoneNumberID = contactKey.phoneNumberID;
-		concernRoleCommunicationDtls.communicationStatus = COMMUNICATIONSTATUS.SENT;
+		concernRoleCommunicationDtls.communicationStatus = commDetails.communicationStatus;
 		concernRoleCommunicationDtls.communicationDate = Date.getCurrentDate();
 		ConcernRoleKey concernRoleKey = new ConcernRoleKey();
 		concernRoleKey.concernRoleID = commDetails.concernRoleID;

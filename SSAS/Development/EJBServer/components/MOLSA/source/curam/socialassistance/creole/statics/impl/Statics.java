@@ -2,12 +2,19 @@ package curam.socialassistance.creole.statics.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.Comparator;
+import curam.core.impl.CuramConst;
+import curam.core.struct.PersonRegistrationDetails;
 import curam.creole.execution.RuleObject;
 import curam.creole.execution.session.Session;
+import curam.creole.value.BoundedInterval;
 import curam.creole.value.Interval;
 import curam.creole.value.Timeline;
+import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.type.Date;
@@ -57,10 +64,11 @@ public final class Statics {
 		return new Date(dateTime.getCalendar());
 	}
 
-	public static Timeline<Integer> yearlyAnniversaryTimeline(Session session,
+	public static Timeline<Number> yearlyAnniversaryTimeline(Session session,
 			Date startDate) {
 		int intNumberOfAnniversaries = 110;
-
+	    final List<Interval<Number>> resultIntervals = new ArrayList<Interval<Number>>();
+		
 		List anniversaryIntervals = new ArrayList(112);
 
 		anniversaryIntervals.add(new Interval(null, Integer.valueOf(0)));
@@ -73,9 +81,48 @@ public final class Statics {
 			anniversaryIntervals.add(new Interval(anniversaryDate, Integer
 					.valueOf(anniversary)));
 		}
+		Date intervalStartDate = null;
+		Number fistinterval = null;
+		final SortedSet<Date> sortedStartDates = new TreeSet<Date>(
+				new Comparator<Date>() {
 
-		Timeline anniversaryTimeline = new Timeline(anniversaryIntervals);
-		return anniversaryTimeline;
+					public int compare(final Date lhs, final Date rhs) {
+						return lhs.compareTo(rhs);
+					}
+				});
+
+		Timeline<Number> anniversaryTimeline = new Timeline(
+				anniversaryIntervals);
+
+		for (BoundedInterval<Number> interval : anniversaryTimeline.intervals()) {
+
+			intervalStartDate = interval.startDate();
+			if (intervalStartDate == null) {
+				fistinterval = interval.value();
+			}
+			if (intervalStartDate != null) {
+
+				if(interval.value().doubleValue()==17 || interval.value().doubleValue()==18 || interval.value().doubleValue()==60){
+					intervalStartDate = shiftToStartOfNextMonth(intervalStartDate);
+					sortedStartDates.add(intervalStartDate);
+				}
+				else{
+					sortedStartDates.add(intervalStartDate);
+				}
+				
+			}
+		}
+		Iterator<Date> iterator = sortedStartDates.iterator();
+		resultIntervals.add(new Interval<Number>(null, fistinterval));
+
+		while (iterator.hasNext()) {
+			final Date startDate1 = iterator.next();
+			resultIntervals.add(new Interval<Number>(startDate1, anniversaryTimeline
+					.valueOn(startDate1)));
+		}
+		Timeline<Number> ageTimeline = new Timeline<Number>(resultIntervals);
+
+		return ageTimeline;
 	}
 
 	/**
@@ -169,6 +216,36 @@ public final class Statics {
 	public static int getDifferenceInDaysFromCurrentDate(Session session,
 			final Date startDate) {
 		return Date.getCurrentDate().subtract(startDate);
+	}
+
+	public static Boolean validateQIDNumber(Session session, String qidNumber,
+			String absentPerson) throws AppException, InformationalException {
+
+		MOLSAParticipantHelper molsaParticipantHelper = new MOLSAParticipantHelper();
+		PersonRegistrationDetails personDetails = new PersonRegistrationDetails();
+		if (qidNumber.isEmpty()) {
+			return false;
+		}
+		personDetails = molsaParticipantHelper.getMOIDetailsByQID(qidNumber);
+		String concernRoleName = null;
+		String name[] = absentPerson.split(CuramConst.gkSpace);
+		int i = name.length;
+		if (i == 2) {
+			if (name[0].equalsIgnoreCase(personDetails.firstForename)
+					&& name[1].equalsIgnoreCase(personDetails.surname)) {
+				return false;
+			} else {
+				return true;
+			}
+		} else if (i == 1) {
+			if (name[0].equalsIgnoreCase(personDetails.firstForename)
+					|| name[0].equalsIgnoreCase(personDetails.surname)) {
+				return false;
+			} else {
+				return true;
+			}
+		} else
+			return false;
 	}
 
 }

@@ -1,6 +1,7 @@
 package curam.molsa.core.sl.impl;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.inject.Inject;
@@ -80,7 +81,14 @@ import curam.message.BPOCASEEVENTS;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.BPOROUTEPRODUCTDELIVERYAPPROVAL;
 import curam.message.GENERALCASE;
+import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
+import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSAConstants;
+import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
+import curam.molsa.sms.sl.intf.MOLSASMSUtil;
+import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
+import curam.molsa.sms.sl.struct.MOLSAMessageText;
+import curam.molsa.sms.sl.struct.MOLSAMessageTextKey;
 import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
 import curam.util.events.impl.EventService;
@@ -112,6 +120,23 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 	@Inject
 	private Map<PRODUCTTYPEEntry, MOLSAMilestoneDeliveryCreator> milestoneDeliveryCreator;
+
+	private static Map<PRODUCTTYPEEntry, Long> certEndMSConfig = new HashMap<PRODUCTTYPEEntry, Long>();
+	static {
+		certEndMSConfig.put(PRODUCTTYPEEntry.ANONYMOUSPARENTS, 45019L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.DESERTEDWIFE, 45013L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.DIVORCEDLADY, 45010L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.FAMILYINNEED, 45014L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.FAMILYOFMISSING, 45015L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.FAMILYOFPRISONER, 45011L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.HANDICAP, 45009L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.INCAPABLEOFWORKING, 45005L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.MAIDALLOWANCE, 45012L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.ORPHAN, 45018L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.SENIORCITIZEN, 45017l);
+		certEndMSConfig.put(PRODUCTTYPEEntry.WIDOW, 45016L);
+
+	}
 
 	/**
 	 * Default constructor for the class.
@@ -521,27 +546,8 @@ public abstract class MOLSAMaintainProductDelivery extends
 					deliveryCreator.createMilestoneDelivery(key.caseID);
 				}
 
-				// Create milestone for Certification End date prior
-				// notification
-				Calendar cal2 = certificationEndDate.getCalendar();
-				cal2.add(Calendar.MONTH, -1);
-				certPriorEndDate = new Date(cal2);
-				final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
-						.newInstance();
-				MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
-				milestoneDeliveryDtls.dtls.caseID = key.caseID;
-				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45005L;
-				milestoneDeliveryDtls.dtls.expectedStartDate = Date
-						.getCurrentDate();
-				milestoneDeliveryDtls.dtls.actualStartDate = Date
-						.getCurrentDate();
-				milestoneDeliveryDtls.dtls.expectedEndDate = certPriorEndDate;
-				milestoneDeliveryDtls.dtls.ownerUserName = TransactionInfo
-						.getProgramUser();
-				milestoneDeliveryDtls.dtls.createdBySystem = true;
-				milestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.INPROGRESS
-						.getCode();
-				milestoneDeliveryObj.create(milestoneDeliveryDtls);
+				createCertificationEndPriorMilestone(certificationEndDate,
+						key.caseID);
 
 			}
 			Event event = new Event();
@@ -550,8 +556,59 @@ public abstract class MOLSAMaintainProductDelivery extends
 			event.primaryEventData = key.caseID;
 			EventService.raiseEvent(event);
 
+			 
+      MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
+      MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
+      molsaMessageTextKey.dtls.category=MOLSASMSMessageType.NOTIFICATION;
+      molsaMessageTextKey.dtls.template=MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+      MOLSAMessageText messageText = molsasmsUtilObj.getSMSMessageText(molsaMessageTextKey );
+      MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
+          new MOLSAConcernRoleListAndMessageTextDetails();
+      //Construct the input details
+      concernRoleListAndMessageTextDetails.dtls.smsMessageText=messageText.dtls.smsMessageText;
+      Long concernRoleID = productDeliveryDAO.get(key.caseID).getConcernRole().getID();
+      concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(concernRoleID);
+      //Need to point to the right template
+      concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+      molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+    
 		}
 
+	}
+
+	/**
+	 * Creates Milestone till 1 month prior to Certification end date for the
+	 * specified Product delivery case.
+	 * 
+	 * @param certEndDate
+	 *            Certification End Date
+	 * @param caseID
+	 *            Case ID
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
+	private void createCertificationEndPriorMilestone(Date certEndDate,
+			long caseID) throws AppException, InformationalException {
+		// Create milestone for Certification End date prior
+		// notification
+		Calendar cal2 = certEndDate.getCalendar();
+		cal2.add(Calendar.MONTH, -1);
+		Date certPriorEndDate = new Date(cal2);
+		final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
+				.newInstance();
+		MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
+		milestoneDeliveryDtls.dtls.caseID = caseID;
+		milestoneDeliveryDtls.dtls.milestoneConfigurationID = certEndMSConfig
+				.get(productDeliveryDAO.get(caseID).getProductType());
+		milestoneDeliveryDtls.dtls.expectedStartDate = Date.getCurrentDate();
+		milestoneDeliveryDtls.dtls.actualStartDate = Date.getCurrentDate();
+		milestoneDeliveryDtls.dtls.expectedEndDate = certPriorEndDate;
+		milestoneDeliveryDtls.dtls.ownerUserName = TransactionInfo
+				.getProgramUser();
+		milestoneDeliveryDtls.dtls.createdBySystem = true;
+		milestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.INPROGRESS
+				.getCode();
+		milestoneDeliveryObj.create(milestoneDeliveryDtls);
 	}
 
 }

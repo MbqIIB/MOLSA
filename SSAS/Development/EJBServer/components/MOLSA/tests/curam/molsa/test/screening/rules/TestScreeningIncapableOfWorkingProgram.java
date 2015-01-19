@@ -48,7 +48,7 @@ public class TestScreeningIncapableOfWorkingProgram extends MOLSAScreeningRulesT
     IncapableOfWorkingProgramCalculator incapableOfWorkingProgramCalculator = IncapableOfWorkingProgramCalculator_Factory
         .getFactory().newInstance(getSession());
     incapableOfWorkingProgramCalculator.personList().specifyValue(personList);
-    assertEquals(Boolean.FALSE,
+    assertEquals(Boolean.TRUE,
         incapableOfWorkingProgramCalculator.getAttributeValue(isEligible).getValue());
 
   }
@@ -58,7 +58,7 @@ public class TestScreeningIncapableOfWorkingProgram extends MOLSAScreeningRulesT
     IncapableOfWorkingProgramCalculator incapableOfWorkingProgramCalculator = IncapableOfWorkingProgramCalculator_Factory
         .getFactory().newInstance(getSession());
     incapableOfWorkingProgramCalculator.personList().specifyValue(personList);
-    assertEquals(Boolean.FALSE,
+    assertEquals(Boolean.TRUE,
         incapableOfWorkingProgramCalculator.getAttributeValue(isEligible).getValue());
 
   }

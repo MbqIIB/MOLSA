@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- FamilyInNeed Rule set. -->
 <RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd"
-	name="FamilyInNeedEligibilityAndEntitlementRuleSet">
-	<Class name="FamilyInNeedEligibilityUnitCalculator"
-		extendsRuleSet="SocialAssistanceRuleSet" extends="SocialAssistanceEligibilityUnitCalculator"
+ xsi:noNamespaceSchemaLocation="../../../../../../../Curam/catalog/RuleSet.xsd"
+ name="FamilyInNeedEligibilityAndEntitlementRuleSet">
+	<Class name="FamilyInNeedEligibilityUnitCalculator" extendsRuleSet="SocialAssistanceRuleSet"
+		extends="SocialAssistanceEligibilityUnitCalculator"
 		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
 		<Attribute name="isEligibleTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -17,14 +17,15 @@
 					<all>
 						<fixedlist>
 							<listof>
-								<javaclass name="Boolean" />
+								<javaclass name="Boolean"/>
 							</listof>
 							<members>
 								<intervalvalue>
-									<reference attribute="hasHouseholdPassedNonFinancialTestTimeline" />
+									<reference
+										attribute="hasHouseholdPassedNonFinancialTestTimeline"/>
 								</intervalvalue>
 								<intervalvalue>
-									<reference attribute="hasHouseholdPassedIncomeTestTimeline" />
+									<reference attribute="hasHouseholdPassedIncomeTestTimeline"/>
 								</intervalvalue>
 							</members>
 						</fixedlist>
@@ -36,7 +37,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet" />
+						<ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -46,17 +47,16 @@
 						<list>
 							<intervalvalue>
 								<reference attribute="eligibleMembersTimeline">
-									<reference attribute="eligibilityUnit">
-									</reference>
+									<reference attribute="eligibilityUnit"> </reference>
 								</reference>
 							</intervalvalue>
 						</list>
 						<listitemexpression>
 							<not>
 								<equals>
-									<null />
+									<null/>
 									<reference attribute="caseParticipantRoleRecord">
-										<current />
+										<current/>
 									</reference>
 								</equals>
 							</not>
@@ -68,7 +68,7 @@
 		<Attribute name="hasHouseholdPassedNonFinancialTestTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -77,7 +77,7 @@
 						<dynamiclist>
 							<list>
 								<intervalvalue>
-									<reference attribute="eligibilityUnitMembersTimeline" />
+									<reference attribute="eligibilityUnitMembersTimeline"/>
 								</intervalvalue>
 							</list>
 							<listitemexpression>
@@ -86,7 +86,7 @@
 										<create ruleclass="SANonFinancialCPRCalculator"
 											ruleset="SocialAssistanceRuleSet">
 											<reference attribute="caseParticipantRoleRecord">
-												<current />
+												<current/>
 											</reference>
 										</create>
 									</reference>
@@ -100,7 +100,7 @@
 		<Attribute name="unearnedIncomeAmount">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Number" />
+					<javaclass name="Number"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -109,14 +109,14 @@
 						<dynamiclist>
 							<list>
 								<intervalvalue>
-									<reference attribute="eligibilityUnitMembersTimeline" />
+									<reference attribute="eligibilityUnitMembersTimeline"/>
 								</intervalvalue>
 							</list>
 							<listitemexpression>
 								<intervalvalue>
 									<reference attribute="totalIncomeAmounntTimeline">
 										<reference attribute="memberCPRCalculator">
-											<current />
+											<current/>
 										</reference>
 									</reference>
 								</intervalvalue>
@@ -129,17 +129,17 @@
 		<Attribute name="hasHouseholdPassedIncomeTestTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<compare comparison="&gt;">
 						<intervalvalue>
-							<reference attribute="primaryBeneficiaryAmount" />
+							<reference attribute="primaryBeneficiaryAmount"/>
 						</intervalvalue>
 						<intervalvalue>
-							<reference attribute="totalCountableIncomeTimeline" />
+							<reference attribute="totalCountableIncomeTimeline"/>
 						</intervalvalue>
 					</compare>
 				</timelineoperation>
@@ -148,40 +148,40 @@
 		<Attribute name="totalCountableIncomeTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Number" />
+					<javaclass name="Number"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<javaclass name="Number" />
+							<javaclass name="Number"/>
 						</type>
 						<when>
 							<condition>
 								<compare comparison="&gt;">
 									<intervalvalue>
-										<reference attribute="unearnedIncomeAmount" />
+										<reference attribute="unearnedIncomeAmount"/>
 									</intervalvalue>
 									<intervalvalue>
-										<reference attribute="totalExpenseAmountTimeline" />
+										<reference attribute="totalExpenseAmountTimeline"/>
 									</intervalvalue>
 								</compare>
 							</condition>
 							<value>
 								<arithmetic operation="-">
 									<intervalvalue>
-										<reference attribute="unearnedIncomeAmount" />
+										<reference attribute="unearnedIncomeAmount"/>
 									</intervalvalue>
 									<intervalvalue>
-										<reference attribute="totalExpenseAmountTimeline" />
+										<reference attribute="totalExpenseAmountTimeline"/>
 									</intervalvalue>
 								</arithmetic>
 							</value>
 						</when>
 						<otherwise>
 							<value>
-								<Number value="0" />
+								<Number value="0"/>
 							</value>
 						</otherwise>
 					</choose>
@@ -191,7 +191,7 @@
 		<Attribute name="totalExpenseAmountTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Number" />
+					<javaclass name="Number"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -200,14 +200,14 @@
 						<dynamiclist>
 							<list>
 								<intervalvalue>
-									<reference attribute="eligibilityUnitMembersTimeline" />
+									<reference attribute="eligibilityUnitMembersTimeline"/>
 								</intervalvalue>
 							</list>
 							<listitemexpression>
 								<intervalvalue>
 									<reference attribute="totalMonthlyExpenseAmountTimeline">
 										<reference attribute="memberCPRCalculator">
-											<current />
+											<current/>
 										</reference>
 									</reference>
 								</intervalvalue>
@@ -219,13 +219,13 @@
 		</Attribute>
 		<Attribute name="caseHeaderRecord">
 			<type>
-				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet" />
+				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet"/>
 			</type>
 			<derivation>
 				<singleitem onEmpty="error" onMultiple="error">
 					<readall ruleclass="CaseHeader" ruleset="CaseEntitiesRuleSet">
 						<match retrievedattribute="caseID">
-							<reference attribute="caseID" />
+							<reference attribute="caseID"/>
 						</match>
 					</readall>
 				</singleitem>
@@ -233,7 +233,7 @@
 		</Attribute>
 		<Attribute name="primaryClientCPRRecord">
 			<type>
-				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 			</type>
 			<derivation>
 				<singleitem onEmpty="error" onMultiple="returnFirst">
@@ -241,7 +241,7 @@
 						<list>
 							<readall ruleclass="CaseParticipantRole" ruleset="CaseEntitiesRuleSet">
 								<match retrievedattribute="caseID">
-									<reference attribute="caseID" />
+									<reference attribute="caseID"/>
 								</match>
 							</readall>
 						</list>
@@ -249,39 +249,39 @@
 							<all>
 								<fixedlist>
 									<listof>
-										<javaclass name="Boolean" />
+										<javaclass name="Boolean"/>
 									</listof>
 									<members>
 										<equals>
 											<reference attribute="participantRoleID">
-												<current />
+												<current/>
 											</reference>
 											<reference attribute="concernRoleID">
-												<reference attribute="caseHeaderRecord" />
+												<reference attribute="caseHeaderRecord"/>
 											</reference>
 										</equals>
 										<any>
 											<fixedlist>
 												<listof>
-													<javaclass name="Boolean" />
+												<javaclass name="Boolean"/>
 												</listof>
 												<members>
-													<equals>
-														<reference attribute="typeCode">
-															<current />
-														</reference>
-														<Code table="CaseParticipantRoleType">
-															<String value="PRI" />
-														</Code>
-													</equals>
-													<equals>
-														<reference attribute="typeCode">
-															<current />
-														</reference>
-														<Code table="CaseParticipantRoleType">
-															<String value="MEM" />
-														</Code>
-													</equals>
+												<equals>
+												<reference attribute="typeCode">
+												<current/>
+												</reference>
+												<Code table="CaseParticipantRoleType">
+												<String value="PRI"/>
+												</Code>
+												</equals>
+												<equals>
+												<reference attribute="typeCode">
+												<current/>
+												</reference>
+												<Code table="CaseParticipantRoleType">
+												<String value="MEM"/>
+												</Code>
+												</equals>
 												</members>
 											</fixedlist>
 										</any>
@@ -296,7 +296,7 @@
 		<Attribute name="headOfHouseholdRecord">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet" />
+					<ruleclass name="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -306,14 +306,14 @@
 							<list>
 								<readall ruleclass="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet">
 									<match retrievedattribute="caseID">
-										<reference attribute="caseID" />
+										<reference attribute="caseID"/>
 									</match>
 								</readall>
 							</list>
 							<listitemexpression>
 								<intervalvalue>
 									<reference attribute="exists">
-										<current />
+										<current/>
 									</reference>
 								</intervalvalue>
 							</listitemexpression>
@@ -325,22 +325,22 @@
 		<Attribute name="headOfHouseholdCPRRecord">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+							<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 						</type>
 						<when>
 							<condition>
 								<not>
 									<equals>
-										<null />
+										<null/>
 										<intervalvalue>
-											<reference attribute="headOfHouseholdRecord" />
+											<reference attribute="headOfHouseholdRecord"/>
 										</intervalvalue>
 									</equals>
 								</not>
@@ -348,14 +348,14 @@
 							<value>
 								<reference attribute="related_participant">
 									<intervalvalue>
-										<reference attribute="headOfHouseholdRecord" />
+										<reference attribute="headOfHouseholdRecord"/>
 									</intervalvalue>
 								</reference>
 							</value>
 						</when>
 						<otherwise>
 							<value>
-								<reference attribute="primaryClientCPRRecord" />
+								<reference attribute="primaryClientCPRRecord"/>
 							</value>
 						</otherwise>
 					</choose>
@@ -366,7 +366,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -377,12 +377,12 @@
 							<dynamiclist>
 								<list>
 									<intervalvalue>
-										<reference attribute="eligibilityUnitMembersTimeline" />
+										<reference attribute="eligibilityUnitMembersTimeline"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<reference attribute="caseParticipantRoleRecord">
-										<current />
+										<current/>
 									</reference>
 								</listitemexpression>
 							</dynamiclist>
@@ -390,8 +390,8 @@
 						<listitemexpression>
 							<not>
 								<equals>
-									<null />
-									<current />
+									<null/>
+									<current/>
 								</equals>
 							</not>
 						</listitemexpression>
@@ -402,40 +402,40 @@
 		<Attribute name="monthlyAmountTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Number" />
+					<javaclass name="Number"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<javaclass name="Number" />
+							<javaclass name="Number"/>
 						</type>
 						<when>
 							<condition>
 								<compare comparison="&lt;">
 									<intervalvalue>
-										<reference attribute="totalCountableIncomeTimeline" />
+										<reference attribute="totalCountableIncomeTimeline"/>
 									</intervalvalue>
 									<intervalvalue>
-										<reference attribute="primaryBeneficiaryAmount" />
+										<reference attribute="primaryBeneficiaryAmount"/>
 									</intervalvalue>
 								</compare>
 							</condition>
 							<value>
 								<arithmetic operation="-">
 									<intervalvalue>
-										<reference attribute="primaryBeneficiaryAmount" />
+										<reference attribute="primaryBeneficiaryAmount"/>
 									</intervalvalue>
 									<intervalvalue>
-										<reference attribute="totalCountableIncomeTimeline" />
+										<reference attribute="totalCountableIncomeTimeline"/>
 									</intervalvalue>
 								</arithmetic>
 							</value>
 						</when>
 						<otherwise>
 							<value>
-								<Number value="0" />
+								<Number value="0"/>
 							</value>
 						</otherwise>
 					</choose>
@@ -445,7 +445,7 @@
 		<Attribute name="primaryBeneficiaryAmount">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Number" />
+					<javaclass name="Number"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -453,11 +453,12 @@
 					<sum>
 						<intervalvalue>
 							<reference attribute="amountList">
-								<create ruleclass="AmountCalculator" ruleset="SocialAssistanceRuleSet">
+								<create ruleclass="AmountCalculator"
+									ruleset="SocialAssistanceRuleSet">
 									<intervalvalue>
-										<reference attribute="headOfHouseholdCPRRecord" />
+										<reference attribute="headOfHouseholdCPRRecord"/>
 									</intervalvalue>
-									<reference attribute="eligibilityUnitMembers" />
+									<reference attribute="eligibilityUnitMembers"/>
 								</create>
 							</reference>
 						</intervalvalue>
@@ -470,24 +471,24 @@
 		<Initialization>
 			<Attribute name="caseParticipantRoleRecord">
 				<type>
-					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 				</type>
 			</Attribute>
 		</Initialization>
 		<Attribute name="memberCPRCalculator">
 			<type>
-				<ruleclass name="MemberCPRCalculator" ruleset="SocialAssistanceRuleSet" />
+				<ruleclass name="MemberCPRCalculator" ruleset="SocialAssistanceRuleSet"/>
 			</type>
 			<derivation>
 				<create ruleclass="MemberCPRCalculator" ruleset="SocialAssistanceRuleSet">
-					<reference attribute="caseParticipantRoleRecord" />
+					<reference attribute="caseParticipantRoleRecord"/>
 				</create>
 			</derivation>
 		</Attribute>
 		<Attribute name="isMarriedTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -497,10 +498,11 @@
 							<list>
 								<filter>
 									<list>
-										<readall ruleclass="MaritalStatus" ruleset="MaritalStatusDataRuleSet">
+										<readall ruleclass="MaritalStatus"
+											ruleset="MaritalStatusDataRuleSet">
 											<match retrievedattribute="caseID">
 												<reference attribute="caseID">
-													<reference attribute="caseParticipantRoleRecord" />
+												<reference attribute="caseParticipantRoleRecord"/>
 												</reference>
 											</match>
 										</readall>
@@ -508,10 +510,10 @@
 									<listitemexpression>
 										<equals>
 											<reference attribute="caseParticipantRoleID">
-												<reference attribute="caseParticipantRoleRecord" />
+												<reference attribute="caseParticipantRoleRecord"/>
 											</reference>
 											<reference attribute="participant">
-												<current />
+												<current/>
 											</reference>
 										</equals>
 									</listitemexpression>
@@ -521,17 +523,17 @@
 								<all>
 									<fixedlist>
 										<listof>
-											<javaclass name="Boolean" />
+											<javaclass name="Boolean"/>
 										</listof>
 										<members>
 											<equals>
 												<intervalvalue>
-													<reference attribute="maritalStatus">
-														<current />
-													</reference>
+												<reference attribute="maritalStatus">
+												<current/>
+												</reference>
 												</intervalvalue>
 												<Code table="MaritalStatus">
-													<String value="MS2" />
+												<String value="MS2"/>
 												</Code>
 											</equals>
 										</members>
@@ -546,7 +548,7 @@
 		<Attribute name="isFemaleTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -555,12 +557,12 @@
 						<intervalvalue>
 							<reference attribute="gender">
 								<reference attribute="pdcGenderRecord">
-									<reference attribute="memberCPRCalculator" />
+									<reference attribute="memberCPRCalculator"/>
 								</reference>
 							</reference>
 						</intervalvalue>
 						<Code table="Gender">
-							<String value="SX2" />
+							<String value="SX2"/>
 						</Code>
 					</equals>
 				</timelineoperation>
@@ -569,7 +571,7 @@
 		<Attribute name="isEligibleWifeTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -577,22 +579,22 @@
 					<all>
 						<fixedlist>
 							<listof>
-								<javaclass name="Boolean" />
+								<javaclass name="Boolean"/>
 							</listof>
 							<members>
 								<intervalvalue>
 									<reference attribute="householdMemberRecordsExists">
-										<reference attribute="memberCPRCalculator" />
+										<reference attribute="memberCPRCalculator"/>
 									</reference>
 								</intervalvalue>
 								<intervalvalue>
-									<reference attribute="isMarriedTimeline" />
+									<reference attribute="isMarriedTimeline"/>
 								</intervalvalue>
 								<intervalvalue>
-									<reference attribute="isFemaleTimeline" />
+									<reference attribute="isFemaleTimeline"/>
 								</intervalvalue>
 								<intervalvalue>
-									<reference attribute="isAgeBelowSixtyTimeline" />
+									<reference attribute="isAgeBelowSixtyTimeline"/>
 								</intervalvalue>
 							</members>
 						</fixedlist>
@@ -603,7 +605,7 @@
 		<Attribute name="isAgeBelowSixtyTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -611,10 +613,10 @@
 					<compare comparison="&lt;">
 						<intervalvalue>
 							<reference attribute="ageTimeline">
-								<reference attribute="memberCPRCalculator" />
+								<reference attribute="memberCPRCalculator"/>
 							</reference>
 						</intervalvalue>
-						<Number value="60" />
+						<Number value="60"/>
 					</compare>
 				</timelineoperation>
 			</derivation>
@@ -622,7 +624,7 @@
 		<Attribute name="isDependentChildTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -630,18 +632,19 @@
 					<all>
 						<fixedlist>
 							<listof>
-								<javaclass name="Boolean" />
+								<javaclass name="Boolean"/>
 							</listof>
 							<members>
 								<intervalvalue>
 									<reference attribute="householdMemberRecordsExists">
-										<reference attribute="memberCPRCalculator" />
+										<reference attribute="memberCPRCalculator"/>
 									</reference>
 								</intervalvalue>
 								<intervalvalue>
 									<reference attribute="isDependentChildTimeline">
-										<create ruleclass="DependentChildCalculator" ruleset="SocialAssistanceRuleSet">
-											<reference attribute="caseParticipantRoleRecord" />
+										<create ruleclass="DependentChildCalculator"
+											ruleset="SocialAssistanceRuleSet">
+											<reference attribute="caseParticipantRoleRecord"/>
 										</create>
 									</reference>
 								</intervalvalue>
@@ -655,57 +658,77 @@
 		<Attribute name="isMarriedMaleLessThenEighteenAndEnrolledInSchoolTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<javaclass name="Boolean" />
+							<javaclass name="Boolean"/>
 						</type>
 						<when>
 							<condition>
 								<all>
 									<fixedlist>
 										<listof>
-											<javaclass name="Boolean" />
+											<javaclass name="Boolean"/>
 										</listof>
 										<members>
 											<equals>
-												<reference attribute="pdcGenderRecord">
-													<reference attribute="memberCPRCalculator" />
-												</reference>
+                                               <intervalvalue>
+                                               	<reference attribute="gender">
+                                               		<reference attribute="pdcGenderRecord">
+                                               			<reference attribute="memberCPRCalculator"/>
+                                               		</reference>
+                                               	</reference>
+                                               </intervalvalue>
 												<Code table="Gender">
-													<String value="SX1" />
+												<String value="SX1"/>
 												</Code>
 											</equals>
 											<intervalvalue>
-												<reference attribute="isMarriedTimeline" />
+												<reference attribute="isMarriedTimeline"/>
 											</intervalvalue>
-											<compare comparison="&lt;=">
-												<intervalvalue>
-													<reference attribute="ageTimeline">
-														<reference attribute="memberCPRCalculator" />
-													</reference>
-												</intervalvalue>
-												<Number value="18" />
-											</compare>
 										</members>
 									</fixedlist>
 								</all>
 							</condition>
 							<value>
-								<intervalvalue>
-									<reference attribute="hasEnrolledForEducation">
-										<reference attribute="memberCPRCalculator" />
-									</reference>
-								</intervalvalue>
+								<choose>
+									<type>
+										<javaclass name="Boolean"/>
+									</type>
+									<when>
+										<condition>
+											<compare comparison="&lt;=">
+												<intervalvalue>
+													<reference attribute="ageTimeline">
+														<reference attribute="memberCPRCalculator"/>
+													</reference>
+												</intervalvalue>
+												<Number value="18"/>
+											</compare>
+										</condition>
+										<value>
+											<intervalvalue>
+												<reference attribute="hasEnrolledForEducation">
+													<reference attribute="memberCPRCalculator"/>
+												</reference>
+											</intervalvalue>
+										</value>
+									</when>
+									<otherwise>
+										<value>
+											<true/>
+										</value>
+									</otherwise>
+								</choose>
 							</value>
 						</when>
 						<otherwise>
 							<value>
-								<false />
+								<false/>
 							</value>
 						</otherwise>
 					</choose>
@@ -718,28 +741,29 @@
 		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
 		<Attribute name="caseID">
 			<type>
-				<javaclass name="Number" />
+				<javaclass name="Number"/>
 			</type>
 			<derivation>
-				<specified />
+				<specified/>
 			</derivation>
 		</Attribute>
 		<Attribute name="simulatedDeterminationsForFilter">
 			<type>
 				<javaclass name="List">
 					<ruleclass name="SocialAssistanceSimulatedDetermination"
-						ruleset="SocialAssistanceRuleSet" />
+						ruleset="SocialAssistanceRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
-				<specified />
+				<specified/>
 			</derivation>
 		</Attribute>
 		<Attribute name="householdUnits">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+						<ruleclass name="SAHouseholdUnitCalculator"
+							ruleset="SocialAssistanceRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -747,13 +771,14 @@
 				<reference attribute="householdUnits">
 					<create ruleclass="FamilyInNeedHouseholdComposition">
 						<specify attribute="caseID">
-							<reference attribute="caseID" />
+							<reference attribute="caseID"/>
 						</specify>
 						<specify attribute="membersForHouseholdComposition">
 							<reference attribute="membersForHouseholdComposition">
-								<create ruleclass="MembersForHCDetermination" ruleset="SocialAssistanceRuleSet">
-									<reference attribute="caseID" />
-									<reference attribute="simulatedDeterminationsForFilter" />
+								<create ruleclass="MembersForHCDetermination"
+									ruleset="SocialAssistanceRuleSet">
+									<reference attribute="caseID"/>
+									<reference attribute="simulatedDeterminationsForFilter"/>
 								</create>
 							</reference>
 						</specify>
@@ -764,7 +789,7 @@
 		<Attribute name="units">
 			<type>
 				<javaclass name="List">
-					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -772,7 +797,8 @@
 					method="getUniqueRuleObjects">
 					<type>
 						<javaclass name="List">
-							<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+							<ruleclass name="SAHouseholdUnitCalculator"
+								ruleset="SocialAssistanceRuleSet"/>
 						</javaclass>
 					</type>
 					<arguments>
@@ -783,8 +809,8 @@
 										<reference attribute="filteredHouseholdUnits">
 											<create ruleclass="HouseholdUnitsFilterCalculator"
 												ruleset="SocialAssistanceRuleSet">
-												<reference attribute="householdUnits" />
-												<reference attribute="caseID" />
+												<reference attribute="householdUnits"/>
+												<reference attribute="caseID"/>
 											</create>
 										</reference>
 									</intervalvalue>
@@ -794,13 +820,14 @@
 										<property name="size">
 											<object>
 												<intervalvalue>
-													<reference attribute="mandatoryEligibleMembersTimeline">
-														<current />
-													</reference>
+												<reference
+												attribute="mandatoryEligibleMembersTimeline">
+												<current/>
+												</reference>
 												</intervalvalue>
 											</object>
 										</property>
-										<Number value="0" />
+										<Number value="0"/>
 									</compare>
 								</listitemexpression>
 							</filter>
@@ -812,32 +839,32 @@
 		<Attribute name="familyInNeedSimulatedDeterminations">
 			<type>
 				<javaclass name="List">
-					<ruleclass name="FamilyInNeedSimulatedDetermination" />
+					<ruleclass name="FamilyInNeedSimulatedDetermination"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<dynamiclist>
 					<list>
-						<reference attribute="units" />
+						<reference attribute="units"/>
 					</list>
 					<listitemexpression>
 						<create ruleclass="FamilyInNeedSimulatedDetermination">
 							<specify attribute="caseID">
-								<reference attribute="caseID" />
+								<reference attribute="caseID"/>
 							</specify>
 							<specify attribute="unit">
-								<current />
+								<current/>
 							</specify>
 							<specify attribute="isValidUnitTimeline">
 								<timelineoperation>
 									<property name="contains">
 										<object>
 											<intervalvalue>
-												<reference attribute="householdUnits" />
+												<reference attribute="householdUnits"/>
 											</intervalvalue>
 										</object>
 										<arguments>
-											<current />
+											<current/>
 										</arguments>
 									</property>
 								</timelineoperation>
@@ -848,85 +875,85 @@
 			</derivation>
 		</Attribute>
 	</Class>
-	<Class extends="SocialAssistanceSimulatedDetermination"
-		extendsRuleSet="SocialAssistanceRuleSet" name="FamilyInNeedSimulatedDetermination"
+	<Class extends="SocialAssistanceSimulatedDetermination" extendsRuleSet="SocialAssistanceRuleSet"
+		name="FamilyInNeedSimulatedDetermination"
 		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
 		<Attribute name="programRecommendationCase">
 			<type>
-				<ruleclass name="SocialAssistanceProductCase" ruleset="SocialAssistanceRuleSet" />
+				<ruleclass name="SocialAssistanceProductCase" ruleset="SocialAssistanceRuleSet"/>
 			</type>
 			<derivation>
-				<reference attribute="familyInNeedProgramRecommendationCase" />
+				<reference attribute="familyInNeedProgramRecommendationCase"/>
 			</derivation>
 		</Attribute>
 		<Attribute name="familyInNeedProgramRecommendationCase">
 			<type>
-				<ruleclass name="FamilyInNeedProductCase" />
+				<ruleclass name="FamilyInNeedProductCase"/>
 			</type>
 			<derivation>
 				<create ruleclass="FamilyInNeedProductCase">
 					<specify attribute="eligibilityUnit">
-						<reference attribute="unit" />
+						<reference attribute="unit"/>
 					</specify>
 					<specify attribute="productDeliveryCase">
-						<reference attribute="simulatedProductDeliveryCase" />
+						<reference attribute="simulatedProductDeliveryCase"/>
 					</specify>
 					<specify attribute="isValidUnitTimeline">
-						<reference attribute="isValidUnitTimeline" />
+						<reference attribute="isValidUnitTimeline"/>
 					</specify>
 				</create>
 			</derivation>
 		</Attribute>
 		<Attribute name="productID">
 			<type>
-				<javaclass name="Number" />
+				<javaclass name="Number"/>
 			</type>
 			<derivation>
-				<Number value="45006" />
+				<Number value="45006"/>
 			</derivation>
 		</Attribute>
 		<Attribute name="programRecommendationDisplayCases">
 			<type>
 				<javaclass name="List">
 					<ruleclass name="ProgramRecommendationDisplayCase"
-						ruleset="ProgramRecommendationDisplayRuleSet" />
+						ruleset="ProgramRecommendationDisplayRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<fixedlist>
 					<listof>
 						<ruleclass name="ProgramRecommendationDisplayCase"
-							ruleset="ProgramRecommendationDisplayRuleSet" />
+							ruleset="ProgramRecommendationDisplayRuleSet"/>
 					</listof>
 					<members>
-						<reference attribute="familyInNeedSummaryCategory" />
-						<reference attribute="saNonFinancialCategory" />
-						<reference attribute="saHhIncomeCategory" />
+						<reference attribute="familyInNeedSummaryCategory"/>
+						<reference attribute="saNonFinancialCategory"/>
+						<reference attribute="saHhIncomeCategory"/>
 					</members>
 				</fixedlist>
 			</derivation>
 		</Attribute>
 		<Attribute name="familyInNeedSummaryCategory">
 			<type>
-				<ruleclass name="FamilyInNeedSummaryCategory" ruleset="FamilyInNeedDisplayRuleSet" />
+				<ruleclass name="FamilyInNeedSummaryCategory" ruleset="FamilyInNeedDisplayRuleSet"/>
 			</type>
 			<derivation>
 				<create ruleclass="FamilyInNeedSummaryCategory" ruleset="FamilyInNeedDisplayRuleSet">
 					<specify attribute="familyInNeedProductCase">
-						<reference attribute="familyInNeedProgramRecommendationCase" />
+						<reference attribute="familyInNeedProgramRecommendationCase"/>
 					</specify>
 					<specify attribute="productDeliveryCase">
-						<reference attribute="simulatedProductDeliveryCase" />
+						<reference attribute="simulatedProductDeliveryCase"/>
 					</specify>
 					<specify attribute="displayCategoryID">
-						<Number value="4508" />
+						<Number value="4508"/>
 					</specify>
 				</create>
 			</derivation>
 		</Attribute>
 		<Attribute name="saNonFinancialCategory">
 			<type>
-				<ruleclass name="SANonFinancialCategory" ruleset="SocialAssistanceDisplayRuleSet" />
+				<ruleclass name="SANonFinancialCategory" ruleset="SocialAssistanceDisplayRuleSet"/>
 			</type>
 			<derivation>
 				<create ruleclass="SANonFinancialCategory" ruleset="SocialAssistanceDisplayRuleSet">
@@ -934,64 +961,67 @@
 						<create ruleclass="FamilyInNeedNonFinancialCategory"
 							ruleset="FamilyInNeedDisplayRuleSet">
 							<specify attribute="productCase">
-								<reference attribute="familyInNeedProgramRecommendationCase" />
+								<reference attribute="familyInNeedProgramRecommendationCase"/>
 							</specify>
 							<specify attribute="productDeliveryCase">
-								<reference attribute="simulatedProductDeliveryCase" />
+								<reference attribute="simulatedProductDeliveryCase"/>
 							</specify>
 						</create>
 					</specify>
 					<specify attribute="displayCategoryID">
-						<Number value="4500" />
+						<Number value="4500"/>
 					</specify>
 				</create>
 			</derivation>
 		</Attribute>
 		<Attribute name="saHhIncomeCategory">
 			<type>
-				<ruleclass name="SAHouseholdIncomeCategory" ruleset="SocialAssistanceDisplayRuleSet" />
+				<ruleclass name="SAHouseholdIncomeCategory" ruleset="SocialAssistanceDisplayRuleSet"
+				/>
 			</type>
 			<derivation>
-				<create ruleclass="SAHouseholdIncomeCategory" ruleset="SocialAssistanceDisplayRuleSet">
+				<create ruleclass="SAHouseholdIncomeCategory"
+					ruleset="SocialAssistanceDisplayRuleSet">
 					<specify attribute="coverageTypeHouseholdIncomeCategory">
 						<create ruleclass="FamilyInNeedHouseholdIncomeCategory"
 							ruleset="FamilyInNeedDisplayRuleSet">
 							<specify attribute="productCase">
-								<reference attribute="familyInNeedProgramRecommendationCase" />
+								<reference attribute="familyInNeedProgramRecommendationCase"/>
 							</specify>
 							<specify attribute="productDeliveryCase">
-								<reference attribute="simulatedProductDeliveryCase" />
+								<reference attribute="simulatedProductDeliveryCase"/>
 							</specify>
 						</create>
 					</specify>
 					<specify attribute="displayCategoryID">
-						<Number value="4502" />
+						<Number value="4502"/>
 					</specify>
 				</create>
 			</derivation>
 		</Attribute>
 	</Class>
 	<Class extends="SocialAssistanceProductCase" extendsRuleSet="SocialAssistanceRuleSet"
-		name="FamilyInNeedProductCase" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		name="FamilyInNeedProductCase"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
 		<Attribute name="caseID">
 			<type>
-				<javaclass name="Number" />
+				<javaclass name="Number"/>
 			</type>
 			<derivation>
 				<reference attribute="caseID">
-					<reference attribute="productDeliveryCase" />
+					<reference attribute="productDeliveryCase"/>
 				</reference>
 			</derivation>
 		</Attribute>
 		<Attribute name="caseHeaderRecord">
 			<type>
-				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet" />
+				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet"/>
 			</type>
 			<derivation>
 				<singleitem onEmpty="error" onMultiple="error">
 					<readall ruleclass="CaseHeader" ruleset="CaseEntitiesRuleSet">
 						<match retrievedattribute="caseID">
-							<reference attribute="caseID" />
+							<reference attribute="caseID"/>
 						</match>
 					</readall>
 				</singleitem>
@@ -999,7 +1029,7 @@
 		</Attribute>
 		<Attribute name="primaryClientCPRRecord">
 			<type>
-				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 			</type>
 			<derivation>
 				<singleitem onEmpty="error" onMultiple="returnFirst">
@@ -1007,7 +1037,7 @@
 						<list>
 							<readall ruleclass="CaseParticipantRole" ruleset="CaseEntitiesRuleSet">
 								<match retrievedattribute="caseID">
-									<reference attribute="parentIntegratedCaseID" />
+									<reference attribute="parentIntegratedCaseID"/>
 								</match>
 							</readall>
 						</list>
@@ -1015,39 +1045,39 @@
 							<all>
 								<fixedlist>
 									<listof>
-										<javaclass name="Boolean" />
+										<javaclass name="Boolean"/>
 									</listof>
 									<members>
 										<equals>
 											<reference attribute="participantRoleID">
-												<current />
+												<current/>
 											</reference>
 											<reference attribute="concernRoleID">
-												<reference attribute="caseHeaderRecord" />
+												<reference attribute="caseHeaderRecord"/>
 											</reference>
 										</equals>
 										<any>
 											<fixedlist>
 												<listof>
-													<javaclass name="Boolean" />
+												<javaclass name="Boolean"/>
 												</listof>
 												<members>
-													<equals>
-														<reference attribute="typeCode">
-															<current />
-														</reference>
-														<Code table="CaseParticipantRoleType">
-															<String value="PRI" />
-														</Code>
-													</equals>
-													<equals>
-														<reference attribute="typeCode">
-															<current />
-														</reference>
-														<Code table="CaseParticipantRoleType">
-															<String value="MEM" />
-														</Code>
-													</equals>
+												<equals>
+												<reference attribute="typeCode">
+												<current/>
+												</reference>
+												<Code table="CaseParticipantRoleType">
+												<String value="PRI"/>
+												</Code>
+												</equals>
+												<equals>
+												<reference attribute="typeCode">
+												<current/>
+												</reference>
+												<Code table="CaseParticipantRoleType">
+												<String value="MEM"/>
+												</Code>
+												</equals>
 												</members>
 											</fixedlist>
 										</any>
@@ -1061,26 +1091,26 @@
 		</Attribute>
 		<Attribute name="parentIntegratedCaseID">
 			<type>
-				<javaclass name="Number" />
+				<javaclass name="Number"/>
 			</type>
 			<derivation>
 				<choose>
 					<type>
-						<javaclass name="Number" />
+						<javaclass name="Number"/>
 					</type>
 					<when>
 						<condition>
-							<reference attribute="isProductDelivery" />
+							<reference attribute="isProductDelivery"/>
 						</condition>
 						<value>
 							<reference attribute="integratedCaseID">
-								<reference attribute="caseHeaderRecord" />
+								<reference attribute="caseHeaderRecord"/>
 							</reference>
 						</value>
 					</when>
 					<otherwise>
 						<value>
-							<reference attribute="caseID" />
+							<reference attribute="caseID"/>
 						</value>
 					</otherwise>
 				</choose>
@@ -1088,34 +1118,34 @@
 		</Attribute>
 		<Attribute name="isProductDelivery">
 			<type>
-				<javaclass name="Boolean" />
+				<javaclass name="Boolean"/>
 			</type>
 			<derivation>
 				<equals>
 					<reference attribute="caseTypeCode">
-						<reference attribute="caseHeaderRecord" />
+						<reference attribute="caseHeaderRecord"/>
 					</reference>
 					<Code table="CaseTypeCode">
-						<String value="CT2" />
+						<String value="CT2"/>
 					</Code>
 				</equals>
 			</derivation>
 		</Attribute>
 		<Attribute name="familyInNeedHouseholdMember">
 			<type>
-				<ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet" />
+				<ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
 			</type>
 			<derivation>
 				<create ruleclass="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet">
-					<reference attribute="parentIntegratedCaseID" />
-					<reference attribute="primaryClientCPRRecord" />
+					<reference attribute="parentIntegratedCaseID"/>
+					<reference attribute="primaryClientCPRRecord"/>
 				</create>
 			</derivation>
 		</Attribute>
 		<Attribute name="headOfHouseholdRecord">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet" />
+					<ruleclass name="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -1125,14 +1155,14 @@
 							<list>
 								<readall ruleclass="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet">
 									<match retrievedattribute="caseID">
-										<reference attribute="parentIntegratedCaseID" />
+										<reference attribute="parentIntegratedCaseID"/>
 									</match>
 								</readall>
 							</list>
 							<listitemexpression>
 								<intervalvalue>
 									<reference attribute="exists">
-										<current />
+										<current/>
 									</reference>
 								</intervalvalue>
 							</listitemexpression>
@@ -1143,7 +1173,7 @@
 		</Attribute>
 		<Attribute name="eligibilityUnit">
 			<type>
-				<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+				<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
 			</type>
 			<derivation>
 				<singleitem onEmpty="returnNull" onMultiple="returnLast">
@@ -1151,17 +1181,18 @@
 						method="getUniqueRuleObjects">
 						<type>
 							<javaclass name="List">
-								<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+								<ruleclass name="SAHouseholdUnitCalculator"
+									ruleset="SocialAssistanceRuleSet"/>
 							</javaclass>
 						</type>
 						<arguments>
 							<reference attribute="householdUnits">
 								<create ruleclass="FamilyInNeedHouseholdComposition">
 									<specify attribute="caseID">
-										<reference attribute="parentIntegratedCaseID" />
+										<reference attribute="parentIntegratedCaseID"/>
 									</specify>
 									<specify attribute="headOfHouseholdRecord">
-										<reference attribute="headOfHouseholdRecord" />
+										<reference attribute="headOfHouseholdRecord"/>
 									</specify>
 								</create>
 							</reference>
@@ -1173,16 +1204,16 @@
 		<Attribute name="primaryAndMemberCaseParticipantRoleRecords">
 			<type>
 				<javaclass name="List">
-					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<fixedlist>
 					<listof>
-						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 					</listof>
 					<members>
-						<reference attribute="primaryClientCPRRecord" />
+						<reference attribute="primaryClientCPRRecord"/>
 					</members>
 				</fixedlist>
 			</derivation>
@@ -1190,37 +1221,38 @@
 		<Attribute name="programRecommendationObjectiveTimelines">
 			<type>
 				<javaclass name="List">
-					<ruleclass name="AbstractObjectiveTimeline" ruleset="ProductEligibilityEntitlementRuleSet" />
+					<ruleclass name="AbstractObjectiveTimeline"
+						ruleset="ProductEligibilityEntitlementRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<reference attribute="objectiveTimelines">
-					<reference attribute="socialAssistanceObjectiveCalculator" />
+					<reference attribute="socialAssistanceObjectiveCalculator"/>
 				</reference>
 			</derivation>
 		</Attribute>
 		<Attribute name="familyInNeedProgramCalculator">
 			<type>
-				<ruleclass name="FamilyInNeedProgramCalculator" />
+				<ruleclass name="FamilyInNeedProgramCalculator"/>
 			</type>
 			<derivation>
 				<create ruleclass="FamilyInNeedProgramCalculator">
-					<reference attribute="parentIntegratedCaseID" />
-					<reference attribute="eligibilityUnit" />
+					<reference attribute="parentIntegratedCaseID"/>
+					<reference attribute="eligibilityUnit"/>
 				</create>
 			</derivation>
 		</Attribute>
 		<Attribute name="familyInNeedEligibilityUnitCalculatorTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="FamilyInNeedEligibilityUnitCalculator" />
+					<ruleclass name="FamilyInNeedEligibilityUnitCalculator"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<intervalvalue>
 						<reference attribute="familyInNeedEligibilityUnitCalculator">
-							<reference attribute="familyInNeedProgramCalculator" />
+							<reference attribute="familyInNeedProgramCalculator"/>
 						</reference>
 					</intervalvalue>
 				</timelineoperation>
@@ -1229,26 +1261,28 @@
 		<Attribute name="monthlyAmountTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Number" />
+					<javaclass name="Number"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<javaclass name="Number" />
+							<javaclass name="Number"/>
 						</type>
 						<when>
 							<condition>
 								<intervalvalue>
-									<reference attribute="isEligibleTimeline" />
+									<reference attribute="isEligibleTimeline"/>
 								</intervalvalue>
 							</condition>
 							<value>
 								<intervalvalue>
 									<reference attribute="monthlyAmountTimeline">
 										<intervalvalue>
-											<reference attribute="familyInNeedEligibilityUnitCalculatorTimeline" />
+											<reference
+												attribute="familyInNeedEligibilityUnitCalculatorTimeline"
+											/>
 										</intervalvalue>
 									</reference>
 								</intervalvalue>
@@ -1256,7 +1290,7 @@
 						</when>
 						<otherwise>
 							<value>
-								<Number value="0" />
+								<Number value="0"/>
 							</value>
 						</otherwise>
 					</choose>
@@ -1266,13 +1300,13 @@
 		<Attribute name="socialAssistanceObjectiveCalculator">
 			<type>
 				<ruleclass name="SocialAssistanceObjectiveCalculator"
-					ruleset="SocialAssistanceRuleSet" />
+					ruleset="SocialAssistanceRuleSet"/>
 			</type>
 			<derivation>
 				<create ruleclass="SocialAssistanceObjectiveCalculator"
 					ruleset="SocialAssistanceRuleSet">
-					<reference attribute="familyInNeedEligibilityUnitCalculatorTimeline" />
-					<reference attribute="primaryAndMemberCaseParticipantRoleRecords" />
+					<reference attribute="familyInNeedEligibilityUnitCalculatorTimeline"/>
+					<reference attribute="primaryAndMemberCaseParticipantRoleRecords"/>
 				</create>
 			</derivation>
 		</Attribute>
@@ -1280,19 +1314,19 @@
 			<type>
 				<javaclass name="List">
 					<ruleclass name="SocialAssistanceObjectiveTimeline"
-						ruleset="SocialAssistanceRuleSet" />
+						ruleset="SocialAssistanceRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<reference attribute="objectiveTimelines">
-					<reference attribute="socialAssistanceObjectiveCalculator" />
+					<reference attribute="socialAssistanceObjectiveCalculator"/>
 				</reference>
 			</derivation>
 		</Attribute>
 		<Attribute name="householdUnitForPD">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
 				</javaclass>
 			</type>
 
@@ -1300,10 +1334,10 @@
 				<reference attribute="householdUnit">
 					<create ruleclass="FamilyInNeedHouseholdComposition">
 						<specify attribute="caseID">
-							<reference attribute="parentIntegratedCaseID" />
+							<reference attribute="parentIntegratedCaseID"/>
 						</specify>
 						<specify attribute="headOfHouseholdRecord">
-							<reference attribute="headOfHouseholdRecord" />
+							<reference attribute="headOfHouseholdRecord"/>
 						</specify>
 					</create>
 				</reference>
@@ -1312,17 +1346,17 @@
 		<Attribute name="inEligibleHouseholdUnit">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<reference attribute="inEligiblehouseholdUnit">
 					<create ruleclass="FamilyInNeedHouseholdComposition">
 						<specify attribute="caseID">
-							<reference attribute="parentIntegratedCaseID" />
+							<reference attribute="parentIntegratedCaseID"/>
 						</specify>
 						<specify attribute="headOfHouseholdRecord">
-							<reference attribute="headOfHouseholdRecord" />
+							<reference attribute="headOfHouseholdRecord"/>
 						</specify>
 					</create>
 				</reference>
@@ -1331,14 +1365,14 @@
 		<Attribute name="isValidUnitTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<javaclass name="Boolean" />
+							<javaclass name="Boolean"/>
 						</type>
 						<when>
 							<condition>
@@ -1347,23 +1381,23 @@
 										<object>
 											<intervalvalue>
 												<reference attribute="eligibleMembersTimeline">
-													<intervalvalue>
-														<reference attribute="householdUnitForPD" />
-													</intervalvalue>
+												<intervalvalue>
+												<reference attribute="householdUnitForPD"/>
+												</intervalvalue>
 												</reference>
 											</intervalvalue>
 										</object>
 									</property>
-									<Number value="0" />
+									<Number value="0"/>
 								</compare>
 							</condition>
 							<value>
-								<true />
+								<true/>
 							</value>
 						</when>
 						<otherwise>
 							<value>
-								<false />
+								<false/>
 							</value>
 						</otherwise>
 					</choose>
@@ -1373,7 +1407,7 @@
 		<Attribute name="isEligibleTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -1381,15 +1415,15 @@
 					<all>
 						<fixedlist>
 							<listof>
-								<javaclass name="Boolean" />
+								<javaclass name="Boolean"/>
 							</listof>
 							<members>
 								<intervalvalue>
-									<reference attribute="isValidUnitTimeline" />
+									<reference attribute="isValidUnitTimeline"/>
 								</intervalvalue>
 								<intervalvalue>
 									<reference attribute="isEligibleTimeline">
-										<reference attribute="familyInNeedProgramCalculator" />
+										<reference attribute="familyInNeedProgramCalculator"/>
 									</reference>
 								</intervalvalue>
 							</members>
@@ -1400,10 +1434,11 @@
 		</Attribute>
 	</Class>
 	<Class extends="SocialAssistanceProduct" extendsRuleSet="SocialAssistanceRuleSet"
-		name="FamilyInNeedProduct" xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+		name="FamilyInNeedProduct"
+		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
 		<Attribute name="description">
 			<type>
-				<javaclass name="curam.creole.value.Message" />
+				<javaclass name="curam.creole.value.Message"/>
 			</type>
 			<derivation>
 				<XmlMessage>FamilyInNeed Product</XmlMessage>
@@ -1415,26 +1450,26 @@
 		<Initialization>
 			<Attribute name="caseID">
 				<type>
-					<javaclass name="Number" />
+					<javaclass name="Number"/>
 				</type>
 			</Attribute>
 			<Attribute name="eligibilityUnit">
 				<type>
-					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
 				</type>
 			</Attribute>
 		</Initialization>
 		<Attribute name="familyInNeedEligibilityUnitCalculator">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="FamilyInNeedEligibilityUnitCalculator" />
+					<ruleclass name="FamilyInNeedEligibilityUnitCalculator"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<create ruleclass="FamilyInNeedEligibilityUnitCalculator">
-						<reference attribute="caseID" />
-						<reference attribute="eligibilityUnit" />
+						<reference attribute="caseID"/>
+						<reference attribute="eligibilityUnit"/>
 					</create>
 				</timelineoperation>
 			</derivation>
@@ -1442,7 +1477,7 @@
 		<Attribute name="isEligibleTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="Boolean" />
+					<javaclass name="Boolean"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -1450,7 +1485,7 @@
 					<intervalvalue>
 						<reference attribute="isEligibleTimeline">
 							<intervalvalue>
-								<reference attribute="familyInNeedEligibilityUnitCalculator" />
+								<reference attribute="familyInNeedEligibilityUnitCalculator"/>
 							</intervalvalue>
 						</reference>
 					</intervalvalue>
@@ -1465,23 +1500,23 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet" />
+						<ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
 			<derivation>
-				<specified />
+				<specified/>
 			</derivation>
 		</Attribute>
 		<Attribute name="caseHeaderRecord">
 			<type>
-				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet" />
+				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet"/>
 			</type>
 			<derivation>
 				<singleitem onEmpty="error" onMultiple="error">
 					<readall ruleclass="CaseHeader" ruleset="CaseEntitiesRuleSet">
 						<match retrievedattribute="caseID">
-							<reference attribute="caseID" />
+							<reference attribute="caseID"/>
 						</match>
 					</readall>
 				</singleitem>
@@ -1489,7 +1524,7 @@
 		</Attribute>
 		<Attribute name="primaryClientCPRRecord">
 			<type>
-				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 			</type>
 			<derivation>
 				<singleitem onEmpty="error" onMultiple="returnFirst">
@@ -1497,7 +1532,7 @@
 						<list>
 							<readall ruleclass="CaseParticipantRole" ruleset="CaseEntitiesRuleSet">
 								<match retrievedattribute="caseID">
-									<reference attribute="caseID" />
+									<reference attribute="caseID"/>
 								</match>
 							</readall>
 						</list>
@@ -1505,39 +1540,39 @@
 							<all>
 								<fixedlist>
 									<listof>
-										<javaclass name="Boolean" />
+										<javaclass name="Boolean"/>
 									</listof>
 									<members>
 										<equals>
 											<reference attribute="participantRoleID">
-												<current />
+												<current/>
 											</reference>
 											<reference attribute="concernRoleID">
-												<reference attribute="caseHeaderRecord" />
+												<reference attribute="caseHeaderRecord"/>
 											</reference>
 										</equals>
 										<any>
 											<fixedlist>
 												<listof>
-													<javaclass name="Boolean" />
+												<javaclass name="Boolean"/>
 												</listof>
 												<members>
-													<equals>
-														<reference attribute="typeCode">
-															<current />
-														</reference>
-														<Code table="CaseParticipantRoleType">
-															<String value="PRI" />
-														</Code>
-													</equals>
-													<equals>
-														<reference attribute="typeCode">
-															<current />
-														</reference>
-														<Code table="CaseParticipantRoleType">
-															<String value="MEM" />
-														</Code>
-													</equals>
+												<equals>
+												<reference attribute="typeCode">
+												<current/>
+												</reference>
+												<Code table="CaseParticipantRoleType">
+												<String value="PRI"/>
+												</Code>
+												</equals>
+												<equals>
+												<reference attribute="typeCode">
+												<current/>
+												</reference>
+												<Code table="CaseParticipantRoleType">
+												<String value="MEM"/>
+												</Code>
+												</equals>
 												</members>
 											</fixedlist>
 										</any>
@@ -1552,7 +1587,7 @@
 		<Attribute name="headOfHouseholdRecord">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet" />
+					<ruleclass name="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
@@ -1562,48 +1597,49 @@
 							<dynamiclist>
 								<list alias="member">
 									<intervalvalue>
-										<reference attribute="membersForHouseholdComposition" />
+										<reference attribute="membersForHouseholdComposition"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<filter>
 										<list alias="headofHouseholdRecord">
-											<readall ruleclass="HeadOfHouse" ruleset="HeadOfHouseDataRuleSet">
+											<readall ruleclass="HeadOfHouse"
+												ruleset="HeadOfHouseDataRuleSet">
 												<match retrievedattribute="caseID">
-													<reference attribute="caseID" />
+												<reference attribute="caseID"/>
 												</match>
 											</readall>
 										</list>
 										<listitemexpression>
 											<all>
 												<fixedlist>
-													<listof>
-														<javaclass name="Boolean" />
-													</listof>
-													<members>
-														<equals>
-															<reference attribute="caseParticipantRoleID">
-																<current alias="member" />
-															</reference>
-															<reference attribute="participant">
-																<current alias="headofHouseholdRecord" />
-															</reference>
-														</equals>
-														<intervalvalue>
-															<reference attribute="exists">
-																<current alias="headofHouseholdRecord" />
-															</reference>
-														</intervalvalue>
-														<intervalvalue>
-															<reference attribute="isMarriedTimeline">
-																<create ruleclass="FamilyInNeedCPRCalculator">
-																	<reference attribute="related_participant">
-																		<current alias="headofHouseholdRecord" />
-																	</reference>
-																</create>
-															</reference>
-														</intervalvalue>
-													</members>
+												<listof>
+												<javaclass name="Boolean"/>
+												</listof>
+												<members>
+												<equals>
+												<reference attribute="caseParticipantRoleID">
+												<current alias="member"/>
+												</reference>
+												<reference attribute="participant">
+												<current alias="headofHouseholdRecord"/>
+												</reference>
+												</equals>
+												<intervalvalue>
+												<reference attribute="exists">
+												<current alias="headofHouseholdRecord"/>
+												</reference>
+												</intervalvalue>
+												<intervalvalue>
+												<reference attribute="isMarriedTimeline">
+												<create ruleclass="FamilyInNeedCPRCalculator">
+												<reference attribute="related_participant">
+												<current alias="headofHouseholdRecord"/>
+												</reference>
+												</create>
+												</reference>
+												</intervalvalue>
+												</members>
 												</fixedlist>
 											</all>
 										</listitemexpression>
@@ -1618,42 +1654,42 @@
 		<Attribute name="headOfHouseholdCPRRecord">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+							<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 						</type>
 						<when>
 							<condition>
 								<all>
 									<fixedlist>
 										<listof>
-											<javaclass name="Boolean" />
+											<javaclass name="Boolean"/>
 										</listof>
 										<members>
 											<not>
 												<equals>
-													<null />
-													<intervalvalue>
-														<reference attribute="headOfHouseholdRecord" />
-													</intervalvalue>
+												<null/>
+												<intervalvalue>
+												<reference attribute="headOfHouseholdRecord"/>
+												</intervalvalue>
 												</equals>
 											</not>
 											<not>
 												<intervalvalue>
-													<reference attribute="isFemaleTimeline">
-														<create ruleclass="FamilyInNeedCPRCalculator">
-															<reference attribute="related_participant">
-																<intervalvalue>
-																	<reference attribute="headOfHouseholdRecord" />
-																</intervalvalue>
-															</reference>
-														</create>
-													</reference>
+												<reference attribute="isFemaleTimeline">
+												<create ruleclass="FamilyInNeedCPRCalculator">
+												<reference attribute="related_participant">
+												<intervalvalue>
+												<reference attribute="headOfHouseholdRecord"/>
+												</intervalvalue>
+												</reference>
+												</create>
+												</reference>
 												</intervalvalue>
 											</not>
 										</members>
@@ -1663,14 +1699,14 @@
 							<value>
 								<reference attribute="related_participant">
 									<intervalvalue>
-										<reference attribute="headOfHouseholdRecord" />
+										<reference attribute="headOfHouseholdRecord"/>
 									</intervalvalue>
 								</reference>
 							</value>
 						</when>
 						<otherwise>
 							<value>
-								<null />
+								<null/>
 							</value>
 						</otherwise>
 					</choose>
@@ -1681,7 +1717,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet" />
+						<ruleclass name="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -1689,9 +1725,10 @@
 				<timelineoperation>
 					<filter>
 						<list>
-							<readall ruleclass="MolsaRelationship" ruleset="MolsaRelationshipDataRuleSet">
+							<readall ruleclass="MolsaRelationship"
+								ruleset="MolsaRelationshipDataRuleSet">
 								<match retrievedattribute="caseID">
-									<reference attribute="caseID" />
+									<reference attribute="caseID"/>
 								</match>
 							</readall>
 						</list>
@@ -1699,25 +1736,25 @@
 							<all>
 								<fixedlist>
 									<listof>
-										<javaclass name="Boolean" />
+										<javaclass name="Boolean"/>
 									</listof>
 									<members>
 										<not>
 											<equals>
-												<null />
+												<null/>
 												<intervalvalue>
-													<reference attribute="headOfHouseholdCPRRecord" />
+												<reference attribute="headOfHouseholdCPRRecord"/>
 												</intervalvalue>
 											</equals>
 										</not>
 										<equals>
 											<reference attribute="caseParticipantRoleID">
 												<intervalvalue>
-													<reference attribute="headOfHouseholdCPRRecord" />
+												<reference attribute="headOfHouseholdCPRRecord"/>
 												</intervalvalue>
 											</reference>
 											<reference attribute="participant">
-												<current />
+												<current/>
 											</reference>
 										</equals>
 									</members>
@@ -1732,7 +1769,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -1743,34 +1780,34 @@
 							<filter>
 								<list>
 									<intervalvalue>
-										<reference attribute="allRelationShipRecords" />
+										<reference attribute="allRelationShipRecords"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<all>
 										<fixedlist>
 											<listof>
-												<javaclass name="Boolean" />
+												<javaclass name="Boolean"/>
 											</listof>
 											<members>
 												<equals>
-													<intervalvalue>
-														<reference attribute="relationshipType">
-															<current />
-														</reference>
-													</intervalvalue>
-													<Code table="RelationshipTypeCode">
-														<String value="RT6" />
-													</Code>
+												<intervalvalue>
+												<reference attribute="relationshipType">
+												<current/>
+												</reference>
+												</intervalvalue>
+												<Code table="RelationshipTypeCode">
+												<String value="RT6"/>
+												</Code>
 												</equals>
 												<intervalvalue>
-													<reference attribute="isEligibleWifeTimeline">
-														<create ruleclass="FamilyInNeedCPRCalculator">
-															<reference attribute="related_relatedParticipant">
-																<current />
-															</reference>
-														</create>
-													</reference>
+												<reference attribute="isEligibleWifeTimeline">
+												<create ruleclass="FamilyInNeedCPRCalculator">
+												<reference attribute="related_relatedParticipant">
+												<current/>
+												</reference>
+												</create>
+												</reference>
 												</intervalvalue>
 											</members>
 										</fixedlist>
@@ -1780,7 +1817,7 @@
 						</list>
 						<listitemexpression>
 							<reference attribute="related_relatedParticipant">
-								<current />
+								<current/>
 							</reference>
 						</listitemexpression>
 					</dynamiclist>
@@ -1791,7 +1828,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -1802,25 +1839,25 @@
 							<filter>
 								<list>
 									<intervalvalue>
-										<reference attribute="allRelationShipRecords" />
+										<reference attribute="allRelationShipRecords"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<all>
 										<fixedlist>
 											<listof>
-												<javaclass name="Boolean" />
+												<javaclass name="Boolean"/>
 											</listof>
 											<members>
 												<equals>
-													<intervalvalue>
-														<reference attribute="relationshipType">
-															<current />
-														</reference>
-													</intervalvalue>
-													<Code table="RelationshipTypeCode">
-														<String value="RT2" />
-													</Code>
+												<intervalvalue>
+												<reference attribute="relationshipType">
+												<current/>
+												</reference>
+												</intervalvalue>
+												<Code table="RelationshipTypeCode">
+												<String value="RT1"/>
+												</Code>
 												</equals>
 											</members>
 										</fixedlist>
@@ -1830,7 +1867,7 @@
 						</list>
 						<listitemexpression>
 							<reference attribute="related_relatedParticipant">
-								<current />
+								<current/>
 							</reference>
 						</listitemexpression>
 					</dynamiclist>
@@ -1841,7 +1878,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -1851,23 +1888,25 @@
 						<fixedlist>
 							<listof>
 								<javaclass name="List">
-									<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+									<ruleclass name="CaseParticipantRole"
+										ruleset="CaseEntitiesRuleSet"/>
 								</javaclass>
 							</listof>
 							<members>
 								<intervalvalue>
-									<reference attribute="eligibleWivesRecords" />
+									<reference attribute="eligibleWivesRecords"/>
 								</intervalvalue>
 								<intervalvalue>
-									<reference attribute="eligibleDependentChildrenRecords" />
+									<reference attribute="eligibleDependentChildrenRecords"/>
 								</intervalvalue>
 								<fixedlist>
 									<listof>
-										<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+										<ruleclass name="CaseParticipantRole"
+											ruleset="CaseEntitiesRuleSet"/>
 									</listof>
 									<members>
 										<intervalvalue>
-											<reference attribute="headOfHouseholdCPRRecord" />
+											<reference attribute="headOfHouseholdCPRRecord"/>
 										</intervalvalue>
 									</members>
 								</fixedlist>
@@ -1881,7 +1920,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="FNHouseholdUnitMember" />
+						<ruleclass name="FNHouseholdUnitMember"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -1892,17 +1931,17 @@
 							<filter>
 								<list>
 									<intervalvalue>
-										<reference attribute="allfnHouseholdMemberRecords" />
+										<reference attribute="allfnHouseholdMemberRecords"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<equals>
 										<intervalvalue>
 											<reference attribute="filterTypeTimeline">
-												<current />
+												<current/>
 											</reference>
 										</intervalvalue>
-										<String value="EligibleMember" />
+										<String value="EligibleMember"/>
 									</equals>
 								</listitemexpression>
 							</filter>
@@ -1910,9 +1949,9 @@
 						<listitemexpression>
 							<not>
 								<equals>
-									<null />
+									<null/>
 									<reference attribute="caseParticipantRoleRecord">
-										<current />
+										<current/>
 									</reference>
 								</equals>
 							</not>
@@ -1925,7 +1964,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="FNHouseholdUnitMember" />
+						<ruleclass name="FNHouseholdUnitMember"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -1936,13 +1975,13 @@
 							<dynamiclist>
 								<list>
 									<intervalvalue>
-										<reference attribute="householdUnitMemberCPRRecords" />
+										<reference attribute="householdUnitMemberCPRRecords"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<create ruleclass="FNHouseholdUnitMember">
-										<reference attribute="caseID" />
-										<current />
+										<reference attribute="caseID"/>
+										<current/>
 									</create>
 								</listitemexpression>
 							</dynamiclist>
@@ -1951,9 +1990,9 @@
 							<not>
 								<equals>
 									<reference attribute="caseParticipantRoleRecord">
-										<current />
+										<current/>
 									</reference>
-									<null />
+									<null/>
 								</equals>
 							</not>
 						</listitemexpression>
@@ -1965,7 +2004,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="FNHouseholdUnitMember" />
+						<ruleclass name="FNHouseholdUnitMember"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -1976,17 +2015,17 @@
 							<filter>
 								<list>
 									<intervalvalue>
-										<reference attribute="allfnHouseholdMemberRecords" />
+										<reference attribute="allfnHouseholdMemberRecords"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<equals>
 										<intervalvalue>
 											<reference attribute="filterTypeTimeline">
-												<current />
+												<current/>
 											</reference>
 										</intervalvalue>
-										<String value="InEligibleMember" />
+										<String value="InEligibleMember"/>
 									</equals>
 								</listitemexpression>
 							</filter>
@@ -1994,9 +2033,9 @@
 						<listitemexpression>
 							<not>
 								<equals>
-									<null />
+									<null/>
 									<reference attribute="caseParticipantRoleRecord">
-										<current />
+										<current/>
 									</reference>
 								</equals>
 							</not>
@@ -2009,7 +2048,7 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="FNHouseholdUnitMember" />
+						<ruleclass name="FNHouseholdUnitMember"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -2020,17 +2059,17 @@
 							<filter>
 								<list>
 									<intervalvalue>
-										<reference attribute="allfnHouseholdMemberRecords" />
+										<reference attribute="allfnHouseholdMemberRecords"/>
 									</intervalvalue>
 								</list>
 								<listitemexpression>
 									<equals>
 										<intervalvalue>
 											<reference attribute="filterTypeTimeline">
-												<current />
+												<current/>
 											</reference>
 										</intervalvalue>
-										<String value="ExcludedMember" />
+										<String value="ExcludedMember"/>
 									</equals>
 								</listitemexpression>
 							</filter>
@@ -2038,9 +2077,9 @@
 						<listitemexpression>
 							<not>
 								<equals>
-									<null />
+									<null/>
 									<reference attribute="caseParticipantRoleRecord">
-										<current />
+										<current/>
 									</reference>
 								</equals>
 							</not>
@@ -2052,37 +2091,40 @@
 		<Attribute name="householdUnit">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+							<ruleclass name="SAHouseholdUnitCalculator"
+								ruleset="SocialAssistanceRuleSet"/>
 						</type>
 						<when>
 							<condition>
 								<not>
 									<equals>
-										<null />
+										<null/>
 										<intervalvalue>
-											<reference attribute="headOfHouseholdRecord" />
+											<reference attribute="headOfHouseholdRecord"/>
 										</intervalvalue>
 									</equals>
 								</not>
 							</condition>
 							<value>
-								<create ruleclass="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet">
+								<create ruleclass="SAHouseholdUnitCalculator"
+									ruleset="SocialAssistanceRuleSet">
 									<specify attribute="mandatoryEligibleMembersTimeline">
-										<reference attribute="allfnHouseholdMemberRecords" />
+										<reference attribute="allfnHouseholdMemberRecords"/>
 									</specify>
 								</create>
 							</value>
 						</when>
 						<otherwise>
 							<value>
-								<create ruleclass="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+								<create ruleclass="SAHouseholdUnitCalculator"
+									ruleset="SocialAssistanceRuleSet"/>
 							</value>
 						</otherwise>
 					</choose>
@@ -2092,45 +2134,49 @@
 		<Attribute name="inEligiblehouseholdUnit">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+					<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+							<ruleclass name="SAHouseholdUnitCalculator"
+								ruleset="SocialAssistanceRuleSet"/>
 						</type>
 						<when>
 							<condition>
 								<not>
 									<equals>
-										<null />
+										<null/>
 										<intervalvalue>
-											<reference attribute="headOfHouseholdRecord" />
+											<reference attribute="headOfHouseholdRecord"/>
 										</intervalvalue>
 									</equals>
 								</not>
 							</condition>
 							<value>
-								<create ruleclass="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet">
+								<create ruleclass="SAHouseholdUnitCalculator"
+									ruleset="SocialAssistanceRuleSet">
 									<specify attribute="mandatoryEligibleMembersTimeline">
 										<timelineoperation>
 											<joinlists>
 												<fixedlist>
-													<listof>
-														<javaclass name="List">
-															<ruleclass name="FNHouseholdUnitMember" />
-														</javaclass>
-													</listof>
-													<members>
-														<intervalvalue>
-															<reference attribute="inEligiblefnHouseholdMemberRecords" />
-														</intervalvalue>
-														<intervalvalue>
-															<reference attribute="excludedfnHouseholdMemberRecords" />
-														</intervalvalue>
-													</members>
+												<listof>
+												<javaclass name="List">
+												<ruleclass name="FNHouseholdUnitMember"/>
+												</javaclass>
+												</listof>
+												<members>
+												<intervalvalue>
+												<reference
+												attribute="inEligiblefnHouseholdMemberRecords"/>
+												</intervalvalue>
+												<intervalvalue>
+												<reference
+												attribute="excludedfnHouseholdMemberRecords"/>
+												</intervalvalue>
+												</members>
 												</fixedlist>
 											</joinlists>
 										</timelineoperation>
@@ -2140,7 +2186,8 @@
 						</when>
 						<otherwise>
 							<value>
-								<create ruleclass="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+								<create ruleclass="SAHouseholdUnitCalculator"
+									ruleset="SocialAssistanceRuleSet"/>
 							</value>
 						</otherwise>
 					</choose>
@@ -2151,7 +2198,8 @@
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="List">
-						<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+						<ruleclass name="SAHouseholdUnitCalculator"
+							ruleset="SocialAssistanceRuleSet"/>
 					</javaclass>
 				</javaclass>
 			</type>
@@ -2159,11 +2207,12 @@
 				<timelineoperation>
 					<fixedlist>
 						<listof>
-							<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+							<ruleclass name="SAHouseholdUnitCalculator"
+								ruleset="SocialAssistanceRuleSet"/>
 						</listof>
 						<members>
 							<intervalvalue>
-								<reference attribute="householdUnit" />
+								<reference attribute="householdUnit"/>
 							</intervalvalue>
 						</members>
 					</fixedlist>
@@ -2176,66 +2225,67 @@
 		<Attribute name="filterTypeTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
-					<javaclass name="String" />
+					<javaclass name="String"/>
 				</javaclass>
 			</type>
 			<derivation>
 				<timelineoperation>
 					<choose>
 						<type>
-							<javaclass name="String" />
+							<javaclass name="String"/>
 						</type>
 						<when>
 							<!-- head of household -->
 							<condition>
 								<intervalvalue>
 									<reference attribute="headOfHouseholdTimeline">
-										<reference attribute="memberCPRCalculator" />
+										<reference attribute="memberCPRCalculator"/>
 									</reference>
 								</intervalvalue>
 							</condition>
 							<value>
 								<choose>
 									<type>
-										<javaclass name="String" />
+										<javaclass name="String"/>
 									</type>
 									<when>
 										<condition>
 											<not>
 												<intervalvalue>
-													<reference attribute="hasPassedNonFinancialTestTimeline">
-														<create ruleclass="SANonFinancialCPRCalculator"
-															ruleset="SocialAssistanceRuleSet">
-															<reference attribute="caseParticipantRoleRecord" />
-														</create>
-													</reference>
+												<reference
+												attribute="hasPassedNonFinancialTestTimeline">
+												<create ruleclass="SANonFinancialCPRCalculator"
+												ruleset="SocialAssistanceRuleSet">
+												<reference attribute="caseParticipantRoleRecord"/>
+												</create>
+												</reference>
 												</intervalvalue>
 											</not>
 										</condition>
 										<value>
-											<String value="ExcludedMember" />
+											<String value="ExcludedMember"/>
 										</value>
 									</when>
 									<when>
 										<condition>
 											<not>
 												<intervalvalue>
-													<reference
-														attribute="isMarriedMaleLessThenEighteenAndEnrolledInSchoolTimeline">
-														<create ruleclass="FamilyInNeedCPRCalculator">
-															<reference attribute="caseParticipantRoleRecord" />
-														</create>
-													</reference>
+												<reference
+												attribute="isMarriedMaleLessThenEighteenAndEnrolledInSchoolTimeline">
+												<create ruleclass="FamilyInNeedCPRCalculator">
+												<reference attribute="caseParticipantRoleRecord"/>
+												</create>
+												</reference>
 												</intervalvalue>
 											</not>
 										</condition>
 										<value>
-											<String value="InEligibleMember" />
+											<String value="InEligibleMember"/>
 										</value>
 									</when>
 									<otherwise>
 										<value>
-											<String value="EligibleMember" />
+											<String value="EligibleMember"/>
 										</value>
 									</otherwise>
 								</choose>
@@ -2245,64 +2295,65 @@
 							<value>
 								<choose>
 									<type>
-										<javaclass name="String" />
+										<javaclass name="String"/>
 									</type>
 									<when>
 										<!-- wife -->
 										<condition>
 											<intervalvalue>
 												<reference attribute="isWifeTimeline">
-													<reference attribute="memberCPRCalculator" />
+												<reference attribute="memberCPRCalculator"/>
 												</reference>
 											</intervalvalue>
 										</condition>
 										<value>
 											<choose>
 												<type>
-													<javaclass name="String" />
+												<javaclass name="String"/>
 												</type>
 												<when>
-													<condition>
-														<not>
-															<intervalvalue>
-																<reference attribute="hasPassedNonFinancialTestTimeline">
-																	<create ruleclass="SANonFinancialCPRCalculator"
-																		ruleset="SocialAssistanceRuleSet">
-																		<reference attribute="caseParticipantRoleRecord" />
-																	</create>
-																</reference>
-															</intervalvalue>
-														</not>
-													</condition>
-													<value>
-														<String value="ExcludedMember" />
-													</value>
+												<condition>
+												<not>
+												<intervalvalue>
+												<reference
+												attribute="hasPassedNonFinancialTestTimeline">
+												<create ruleclass="SANonFinancialCPRCalculator"
+												ruleset="SocialAssistanceRuleSet">
+												<reference attribute="caseParticipantRoleRecord"/>
+												</create>
+												</reference>
+												</intervalvalue>
+												</not>
+												</condition>
+												<value>
+												<String value="ExcludedMember"/>
+												</value>
 												</when>
 												<otherwise>
-													<value>
-														<choose>
-															<type>
-																<javaclass name="String" />
-															</type>
-															<when>
-																<condition>
-																	<intervalvalue>
-																		<reference attribute="hasEarnedIncomeTimeline">
-																			<reference attribute="memberCPRCalculator" />
-																		</reference>
-																	</intervalvalue>
-																</condition>
-																<value>
-																	<String value="InEligibleMember" />
-																</value>
-															</when>
-															<otherwise>
-																<value>
-																	<String value="EligibleMember" />
-																</value>
-															</otherwise>
-														</choose>
-													</value>
+												<value>
+												<choose>
+												<type>
+												<javaclass name="String"/>
+												</type>
+												<when>
+												<condition>
+												<intervalvalue>
+												<reference attribute="hasEarnedIncomeTimeline">
+												<reference attribute="memberCPRCalculator"/>
+												</reference>
+												</intervalvalue>
+												</condition>
+												<value>
+												<String value="InEligibleMember"/>
+												</value>
+												</when>
+												<otherwise>
+												<value>
+												<String value="EligibleMember"/>
+												</value>
+												</otherwise>
+												</choose>
+												</value>
 												</otherwise>
 											</choose>
 										</value>
@@ -2312,68 +2363,69 @@
 										<value>
 											<choose>
 												<type>
-													<javaclass name="String" />
+												<javaclass name="String"/>
 												</type>
 												<when>
-													<condition>
-														<any>
-															<fixedlist>
-																<listof>
-																	<javaclass name="Boolean" />
-																</listof>
-																<members>
-																	<not>
-																		<intervalvalue>
-																			<reference attribute="hasPassedNonFinancialTestTimeline">
-																				<create ruleclass="SANonFinancialCPRCalculator"
-																					ruleset="SocialAssistanceRuleSet">
-																					<reference attribute="caseParticipantRoleRecord" />
-																				</create>
-																			</reference>
-																		</intervalvalue>
-																	</not>
-																	<not>
-																		<intervalvalue>
-																			<reference attribute="isDependentChildTimeline">
-																				<create ruleclass="FamilyInNeedCPRCalculator">
-																					<reference attribute="caseParticipantRoleRecord" />
-																				</create>
-																			</reference>
-																		</intervalvalue>
-																	</not>
-																</members>
-															</fixedlist>
-														</any>
-													</condition>
-													<value>
-														<String value="ExcludedMember" />
-													</value>
+												<condition>
+												<any>
+												<fixedlist>
+												<listof>
+												<javaclass name="Boolean"/>
+												</listof>
+												<members>
+												<not>
+												<intervalvalue>
+												<reference
+												attribute="hasPassedNonFinancialTestTimeline">
+												<create ruleclass="SANonFinancialCPRCalculator"
+												ruleset="SocialAssistanceRuleSet">
+												<reference attribute="caseParticipantRoleRecord"/>
+												</create>
+												</reference>
+												</intervalvalue>
+												</not>
+												<not>
+												<intervalvalue>
+												<reference attribute="isDependentChildTimeline">
+												<create ruleclass="FamilyInNeedCPRCalculator">
+												<reference attribute="caseParticipantRoleRecord"/>
+												</create>
+												</reference>
+												</intervalvalue>
+												</not>
+												</members>
+												</fixedlist>
+												</any>
+												</condition>
+												<value>
+												<String value="ExcludedMember"/>
+												</value>
 												</when>
 												<otherwise>
-													<value>
-														<choose>
-															<type>
-																<javaclass name="String" />
-															</type>
-															<when>
-																<condition>
-																	<intervalvalue>
-																		<reference attribute="hasEarnedIncomeTimeline">
-																			<reference attribute="memberCPRCalculator" />
-																		</reference>
-																	</intervalvalue>
-																</condition>
-																<value>
-																	<String value="InEligibleMember" />
-																</value>
-															</when>
-															<otherwise>
-																<value>
-																	<String value="EligibleMember" />
-																</value>
-															</otherwise>
-														</choose>
-													</value>
+												<value>
+												<choose>
+												<type>
+												<javaclass name="String"/>
+												</type>
+												<when>
+												<condition>
+												<intervalvalue>
+												<reference attribute="hasEarnedIncomeTimeline">
+												<reference attribute="memberCPRCalculator"/>
+												</reference>
+												</intervalvalue>
+												</condition>
+												<value>
+												<String value="InEligibleMember"/>
+												</value>
+												</when>
+												<otherwise>
+												<value>
+												<String value="EligibleMember"/>
+												</value>
+												</otherwise>
+												</choose>
+												</value>
 												</otherwise>
 											</choose>
 										</value>

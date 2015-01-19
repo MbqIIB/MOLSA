@@ -329,15 +329,16 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
               if (!(mailingAddressMapList.dtls.item(j).value.length() == 0)) {
 
                 if (mailingAddressMapList.dtls.item(j).name
-                    .equals(curam.codetable.ADDRESSELEMENTTYPE.LINE1)) {
+                    .equals(curam.codetable.ADDRESSELEMENTTYPE.CITY)) {
                   String municipality = mailingAddressMapList.dtls.item(j).value;
                   personMailingAddressEntity.setTypedAttribute(
                       MOLSADatastoreConst.kMailingMunicipality, municipality);
                 } else if (mailingAddressMapList.dtls.item(j).name
-                    .equals(curam.codetable.ADDRESSELEMENTTYPE.LINE3)) {
+                    .equals(curam.codetable.ADDRESSELEMENTTYPE.LINE1)) {
                   String zone = mailingAddressMapList.dtls.item(j).value;
                   personMailingAddressEntity.setTypedAttribute(
                       MOLSADatastoreConst.kMailingZone, zone);
+
                 } else if (mailingAddressMapList.dtls.item(j).name
                     .equals(curam.codetable.ADDRESSELEMENTTYPE.LINE2)) {
                   String street = mailingAddressMapList.dtls.item(j).value;

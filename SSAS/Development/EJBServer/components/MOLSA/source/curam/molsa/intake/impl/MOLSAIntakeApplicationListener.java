@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 import curam.application.impl.AbstractApplicationEvents;
 import curam.application.impl.Application;
 import curam.application.impl.ApplicationRoleObject;
+import curam.application.impl.IntakeApplicantDAO;
 import curam.codetable.ADDRESSLAYOUTTYPE;
 import curam.codetable.CASEEVIDENCE;
 import curam.codetable.CASEPARTICIPANTROLETYPE;
@@ -19,6 +20,8 @@ import curam.codetable.impl.CONCERNROLETYPEEntry;
 import curam.codetable.impl.COUNTRYEntry;
 import curam.core.facade.fact.RepresentativeFactory;
 import curam.core.facade.intf.Representative;
+import curam.core.facade.struct.ReadByAlternateIDDetails;
+import curam.core.facade.struct.RepresentativeAlternateIDKey;
 import curam.core.facade.struct.RepresentativeID;
 import curam.core.facade.struct.RepresentativeRegistrationDetails;
 import curam.core.fact.AddressFactory;
@@ -49,10 +52,18 @@ import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.GenericSLDataDetails;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.message.BPOADDRESS;
+import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
+import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
 import curam.molsa.core.fact.MOLSAAddressDataDAFactory;
 import curam.molsa.core.intf.MOLSAAddressDataDA;
 import curam.molsa.datastore.impl.MOLSADatastoreUtility;
+import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
+import curam.molsa.sms.sl.intf.MOLSASMSUtil;
+import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
+import curam.molsa.sms.sl.struct.MOLSAMessageText;
+import curam.molsa.sms.sl.struct.MOLSAMessageTextKey;
+import curam.participant.impl.ConcernRoleDAO;
 import curam.pdc.facade.fact.PDCPersonFactory;
 import curam.pdc.facade.intf.PDCPerson;
 import curam.pdc.facade.struct.PDCEvidenceDetails;
@@ -60,7 +71,6 @@ import curam.pdc.facade.struct.PDCEvidenceDetailsList;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.util.exception.AppException;
-import curam.util.exception.AppRuntimeException;
 import curam.util.exception.InformationalException;
 import curam.util.resources.Configuration;
 import curam.util.resources.Trace;
@@ -81,14 +91,18 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
   @Inject
   private CaseHeaderDAO caseHeaderDAO;
 
+  @Inject
+  private IntakeApplicantDAO intakeApplicantDAO;
+
+  @Inject
+  private ConcernRoleDAO concernRoleDAO;
+
   @Override
   public void startMappingApplication(Application intakeApplication) {
-    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.startMappingApplication()");
   }
 
   @Override
   public void finishMappingApplication(Application application) {
-    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.finishMappingApplication()");
 
   }
 
@@ -193,20 +207,41 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
 
   @Override
   public void postSubmitting(Application intakeApplication) throws InformationalException, AppException {
-    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.postSubmitting()");
     try {
-      final Datastore datastore = DatastoreHelper.openDatastore(intakeApplication.getSchemaName());
+        final Datastore datastore = DatastoreHelper.openDatastore(intakeApplication.getSchemaName());
 
-      final Entity rootEntity = datastore.readEntity(intakeApplication.getRootEntityID());
+        final Entity rootEntity = datastore.readEntity(intakeApplication.getRootEntityID());
 
-      final Entity[] personEntites = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kPerson));
+        final Entity[] personEntites = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kPerson));
 
-      final Entity[] absentFatherEntities = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kAbsentFather));
+        final Entity[] absentFatherEntities = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kAbsentFather));
 
-      if (null != absentFatherEntities && absentFatherEntities.length > 0) {
-        registerRepresentative(personEntites, absentFatherEntities[0], intakeApplication);
-      }
-
+        if (null != absentFatherEntities && absentFatherEntities.length > 0) {
+          registerRepresentative(personEntites, absentFatherEntities[0], intakeApplication);
+        }
+      //SMS Integration
+        long concernRoleID = 0;
+        List<curam.piwrapper.casemanager.impl.CaseParticipantRole> allCaseParticipants = intakeApplication.getCase().listActiveCaseParticipantRoles();
+        for (Entity relatedPerson : personEntites) {
+            for (curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : allCaseParticipants) {
+          	if (relatedPerson.getAttribute(MOLSADatastoreConst.kIsPrimaryParticipant).equals(MOLSADatastoreConst.kTrue))
+               concernRoleID=caseParticipantRole.getConcernRole().getID(); 
+            }
+          }
+     
+        MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
+        MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
+        molsaMessageTextKey.dtls.category=MOLSASMSMessageType.NOTIFICATION;
+        molsaMessageTextKey.dtls.template=MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+        MOLSAMessageText messageText = molsasmsUtilObj.getSMSMessageText(molsaMessageTextKey );
+        MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
+            new MOLSAConcernRoleListAndMessageTextDetails();
+        //Construct the input details
+        concernRoleListAndMessageTextDetails.dtls.smsMessageText=messageText.dtls.smsMessageText;
+        concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(concernRoleID);
+        //Need to point to the right template
+        concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+        molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
     } catch (final NoSuchAttributeException e) {
       throw new AppException(WORKSPACESERVICESDATAMAPPING.ERR_READING_FROM_DATASTORE, e);
     }
@@ -215,12 +250,10 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
 
   @Override
   public void startDeferredSubmission(Application application) throws InformationalException, AppException {
-    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.startDeferredSubmission()");
   }
 
   @Override
   public void finishDeferredSubmission(Application application) throws InformationalException, AppException {
-    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.finishDeferredSubmission()");
   }
 
   @Override
@@ -230,7 +263,6 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
 
   @Override
   public void deferredSubmissionErrorHandler(Application application) throws InformationalException, AppException {
-    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.deferredSubmissionErrorHandler()");
   }
 
   @Override
@@ -365,57 +397,55 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
    *          Application filer details.
    * @param intakeApplication
    *          an intake application
+   * @throws InformationalException
+   * @throws AppException
    */
 
   @SuppressWarnings("unused")
-  private void registerRepresentative(Entity[] personEntites, final Entity absentPerson, final Application intakeApplication) {
+  private void registerRepresentative(Entity[] personEntites, final Entity absentPerson, final Application intakeApplication) throws AppException, InformationalException {
 
+    final Representative representative = RepresentativeFactory.newInstance();
+    final RepresentativeRegistrationDetails representativeRegistrationDetails = new RepresentativeRegistrationDetails();
+    final RepresentativeID representativeID = new RepresentativeID();
+    RepresentativeAlternateIDKey alternateIDKey = new RepresentativeAlternateIDKey();
+    ReadByAlternateIDDetails readAlternateIDDetails = new ReadByAlternateIDDetails();
+    boolean alreadyRegistered = false;
     try {
-
-      final Representative representative = RepresentativeFactory.newInstance();
-
-      final RepresentativeRegistrationDetails representativeRegistrationDetails = new RepresentativeRegistrationDetails();
+      alternateIDKey.representativeAlternateIDKey.representativeAlternateIDKey.alternateID = absentPerson.getAttribute(MOLSADatastoreConst.kQIDNumber);
+      readAlternateIDDetails = representative.readByAlternateID(alternateIDKey);
+      alreadyRegistered = true;
+    } catch (final Exception e) {
 
       assignRegistrationDetails(representativeRegistrationDetails, absentPerson);
-
       representative.registerRepresentative(representativeRegistrationDetails);
-
-      final RepresentativeID representativeID = new RepresentativeID();
-
       representativeID.representativeID = representativeRegistrationDetails.representativeRegistrationDetails.representativeDtls.concernRoleID;
-
-      final CaseHeader caseHeader = caseHeaderDAO.get(intakeApplication.getCase().getID());
-      final CaseParticipantRole caseParticipantRoleObject = CaseParticipantRoleFactory.newInstance();
-      final CaseParticipantRoleDetails absentCaseParticipantRoleDetails = new CaseParticipantRoleDetails();
-      // Assign details to create a Concern Case Role
-      absentCaseParticipantRoleDetails.dtls.caseID = caseHeader.getID();
-      absentCaseParticipantRoleDetails.dtls.participantRoleID = representativeID.representativeID;
-      absentCaseParticipantRoleDetails.dtls.fromDate = Date.getCurrentDate();
-      absentCaseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.MEMBER;
-
-      caseParticipantRoleObject.insertCaseParticipantRole(absentCaseParticipantRoleDetails);
-
-      List<curam.piwrapper.casemanager.impl.CaseParticipantRole> allCaseParticipants = intakeApplication.getCase().listActiveCaseParticipantRoles();
-      for (Entity relatedPerson : personEntites) {
-        if (relatedPerson.getAttribute(MOLSADatastoreConst.kHasAbsentFather).equals(MOLSADatastoreConst.kTrue)) {
-          for (curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : allCaseParticipants) {
-            if (relatedPerson.getAttribute(MOLSADatastoreConst.kQIDNumber).equals(caseParticipantRole.getConcernRole().getPrimaryAlternateID())) {
-
-              final ReturnEvidenceDetails absentPeronEvidence = createAbsentParentEvidence(absentPerson, caseHeader, absentCaseParticipantRoleDetails, caseParticipantRole);
-            }
-          }
-
-        }
-      }
-
-    } catch (final AppException e) {
-
-      throw new AppRuntimeException(e);
-    } catch (final InformationalException e) {
-
-      throw new AppRuntimeException(e);
     }
+    if (alreadyRegistered)
+      representativeID.representativeID = readAlternateIDDetails.readByAlternateIDDetails.representativeDtls.concernRoleID;
 
+    final CaseHeader caseHeader = caseHeaderDAO.get(intakeApplication.getCase().getID());
+    final CaseParticipantRole caseParticipantRoleObject = CaseParticipantRoleFactory.newInstance();
+    final CaseParticipantRoleDetails absentCaseParticipantRoleDetails = new CaseParticipantRoleDetails();
+    // Assign details to create a Concern Case Role
+    absentCaseParticipantRoleDetails.dtls.caseID = caseHeader.getID();
+    absentCaseParticipantRoleDetails.dtls.participantRoleID = representativeID.representativeID;
+    absentCaseParticipantRoleDetails.dtls.fromDate = Date.getCurrentDate();
+    absentCaseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.MEMBER;
+
+    caseParticipantRoleObject.insertCaseParticipantRole(absentCaseParticipantRoleDetails);
+
+    List<curam.piwrapper.casemanager.impl.CaseParticipantRole> allCaseParticipants = intakeApplication.getCase().listActiveCaseParticipantRoles();
+    for (Entity relatedPerson : personEntites) {
+      if (relatedPerson.getAttribute(MOLSADatastoreConst.kHasAbsentFather).equals(MOLSADatastoreConst.kTrue)) {
+        for (curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : allCaseParticipants) {
+          if (relatedPerson.getAttribute(MOLSADatastoreConst.kQIDNumber).equals(caseParticipantRole.getConcernRole().getPrimaryAlternateID())) {
+
+            final ReturnEvidenceDetails absentPeronEvidence = createAbsentParentEvidence(absentPerson, caseHeader, absentCaseParticipantRoleDetails, caseParticipantRole);
+          }
+        }
+
+      }
+    }
   }
 
   /**
@@ -505,7 +535,7 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
     final String firstName = absentParent.getAttribute(MOLSADatastoreConst.kFirstName);
     final String lastName = absentParent.getAttribute(MOLSADatastoreConst.kLastName);
     final StringBuilder builder = new StringBuilder();
-    return builder.append(firstName).append(CuramConst.gkEmpty).append(lastName).toString();
+    return builder.append(firstName).append(CuramConst.gkSpace).append(lastName).toString();
   }
 
   /**
@@ -543,6 +573,7 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
 
     final Long absentCaseParticipantRoleID = absentCaseParticipantRoleDetails.dtls.caseParticipantRoleID;
 
+    dynamicEvidenceDataDetails.getAttribute(MOLSADatastoreConst.qid).setValue(absentPerson.getAttribute(MOLSADatastoreConst.kQIDNumber));
     dynamicEvidenceDataDetails.getAttribute(MOLSADatastoreConst.kabsentPerson).setValue(absentCaseParticipantRoleID.toString());
     dynamicEvidenceDataDetails.getAttribute(MOLSADatastoreConst.kParticipant).setValue(caseParticipantRole.getID().toString());
 
@@ -570,8 +601,8 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
    */
   private String getBlankAddress() {
 
-    final String retval = "1\n" + "0\n" + "US\n" + "US\n" + "1\n" + "0\n" + "ADD1=1153\n" + "ADD2=Mole Street\n" + "CITY=MM17005\n" + "UNITNO=123\n" 
-    + "ADD4=test\n" + "ADD5=test\n" + "ZIP=99999\n" + "POBOXNO=123\n" + "COUNTRY=QATAR";
+    final String retval = "1\n" + "0\n" + "US\n" + "US\n" + "1\n" + "0\n" + "ADD1=1153\n" + "ADD2=Mole Street\n" + "CITY=MM17005\n" + "UNITNO=123\n" + "ADD4=test\n"
+        + "ADD5=test\n" + "ZIP=99999\n" + "POBOXNO=123\n" + "COUNTRY=QATAR";
 
     return retval;
 
@@ -639,94 +670,105 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
 
       this.firstName = firstName;
     }
-/**
- * 
- * @param lastName
- * indicates last name
- */
+
+    /**
+     * 
+     * @param lastName
+     *          indicates last name
+     */
     public void setLastName(final String lastName) {
 
       this.lastName = lastName;
     }
-/**
- * 
- * @param dateOfBirth
- * stores DOB
- */
+
+    /**
+     * 
+     * @param dateOfBirth
+     *          stores DOB
+     */
     public void setDateOfBirth(final Date dateOfBirth) {
 
       this.dateOfBirth = dateOfBirth;
     }
-/**
- * 
- * @param gender
- * stores gender value
- */
+
+    /**
+     * 
+     * @param gender
+     *          stores gender value
+     */
     public void setGender(final String gender) {
 
       this.gender = gender;
     }
-/**
- * 
- * @param concernRoleID
- * stores concern role id
- */
+
+    /**
+     * 
+     * @param concernRoleID
+     *          stores concern role id
+     */
     public void setConcernRoleID(final long concernRoleID) {
 
       this.concernRoleID = concernRoleID;
     }
-/**
- * 
- * @return firstName
- */
+
+    /**
+     * 
+     * @return firstName
+     */
     public String getFirstName() {
 
       return firstName;
     }
-/**
- * 
- * @return lastName
- */
+
+    /**
+     * 
+     * @return lastName
+     */
     public String getLastName() {
 
       return lastName;
     }
-/**
- * 
- * @return dateOfBirth
- */
+
+    /**
+     * 
+     * @return dateOfBirth
+     */
     public Date getDateOfBirth() {
 
       return dateOfBirth;
     }
-/**
- * 
- * @return gender
- */
+
+    /**
+     * 
+     * @return gender
+     */
     public String getGender() {
 
       return gender;
     }
-/**
- * 
- * @return concernRoleID
- */
+
+    /**
+     * 
+     * @return concernRoleID
+     */
     public long getConcernRoleID() {
 
       return concernRoleID;
     }
-/**
- * 
- * @return qid
- */
+
+    /**
+     * 
+     * @return qid
+     */
     public String getQid() {
       return qid;
     }
-/**
- * 
- * @param qid
- * a qid
- */
+
+    /**
+     * 
+     * @param qid
+     *          a qid
+     */
     public void setQid(String qid) {
       this.qid = qid;
     }

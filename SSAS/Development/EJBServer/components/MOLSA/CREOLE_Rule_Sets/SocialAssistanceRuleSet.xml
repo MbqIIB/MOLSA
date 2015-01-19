@@ -2331,6 +2331,68 @@
 				</timelineoperation>
 			</derivation>
 		</Attribute>
+		<Attribute name="hasAbsentFatherRecordofDeceased">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="absentFatherRecords" />
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="absenceReason">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MOLSAAbsentFatherReason">
+										<String value="MAF17001" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="hasAbsentFatherRecordofDeserted">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="absentFatherRecords" />
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="absenceReason">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MOLSAAbsentFatherReason">
+										<String value="MAF17004" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		
+		
 		
 		<Attribute name="hasAbentFatherRecordofPrisoner">
 			<type>
@@ -2356,6 +2418,58 @@
 										<String value="MAF17002" />
 									</Code>
 								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="hasAbentFatherRecordofPrisonerMoreThan60Days">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="absentFatherRecords" />
+							</list>
+							<listitemexpression>
+                              <all>
+                              	<fixedlist>
+                              		<listof>
+                              			<javaclass name="Boolean"/>
+                              		</listof>
+                              		<members>
+                              			<equals>
+                              				<intervalvalue>
+                              					<reference attribute="absenceReason">
+                              						<current />
+                              					</reference>
+                              				</intervalvalue>
+                              				<Code table="MOLSAAbsentFatherReason">
+                              					<String value="MAF17002" />
+                              				</Code>
+                              			</equals>
+                              			<compare comparison="&gt;">
+                              			    <call class="curam.socialassistance.creole.statics.impl.Statics" method="getDifferenceInDaysFromCurrentDate">
+                              					<type>
+                              						<javaclass name="Number"/>
+                              					</type>
+                              					<arguments>
+                              						<reference attribute="startDate">
+                              							<current/>
+                              						</reference>
+                              					</arguments>
+                              				</call>
+                              				<Number value="60"/>
+                              			</compare>
+                              		</members>
+                              	</fixedlist>
+                              </all>
 							</listitemexpression>
 						</dynamiclist>
 					</any>

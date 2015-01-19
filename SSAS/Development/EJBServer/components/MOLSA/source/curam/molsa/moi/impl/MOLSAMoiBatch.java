@@ -23,8 +23,13 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.resources.Configuration;
 import curam.util.resources.ProgramLocale;
-import curam.util.type.Date;
 
+/**
+ * 
+ * This class sets the chunk size and streams for MOLSA MOI batch.
+ * 
+ */
+@SuppressWarnings("restriction")
 public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 	protected static final int kFirstKeyValue = 1;
 	protected final int kChunkSize;
@@ -33,6 +38,9 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 	protected final int kUnProcessedChunkReadWait;
 	protected final boolean kProcessUnProcessedChunks;
 
+	/**
+	 * Constructor for the class
+	 */
 	public MOLSAMoiBatch() {
 
 		String chunkSize = Configuration
@@ -76,14 +84,34 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 				.getBooleanProperty(EnvVars.ENV_MOLSAMOI_PROCESS_UNPROCESSED_CHUNKS);
 	}
 
+	/**
+	 * 
+	 * This method would send the the details of the number of records processed
+	 * and skipped.
+	 * 
+	 * @param instanceID
+	 *            String
+	 * @param batchProcessDtls
+	 *            BatchProcessDtls
+	 * @param processedBatchProcessChunkDtlsList
+	 *            BatchProcessChunkDtlsList
+	 * @param unprocessedBatchProcessChunkDtlsList
+	 *            BatchProcessChunkDtlsList
+	 * @return void
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General Exception
+	 * 
+	 */
+
 	@Override
 	public void sendBatchReport(String instanceID,
 			BatchProcessDtls batchProcessDtls,
 			BatchProcessChunkDtlsList processedBatchProcessChunkDtlsList,
 			BatchProcessChunkDtlsList unprocessedBatchProcessChunkDtlsList)
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
-		
+
 		long totalNumberOfCasesProcessed = 0;
 		long totalNumberOfCasesSkipped = 0;
 
@@ -102,8 +130,6 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 			totalNumberOfCasesSkipped += molsaInfoProviderProcessChunkResult.casesSkippedCount;
 
 		}
-		
-		
 
 		if (totalNumberOfUnprocessedChunks > 0) {
 
@@ -163,12 +189,11 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 	 * This method composes and sends the batch report for this batch program.
 	 * 
 	 * @param resultSummary
+	 *            String
 	 * @return MOLSAInformationProviderProcessChunkResult
 	 */
 	public MOLSAInformationProviderProcessChunkResult decodeProcessChunkResult(
 			final String resultSummary) {
-		// TODO Auto-generated method stub
-
 		final MOLSAInformationProviderProcessChunkResult molsaInfoProviderProcessChunkResult = new MOLSAInformationProviderProcessChunkResult();
 		final StringTokenizer st = new StringTokenizer(resultSummary);
 		int elementNumber = 0;
@@ -210,7 +235,6 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 
 	@Override
 	public void process() throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		BatchStreamHelper batchStreamHelper = new BatchStreamHelper();
 
 		ChunkMainParameters chunkMainParameters = new ChunkMainParameters();
@@ -256,5 +280,4 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 				batchProcessingIDList, chunkMainParameters,
 				molsaMoiBatchStreamWrapper);
 	}
-
 }

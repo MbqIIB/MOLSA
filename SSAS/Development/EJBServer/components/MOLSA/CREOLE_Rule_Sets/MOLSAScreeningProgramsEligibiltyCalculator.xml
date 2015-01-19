@@ -246,18 +246,6 @@
         </reference>
       </derivation>
     </Attribute>
-    <Attribute name="nonFinancialCalculator">
-      <type>
-        <ruleclass name="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet"/>
-      </type>
-      <derivation>
-        <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
-          <specify attribute="person">
-            <reference attribute="person"/>
-          </specify>
-        </create>
-      </derivation>
-    </Attribute>
     <Attribute name="eligible">
       <type>
         <javaclass name="Boolean"/>
@@ -301,89 +289,6 @@
         </readall>
       </derivation>
     </Attribute>
-    <Attribute name="eligibleDependentChildrenOfHeadOfHousehold">
-      <type>
-        <javaclass name="List">
-          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
-        </javaclass>
-      </type>
-      <derivation>
-        <reference attribute="eligibleDependentChildren">
-          <create ruleclass="EligibleDependentChildrenUnit">
-            <specify attribute="person">
-              <reference attribute="headOfHousehold"/>
-            </specify>
-          </create>
-        </reference>
-      </derivation>
-    </Attribute>
-    <Attribute name="eligibleWives">
-      <type>
-        <javaclass name="List">
-          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
-        </javaclass>
-      </type>
-      <derivation>
-        <dynamiclist>
-          <list>
-            <filter>
-              <list>
-                <reference attribute="headOfHouseholdRelationshipRecords"/>
-              </list>
-              <listitemexpression>
-                <equals>
-                  <reference attribute="relationshipType">
-                    <current/>
-                  </reference>
-                  <Code table="RelationshipTypeCoreDesc">
-                    <String value="RT6"/>
-                  </Code>
-                </equals>
-              </listitemexpression>
-            </filter>
-          </list>
-          <listitemexpression>
-            <reference attribute="to">
-              <current/>
-            </reference>
-          </listitemexpression>
-        </dynamiclist>
-      </derivation>
-    </Attribute>
-    <Attribute name="eligibleWivesDependentChildren">
-      <type>
-        <javaclass name="List">
-          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
-        </javaclass>
-      </type>
-      <derivation>
-        <removeduplicates>
-          <joinlists>
-            <dynamiclist>
-              <list>
-                <dynamiclist>
-                  <list>
-                    <reference attribute="eligibleWives"/>
-                  </list>
-                  <listitemexpression>
-                    <create ruleclass="EligibleDependentChildrenUnit">
-                      <specify attribute="person">
-                        <current/>
-                      </specify>
-                    </create>
-                  </listitemexpression>
-                </dynamiclist>
-              </list>
-              <listitemexpression>
-                <reference attribute="eligibleDependentChildren">
-                  <current/>
-                </reference>
-              </listitemexpression>
-            </dynamiclist>
-          </joinlists>
-        </removeduplicates>
-      </derivation>
-    </Attribute>
     <Attribute name="absentFather">
       <type>
         <ruleclass name="AbsentFather" ruleset="MOLSAScreeningRuleSet"/>
@@ -418,7 +323,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -463,9 +368,31 @@
               <reference attribute="isFemale">
                 <reference attribute="person"/>
               </reference>
-              <reference attribute="isWidowed">
+              <equals>
+                <reference attribute="maritalStatus">
+                  <reference attribute="person"/>
+                </reference>
+                <Code table="MaritalStatus">
+                  <String value="MS17000"/>
+                </Code>
+              </equals>
+              <reference attribute="hasAbsentHusband">
                 <reference attribute="person"/>
               </reference>
+              <not>
+                <equals>
+                  <null/>
+                  <reference attribute="absentFather"/>
+                </equals>
+              </not>
+              <equals>
+                <reference attribute="absentPersonReason">
+                  <reference attribute="absentFather"/>
+                </reference>
+                <Code table="MOLSAAbsentFatherReason">
+                  <String value="MAF17001"/>
+                </Code>
+              </equals>
             </members>
           </fixedlist>
         </all>
@@ -519,7 +446,7 @@
             <members>
               <reference attribute="isWidow"/>
               <reference attribute="passesNonFinancials">
-                <reference attribute="nonFinancialCalculator"/>
+                <reference attribute="person"/>
               </reference>
               <not>
                 <reference attribute="isEmployed">
@@ -548,7 +475,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -593,9 +520,31 @@
               <reference attribute="isFemale">
                 <reference attribute="person"/>
               </reference>
-              <reference attribute="isDeserted">
+              <equals>
+                <reference attribute="maritalStatus">
+                  <reference attribute="person"/>
+                </reference>
+                <Code table="MaritalStatus">
+                  <String value="MS17001"/>
+                </Code>
+              </equals>
+              <reference attribute="hasAbsentHusband">
                 <reference attribute="person"/>
               </reference>
+              <not>
+                <equals>
+                  <null/>
+                  <reference attribute="absentFather"/>
+                </equals>
+              </not>
+              <equals>
+                <reference attribute="absentPersonReason">
+                  <reference attribute="absentFather"/>
+                </reference>
+                <Code table="MOLSAAbsentFatherReason">
+                  <String value="MAF17004"/>
+                </Code>
+              </equals>
             </members>
           </fixedlist>
         </all>
@@ -649,7 +598,7 @@
             <members>
               <reference attribute="isDesertedWife"/>
               <reference attribute="passesNonFinancials">
-                <reference attribute="nonFinancialCalculator"/>
+                <reference attribute="person"/>
               </reference>
               <not>
                 <reference attribute="isEmployed">
@@ -678,7 +627,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -779,7 +728,7 @@
             <members>
               <reference attribute="isDivorcedLady"/>
               <reference attribute="passesNonFinancials">
-                <reference attribute="nonFinancialCalculator"/>
+                <reference attribute="person"/>
               </reference>
               <not>
                 <reference attribute="isEmployed">
@@ -808,7 +757,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -996,7 +945,7 @@
             <members>
               <reference attribute="hasAnonymousParents"/>
               <reference attribute="passesNonFinancials">
-                <reference attribute="nonFinancialCalculator"/>
+                <reference attribute="person"/>
               </reference>
               <not>
                 <reference attribute="isEmployed">
@@ -1025,7 +974,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -1103,9 +1052,12 @@
             </listof>
             <members>
               <not>
-                <reference attribute="isSeniorCitizen">
-                  <reference attribute="person"/>
-                </reference>
+                <compare comparison=">">
+                  <reference attribute="age">
+                    <reference attribute="person"/>
+                  </reference>
+                  <Number value="60"/>
+                </compare>
               </not>
               <reference attribute="hasDeceasedParents"/>
               <equals>
@@ -1213,7 +1165,7 @@
             <members>
               <reference attribute="isOrphan"/>
               <reference attribute="passesNonFinancials">
-                <reference attribute="nonFinancialCalculator"/>
+                <reference attribute="person"/>
               </reference>
               <reference attribute="isEnrolledInEducation"/>
               <not>
@@ -1243,7 +1195,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -1355,7 +1307,7 @@
             <members>
               <reference attribute="isHandicapped"/>
               <reference attribute="passesNonFinancials">
-                <reference attribute="nonFinancialCalculator"/>
+                <reference attribute="person"/>
               </reference>
               <reference attribute="passesIncomeTest"/>
             </members>
@@ -1510,33 +1462,21 @@
         <javaclass name="Boolean"/>
       </type>
       <derivation>
-        <all>
+        <any>
           <fixedlist>
             <listof>
               <javaclass name="Boolean"/>
             </listof>
             <members>
-              <any>
-                <fixedlist>
-                  <listof>
-                    <javaclass name="Boolean"/>
-                  </listof>
-                  <members>
-                    <reference attribute="isPhysicallyChallenged">
-                      <reference attribute="headOfHousehold"/>
-                    </reference>
-                    <reference attribute="isUnfitToWork">
-                      <reference attribute="headOfHousehold"/>
-                    </reference>
-                  </members>
-                </fixedlist>
-              </any>
-              <reference attribute="requiresMaidAssistance">
+              <reference attribute="isPhysicallyChallenged">
+                <reference attribute="headOfHousehold"/>
+              </reference>
+              <reference attribute="isUnfitToWork">
                 <reference attribute="headOfHousehold"/>
               </reference>
             </members>
           </fixedlist>
-        </all>
+        </any>
       </derivation>
     </Attribute>
     <Attribute name="assistanceUnit">
@@ -1605,6 +1545,89 @@
       </type>
       <derivation>
         <reference attribute="assistanceUnit"/>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleDependentChildrenOfHeadOfHousehold">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <reference attribute="eligibleDependentChildren">
+          <create ruleclass="EligibleDependentChildrenUnit">
+            <specify attribute="person">
+              <reference attribute="headOfHousehold"/>
+            </specify>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleWives">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <filter>
+              <list>
+                <reference attribute="headOfHouseholdRelationshipRecords"/>
+              </list>
+              <listitemexpression>
+                <equals>
+                  <reference attribute="relationshipType">
+                    <current/>
+                  </reference>
+                  <Code table="RelationshipTypeCoreDesc">
+                    <String value="RT6"/>
+                  </Code>
+                </equals>
+              </listitemexpression>
+            </filter>
+          </list>
+          <listitemexpression>
+            <reference attribute="to">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleWivesDependentChildren">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <dynamiclist>
+                  <list>
+                    <reference attribute="eligibleWives"/>
+                  </list>
+                  <listitemexpression>
+                    <create ruleclass="EligibleDependentChildrenUnit">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </listitemexpression>
+                </dynamiclist>
+              </list>
+              <listitemexpression>
+                <reference attribute="eligibleDependentChildren">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
       </derivation>
     </Attribute>
     <Attribute name="maxBenefitAmount">
@@ -1692,7 +1715,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -1721,16 +1744,6 @@
             </concat>
           </replace>
         </XmlMessage>
-      </derivation>
-    </Attribute>
-    <Attribute name="isSeniorCitizen">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <reference attribute="isSeniorCitizen">
-          <reference attribute="person"/>
-        </reference>
       </derivation>
     </Attribute>
     <Attribute name="headOfHousehold">
@@ -1882,17 +1895,15 @@
                 </listof>
                 <members>
                   <not>
-                    <reference attribute="isSeniorCitizen">
-                      <current/>
-                    </reference>
+                    <compare comparison=">">
+                      <reference attribute="age">
+                        <current/>
+                      </reference>
+                      <Number value="60"/>
+                    </compare>
                   </not>
                   <reference attribute="passesNonFinancials">
-                    <create ruleclass="NonFinancialCalculator"
-                      ruleset="MOLSAScreeningNonFinancialRuleSet">
-                      <specify attribute="person">
-                        <current/>
-                      </specify>
-                    </create>
+                    <current/>
                   </reference>
                   <not>
                     <reference attribute="isEmployed">
@@ -2075,7 +2086,12 @@
               <javaclass name="Boolean"/>
             </listof>
             <members>
-              <reference attribute="isSeniorCitizen"/>
+              <compare comparison=">">
+                <reference attribute="age">
+                  <reference attribute="person"/>
+                </reference>
+                <Number value="60"/>
+              </compare>
               <reference attribute="passesIncomeTest"/>
             </members>
           </fixedlist>
@@ -2098,7 +2114,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -2334,67 +2350,34 @@
         <javaclass name="Boolean"/>
       </type>
       <derivation>
-        <all>
-          <fixedlist>
-            <listof>
-              <javaclass name="Boolean"/>
-            </listof>
-            <members>
-              <any>
-                <dynamiclist>
-                  <list>
-                    <reference attribute="personList"/>
-                  </list>
-                  <listitemexpression>
-                    <all>
-                      <fixedlist>
-                        <listof>
-                          <javaclass name="Boolean"/>
-                        </listof>
-                        <members>
-                          <reference attribute="hasAbsentFather">
-                            <current/>
-                          </reference>
-                          <reference attribute="isSingle">
-                            <current/>
-                          </reference>
-                        </members>
-                      </fixedlist>
-                    </all>
-                  </listitemexpression>
-                </dynamiclist>
-              </any>
-              <choose>
-                <type>
-                  <javaclass name="Boolean"/>
-                </type>
-                <when>
-                  <condition>
-                    <equals>
-                      <null/>
-                      <reference attribute="absentFather"/>
-                    </equals>
-                  </condition>
-                  <value>
-                    <false/>
-                  </value>
-                </when>
-                <otherwise>
-                  <value>
-                    <equals>
-                      <reference attribute="absentPersonReason">
-                        <reference attribute="absentFather"/>
-                      </reference>
-                      <Code table="MOLSAAbsentFatherReason">
-                        <String value="MAF17003"/>
-                      </Code>
-                    </equals>
-                  </value>
-                </otherwise>
-              </choose>
-            </members>
-          </fixedlist>
-        </all>
+        <choose>
+          <type>
+            <javaclass name="Boolean"/>
+          </type>
+          <when>
+            <condition>
+              <equals>
+                <null/>
+                <reference attribute="absentFather"/>
+              </equals>
+            </condition>
+            <value>
+              <false/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <equals>
+                <reference attribute="absentPersonReason">
+                  <reference attribute="absentFather"/>
+                </reference>
+                <Code table="MOLSAAbsentFatherReason">
+                  <String value="MAF17003"/>
+                </Code>
+              </equals>
+            </value>
+          </otherwise>
+        </choose>
       </derivation>
     </Attribute>
     <Attribute name="assistanceUnit">
@@ -2422,8 +2405,9 @@
                   </members>
                 </fixedlist>
                 <reference attribute="eligibleDependentChildrenOfHeadOfHousehold"/>
-                <reference attribute="eligibleWives"/>
-                <reference attribute="eligibleWivesDependentChildren"/>
+                <reference attribute="eligibleWivesOfAbsentHusband"/>
+                <reference attribute="eligibleChildrenOfAbsentFather"/>
+                <reference attribute="eligibleWivesOfAbsentHusbandDependentChildren"/>
               </members>
             </fixedlist>
           </joinlists>
@@ -2449,12 +2433,7 @@
                 </listof>
                 <members>
                   <reference attribute="passesNonFinancials">
-                    <create ruleclass="NonFinancialCalculator"
-                      ruleset="MOLSAScreeningNonFinancialRuleSet">
-                      <specify attribute="person">
-                        <reference attribute="person"/>
-                      </specify>
-                    </create>
+                    <reference attribute="person"/>
                   </reference>
                   <not>
                     <reference attribute="isEmployed">
@@ -2478,6 +2457,119 @@
         <reference attribute="eligibleAssistanceUnit"/>
       </derivation>
     </Attribute>
+    <Attribute name="eligibleDependentChildrenOfHeadOfHousehold">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <reference attribute="eligibleDependentChildren">
+          <create ruleclass="EligibleDependentChildrenUnit">
+            <specify attribute="person">
+              <reference attribute="headOfHousehold"/>
+            </specify>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleChildrenOfAbsentFather">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="personList"/>
+          </list>
+          <listitemexpression>
+            <all>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Boolean"/>
+                </listof>
+                <members>
+                  <reference attribute="hasAbsentFather">
+                    <current/>
+                  </reference>
+                  <reference attribute="isDependentChild">
+                    <create ruleclass="DependentChildCalculator">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </reference>
+                </members>
+              </fixedlist>
+            </all>
+          </listitemexpression>
+        </filter>
+       </derivation>
+    </Attribute>
+    <Attribute name="eligibleWivesOfAbsentHusband">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <filter>
+              <list>
+                <reference attribute="personList"/>
+              </list>
+              <listitemexpression>
+                <reference attribute="hasAbsentHusband">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </filter>
+          </list>
+          <listitemexpression>
+            <reference attribute="passesNonFinancials">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleWivesOfAbsentHusbandDependentChildren">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <dynamiclist>
+                  <list>
+                    <reference attribute="eligibleWivesOfAbsentHusband"/>
+                  </list>
+                  <listitemexpression>
+                    <create ruleclass="EligibleDependentChildrenUnit">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </listitemexpression>
+                </dynamiclist>
+              </list>
+              <listitemexpression>
+                <reference attribute="eligibleDependentChildren">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
     <Attribute name="maxBenefitAmount">
       <type>
         <javaclass name="Number"/>
@@ -2489,6 +2581,30 @@
         </arithmetic>
       </derivation>
     </Attribute>
+    <Attribute name="totalEligibleChildren">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <fixedlist>
+              <listof>
+                <javaclass name="List">
+                  <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+                </javaclass>
+              </listof>
+              <members>
+                <reference attribute="eligibleDependentChildrenOfHeadOfHousehold"/>
+                <reference attribute="eligibleWivesOfAbsentHusbandDependentChildren"/>
+              </members>
+            </fixedlist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
     <Attribute name="extraBenefitAmountForEligibleKid">
       <type>
         <javaclass name="Number"/>
@@ -2496,18 +2612,11 @@
       <derivation>
         <arithmetic operation="*">
           <Number value="1000"/>
-          <arithmetic operation="+">
-            <property name="size">
-              <object>
-                <reference attribute="eligibleDependentChildrenOfHeadOfHousehold"/>
-              </object>
-            </property>
-            <property name="size">
-              <object>
-                <reference attribute="eligibleWivesDependentChildren"/>
-              </object>
-            </property>
-          </arithmetic>
+          <property name="size">
+            <object>
+              <reference attribute="totalEligibleChildren"/>
+            </object>
+          </property>
         </arithmetic>
       </derivation>
     </Attribute>
@@ -2520,7 +2629,7 @@
           <Number value="6000"/>
           <property name="size">
             <object>
-              <reference attribute="eligibleWives"/>
+              <reference attribute="eligibleWivesOfAbsentHusband"/>
             </object>
           </property>
         </arithmetic>
@@ -2561,55 +2670,34 @@
         <javaclass name="Boolean"/>
       </type>
       <derivation>
-        <all>
-          <fixedlist>
-            <listof>
-              <javaclass name="Boolean"/>
-            </listof>
-            <members>
-              <any>
-                <dynamiclist>
-                  <list>
-                    <reference attribute="personList"/>
-                  </list>
-                  <listitemexpression>
-                    <reference attribute="hasAbsentFather">
-                      <current/>
-                    </reference>
-                  </listitemexpression>
-                </dynamiclist>
-              </any>
-              <choose>
-                <type>
-                  <javaclass name="Boolean"/>
-                </type>
-                <when>
-                  <condition>
-                    <equals>
-                      <null/>
-                      <reference attribute="absentFather"/>
-                    </equals>
-                  </condition>
-                  <value>
-                    <false/>
-                  </value>
-                </when>
-                <otherwise>
-                  <value>
-                    <equals>
-                      <reference attribute="absentPersonReason">
-                        <reference attribute="absentFather"/>
-                      </reference>
-                      <Code table="MOLSAAbsentFatherReason">
-                        <String value="MAF17002"/>
-                      </Code>
-                    </equals>
-                  </value>
-                </otherwise>
-              </choose>
-            </members>
-          </fixedlist>
-        </all>
+        <choose>
+          <type>
+            <javaclass name="Boolean"/>
+          </type>
+          <when>
+            <condition>
+              <equals>
+                <null/>
+                <reference attribute="absentFather"/>
+              </equals>
+            </condition>
+            <value>
+              <false/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <equals>
+                <reference attribute="absentPersonReason">
+                  <reference attribute="absentFather"/>
+                </reference>
+                <Code table="MOLSAAbsentFatherReason">
+                  <String value="MAF17002"/>
+                </Code>
+              </equals>
+            </value>
+          </otherwise>
+        </choose>
       </derivation>
     </Attribute>
     <Attribute name="assistanceUnit">
@@ -2637,8 +2725,9 @@
                   </members>
                 </fixedlist>
                 <reference attribute="eligibleDependentChildrenOfHeadOfHousehold"/>
-                <reference attribute="eligibleWives"/>
-                <reference attribute="eligibleWivesDependentChildren"/>
+                <reference attribute="eligibleWivesOfAbsentHusband"/>
+                <reference attribute="eligibleWivesOfAbsentHusbandDependentChildren"/>
+                <reference attribute="eligibleChildrenOfAbsentFather"/>
               </members>
             </fixedlist>
           </joinlists>
@@ -2664,12 +2753,7 @@
                 </listof>
                 <members>
                   <reference attribute="passesNonFinancials">
-                    <create ruleclass="NonFinancialCalculator"
-                      ruleset="MOLSAScreeningNonFinancialRuleSet">
-                      <specify attribute="person">
-                        <reference attribute="person"/>
-                      </specify>
-                    </create>
+                    <reference attribute="person"/>
                   </reference>
                   <not>
                     <reference attribute="isEmployed">
@@ -2693,40 +2777,171 @@
         <reference attribute="assistanceUnit"/>
       </derivation>
     </Attribute>
+    <Attribute name="eligibleDependentChildrenOfHeadOfHousehold">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <reference attribute="eligibleDependentChildren">
+          <create ruleclass="EligibleDependentChildrenUnit">
+            <specify attribute="person">
+              <reference attribute="headOfHousehold"/>
+            </specify>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleWivesOfAbsentHusband">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <filter>
+              <list>
+                <reference attribute="personList"/>
+              </list>
+              <listitemexpression>
+                <reference attribute="hasAbsentHusband">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </filter>
+          </list>
+          <listitemexpression>
+            <reference attribute="passesNonFinancials">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleWivesOfAbsentHusbandDependentChildren">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <dynamiclist>
+                  <list>
+                    <reference attribute="eligibleWivesOfAbsentHusband"/>
+                  </list>
+                  <listitemexpression>
+                    <create ruleclass="EligibleDependentChildrenUnit">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </listitemexpression>
+                </dynamiclist>
+              </list>
+              <listitemexpression>
+                <reference attribute="eligibleDependentChildren">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleChildrenOfAbsentFather">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <filter>
+          <list>
+            <reference attribute="personList"/>
+          </list>
+          <listitemexpression>
+            <all>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Boolean"/>
+                </listof>
+                <members>
+                  <reference attribute="hasAbsentFather">
+                    <current/>
+                  </reference>
+                  <reference attribute="isDependentChild">
+                    <create ruleclass="DependentChildCalculator">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </reference>
+                </members>
+              </fixedlist>
+            </all>
+          </listitemexpression>
+        </filter>
+      </derivation>
+    </Attribute>
     <Attribute name="maxBenefitAmount">
       <type>
         <javaclass name="Number"/>
       </type>
       <derivation>
         <arithmetic operation="+">
-          <reference attribute="extraBenefitAmountForEligibleWife"/>
-          <reference attribute="extraBenefitAmountForEligibleKid"/>
+          <reference attribute="extraBenefitAmountPerEligibleWife"/>
+          <reference attribute="extraBenefitAmountPerEligibleKid"/>
         </arithmetic>
       </derivation>
     </Attribute>
-    <Attribute name="extraBenefitAmountForEligibleKid">
+    <Attribute name="totalEligibleChildren">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <fixedlist>
+              <listof>
+                <javaclass name="List">
+                  <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+                </javaclass>
+              </listof>
+              <members>
+                <reference attribute="eligibleDependentChildrenOfHeadOfHousehold"/>
+                <reference attribute="eligibleWivesOfAbsentHusbandDependentChildren"/>
+                <reference attribute="eligibleChildrenOfAbsentFather"/>
+              </members>
+            </fixedlist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
+    <Attribute name="extraBenefitAmountPerEligibleKid">
       <type>
         <javaclass name="Number"/>
       </type>
       <derivation>
         <arithmetic operation="*">
           <Number value="1000"/>
-          <arithmetic operation="+">
-            <property name="size">
-              <object>
-                <reference attribute="eligibleDependentChildrenOfHeadOfHousehold"/>
-              </object>
-            </property>
-            <property name="size">
-              <object>
-                <reference attribute="eligibleWivesDependentChildren"/>
-              </object>
-            </property>
-          </arithmetic>
+          <property name="size">
+            <object>
+              <reference attribute="totalEligibleChildren"/>
+            </object>
+          </property>
         </arithmetic>
       </derivation>
     </Attribute>
-    <Attribute name="extraBenefitAmountForEligibleWife">
+    <Attribute name="extraBenefitAmountPerEligibleWife">
       <type>
         <javaclass name="Number"/>
       </type>
@@ -2735,7 +2950,7 @@
           <Number value="6000"/>
           <property name="size">
             <object>
-              <reference attribute="eligibleWives"/>
+              <reference attribute="eligibleWivesOfAbsentHusband"/>
             </object>
           </property>
         </arithmetic>
@@ -2784,7 +2999,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="memberFullName">
+                  <reference attribute="descriptionNew">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -2929,17 +3144,95 @@
               </reference>
               <not>
                 <reference attribute="passesNonFinancials">
-                  <create ruleclass="NonFinancialCalculator"
-                    ruleset="MOLSAScreeningNonFinancialRuleSet">
-                    <specify attribute="person">
-                      <reference attribute="headOfHousehold"/>
-                    </specify>
-                  </create>
+                  <reference attribute="headOfHousehold"/>
                 </reference>
               </not>
             </members>
           </fixedlist>
         </all>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleDependentChildrenOfHeadOfHousehold">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <reference attribute="eligibleDependentChildren">
+          <create ruleclass="EligibleDependentChildrenUnit">
+            <specify attribute="person">
+              <reference attribute="headOfHousehold"/>
+            </specify>
+          </create>
+        </reference>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleWives">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <filter>
+              <list>
+                <reference attribute="headOfHouseholdRelationshipRecords"/>
+              </list>
+              <listitemexpression>
+                <equals>
+                  <reference attribute="relationshipType">
+                    <current/>
+                  </reference>
+                  <Code table="RelationshipTypeCoreDesc">
+                    <String value="RT6"/>
+                  </Code>
+                </equals>
+              </listitemexpression>
+            </filter>
+          </list>
+          <listitemexpression>
+            <reference attribute="to">
+              <current/>
+            </reference>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="eligibleWivesDependentChildren">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <dynamiclist>
+                  <list>
+                    <reference attribute="eligibleWives"/>
+                  </list>
+                  <listitemexpression>
+                    <create ruleclass="EligibleDependentChildrenUnit">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </listitemexpression>
+                </dynamiclist>
+              </list>
+              <listitemexpression>
+                <reference attribute="eligibleDependentChildren">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
       </derivation>
     </Attribute>
     <Attribute name="otherEligibleMembersAssistanceUnit">
@@ -2985,12 +3278,7 @@
                 </listof>
                 <members>
                   <reference attribute="passesNonFinancials">
-                    <create ruleclass="NonFinancialCalculator"
-                      ruleset="MOLSAScreeningNonFinancialRuleSet">
-                      <specify attribute="person">
-                        <reference attribute="person"/>
-                      </specify>
-                    </create>
+                    <reference attribute="person"/>
                   </reference>
                   <not>
                     <reference attribute="isEmployed">
@@ -3331,13 +3619,25 @@
             <reference attribute="children"/>
           </list>
           <listitemexpression>
-            <reference attribute="isDependentChild">
-              <create ruleclass="DependentChildCalculator">
-                <specify attribute="person">
-                  <current/>
-                </specify>
-              </create>
-            </reference>
+            <all>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Boolean"/>
+                </listof>
+                <members>
+                  <reference attribute="passesNonFinancials">
+                    <current/>
+                  </reference>
+                  <reference attribute="isDependentChild">
+                    <create ruleclass="DependentChildCalculator">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </reference>
+                </members>
+              </fixedlist>
+            </all>
           </listitemexpression>
         </filter>
       </derivation>

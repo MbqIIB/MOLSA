@@ -1,5 +1,8 @@
 package curam.rules.functions;
 
+import com.google.inject.Inject;
+
+import curam.creole.storage.database.RuleSetManager;
 import curam.datastore.impl.Datastore;
 import curam.datastore.impl.Entity;
 import curam.datastore.impl.NoSuchSchemaException;
@@ -31,6 +34,9 @@ import curam.util.type.Date;
 @SuppressWarnings("restriction")
 public class CustomFunctionUpdateEntities extends CustomFunctor {
 
+  @Inject
+  private RuleSetManager ruleSetManager;
+
   /**
   * 
   */
@@ -41,8 +47,9 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
 
   /**
    * Updates the Application entity submit date
+   * 
    * @param rulesParameters
-   * rules parameters
+   *          rules parameters
    * @throws AppException
    *           GeneralException
    * @throws InformationalException
@@ -70,11 +77,12 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
       final Entity[] intakeApplicationTypeEntities = application
           .getChildEntities(datastore
               .getEntityType(MOLSADatastoreConst.kIntakeApplicationType));
-      
-      final Entity[] intakeApplicationEntities = application
-      .getChildEntities(datastore
-          .getEntityType(MOLSADatastoreConst.kIntakeApplication));
 
+      final Entity[] intakeApplicationEntities = application
+          .getChildEntities(datastore
+              .getEntityType(MOLSADatastoreConst.kIntakeApplication));
+
+      Entity[] primaryParticipantAddress = null;
       // Update Person QID Values on SSN
       for (Entity personEntity : personEntities) {
         if ((Boolean) personEntity
@@ -83,6 +91,42 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
               .getTypedAttribute(MOLSADatastoreConst.kCtrlQApplicationDate);
           applicationMethod = (String) personEntity
               .getTypedAttribute(MOLSADatastoreConst.kApplicationMethod);
+          // Get Primary Address and Store
+          primaryParticipantAddress = personEntity.getChildEntities(datastore
+              .getEntityType(MOLSADatastoreConst.kAddress));
+        }
+        if (!(Boolean) personEntity
+            .getTypedAttribute(MOLSADatastoreConst.kIsPrimaryParticipant)
+            && (Boolean) personEntity
+                .getTypedAttribute(MOLSADatastoreConst.kIsResidingWithPrimaryParticipant)) {
+          // Will have only one address
+          final Entity primaryAddress = primaryParticipantAddress[0];
+          // Pick Up the current person attribute
+          final Entity nonPrimaryAddress = datastore
+              .newEntity(MOLSADatastoreConst.kAddress);
+          nonPrimaryAddress.setTypedAttribute(
+              MOLSADatastoreConst.kMunicipality, primaryAddress
+                  .getTypedAttribute(MOLSADatastoreConst.kMunicipality));
+          nonPrimaryAddress.setTypedAttribute(MOLSADatastoreConst.kZone,
+              primaryAddress.getTypedAttribute(MOLSADatastoreConst.kZone));
+          nonPrimaryAddress.setTypedAttribute(MOLSADatastoreConst.kStreet,
+              primaryAddress.getTypedAttribute(MOLSADatastoreConst.kStreet));
+          nonPrimaryAddress.setTypedAttribute(
+              MOLSADatastoreConst.kBuildingNumber, primaryAddress
+                  .getTypedAttribute(MOLSADatastoreConst.kBuildingNumber));
+          nonPrimaryAddress.setTypedAttribute(
+              MOLSADatastoreConst.kBuildingType, primaryAddress
+                  .getTypedAttribute(MOLSADatastoreConst.kBuildingType));
+          nonPrimaryAddress.setTypedAttribute(MOLSADatastoreConst.kPostCode,
+              primaryAddress.getTypedAttribute(MOLSADatastoreConst.kPostCode));
+          nonPrimaryAddress.setTypedAttribute(
+              MOLSADatastoreConst.kElectricityNumber, primaryAddress
+                  .getTypedAttribute(MOLSADatastoreConst.kElectricityNumber));
+          nonPrimaryAddress.setTypedAttribute(MOLSADatastoreConst.kpoBox,
+              primaryAddress.getTypedAttribute(MOLSADatastoreConst.kpoBox));
+          nonPrimaryAddress.setTypedAttribute(MOLSADatastoreConst.kCountry,
+              primaryAddress.getTypedAttribute(MOLSADatastoreConst.kCountry));
+          personEntity.addChildEntity(nonPrimaryAddress);
         }
 
         personEntity.setAttribute(MOLSADatastoreConst.kSSN,
@@ -126,16 +170,19 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
                 addressEntity.getTypedAttribute(MOLSADatastoreConst.kCountry));
 
           }
-
           personEntity.addChildEntity(mailingAddress);
 
         }
+
+        // Code to add mailing Address entites if address is specified
+
       }
       application.setTypedAttribute(MOLSADatastoreConst.kSubmitDate,
           applicationDate);
-      application.setTypedAttribute(MOLSADatastoreConst.kApplicationMonthStartDate,
+      application.setTypedAttribute(
+          MOLSADatastoreConst.kApplicationMonthStartDate,
           MOLSADateUtil.shiftToStartOfMonth(applicationDate));
-      
+
       // Also Update IntakeApplication Date of Application with user entered
       // value
       for (Entity intakeApplicationEntity : intakeApplicationTypeEntities) {
@@ -143,7 +190,7 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
             MOLSADatastoreConst.kDateOfApplication, applicationDate);
         intakeApplicationEntity.update();
       }
-      
+
       for (Entity intakeApplication : intakeApplicationEntities) {
         intakeApplication.setTypedAttribute(
             MOLSADatastoreConst.kDateOfApplication, applicationDate);
@@ -159,10 +206,12 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
           MOLSADatastoreConst.kApplicationMethod, applicationMethod);
       application.addChildEntity(applicationDetailsEntity);
       application.update();
+
     } catch (NoSuchSchemaException e) {
 
       throw new AppRuntimeException(e);
     }
+
     return AdaptorFactory.getBooleanAdaptor(Boolean.TRUE);
 
   }

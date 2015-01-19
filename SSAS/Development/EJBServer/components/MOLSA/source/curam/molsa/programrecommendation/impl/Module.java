@@ -12,6 +12,7 @@ import curam.codetable.impl.PROGRAMTYPEEntry;
 import curam.core.sl.infrastructure.assessment.event.impl.AssessmentEngineEvent;
 import curam.core.sl.infrastructure.impl.EvidenceControllerInterface;
 import curam.core.sl.infrastructure.impl.ReciprocalEvidenceConversion;
+import curam.creoleprogramrecommendation.impl.AuthorizationEvent;
 import curam.creoleprogramrecommendation.impl.DeliveryCreator;
 import curam.molsa.casedetermination.sl.event.impl.MOLSAAssessmentEngineEventListener;
 import curam.molsa.core.sl.impl.MOLSAAnonymousMDCreator;
@@ -19,6 +20,7 @@ import curam.molsa.core.sl.impl.MOLSAEvidenceControllerInterfaceImpl;
 import curam.molsa.core.sl.impl.MOLSAHandicapMDCreator;
 import curam.molsa.core.sl.impl.MOLSAMilestoneDeliveryCreator;
 import curam.molsa.core.sl.impl.MOLSASeniorMDCreator;
+import curam.molsa.creoleprogramrecommendation.sl.event.impl.MOLSAAuthorizationEventListener;
 import curam.molsa.evidence.impl.MOLSAHouseholdRelationshipReciprocalConversion;
 
 /**
@@ -47,6 +49,10 @@ public class Module extends AbstractModule {
 				PROGRAMTYPEEntry.FAMILYOFPRISONER).to(
 				MOLSAFamilyOfMissingAndPrisonPDCreator.class);
 
+		deliveryCreatorImplementations.addBinding(
+				PROGRAMTYPEEntry.SENIORCITIZEN).to(
+				MOLSASeniorCitizenPDCreator.class);
+
 		final Multibinder<AssessmentEngineEvent> assessmentEngineEventListeners = Multibinder
 				.newSetBinder(binder(),
 						new TypeLiteral<AssessmentEngineEvent>() {
@@ -65,6 +71,17 @@ public class Module extends AbstractModule {
 				MOLSAEvidenceControllerInterfaceImpl.class);
 
 		registerMilestoneDeliveryCreator();
+		registerProductDeliveryKey();
+		
+		// Authorize Event Bindings
+	    final Multibinder<AuthorizationEvent> authorizationEventListeners =
+	      Multibinder.newSetBinder(binder(), new TypeLiteral<AuthorizationEvent>() {
+	          // type literal - intentionally blank
+	        });
+	    authorizationEventListeners.addBinding().to(
+	        MOLSAAuthorizationEventListener.class);
+
+
 	}
 
 	/**
@@ -105,6 +122,46 @@ public class Module extends AbstractModule {
 		milestoneCreatorImplementations.addBinding(
 				PRODUCTTYPEEntry.ANONYMOUSPARENTS).to(
 				MOLSAAnonymousMDCreator.class);
+
+	}
+
+	/**
+	 * Register product delivery key
+	 */
+	protected void registerProductDeliveryKey() {
+
+		// bind(MOLSARegisterProductDeliveryKey.class).annotatedWith(MOLSAProductDeliveryDefault.class).to(MOLSASocialAssistanceRegisterPDKey.class);
+
+		MapBinder<PRODUCTTYPEEntry, MOLSARegisterProductDeliveryKey> registerKeyImplementations = MapBinder
+				.newMapBinder(binder(), PRODUCTTYPEEntry.class,
+						MOLSARegisterProductDeliveryKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.SENIORCITIZEN)
+				.to(MOLSASeniorCitizenRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.FAMILYOFMISSING)
+				.to(MOLSAFamilyOfMissingRegisterPDKey.class);
+		registerKeyImplementations
+				.addBinding(PRODUCTTYPEEntry.FAMILYOFPRISONER).to(
+						MOLSAFamilyOfPrisonnerRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.WIDOW).to(
+				MOLSASocialAssistanceRegisterPDKey.class);
+		registerKeyImplementations
+				.addBinding(PRODUCTTYPEEntry.ANONYMOUSPARENTS).to(
+						MOLSASocialAssistanceRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.DESERTEDWIFE)
+				.to(MOLSASocialAssistanceRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.DIVORCEDLADY)
+				.to(MOLSASocialAssistanceRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.FAMILYINNEED)
+				.to(MOLSAFamilyInNeedRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.HANDICAP).to(
+				MOLSASocialAssistanceRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.ORPHAN).to(
+				MOLSASocialAssistanceRegisterPDKey.class);
+		registerKeyImplementations.addBinding(PRODUCTTYPEEntry.MAIDALLOWANCE)
+				.to(MOLSASocialAssistanceRegisterPDKey.class);
+		registerKeyImplementations.addBinding(
+				PRODUCTTYPEEntry.INCAPABLEOFWORKING).to(
+						MOLSAIncapableOfWorkingRegisterPDKey.class);
 
 	}
 }

@@ -10,6 +10,7 @@ import curam.creole.ruleclass.MOLSAScreeningProgramsEligibiltyCalculator.impl.De
 import curam.creole.ruleclass.MOLSAScreeningRuleSet.impl.DesertedWifeProgram;
 import curam.creole.ruleclass.MOLSAScreeningRuleSet.impl.DesertedWifeProgram_Factory;
 import curam.creole.ruleclass.MOLSAScreeningRuleSet.impl.Person;
+import curam.molsa.codetable.impl.ABSENTFATHEREntry;
 import curam.molsa.codetable.impl.EXPENSEEntry;
 import curam.molsa.codetable.impl.RESIDENCYEntry;
 import curam.molsa.test.base.MOLSAScreeningRulesTestData;
@@ -22,10 +23,13 @@ public class TestScreeningDesertedProgram extends MOLSAScreeningRulesTestData {
   }
 
   public void testDesertedWifeProgram() {
-    createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
+    final Person personRecord = createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
         GENDEREntry.FEMALE.getCode(), CITIZENSHIPCODEEntry.QATARI.getCode(),
         RESIDENCYEntry.YES.getCode());
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
 
     createPersonRecord("Mohammed Hamed", 102, Date.fromISO8601("19720101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
@@ -45,11 +49,14 @@ public class TestScreeningDesertedProgram extends MOLSAScreeningRulesTestData {
   }
 
   public void testDesertedWifeProgramFailingNonFinancials() {
-    createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
+    final Person personRecord =  createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
         GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.NOT_A_QATARI.getCode(),
         RESIDENCYEntry.YES.getCode());
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
 
     createPersonRecord("Mohammed Hamed", 102, Date.fromISO8601("19720101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
@@ -70,11 +77,13 @@ public class TestScreeningDesertedProgram extends MOLSAScreeningRulesTestData {
   }
 
   public void testDesertedWifeProgramDiffMaritialStatus() {
-    createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
+    final Person personRecord = createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
         Boolean.TRUE, MARITALSTATUSEntry.WIDOWED.getCode(),
         GENDEREntry.FEMALE.getCode(), CITIZENSHIPCODEEntry.QATARI.getCode(),
         RESIDENCYEntry.YES.getCode());
-
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
     createPersonRecord("Mohammed Hamed", 102, Date.fromISO8601("19720101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
         GENDEREntry.MALE.getCode(), CITIZENSHIPCODEEntry.QATARI.getCode(),
@@ -96,6 +105,12 @@ public class TestScreeningDesertedProgram extends MOLSAScreeningRulesTestData {
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.DESERTED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
 
     createPersonRecord("Mohammed Hamed", 102, Date.fromISO8601("19720101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
@@ -125,6 +140,9 @@ public class TestScreeningDesertedProgram extends MOLSAScreeningRulesTestData {
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.DESERTED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
 
     createPersonRecord("Mohammed Hamed", 102, Date.fromISO8601("19720101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
@@ -163,6 +181,9 @@ public class TestScreeningDesertedProgram extends MOLSAScreeningRulesTestData {
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.DESERTED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
 
     createPersonRecord("Mohammed Hamed", 102, Date.fromISO8601("19720101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
@@ -193,6 +214,9 @@ public class TestScreeningDesertedProgram extends MOLSAScreeningRulesTestData {
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.COMMONLAW.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
+    personRecord.hasAbsentHusband().specifyValue(Boolean.TRUE);
+    createAbsentFatherRecord("Abeed", "Khan", 201,
+        Date.fromISO8601("19620101"), ABSENTFATHEREntry.DESERTED.getCode());
 
     DesertedWifeProgramCalculator desertedWifeProgramCalculator = DesertedWifeProgramCalculator_Factory
         .getFactory().newInstance(getSession());

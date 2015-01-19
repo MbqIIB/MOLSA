@@ -3,9 +3,7 @@ package curam.molsa.test.moi;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import com.google.inject.Inject;
-
 import curam.application.impl.Application;
 import curam.codetable.ADDRESSLAYOUTTYPE;
 import curam.codetable.CITIZENSHIPCODE;
@@ -18,8 +16,6 @@ import curam.codetable.NATIONALITY;
 import curam.codetable.RELATIONSHIPTYPECODE;
 import curam.codetable.impl.APPLICANTROLEEntry;
 import curam.codetable.impl.CASESTATUSEntry;
-import curam.core.facade.infrastructure.fact.EvidenceFactory;
-import curam.core.facade.infrastructure.intf.Evidence;
 import curam.core.fact.CachedCaseHeaderFactory;
 import curam.core.intf.CachedCaseHeader;
 import curam.core.sl.infrastructure.assessment.impl.DeterminationInterval;
@@ -36,27 +32,32 @@ import curam.molsa.codetable.EDUCATION;
 import curam.molsa.codetable.EDUCATIONLEVEL;
 import curam.molsa.codetable.EXPENSE;
 import curam.molsa.codetable.RESIDENCY;
-import curam.molsa.codetable.RESPONSETYPE;
-import curam.molsa.ip.batch.fact.MOLSAInformationProviderBatchStreamFactory;
-import curam.molsa.ip.entity.fact.MOLSAInformationProviderTmpFactory;
-import curam.molsa.ip.entity.intf.MOLSAInformationProviderTmp;
-import curam.molsa.ip.entity.struct.MOLSAInformationProviderTmpDtls;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.molsa.moi.fact.MOLSAMoiBatchStreamFactory;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
 import curam.molsa.test.framework.TestHelper;
-import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.type.Date;
 
+/**
+ * 
+ * This class tests the MOI Batch functionality.
+ * 
+ */
+@SuppressWarnings("restriction")
 public class MolsaMoiBatchTest001 extends CERScenarioTestBase {
 
+	/**
+	 * Constructor for the class
+	 * 
+	 * @param arg0
+	 *            String
+	 */
 	public MolsaMoiBatchTest001(String arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
@@ -97,7 +98,6 @@ public class MolsaMoiBatchTest001 extends CERScenarioTestBase {
 	@Override
 	protected void addIntakeApplicant(Application application)
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		createIntakeApplicant(application.getID(), MAHEENA_UNIQUE_NAME,
 				APPLICANTROLEEntry.PRIMARY_APPLICANT);
 
@@ -119,7 +119,6 @@ public class MolsaMoiBatchTest001 extends CERScenarioTestBase {
 	@Override
 	protected void addEvidence(CaseKey caseKey) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 		long participantid = getParticipantRoleID(MAHEENA_UNIQUE_NAME).participantRoleID;
 		long caseParticipantRoleID = getCaseParticipantRoleID(MAHEENA_UNIQUE_NAME).caseParticipantRoleID;
 		long sisterwifeparticipantid = getParticipantRoleID(TASNEEM_UNIQUE_NAME).participantRoleID;
@@ -209,7 +208,6 @@ public class MolsaMoiBatchTest001 extends CERScenarioTestBase {
 	@Override
 	protected void addCaseMember(Application application) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 		Date currentDate = Date.getCurrentDate();
 		PersonRegistrationDetails registrationIDDetails = new PersonRegistrationDetails();
 		registrationIDDetails.currentMaritalStatus = MARITALSTATUS.DESERTED;
@@ -235,7 +233,6 @@ public class MolsaMoiBatchTest001 extends CERScenarioTestBase {
 	@Override
 	protected List<HouseholdUnit> getExpectedHouseholdUnits()
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 		List<HouseholdUnit> householdUnitList = new ArrayList<HouseholdUnit>();
 		List<Long> mandatoryMembers = new ArrayList<Long>();
 
@@ -322,20 +319,15 @@ public class MolsaMoiBatchTest001 extends CERScenarioTestBase {
 				.newInstance();
 		BatchProcessingID batchId = new BatchProcessingID();
 		batchId.recordID = 12345678901L;
-
 		MOLSAMoiDtls dtls = new MOLSAMoiDtls();
-
 		BatchProcessingSkippedRecord skippedRecordDtls = molsaBatchStream
 				.processRecord(batchId, dtls);
 		assertEquals(0, skippedRecordDtls.recordID);
-
 	}
 
 	@Override
 	protected void postAssertionOnCase(CaseKey caseKey) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
-
 	}
 
 }

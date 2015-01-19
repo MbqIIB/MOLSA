@@ -154,6 +154,7 @@ public class MOLSAHandicapMDCreator implements MOLSAMilestoneDeliveryCreator {
 
 		Calendar currentYearCal = Date.getDate(dateOfBirth).getCalendar();
 		currentYearCal.add(Calendar.YEAR, 18);
+		currentYearCal.add(Calendar.MONTH, -1);
 
 		long age = MOLSADateUtil.determineAge(certEndDate,
 				Date.getDate(dateOfBirth));

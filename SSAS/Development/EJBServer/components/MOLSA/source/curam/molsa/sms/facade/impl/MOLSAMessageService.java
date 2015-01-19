@@ -14,45 +14,88 @@ import curam.core.facade.struct.CommunicationDetailList;
 import curam.core.facade.struct.CommunicationFilterKey;
 import curam.core.facade.struct.ListCommunicationsKey;
 import curam.core.facade.struct.ReadProFormaCommKey;
+import curam.core.fact.WMInstanceDataFactory;
+import curam.core.impl.CuramConst;
+import curam.core.intf.WMInstanceData;
 import curam.core.sl.struct.CaseMemberCommDetailsList;
 import curam.core.sl.struct.CaseMemberCommunicationDetails;
 import curam.core.sl.struct.CommunicationKey;
+import curam.core.struct.WMInstanceDataDtls;
+import curam.message.MOLSASMSSERVICE;
+import curam.molsa.sms.entity.fact.MOLSASMSLogFactory;
+import curam.molsa.sms.entity.fact.MOLSASMSWMInstanceFactory;
+import curam.molsa.sms.entity.intf.MOLSASMSLog;
+import curam.molsa.sms.entity.intf.MOLSASMSWMInstance;
+import curam.molsa.sms.entity.struct.MOLSASMSWMInstanceDtls;
 import curam.molsa.sms.facade.struct.MOLSAAdditionalBenefitDetailsList;
 import curam.molsa.sms.facade.struct.MOLSACommunicationAndListRowActionDetails;
 import curam.molsa.sms.facade.struct.MOLSACommunicationDetailList;
 import curam.molsa.sms.facade.struct.MOLSAConcernRoleListAndMessageText;
+import curam.molsa.sms.facade.struct.MOLSAFailedSMSDetailsList;
 import curam.molsa.sms.facade.struct.MOLSAMessageText;
 import curam.molsa.sms.facade.struct.MOLSAMessageTextKey;
 import curam.molsa.sms.facade.struct.MOLSAParticipantDetailsList;
 import curam.molsa.sms.facade.struct.MOLSAParticipantFilterCriteriaDetails;
+import curam.molsa.sms.facade.struct.MOLSASMSLogKey;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.RecordNotFoundException;
+import curam.util.fact.DeferredProcessingFactory;
+import curam.util.intf.DeferredProcessing;
+import curam.util.resources.KeySet;
+import curam.util.resources.StringUtil;
 import curam.util.resources.impl.PropertiesResourceCache;
+import curam.util.type.StringList;
+import curam.util.type.UniqueID;
 
 
 public abstract class MOLSAMessageService extends curam.molsa.sms.facade.base.MOLSAMessageService {
 
 
   public void sendSMS(MOLSAConcernRoleListAndMessageText key) throws AppException, InformationalException {
+    
+    
 		MOLSAConcernRoleListAndMessageTextDetails details = new MOLSAConcernRoleListAndMessageTextDetails();
-		details.dtls.concernRoleTabbedList = key.concernRoleTabbedList;
-		details.dtls.smsMessageText = key.smsMessageText;
-		details.dtls.smsMessageType = key.smsMessageType;
-		MOLSASMSUtilFactory.newInstance().sendSMS(details);
+		StringList concernRoleIDList = StringUtil
+        .delimitedText2StringList(
+            key.concernRoleTabbedList,
+            CuramConst.gkTabDelimiterChar);
+		if(concernRoleIDList.size()<=1){
+		  details.dtls.concernRoleTabbedList = key.concernRoleTabbedList;
+	    details.dtls.smsMessageText = key.smsMessageText;
+	    details.dtls.smsMessageType = key.smsMessageType;
+	    details.dtls.caseID=key.caseID;
+	    MOLSASMSUtilFactory.newInstance().sendSMS(details);
+		}else{
+		//Invoke the deferred process to send the bulk SMS
+	     final DeferredProcessing deferredProcessingObj =
+	          DeferredProcessingFactory.newInstance();
+	        MOLSASMSWMInstance molsasmswmInstanceObj=MOLSASMSWMInstanceFactory.newInstance();
+	        MOLSASMSWMInstanceDtls instanceDtls = new MOLSASMSWMInstanceDtls();
+	        instanceDtls.idTabbedList=key.concernRoleTabbedList;
+	        instanceDtls.instDataID=UniqueID.nextUniqueID(KeySet.kKeySetDefault);
+	        instanceDtls.messageText=key.smsMessageText;
+	        instanceDtls.smsTemplate=key.smsMessageType;
+	        instanceDtls.caseID=key.caseID;
+	        molsasmswmInstanceObj.insert(instanceDtls);
+	
+	        deferredProcessingObj.startProcess("DEFERREDSMSPROCESSING",instanceDtls.instDataID);
+		}	
   }
 
   @Override
   public MOLSAMessageText getSMSMessageText(MOLSAMessageTextKey key) throws AppException, InformationalException {
-    StringBuffer stringBuffer = new StringBuffer();
+    
+    MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
+    curam.molsa.sms.sl.struct.MOLSAMessageTextKey messageTextKey=new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
     MOLSAMessageText messageText = new MOLSAMessageText();
-    stringBuffer.append(key.category);
-    stringBuffer.append(".");
-    stringBuffer.append(key.template);
-    messageText.smsMessageText = PropertiesResourceCache.getInstance().getProperty("MOLSASMSMessageText.properties", stringBuffer.toString());
+    messageTextKey.dtls.category=key.category;
+    messageTextKey.dtls.template=key.template;
+    curam.molsa.sms.sl.struct.MOLSAMessageText text = molsasmsUtilObj.getSMSMessageText(messageTextKey);
+    messageText.smsMessageText=text.dtls.smsMessageText;
     return messageText;
   }
 
@@ -69,9 +112,15 @@ public abstract class MOLSAMessageService extends curam.molsa.sms.facade.base.MO
   }
 
   @Override
-  public void listAllFailedMessages() throws AppException, InformationalException {
-    // TODO Auto-generated method stub
+  public MOLSAFailedSMSDetailsList listAllFailedMessages() throws AppException, InformationalException {
 
+    MOLSAFailedSMSDetailsList smsDetailsList = new MOLSAFailedSMSDetailsList();
+    MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
+    curam.molsa.sms.sl.struct.MOLSAFailedSMSDetailsList failedSMSDetailsList = molsasmsUtilObj.listAllFailedMessages();
+    
+    smsDetailsList.dtls.addAll(failedSMSDetailsList.dtls.dtls);
+
+return smsDetailsList;
   }
  
 
@@ -100,7 +149,6 @@ public abstract class MOLSAMessageService extends curam.molsa.sms.facade.base.MO
 
   @Override
   public void exportParticipantsToExcel(MOLSAConcernRoleListAndMessageText key) throws AppException, InformationalException {
-    // TODO Auto-generated method stub
     
     MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
     MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails
@@ -232,4 +280,39 @@ public abstract class MOLSAMessageService extends curam.molsa.sms.facade.base.MO
       return molsaCommunicationDetailList;
   }
 
+  @Override
+  public void resendSMS(MOLSASMSLogKey key) throws AppException, InformationalException {
+
+    if(key.smsLogIDTabbedList.length()==0){
+      curam.core.sl.infrastructure.impl.ValidationManagerFactory
+      .getManager()
+      .throwWithLookup(
+          new AppException(
+              MOLSASMSSERVICE.NO_CONCERNROLE_SELECTED),
+          curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
+          0);
+    }
+    
+   MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
+   curam.molsa.sms.sl.struct.MOLSASMSLogKey logKey=new curam.molsa.sms.sl.struct.MOLSASMSLogKey();
+   StringList concernRoleIDList = StringUtil
+       .delimitedText2StringList(
+           key.smsLogIDTabbedList,
+           CuramConst.gkTabDelimiterChar);
+   if(CuramConst.gkOne==concernRoleIDList.size()){
+     logKey.dtls.smsLogIDTabbedList=key.smsLogIDTabbedList;
+     molsasmsUtilObj.resendSMS(logKey);
+   }else{
+   //Invoke the deferred process to send the bulk SMS
+      final DeferredProcessing deferredProcessingObj =
+           DeferredProcessingFactory.newInstance();
+         MOLSASMSWMInstance molsasmswmInstanceObj=MOLSASMSWMInstanceFactory.newInstance();
+         MOLSASMSWMInstanceDtls instanceDtls = new MOLSASMSWMInstanceDtls();
+         instanceDtls.idTabbedList=key.smsLogIDTabbedList;
+         instanceDtls.instDataID=UniqueID.nextUniqueID(KeySet.kKeySetDefault);
+         molsasmswmInstanceObj.insert(instanceDtls);
+ 
+         deferredProcessingObj.startProcess("DEFERREDRESENDSMSPROCESSING",instanceDtls.instDataID);
+  }
+  }
 }

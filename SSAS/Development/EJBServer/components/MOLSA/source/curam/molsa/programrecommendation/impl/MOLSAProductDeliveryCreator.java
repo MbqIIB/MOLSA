@@ -1,8 +1,11 @@
 package curam.molsa.programrecommendation.impl;
 
+import java.util.Map;
+
 import com.google.inject.Inject;
 
 import curam.codetable.CURRENCY;
+import curam.codetable.impl.PRODUCTTYPEEntry;
 import curam.core.fact.AdminProductDeliveryPatternInfoFactory;
 import curam.core.fact.CreateProductDeliveryFactory;
 import curam.core.sl.entity.struct.CaseKeyStruct;
@@ -16,12 +19,14 @@ import curam.core.struct.RegisterProductDeliveryKey;
 import curam.creoleprogramrecommendation.impl.DeliveryCreator;
 import curam.creoleprogramrecommendation.impl.SimulatedDetermination;
 import curam.molsa.core.facade.fact.MOLSAProductDeliveryFactory;
+import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.IntegratedCase;
 import curam.piwrapper.caseheader.impl.ProductDelivery;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.persistence.GuiceWrapper;
 import curam.util.type.Date;
 import curam.verification.sl.infrastructure.fact.VerificationFactory;
 
@@ -36,13 +41,33 @@ public class MOLSAProductDeliveryCreator implements DeliveryCreator {
 	@Inject
 	private ProductDeliveryDAO productDeliveryDAO;
 
+	@Inject
+	private Map<PRODUCTTYPEEntry, MOLSARegisterProductDeliveryKey> registerProductDelivery;
+	@Inject
+	private ProductDAO productDAO;
+
+	/**
+	 * Default 
+	 */
+	public MOLSAProductDeliveryCreator() {
+
+		GuiceWrapper.getInjector().injectMembers(this);
+	}
+
 	/**
 	 * Creates {@link ProductDelivery} and submits the Product for approval if
 	 * not outstanding verification.
 	 */
 	public CaseHeader create(SimulatedDetermination simulatedDetermination)
 			throws AppException, InformationalException {
-		RegisterProductDeliveryKey registerProductDeliveryKey = registerProductDeliveryKey(simulatedDetermination);
+
+		MOLSARegisterProductDeliveryKey productDeliveryKey;
+
+		productDeliveryKey = registerProductDelivery.get(productDAO.get(
+				simulatedDetermination.productID()).getProductType());
+
+		RegisterProductDeliveryKey registerProductDeliveryKey = productDeliveryKey
+				.registerProductDeliveryKey(simulatedDetermination);
 
 		registerProductDeliveryKey.caseStartDate = simulatedDetermination
 				.getDateRange().start();
@@ -112,6 +137,7 @@ public class MOLSAProductDeliveryCreator implements DeliveryCreator {
 	private RegisterProductDeliveryKey registerProductDeliveryKey(
 			SimulatedDetermination simulatedDetermination) throws AppException,
 			InformationalException {
+
 		RegisterProductDeliveryKey registerProductDeliveryKey = new RegisterProductDeliveryKey();
 		registerProductDeliveryKey.clientID = simulatedDetermination
 				.getIntegratedCase().getConcernRole().getID();
