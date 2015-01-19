@@ -1,0 +1,118 @@
+<PAGE
+    PAGE_ID="MOLSA_listFailedSMS"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSAMessageService"
+        NAME="DISPLAY"
+        OPERATION="listAllFailedMessages"
+        PHASE="DISPLAY"
+    />
+    
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSAMessageService"
+        NAME="ACTION"
+        OPERATION="resendSMS"
+        PHASE="ACTION"
+    />
+    
+ 
+    <LIST>
+        <CONTAINER
+            ALIGNMENT="CENTER"
+            WIDTH="5"
+            >
+            <WIDGET
+                TYPE="MULTISELECT"
+                >
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+                    <CONNECT>
+                        <SOURCE
+                            NAME="DISPLAY"
+                            PROPERTY="smsMessageID"
+                        />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+                    <CONNECT>
+                        <TARGET
+                            NAME="ACTION"
+                            PROPERTY="smsLogIDTabbedList"
+                        />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+            </WIDGET>
+        </CONTAINER>
+        
+        <FIELD
+            LABEL="Field.Label.PersonName"
+            WIDTH="15"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="result$dtls$participantName"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.PhoneNember"
+            WIDTH="15"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="result$dtls$phoneNumber"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.Message"
+            WIDTH="30"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="result$dtls$message"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.FailedReason"
+            WIDTH="20"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="result$dtls$failedReason"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.FailureDate"
+            WIDTH="15"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="result$dtls$failureDate"
+                />
+            </CONNECT>
+        </FIELD>
+    </LIST>
+    
+    
+    <ACTION_SET TOP="false">
+        <ACTION_CONTROL LABEL="ActionControl.Label.ResendSMS" TYPE="SUBMIT">
+            <LINK PAGE_ID="THIS"/>
+        </ACTION_CONTROL>
+    </ACTION_SET>
+</PAGE>
