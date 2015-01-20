@@ -455,7 +455,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
       Date date = new Date(calender.getTimeInMillis());
       dtls.caluclatedDateFromAge = date;
 
-      whereStrBuf.append("person.dateofbirth <= :caluclatedDateFromAge AND ");
+      whereStrBuf.append("person.dateofbirth >= :caluclatedDateFromAge AND ");
     }
 
     if (dtls.gender.length() > CuramConst.gkZero) {
