@@ -778,6 +778,11 @@ public class MOLSADatastoreConst {
    * Residing with Primary participant
    */
   public static String kIsResidingWithPrimaryParticipant="isResidingWithPrimaryParticipant";
+  
+  /**
+   * Phone Number
+   */
+  public static final String KCellPhoneNumber = "cellPhoneNumber";
 
   
 }
