@@ -45,7 +45,7 @@ public class MolsaScreeningNotification extends
       PlayerIDAndExecutionID playerAndExecutionID) throws AppException,
       InformationalException {
     PagePlayerStateInternal pagePlayerState = (PagePlayerStateInternal) pagePlayerStateDAO
-        .get(playerAndExecutionID.playerID);
+        .get(playerAndExecutionID.executionID);
 
     final IEGScriptExecution iegScriptExecution = IEGScriptExecutionFactory
         .getInstance().getScriptExecutionObject(
@@ -85,7 +85,7 @@ public class MolsaScreeningNotification extends
     AppException message = new AppException(MOLSANOTIFICATION.SCREENING_PERSON);
     message.arg(name);
     message.arg(qid);
-   // notificationDetails.concernRoleID = Long.valueOf(45000);
+    notificationDetails.concernRoleID = Long.valueOf(45000);
     notificationDetails.reasonText = message.getMessage();
     notificationDetails.subject = message.getMessage();
     notificationDetails.currPriority = PRIORITY.DEFAULTCODE;
