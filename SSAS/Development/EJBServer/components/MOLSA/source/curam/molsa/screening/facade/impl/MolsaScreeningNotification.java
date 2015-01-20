@@ -72,6 +72,7 @@ public class MolsaScreeningNotification extends
 				.getEntityType(MOLSADatastoreConst.kPerson));
 		String qid = null;
 		String name = null;
+		String phoneNumber = null;
 
 		for (Entity personEntity : personEntities) {
 			if ((Boolean) personEntity
@@ -79,6 +80,7 @@ public class MolsaScreeningNotification extends
 				qid = personEntity.getAttribute(MOLSADatastoreConst.kQIDNumber);
 				name = personEntity
 						.getAttribute(MOLSADatastoreConst.kFirstName);
+				phoneNumber = personEntity.getAttribute(MOLSADatastoreConst.KCellPhoneNumber);
 
 			}
 
@@ -94,6 +96,7 @@ public class MolsaScreeningNotification extends
 		AppException message = new AppException(
 				MOLSANOTIFICATION.SCREENING_PERSON);
 		message.arg(name);
+		message.arg(phoneNumber);
 		message.arg(qid);
 		taskCreateDetail.taskDetails.subject = message.getMessage();
 
