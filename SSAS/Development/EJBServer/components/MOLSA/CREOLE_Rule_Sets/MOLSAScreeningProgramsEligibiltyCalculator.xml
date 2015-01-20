@@ -323,7 +323,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -475,7 +475,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -627,7 +627,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -757,7 +757,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -974,7 +974,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -1195,7 +1195,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -1715,7 +1715,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -2114,7 +2114,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -2176,7 +2176,7 @@
             </listof>
             <members>
               <reference attribute="requiresMaidAssistance">
-                <reference attribute="headOfHousehold"/>
+                <reference attribute="person"/>
               </reference>
             </members>
           </fixedlist>
@@ -2273,7 +2273,7 @@
             <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
           </listof>
           <members>
-            <reference attribute="headOfHousehold"/>
+            <reference attribute="person"/>
           </members>
         </fixedlist>
       </derivation>
@@ -2506,7 +2506,7 @@
             </all>
           </listitemexpression>
         </filter>
-       </derivation>
+      </derivation>
     </Attribute>
     <Attribute name="eligibleWivesOfAbsentHusband">
       <type>
@@ -2999,7 +2999,7 @@
                   <javaclass name="Object"/>
                 </listof>
                 <members>
-                  <reference attribute="descriptionNew">
+                  <reference attribute="description">
                     <reference attribute="person"/>
                   </reference>
                   <String value=" "/>
@@ -3030,28 +3030,69 @@
         </XmlMessage>
       </derivation>
     </Attribute>
+    <Attribute name="isMaleHeadOfHouseholdMarriedUnder18AndEnrolledInEducation">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="isMale">
+                <reference attribute="headOfHousehold"/>
+              </reference>
+              <reference attribute="isMarried">
+                <reference attribute="headOfHousehold"/>
+              </reference>
+              <compare comparison="&lt;">
+                <reference attribute="age">
+                  <reference attribute="headOfHousehold"/>
+                </reference>
+                <Number value="18"/>
+              </compare>
+              <reference attribute="isMemberEnrolledInSchool">
+                <reference attribute="headOfHousehold"/>
+              </reference>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
     <Attribute name="isFamilyInNeed">
       <type>
         <javaclass name="Boolean"/>
       </type>
       <derivation>
-        <any>
-          <dynamiclist>
-            <list>
-              <reference attribute="oneWayRelationShipPairs"/>
-            </list>
-            <listitemexpression>
-              <equals>
-                <reference attribute="relationshipType">
-                  <current/>
-                </reference>
-                <Code table="RelationshipTypeCoreDesc">
-                  <String value="RT6"/>
-                </Code>
-              </equals>
-            </listitemexpression>
-          </dynamiclist>
-        </any>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="isMaleHeadOfHouseholdMarriedUnder18AndEnrolledInEducation"/>
+              <any>
+                <dynamiclist>
+                  <list>
+                    <reference attribute="oneWayRelationShipPairs"/>
+                  </list>
+                  <listitemexpression>
+                    <equals>
+                      <reference attribute="relationshipType">
+                        <current/>
+                      </reference>
+                      <Code table="RelationshipTypeCoreDesc">
+                        <String value="RT6"/>
+                      </Code>
+                    </equals>
+                  </listitemexpression>
+                </dynamiclist>
+              </any>
+            </members>
+          </fixedlist>
+        </all>
       </derivation>
     </Attribute>
     <Attribute name="assistanceUnit">
