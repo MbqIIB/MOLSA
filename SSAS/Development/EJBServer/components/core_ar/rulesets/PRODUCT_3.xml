@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">
+  <Product comment="" id="PRODUCT_3" legislationbase="" producttype="RT1">
+    <Label highlightonfailure="true" legislationlink="">
+      <RuleName>
+        <Text locale="ar" value="دليل زيادة المدفوعات" />
+      </RuleName>
+      <SuccessText>
+        <Text locale="ar" value="نجاح دليل الدفع الزائد" />
+      </SuccessText>
+      <FailureText>
+        <Text locale="ar" value="فشل دليل الدفع الزائد" />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation" />
+      <DataItem name="deliveryFrequency" />
+      <DataItem name="personReferenceNumber" />
+      <DataItem name="claimReferenceNumber" />
+      <DataItem name="assessmentReferenceNumber" />
+    </DataAccess>
+    <DataAccess name="OverpaymentCaseEvidence">
+      <DataItem name="caseClosedInd" />
+      <DataItem name="caseSuspendedInd" />
+      <DataItem name="productAvailableInd" />
+      <DataItem name="locationAvailableInd" />
+      <DataItem name="overpaymentAmount" />
+    </DataAccess>
+    <DataAccess name="OverpaymentRulesConstants">
+      <DataItem name="kOMinAge" />
+      <DataItem name="kOMaxAge" />
+      <DataItem name="kOverpaymentAmountLowerBound" />
+    </DataAccess>
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="القواعد الأساسية" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="نجاح القواعد اِلأساسية" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="فشل القواعد اِلأساسية" />
+        </FailureText>
+      </Label>
+      <Rule id="2" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="فتح حالة" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="الحالة مفتوحة" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="تم اغلاق الحالة" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="OverpaymentCaseEvidence.caseClosedInd" dataitemrhs="true" id="3" operation="!=" />
+      </Rule>
+      <Rule id="4" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="تم تأجيل الحالة" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="تم تأجيل الحالة" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="تم تأجيل الحالة" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="OverpaymentCaseEvidence.caseSuspendedInd" dataitemrhs="true" id="5" operation="!=" />
+      </Rule>
+      <Rule id="6" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="المنتج متاح" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="المنتج متاح" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="المنتج غير متاح" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="OverpaymentCaseEvidence.productAvailableInd" dataitemrhs="true" id="7" operation="==" />
+      </Rule>
+      <Rule id="8" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="المنتج متاح من المكان المحدد" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="المنتج متاح من المكان المحدد" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="المنتج متاح من المكان المحدد" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="OverpaymentCaseEvidence.locationAvailableInd" dataitemrhs="true" id="9" operation="==" />
+      </Rule>
+    </RuleGroup>
+    <ObjectiveGroup comment="" conjunction="highestvalue" id="10" priority="1">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="مجموعة المدفوعات الزائدة" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="نجاح مجموعة المدفوعات الزائدة" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="نجاح مجموعة الدفع الزائد" />
+        </FailureText>
+      </Label>
+      <Objective comment="" deductionallowable="true" description="" id="11" priority="1" ratefctype="CT2" ratetarget="RC1" ratetype="PC18" recordid="10" targetid="0">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="غاية معدل الدفع الزائد" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="نجاح معدل الدفع الزائد" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="فشل معدل الدفع الزائد" />
+          </FailureText>
+        </Label>
+        <ObjectiveTag comment="" id="12" name="" pattern="200100000" recordid="10" type="RTT3" value="OverpaymentCaseEvidence.overpaymentAmount" />
+        <ObjectiveTag comment="" id="13" name="" pattern="000100000" recordid="11" type="RTT3" value="OverpaymentCaseEvidence.overpaymentAmount" />
+        <ObjectiveTag comment="" id="17" name="Weekly" pattern="100100000" recordid="12" type="RTT3" value="OverpaymentCaseEvidence.overpaymentAmount" />
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="14" operation="and" summaryitem="true">
+          <Label highlightonfailure="true" legislationlink="">
+            <RuleName>
+              <Text locale="ar" value="قواعد معدل الدفع الزائد للاعانة" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="نجاح قواعد معدل الدفع الزائد للاعانة" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="فشل قواعد معدل الدفع الزائد للاعانة" />
+            </FailureText>
+          </Label>
+          <Rule id="15" rulemode="all" summaryitem="true">
+            <Label highlightonfailure="true" legislationlink="">
+              <RuleName>
+                <Text locale="ar" value="مقدار الدفع الزائد ليس صفرا" />
+              </RuleName>
+              <SuccessText>
+                <Text locale="ar" value="مقدار الدفع الزائد أكبر من صفر" />
+              </SuccessText>
+              <FailureText>
+                <Text locale="ar" value="مقدار الدفع الزائد أكبر من صفر" />
+              </FailureText>
+            </Label>
+            <Condition dataitemlhs="OverpaymentCaseEvidence.overpaymentAmount" dataitemrhs="OverpaymentRulesConstants.kOverpaymentAmountLowerBound" id="16" operation="&gt;" />
+          </Rule>
+        </RuleGroup>
+      </Objective>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>
+

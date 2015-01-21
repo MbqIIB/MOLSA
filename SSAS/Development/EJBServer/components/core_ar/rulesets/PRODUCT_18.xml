@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">
+  <Product comment="" id="PRODUCT_18" legislationbase="" producttype="RT1">
+    <Label highlightonfailure="true" legislationlink="">
+      <RuleName>
+        <Text locale="ar" value="دليل المدفوعات الناقصة للاعانات " />
+      </RuleName>
+      <SuccessText>
+        <Text locale="ar" value="نجاح دليل نقص المدفوعات للاعانات " />
+      </SuccessText>
+      <FailureText>
+        <Text locale="ar" value="فشل دليل نقص المدفوعات للاعانة " />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation" />
+      <DataItem name="deliveryFrequency" />
+      <DataItem name="personReferenceNumber" />
+      <DataItem name="claimReferenceNumber" />
+      <DataItem name="assessmentReferenceNumber" />
+    </DataAccess>
+    <DataAccess name="BenefitUnderpaymentCaseEvidence">
+      <DataItem name="caseClosedInd" />
+      <DataItem name="caseSuspendedInd" />
+      <DataItem name="productAvailableInd" />
+      <DataItem name="locationAvailableInd" />
+      <DataItem name="underpaymentAmount" />
+      <DataItem name="certificationFromDate" />
+      <DataItem name="certificationToDate" />
+    </DataAccess>
+    <DataAccess name="BenefitUnderpaymentRulesConstants">
+      <DataItem name="kOMinAge" />
+      <DataItem name="kOMaxAge" />
+      <DataItem name="kUnderpaymentAmountLowerBound" />
+    </DataAccess>
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="القواعد الأساسية" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="نجاح القواعد اِلأساسية" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="فشل القواعد اِلأساسية" />
+        </FailureText>
+      </Label>
+      <Rule id="2" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="فتح حالة" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="الحالة مفتوحة" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="تم اغلاق الحالة" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.caseClosedInd" dataitemrhs="true" id="3" operation="!=" />
+      </Rule>
+      <Rule id="4" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="تم تأجيل الحالة" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="تم تأجيل الحالة" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="تم تأجيل الحالة" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.caseSuspendedInd" dataitemrhs="true" id="5" operation="!=" />
+      </Rule>
+      <Rule id="6" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="المنتج متاح" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="المنتج متاح" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="المنتج غير متاح" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.productAvailableInd" dataitemrhs="true" id="7" operation="==" />
+      </Rule>
+      <Rule id="8" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="المنتج متاح من المكان المحدد" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="المنتج متاح من المكان المحدد" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="المنتج متاح من المكان المحدد" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.locationAvailableInd" dataitemrhs="true" id="9" operation="==" />
+      </Rule>
+      <!-- BEGIN, CR00281413, DJ -->
+      <Rule id="19" rulemode="all" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="مقدار نقص المدفوعات ليس بصفر" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="مقدار نقص المدفوعات يتعدى الحد الأدني المطلوب" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="مقدار نقص المدفوعات لا يتعدى الحد الأدني المطلوب " />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.underpaymentAmount" dataitemrhs="BenefitUnderpaymentRulesConstants.kUnderpaymentAmountLowerBound" id="17" operation="&gt;" />
+      </Rule>
+      <!-- END, CR00281413 -->
+    </RuleGroup>
+    <ObjectiveGroup comment="" conjunction="highestvalue" id="10" priority="1">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="مجموعة المدفوعات الناقصة للاعانات" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="نجاح مجموعة المدفوعات الناقصة للاعانات " />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="فشل مجموعة المدفوعات الناقصة للاعانات " />
+        </FailureText>
+      </Label>
+      <Objective comment="" deductionallowable="true" description="" id="11" priority="1" ratefctype="CT1" ratetarget="RC1" ratetype="PC93" recordid="10" targetid="0">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="غاية معدل المدفوعات الناقصة للاعانة " />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="نجاح معدل المدفوعات الناقصة للاعانات " />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="فشل معدل المدفوعات الناقصة للاعانة " />
+          </FailureText>
+        </Label>
+        <ObjectiveTag comment="" id="12" name="" pattern="200100000" recordid="10" type="RTT3" value="BenefitUnderpaymentCaseEvidence.underpaymentAmount" />
+        <ObjectiveTag comment="" id="13" name="" pattern="000100000" recordid="11" type="RTT3" value="BenefitUnderpaymentCaseEvidence.underpaymentAmount" />
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="14" operation="and" summaryitem="true">
+          <Label highlightonfailure="true" legislationlink="">
+            <RuleName>
+              <Text locale="ar" value="قواعد معدل نقص المدفوعات للاعانات " />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="نجاح قواعد معدل زيادة المدفوعات للاعانات " />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="فشل قواعد معدل نقص المدفوعات للاعانة " />
+            </FailureText>
+          </Label>
+          <Rule id="15" rulemode="all" summaryitem="true">
+            <Label highlightonfailure="true" legislationlink="">
+              <RuleName>
+                <Text locale="ar" value="مقدار نقص المدفوعات ليس بصفر" />
+              </RuleName>
+              <SuccessText>
+                <Text locale="ar" value="مقدار نقص المدفوعات يتعدى الحد الأدني المطلوب" />
+              </SuccessText>
+              <FailureText>
+                <Text locale="ar" value="مقدار نقص المدفوعات لا يتعدى الحد الأدني المطلوب " />
+              </FailureText>
+            </Label>
+            <Condition dataitemlhs="BenefitUnderpaymentCaseEvidence.underpaymentAmount" dataitemrhs="BenefitUnderpaymentRulesConstants.kUnderpaymentAmountLowerBound" id="16" operation="&gt;" />
+          </Rule>
+        </RuleGroup>
+      </Objective>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>
+

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2009, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright 2009, 2011-2012 Curam Software Ltd.                          -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- This workflow is used to generate a service invoice exception task.    -->
+<workflow-process category="PC21" createdBy="admin" creationDate="20090817T151105" id="28610" language-version="1.0" process-version="1" released="true">
+  <name>SUPERVISORVIEWNEWEXTERNALUSERTASKNOTIFICATIONWORKFLOW</name>
+  <process-display-name>
+    <localized-text>
+      <locale language="ar">مسار العمل لاعلام مهمة NewExternalUser لمشاهدة المشرف</locale>
+      <locale language="en">Supervisor View NewExternalUser Task Notification Workflow</locale>
+    </localized-text>
+  </process-display-name>
+  <!-- BEGIN, CR00306765, AKr -->
+  <description>
+    <localized-text>
+      <locale language="ar">لاعلام المالك لأحد المستخدمين الخارجيين بأن الحساب قد تم تكوينه للمستخدم الخارجي.</locale>
+      <locale language="en">Notifies the owner of an external user that an account has been created for the external user.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00306765 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute name="concernRoleID" struct-name="curam.cpm.sl.entity.struct.ConcernRoleKey" />
+      <target-attribute name="concernRoleID" wdo-name="NewExternalUserTaskDetails" />
+    </mapping>
+    <mapping>
+      <source-attribute name="key.key.linkID" struct-name="curam.cpm.facade.struct.ExternalUserParticipantLinkKey" />
+      <target-attribute name="externalUserParticipantLinkID" wdo-name="NewExternalUserTaskDetails" />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo initialize-attributes="false" is-list-wdo="false">
+      <wdo-name>TaskViewNewUserDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="ar">تفاصيل مشاهدة المهمة للمستخدم الجديد</locale>
+          <locale language="en">Task View New User Details</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>concernRoleID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">كود الوظيفة المتعلقة</locale>
+              <locale language="en">Concern Role ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>userName</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">اسم المستخدم</locale>
+              <locale language="en">User Name</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+    <wdo initialize-attributes="false" is-list-wdo="false">
+      <wdo-name>NewExternalUserTaskDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="ar">NewExternalUserTaskDetails</locale>
+          <locale language="en">NewExternalUserTaskDetails</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>userName</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">اسم المستخدم</locale>
+              <locale language="en">User Name</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>concernRoleID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">كود الوظيفة المتعلقة</locale>
+              <locale language="en">Concern Role ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>externalUserParticipantLinkID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">كود تعريف رابط مشاركة المستخدم الخارجي</locale>
+              <locale language="en">External User Participant Link ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="ar">بدء نشاط العملية</locale>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="ar">بدء نشاط العملية</locale>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1" />
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="ar">نشاط انهاء العملية</locale>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="ar">نشاط انهاء العملية</locale>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none" />
+    </end-process-activity>
+    <automatic-activity category="AC1" id="4">
+      <name>
+        <localized-text>
+          <locale language="ar">احضار اسم المستخدم لرابط مشاركة مستخدم خارجي</locale>
+          <locale language="en">Get User Name for External User Participant Link</locale>
+        </localized-text>
+      </name>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="3" />
+      </split>
+      <bpo-mapping interface-name="curam.cpm.workflowprocesses.intf.ExternalUserWorkflowAllocation" method-name="readUserNameForExternalUserParticipantLink">
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.core.sl.struct.ExternalUserParticipantLinkKey">
+              <field name="key">
+                <struct type="curam.core.sl.entity.struct.ExternalUserParticipantLinkKey">
+                  <field name="linkID">
+                    <base-type type="INT64">
+                      <wdo-attribute name="externalUserParticipantLinkID" wdo-name="NewExternalUserTaskDetails" />
+                    </base-type>
+                  </field>
+                </struct>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="userKey">
+              <struct>
+                <field name="userName">
+                  <base-type>
+                    <wdo-attribute name="userName" wdo-name="NewExternalUserTaskDetails" />
+                  </base-type>
+                </field>
+              </struct>
+            </field>
+          </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+    <route-activity category="AC1" id="3">
+      <name>
+        <localized-text>
+          <locale language="ar">اعلام المالك بمستخدم خارجي جديد</locale>
+          <locale language="en">Inform Owner New External User</locale>
+        </localized-text>
+      </name>
+      <notification delivery-mechanism="DM1">
+        <subject>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="ar">اعلام بتكوين مستخدم خارجي جديد</locale>
+                <locale language="en">New External User Created Notification</locale>
+              </localized-text>
+            </message-text>
+          </message>
+        </subject>
+        <body>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="ar">حساب عملي خارجي جديد - تم تكوين %1s</locale>
+                <locale language="en">A new External Client Account - %1s has been created</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute name="userName" wdo-name="TaskViewNewUserDetails" />
+            </message-parameters>
+          </message>
+        </body>
+        <allocation-strategy identifier="curam.cpm.eua.facade.intf.AllocationStrategy.resourceManagerAllocationStrategy" type="function">
+          <function-mappings>
+            <formal-parameters>
+              <formal-parameter index="0">
+                <struct type="curam.cpm.eua.facade.struct.ExternalUserCreatedDetails">
+                  <field name="username">
+                    <base-type type="STRING">
+                      <wdo-attribute name="userName" wdo-name="TaskViewNewUserDetails" />
+                    </base-type>
+                  </field>
+                  <field name="concernRoleID">
+                    <base-type type="INT64">
+                      <wdo-attribute name="concernRoleID" wdo-name="TaskViewNewUserDetails" />
+                    </base-type>
+                  </field>
+                </struct>
+              </formal-parameter>
+            </formal-parameters>
+          </function-mappings>
+        </allocation-strategy>
+        <actions>
+          <action page-id="ProviderManagement_resolveConcernRoleType" principal-action="false">
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="ar">الصفحة الرئيسية لجهة التقديم</locale>
+                  <locale language="en">Provider Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="concernRoleID">
+              <wdo-attribute name="concernRoleID" wdo-name="TaskViewNewUserDetails" />
+            </link-parameter>
+          </action>
+          <action page-id="ExternalUser_userHome" principal-action="false">
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="ar">الصفحة الرئيسية للمستخدم</locale>
+                  <locale language="en">User Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="userName">
+              <wdo-attribute name="userName" wdo-name="TaskViewNewUserDetails" />
+            </link-parameter>
+          </action>
+        </actions>
+      </notification>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="2" />
+      </split>
+    </route-activity>
+  </activities>
+  <transitions>
+    <transition from-activity-idref="1" id="1" to-activity-idref="4" />
+    <transition from-activity-idref="3" id="2" to-activity-idref="2" />
+    <transition from-activity-idref="4" id="3" to-activity-idref="3" />
+  </transitions>
+</workflow-process>
+

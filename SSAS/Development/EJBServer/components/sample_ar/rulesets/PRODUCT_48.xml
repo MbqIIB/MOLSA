@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">
+  <Product comment="This is the rule set for a sample benefit product which has only a daily objective tag. It also has descriptions specified for the objectives and objective tags." id="PRODUCT_48" legislationbase="" producttype="RT2">
+    <Label highlightonfailure="true" legislationlink="">
+      <RuleName>
+        <Text locale="ar" value="عرض منتج اختبار الغاية" />
+      </RuleName>
+      <SuccessText>
+        <Text locale="ar" value="شخص مؤهل للمنتج 48" />
+      </SuccessText>
+      <FailureText>
+        <Text locale="ar" value="شخص غير مؤهل للمنتج 48" />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation" />
+      <DataItem name="deliveryFrequency" />
+      <DataItem name="personReferenceNumber" />
+      <DataItem name="claimReferenceNumber" />
+      <DataItem name="assessmentReferenceNumber" />
+    </DataAccess>
+    <DataAccess name="SimpleProductRulesEvidence">
+      <DataItem name="eligibleInd" />
+      <DataItem name="dailyRate" />
+      <DataItem name="childIndicator" />
+      <DataItem name="certificationFromDate" />
+      <DataItem name="certificationToDate" />
+      <DataItem name="clientAge" />
+    </DataAccess>
+    <DataAccess name="SimpleProductRulesEvidenceList">
+      <DataItem name="eligibleInd" />
+      <DataItem name="dailyRate" />
+      <DataItem name="description" />
+    </DataAccess>
+    <DataAccess name="SimpleProductRulesConstants">
+      <DataItem name="kMinAge" />
+      <DataItem name="kMaxAge" />
+    </DataAccess>
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="المتطلبات الرئيسية" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="المتطلبات الرئيسية" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="المتطلبات الرئيسية" />
+        </FailureText>
+      </Label>
+      <Rule id="2" rulemode="all" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="اختبار مؤشر الأهلية" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="مؤشر الأهلية متحقق" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="مؤشر الأهلية بالقيمة False" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="SimpleProductRulesEvidence.eligibleInd" dataitemrhs="true" id="3" operation="==" />
+      </Rule>
+      <Rule id="4" rulemode="notquotation" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="المدعي مرخص" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="المدعي مرخص" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="المدعي غير مرخص" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="SimpleProductRulesEvidence.certificationFromDate" dataitemrhs="Globals.dateOfCalculation" id="5" operation="&lt;=" />
+        <Condition conjunction="and" dataitemlhs="SimpleProductRulesEvidence.certificationToDate" dataitemrhs="Globals.dateOfCalculation" id="6" operation="&gt;=" />
+      </Rule>
+      <Rule id="21" rulemode="all" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="يتراوح عمر المدعي ما بين 18 و 65" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="يتراوح عمر المدعي ما بين 18 و 65" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="المدعي ليس بالسن بين 18 و 65" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="SimpleProductRulesEvidence.clientAge" dataitemrhs="SimpleProductRulesConstants.kMinAge" id="22" operation="&gt;=" />
+        <Condition conjunction="and" dataitemlhs="SimpleProductRulesEvidence.clientAge" dataitemrhs="SimpleProductRulesConstants.kMaxAge" id="23" operation="&lt;=" />
+      </Rule>
+    </RuleGroup>
+    <ObjectiveGroup comment="" conjunction="all" id="7" priority="1">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="السعر الشخصي النموذجي للمنتج" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="السعر الشخصي النموذجي للمنتج هو الدفع" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="سعر المنتج النموذجي هو لا يتم الدفع" />
+        </FailureText>
+      </Label>
+      <ObjectiveListGroup conjunction="all" id="111" listgroup="SimpleProductRulesEvidenceList">
+        <Label highlightonfailure="true">
+          <RuleName>
+            <Text locale="ar" value="ListObjectiveListGroup" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="كشف الغايات - كشف المجموعات الناجحة" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="كشف الغايات - كشف المجموعات الفاشلة" />
+          </FailureText>
+        </Label>
+        <RuleGroup executionmode="stoponresult" id="112" operation="and" summaryitem="false">
+          <Label>
+            <RuleName>
+              <Text locale="ar" value="RuleGroup" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="RuleGroup ناجح" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="فشل RuleGroup" />
+            </FailureText>
+          </Label>
+          <Rule id="113">
+            <Label>
+              <RuleName>
+                <Text locale="ar" value="قاعدة التأهيل للكشف" />
+              </RuleName>
+              <SuccessText>
+                <Text locale="ar" value="القاعدة المؤهلة لكشف حالات النجاح" />
+              </SuccessText>
+              <FailureText>
+                <Text locale="ar" value="القاعدة المؤهلة لكشف حالات الفشل" />
+              </FailureText>
+            </Label>
+            <Condition dataitemlhs="SimpleProductRulesEvidenceList.current.eligibleInd" dataitemrhs="true" id="114" operation="==" />
+          </Rule>
+        </RuleGroup>
+        <Objective deductionallowable="true" description="" id="115" priority="0" ratefctype="CT1" ratetarget="RC1" ratetype="PC4" recordid="14" relatedreference="SimpleProductRulesEvidenceList.current.description" targetid="123">
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text locale="ar" value="كشف الغايات" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="كشف الغايات الناجحة" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="كشف العناصر الفاشلة" />
+            </FailureText>
+          </Label>
+          <ObjectiveTag id="116" name="List Payment" pattern="000100000" recordid="120" type="RTT3" value="SimpleProductRulesEvidenceList.current.dailyRate" />
+        </Objective>
+      </ObjectiveListGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>
+

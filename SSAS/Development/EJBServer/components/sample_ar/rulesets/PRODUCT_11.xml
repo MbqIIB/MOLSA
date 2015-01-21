@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://Curam/CuramRulesSchema.xsd">
+  <Product comment="This is the rule set for a simple product." id="PRODUCT_11" legislationbase="" producttype="RT2">
+    <Label highlightonfailure="true" legislationlink="">
+      <RuleName>
+        <Text locale="ar" value="نموذج المنتج" />
+      </RuleName>
+      <SuccessText>
+        <Text locale="ar" value="الشخص مؤهل لنموذج المنتج" />
+      </SuccessText>
+      <FailureText>
+        <Text locale="ar" value="الشخص غير مؤهل لنموذج المنتج" />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation" />
+      <DataItem name="deliveryFrequency" />
+      <DataItem name="personReferenceNumber" />
+      <DataItem name="claimReferenceNumber" />
+      <DataItem name="assessmentReferenceNumber" />
+    </DataAccess>
+    <DataAccess name="SimpleProductRulesEvidence">
+      <DataItem name="eligibleInd" />
+      <DataItem name="dailyRate" />
+      <DataItem name="childIndicator" />
+      <DataItem name="certificationFromDate" />
+      <DataItem name="certificationToDate" />
+      <DataItem name="clientAge" />
+    </DataAccess>
+    <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="1" operation="and" summaryitem="true">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="المتطلبات الرئيسية" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="المتطلبات الرئيسية" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="المتطلبات الرئيسية" />
+        </FailureText>
+      </Label>
+      <Rule id="2" rulemode="all" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="اختبار مؤشر الأهلية" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="مؤشر الأهلية متحقق" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="مؤشر الأهلية بالقيمة False" />
+          </FailureText>
+        </Label>
+        <Condition dataitemlhs="SimpleProductRulesEvidence.eligibleInd" dataitemrhs="true" id="3" operation="==" />
+      </Rule>
+    </RuleGroup>
+    <ObjectiveGroup comment="" conjunction="all" id="4" priority="1">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="المعدل الشخصي لنموذج المنتج" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="المعدل الشخصي لنموذج المنتج يعد مدفوعا" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="سعر نموذج المنتج يعد غير مدفوعا" />
+        </FailureText>
+      </Label>
+      <Objective comment="Personal rate for Simple Product" deductionallowable="true" description="" id="5" priority="1" ratefctype="CT1" ratetarget="RC1" ratetype="PC4" recordid="16" targetid="0">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="الحد الأقصى لسعر نموذج المنتج" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="الحد الأقصى لسعر نموذج المنتج الذي تم بنجاح" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="الحد الأقصى لسعر نموذج المنتج الذي لم يتم بنجاح" />
+          </FailureText>
+        </Label>
+        <ObjectiveTag comment="" id="6" name="Personal Daily Rate" pattern="000100000" recordid="22" type="RTT3" value="SimpleProductRulesEvidence.dailyRate" />
+        <ObjectiveTag comment="" id="7" name="Personal Monthly Rate" pattern="200100000" recordid="23" type="RTT3" value="SimpleProductRulesEvidence.dailyRate*30" />
+        <RuleGroup assessmentquerymode="querysingleitem" executionmode="executeall" id="8" operation="and" summaryitem="true">
+          <Label highlightonfailure="true" legislationlink="">
+            <RuleName>
+              <Text locale="ar" value="قواعد الحد الأقصى لسعر نموذج المنتج" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="قواعد الحد الأقصى لسعر نموذج المنتج الذي تم بنجاح" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="قواعد الحد الأقصى لسعر نموذج المنتج الذي لم يتم بنجاح" />
+            </FailureText>
+          </Label>
+          <Rule id="9" rulemode="all" summaryitem="true">
+            <Label highlightonfailure="true" legislationlink="">
+              <RuleName>
+                <Text locale="ar" value="يجب تحقق مؤشر الأهلية" />
+              </RuleName>
+              <SuccessText>
+                <Text locale="ar" value="مؤشر الأهلية متحقق" />
+              </SuccessText>
+              <FailureText>
+                <Text locale="ar" value="مؤشر الأهلية غير متحقق" />
+              </FailureText>
+            </Label>
+            <Condition dataitemlhs="SimpleProductRulesEvidence.eligibleInd" dataitemrhs="true" id="10" operation="==" />
+          </Rule>
+        </RuleGroup>
+      </Objective>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>
+

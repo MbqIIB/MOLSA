@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<workflow-process category="PC21" createdBy="admin" creationDate="20090903T142504" id="28595" language-version="1.0" process-version="1" released="true">
+  <name>ROSTEREXCEPTIONPROCESSINGWORKFLOW</name>
+  <process-display-name>
+    <localized-text>
+      <locale language="ar">مسار العمل لتشغيل استثناء اللائحة</locale>
+      <locale language="en">Roster Exception Processing Workflow</locale>
+    </localized-text>
+  </process-display-name>
+  <description>
+    <localized-text>
+      <locale language="ar">عملية مسار العمل لتشغيل خطأ بند فاتورة اللائحة.</locale>
+      <locale language="en">Roster line item exception processing workflow process.</locale>
+    </localized-text>
+  </description>
+  <enactment-mappings>
+    <mapping>
+      <source-attribute name="rosterLineItemID" struct-name="curam.cpm.workflowprocesses.attendancetracking.struct.RosterLineItemExceptionProcessingDescriptor" />
+      <target-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo initialize-attributes="false" is-list-wdo="false">
+      <wdo-name>RosterLineItemExceptionProcessingDescriptor</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="ar">بند اللائحة لموصف تشغيل الاستثناء</locale>
+          <locale language="en">Roster Line Item Exception Processing Descriptor</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>rosterLineItemID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">كود التعريف لبند اللائحة</locale>
+              <locale language="en">Roster Line Item ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>exception</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">وصف الخطأ الاستثنائي الذي حدث</locale>
+              <locale language="en">Description of the exception that happened</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>referenceNumber</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">رقم المرجع لبند اللائحة</locale>
+              <locale language="en">Reference Number of the Roster Line Item</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="ar">بدء نشاط العملية</locale>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="ar">بدء نشاط العملية</locale>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1" />
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="ar">نشاط انهاء العملية</locale>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="ar">نشاط انهاء العملية</locale>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none" />
+    </end-process-activity>
+    <automatic-activity category="AC1" id="4">
+      <name>
+        <localized-text>
+          <locale language="ar">احضار تفاصيل المهمة الاستثنائية لبند اللائحة</locale>
+          <locale language="en">Get Exception Task details for Roster Line Item</locale>
+        </localized-text>
+      </name>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="3" />
+      </split>
+      <bpo-mapping interface-name="curam.cpm.workflowprocesses.attendancetracking.intf.RosterWorkflowAllocation" method-name="readExceptionTaskDetailsForPRLI">
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.cpm.sl.entity.struct.ProviderRosterLineItemKey">
+              <field name="providerRosterLineItemID">
+                <base-type type="INT64">
+                  <wdo-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="referenceNumber">
+              <base-type>
+                <wdo-attribute name="referenceNumber" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+              </base-type>
+            </field>
+            <field name="exception">
+              <base-type>
+                <wdo-attribute name="exception" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+              </base-type>
+            </field>
+          </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+    <manual-activity category="AC1" id="3">
+      <name>
+        <localized-text>
+          <locale language="ar">تم رفع خطأ استثنائي في العنوان أثناء تشغيل بند فاتورة اللائحة</locale>
+          <locale language="en">Address exception raised while processing Roster Line Item</locale>
+        </localized-text>
+      </name>
+      <notification delivery-mechanism="DM1">
+        <subject>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="ar">احالة بند اللائحة للتشغيل الاستثنائي</locale>
+                <locale language="en">Roster Line Item submitted for exception processing</locale>
+              </localized-text>
+            </message-text>
+          </message>
+        </subject>
+        <body>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="ar">تم احالة بند اللائحة برقم المرجع %1 للتشغيل الاستثنائي.</locale>
+                <locale language="en">The Roster line item with reference number %1 has been submitted for exception processing.</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute name="referenceNumber" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+            </message-parameters>
+          </message>
+        </body>
+        <allocation-strategy identifier="curam.cpm.workflowprocesses.intf.WorkflowAllocationFunction.prliExceptionProcessingAllocationStrategy" type="function">
+          <function-mappings>
+            <formal-parameters>
+              <formal-parameter index="0">
+                <struct type="curam.core.sl.entity.struct.RosterLineItemKey">
+                  <field name="rosterLineItemID">
+                    <base-type type="INT64">
+                      <wdo-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+                    </base-type>
+                  </field>
+                </struct>
+              </formal-parameter>
+            </formal-parameters>
+          </function-mappings>
+        </allocation-strategy>
+      </notification>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="2" />
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="ar">%1s</locale>
+              <locale language="en">%1s</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute name="exception" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+          </message-parameters>
+        </message>
+        <actions>
+          <!-- BEGIN, CR00279857, ASN -->
+          <action open-modal="true" page-id="ProviderManagement_processRosterLineItemException" principal-action="true">
+            <!-- END, CR00279857 -->
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="ar">تصحيح بيانات اللائحة: للاستمرار في توضيح أن بند اللائحة يجب اعادة تقييمه، أو رفضه أو حذفه.</locale>
+                  <locale language="en">Roster Data Correction: Proceed to indicate that the roster line item should be re-evaluated, denied or deleted.</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="rosterLineItemID">
+              <wdo-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+            </link-parameter>
+            <link-parameter name="taskID">
+              <wdo-attribute name="taskID" wdo-name="Context_Task" />
+            </link-parameter>
+          </action>
+          <action page-id="ProviderManagement_viewEPRosterLineItem" principal-action="false">
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="ar">الصفحة الرئيسية لبند اللائحة</locale>
+                  <locale language="en">Roster Line Item Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="rosterLineItemID">
+              <wdo-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+            </link-parameter>
+          </action>
+        </actions>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>false</allow-task-forwarding>
+      </task>
+      <allocation-strategy identifier="curam.cpm.workflowprocesses.intf.WorkflowAllocationFunction.prliExceptionProcessingAllocationStrategy" type="function">
+        <function-mappings>
+          <formal-parameters>
+            <formal-parameter index="0">
+              <struct type="curam.core.sl.entity.struct.RosterLineItemKey">
+                <field name="rosterLineItemID">
+                  <base-type type="INT64">
+                    <wdo-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+                  </base-type>
+                </field>
+              </struct>
+            </formal-parameter>
+          </formal-parameters>
+        </function-mappings>
+      </allocation-strategy>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event event-class="ROSTER" event-type="PRLI_PROCESSED" identifier="1">
+            <event-match-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+          </event>
+          <event event-class="ROSTER" event-type="PRLI_CANCELED" identifier="2">
+            <event-match-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+          </event>
+          <event event-class="ROSTER" event-type="PRLI_DENIED" identifier="3">
+            <event-match-attribute name="rosterLineItemID" wdo-name="RosterLineItemExceptionProcessingDescriptor" />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition from-activity-idref="1" id="1" to-activity-idref="4" />
+    <transition from-activity-idref="3" id="2" to-activity-idref="2" />
+    <transition from-activity-idref="4" id="3" to-activity-idref="3" />
+  </transitions>
+</workflow-process>
+

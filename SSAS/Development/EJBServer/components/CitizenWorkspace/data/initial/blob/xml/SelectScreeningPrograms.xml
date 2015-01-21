@@ -12,6 +12,7 @@
     <identifier name="Select Program" />
     <server alias="DISPLAY" method="listProgramsForScreening">
         <param name="key$applicationID" path="screeningID" />
+        <param name="key$citizenScriptInfoID" path="iegExecutionID" />
         <param name="key$playerID" path="id" />
     </server> 
     <server alias="BACK_BUTTON" method="getBackButtonVisibility">
@@ -25,6 +26,8 @@
     </header>
     <content>
         <forward source="/PAGE/screeningID" target="/ans/applicationID" name="screeningID"/>
+        <forward source="/PAGE/iegExecutionID" target="/ans/iegExecutionID" name="iegExecutionID"/>
+        <forward source="/PAGE/isRescreen" target="/ans/isRescreen" name="isRescreen"/>
         <container>
             <title id="SelectProgram.List.Title" />
             <description id="SelectProgram.List.Description" />
@@ -37,6 +40,7 @@
                 <field type="CW_PROGRAM_SELECT" target="/prog[]" source="/DISPLAY/xmlData/program-list/program[]/id">
                     <title source="/DISPLAY/xmlData/program-list/program[]/title" />
                     <description source="/DISPLAY/xmlData/program-list/program[]/description" />
+                    <param name="auto-select" source="/DISPLAY/xmlData/program-list/program[]/selected"/>
                     <help source="/DISPLAY/xmlData/program-list/program[]/url" />
                     <param name="help-label" id="SelectProgram.Help.Label" />
                     <param name="labelClass" value="label-highlight" />

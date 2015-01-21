@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../CuramSDEJ_ZIP/lib/ruleset.xsd">
+  <Product comment="" id="PRODUCT_52" legislationbase="" producttype="RT2">
+    <Label highlightonfailure="true" legislationlink="">
+      <RuleName>
+        <Text locale="ar" value="تسكين جهة التقديم" />
+      </RuleName>
+      <SuccessText>
+        <Text locale="ar" value="نجاح تسكين جهة التقديم" />
+      </SuccessText>
+      <FailureText>
+        <Text locale="ar" value="فشل تسكين جهة التقديم" />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation" />
+      <DataItem name="deliveryFrequency" />
+      <DataItem name="personReferenceNumber" />
+      <DataItem name="claimReferenceNumber" />
+      <DataItem name="assessmentReferenceNumber" />
+    </DataAccess>
+    <DataAccess name="ProviderPlacementEvidenceRDO">
+      <DataItem name="paymentAmount" />
+      <DataItem name="placementID" />
+    </DataAccess>
+    <DataAccess name="ProviderPlacementEvidenceConstants">
+      <DataItem name="paymentAmount" />
+      <DataItem name="totalCount" />
+    </DataAccess>
+    <RuleGroup executionmode="stoponresult" id="1">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="RuleListGroup لدليل التسكين" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="نجاح RuleListGroup لدليل التسكين" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="فشل RuleListGroup لدليل التسكين" />
+        </FailureText>
+      </Label>
+      <RuleListGroup executionmode="executeall" id="2" listgroup="ProviderPlacementEvidenceRDO" operation="and" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="RuleListGroup لدليل التسكين" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="نجاح RuleListGroup لدليل التسكين" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="فشل RuleListGroup لدليل التسكين" />
+          </FailureText>
+        </Label>
+        <DataItemAssignment dataitem="ProviderPlacementEvidenceConstants.totalCount" id="3" value="ProviderPlacementEvidenceConstants.totalCount + 1" />
+        <DataItemAssignment dataitem="ProviderPlacementEvidenceConstants.paymentAmount" id="4" value="ProviderPlacementEvidenceConstants.paymentAmount + ProviderPlacementEvidenceRDO.current.paymentAmount" />
+      </RuleListGroup>
+      <RuleGroup executionmode="stoponresult" id="5" operation="and" summaryitem="false">
+        <Label>
+          <RuleName>
+            <Text locale="ar" value="RuleGroup لدليل التسكين" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="نجاح RuleGroup لدليل التسكين" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="فشل RuleGroup لدليل التسكين" />
+          </FailureText>
+        </Label>
+        <Rule id="6">
+          <Label>
+            <RuleName>
+              <Text locale="ar" value="اجمالي قاعدة العدد لتسكين جهة التقديم" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="نجاح اجمالي قاعدة العدد لتسكين جهة التقديم" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="فشل اجمالي قاعدة العدد لتسكين جهة التقديم" />
+            </FailureText>
+          </Label>
+          <Condition closingbrackets="0" dataitemlhs="ProviderPlacementEvidenceConstants.totalCount" dataitemrhs="0" id="7" openingbrackets="0" operation="&gt;" />
+        </Rule>
+        <Rule id="8">
+          <Label>
+            <RuleName>
+              <Text locale="ar" value="اجمالي قاعدة القيمة لدليل التسكين" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="نجاح اجمالي قاعدة العدد لدليل التسكين" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="فشل اجمالي قاعدة القيمة من Placement Evidence" />
+            </FailureText>
+          </Label>
+          <Condition closingbrackets="0" dataitemlhs="ProviderPlacementEvidenceConstants.paymentAmount" dataitemrhs="0" id="9" openingbrackets="0" operation="&gt;" />
+        </Rule>
+      </RuleGroup>
+    </RuleGroup>
+    <ObjectiveGroup id="10" priority="0">
+      <Label highlightonfailure="true">
+        <RuleName>
+          <Text locale="ar" value="مجموعة الغايات لتسكين جهة التقديم" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="نجاح مجموعة الغايات لتسكين جهة التقديم" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="فشل مجموعة الغايات لتسكين جهة التقديم" />
+        </FailureText>
+      </Label>
+      <ObjectiveListGroup conjunction="all" id="11" listgroup="ProviderPlacementEvidenceRDO">
+        <Label highlightonfailure="true">
+          <RuleName>
+            <Text locale="ar" value="مجموعة كشف الغايات لتسكين جهة التقديم" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="نجاح مجموعة كشف الغايات لتسكين جهة التقديم" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="فشل مجموعة كشف الغايات لتسكين جهة التقديم" />
+          </FailureText>
+        </Label>
+        <RuleGroup executionmode="stoponresult" id="12" operation="and" summaryitem="false">
+          <Label>
+            <RuleName>
+              <Text locale="ar" value="RuleGroup لتسكين جهة التقديم" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="نجاح RuleGroup لتسكين جهة التقديم" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="فشل RuleGroup لتسكين جهة التقديم" />
+            </FailureText>
+          </Label>
+          <Rule id="13">
+            <Label>
+              <RuleName>
+                <Text locale="ar" value="اجمالي قاعدة القيمة لتسكين جهة تقديم الخدمة" />
+              </RuleName>
+              <SuccessText>
+                <Text locale="ar" value="نجاح اجمالي قاعدة القيمة لتسكين جهة تقديم الخدمة" />
+              </SuccessText>
+              <FailureText>
+                <Text locale="ar" value="فشل اجمالي قاعدة القيمة لتسكين جهة تقديم الخدمة" />
+              </FailureText>
+            </Label>
+            <Condition closingbrackets="0" dataitemlhs="ProviderPlacementEvidenceRDO.current.paymentAmount" dataitemrhs="0" id="14" openingbrackets="0" operation="&gt;" />
+          </Rule>
+        </RuleGroup>
+        <Objective deductionallowable="true" description="" id="15" priority="0" ratefctype="CT1" ratetarget="RC1" ratetype="PC502" recordid="10" relatedreference="ProviderPlacementEvidenceRDO.current.placementID" targetid="Globals.personReferenceNumber">
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text locale="ar" value="غاية التسكين لجهة تقديم الخدمة" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="نجاح غاية التسكين لجهة تقديم الخدمة" />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="فشل غاية التسكين لجهة تقديم الخدمة" />
+            </FailureText>
+          </Label>
+          <ObjectiveTag id="16" name="Provider Placement Payment" pattern="000100000" recordid="120" type="RTT3" value="ProviderPlacementEvidenceRDO.current.paymentAmount" />
+        </Objective>
+      </ObjectiveListGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>
+

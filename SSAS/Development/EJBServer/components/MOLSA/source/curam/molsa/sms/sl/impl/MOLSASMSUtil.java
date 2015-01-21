@@ -370,6 +370,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
         return true;
       }
     } catch (RemoteException exception) {
+      exception.printStackTrace();
     }
     return false;
   }
@@ -516,7 +517,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     whereStrBuf.append("person.concernroleID=concernrole.concernroleID AND ");
     whereStrBuf.append("productdelivery.caseid=caseheader.caseid AND ");
     whereStrBuf.append("caseheader.casetypecode='CT2' ");
-    whereStrBuf.append("Group By concernrole.concernroleID");
+    
 
     sqlStatement.sqlStatement = selectStrBuf.toString() + intoStrBuf.toString() + fromStrBuf.toString() + whereStrBuf.toString();
     return sqlStatement;

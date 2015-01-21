@@ -15,6 +15,7 @@
   <server alias="DISPLAY" class="ScreeningResults"
     method="getScreeningResults">
     <param name="key$playerID" path="id" />
+    <param name="key$iegExecutionID" path="iegExecutionID" />
   </server>
   <header>
     <title id="Page.Title" />
@@ -22,7 +23,24 @@
     <icon id="icon_am_i_eligible" />
   </header>
   <content>
-    
+    <forward source="/PAGE/iegExecutionID" target="/ans/iegExecutionID" name="iegExecutionID"/>
+
+  <!-- Rescreening link -->
+  <container conditionalSource="/DISPLAY/xmlData/rescreening[@allowRescreening='true'][]" false="$empty">
+    <param name="css-class" value="screening-results-rescreening-link"/>
+    <field source="/DISPLAY/xmlData/rescreening/label" />
+    <field source="/PAGE/iegExecutionID" type="CW_HYPERLINKS">
+      <title id="Rescreening.Link.Label" />
+      <param name="in-title" value="false" />
+      <param name="uri-prefix" source="/DISPLAY/xmlData/rescreening/url"/>
+      <param name="open-new" value="false"/>
+      <param name="in-title" value="true" />
+    </field>
+    <field source="/DISPLAY/xmlData/rescreening/labelSuffix" />
+  </container>
+
+  <container>
+    <param name="css-class" value="screening-results-eligible"/>
     <container conditionalSource="/DISPLAY/xmlData/program[@eligible='true'][]" false="$empty">
       <title id="Eligible.Title" />
       <help id="Eligible.Help" />
@@ -43,7 +61,10 @@
         </container>
       </list>
     </container>
-    
+  </container>
+
+  <container>
+    <param name="css-class" value="screening-results-not-eligible"/>
     <container conditionalSource="/DISPLAY/xmlData/program[@eligible='false'][]" false="$empty">
       <title id="Not.Eligible.Title" />
       <help id="Not.Eligible.Help" />
@@ -65,11 +86,13 @@
         </container>
       </list>
     </container>
+  </container>
+
   </content>
   
   <navigation>
     <nav-button name="exit" page="ResolveCitizenHome" page-type="resolve" />
     <nav-button name="print" type="print" />
-    <nav-button name="next" type="action" page="ScreeningNextSteps" />
+    <nav-button name="next" type="action" />
   </navigation>
 </page>

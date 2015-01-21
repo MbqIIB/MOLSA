@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<RuleSet>
+  <Product id="SELECTPRODFUNDS" legislationbase="" producttype="">
+    <Label highlightonfailure="false" legislationlink="">
+      <RuleName>
+        <Text locale="ar" value="تحديد التمويل للالتزام" />
+      </RuleName>
+      <SuccessText>
+        <Text locale="ar" value="نجاح تحديد التمويل للالتزام" />
+      </SuccessText>
+      <FailureText>
+        <Text locale="ar" value="فشل تحديد التمويل للالتزام" />
+      </FailureText>
+    </Label>
+    <DataAccess name="Globals">
+      <DataItem name="dateOfCalculation" />
+    </DataAccess>
+    <DataAccess name="FundIDListRDO">
+      <DataItem name="fundID" />
+    </DataAccess>
+    <RuleGroup executionmode="executeall" id="1" operation="and" summaryitem="true">
+      <Label highlightonfailure="true" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="تحديد التمويل لمجموعة الالتزام" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="نجاح تحديد التمويل للالتزام" />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="فشل تحديد التمويل للالتزام" />
+        </FailureText>
+      </Label>
+      <RuleListGroup executionmode="stoponresult" id="2" listgroup="FundIDListRDO" loopexecutionmode="succeedonestop" operation="or" summaryitem="true">
+        <Label highlightonfailure="true" legislationlink="">
+          <RuleName>
+            <Text locale="ar" value="تحديد التمويل لمجموعة قاعدة الالتزام" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="نجاح تحديد التمويل لمجموعة قاعدة الالتزام" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="فشل تحديد التمويل لمجموعة قاعدة الالتزام" />
+          </FailureText>
+        </Label>
+      </RuleListGroup>
+    </RuleGroup>
+    <ObjectiveGroup id="102" priority="0">
+      <Label highlightonfailure="false" legislationlink="">
+        <RuleName>
+          <Text locale="ar" value="الغايات" />
+        </RuleName>
+        <SuccessText>
+          <Text locale="ar" value="مجموعة الغايات ناجحة." />
+        </SuccessText>
+        <FailureText>
+          <Text locale="ar" value="مجموعة الغايات غير ناجحة." />
+        </FailureText>
+      </Label>
+      <ObjectiveListGroup conjunction="all" id="11" listgroup="FundIDListRDO">
+        <Label highlightonfailure="true">
+          <RuleName>
+            <Text locale="ar" value="تحديد التمويل لمجموعة كشف الغايات للالتزام" />
+          </RuleName>
+          <SuccessText>
+            <Text locale="ar" value="تحديد التمويل لمجموعة كشف الغايات للالتزام الذي تم بنجاح" />
+          </SuccessText>
+          <FailureText>
+            <Text locale="ar" value="تحديد التمويل لمجموعة كشف الغايات للالتزام الذي لم يتم بنجاح" />
+          </FailureText>
+        </Label>
+        <Objective deductionallowable="false" description="" id="573693278" priority="0" ratefctype="CT1" ratetarget="RC1" ratetype="PC7" recordid="1" targetid="FundIDListRDO.current.fundID">
+          <Label highlightonfailure="true">
+            <RuleName>
+              <Text locale="ar" value="تحديد التمويل لمجموعة الغايات للالتزام" />
+            </RuleName>
+            <SuccessText>
+              <Text locale="ar" value="تحديد التمويل لغايات الالتزام الناجحة." />
+            </SuccessText>
+            <FailureText>
+              <Text locale="ar" value="تحديد التمويل لمجموعة كشف الغايات للالتزام لم يتم بنجاح." />
+            </FailureText>
+          </Label>
+          <ObjectiveTag comment="Member group" id="4543543" name="Member group" recordid="41" type="RTT1" value="PN35" />
+        </Objective>
+      </ObjectiveListGroup>
+    </ObjectiveGroup>
+  </Product>
+</RuleSet>
+

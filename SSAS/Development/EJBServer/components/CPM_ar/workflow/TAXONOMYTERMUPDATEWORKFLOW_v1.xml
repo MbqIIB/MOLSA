@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+  
+  Copyright IBM Corporation 2010, 2012. All Rights Reserved.
+  
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!--
+  Copyright 2010, 2012 Curam Software Ltd.
+  All rights reserved.
+  This software is the confidential and proprietary information of Curam
+  Software, Ltd. ("Confidential Information"). You shall not disclose
+  such Confidential Information and shall use it only in accordance with the
+  terms of the license agreement you entered into with Curam Software.
+-->
+<workflow-process category="PC21" createdBy="admin" creationDate="20100823T183433" id="28672" language-version="1.0" process-version="1" released="true">
+  <name>TAXONOMYTERMUPDATEWORKFLOW</name>
+  <process-display-name>
+    <localized-text>
+      <locale language="ar">مسار العمل لتحديث شرط التصنيف</locale>
+      <locale language="en">Taxonomy Term Update Workflow</locale>
+    </localized-text>
+  </process-display-name>
+  <!-- BEGIN, CR00306765, AKr -->
+  <description>
+    <localized-text>
+      <locale language="ar">لاعلام المالك لجهة التقديم التي تقدم الخدمات التي تم فهرستها من خلال شرط التصنيف، وقد تم تحديث شرط التصنيف هذا.</locale>
+      <locale language="en">Notifies the owner of a provider who provides services indexed by a 
+        taxonomy term, that the taxonomy term has been updated.</locale>
+    </localized-text>
+  </description>
+  <!-- END, CR00306765 -->
+  <enactment-mappings>
+    <mapping>
+      <source-attribute name="taxonomyTermID" struct-name="curam.cpm.workflowprocesses.taxonomy.struct.TaxonomyDescriptor" />
+      <target-attribute name="taxonomyTermID" wdo-name="TaxonomyTermDescriptor" />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo initialize-attributes="false" is-list-wdo="false">
+      <wdo-name>TaxonomyTermDescriptor</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="ar">مؤصف التشغيل لمهمة TaxonomyTerm</locale>
+          <locale language="en">TaxonomyTerm task Processing Descriptor</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>taxonomyTermID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">كود التعريف لشرط التصنيف</locale>
+              <locale language="en">Taxonomy Term ID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>taxonomyTermName</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="ar">اسم شرط التصنيف</locale>
+              <locale language="en">Name of the Taxonomy Term</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="ar">بدء نشاط العملية</locale>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="ar">بدء نشاط العملية</locale>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1" />
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="ar">نشاط انهاء العملية</locale>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="ar">نشاط انهاء العملية</locale>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none" />
+    </end-process-activity>
+    <automatic-activity category="AC1" id="3">
+      <name>
+        <localized-text>
+          <locale language="ar">احضار اسم شرط التصنيف</locale>
+          <locale language="en">Get the  Name of the Taxonomy Term</locale>
+        </localized-text>
+      </name>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="2" />
+      </split>
+      <bpo-mapping interface-name="curam.cpm.workflowprocesses.taxonomy.intf.TaxonomyWorkFlowAllocation" method-name="readTaxonomyName">
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.cpm.sl.entity.struct.TaxonomyTermKey">
+              <field name="taxonomyTermID">
+                <base-type type="INT64">
+                  <wdo-attribute name="taxonomyTermID" wdo-name="TaxonomyTermDescriptor" />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="taxonomyTermName">
+              <base-type>
+                <wdo-attribute name="taxonomyTermName" wdo-name="TaxonomyTermDescriptor" />
+              </base-type>
+            </field>
+          </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+    <manual-activity category="AC1" id="4">
+      <name>
+        <localized-text>
+          <locale language="ar">مراجعة الفهرس لشرط التصنيف</locale>
+          <locale language="en">Review index for taxonomy term</locale>
+        </localized-text>
+      </name>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="3" />
+      </split>
+      <task>
+        <message>
+          <message-text>
+            <localized-text>
+              <locale language="ar">تم تحديث شرط التصنيف %1s والفهرس يتطلب المراجعة.</locale>
+              <locale language="en">Taxonomy Term %1s has been updated and index requires review.</locale>
+            </localized-text>
+          </message-text>
+          <message-parameters>
+            <wdo-attribute name="taxonomyTermName" wdo-name="TaxonomyTermDescriptor" />
+          </message-parameters>
+        </message>
+        <actions>
+          <action page-id="ProviderManagement_viewTaxonomyTerm" principal-action="true">
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="ar">مراجعة فهرسة عروض جهة التقديم: للاستمرار لتوضيح أنه يجب مراجعة فهرس عروض جهة التقديم.</locale>
+                  <locale language="en">Provider Offering Indexing Review: Proceed to indicate that the provider offering indexing has to be reviewed.</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="taxonomyTermID">
+              <wdo-attribute name="taxonomyTermID" wdo-name="TaxonomyTermDescriptor" />
+            </link-parameter>
+          </action>
+          <action page-id="ProviderManagement_viewTaxonomyTerm" principal-action="false">
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="ar">الصفحة الرئيسية لعروض جهة التقديم</locale>
+                  <locale language="en">Provider Offering Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="taxonomyTermID">
+              <wdo-attribute name="taxonomyTermID" wdo-name="TaxonomyTermDescriptor" />
+            </link-parameter>
+          </action>
+        </actions>
+        <allow-deadline-override>false</allow-deadline-override>
+        <allow-task-forwarding>true</allow-task-forwarding>
+      </task>
+      <allocation-strategy identifier="curam.cpm.workflowprocesses.intf.WorkflowAllocationFunction.taxonomyUpdateTaskAllocationStrategy" type="function">
+        <function-mappings>
+          <formal-parameters>
+            <formal-parameter index="0">
+              <struct type="curam.cpm.sl.entity.struct.TaxonomyTermKey">
+                <field name="taxonomyTermID">
+                  <base-type type="INT64">
+                    <wdo-attribute name="taxonomyTermID" wdo-name="TaxonomyTermDescriptor" />
+                  </base-type>
+                </field>
+              </struct>
+            </formal-parameter>
+          </formal-parameters>
+        </function-mappings>
+      </allocation-strategy>
+      <event-wait wait-on-all-events="false">
+        <events>
+          <event event-class="PROVIDERMANAGEMENT" event-type="TAXONOMY_INDEXING_REVIEW" identifier="1">
+            <event-match-attribute name="taxonomyTermID" wdo-name="TaxonomyTermDescriptor" />
+          </event>
+        </events>
+      </event-wait>
+    </manual-activity>
+  </activities>
+  <transitions>
+    <transition from-activity-idref="1" id="1" to-activity-idref="3" />
+    <transition from-activity-idref="3" id="2" to-activity-idref="4" />
+    <transition from-activity-idref="4" id="3" to-activity-idref="2" />
+  </transitions>
+</workflow-process>
+
