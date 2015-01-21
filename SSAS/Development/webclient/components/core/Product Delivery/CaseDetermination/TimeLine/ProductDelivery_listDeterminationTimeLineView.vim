@@ -123,12 +123,13 @@
   </MENU>
 
 
+  <!--
   <ACTION_SET
     ALIGNMENT="CENTER"
     TOP="false"
   >
 
-
+BEGIN, CR00422014, BD
     <ACTION_CONTROL LABEL="ActionControl.Label.GraphicalView">
       <LINK PAGE_ID="ProductDelivery_determinationFlexView">
         <CONNECT>
@@ -165,7 +166,10 @@
 
 
     </ACTION_CONTROL>
+END, CR00422014
+
   </ACTION_SET>
+-->
 
 
   <CLUSTER

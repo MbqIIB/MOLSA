@@ -37,7 +37,10 @@
             decisionMatrixVersionID = "null";
           }
           if(versionNo == null){
-            versionNo = "-1";
+			final curam.omega3.user.UserPreferences prefs =
+              curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession());
+            final java.text.NumberFormat nf = java.text.NumberFormat.getInstance(prefs.getLocale());
+            versionNo = nf.format(-1);
           }                                                            
           
           if(isMatrixReadOnly == null || isMatrixReadOnly == "null") {
@@ -67,6 +70,12 @@
           flashVars.append("questionnaireID")
             .append("=")
             .append(curam.omega3.request.RequestUtils.escapeURL(questionnaireID))
+            .append("&");
+          
+		  // base text direction
+          flashVars.append("baseTextDir")
+            .append("=")
+            .append(curam.util.client.BidiUtils.getBaseTextDirection().toString())
             .append("&");
           
           // locale

@@ -44,6 +44,13 @@
     pageContext.setAttribute("pageLocale", locale);
     pageContext.setAttribute("dojoConfig", JspUtil.getDojoConfig(prefs.getLocale()));
     pageContext.setAttribute("dojoLocale", JspUtil.getDojoLocale(prefs.getLocale()));
+
+    if (request.getParameter("directLink") != null) {
+      curam.util.client.jsp.JspUtil.handleExternalAppDirectLink(pageContext);
+    } else {
+      pageContext.setAttribute("directLinkData", "null");
+    }
+
     pageContext.setAttribute("optimalBrowserMsgDesc", 
       CDEJResources.getProperty("optimal.browser.msg.description"));
     pageContext.setAttribute("optimalBrowserMsgInfo", 
@@ -134,6 +141,16 @@
         ]
         };
       </script>
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet><link type="text/css" rel="stylesheet" href="CDEJ/jscript/dojotk/dijit/themes/dijit_rtl.css" media="all"/><jsp:scriptlet>
+        }
+      </jsp:scriptlet>
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet><link type="text/css" rel="stylesheet" href="CDEJ/extapp/themes/curam-extapp/curam-extapp_rtl.css" media="all"/><jsp:scriptlet>
+        }
+      </jsp:scriptlet>      
       
       <script type="text/javascript" src="CDEJ/jscript/dojotk/dojo/dojo.js">// dummy script content</script>
       <script type="text/javascript">
@@ -165,10 +182,12 @@
         </jsp:scriptlet>
       </script>
       <script type="text/javascript" src="CDEJ/extapp/bootstrap.js">// dummy script content</script>
-      <jsp:include page="application-custom-script-includes.jspx"/>
+      <jsp:include page="application-custom-script-includes.jspx">
+        <jsp:param name="htmlDirection" value="${htmlDirection}"/>
+      </jsp:include>
     </head>
     <!-- htmlDirection will have a space in it if it is specified. -->
-    <body class="oneui curam-extapp ${highContrastClassName} ${appId} ${htmlLanguage}${htmlDirection}">
+    <body class="oneui curam-extapp ${highContrastClassName} ${appId} ${htmlLanguage} ${htmlDirection}">
       <div class="access hidden">
         <a id="skipLink" accesskey="1" href="#" tabindex="1" onfocus="CuramExternalApp._showHideSkipLink(event);" onblur="CuramExternalApp._showHideSkipLink(event);" onclick="CuramExternalApp._skipLinkFocus();">
           <jsp:scriptlet>
@@ -179,10 +198,13 @@
       <div id="curam-optimal-brower" role="region" aria-label="optimal browser message banner" data-dojo-type="curam/widget/OptimalBrowserMessage" data-dojo-id="CuramOptimalBrowserMessage" data-dojo-props="isExternalApp: true">
         ${pageScope.optimalBrowserMsgInfo}
       </div>
-      <div id="curam-app" data-dojo-type="curam/app/ExternalApplication" data-dojo-id="CuramExternalApp">
+      <div id="curam-app" data-dojo-type="curam/app/ExternalApplication" data-dojo-id="CuramExternalApp"
+          data-dojo-props="directLinkData: ${pageScope.directLinkData}">
         ${pageScope.loadingAppMsgInfo}
       </div>
     </body>
   </html>
   
 </jsp:root>
+
+

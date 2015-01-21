@@ -84,7 +84,7 @@
       LABEL="ActionControl.Label.KeyEvent"
       STYLE="in-page-link"
     >
-      <LINK PAGE_ID="ProductDelivery_determinationFlexView">
+      <LINK PAGE_ID="ProductDelivery_listDeterminationTimeLine">
         <CONNECT>
           <SOURCE
             NAME="PAGE"
@@ -118,8 +118,8 @@
       </LINK>
     </ACTION_CONTROL>
   </MENU>
-  
-  
+
+
   <ACTION_SET>
     <ACTION_CONTROL LABEL="ActionControl.Label.Reassess">
       <LINK
@@ -150,8 +150,8 @@
       </LINK>
     </ACTION_CONTROL>
   </ACTION_SET>
-  
-  
+
+
   <CLUSTER
     SHOW_LABELS="false"
     STYLE="outer-cluster-borderless"

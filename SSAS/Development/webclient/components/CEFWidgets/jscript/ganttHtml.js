@@ -275,10 +275,15 @@ function showExpected() {
 function scrollTo(x) {
   var rightData = dojo.byId("right-data");
   var rightHeader = dojo.byId("right-header");
-  if (x < -100) {
+  var isLTR = dojo._isBodyLtr();
+  if (x < -100 && isLTR) {
     rightData.scrollLeft = rightData.scrollWidth;
     rightHeader.scrollLeft = rightHeader.scrollWidth;
+  } else if ( x > 100 && !isLTR) {
+    rightData.scrollLeft = -rightData.scrollWidth;
+    rightHeader.scrollLeft = -rightHeader.scrollWidth;
   } else {
+    x = dojo.isIE ? Math.abs(x) : x;
     rightData.scrollLeft = x;
     rightHeader.scrollLeft = x;
   }
@@ -420,7 +425,12 @@ Slider.placeSlider = function (dontWrite) {
       ganttData.offsetHeight + ganttHeader.offsetHeight - 2 + 'px';
     sliderImage.style.width = '6px';
     // set position of button
-    this.button.left = x + leftData.offsetWidth + 'px';
+    if(dojo._isBodyLtr()){
+    	this.button.left = x + leftData.offsetWidth + 'px';
+    }else{
+        var rightData = dojo.byId("right-data");
+        this.button.left = x + rightData.offsetWidth +  (dojo.isIE ? 8 : 9) + proto.buttonWidth + 'px';
+    }
     this.button.top = y + 'px';
     // offset is remembered for later sliding
     this.offset = x;
@@ -551,13 +561,22 @@ Slider.DoResize = function(slider) {
     var sliderHeight = ganttData.offsetHeight
       + ganttHeader.offsetHeight - 2 + 'px';
     sliderImage.style.height = sliderButton.style.height = sliderHeight;
-    setWidth(leftData, leftDataWidth);
     var subVal = dojo.isIE ? 8 : 9;
+    if(dojo._isBodyLtr()){
+       setWidth(leftData, leftDataWidth);
+       setWidth(rightData, ganttData.offsetWidth - leftDataWidth - subVal);
 
-    setWidth(rightData, ganttData.offsetWidth - leftDataWidth - subVal);
+       setWidth(leftHeader, leftDataWidth);
+       setWidth(rightHeader, ganttData.offsetWidth - leftDataWidth - subVal);
+    }else{
+       setWidth(leftData, ganttData.offsetWidth - leftDataWidth - subVal);
+       setWidth(rightData, leftDataWidth);
 
-    setWidth(leftHeader, leftDataWidth);
-    setWidth(rightHeader, ganttData.offsetWidth - leftDataWidth - subVal);
+       setWidth(leftHeader, ganttData.offsetWidth - leftDataWidth - subVal);
+       setWidth(rightHeader, leftDataWidth);
+    }   
+
+    
 }
 
 // mousemove handler of the button for sliding

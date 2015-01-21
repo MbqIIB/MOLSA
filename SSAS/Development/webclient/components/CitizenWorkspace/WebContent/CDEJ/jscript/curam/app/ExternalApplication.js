@@ -18,7 +18,7 @@ define(
     "curam/util/UIMFragment",
     "dojo/dom-class",
     "dojo/dom-style",
-    "curam/ui/ClientDataAccessor",    
+    "curam/ui/ClientDataAccessor",
     "curam/widget/containers/TransitionContainer",
     "dojo/on",
     "curam/widget/menu/MenuPane",
@@ -38,6 +38,7 @@ define(
     "dijit/form/ComboButton",
     "curam/widget/menu/BannerMenuItem",
     /* END ONE UI banner requirements */
+    "curam/util/SessionTimeout",
     "curam/util/ui/AppExitConfirmation"
     ],
   function(
@@ -66,7 +67,7 @@ define(
     CheckedMenuItem,
     fx,
     focusUtil) {
-  return declare("curam.app.ExternalApplication",[_Widget,_TemplatedMixin,_WidgetsInTemplateMixin], 
+  return declare("curam.app.ExternalApplication",[_Widget,_TemplatedMixin,_WidgetsInTemplateMixin],
   {
     started : false,
 
@@ -80,15 +81,17 @@ define(
   templateString: template,
 
   widgetsInTemplate: true,
-  
+
   baseClass : "curamApp",
-  
+
   _appConfig: null,
-  
+
   _initializedNavBarID: null,
-  
+
   guardAgainstLeaving: null,
-    
+
+  directLinkData: null,
+
   /**
    * Overridden to mixin the override resources if provided.
    * @function
@@ -97,7 +100,7 @@ define(
   postMixInProperties: function() {
     this.inherited(arguments);
   },
-  
+
   /**
    * Override to force startup/layout on BorderContainer.
    */
@@ -106,15 +109,15 @@ define(
     this._init();
     this._setupUserLeavingGuard();
   },
-  
-  
+
+
   _isNavBarItem: function(uimPageID) {
     // the "map" variable is created in TabLayoutResolver.java
-    return (this._appConfig.map[uimPageID] != null); 
+    return (this._appConfig.map[uimPageID] != null);
   },
-  
+
   /**
-   * 
+   *
    */
   _init: function() {
     var da = new ClientDataAccessor();
@@ -148,18 +151,35 @@ define(
     }));
 
   },
-  
+
   /**
    * Sets up a handler that will pop up a confirmation dialog before the user
    * leaves the external application. It will only do so if the appropriate
-   * configuration value is enabled. 
+   * configuration value is enabled.
    */
   _setupUserLeavingGuard: function() {
     if (this.guardAgainstLeaving) {
       curam.util.ui.AppExitConfirmation.install();
     }
   },
-  
+
+  /**
+     * Iniates the check to see if the timeout warning modal should
+     * be diplayed if the session is about to timeout.
+     */
+    _checkSessionExpired: function() {
+      if (this._appConfig != null) {
+    	  var timeoutWarningConfig = this._appConfig.timeoutWarning;
+    	  if (timeoutWarningConfig) {
+    	    var width = timeoutWarningConfig.width;
+    		var height = timeoutWarningConfig.height;
+    		var timeout = timeoutWarningConfig.timeout;
+    		var bufferingPeriod = timeoutWarningConfig.bufferingPeriod;
+  		curam.util.SessionTimeout.checkSessionExpired(width, height, timeout, bufferingPeriod);
+    	  }
+      }
+  },
+
   /**
    * Loads the application "landing page" into the main content panel
    * (_mainContent attach point).
@@ -221,13 +241,13 @@ define(
 
     this._loadBanner();
   },
-  
-  /** 
+
+  /**
    * Initializes the landing page link in the banner. Must only be called AFTER
    * the banner is loaded. Also, this method assumes that "this" points to an
    * instance of this class, an instance of ExternalApplication. The
    * _loadBanner() method guarantees this.
-   * 
+   *
    * TODO: Re-implement the banner as a dijit with its own life cycle.
    */
   _initializeBannerLandingPageLink: function(contentPane) {
@@ -412,15 +432,15 @@ define(
 
   },
 
-  /** 
+  /**
    * Ensure that MegaMenu items on any given row, all have a uniform height.
    * That is, a height equal to the largest in the row. This function is needed
    * as each column of items in the menu are repersented by a seperate table, so
    * there is no real link between items along rows.
-   * 
+   *
    */
   _evenOutMenuRows: function(widget) {
-    
+
     var widgetNode = dojo.byId(widget.popup.id);
     var widgetID = widget.parent ? widget.parent.id : widget.popup.id;
     // only animate if the menu is a mega menu, or help menu from the banner
@@ -513,14 +533,14 @@ define(
     var megaExists = currentBanner.navigation ? true : false;
     var logoExists = currentBanner.logoExists;
     var printExists = currentBanner._settingsNode ? true : false;
-    
+
     // Had to put code to set the print menu text in this resize method as it
     // was the only place a banner reference ("currentBanner") was available.
     // The print menu is implemented using the OneUI "settings" menu.
     // We reset the alt text below to that of the print menu. The print menu
     // text is looked up in the "TabLayoutResolver" java class.
     if (printExists) {
-      // Either title or alt is used based on the browser. 
+      // Either title or alt is used based on the browser.
       if (domAttr.get(currentBanner._settingsNode, "title")) {
         domAttr.set(currentBanner._settingsNode, "title",
             CuramExternalApp._appConfig.printMenuLabel);
@@ -531,8 +551,16 @@ define(
       }
     }
 
+    var isLTR = currentBanner.isLeftToRight();
+
     // Find the endpoints of the available space.
-    var lastNodeXPosition = helpExists ? pos(currentBanner._helpNode).x : 885; 
+    var lastNodeXPosition = helpExists ?
+      isLTR ?
+        pos(currentBanner._helpNode).x :
+        box(currentBanner._mainContainerNode).w
+          + box(currentBanner._helpNode).w
+          - pos(currentBanner._helpNode).x :
+      885;
     var bannerInnerSpace = lastNodeXPosition - box(bannerTitleNode).w;
 
     if(userExists){
@@ -607,41 +635,55 @@ define(
     // Once the text lengths are set, we have to position the MegaMenu again.
     if (megaExists) {
       var rightVal = 0;
-      
-      rightVal += logoExists ? 
+
+      rightVal += logoExists ?
           box(dojo.query(
               ".idxHeaderLogoBox", currentBanner._globalActionsNode)[0]).w : 0;
-      
+
       rightVal += userExists ? box(userNode).w : 0;
       rightVal += helpExists ? box(currentBanner._helpNode).w : 0;
       rightVal += printExists ? box(currentBanner._settingsNode).w : 0;
 
-      domStyle.set(MegaMenuNode, "right", rightVal + "px");
+      domStyle.set(MegaMenuNode, isLTR ? "right" : "left", rightVal + "px");
     }
 
   },
 
   _postDataLoadInit: function() {
-    
+
     // assign helper function to main body that does
     // look ups for URI
     this._appContentBody._doResourceLookUp =
       lang.hitch(this, this._doResourceLookUpForMainBody);
-    
+
     // Handles button selection on the nav bar
     this._appNav._onSelectAfter = lang.hitch(this,
         function(inputJson) {
       this._appContentBody.set(
           "displayPanel", inputJson);
     });
-    
-    
+
+
     this._makeNavBarAccessible();
     this._loadBanner();
-    this._loadLandingPage();
-    
+
+
+    // Dont load the landing page if a direct page is requested.
+    if (this.directLinkData) {
+      if (this._isNavBarItem(this.directLinkData.pageID)) {
+        this._initNavBar(this.directLinkData.pageID, lang.hitch(this, function() {
+          this.directLinkData.isDirectLink = true;
+          this._displayNavMenuAndBodyContent(this.directLinkData);
+        }));
+      } else {
+        this._displayOnlyBodyContent(this.directLinkData);
+      }
+    } else {
+      this._loadLandingPage();
+    }
+
   },
-  
+
   _initNavBar: function(uimPageID, callBack) {
     var navID = this._appConfig.map[uimPageID];
     if (typeof(navID) == "undefined" // page isn't associated with a navbar
@@ -663,31 +705,31 @@ define(
         },
         null);
   },
-  
+
   _makeNavBarAccessible: function() {
-    
+
     var hoverCardCloseIcon = dojo.query(".idxOneuiHoverCardCloseIcon")[0];
-    if (hoverCardCloseIcon) { 
+    if (hoverCardCloseIcon) {
       // Without setting this, the tabbing will become trapped once the last
       // focusable element is focused. The user will be unable to loop round to
       // the first element, or reverse tab to the previous one.
       domAttr.set(hoverCardCloseIcon, "tabindex", -1);
-      
+
       // Setting the aria label for the close icon on the hover card to resolve
       // the accessibility issue existing in the current One UI toolkit.
       // TODO: This piece of code can be removed once the toolkit is upgraded
       // where this issue is resolved offically.
-      domAttr.set(hoverCardCloseIcon, "aria-label", 
+      domAttr.set(hoverCardCloseIcon, "aria-label",
           this._appConfig.hoverCardCloseButtonLabel);
     }
-    
+
     // Setting the label used for the overflow button in
     // the side navigation bar.
     var navOverflowButton = dijit.byId("navOverflowButton");
     navOverflowButton._setLabelAttr(this._appConfig.navOverflowButtonLabel);
-    
+
   },
-  
+
   _loadMenuItems: function(navItems, navBarPixelWidth) {
     var menuItems = [];
     this._appNav.set("width", navBarPixelWidth);
@@ -699,13 +741,13 @@ define(
         selected: false,
         iconPath: navItem.iconPath,
         subPageIds: navItem.subPageIds,
-        iconClass: "whoKnow"     
+        iconClass: "whoKnow"
       }
       menuItems.push(menuItem);
     }
     this._appNav.addMenuItems(menuItems);
   },
-  
+
   megaMenuClick: function(args) {
     if (typeof(args.displayNavBar) == "undefined") {
       // if the displayNavBar hasn't been explicitly set, then it is assumed
@@ -714,7 +756,7 @@ define(
     }
     this.displayContent(args);
   },
-  
+
   displayContent : function(inputJson) {
    if(inputJson != null) {
       inputJson.forceRefresh = true;
@@ -722,10 +764,10 @@ define(
       // with each condition below. TODO: move conditions into
       // a separate function which just sets a boolean flag.
       // Take care with precedence when doing so.
-      
+
       // Where "inputJson.displayNavBar" is explicitly set,
       // this takes precedence.
-      
+
       // "displayNavBar" is explicitly set to false
       if (inputJson.displayNavBar == false) {
         this._displayOnlyBodyContent(inputJson);
@@ -737,7 +779,7 @@ define(
         return;
       }
       // inputJson.displayNavBar hasn't been specified
-      
+
       // check if it is the landing page, if so hide the nav bar
       // this takes precedence over the conditions below.
       if (inputJson.pageID == curam.config.landingPage) {
@@ -754,7 +796,7 @@ define(
         // is alread displayed, leave it so.
         if (this._appNav._showing) {
           this._displayNavMenuAndBodyContent(inputJson);
-          return;          
+          return;
         } else {
           // it is not a configured nav bar item, the nav bar is
           // already hidden, leave it so.
@@ -764,8 +806,8 @@ define(
       }
     }
   },
-  
-  _displayOnlyBodyContent : function(inputJson) {       
+
+  _displayOnlyBodyContent : function(inputJson) {
     if(this._appNav._showing) {
       // side menu is displayed
       var handlerBodyFadeOut = this.connect(this._appContentBody, '_panelFadeOutComplete', lang.hitch(this,function(){
@@ -775,20 +817,20 @@ define(
                 this._appNav.deselect();
 
                 handlerMenuFadeOut.remove();
-                
+
                 // PK change to allow inputJson to pass through....
                 //this._appContentBody.set("displayPanel", {
                 //        key : inputJson.pageID,
                 //        param : inputJson.param
                 //});
-                inputJson.key = inputJson.pageID; 
+                inputJson.key = inputJson.pageID;
                 this._appContentBody.set("displayPanel", inputJson);
         }));
 
         this._appNav.fadeOut();
       }));
 
-      this._appContentBody.fadeOutDisplay();  
+      this._appContentBody.fadeOutDisplay();
 
     } else {
       // side menu is not displayed
@@ -803,49 +845,57 @@ define(
     }
   },
 
-  
+
   /**
    * Function will bring the nav menu and main body in to display
    * and display the page of the requested ID in the main body
    */
   _displayNavMenuAndBodyContent : function(inputJson)
-  {               
+  {
     inputJson.key = inputJson.pageID;
     if (inputJson.param == null) {
       inputJson.param = [];
     }
-    
+
     inputJson.exceptionButtonFound = false;
 
     if(this._appNav._showing) {
       this._appNav.setSelectedButton(inputJson);
     } else {
-      var handlerBodyFadeOut = this.connect(this._appContentBody, '_panelFadeOutComplete', lang.hitch(this,function(){
-        // remove listener after first event
-        handlerBodyFadeOut.remove();
+      if (inputJson.isDirectLink) {
         var handlerMenuFadeIn = this.connect(this._appNav, '_onShowComplete', lang.hitch(this,function(){
-  
-                handlerMenuFadeIn.remove();
-                this._appNav.setSelectedButton(inputJson);
+          handlerMenuFadeIn.remove();
+          this._appNav.setSelectedButton(inputJson);
         }));
-  
         this._appNav.fadeIn();
-      }));
-      this._appContentBody.fadeOutDisplay();
+      } else {
+        var handlerBodyFadeOut = this.connect(this._appContentBody, '_panelFadeOutComplete', lang.hitch(this,function(){
+          // remove listener after first event
+          handlerBodyFadeOut.remove();
+          var handlerMenuFadeIn = this.connect(this._appNav, '_onShowComplete', lang.hitch(this,function(){
+
+            handlerMenuFadeIn.remove();
+            this._appNav.setSelectedButton(inputJson);
+          }));
+
+          this._appNav.fadeIn();
+        }));
+        this._appContentBody.fadeOutDisplay();
+      }
     }
   },
-    
+
   /**
    * Function looks up and returns a URI from a referenceIdentifer
    */
   _doResourceLookUpForMainBody : function(jsonIn, pramUrl, compositeKey) {
     // no translation required...for now....just return the identifier
     // directly
-    
+
     var uri;
     // when the TransitionContainer invokes this call back, jsonIn.key is the
     // UIM Page ID
-    if (jsonIn.key) {  
+    if (jsonIn.key) {
       // assume its a UIM so build a "curam style" url
       if (this._isUIMFragment(jsonIn.key)) {
         uri = jsL + "/" + jsonIn.key + "Page.do?"
@@ -859,11 +909,11 @@ define(
       // just use the specified url without any changes
       uri = jsonIn.url
     }
-    // NB: the uri built here is not complete. The TransitionContainer will 
+    // NB: the uri built here is not complete. The TransitionContainer will
     // take care of adding any parameters specified in jsonIn.param
     return uri;
   },
-  
+
   /**
    * Adds CDEJ parameters to the request string. This function assumes it is
    * called directly after _constructPath() so it always starts with a "?".
@@ -875,7 +925,7 @@ define(
   },
   /**
    * Called from util.js when a modal is opened from a UIM in the external
-   * application. 
+   * application.
    */
   updateMainContentIframe: function(href) {
     var iframe = dojo.query("iframe", this.domNode)[0];
@@ -883,7 +933,7 @@ define(
       iframe.contentWindow.location.href = href;
     }
   },
-  
+
   _isUIMFragment: function(pageID) {
     return (this._appConfig && this._appConfig.uimFragRegistry[pageID] != null);
   },
@@ -898,14 +948,14 @@ define(
       // only if the click occurs to the left of the user dropdown arrow, do we
       // allow the application to navigate to the user home page.
       var arrowNode = dojo.byId("curam-extapp_userMenuArrow");
-      
+
       // Workaround when the Jaws is opened.
       if (evt.target != arrowNode) {
           displayContent(linkArgs);
       }
-      
+
     }, linkArgs));
-    
+
     dojo.connect(userNode, 'onkeypress', function(evt){
       if (evt.charOrCode === dojo.keys.ENTER) {
         dojo.stopEvent(evt);
@@ -924,19 +974,19 @@ define(
     domAttr.set(textNode, "tabindex", "3");
     domAttr.set(textNode, "title", textNode.innerText);
     domAttr.set(textNode, "role", "link");
-    
+
     var userMenuDropDown = dojo.query(".idxHeaderDropDownArrow", userNode)[0];
     domAttr.set(userMenuDropDown, "tabindex", "4");
     domAttr.set(userMenuDropDown, "role", "button");
     // TODO: need to change the title to a proper one.
     domAttr.set(userMenuDropDown, "title", textNode.innerText);
-    
+
     /* To handle the change of image in user node when we are in high contrast mode */
     this._handleUserImageHighContrast(userNode);
   },
 
-  /** 
-   * When we are in high contrast mode we should have a different image for user node 
+  /**
+   * When we are in high contrast mode we should have a different image for user node
    * and it should be changed in roll as well as click state.
    */
   _handleUserImageHighContrast: function(userNode) {
@@ -957,7 +1007,7 @@ define(
       }
     }
   },
-  
+
   /**
    * Out of the box ONEUI header is not accessable. Need to apply certain
    * attributes to aid keyboard navigation.
@@ -976,7 +1026,7 @@ define(
 
     domAttr.set(helpNode, "tabindex", "6");
     domAttr.set(helpNode, "role", "button");
-    
+
     dojo.connect(helpNode, "onkeydown", function(evt){
       if (evt.keyCode === dojo.keys.ENTER) {
         dojo.stopEvent(evt);
@@ -994,7 +1044,7 @@ define(
     var printNode = banner._settingsNode;
     domAttr.set(printNode, "tabindex", "5");
     domAttr.set(printNode, "role", "button");
-    
+
     dojo.connect(printNode, "onkeydown", function(evt){
       if (evt.keyCode === dojo.keys.ENTER) {
         dojo.stopEvent(evt);
@@ -1036,7 +1086,10 @@ define(
         // move the arrowNode to the right.
         dojoAspect.before(idx.oneui.HoverHelpTooltip, "show", function() {
           var arrowNode = dojo.byId("curam-extapp_userMenuArrow");
-          domStyle.set(arrowNode, {"position":"fixed", "top" : "30px", "right":"21px"});
+          var isLTR = CuramExternalApp._oneuiBanner.isLeftToRight();
+          domStyle.set(arrowNode, isLTR ?
+            {"position":"fixed", "top" : "30px", "right":"21px"} :
+            {"position":"fixed", "top" : "30px", "left":"21px"});
         });
         // after rendered, move the arrowNode back.
         dojoAspect.after(idx.oneui.HoverHelpTooltip, "show", function() {
@@ -1051,15 +1104,15 @@ define(
             hoverHolderID = "idx_oneui__MasterHoverHelpTooltip_"
                     + hoverContentID.slice(hoverContentID.lastIndexOf("_")+1);
           }
-          
+
           var oneuiBanner = CuramExternalApp._oneuiBanner;
           var helpExists = oneuiBanner._helpNode ? true : false;
           // One UI "settings" menu is used for printing
           var printMenuExists = oneuiBanner._settingsNode ? true : false;
           var logoExists = oneuiBanner.logoExists;
-          
+
           var rightVal = 0;
-          rightVal += logoExists ? 
+          rightVal += logoExists ?
               domGeom.getMarginBox(query(
                   ".idxHeaderLogoBox", oneuiBanner._globalActionsNode)[0]).w : 0;
           rightVal += helpExists ? domGeom.getMarginBox(oneuiBanner._helpNode).w : 0;
@@ -1068,10 +1121,15 @@ define(
           // to place the hover card under it.
           rightVal += domGeom.getContentBox(
               query(".idxHeaderDropDownArrow", oneuiBanner.userNode)[0]).w / 2;
-          
-          domStyle.set(dom.byId(hoverHolderID), {"left":"auto", "right": rightVal + "px"});
-          
-          
+
+          // There is a difference of 14px between the right and left values.
+          // This differece results from the margin-left property
+          // selector: .oneui .idxOneuiHoverHelpTooltipBelow
+          // in \ibmidxtk\idx\themes\oneui\idx\oneui\HoverHelpTooltip.css
+          var isLTR = oneuiBanner.isLeftToRight();
+          domStyle.set(dom.byId(hoverHolderID), isLTR ?
+            {"left":"auto", "right": rightVal + "px"} :
+            {"right":"auto", "left": (rightVal+14) + "px"});
         }, hoverContentNode.id));
       }
 
@@ -1091,7 +1149,7 @@ define(
       domClass.add(node, "oneuiHeaderGlobalActionsMenu_help");
     }
   },
-  
+
   /**
    * Displays the specified page in a modal.
    */
@@ -1249,10 +1307,10 @@ define(
       dest.focus();
     }
   },
-  
+
   /**
    * TEC-16453. Skiplink should become visible when focused (i.e. a user tabs on it)
-   * and it should be visible only when it has focus, so it should hide again when 
+   * and it should be visible only when it has focus, so it should hide again when
    * the user tabs off it.
    */
   _showHideSkipLink: function(e) {
@@ -1266,7 +1324,7 @@ define(
       }
     }
   },
-  
+
 /*
   print: function() {
     // if the "curam-iframe" exists
@@ -1303,4 +1361,4 @@ define(
   }
 
   });
-});  
+});

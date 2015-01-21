@@ -84,17 +84,10 @@
             && Boolean.valueOf(
               curam.omega3.util.CDEJResources.getApplicationDataProperty("curam.citizenworkspace.use.external.login.page"))) {
               
-          curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getCWSessionToken_TH getCWSessionToken_TH = 
-            new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_getCWSessionToken_TH(); 
           
-          getCWSessionToken_TH.setFieldValue(getCWSessionToken_TH.key$playerID_idx, id);
-          
-          getCWSessionToken_TH.callServer();
-          
-          String token = getCWSessionToken_TH.getFieldValue(getCWSessionToken_TH.result$token_idx); 
-
-          out.print("<script>window.parent.displayContent({pageID:'CitizenAccount_startProcess', param: [{paramKey:\"token\", paramValue:\""
-            + curam.omega3.request.RequestUtils.escapeURL(token) + "\"}]})" + "</script>");
+	  out.print("<script>");
+	  out.print("window.top.location.assign('" + request.getContextPath() + "/cw/ForwardExternalLogin.jspx?id=" + curam.omega3.request.RequestUtils.escapeURL(id) + "');");
+          out.print("</script>");
 
           return;
         }      

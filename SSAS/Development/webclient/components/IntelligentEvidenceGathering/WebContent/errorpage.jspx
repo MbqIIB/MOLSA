@@ -23,6 +23,36 @@
                 <div id="hd">
                   <h2>An Application Error Has Occurred, please start again!!!</h2>
                 </div>
+                <div id="bd">
+                    <div style="padding-top: 15px; padding-bottom: 20px; color: red;">
+                        <jsp:scriptlet>
+                            <![CDATA[
+
+                              String message = "";
+                              if (exception.getCause().getCause() != null) {
+                                message = exception.getCause().getCause().getMessage();
+                              } else {
+                                message = exception.getCause().getMessage();
+                              }
+
+                              out.print(curam.util.common.util.JavaScriptEscaper.escapeText(message));
+
+                              out.println("\n<!--");
+                              java.io.StringWriter sw = new java.io.StringWriter();
+                              java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+                              exception.printStackTrace(pw);
+                              out.print(curam.util.common.util.JavaScriptEscaper.escapeText(sw));
+                              sw.close();
+                              pw.close();
+                              out.println("-->");
+                                                
+                            ]]>
+                        </jsp:scriptlet>
+                    </div>
+                </div>
+                <div id="ft">
+                    <a href="../userhome.jsp">Home</a>
+                </div>
             </div>
         </body>
     </html>

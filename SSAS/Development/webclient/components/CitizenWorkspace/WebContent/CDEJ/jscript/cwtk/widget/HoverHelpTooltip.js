@@ -45,6 +45,13 @@ define([
 		       });
 			   
 			   this.fixDropDown();
+			   
+			   // Fix horizontal alignment of the tooltip. GLS-1748
+			   if(!this.isLeftToRight()){
+			       var marginLeft = this.dropDown.domNode.style.marginLeft;
+			       this.dropDown.domNode.style.marginLeft = this.dropDown.domNode.style.marginRight;
+			       this.dropDown.domNode.style.marginRight = "-" + marginLeft;
+			    }
 		   } 
 		});
 

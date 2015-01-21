@@ -14,7 +14,22 @@
 	<jsp:text>
 		<![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]>
 	</jsp:text>
-	<html>
+<jsp:directive.page import="java.util.Locale" />
+<jsp:scriptlet>
+  Locale locale = request.getLocale();
+  String language = locale.toString();
+  pageContext.setAttribute("htmlLanguage", language);
+  if(language.startsWith("ar")
+    || language.startsWith("he")
+    || language.startsWith("iw")) {
+    pageContext.setAttribute("htmlDirection", "rtl");
+    pageContext.setAttribute("classDirection", "rtl");
+  } else {
+    pageContext.setAttribute("htmlDirection", "ltr");
+    pageContext.setAttribute("classDirection", "");
+  }
+</jsp:scriptlet>
+  <html lang="${htmlLanguage}" dir="${htmlDirection}" class="${classDirection}">
 	<head>
 	<script type="text/javascript">
         function autoSubmit() {
@@ -23,7 +38,7 @@
   </script>
 	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 	</head>
-	<body class="logonBody" style="visibility: hidden;" onload="autoSubmit()">
+	<body class="${classDirection} logonBody" style="visibility: hidden;" onload="autoSubmit()">
 	<form id="loginform" name="loginform" action="j_security_check" method="post">
 		<!-- BEGIN, CR00246200, FM -->
 		<input type="hidden" name="j_username" value="publicprovider"/>

@@ -21,27 +21,59 @@
 
       String playerID = request.getParameter("id");
       String navigatorID = (String) httpSession.getAttribute("curam.navigatorid");
-        
-      // Call setup intake process
-      curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupScreening_TH th = 
-        new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupScreening_TH(); 
-      th.setFieldValue(th.details$playerID_idx, playerID);     
-      th.setFieldValue(th.details$navigatorID_idx, navigatorID);    
-      th.callServer();
-      
-      String newPlayerId = th.getFieldValue(th.result$playerID_idx);
-      String pageName = th.getFieldValue(th.result$nextPage_idx);
-      String loginRequiredInd = th.getFieldValue(th.result$loginRequiredInd_idx);
-      String username = th.getFieldValue(th.result$username_idx);
-      String password = th.getFieldValue(th.result$password_idx);
-      String pageParams = th.getFieldValue(th.result$pageParams_idx);
-      String pageType = th.getFieldValue(th.result$pageType_idx);
-      String usertype = th.getFieldValue(th.result$usertype_idx);
-      
+      String iegExecutionID = request.getParameter("iegExecutionID");
+
+      String newPlayerId;
+      String pageName;
+      String loginRequiredInd;
+      String username;
+      String password;
+      String pageParams;
+      String pageType;
+      String usertype;
+
+      if(iegExecutionID == null) {
+
+        // Call setup screening process
+        curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupScreening_TH th = 
+          new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupScreening_TH(); 
+        th.setFieldValue(th.details$playerID_idx, playerID);     
+        th.setFieldValue(th.details$navigatorID_idx, navigatorID);
+        th.callServer();
+
+        newPlayerId = th.getFieldValue(th.result$playerID_idx);
+        pageName = th.getFieldValue(th.result$nextPage_idx);
+        loginRequiredInd = th.getFieldValue(th.result$loginRequiredInd_idx);
+        username = th.getFieldValue(th.result$username_idx);
+        password = th.getFieldValue(th.result$password_idx);
+        pageParams = th.getFieldValue(th.result$pageParams_idx);
+        pageType = th.getFieldValue(th.result$pageType_idx);
+        usertype = th.getFieldValue(th.result$usertype_idx);
+
+      } else {
+
+        // Call setup rescreening process
+        curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupRescreening_TH th = 
+          new curam.interfaces.CitizenWorkspacePkg.CitizenWorkspace_setupRescreening_TH(); 
+        th.setFieldValue(th.details$playerID_idx, playerID);     
+        th.setFieldValue(th.details$navigatorID_idx, navigatorID);
+        th.setFieldValue(th.details$citizenScriptInfoID_idx, iegExecutionID);    
+        th.callServer();
+
+        newPlayerId = th.getFieldValue(th.result$playerID_idx);
+        pageName = th.getFieldValue(th.result$nextPage_idx);
+        loginRequiredInd = th.getFieldValue(th.result$loginRequiredInd_idx);
+        username = th.getFieldValue(th.result$username_idx);
+        password = th.getFieldValue(th.result$password_idx);
+        pageParams = th.getFieldValue(th.result$pageParams_idx);
+        pageType = th.getFieldValue(th.result$pageType_idx);
+        usertype = th.getFieldValue(th.result$usertype_idx);
+      }
+
       httpSession.setAttribute("curam.page.playerExecutionID", newPlayerId);
 
       if ("true".equals(loginRequiredInd) && userPrincipal != null) {
-      
+
         // Set the session values required to forward to the correct page after logon
         String params = "&id=" + newPlayerId + pageParams;
         httpSession.setAttribute("curam.page.name", pageName);
@@ -54,7 +86,7 @@
         url = "../logon.jsp";
 
       } else {
-      
+
         url = ""; // url variable has not been initialised
 
         // determine whether to route to ResolvePage or PagePlayerPage
@@ -65,14 +97,20 @@
         }
 
         // Add the params
-        url += "id=" + curam.omega3.request.RequestUtils.escapeURL(newPlayerId) + "&page=" + curam.omega3.request.RequestUtils.escapeURL(pageName);
-        
+        url += "id=" + curam.omega3.request.RequestUtils.escapeURL(newPlayerId)
+            + "&page=" + curam.omega3.request.RequestUtils.escapeURL(pageName);
+
+        if(iegExecutionID != null) {
+          url += "&iegExecutionID=" + curam.omega3.request.RequestUtils.escapeURL(iegExecutionID)
+              + "&isRescreen=true";
+        }
+
         if (pageParams != null && pageParams.length() > 0) {
             pageParams = citizenworkspace.util.ParameterEncodingHelper.getEncodedPageParms(pageParams);
             url += "&" + pageParams;      
         }
       }
-           
+
       response.sendRedirect(response.encodeRedirectURL(url)); 
 
       ]]>

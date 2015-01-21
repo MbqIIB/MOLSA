@@ -414,6 +414,11 @@ dojo.declare("AnnouncementsPlayer", [dijit._Widget, dijit._Templated], {
     //curam.debug.log("AnnouncementPlayer.displayMessage("+message+");");
     
     dojo.style(this.textDisplay, "opacity", "1");
+    if (message.bidiDir) {
+        dojo.style(this.textDisplay, "direction", message.bidiDir );
+        dojo.style(this.textDisplay, "display", "inline-block" );
+        dojo.style(this.textDisplay, "textAlign", "start" );
+    }
     this.dateTime.innerHTML = message.date + " " + message.time + " ";
     this.text.innerHTML = message.text;
     var link = this.fullTextURL + "Page.do?o3ctx=4096&announcementID=" + message.id;

@@ -95,5 +95,11 @@ CKEDITOR.editorConfig = function( config )
     	];
     	config.extraPlugins += ',customdialogs';
      }
+	 if (isBidi == 'true') {
+		var bidiButtons = ['BidiLtr','BidiRtl'];
+		config.toolbar_CEFToolbar[4] = config.toolbar_CEFToolbar[4].concat (bidiButtons);
+		config.extraPlugins += ',lotusbidi';
+	 }
+	 
  
 } ;

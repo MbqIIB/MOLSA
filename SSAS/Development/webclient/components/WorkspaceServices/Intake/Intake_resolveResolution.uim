@@ -44,10 +44,17 @@
       
     url += curam.omega3.user.UserPreferencesFactory.getUserPreferences(pageContext.getSession()).getLocale() + "/";     
     
-    url += linkToResolutionPageHelper.getFieldValue(linkToResolutionPageHelper.result$resolutionPageName_idx) + "Page.do?caseID="; //linkToResolutionPageHelper.getFieldValue(linkToResolutionPageHelper.result$resolutionPageName_idx) + "?caseID=";
+    String pageName = linkToResolutionPageHelper.getFieldValue(linkToResolutionPageHelper.result$resolutionPageName_idx);
+    
+    String escapedPageName = curam.omega3.request.RequestUtils.escapeURL(pageName);
+    
+    String escapedCaseID = curam.omega3.request.RequestUtils.escapeURL(caseID);
+    
+    url += escapedPageName;
+    
+    url += "Page.do?caseID=";
       
-    // Don't forget to encode parameters
-    url += curam.omega3.request.RequestUtils.escapeURL(caseID);
+    url += escapedCaseID;
       
     url += "&" + rh.getSystemParameters(); 
 

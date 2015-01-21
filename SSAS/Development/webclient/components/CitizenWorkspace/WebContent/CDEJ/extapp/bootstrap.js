@@ -2,7 +2,7 @@
 // contain classes\modules. Simply including it will execute "global" bootstrap
 // code.
 
-// Used by curam.util.getTopWindow()       
+// Used by curam.util.getTopWindow()
 window.__extAppTopWin = true;
 
 require([
@@ -10,7 +10,7 @@ require([
   "dojo/domReady",
   "dojo/ready",
   "dojo/_base/window",
-  "dojo/_base/fx", 
+  "dojo/_base/fx",
   /* END: modules used during bootstrap */
   /* START: pre-load modules */
   "dojo/dom-geometry",
@@ -34,12 +34,12 @@ require([
   "curam/widget/OptimalBrowserMessage",
   "curam/app/ExternalApplication",
   "dijit/form/TextBox"
-  
+
   /* END: pre-load modules */
 ], function(domReady, ready, dojoWindow, fx) {
 
   // TODO: this is also defined in application.jspx...fix this!
-  dojo.global.jsScreenContext = 
+  dojo.global.jsScreenContext =
     new curam.util.ScreenContext("EXTAPP");
   domReady(function() {
     console.log("DOM Ready");
@@ -53,7 +53,7 @@ require([
       node: dojoWindow.body(),
       delay: 500,
       duration: 1000
-    }).play();  
+    }).play();
   });
 });
 
@@ -79,7 +79,12 @@ function displayContent(args) {
   });
 }
 
-
+function getAppConfig() {
+  var mainAppWidget =  dijit.byId("curam-app");
+  if (mainAppWidget) {
+    return mainAppWidget._appConfig;
+  }
+}
 
 function loadMegaMenuItem(megaMenuItem) {
   megaMenuItem.displayNavBar = false;
@@ -88,5 +93,21 @@ function loadMegaMenuItem(megaMenuItem) {
 
 function loadMegaMenuItemInModal(megaMenuItem) {
   dijit.byId("curam-app").displayMegaMenuItemInModal(args);
+}
+
+function openModal(url, widthAndHeight) {
+  require(['curam/util/UimDialog'], function(uimDialog) {
+    var href = url,
+        extAppContext = new curam.util.ScreenContext('EXTAPP');
+
+    // set a proper screen context value
+    href = curam.util.replaceUrlParam(href, "o3ctx", extAppContext.getValue());
+
+    if (widthAndHeight) {
+      uimDialog.openUrl(href, widthAndHeight);
+    } else {
+      uimDialog.openUrl(href);
+    }
+  });
 }
 

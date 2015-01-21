@@ -104,6 +104,11 @@ this.currentMessage=this.getNextMessage();
 this.pause();
 },displayMessage:function(_7){
 dojo.style(this.textDisplay,"opacity","1");
+if(_7.bidiDir){
+dojo.style(this.textDisplay,"direction",_7.bidiDir);
+dojo.style(this.textDisplay,"display","inline-block");
+dojo.style(this.textDisplay,"textAlign","start");
+}
 this.dateTime.innerHTML=_7.date+" "+_7.time+" ";
 this.text.innerHTML=_7.text;
 var _8=this.fullTextURL+"Page.do?o3ctx=4096&announcementID="+_7.id;

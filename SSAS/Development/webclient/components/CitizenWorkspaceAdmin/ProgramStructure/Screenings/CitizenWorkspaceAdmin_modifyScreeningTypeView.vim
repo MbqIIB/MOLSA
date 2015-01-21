@@ -64,7 +64,7 @@
     </FIELD>
     <FIELD LABEL="Field.Title.ProgramSelection">
       <CONNECT>
-        <SOURCE NAME="DISPLAY" PROPERTY="programSelectionInd" />
+        <SOURCE NAME="DISPLAY" PROPERTY="details$dtls$programSelectionInd" />
       </CONNECT>
       <CONNECT>
         <TARGET NAME="ACTION" PROPERTY="programSelectionInd" />
@@ -76,6 +76,14 @@
       </CONNECT>
       <CONNECT>
         <TARGET NAME="ACTION" PROPERTY="url" />
+      </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Title.AllowRescreening">
+      <CONNECT>
+        <SOURCE NAME="DISPLAY" PROPERTY="details$allowRescreeningInd" />
+      </CONNECT>
+      <CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="details$allowRescreeningInd" />
       </CONNECT>
     </FIELD>
   </CLUSTER>
