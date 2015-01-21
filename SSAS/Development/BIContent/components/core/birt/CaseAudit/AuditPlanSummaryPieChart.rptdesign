@@ -5,6 +5,18 @@
         <value>properties/AuditPlanSummaryPieChart</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}   ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <list-property name="libraries">
@@ -26,6 +38,56 @@
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="117">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="g11n-btd" id="118">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
@@ -306,14 +368,20 @@ ORDER BY
         <Caption>
           <Value>Report.chart.title=Case Audit Plan Status Summary</Value>
           <Font>
-            <Name>all-fonts</Name>
-            <Size>9.0</Size>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
             <Alignment>
               <horizontalAlignment>Center</horizontalAlignment>
               <verticalAlignment>Bottom</verticalAlignment>
             </Alignment>
             <Rotation>0.0</Rotation>
           </Font>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
           <Transparency>0</Transparency>
@@ -448,10 +516,16 @@ ORDER BY
       <Text>
         <Value></Value>
         <Font>
-          <Name>all-fonts</Name>
-          <Size>8.0</Size>
+          <Name>Tahoma</Name>
+          <Size>10.0</Size>
           <Alignment/>
         </Font>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
       </Text>
       <Orientation>Vertical</Orientation>
       <Direction>Top_Bottom</Direction>
@@ -543,6 +617,32 @@ ORDER BY
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>
+/**
+ * Called before generation of chart model to GeneratedChartState.
+ * 
+ * @param chart
+ *            Chart
+ * @param icsc
+ *            IChartScriptContext
+ */
+
+function beforeGeneration( chart, icsc )
+{
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);
+	if(&quot;rtl&quot;.equals(bidiLayout)) {
+		//Import for Position
+		importPackage(org.eclipse.birt.chart.model.attribute);
+		
+		//Move legend to left. This will not mirror the legend contents. Only the legend position will be changed.
+		chart.getLegend().setPosition(Position.get(Position.LEFT));
+		
+		//Rotatate 180 degree in clockwise direction
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setClockwise(true);
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setRotation(180);
+	}
+}
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <GridColumnCount>0</GridColumnCount>
@@ -616,20 +716,11 @@ ORDER BY
         </EndColor>
         <Direction>-45.0</Direction>
       </Entries>
-      <Entries xsi:type="attribute:Gradient">
-        <StartColor>
-          <Transparency>255</Transparency>
-          <Red>225</Red>
-          <Green>228</Green>
-          <Blue>226</Blue>
-        </StartColor>
-        <EndColor>
-          <Transparency>255</Transparency>
-          <Red>204</Red>
-          <Green>206</Green>
-          <Blue>206</Blue>
-        </EndColor>
-        <Direction>-45.0</Direction>
+      <Entries xsi:type="attribute:ColorDefinition">
+        <Transparency>255</Transparency>
+        <Red>192</Red>
+        <Green>192</Green>
+        <Blue>192</Blue>
       </Entries>
       <Entries xsi:type="attribute:Gradient">
         <StartColor>
@@ -892,20 +983,11 @@ ORDER BY
           </EndColor>
           <Direction>-45.0</Direction>
         </Entries>
-        <Entries xsi:type="attribute:Gradient">
-          <StartColor>
-            <Transparency>255</Transparency>
-            <Red>225</Red>
-            <Green>228</Green>
-            <Blue>226</Blue>
-          </StartColor>
-          <EndColor>
-            <Transparency>255</Transparency>
-            <Red>204</Red>
-            <Green>206</Green>
-            <Blue>206</Blue>
-          </EndColor>
-          <Direction>-45.0</Direction>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
         </Entries>
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
@@ -1192,7 +1274,7 @@ ORDER BY
             <AggregateExpression xsi:nil="true"/>
           </Grouping>
         </DataDefinition>
-        <SeriesIdentifier>Series 1</SeriesIdentifier>
+        <SeriesIdentifier></SeriesIdentifier>
         <DataPoint>
           <Components>
             <Type>Orthogonal_Value</Type>
@@ -1241,10 +1323,10 @@ ORDER BY
         <LeaderLineAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
-          <Visible>true</Visible>
+          <Visible>false</Visible>
         </LeaderLineAttributes>
         <LeaderLineStyle>Fixed_Length</LeaderLineStyle>
-        <LeaderLineLength>1.0</LeaderLineLength>
+        <LeaderLineLength>10.0</LeaderLineLength>
         <Ratio>1.0</Ratio>
         <Rotation>0.0</Rotation>
         <Clockwise>false</Clockwise>
@@ -1920,9 +2002,10 @@ ORDER BY
   </SeriesDefinitions>
   <MinSlice>0.0</MinSlice>
   <MinSliceLabel></MinSliceLabel>
+  <Coverage>0.5</Coverage>
 </model:ChartWithoutAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <list-property name="action">
                 <structure>
                     <property name="targetWindow">_self</property>

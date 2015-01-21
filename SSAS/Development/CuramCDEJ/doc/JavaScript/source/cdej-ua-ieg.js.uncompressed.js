@@ -1369,6 +1369,7 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 		// Tab button widths.
 		domStyle.set(this.containerNode, "width",
 			(domStyle.get(this.containerNode, "width") + 200) + "px");
+		this.containerNode._width = 0; //  Invalidate the cached width of the wrapper
 	},
 
 	/* CURAM-FIX: added functions needed by Curam specific code */    
@@ -1482,8 +1483,13 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 			/* CURAM-FIX: comment out the next line and replace with the next addition
                          * to remove one call to leftTab.offsetLeft */
 			// return rightTab.offsetLeft + domStyle.get(rightTab, "width") - leftTab.offsetLeft;
-	                var rightWidth = this._getNodeWidth(rightTab);
+			var rightWidth = this._getNodeWidth(rightTab);
+			if(this.isLeftToRight()){	                
 	                this._tabsWidth = rightTab.offsetLeft + rightWidth;
+			}else{
+				var leftTab = children[children.length - 1].domNode;
+		    	this._tabsWidth = rightTab.offsetLeft + rightWidth - leftTab.offsetLeft;
+			}
 	                return this._tabsWidth;
 	                /* END CURAM-FIX */
 			
@@ -1610,7 +1616,7 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 		//		of pixels of possible scroll (ex: 1000) means "scrolled all the way to the right"
 		return (this.isLeftToRight() || has("ie") < 8 || (has("ie") && has("quirks")) || has("webkit")) ? this.scrollNode.scrollLeft :
 				domStyle.get(this.containerNode, "width") - domStyle.get(this.scrollNode, "width")
-					 + (has("ie") == 8 ? -1 : 1) * this.scrollNode.scrollLeft;
+					 + (has("ie") >= 8 ? -1 : 1) * this.scrollNode.scrollLeft;
 	},
 
 	_convertToScrollLeft: function(val){
@@ -1625,7 +1631,7 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 			return val;
 		}else{
 			var maxScroll = domStyle.get(this.containerNode, "width") - domStyle.get(this.scrollNode, "width");
-			return (has("ie") == 8 ? -1 : 1) * (val - maxScroll);
+			return (has("ie") >= 8 ? -1 : 1) * (val - maxScroll);
 		}
 	},
 
@@ -1692,14 +1698,15 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 		if(children.length && tabsWidth > scrollNodeWidth){
 			// Scrolling should happen
 			return {
-		                /* CURAM-FIX: replace following line */      
-                                // min: this.isLeftToRight() ? 0 : children[children.length-1].domNode.offsetLeft,
-		                min: this.isLeftToRight() ? 0 : this._getNodeWidth(children[children.length-1].domNode),
+				//There is a padding of 10px at right of tabs list. See ".rtl .soria .appTabContainer .dijitTabContainerTop-tabs"
+				//  in \TIVOB\client\CoreInf\CuramCDEJ\lib\curam\web\themes\soria_rtl\css\ApplicationTabContainer_rtl.css
+				//  This padding is not included in the calculations. So, Decrease the minimum scroll value here.
+				min: this.isLeftToRight() ? 0 : children[children.length-1].domNode.offsetLeft-10,  // 10px for padding of the wrapper
 	                        /* CURAM-FIX: replace following line */      
 				//max: this.isLeftToRight() ?
 				//	(children[children.length-1].domNode.offsetLeft + domStyle.get(children[children.length-1].domNode, "width")) - scrollNodeWidth :
 				//	maxPossibleScroll
-		                max: this.isLeftToRight() ? tabsWidth - scrollNodeWidth : maxPossibleScroll
+		                max: this.isLeftToRight() ? tabsWidth - scrollNodeWidth : maxPossibleScroll 
 			};
 		}else{
 			// No scrolling needed, all tabs visible, we stay either scrolled to far left or far right (depending on dir)
@@ -2044,9 +2051,10 @@ define("dijit/place", [
        * around the actions menu button, set the overflow variable with the maximum value
        * to prevent placing the popup window from these two places.
        */
+	  var l = domGeometry.isBodyLtr();
       if(lang.exists("curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm")
           && curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm == true) {
-        if( (corner.charAt(0) == 'T' || corner.charAt(1) == 'L')
+        if( (corner.charAt(0) == 'T' || (corner.charAt(1) == 'L' && l) || (corner.charAt(1) == 'R' && !l) )
           && overflow > 0 ){
 
           overflow = mb.w + mb.h;
@@ -2084,7 +2092,7 @@ define("dijit/place", [
 		// In RTL mode, set style.right rather than style.left so in the common case,
 		// window resizes move the popup along with the aroundNode.
 		var l = domGeometry.isBodyLtr(),
-			s = node.style;
+		   	s = node.style;
 		s.top = best.y + "px";
 		s[l ? "left" : "right"] = (l ? best.x : view.w - best.x - best.w) + "px";
 		s[l ? "right" : "left"] = "auto";	// needed for FF or else tooltip goes to far left
@@ -9513,6 +9521,78 @@ define("dijit/_OnDijitClickMixin", [
 });
 
 },
+'dijit/_BidiSupport':function(){
+define("dijit/_BidiSupport", ["./_WidgetBase"], function(_WidgetBase){
+
+/*=====
+	var _WidgetBase = dijit._WidgetBase;
+====*/
+
+	// module:
+	//		dijit/_BidiSupport
+	// summary:
+	//		Module that deals with BIDI, special with the auto
+	//		direction if needed without changing the GUI direction.
+	//		Including this module will extend _WidgetBase with BIDI related methods.
+	// description:
+	//		There's a special need for displaying BIDI text in rtl direction
+	//		in ltr GUI, sometimes needed auto support.
+	//		In creation of widget, if it's want to activate this class,
+	//		the widget should define the "textDir".
+
+	_WidgetBase.extend({
+
+		getTextDir: function(/*String*/ text){
+			// summary:
+			//		Gets the right direction of text.
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+			return this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+		},
+
+		_checkContextual: function(text){
+			// summary:
+			//		Finds the first strong (directional) character, return ltr if isLatin
+			//		or rtl if isBidiChar.
+			//	tags:
+			//		private.
+
+			// look for strong (directional) characters
+			var fdc = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(text);
+			// if found return the direction that defined by the character, else return widgets dir as defult.
+			return fdc ? ( fdc[0] <= 'z' ? "ltr" : "rtl" ) : this.dir ? this.dir : this.isLeftToRight() ? "ltr" : "rtl";
+		},
+
+		applyTextDir: function(/*Object*/ element, /*String*/ text){
+			// summary:
+			//		Set element.dir according to this.textDir
+			// element:
+			//		The text element to be set. Should have dir property.
+			// text:
+			//		Used in case this.textDir is "auto", for calculating the right transformation
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+
+			var textDir = this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+			// update only when there's a difference
+			if(element.dir != textDir){
+				element.dir = textDir;
+			}
+		}
+	});
+
+	return _WidgetBase;
+});
+
+},
 'dijit/form/_ListMouseMixin':function(){
 define("dijit/form/_ListMouseMixin", [
 	"dojo/_base/declare", // declare
@@ -16129,7 +16209,7 @@ var bundle = new curam.util.ResourceBundle("Debug");
 /*
  * Licensed Materials - Property of IBM
  *
- * Copyright IBM Corporation 2012,2013. All Rights Reserved.
+ * Copyright IBM Corporation 2012,2014. All Rights Reserved.
  *
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -16138,6 +16218,9 @@ var bundle = new curam.util.ResourceBundle("Debug");
 /*
  * Modification History
  * --------------------
+ * 06-Jun-2014  AS [CR00428142] TEC-17091. Skiplink should become visible when focused
+ * 03-Jun-2014 BOS [CR00434187] Added the getCookie() function and updated 
+ *                    replaceSubmitButton() to support timeout warning dialog.
  * 15-Apr-2014  JY [CR00425261] Refactored the print function to allow printing
  *                              the context panel.
  * 20-Feb-2014  AS [CR00414442] Skipped arrow and validation div of filtering 
@@ -16371,6 +16454,7 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/dom-attr",
         "dojo/_base/lang",
         "dojo/on",
+		"dijit/_BidiSupport",		
         
         "curam/define",
         /* "dojox/storage", */
@@ -16380,9 +16464,10 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/_base/sniff",
         "cm/_base/_dom",
         "curam/util/ResourceBundle"
+        
         ], function(dom, registry, domConstruct, ready, windowBase, style,
             array, domClass, topic, dojoEvent, query, has, unload,
-            geom, json, attr, lang, on) {
+            geom, json, attr, lang, on, bidi) {
 
 /**
  * Creating Resource Bundle Object to access localized resources.
@@ -18323,6 +18408,23 @@ curam.define.singleton("curam.util",
   },
   
   /**
+   * TEC-17091. Skiplink should become visible when focused (i.e. a user tabs on it)
+   * and it should be visible only when it has focus, so it should hide again when 
+   * the user tabs off it.
+   */
+  showHideSkipLink: function(e) {
+    var skipLink = dojo.byId("skipLink");
+    if (skipLink) {
+      var skipLinkDiv = skipLink.parentNode;
+      if (e.type == "focus" && domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.remove(skipLinkDiv, "hidden");
+      } else if (e.type == "blur" && !domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.add(skipLinkDiv, "hidden");
+      }
+    }
+  },
+  
+  /**
   * Registers a handler for submitting a form when Enter key is pressed.
   *
   * Called from the PageTag - will be called on every page in any context,
@@ -18640,8 +18742,10 @@ curam.define.singleton("curam.util",
  
   /**
   * Replaces standard submit buttons with anchor tags when no images are used.
+  * @param {String} buttonText
+  *            The text to be displayed on submit button.
   */
-  replaceSubmitButton: function(name) {
+  replaceSubmitButton: function(name, buttonText) {
     if(curam.replacedButtons[name] == "true") {
       return;
     }
@@ -18668,6 +18772,14 @@ curam.define.singleton("curam.util",
     * The current node, the index, and the node list itself.
     */
     inputList.forEach(function(replacedButton, index, theButtons) {
+    	// if there is a paramter passed in for button text then set the 'value'
+        // of the second button (the button dipalyed to user) node to the button
+        // text specified.
+        // Note: This will replace any value set in the value attribute already!
+        if (buttonText) {
+          var buttonDisplayed = theButtons[1];
+          buttonDisplayed.setAttribute("value",buttonText);
+        }
       replacedButton.tabIndex = -1;
       var parentSpan = replacedButton.parentNode;
  
@@ -19190,6 +19302,28 @@ curam.define.singleton("curam.util",
     highContrastModeType: function(){      
       var highContrastMode = dojo.query("body.high-contrast")[0];
       return highContrastMode;
+    },	
+		  
+	processBidiContextual: function (target){
+		target.dir = bidi.prototype._checkContextual(target.value);			
+	},
+	
+	getCookie: function(name) {
+	    var dc=document.cookie;
+	    var prefix=name+"=";
+	    var begin=dc.indexOf("; "+prefix);
+	    if(begin==-1) {
+	      begin=dc.indexOf(prefix);
+	      if(begin!=0)
+	        return null;
+	    } else {
+	      begin+=2;
+	    }
+	    var end=document.cookie.indexOf(";",begin);
+	    if(end==-1) {
+	      end=dc.length;
+	    }
+	    return unescape(dc.substring(begin+prefix.length,end));
     }
   });
 

@@ -140,14 +140,31 @@
       <jsp:scriptlet><![CDATA[out.print("\" name=\"headerframe\" id=\"headerframe\" title=\"");]]></jsp:scriptlet>
       <c:out value="${wizard_header_frame_title}"/>
       <jsp:scriptlet><![CDATA[out.print("\" scrolling=\"no\"/>");]]></jsp:scriptlet>
-      <frameset id="navset" cols="180,*">
-        <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
-        <c:out value="${navUrl}"/>
-        <jsp:scriptlet><![CDATA[out.print("\" name=\"navframe\" id=\"navframe\" title=\"");]]></jsp:scriptlet>
-        <c:out value="${wizard_navigation_frame_title}"/>
-        <jsp:scriptlet><![CDATA[out.print("\" />");]]></jsp:scriptlet>
-        <frame name="targetframe" id="targetframe" src="loading.jspx?o3ctx=${currentContext}" title="${wizard_content_frame_title}" />
-      </frameset>
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet>
+            <frameset id="navset" cols="*,180" class="rtl">
+              <frame name="targetframe" id="targetframe" src="loading.jspx?o3ctx=${currentContext}" title="${wizard_content_frame_title}" />
+              <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
+              <c:out value="${navUrl}"/>
+              <jsp:scriptlet><![CDATA[out.print("\" name=\"navframe\" id=\"navframe\" title=\"");]]></jsp:scriptlet>
+              <c:out value="${wizard_navigation_frame_title}"/>
+              <jsp:scriptlet><![CDATA[out.print("\" />");]]></jsp:scriptlet>
+            </frameset>
+          <jsp:scriptlet>
+        } else {
+          </jsp:scriptlet>
+            <frameset id="navset" cols="180,*" class="ltr">
+              <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
+              <c:out value="${navUrl}"/>
+              <jsp:scriptlet><![CDATA[out.print("\" name=\"navframe\" id=\"navframe\" title=\"");]]></jsp:scriptlet>
+              <c:out value="${wizard_navigation_frame_title}"/>
+              <jsp:scriptlet><![CDATA[out.print("\" />");]]></jsp:scriptlet>
+              <frame name="targetframe" id="targetframe" src="loading.jspx?o3ctx=${currentContext}" title="${wizard_content_frame_title}" />
+            </frameset>
+          <jsp:scriptlet>
+        }
+      </jsp:scriptlet>
       <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet>
       <c:out value="${buttonsUrl}"/>
       <jsp:scriptlet><![CDATA[out.print("\" name=\"buttonframe\" style=\"height:35px;\" title=\"");]]></jsp:scriptlet>

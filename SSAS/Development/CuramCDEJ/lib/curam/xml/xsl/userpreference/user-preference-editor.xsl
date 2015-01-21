@@ -11,7 +11,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:code-table="http://xml.apache.org/xalan/java/curam.omega3.codetable.CodeTableRepository"
   xmlns:domain-info="http://xml.apache.org/xalan/java/curam.util.client.domain.util.DomainUtils"
-  exclude-result-prefixes="code-table domain-info" version="1.0">
+  xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils"
+  exclude-result-prefixes="code-table domain-info bidi-utils" version="1.0">
   <xsl:import href="../common/ui-field.xsl"/>
   <xsl:output method="xml" indent="no" omit-xml-declaration="yes"/>
   <xsl:param name="locale"/>
@@ -58,7 +59,14 @@
       <xsl:choose>
         <xsl:when test="$visibleAttribute = 'true'">
         <tr>
-          <th class="label"><span class="label"><xsl:value-of select="./title" /></span></th>
+          <th class="label">
+          	<span class="label">
+          		<xsl:attribute name="dir">
+          		  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(./title)"/>
+          		</xsl:attribute>          	
+          		<xsl:value-of select="./title" />
+          	</span>
+          </th>
           <td class="field">
             <xsl:choose>
               <xsl:when test="./readonly = 'true'">
@@ -111,7 +119,12 @@
            <xsl:variable name="code-table" select="code-table:getCodeTableNodeSet($ct-name, $locale)" />
            <xsl:for-each select="$code-table/item">
               <xsl:if test="@code = $value">
-                <span class="read-only"><xsl:value-of select="description/text()" /></span>
+                <span class="read-only">
+                  <xsl:attribute name="dir">
+                    <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(description/text())"/>
+                  </xsl:attribute>                
+                  <xsl:value-of select="description/text()" />
+                </span>
                 <input type="hidden" name="{$name}" value="{$value}" title="{$title}"/>
               </xsl:if>
            </xsl:for-each>

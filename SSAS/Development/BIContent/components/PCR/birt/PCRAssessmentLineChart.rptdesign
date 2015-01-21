@@ -5,6 +5,18 @@
         <value>properties/PCRAssessmentLineChart</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}        ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -25,6 +37,31 @@
             <property name="distinct">true</property>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="551">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
@@ -617,6 +654,46 @@ function beforeComputations( chart, plotComputation )
 
 function afterRendering( gcs, icsc )
 {
+}
+
+/**
+ * Called before generation of chart model to GeneratedChartState.
+ * 
+ * @param chart
+ *            Chart
+ * @param icsc
+ *            IChartScriptContext
+ */
+
+function beforeGeneration( chart, icsc )
+{
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);
+	if(&quot;rtl&quot;.equals(bidiLayout)) {
+		//Reverse the direction of the categories on X-Axis 
+		chart.setReverseCategory(true);
+		
+		//Import for IntersectionType, Position
+		importPackage(org.eclipse.birt.chart.model.attribute);
+		
+		var xAxis = chart.getPrimaryBaseAxes()[0];
+		var yAxis = chart.getPrimaryOrthogonalAxis(xAxis);
+		
+		//Move Y-Axis to maximum right
+		yAxis.getOrigin().setType(IntersectionType.get(IntersectionType.MAX));
+		
+		//Flip position and direction of Y-Axis title
+		yAxis.setTitlePosition(Position.get(Position.RIGHT));
+		yAxis.getTitle().getCaption().getFont().setRotation(-90);
+		
+		//Flip position of Y-Axis label
+		yAxis.setLabelPosition(Position.get(Position.RIGHT));
+
+		//Import for Anchor
+		importPackage(org.eclipse.birt.chart.model.attribute);
+		
+		//Move tile to the top left
+		chart.getTitle().setAnchor(Anchor.get(Anchor.NORTH_WEST));
+	}
 }
 </Script>
   <Units>Points</Units>

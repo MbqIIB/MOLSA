@@ -5,6 +5,18 @@
         <value>properties/OnlineApplicationReport</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}        ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <list-property name="libraries">
@@ -30,6 +42,31 @@
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="556">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
@@ -591,7 +628,7 @@ GROUP BY
         <Visible>true</Visible>
       </Separator>
       <Position>Right</Position>
-      <ItemType>Categories</ItemType>
+      <ItemType>Series</ItemType>
       <Title>
         <Caption>
           <Value>Status</Value>
@@ -662,6 +699,41 @@ GROUP BY
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>
+/**
+ * Called before generation of chart model to GeneratedChartState.
+ * 
+ * @param chart
+ *            Chart
+ * @param icsc
+ *            IChartScriptContext
+ */
+
+function beforeGeneration( chart, icsc )
+{
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);
+	if(&quot;rtl&quot;.equals(bidiLayout)) {
+		//Reverse the direction of the categories on X-Axis 
+		chart.setReverseCategory(true);
+		
+		//Import for IntersectionType, Position
+		importPackage(org.eclipse.birt.chart.model.attribute);
+		
+		var xAxis = chart.getPrimaryBaseAxes()[0];
+		var yAxis = chart.getPrimaryOrthogonalAxis(xAxis);
+		
+		//Move Y-Axis to maximum right
+		yAxis.getOrigin().setType(IntersectionType.get(IntersectionType.MAX));
+		
+		//Flip position and direction of Y-Axis title
+		yAxis.setTitlePosition(Position.get(Position.RIGHT));
+		yAxis.getTitle().getCaption().getFont().setRotation(-90);
+		
+		//Flip position of Y-Axis label
+		yAxis.setLabelPosition(Position.get(Position.RIGHT));
+	}
+}
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <ExtendedProperties>
@@ -747,10 +819,10 @@ GROUP BY
         <Visible>false</Visible>
       </Outline>
       <Insets>
-        <Top>8.0</Top>
-        <Left>8.0</Left>
-        <Bottom>2.0</Bottom>
-        <Right>2.0</Right>
+        <Top>0.0</Top>
+        <Left>0.0</Left>
+        <Bottom>0.0</Bottom>
+        <Right>0.0</Right>
       </Insets>
       <Visible>true</Visible>
     </Title>
@@ -810,11 +882,11 @@ GROUP BY
             </StartColor>
             <EndColor>
               <Transparency>255</Transparency>
-              <Red>96</Red>
+              <Red>95</Red>
               <Green>165</Green>
               <Blue>205</Blue>
             </EndColor>
-            <Direction>-45.0</Direction>
+            <Direction>-90.0</Direction>
           </Entries>
           <Entries xsi:type="attribute:Gradient">
             <StartColor>
@@ -1137,14 +1209,20 @@ GROUP BY
       <LineAttributes>
         <Style>Solid</Style>
         <Thickness>1</Thickness>
-        <Visible>false</Visible>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>200</Red>
+          <Green>208</Green>
+          <Blue>224</Blue>
+        </Color>
+        <Visible>true</Visible>
       </LineAttributes>
       <Label>
         <Caption>
           <Value></Value>
           <Font>
             <Name>Tahoma</Name>
-            <Size>8.0</Size>
+            <Size>10.0</Size>
             <Alignment/>
             <Rotation>0.0</Rotation>
           </Font>
@@ -1194,21 +1272,21 @@ GROUP BY
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>196</Red>
-            <Green>196</Green>
-            <Blue>196</Blue>
+            <Red>238</Red>
+            <Green>238</Green>
+            <Blue>238</Blue>
           </Color>
           <Visible>true</Visible>
         </LineAttributes>
-        <TickStyle>Right</TickStyle>
+        <TickStyle>Across</TickStyle>
         <TickAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>172</Red>
-            <Green>172</Green>
-            <Blue>172</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
           <Visible>true</Visible>
         </TickAttributes>
@@ -1225,25 +1303,25 @@ GROUP BY
           </Color>
           <Visible>false</Visible>
         </LineAttributes>
-        <TickStyle>Right</TickStyle>
+        <TickStyle>Across</TickStyle>
         <TickAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>225</Red>
-            <Green>225</Green>
-            <Blue>225</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
         </TickAttributes>
       </MinorGrid>
       <Scale>
-        <MinorGridsPerUnit>5</MinorGridsPerUnit>
+        <MinorGridsPerUnit>2</MinorGridsPerUnit>
         <AutoExpand>true</AutoExpand>
       </Scale>
       <Origin>
-        <Type>Min</Type>
+        <Type>Value</Type>
         <Value xsi:type="data:NumberDataElement">
           <Value>0.0</Value>
         </Value>
@@ -1267,11 +1345,11 @@ GROUP BY
           </StartColor>
           <EndColor>
             <Transparency>255</Transparency>
-            <Red>96</Red>
+            <Red>95</Red>
             <Green>165</Green>
             <Blue>205</Blue>
           </EndColor>
-          <Direction>-45.0</Direction>
+          <Direction>-90.0</Direction>
         </Entries>
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
@@ -2201,14 +2279,20 @@ GROUP BY
     <LineAttributes>
       <Style>Solid</Style>
       <Thickness>1</Thickness>
-      <Visible>false</Visible>
+      <Color>
+        <Transparency>255</Transparency>
+        <Red>200</Red>
+        <Green>208</Green>
+        <Blue>224</Blue>
+      </Color>
+      <Visible>true</Visible>
     </LineAttributes>
     <Label>
       <Caption>
         <Value></Value>
         <Font>
           <Name>Tahoma</Name>
-          <Size>8.0</Size>
+          <Size>10.0</Size>
           <Alignment/>
         </Font>
         <Color>
@@ -2242,10 +2326,10 @@ GROUP BY
         <Blue>255</Blue>
       </ShadowColor>
       <Insets>
-        <Top>7.5</Top>
-        <Left>12.0</Left>
-        <Bottom>7.0</Bottom>
-        <Right>7.0</Right>
+        <Top>0.0</Top>
+        <Left>0.0</Left>
+        <Bottom>0.0</Bottom>
+        <Right>0.0</Right>
       </Insets>
       <Visible>true</Visible>
     </Label>
@@ -2272,7 +2356,7 @@ GROUP BY
           <Green>196</Green>
           <Blue>196</Blue>
         </Color>
-        <Visible>false</Visible>
+        <Visible>true</Visible>
       </TickAttributes>
     </MajorGrid>
     <MinorGrid>
@@ -2333,7 +2417,7 @@ GROUP BY
   <ReverseCategory>false</ReverseCategory>
 </model:ChartWithAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <property name="inheritColumns">false</property>
             <property name="dataSet">AssignedApplicationsDataSet</property>
             <property name="height">1.9791666666666667in</property>

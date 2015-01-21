@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <xsl:stylesheet version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    exclude-result-prefixes="bidi-utils">
   <xsl:import href="../common/runtime-params.xsl"/>
   <xsl:output method="xml" indent="no" omit-xml-declaration="yes" />
 
@@ -133,53 +135,85 @@
   <xsl:if test="$instance-data-required">
     <div class="cluster label-field">
       <div class="header">
-        <h2><xsl:value-of select="$instance-head"/></h2>
+        <h2>
+         <xsl:attribute name="dir">
+         <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-head)"/>
+         </xsl:attribute>        
+        <xsl:value-of select="$instance-head"/>
+        </h2>
       </div>
       <table>
         <col width="25%"/><col width="25%"/><col width="25%"/><col width="25%"/>
         <tbody>
           <tr>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-1)"/>
+              </xsl:attribute>                    
               <xsl:value-of select="$instance-data-label-1"/>
             </td>
             <td><span class="label" id="o3wf_id_1"></span></td>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-2)"/>
+              </xsl:attribute>                                
               <xsl:value-of select="$instance-data-label-2"/>
             </td>
             <td><span class="label" id="o3wf_id_2"></span></td>
           </tr>
           <tr>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-3)"/>
+              </xsl:attribute>                                
               <xsl:value-of select="$instance-data-label-3"/>
             </td>
             <td><span class="label" id="o3wf_id_3"></span></td>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-4)"/>
+              </xsl:attribute>                                            
               <xsl:value-of select="$instance-data-label-4"/>
             </td>
             <td><span class="label" id="o3wf_id_4"></span></td>
           </tr>
           <tr>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-5)"/>
+              </xsl:attribute>                                
               <xsl:value-of select="$instance-data-label-5"/>
             </td>
             <td><span class="label" id="o3wf_id_5"></span></td>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-6)"/>
+              </xsl:attribute>                                
               <xsl:value-of select="$instance-data-label-6"/>
             </td>
             <td><span class="label" id="o3wf_id_6"></span></td>
           </tr>
           <tr>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-7)"/>
+              </xsl:attribute>                                
               <xsl:value-of select="$instance-data-label-7"/>
             </td>
             <td><span class="label" id="o3wf_id_7"></span></td>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-8)"/>
+              </xsl:attribute>                                
               <xsl:value-of select="$instance-data-label-8"/>
             </td>
             <td><span class="label" id="o3wf_id_8"></span></td>
           </tr>
           <tr>
             <td class="label">
+              <xsl:attribute name="dir">
+              <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(instance-data-label-9)"/>
+              </xsl:attribute>                                
               <xsl:value-of select="$instance-data-label-9"/>
             </td>
             <td><span class="label" id="o3wf_id_9"></span></td>

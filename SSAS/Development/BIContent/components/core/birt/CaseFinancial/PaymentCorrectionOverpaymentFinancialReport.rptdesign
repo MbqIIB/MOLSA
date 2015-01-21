@@ -5,6 +5,18 @@
         <value>properties/PaymentCorrectionOverpaymentFinancialReport</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}   ]]></method>
     <method name="beforeFactory"><![CDATA[if(params["db2numbertype"].value == "bitdata") {
 
   mytable = reportContext.getDesignHandle().findElement("Pie"); 
@@ -60,6 +72,56 @@
             <property name="paramType">simple</property>
             <property name="controlType">list-box</property>
             <property name="mustMatch">true</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="525">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="g11n-btd" id="526">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
             <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -418,14 +480,20 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
         <Caption>
           <Value>Report.chart.title=Amounts By Payment Correction Type</Value>
           <Font>
-            <Name>all-fonts</Name>
-            <Size>9.0</Size>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
             <Alignment>
               <horizontalAlignment>Center</horizontalAlignment>
               <verticalAlignment>Bottom</verticalAlignment>
             </Alignment>
             <Rotation>0.0</Rotation>
           </Font>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
           <Transparency>0</Transparency>
@@ -655,6 +723,32 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>&#xD;
+/**&#xD;
+ * Called before generation of chart model to GeneratedChartState.&#xD;
+ * &#xD;
+ * @param chart&#xD;
+ *            Chart&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeGeneration( chart, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		//Import for Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		//Move legend to left. This will not mirror the legend contents. Only the legend position will be changed.&#xD;
+		chart.getLegend().setPosition(Position.get(Position.LEFT));&#xD;
+		&#xD;
+		//Rotatate 180 degree in clockwise direction&#xD;
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setClockwise(true);&#xD;
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setRotation(180);&#xD;
+	}&#xD;
+}&#xD;
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <GridColumnCount>0</GridColumnCount>
@@ -722,11 +816,11 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
         </StartColor>
         <EndColor>
           <Transparency>255</Transparency>
-          <Red>96</Red>
+          <Red>95</Red>
           <Green>165</Green>
           <Blue>205</Blue>
         </EndColor>
-        <Direction>-45.0</Direction>
+        <Direction>-90.0</Direction>
       </Entries>
       <Entries xsi:type="attribute:Gradient">
         <StartColor>
@@ -998,11 +1092,11 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
           </StartColor>
           <EndColor>
             <Transparency>255</Transparency>
-            <Red>96</Red>
+            <Red>95</Red>
             <Green>165</Green>
             <Blue>205</Blue>
           </EndColor>
-          <Direction>-45.0</Direction>
+          <Direction>-90.0</Direction>
         </Entries>
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
@@ -1294,7 +1388,7 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
             <Bottom>0.0</Bottom>
             <Right>3.0</Right>
           </Insets>
-          <Visible>true</Visible>
+          <Visible>false</Visible>
         </Label>
         <DataDefinition>
           <Definition>new Number(row[&quot;AMOUNT&quot;])</Definition>
@@ -1304,7 +1398,7 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
             <AggregateExpression xsi:nil="true"/>
           </Grouping>
         </DataDefinition>
-        <SeriesIdentifier>Series 1</SeriesIdentifier>
+        <SeriesIdentifier></SeriesIdentifier>
         <DataPoint>
           <Components>
             <Type>Orthogonal_Value</Type>
@@ -1353,7 +1447,7 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
         <LeaderLineAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
-          <Visible>true</Visible>
+          <Visible>false</Visible>
         </LeaderLineAttributes>
         <LeaderLineStyle>Fixed_Length</LeaderLineStyle>
         <LeaderLineLength>1.0</LeaderLineLength>
@@ -2032,7 +2126,7 @@ LEFT OUTER JOIN PaymentCorrectionEvidence
   </SeriesDefinitions>
 </model:ChartWithoutAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <list-property name="action">
                 <structure>
                     <property name="targetWindow">_self</property>

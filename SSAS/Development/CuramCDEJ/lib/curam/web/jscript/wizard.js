@@ -803,7 +803,7 @@ return this.pages[this.currentPage].liRef.offsetTop+this.pages[this.currentPage]
 WizardNavigator.prototype.optShowNavigator=function(){
 var _74=tRef(window,"wizard").document.getElementById("navset");
 if(this.visible){
-_74.cols="180,*";
+_74.cols=_74.className=="rtl"?"*,180":"180,*";
 }else{
 _74.cols="0,*";
 }

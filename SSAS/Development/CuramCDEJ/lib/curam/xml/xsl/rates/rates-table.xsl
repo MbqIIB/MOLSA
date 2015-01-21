@@ -11,7 +11,9 @@ terms of the license agreement you entered into with Curam Software.
 <!--
 Style sheet for converting RATES_DATA xml into an editable HTML table.
 -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils"
+  exclude-result-prefixes="bidi-utils">
   <xsl:output method="xml" indent="no" omit-xml-declaration="yes" />
   <!--
     PARAMETERS SECTION
@@ -146,6 +148,9 @@ Style sheet for converting RATES_DATA xml into an editable HTML table.
   <!-- Main template -->
   <xsl:template match="RATES_DATA">
    <div style="overflow-x:auto;overflow-y:hidden;padding-bottom:18px">
+   
+   
+   
     <table xsl:use-attribute-sets="rates-table">
         <tr xsl:use-attribute-sets="header">
           <xsl:call-template name="do-top-left-corner" />
@@ -452,7 +457,7 @@ Style sheet for converting RATES_DATA xml into an editable HTML table.
                                     $AMPERSAND,  'RateSubColumnIndex', $EQUALS,
                                     string(number(@INDEX) + 1))"/>
             <xsl:with-param name="href-prop" select="'NewSubColumn.Image'"/>
-            <xsl:with-param name="alt-prop" select="'NewSubColumn.Tooltip'"/>
+            <xsl:with-param name="alt-prop" select="'NewSubColumn.Tooltip'"/>        	        	                
           </xsl:call-template>
         
         </xsl:if>
@@ -536,7 +541,7 @@ Style sheet for converting RATES_DATA xml into an editable HTML table.
     <xsl:call-template name="do-range-value">
       <xsl:with-param name="minimum" select="$current-cell/@MINIMUM" />
       <xsl:with-param name="maximum" select="$current-cell/@MAXIMUM" />
-      <xsl:with-param name="value" select="$current-cell/@VALUE" />
+      <xsl:with-param name="value" select="$current-cell/@VALUE" />            
     </xsl:call-template>
     </span>
     <xsl:call-template name="regular-cell-buttons">
@@ -679,7 +684,10 @@ Style sheet for converting RATES_DATA xml into an editable HTML table.
           '{concat($config/RATES_TABLE_CONFIG/MANAGE_ROW_PAGE, 'Page.do', 
                  $QUESTION_MARK, $o3-parameters,
                  $AMPERSAND, 'RateRowID', $EQUALS, @ID)}') }}); return false;"
-          title="{$ManageRow.Tooltip}">
+          title="{$ManageRow.Tooltip}">        
+        	<xsl:attribute name="dir">
+		    	<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(ManageRow.Tooltip)"/>
+        	</xsl:attribute>                       
           <xsl:call-template name="read-code">
             <xsl:with-param name="code" select="string(@TYPE)"/>
             <xsl:with-param name="row-code" select="1"/>
@@ -729,6 +737,10 @@ Style sheet for converting RATES_DATA xml into an editable HTML table.
                 'Page.do', $QUESTION_MARK, $o3-parameters,
                 $AMPERSAND, 'RateColumnID', $EQUALS, @ID)}') }}); return false;"
           title="{$ManageColumn.Tooltip}">
+        	<xsl:attribute name="dir">
+		    	<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(ManageColumn.Tooltip)"/>
+        	</xsl:attribute>
+          
           <xsl:call-template name="read-code">
             <xsl:with-param name="code" select="string(@TYPE)"/>
             <xsl:with-param name="row-code" select="0"/>
@@ -978,7 +990,12 @@ Style sheet for converting RATES_DATA xml into an editable HTML table.
         <xsl:value-of select="$AddSubColumn.Beginning.Tooltip"/>
       </xsl:when>
       </xsl:choose>
-     </xsl:attribute>
+     </xsl:attribute>     
+     	
+        <xsl:attribute name="dir">
+			<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(current()/@LABEL)"/>
+        </xsl:attribute>
+                  
       </img>
     </a>
   </xsl:template>

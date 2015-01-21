@@ -5,6 +5,18 @@
         <value>properties/AuditPlanSummaryBarChart</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}   ]]></method>
     <method name="beforeFactory"><![CDATA[var mychart2 =this.getReportElementByID(116);
  
 if(params["OutputType"].value == "1") {
@@ -60,6 +72,56 @@ mychart2.setOutputType("PNG");
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="523">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="g11n-btd" id="524">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
@@ -334,13 +396,21 @@ GROUP BY
         <Caption>
           <Value>Case Audit Plan Status Summary</Value>
           <Font>
-            <Name>all-fonts</Name>
-            <Size>9.0</Size>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
+            <Bold>true</Bold>
+            <Italic>true</Italic>
             <Alignment>
               <horizontalAlignment>Center</horizontalAlignment>
               <verticalAlignment>Bottom</verticalAlignment>
             </Alignment>
           </Font>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
           <Transparency>0</Transparency>
@@ -492,7 +562,7 @@ GROUP BY
         <Visible>true</Visible>
       </Separator>
       <Position>Right</Position>
-      <ItemType>Categories</ItemType>
+      <ItemType>Series</ItemType>
       <Title>
         <Caption>
           <Value>Status</Value>
@@ -523,7 +593,7 @@ GROUP BY
           <Bottom>0.0</Bottom>
           <Right>3.0</Right>
         </Insets>
-        <Visible>true</Visible>
+        <Visible>false</Visible>
       </Title>
       <TitlePosition>Above</TitlePosition>
     </Children>
@@ -563,6 +633,37 @@ GROUP BY
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>&#xD;
+/**&#xD;
+ * Called before generation of chart model to GeneratedChartState.&#xD;
+ * &#xD;
+ * @param chart&#xD;
+ *            Chart&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeGeneration( chart, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		//Reverse the direction of the categories on X-Axis &#xD;
+		chart.setReverseCategory(true);&#xD;
+		&#xD;
+		//Import for IntersectionType, Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		var xAxis = chart.getPrimaryBaseAxes()[0];&#xD;
+		var yAxis = chart.getPrimaryOrthogonalAxis(xAxis);&#xD;
+		&#xD;
+		//Move Y-Axis to maximum right&#xD;
+		yAxis.getOrigin().setType(IntersectionType.get(IntersectionType.MAX));&#xD;
+		&#xD;
+		//Flip position of Y-Axis label&#xD;
+		yAxis.setLabelPosition(Position.get(Position.RIGHT));&#xD;
+	}&#xD;
+}&#xD;
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <ExtendedProperties>
@@ -711,11 +812,11 @@ GROUP BY
             </StartColor>
             <EndColor>
               <Transparency>255</Transparency>
-              <Red>96</Red>
+              <Red>95</Red>
               <Green>165</Green>
               <Blue>205</Blue>
             </EndColor>
-            <Direction>-45.0</Direction>
+            <Direction>-90.0</Direction>
           </Entries>
           <Entries xsi:type="attribute:Gradient">
             <StartColor>
@@ -1015,7 +1116,7 @@ GROUP BY
               <AggregateExpression xsi:nil="true"/>
             </Grouping>
           </DataDefinition>
-          <SeriesIdentifier>Report.chart.title=Summary</SeriesIdentifier>
+          <SeriesIdentifier>Report.chart.title=Count</SeriesIdentifier>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
@@ -1038,14 +1139,22 @@ GROUP BY
       <LineAttributes>
         <Style>Solid</Style>
         <Thickness>1</Thickness>
-        <Visible>false</Visible>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>200</Red>
+          <Green>208</Green>
+          <Blue>224</Blue>
+        </Color>
+        <Visible>true</Visible>
       </LineAttributes>
       <Label>
         <Caption>
           <Value></Value>
           <Font>
-            <Name>all-fonts</Name>
-            <Size>8.0</Size>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
+            <Bold>true</Bold>
+            <Italic>true</Italic>
             <Alignment/>
             <Rotation>0.0</Rotation>
           </Font>
@@ -1095,21 +1204,21 @@ GROUP BY
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>196</Red>
-            <Green>196</Green>
-            <Blue>196</Blue>
+            <Red>238</Red>
+            <Green>238</Green>
+            <Blue>238</Blue>
           </Color>
           <Visible>true</Visible>
         </LineAttributes>
-        <TickStyle>Right</TickStyle>
+        <TickStyle>Across</TickStyle>
         <TickAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>172</Red>
-            <Green>172</Green>
-            <Blue>172</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
           <Visible>true</Visible>
         </TickAttributes>
@@ -1126,29 +1235,29 @@ GROUP BY
           </Color>
           <Visible>false</Visible>
         </LineAttributes>
-        <TickStyle>Right</TickStyle>
+        <TickStyle>Across</TickStyle>
         <TickAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>225</Red>
-            <Green>225</Green>
-            <Blue>225</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
         </TickAttributes>
       </MinorGrid>
       <Scale>
         <Min xsi:type="data:NumberDataElement">
           <Value>0.0</Value>
         </Min>
-        <MinorGridsPerUnit>5</MinorGridsPerUnit>
+        <MinorGridsPerUnit>2</MinorGridsPerUnit>
         <ShowOutside>true</ShowOutside>
         <AutoExpand>true</AutoExpand>
       </Scale>
       <Origin>
-        <Type>Min</Type>
+        <Type>Value</Type>
         <Value xsi:type="data:NumberDataElement">
           <Value>0.0</Value>
         </Value>
@@ -1172,11 +1281,11 @@ GROUP BY
           </StartColor>
           <EndColor>
             <Transparency>255</Transparency>
-            <Red>96</Red>
+            <Red>95</Red>
             <Green>165</Green>
             <Blue>205</Blue>
           </EndColor>
-          <Direction>-45.0</Direction>
+          <Direction>-90.0</Direction>
         </Entries>
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
@@ -2106,14 +2215,22 @@ GROUP BY
     <LineAttributes>
       <Style>Solid</Style>
       <Thickness>1</Thickness>
-      <Visible>false</Visible>
+      <Color>
+        <Transparency>255</Transparency>
+        <Red>200</Red>
+        <Green>208</Green>
+        <Blue>224</Blue>
+      </Color>
+      <Visible>true</Visible>
     </LineAttributes>
     <Label>
       <Caption>
         <Value></Value>
         <Font>
-          <Name>all-fonts</Name>
-          <Size>8.0</Size>
+          <Name>Tahoma</Name>
+          <Size>10.0</Size>
+          <Bold>true</Bold>
+          <Italic>true</Italic>
           <Alignment/>
         </Font>
         <Color>
@@ -2147,10 +2264,10 @@ GROUP BY
         <Blue>255</Blue>
       </ShadowColor>
       <Insets>
-        <Top>7.5</Top>
-        <Left>12.0</Left>
-        <Bottom>7.0</Bottom>
-        <Right>7.0</Right>
+        <Top>0.0</Top>
+        <Left>0.0</Left>
+        <Bottom>0.0</Bottom>
+        <Right>0.0</Right>
       </Insets>
       <Visible>true</Visible>
     </Label>
@@ -2173,11 +2290,11 @@ GROUP BY
         <Thickness>1</Thickness>
         <Color>
           <Transparency>255</Transparency>
-          <Red>196</Red>
-          <Green>196</Green>
-          <Blue>196</Blue>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
         </Color>
-        <Visible>false</Visible>
+        <Visible>true</Visible>
       </TickAttributes>
     </MajorGrid>
     <MinorGrid>
@@ -2208,7 +2325,7 @@ GROUP BY
     <Scale>
       <MinorGridsPerUnit>5</MinorGridsPerUnit>
       <ShowOutside>false</ShowOutside>
-      <TickBetweenCategories>false</TickBetweenCategories>
+      <TickBetweenCategories>true</TickBetweenCategories>
     </Scale>
     <Origin>
       <Type>Value</Type>
@@ -2238,7 +2355,7 @@ GROUP BY
   <ReverseCategory>false</ReverseCategory>
 </model:ChartWithAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <property name="inheritColumns">false</property>
             <property name="dataSet">Data Set</property>
             <property name="height">265px</property>

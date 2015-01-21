@@ -84,13 +84,13 @@ var _1c=dojo.query(".content-area-container",_1b)[0];
 var _1d=dojo.query(".child-nav",_1b)[0];
 if(!_18){
 var _1e="0px";
-var _1f={left:_1e};
+var _1f=((getComputedStyle(_1c).direction=="ltr")?{left:_1e}:{right:_1e});
 var _20={width:_1e};
 dojo.style(_1c,_1f);
 dojo.style(_1d,_20);
 }else{
 var _21=dojo.attr(_1b,"child-menu-width");
-var _1f={left:_21};
+var _1f=((getComputedStyle(_1c).direction=="ltr")?{left:_21}:{right:_21});
 var _20={width:_21};
 dojo.style(_1c,_1f);
 dojo.style(_1d,_20);

@@ -5,6 +5,18 @@
         <value>properties/MyTasksBarChart</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}  ]]></method>
     <property name="iconFile">/templates/chart_listing.gif</property>
     <property name="cheatSheet">org.eclipse.birt.report.designer.ui.cheatsheet.chartlisting</property>
     <property name="layoutPreference">auto layout</property>
@@ -49,6 +61,56 @@
             <structure name="format">
                 <property name="category">Custom</property>
                 <property name="pattern">yyyy-MM-dd HH:mm:ss.SSS</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="50">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="g11n-btd" id="51">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
     </parameters>
@@ -524,6 +586,43 @@ AND	w.deadlineTime < ?]]></xml-property>
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>&#xD;
+/**&#xD;
+ * Called before generation of chart model to GeneratedChartState.&#xD;
+ * &#xD;
+ * @param chart&#xD;
+ *            Chart&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeGeneration( chart, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		//Reverse the direction of the categories on X-Axis &#xD;
+		chart.setReverseCategory(true);&#xD;
+		&#xD;
+		//Import for IntersectionType, Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		var xAxis = chart.getPrimaryBaseAxes()[0];&#xD;
+		var yAxis = chart.getPrimaryOrthogonalAxis(xAxis);&#xD;
+		&#xD;
+		//Move Y-Axis to maximum right&#xD;
+		yAxis.getOrigin().setType(IntersectionType.get(IntersectionType.MAX));&#xD;
+		&#xD;
+		//Flip position of Y-Axis label&#xD;
+		yAxis.setLabelPosition(Position.get(Position.RIGHT));&#xD;
+		&#xD;
+		//Import for Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		//Move legend to left. This will not mirror the legend contents. Only the legend position will be changed.&#xD;
+		chart.getLegend().setPosition(Position.get(Position.LEFT));&#xD;
+	}&#xD;
+}&#xD;
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <GridColumnCount>0</GridColumnCount>
@@ -533,7 +632,7 @@ AND	w.deadlineTime < ?]]></xml-property>
   </ExtendedProperties>
   <SampleData>
     <BaseSampleData>
-      <DataSetRepresentation>01/05/2000,02/01/2000,04/12/2000,03/12/2000,02/29/2000</DataSetRepresentation>
+      <DataSetRepresentation>'A','B','C','D','E'</DataSetRepresentation>
     </BaseSampleData>
     <OrthogonalSampleData>
       <DataSetRepresentation>6,4,12,8,10</DataSetRepresentation>
@@ -581,7 +680,7 @@ AND	w.deadlineTime < ?]]></xml-property>
     <Visible>false</Visible>
   </EmptyMessage>
   <Axes>
-    <Type>DateTime</Type>
+    <Type>Text</Type>
     <Title>
       <Caption>
         <Value>Report.chart.xaxis.title=X-Axis Title</Value>
@@ -667,11 +766,20 @@ AND	w.deadlineTime < ?]]></xml-property>
           </Grouping>
         </Query>
         <SeriesPalette>
-          <Entries xsi:type="attribute:ColorDefinition">
-            <Transparency>255</Transparency>
-            <Red>80</Red>
-            <Green>166</Green>
-            <Blue>218</Blue>
+          <Entries xsi:type="attribute:Gradient">
+            <StartColor>
+              <Transparency>255</Transparency>
+              <Red>164</Red>
+              <Green>208</Green>
+              <Blue>232</Blue>
+            </StartColor>
+            <EndColor>
+              <Transparency>255</Transparency>
+              <Red>95</Red>
+              <Green>165</Green>
+              <Blue>205</Blue>
+            </EndColor>
+            <Direction>-90.0</Direction>
           </Entries>
           <Entries xsi:type="attribute:ColorDefinition">
             <Transparency>255</Transparency>
@@ -902,7 +1010,7 @@ AND	w.deadlineTime < ?]]></xml-property>
               <AggregateExpression>Count</AggregateExpression>
             </Grouping>
           </DataDefinition>
-          <SeriesIdentifier>Series 1</SeriesIdentifier>
+          <SeriesIdentifier>Count</SeriesIdentifier>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
@@ -910,7 +1018,7 @@ AND	w.deadlineTime < ?]]></xml-property>
             <Separator>, </Separator>
           </DataPoint>
           <LabelPosition>Inside</LabelPosition>
-          <Stacked>true</Stacked>
+          <Stacked>false</Stacked>
           <Riser>Rectangle</Riser>
         </Series>
       </SeriesDefinitions>
@@ -918,14 +1026,30 @@ AND	w.deadlineTime < ?]]></xml-property>
       <LineAttributes>
         <Style>Solid</Style>
         <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>200</Red>
+          <Green>208</Green>
+          <Blue>224</Blue>
+        </Color>
         <Visible>true</Visible>
       </LineAttributes>
       <Label>
         <Caption>
           <Value></Value>
           <Font>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
+            <Bold>true</Bold>
+            <Italic>true</Italic>
             <Alignment/>
           </Font>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
           <Transparency>0</Transparency>
@@ -959,9 +1083,9 @@ AND	w.deadlineTime < ?]]></xml-property>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>196</Red>
-            <Green>196</Green>
-            <Blue>196</Blue>
+            <Red>238</Red>
+            <Green>238</Green>
+            <Blue>238</Blue>
           </Color>
           <Visible>true</Visible>
         </LineAttributes>
@@ -971,9 +1095,9 @@ AND	w.deadlineTime < ?]]></xml-property>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>196</Red>
-            <Green>196</Green>
-            <Blue>196</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
           <Visible>true</Visible>
         </TickAttributes>
@@ -996,19 +1120,19 @@ AND	w.deadlineTime < ?]]></xml-property>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>225</Red>
-            <Green>225</Green>
-            <Blue>225</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
         </TickAttributes>
       </MinorGrid>
       <Scale>
-        <MinorGridsPerUnit>5</MinorGridsPerUnit>
+        <MinorGridsPerUnit>2</MinorGridsPerUnit>
         <AutoExpand>true</AutoExpand>
       </Scale>
       <Origin>
-        <Type>Min</Type>
+        <Type>Value</Type>
         <Value xsi:type="data:NumberDataElement">
           <Value>0.0</Value>
         </Value>
@@ -1886,17 +2010,31 @@ AND	w.deadlineTime < ?]]></xml-property>
     <LineAttributes>
       <Style>Solid</Style>
       <Thickness>1</Thickness>
+      <Color>
+        <Transparency>255</Transparency>
+        <Red>200</Red>
+        <Green>208</Green>
+        <Blue>224</Blue>
+      </Color>
       <Visible>true</Visible>
     </LineAttributes>
     <Label>
       <Caption>
         <Value></Value>
         <Font>
-          <Name>all-fonts</Name>
-          <Size>9.0</Size>
+          <Name>Tahoma</Name>
+          <Size>10.0</Size>
+          <Bold>true</Bold>
+          <Italic>true</Italic>
           <Alignment/>
           <Rotation>45.0</Rotation>
         </Font>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
       </Caption>
       <Background xsi:type="attribute:ColorDefinition">
         <Transparency>0</Transparency>
@@ -1945,9 +2083,9 @@ AND	w.deadlineTime < ?]]></xml-property>
         <Thickness>1</Thickness>
         <Color>
           <Transparency>255</Transparency>
-          <Red>196</Red>
-          <Green>196</Green>
-          <Blue>196</Blue>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
         </Color>
         <Visible>true</Visible>
       </TickAttributes>
@@ -1982,7 +2120,7 @@ AND	w.deadlineTime < ?]]></xml-property>
       <ShowOutside>false</ShowOutside>
     </Scale>
     <Origin>
-      <Type>Min</Type>
+      <Type>Value</Type>
       <Value xsi:type="data:NumberDataElement">
         <Value>0.0</Value>
       </Value>
@@ -1997,7 +2135,7 @@ AND	w.deadlineTime < ?]]></xml-property>
   <ReverseCategory>false</ReverseCategory>
 </model:ChartWithAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <property name="inheritColumns">false</property>
             <property name="dataSet">MyTasks</property>
             <property name="height">2.96875in</property>

@@ -8,7 +8,10 @@
   such Confidential Information and shall use it only in accordance with the
   terms of the license agreement you entered into with Curam Software.
 -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:code-table="http://xml.apache.org/xalan/java/curam.omega3.codetable.CodeTableRepository" exclude-result-prefixes="code-table">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:code-table="http://xml.apache.org/xalan/java/curam.omega3.codetable.CodeTableRepository"
+	xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils" 
+	exclude-result-prefixes="code-table bidi-utils">
   <xsl:import href="../common/ui-field.xsl"/>
   <xsl:import href="../dynamic-menu/build-menu.xsl"/>
   <xsl:output method="xml" indent="no" omit-xml-declaration="yes"/>
@@ -27,12 +30,18 @@
         <tr>
           <th class="first-header">
           	<span>
+          	  <xsl:attribute name="dir">
+          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-header-question)"/>
+          	  </xsl:attribute>          	
               <xsl:value-of select="$table-header-question"/>
             </span>
           </th>
           <xsl:if test="@SHOW_MIN_MAX = 'false'">
             <th class="last-header">
               <span>          
+          	  <xsl:attribute name="dir">
+          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-header-value)"/>
+          	  </xsl:attribute>          	
                 <xsl:value-of select="$table-header-value"/>
               </span>
             </th>
@@ -40,16 +49,25 @@
           <xsl:if test="@SHOW_MIN_MAX = 'true'">
             <th>
               <span>          
+          	  <xsl:attribute name="dir">
+          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-header-value)"/>
+          	  </xsl:attribute>          	
                 <xsl:value-of select="$table-header-value"/>
               </span>
             </th>
             <th>
             	<span>
+	          	  <xsl:attribute name="dir">
+    	      	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-header-min)"/>
+        	  	  </xsl:attribute>          	            	
                 <xsl:value-of select="$table-header-min"/>
               </span>
             </th>
             <th class="last-header">
             	<span>
+          		  <xsl:attribute name="dir">
+	          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-header-max)"/>
+	          	  </xsl:attribute>          	            	
                 <xsl:value-of select="$table-header-max"/>
               </span>
             </th>
@@ -78,6 +96,9 @@
         <xsl:if test="position() = last()">
           <xsl:attribute name="class">column widget-border left-col first-footer</xsl:attribute>
         </xsl:if>
+        <xsl:attribute name="dir">
+          <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(label)"/>
+        </xsl:attribute>          	            	        
         <xsl:value-of select="$label"/>
       </td>
       
@@ -124,7 +145,7 @@
             <xsl:when test="@MIN">
               <xsl:variable name="input-hidden-name-min" select="concat($prefix-hidden-name, '.', $question-id, '.', 'MIN')"/>
               <xsl:variable name="label-min" select="concat($label, ' - ', $label-minimum)"/>
-              <input type="hidden" id="{$input-hidden-name-min}" name="{$input-hidden-name-min}" value="{$label-min}"/>
+              <input type="hidden" id="{$input-hidden-name-min}" name="{$input-hidden-name-min}" value="{$label-min}"/>                       	            	                     
               <xsl:call-template name="gen-input-field">
                 <xsl:with-param name="name" select="concat($prefix-name, '.',  $domain, '.', $locale, '.', $question-id, '.', 'MIN')"/>
                 <xsl:with-param name="value" select="@MIN"/>
@@ -144,7 +165,7 @@
             <xsl:when test="@MAX">
               <xsl:variable name="input-hidden-name-max" select="concat($prefix-hidden-name, '.', $question-id, '.', 'MAX')"/>
               <xsl:variable name="label-max" select="concat($label, ' - ', $label-maximum)"/>
-              <input type="hidden" id="{$input-hidden-name-max}" name="{$input-hidden-name-max}" value="{$label-max}"/>
+              <input type="hidden" id="{$input-hidden-name-max}" name="{$input-hidden-name-max}" value="{$label-max}"/>                        	            	                                    
               <xsl:call-template name="gen-input-field">
                 <xsl:with-param name="name" select="concat($prefix-name, '.',  $domain, '.', $locale, '.', $question-id, '.', 'MAX')"/>
                 <xsl:with-param name="value" select="@MAX"/>

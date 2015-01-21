@@ -10,11 +10,33 @@
   </jsp:text>
 <!-- NetWeaver cannot find the resources required in this file unless the abolute path is  defined. -->
 <jsp:scriptlet>pageContext.setAttribute("path1", request.getContextPath());</jsp:scriptlet>
-  <html dir="ltr" lang = "en">
+<jsp:directive.page import="java.util.Locale" />
+<jsp:scriptlet>
+  Locale locale = request.getLocale();
+  String language = locale.toString();
+  pageContext.setAttribute("htmlLanguage", language);
+  if(language.startsWith("ar")
+    || language.startsWith("he")
+    || language.startsWith("iw")) {
+    pageContext.setAttribute("htmlDirection", "rtl");
+    pageContext.setAttribute("classDirection", "rtl");
+  } else {
+    pageContext.setAttribute("htmlDirection", "ltr");
+    pageContext.setAttribute("classDirection", "");
+  }
+</jsp:scriptlet>
+  <html lang="${htmlLanguage}" dir="${htmlDirection}" class="${classDirection}">
     <head>
       <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
       </meta>
       <link href="${pageScope.path1}/themes/v6/css/v6_login.css" media="screen" rel="stylesheet" type="text/css" />
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet>
+          <link href="${pageScope.path1}/themes/v6_rtl/css/v6_rtl_login.css" media="screen" rel="stylesheet" type="text/css" />
+          <jsp:scriptlet>
+        }
+      </jsp:scriptlet>
       <link href="${pageScope.path1}/CDEJ/css/custom.css" media="screen" rel="stylesheet" type="text/css" />
       <jsp:text><![CDATA[<!--[if IE 8]>]]></jsp:text>
         <link rel="stylesheet" href="${pageScope.path1}/themes/v6/css/v6_cc_IE8.css"/>
@@ -30,9 +52,9 @@
               "curam.omega3.i18n.Logon",
               "LogonError.title"));]]></jsp:scriptlet></title>
     </head>
-    <body class="logonerror logon" 
+    <body class="${classDirection} logonerror logon" 
           onload="return window_onload()"
-          dir="ltr">  
+          dir="${htmlDirection}">  
        <jsp:scriptlet>
           <![CDATA[out.print("<div id=\"app-banner\" role=\"banner\""
                 + " aria-label=\"" + curam.omega3.util.CDEJResources.getProperty("curam.omega3.i18n.Logon", "Logon.banner.landmark")

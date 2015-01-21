@@ -49,7 +49,7 @@ return;
 }
 _b=_a.target;
 }else{
-if((_a.target.nodeName=="IMG"&&!dojo.hasClass(_a.target.parentNode,"file-download"))||(_a.target.nodeName=="SPAN"&&_a.target.className=="middle")){
+if((_a.target.nodeName=="IMG"&&!dojo.hasClass(_a.target.parentNode,"file-download"))||(_a.target.nodeName=="SPAN"&&(_a.target.className=="middle"||_a.target.className=="bidi"))){
 _b=cm.getParentByType(_a.target,"A");
 }
 }

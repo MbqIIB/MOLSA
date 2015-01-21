@@ -91,6 +91,7 @@
   <!-- By default the run as username is SYSTEM. -->
   <!-- This can be overwritten in AppServer.properties. -->
   <property name="runas.user"     value="SYSTEM"/>
+  <property name="curam.principal.name" value="Curam"/>
 
   <target name="get.appserver">
     <condition property="isWAS">
@@ -495,6 +496,8 @@
       <param name="web.xml.temp.location" value="${dir.ear.client}/war/WEB-INF"/>
       <param name="web.xml.override.location" value="${ear.custom.web.xml}"/>
     </antcall>
+    
+    <antcall target="client.substitute.principal.name"/>
 
     <mkdir dir="${dir.ear.client}/war/WEB-INF/lib" />
     <echo file="${basedir}/WebContent/WEB-INF/classes/curam/omega3/ApplicationConfiguration.properties"
@@ -672,6 +675,12 @@ dynamicUIMInitModelOnStart=false
   <target name="client.substitute.run.as">
      <replace file="${dir.ear.client}/ejb-jar/META-INF/weblogic-ejb-jar.xml"
         token="$RUN_AS_USER_NAME$" value="${runas.user}"/>
+  </target>
+  
+   <!--  *** Substitute with the 'principal.name' property, if specified. Else default to Curam -->
+  <target name="client.substitute.principal.name">
+     <replace file="${dir.ear.client}/war/WEB-INF/weblogic.xml"
+        token="$CURAM_PRINCIPAL_NAME$" value="${curam.principal.name}"/>
   </target>
 
 

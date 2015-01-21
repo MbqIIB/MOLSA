@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils"
+    exclude-result-prefixes="bidi-utils">
+    
   <xsl:output method="xml" indent="no" omit-xml-declaration="yes"/>   
   <xsl:strip-space elements="*" />
   
@@ -34,9 +37,14 @@
         <xsl:value-of select="$max-rows * 30 + $max-rows * 1"/><xsl:text>px;overflow-y:auto;</xsl:text>
       </xsl:attribute>
     </xsl:if>
-  
-  <div id="heatmapLegend" style="float:{$legend-pos};margin-{$legend-pos}:5px;">
-    <div class="legendCaption"><xsl:value-of select="$legend-title"/></div>
+    
+  <div id="heatmapLegend" style="float:{$legend-pos};margin-{$legend-pos}:5px;">  	  
+  	<xsl:attribute name="dir">
+   		<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(legend-title)"/>
+  	</xsl:attribute>  
+    <div class="legendCaption">
+    	<xsl:value-of select="$legend-title"/>
+    </div>
     <xsl:call-template name="output-legend"/>
   </div>
  
@@ -127,7 +135,12 @@
     <xsl:for-each select="REGION">
       <div id="legendItem{@REGION_ID}" class="legendItem">
         <div id="legendImage{@REGION_ID}" class="legendImage {@REGION_ID}">·</div>
-        <div class="legendItemValue"><xsl:value-of select="current()/@LABEL"/></div>
+        <div class="legendItemValue">
+        <xsl:attribute name="dir">
+   			<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(current()/@LABEL)"/>
+  		</xsl:attribute>        		    
+        <xsl:value-of select="current()/@LABEL"/>                
+        </div>        
       </div>
     </xsl:for-each>
 </xsl:template>
@@ -139,6 +152,9 @@
        <xsl:attribute name="id">
          <xsl:value-of select="current()/@REGION_ID"/>
        </xsl:attribute>
+        <xsl:attribute name="dir">
+   			<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(current()/@LABEL)"/>
+  		</xsl:attribute>       		                
        <xsl:value-of select="current()/@LABEL"/>
       </th>
     </xsl:for-each>

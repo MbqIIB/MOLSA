@@ -15,6 +15,18 @@
             <property name="id">525</property>
         </structure>
     </list-property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}   ]]></method>
     <method name="beforeFactory"><![CDATA[if(params["db2numbertype"].value == "bitdata") {
 
   mytable = reportContext.getDesignHandle().findElement("Chart"); 
@@ -70,6 +82,56 @@
             <property name="paramType">simple</property>
             <property name="controlType">list-box</property>
             <property name="mustMatch">true</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="526">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="g11n-btd" id="527">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
             <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -538,13 +600,15 @@ this.queryText = "  SELECT"
         </Color>
         <Visible>false</Visible>
       </Outline>
-      <Visible>false</Visible>
+      <Visible>true</Visible>
       <Label>
         <Caption>
           <Value>Report.chart.title=Case Audit Plan Progress Summary</Value>
           <Font>
-            <Name>all-fonts</Name>
-            <Size>8.0</Size>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
+            <Bold>true</Bold>
+            <Italic>true</Italic>
             <Alignment>
               <horizontalAlignment>Center</horizontalAlignment>
               <verticalAlignment>Bottom</verticalAlignment>
@@ -552,9 +616,9 @@ this.queryText = "  SELECT"
           </Font>
           <Color>
             <Transparency>255</Transparency>
-            <Red>128</Red>
-            <Green>128</Green>
-            <Blue>128</Blue>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
           </Color>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
@@ -708,7 +772,7 @@ this.queryText = "  SELECT"
         <Visible>true</Visible>
       </Separator>
       <Position>Right</Position>
-      <ItemType>Categories</ItemType>
+      <ItemType>Series</ItemType>
       <Title>
         <Caption>
           <Value></Value>
@@ -747,7 +811,7 @@ this.queryText = "  SELECT"
       <Left>0.0</Left>
       <Top>0.0</Top>
       <Width>169.488</Width>
-      <Height>105.0</Height>
+      <Height>121.5</Height>
     </Bounds>
     <Insets>
       <Top>3.0</Top>
@@ -779,6 +843,77 @@ this.queryText = "  SELECT"
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional_With_Depth</Dimension>
+  <Script>&#xD;
+/**&#xD;
+ * Called before generation of chart model to GeneratedChartState.&#xD;
+ * &#xD;
+ * @param chart&#xD;
+ *            Chart&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeGeneration( chart, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		//Import for IntersectionType, Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		var xAxis = chart.getPrimaryBaseAxes()[0];&#xD;
+		&#xD;
+		//Flip position of X-Axis label&#xD;
+		xAxis.setLabelPosition(Position.get(Position.BELOW));&#xD;
+	}&#xD;
+}&#xD;
+/**&#xD;
+ * Called after populating the series dataset.&#xD;
+ * &#xD;
+ * @param series&#xD;
+ *            Series&#xD;
+ * @param dataSet&#xD;
+ *            DataSet&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function afterDataSetFilled( series, dataSet, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		if( series.getSeriesIdentifier() == &quot;Count&quot;){&#xD;
+			var list = dataSet.getValues();&#xD;
+			&#xD;
+			//Inverse the values of the data&#xD;
+			for(i=0; i&lt;list.length; i++) {&#xD;
+			  list[i] = -list[i];&#xD;
+			}&#xD;
+		}&#xD;
+	}&#xD;
+}&#xD;
+&#xD;
+/**&#xD;
+ * Called before rendering the label for each datapoint.&#xD;
+ * &#xD;
+ * @param dph&#xD;
+ *            DataPointHints&#xD;
+ * @param label&#xD;
+ *            Label&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeDrawDataPointLabel( dph, label, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		var val = label.getCaption().getValue();&#xD;
+		&#xD;
+		//Remove the negative from the value of the series label&#xD;
+		label.getCaption().setValue(val.substring(1));&#xD;
+	}&#xD;
+}&#xD;
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <ExtendedProperties>
@@ -924,16 +1059,17 @@ this.queryText = "  SELECT"
           <Entries xsi:type="attribute:Gradient">
             <StartColor>
               <Transparency>255</Transparency>
-              <Red>128</Red>
-              <Green>188</Green>
-              <Blue>206</Blue>
+              <Red>164</Red>
+              <Green>208</Green>
+              <Blue>232</Blue>
             </StartColor>
             <EndColor>
               <Transparency>255</Transparency>
-              <Red>192</Red>
-              <Green>214</Green>
-              <Blue>222</Blue>
+              <Red>95</Red>
+              <Green>165</Green>
+              <Blue>205</Blue>
             </EndColor>
+            <Direction>-90.0</Direction>
           </Entries>
           <Entries xsi:type="attribute:Gradient">
             <StartColor>
@@ -1139,14 +1275,14 @@ this.queryText = "  SELECT"
               <AggregateExpression>Sum</AggregateExpression>
             </Grouping>
           </DataDefinition>
-          <SeriesIdentifier></SeriesIdentifier>
+          <SeriesIdentifier>Count</SeriesIdentifier>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
             </Components>
             <Separator>, </Separator>
           </DataPoint>
-          <LabelPosition>Outside</LabelPosition>
+          <LabelPosition>Inside</LabelPosition>
           <Stacked>false</Stacked>
           <Translucent>false</Translucent>
           <Riser>Rectangle</Riser>
@@ -1163,12 +1299,12 @@ this.queryText = "  SELECT"
         <Style>Solid</Style>
         <Thickness>1</Thickness>
         <Color>
-          <Transparency>0</Transparency>
-          <Red>255</Red>
-          <Green>255</Green>
-          <Blue>255</Blue>
+          <Transparency>248</Transparency>
+          <Red>200</Red>
+          <Green>208</Green>
+          <Blue>224</Blue>
         </Color>
-        <Visible>false</Visible>
+        <Visible>true</Visible>
       </LineAttributes>
       <Label>
         <Caption>
@@ -1215,7 +1351,7 @@ this.queryText = "  SELECT"
             <Green>196</Green>
             <Blue>196</Blue>
           </Color>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
         </LineAttributes>
         <TickStyle>Across</TickStyle>
         <TickAttributes>
@@ -1227,7 +1363,7 @@ this.queryText = "  SELECT"
             <Green>196</Green>
             <Blue>196</Blue>
           </Color>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
         </TickAttributes>
       </MajorGrid>
       <MinorGrid>
@@ -1248,19 +1384,19 @@ this.queryText = "  SELECT"
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>225</Red>
-            <Green>225</Green>
-            <Blue>225</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
         </TickAttributes>
       </MinorGrid>
       <Scale>
-        <MinorGridsPerUnit>5</MinorGridsPerUnit>
+        <MinorGridsPerUnit>2</MinorGridsPerUnit>
         <AutoExpand>true</AutoExpand>
       </Scale>
       <Origin>
-        <Type>Min</Type>
+        <Type>Value</Type>
         <Value xsi:type="data:NumberDataElement">
           <Value>0.0</Value>
         </Value>
@@ -1662,16 +1798,17 @@ this.queryText = "  SELECT"
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
             <Transparency>255</Transparency>
-            <Red>128</Red>
-            <Green>188</Green>
-            <Blue>206</Blue>
+            <Red>164</Red>
+            <Green>208</Green>
+            <Blue>232</Blue>
           </StartColor>
           <EndColor>
             <Transparency>255</Transparency>
-            <Red>192</Red>
-            <Green>214</Green>
-            <Blue>222</Blue>
+            <Red>95</Red>
+            <Green>165</Green>
+            <Blue>205</Blue>
           </EndColor>
+          <Direction>-90.0</Direction>
         </Entries>
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
@@ -2172,26 +2309,28 @@ this.queryText = "  SELECT"
       <Style>Solid</Style>
       <Thickness>1</Thickness>
       <Color>
-        <Transparency>0</Transparency>
-        <Red>255</Red>
-        <Green>255</Green>
-        <Blue>255</Blue>
+        <Transparency>255</Transparency>
+        <Red>200</Red>
+        <Green>208</Green>
+        <Blue>224</Blue>
       </Color>
-      <Visible>false</Visible>
+      <Visible>true</Visible>
     </LineAttributes>
     <Label>
       <Caption>
         <Value></Value>
         <Font>
-          <Name>all-fonts</Name>
-          <Size>9.0</Size>
+          <Name>Tahoma</Name>
+          <Size>10.0</Size>
+          <Bold>true</Bold>
+          <Italic>true</Italic>
           <Alignment/>
         </Font>
         <Color>
           <Transparency>255</Transparency>
-          <Red>128</Red>
-          <Green>128</Green>
-          <Blue>128</Blue>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
         </Color>
       </Caption>
       <Background xsi:type="attribute:ColorDefinition">
@@ -2209,16 +2348,17 @@ this.queryText = "  SELECT"
           <Green>0</Green>
           <Blue>0</Blue>
         </Color>
+        <Visible>false</Visible>
       </Outline>
       <Insets>
         <Top>0.0</Top>
-        <Left>2.0</Left>
+        <Left>0.0</Left>
         <Bottom>0.0</Bottom>
-        <Right>3.0</Right>
+        <Right>0.0</Right>
       </Insets>
       <Visible>true</Visible>
     </Label>
-    <LabelPosition>Below</LabelPosition>
+    <LabelPosition>Above</LabelPosition>
     <MajorGrid>
       <LineAttributes>
         <Style>Solid</Style>
@@ -2237,11 +2377,11 @@ this.queryText = "  SELECT"
         <Thickness>1</Thickness>
         <Color>
           <Transparency>255</Transparency>
-          <Red>196</Red>
-          <Green>196</Green>
-          <Blue>196</Blue>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
         </Color>
-        <Visible>false</Visible>
+        <Visible>true</Visible>
       </TickAttributes>
     </MajorGrid>
     <MinorGrid>
@@ -2272,7 +2412,7 @@ this.queryText = "  SELECT"
     <Scale>
       <MinorGridsPerUnit>5</MinorGridsPerUnit>
       <ShowOutside>false</ShowOutside>
-      <TickBetweenCategories>false</TickBetweenCategories>
+      <TickBetweenCategories>true</TickBetweenCategories>
     </Scale>
     <Origin>
       <Type>Value</Type>
@@ -2306,6 +2446,7 @@ this.queryText = "  SELECT"
       <Type>None</Type>
     </Angles>
   </Rotation>
+  <ReverseCategory>false</ReverseCategory>
 </model:ChartWithAxes>
 ]]></xml-property>
             <property name="outputFormat">PNG</property>
@@ -2332,7 +2473,7 @@ this.queryText = "  SELECT"
             <property name="marginRight">0in</property>
             <structure name="toc"/>
             <property name="dataSet">Audit Plan Progress Data Set</property>
-            <property name="height">140px</property>
+            <property name="height">1.6875in</property>
             <property name="width">2.354in</property>
             <list-property name="boundDataColumns">
                 <structure>

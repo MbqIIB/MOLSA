@@ -11,7 +11,9 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:code-table="http://xml.apache.org/xalan/java/curam.omega3.codetable.CodeTableRepository"
   xmlns:domain-info="http://xml.apache.org/xalan/java/curam.util.client.domain.util.DomainUtils"
-  exclude-result-prefixes="code-table domain-info" version="1.0">
+  xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils" 
+  exclude-result-prefixes="code-table domain-info bidi-utils" version="1.0"
+>
 
   <xsl:import href="ui-param.xsl" />
 
@@ -151,6 +153,10 @@
 
     <input type="text" id="{$name}" name="{$name}" value="{$value}"
       title="{$title}">
+      <xsl:attribute name="dir">
+			<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(title)"/>
+      </xsl:attribute>            
+      
       <xsl:if test="$style">
         <xsl:attribute name="style">
           <xsl:value-of select="$style" />

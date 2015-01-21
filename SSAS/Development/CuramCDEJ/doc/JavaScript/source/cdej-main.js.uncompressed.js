@@ -6987,14 +6987,14 @@ define("curam/util/TabNavigation", ["curam/debug",
 
       if(!open) {
         var closedWidth = "0px";
-        var leftObj = { left: closedWidth };
+        var leftObj = ((getComputedStyle(contentPanel).direction == "ltr") ? { left: closedWidth } : { right: closedWidth });
         var widthObj = { width: closedWidth };
         dojo.style(contentPanel, leftObj);
         dojo.style(childNavPanel, widthObj);
 
       } else {
         var openWidth = dojo.attr(navigationTab, "child-menu-width");
-        var leftObj = { left: openWidth };
+        var leftObj = ((getComputedStyle(contentPanel).direction == "ltr") ? { left: openWidth } : { right: openWidth });
         var widthObj = { width: openWidth };
         dojo.style(contentPanel, leftObj);
         dojo.style(childNavPanel, widthObj);
@@ -14392,8 +14392,18 @@ define("curam/smartPanel", ["curam/tab",
         var navTabBC = navTabBcNode ? dijit.byNode(navTabBcNode) : null;
         
         if (navTabBC) {
-          // find the correct splitter object
-          var spSplitter = navTabBC.getSplitter("right");
+          // find the correct splitter object. The smart panel region is defined
+          // "trailing" i.e. it is on the "left" for a mirrored user interface
+          // and vice versa. However, however a bug in Dojo means we can't
+          // search using "trailing". Instead we have to figure out the document
+          // direction and use "left" or "right" explicitly to locate the
+          // splitter.
+          var spSplitter = null;
+          if (dojo.isBodyLtr()) {
+            spSplitter = navTabBC.getSplitter("right");
+          } else {
+            spSplitter = navTabBC.getSplitter("left");            
+          }
 
           // when the user drags the splitter bar open and then releases, attach
           // a function call to lazy load the smart panel contents
@@ -14731,7 +14741,7 @@ define("curam/ui/UIMPageAdaptor", ["curam/tab",
         }
         anchor = event.target;
       } else if ((event.target.nodeName == "IMG" && !dojo.hasClass(event.target.parentNode, "file-download")) ||
-          (event.target.nodeName == "SPAN" && event.target.className == "middle")) {
+          (event.target.nodeName == "SPAN" && (event.target.className == "middle" || event.target.className == "bidi"))) {
         // TODO: check html schema, what inline elements are allowed in an
         // anchor element....can they be nested etc. this check probably needs
         // search for an ancestor anchor element rather than parent.
@@ -22850,6 +22860,7 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 		// Tab button widths.
 		domStyle.set(this.containerNode, "width",
 			(domStyle.get(this.containerNode, "width") + 200) + "px");
+		this.containerNode._width = 0; //  Invalidate the cached width of the wrapper
 	},
 
 	/* CURAM-FIX: added functions needed by Curam specific code */    
@@ -22963,8 +22974,13 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 			/* CURAM-FIX: comment out the next line and replace with the next addition
                          * to remove one call to leftTab.offsetLeft */
 			// return rightTab.offsetLeft + domStyle.get(rightTab, "width") - leftTab.offsetLeft;
-	                var rightWidth = this._getNodeWidth(rightTab);
+			var rightWidth = this._getNodeWidth(rightTab);
+			if(this.isLeftToRight()){	                
 	                this._tabsWidth = rightTab.offsetLeft + rightWidth;
+			}else{
+				var leftTab = children[children.length - 1].domNode;
+		    	this._tabsWidth = rightTab.offsetLeft + rightWidth - leftTab.offsetLeft;
+			}
 	                return this._tabsWidth;
 	                /* END CURAM-FIX */
 			
@@ -23091,7 +23107,7 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 		//		of pixels of possible scroll (ex: 1000) means "scrolled all the way to the right"
 		return (this.isLeftToRight() || has("ie") < 8 || (has("ie") && has("quirks")) || has("webkit")) ? this.scrollNode.scrollLeft :
 				domStyle.get(this.containerNode, "width") - domStyle.get(this.scrollNode, "width")
-					 + (has("ie") == 8 ? -1 : 1) * this.scrollNode.scrollLeft;
+					 + (has("ie") >= 8 ? -1 : 1) * this.scrollNode.scrollLeft;
 	},
 
 	_convertToScrollLeft: function(val){
@@ -23106,7 +23122,7 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 			return val;
 		}else{
 			var maxScroll = domStyle.get(this.containerNode, "width") - domStyle.get(this.scrollNode, "width");
-			return (has("ie") == 8 ? -1 : 1) * (val - maxScroll);
+			return (has("ie") >= 8 ? -1 : 1) * (val - maxScroll);
 		}
 	},
 
@@ -23173,14 +23189,15 @@ var ScrollingTabController = declare("dijit.layout.ScrollingTabController", [Tab
 		if(children.length && tabsWidth > scrollNodeWidth){
 			// Scrolling should happen
 			return {
-		                /* CURAM-FIX: replace following line */      
-                                // min: this.isLeftToRight() ? 0 : children[children.length-1].domNode.offsetLeft,
-		                min: this.isLeftToRight() ? 0 : this._getNodeWidth(children[children.length-1].domNode),
+				//There is a padding of 10px at right of tabs list. See ".rtl .soria .appTabContainer .dijitTabContainerTop-tabs"
+				//  in \TIVOB\client\CoreInf\CuramCDEJ\lib\curam\web\themes\soria_rtl\css\ApplicationTabContainer_rtl.css
+				//  This padding is not included in the calculations. So, Decrease the minimum scroll value here.
+				min: this.isLeftToRight() ? 0 : children[children.length-1].domNode.offsetLeft-10,  // 10px for padding of the wrapper
 	                        /* CURAM-FIX: replace following line */      
 				//max: this.isLeftToRight() ?
 				//	(children[children.length-1].domNode.offsetLeft + domStyle.get(children[children.length-1].domNode, "width")) - scrollNodeWidth :
 				//	maxPossibleScroll
-		                max: this.isLeftToRight() ? tabsWidth - scrollNodeWidth : maxPossibleScroll
+		                max: this.isLeftToRight() ? tabsWidth - scrollNodeWidth : maxPossibleScroll 
 			};
 		}else{
 			// No scrolling needed, all tabs visible, we stay either scrolled to far left or far right (depending on dir)
@@ -28668,9 +28685,10 @@ define("dijit/place", [
        * around the actions menu button, set the overflow variable with the maximum value
        * to prevent placing the popup window from these two places.
        */
+	  var l = domGeometry.isBodyLtr();
       if(lang.exists("curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm")
           && curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm == true) {
-        if( (corner.charAt(0) == 'T' || corner.charAt(1) == 'L')
+        if( (corner.charAt(0) == 'T' || (corner.charAt(1) == 'L' && l) || (corner.charAt(1) == 'R' && !l) )
           && overflow > 0 ){
 
           overflow = mb.w + mb.h;
@@ -28708,7 +28726,7 @@ define("dijit/place", [
 		// In RTL mode, set style.right rather than style.left so in the common case,
 		// window resizes move the popup along with the aroundNode.
 		var l = domGeometry.isBodyLtr(),
-			s = node.style;
+		   	s = node.style;
 		s.top = best.y + "px";
 		s[l ? "left" : "right"] = (l ? best.x : view.w - best.x - best.w) + "px";
 		s[l ? "right" : "left"] = "auto";	// needed for FF or else tooltip goes to far left
@@ -31606,6 +31624,78 @@ return declare("dijit.form._FormValueWidget", [_FormWidget, _FormValueMixin],
 	}
 });
 
+});
+
+},
+'dijit/_BidiSupport':function(){
+define("dijit/_BidiSupport", ["./_WidgetBase"], function(_WidgetBase){
+
+/*=====
+	var _WidgetBase = dijit._WidgetBase;
+====*/
+
+	// module:
+	//		dijit/_BidiSupport
+	// summary:
+	//		Module that deals with BIDI, special with the auto
+	//		direction if needed without changing the GUI direction.
+	//		Including this module will extend _WidgetBase with BIDI related methods.
+	// description:
+	//		There's a special need for displaying BIDI text in rtl direction
+	//		in ltr GUI, sometimes needed auto support.
+	//		In creation of widget, if it's want to activate this class,
+	//		the widget should define the "textDir".
+
+	_WidgetBase.extend({
+
+		getTextDir: function(/*String*/ text){
+			// summary:
+			//		Gets the right direction of text.
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+			return this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+		},
+
+		_checkContextual: function(text){
+			// summary:
+			//		Finds the first strong (directional) character, return ltr if isLatin
+			//		or rtl if isBidiChar.
+			//	tags:
+			//		private.
+
+			// look for strong (directional) characters
+			var fdc = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(text);
+			// if found return the direction that defined by the character, else return widgets dir as defult.
+			return fdc ? ( fdc[0] <= 'z' ? "ltr" : "rtl" ) : this.dir ? this.dir : this.isLeftToRight() ? "ltr" : "rtl";
+		},
+
+		applyTextDir: function(/*Object*/ element, /*String*/ text){
+			// summary:
+			//		Set element.dir according to this.textDir
+			// element:
+			//		The text element to be set. Should have dir property.
+			// text:
+			//		Used in case this.textDir is "auto", for calculating the right transformation
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+
+			var textDir = this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+			// update only when there's a difference
+			if(element.dir != textDir){
+				element.dir = textDir;
+			}
+		}
+	});
+
+	return _WidgetBase;
 });
 
 },
@@ -34614,7 +34704,7 @@ return simpleFetch;
 /*
  * Licensed Materials - Property of IBM
  *
- * Copyright IBM Corporation 2012,2013. All Rights Reserved.
+ * Copyright IBM Corporation 2012,2014. All Rights Reserved.
  *
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -34623,6 +34713,9 @@ return simpleFetch;
 /*
  * Modification History
  * --------------------
+ * 06-Jun-2014  AS [CR00428142] TEC-17091. Skiplink should become visible when focused
+ * 03-Jun-2014 BOS [CR00434187] Added the getCookie() function and updated 
+ *                    replaceSubmitButton() to support timeout warning dialog.
  * 15-Apr-2014  JY [CR00425261] Refactored the print function to allow printing
  *                              the context panel.
  * 20-Feb-2014  AS [CR00414442] Skipped arrow and validation div of filtering 
@@ -34856,6 +34949,7 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/dom-attr",
         "dojo/_base/lang",
         "dojo/on",
+		"dijit/_BidiSupport",		
         
         "curam/define",
         /* "dojox/storage", */
@@ -34865,9 +34959,10 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/_base/sniff",
         "cm/_base/_dom",
         "curam/util/ResourceBundle"
+        
         ], function(dom, registry, domConstruct, ready, windowBase, style,
             array, domClass, topic, dojoEvent, query, has, unload,
-            geom, json, attr, lang, on) {
+            geom, json, attr, lang, on, bidi) {
 
 /**
  * Creating Resource Bundle Object to access localized resources.
@@ -36808,6 +36903,23 @@ curam.define.singleton("curam.util",
   },
   
   /**
+   * TEC-17091. Skiplink should become visible when focused (i.e. a user tabs on it)
+   * and it should be visible only when it has focus, so it should hide again when 
+   * the user tabs off it.
+   */
+  showHideSkipLink: function(e) {
+    var skipLink = dojo.byId("skipLink");
+    if (skipLink) {
+      var skipLinkDiv = skipLink.parentNode;
+      if (e.type == "focus" && domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.remove(skipLinkDiv, "hidden");
+      } else if (e.type == "blur" && !domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.add(skipLinkDiv, "hidden");
+      }
+    }
+  },
+  
+  /**
   * Registers a handler for submitting a form when Enter key is pressed.
   *
   * Called from the PageTag - will be called on every page in any context,
@@ -37125,8 +37237,10 @@ curam.define.singleton("curam.util",
  
   /**
   * Replaces standard submit buttons with anchor tags when no images are used.
+  * @param {String} buttonText
+  *            The text to be displayed on submit button.
   */
-  replaceSubmitButton: function(name) {
+  replaceSubmitButton: function(name, buttonText) {
     if(curam.replacedButtons[name] == "true") {
       return;
     }
@@ -37153,6 +37267,14 @@ curam.define.singleton("curam.util",
     * The current node, the index, and the node list itself.
     */
     inputList.forEach(function(replacedButton, index, theButtons) {
+    	// if there is a paramter passed in for button text then set the 'value'
+        // of the second button (the button dipalyed to user) node to the button
+        // text specified.
+        // Note: This will replace any value set in the value attribute already!
+        if (buttonText) {
+          var buttonDisplayed = theButtons[1];
+          buttonDisplayed.setAttribute("value",buttonText);
+        }
       replacedButton.tabIndex = -1;
       var parentSpan = replacedButton.parentNode;
  
@@ -37675,6 +37797,28 @@ curam.define.singleton("curam.util",
     highContrastModeType: function(){      
       var highContrastMode = dojo.query("body.high-contrast")[0];
       return highContrastMode;
+    },	
+		  
+	processBidiContextual: function (target){
+		target.dir = bidi.prototype._checkContextual(target.value);			
+	},
+	
+	getCookie: function(name) {
+	    var dc=document.cookie;
+	    var prefix=name+"=";
+	    var begin=dc.indexOf("; "+prefix);
+	    if(begin==-1) {
+	      begin=dc.indexOf(prefix);
+	      if(begin!=0)
+	        return null;
+	    } else {
+	      begin+=2;
+	    }
+	    var end=document.cookie.indexOf(";",begin);
+	    if(end==-1) {
+	      end=dc.length;
+	    }
+	    return unescape(dc.substring(begin+prefix.length,end));
     }
   });
 
@@ -51807,6 +51951,388 @@ define("dijit/form/ValidationTextBox", [
 });
 
 },
+'curam/util/SessionTimeout':function(){
+/*
+ * Copyright 2014 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+define("curam/util/SessionTimeout", ["curam/util",
+        "dojo/_base/lang",
+        "curam/debug",
+        "curam/html",
+        "curam/util/UimDialog",
+        "curam/util/ResourceBundle"],
+       function(util, lang, debug, html, uimDialog) {
+  /*
+   * Modification History
+   * --------------------
+   * 28-Jun-2014 BOS [CR00435242] Update the configuration for the expired user
+   * message.
+   * 03-Jun-2014 BOS [CR00434187] Initial Version.
+   */
+  /**
+   * @name curam.util.SessionTimeout
+   * @namespace Checks if and when a timeout warning modal is displayed to a
+   * user immediately before their session times out.
+   * 
+   * This API provides methods for a session timeout warning modal dialog.
+   * 
+   * It reads a specific cookie that is set by the <code>RequestFilter</code>
+   * Servlet and uses the information within that cookie to check if a modal
+   * dialog needs to be displayed to the user to warn them that their session is
+   * about to timeout.
+   * 
+   * This API is tightly coupled with the 
+   * <code>external-session-timeout-dialog.jspx</code> and the 
+   * <code>RequestFilter.java</code> Servlet.
+   * 
+   */
+	
+	/**
+	 * Creating Resource Bundle Object to access localized resources.
+	 */ 
+	dojo.requireLocalization("curam.application", "TimeoutWarning");
+	var bundle = new curam.util.ResourceBundle("TimeoutWarning");
+  
+  curam.define.singleton("curam.util.SessionTimeout", {
+	// The page identifier for the logout page that will end the session if
+	// a user clicks the logout button or the session automatically logs out.
+	logoutPageID:"",
+	
+	// The minutes displayed for the countdown timer to inform user of time in
+	// minutes that they have to take action within the modal before it 
+	// automatically terminates the session.
+	minutes:0,
+	
+	// The seconds displayed for the countdown timer to inform user of time in
+	// seconds that they have to take action within the modal before it 
+	// automatically terminates the session.
+	seconds:0,
+	
+	// The node that display the user message
+	userMessageNode:null,
+	
+	// The identifier of the node that displays the user message in the modal 
+	userMessageNodeID:"userMessage",
+	
+	// The identifier of the node that displays the time left in the modal
+	displayTimerNodeID:"displayTimer",
+	
+	// Indicates if the countdown timer should be stopped or not
+	stopTimer:false,
+	
+	// The updated user message to be displayed in the modal dialog
+	updatedUserMessage:null,
+	
+	// The text that will be supplied to modal button to inform user that they
+	// should dismiss modal
+	dismissModalBtnTxt:null,
+	
+	// CCS class name for modal buttons that are displayed to user. These class
+	// names can be used to retrieve the DOM for these buttons and update the
+	// style and text on them.
+	displayButtonCssNames:".initially-hidden-widget.btn-id-1",
+	
+	// Indicates if a modal button action should logout a user.
+	doLogout:true,
+	
+	// The length of time that it takes for the dialog to be displayed.
+	timeForDialogToAppear:0,
+	
+	// The JSPX file used to display the session timeout warning dialog to the user.
+	sessTimeoutWarningJSPXDialog:"external-session-timeout-warning-dialog.jspx",
+	
+	// The JSPX file used to display the session timeout dialog to the user.
+	sessTimeoutJSPXDialog:"external-session-timeout-dialog.jspx",
+	
+	// The grace period afforded to the user when taking action within the modal.
+	bufferingPeriod:null,
+
+	/**
+	 * Checks if a timeout warning dialog should be displayed to a user if their
+	 * session is about to expire.
+	 *  
+	 * @param width                The configured width of the timeout warning 
+	 * dialog.
+	 * @param height               The configured height of the timeout warning 
+	 * dialog.
+	 * @param timeoutPeriod        The configured timeout period of the timeout
+	 * warning dialog.
+	 * @param timeoutWarningIssued Indicates if a timeout warning dialog has
+	 * already been displayed to the user.
+	 */
+    checkSessionExpired: function(width, height, timeoutPeriod, bufferingPeriod) {     
+      this.width = width;
+	  this.height = height;
+	  this.timeoutPeriod = timeoutPeriod;
+	  this.stopChecking = false;
+	
+	  // 10 seconds is the default check for how often the check will be
+	  // executed.
+	  this.interval = 10000;
+	
+	  // if a grace period for checking that the session has not expired has not 
+      // been explicitly set then set it to default of 30 seconds (30000 miliseconds)
+      this.bufferingPeriod = bufferingPeriod == undefined ? 30000 : bufferingPeriod * 1000;
+
+	  this.executeChecking = setInterval(function(){curam.util.SessionTimeout._executeSessionExpiredCheck();},this.interval);
+    },
+    
+    /*
+     * Executes the actual check to assess if the timeout warning dialog should
+     * be displayed to the user.
+     */
+    _executeSessionExpiredCheck: function() {
+      // get the latest session expiry cookie
+      var latestSessionExpCookie = curam.util.getCookie('sessionExpiry');
+      // the currsessionExpCookie holds the current cookie reference, if they do
+      // not match then a new request has been issued so reset the timer back to
+      
+      // -10 seconds (as 10s has already passed) need to restart back to before 0
+      if (this.currSessionExpCookie) {
+    	if (this.currSessionExpCookie != latestSessionExpCookie) {
+    	  this.timeForDialogToAppear = -10000;
+    	  // TODO: Would be better to refactor _sessionExpiryCookieIsAsExpected
+    	  // function and just set global variables in that function -- BOS
+    	  this.validCookie
+  	        = this._sessionExpiryCookieIsAsExpected(latestSessionExpCookie);
+    	 
+    	}
+      } else {
+    	// current cookie undefined indicates a new checking period so validate
+    	// cookies
+    	this.validCookie
+  	      = this._sessionExpiryCookieIsAsExpected(latestSessionExpCookie);
+    	this._ammendTimeoutPeriodForMisconfiguration(this.validCookie);  	
+      }
+      this.currSessionExpCookie = latestSessionExpCookie;
+      
+      this.timeForDialogToAppear = this.timeForDialogToAppear + this.interval;
+      
+      if (this.validCookie) {
+    	  this.sessionExpiry = Math.abs(this.validCookie[0]);
+    	  this.serverTime = Math.abs(this.validCookie[1]);
+    	// total offset time is the configured session timeout (data set on cookie)
+        // plus the total interval period so far plus the grace period allowed
+        // Timezone difference taken into account here..
+    	// Client side time is not important in this calculation..
+    	var totalCurrServerTime
+          = this.serverTime + this.timeForDialogToAppear + this.bufferingPeriod;
+    	var totalExpirySeverTime = this.sessionExpiry - (this.timeoutPeriod * 1000);
+    	// these two variables useful for debugging purposes
+    	this.totalExpirySeverTime = totalExpirySeverTime;
+    	this.totalCurrServerTime = totalCurrServerTime;
+	    if (totalCurrServerTime >= totalExpirySeverTime && this.stopChecking!=true) {
+	      this.stopChecking = true;
+	      if (window.top.openModal != undefined) {
+	        window.top.openModal(this.sessTimeoutWarningJSPXDialog, {width:this.width,height:this.height});
+	        
+	      }
+	      clearInterval(this.executeChecking);
+	    }  
+      }
+    },
+      
+    /**
+     * Checks that the cookie that contains data about the session timeout is
+     * secure and that its data has not been manipulated maliciously.
+     * 
+     * @param sessionExpiryCookie The cookie to check for security.
+     * @returns                   the secure cookie.
+     */
+    _sessionExpiryCookieIsAsExpected:function(sessionExpiryCookie) {
+    	// TODO: Might be better to do this validation in the request filter and
+    	// just set the difference between server and expiry time i.e
+    	// expiryTime - serverTime -- BOS
+        var validDate = true;
+        if (sessionExpiryCookie != null) {
+      	// There is a contract here between the addSessionTimeoutCookie() method
+      	// that sets this cookie in the 'RequestFilter' servlet and check we do
+      	// here to ensure that cookie is as expected. The cookie should have 
+      	// only 2 tokens delimited by a hyphen character (-) and each token
+      	// must be in the date format.
+          var tokens = sessionExpiryCookie.split("-", 2);
+          if (tokens && tokens.length == 2) {
+            for (token in tokens) {
+          	  // first convert to int as it must in miliseconds from 1 Jan 1970..
+          	  var millisecondsToken = Math.abs(token);
+          	  if (isNaN(millisecondsToken)) {
+          		validDate = false;
+              }
+            }
+            if (validDate == true) {	
+              return tokens;	  
+            }
+          }
+        }
+     },
+     
+     /**
+      * Ammends the timeout configuration if the timeout period is incorrectly
+      * configured to be greater than the session timeout period or is 
+      * configured to be a negative value..
+      * @param validCookie
+      */
+     _ammendTimeoutPeriodForMisconfiguration: function(validCookie) {
+       // TODO: Even though this only happens once. It would be better to do this in
+       // RequestFilter and TabLayoutResolver. However would have to do examine
+       // the timeout configuration and validate that set correctly -- BOS 
+       if (validCookie) {
+    	  var sessionExpiry = Math.abs(this.validCookie[0]);
+     	  var serverTime = Math.abs(this.validCookie[1]);  
+     	  // session timeout configuration in seconds  
+     	  var sessionTimeoutConfig = (sessionExpiry 
+     	    - (serverTime + this.interval + this.bufferingPeriod))/1000;
+     	 sessionTimeoutConfig = sessionTimeoutConfig <= 0 ? 0 : sessionTimeoutConfig;
+     	  var timeoutConfig = this.getTimeoutWarningConfig();
+     	  if (timeoutConfig) {
+     		var timeoutPeriodConfig = timeoutConfig.timeout;
+     		timeoutPeriodConfig = timeoutPeriodConfig <= 0 ? 0 : timeoutPeriodConfig;
+     		if (timeoutPeriodConfig >= sessionTimeoutConfig) {
+     		  this.getTimeoutWarningConfig("timeout", sessionTimeoutConfig); 
+     		}
+     	  } 
+       }
+     },
+    
+    /**
+     * The application configuration for the timeout warning.
+     * @returns The application configuration for the timeout warning.
+     */
+    getTimeoutWarningConfig: function(timeoutConfigKey, timeoutConfigVal) {
+      if (window.top.getAppConfig) {
+    	  var config = window.top.getAppConfig();
+          var timeoutConfig = config.timeoutWarning;
+          if (timeoutConfig && timeoutConfigKey && timeoutConfigVal) {
+            timeoutConfig[timeoutConfigKey] = timeoutConfigVal;
+          }
+          return timeoutConfig;	  
+      }
+    },
+    
+    /**
+     * Displays countdown timer to the user and logs user out.
+     * 
+     * @param logoutPageID         The specified logout page identifier.
+     * @param timeoutPeriod        The specified timeout period to initiate the
+     * countdown timer.
+     * @param sessionExpiryUserMsg The expiry user message to be displayed to
+     * the user when the user does not take action within the user after the
+     * timer has timed out.
+     * @param dismissModalBtnTxt The text for the dismiss modal button.
+     */
+    displayTimerAndLogout:function(logoutPageID, timeoutPeriod, sessionExpiryUserMsg, dismissModalBtnTxt, expiredTitleText, titleNodeID){
+    	this.executeTimer = setInterval(function(){curam.util.SessionTimeout.timer();}, 1000);
+    	this.minutes  = ~~(timeoutPeriod / 60);
+    	this.seconds = timeoutPeriod % 60;
+    	this.timerNode = dojo.byId(this.displayTimerNodeID);
+    	this.userMessageNode = dojo.byId(this.userMessageNodeID);
+    	this.logoutPageID = logoutPageID;
+    	this.updatedUserMessage = sessionExpiryUserMsg;
+    	this.dismissModalBtnTxt = dismissModalBtnTxt;
+    	this.expiredTitleText = expiredTitleText;
+    	this.titleNode = window.top.dojo.byId(titleNodeID);	
+    },
+    
+    /**
+     * Executes the timer.
+     */
+    timer:function(){
+      if (this.stopTimer !=true) {
+    	var timerMessage = "";
+    	if (this.seconds < 10) {
+    	  timerMessage = this.minutes+" : 0"+this.seconds; 	
+        } else {
+    	  timerMessage = this.minutes+" : "+this.seconds;	
+    	}
+
+		//Ensure LTR direction: LRE + text + PDF
+		this.timerNode.innerHTML = "&#x202A;" + timerMessage + "&#x202C;"
+        
+        if (this.seconds == 0) {
+          this.seconds = 59;
+          this.minutes = this.minutes - 1;
+        } else {
+      	  this.seconds = this.seconds - 1;	
+        }
+        
+        if(this.minutes==0 && this.seconds ==0){
+          this.quitTimeoutWarningDialog();
+      	  this.stopTimer();
+        }
+      
+        if (this.seconds==0) {
+          this.minutes = this.minutes - 1;
+      	this.seconds = 59;
+        } 
+      }
+    },
+    
+    stopTimer:function() {
+      clearInterval(this.executeTimer);
+    },
+    
+    /**
+     * Quits the session from the session timeout warning dialog.
+     */
+    quitTimeoutWarningDialog: function(close){
+      var logoutPage = {pageID:this.logoutPageID};
+      window.top.displayContent(logoutPage);  
+    },
+    
+    /**
+     * Dismisses the session timeout dialog and restarts the session again.
+     */
+    dismissTimeoutDialog: function() {
+      window.top.location = jsBaseURL + "/" + "application.do";
+    },
+    
+    /**
+     * Enables the user to continue using the application when they click the
+     * localized Continue button within the modal.
+     */
+    continueUsingApp:function() {
+    	debug.log(bundle.getProperty("continueApp"));
+    	this.stopTimer();
+    },
+    
+    /**
+     * Enables the user to dismiss the timeout warning modal when a session has
+     * timed out and starts checking again for when the new session times out.
+     */
+    dismissTimeoutWarningModal:function() {
+    	debug.log(bundle.getProperty("dismissTimeoutModal"));
+    },
+    
+    /**
+     * Format the user message and displays it as paragraphs to the user.
+     * 
+     * @param msg             The user message to be displayed.
+     * @param userMessageNode The user message node to be updated.
+     */
+    displayUserMsgAsParagraphs: function(msg, userMessageNode) {
+      var userMessageWithParagraphs;
+      if (userMessageNode) {
+        userMessageWithParagraphs = userMessageNode;
+      } else {
+    	userMessageWithParagraphs = dojo.byId(this.userMessageNodeID);  
+      }
+      
+      var paragaphTxt = curam.html.splitWithTag(msg, "\\n", "p");	
+      userMessageWithParagraphs.innerHTML = paragaphTxt;
+      this.userMessageNode = userMessageWithParagraphs;
+    }});
+   
+  return curam.util.SessionTimeout;
+  
+});
+},
 'url:dijit/layout/templates/ScrollingTabController.html':"<div class=\"dijitTabListContainer-${tabPosition} tabStrip-disabled dijitLayoutContainer\"><!-- CURAM-FIX: removed style=\"visibility:hidden, dd the tabStrip-disabled class by default.\" -->\r\n\t<div data-dojo-type=\"dijit.layout._ScrollingTabControllerMenuButton\"\r\n\t\t\tclass=\"tabStripButton-${tabPosition}\"\r\n\t\t\tid=\"${id}_menuBtn\"\r\n\t\t\tdata-dojo-props=\"containerId: '${containerId}', iconClass: 'dijitTabStripMenuIcon',\r\n\t\t\t\t\tdropDownPosition: ['below-alt', 'above-alt']\"\r\n\t\t\tdata-dojo-attach-point=\"_menuBtn\" showLabel=\"false\" title=\"\">&#9660;</div>\r\n\t<div data-dojo-type=\"dijit.layout._ScrollingTabControllerButton\"\r\n\t\t\tclass=\"tabStripButton-${tabPosition}\"\r\n\t\t\tid=\"${id}_leftBtn\"\r\n\t\t\tdata-dojo-props=\"iconClass:'dijitTabStripSlideLeftIcon', showLabel:false, title:''\"\r\n\t\t\tdata-dojo-attach-point=\"_leftBtn\" data-dojo-attach-event=\"onClick: doSlideLeft\">&#9664;</div>\r\n\t<div data-dojo-type=\"dijit.layout._ScrollingTabControllerButton\"\r\n\t\t\tclass=\"tabStripButton-${tabPosition}\"\r\n\t\t\tid=\"${id}_rightBtn\"\r\n\t\t\tdata-dojo-props=\"iconClass:'dijitTabStripSlideRightIcon', showLabel:false, title:''\"\r\n\t\t\tdata-dojo-attach-point=\"_rightBtn\" data-dojo-attach-event=\"onClick: doSlideRight\">&#9654;</div>\r\n\t<div class='dijitTabListWrapper dijitTabContainerTopNone dijitAlignClient' data-dojo-attach-point='tablistWrapper'>\r\n\t\t<div role='tablist' data-dojo-attach-event='onkeypress:onkeypress'\r\n\t\t\t\tdata-dojo-attach-point='containerNode' class='nowrapTabStrip dijitTabContainerTop-tabs'></div>\r\n\t</div>\r\n</div>\r\n",
 'curam/codetable-hierarchy':function(){
 /*
@@ -55761,4 +56287,4 @@ define("dijit/TooltipDialog", [
 ,
 '*noref':1}});
 define("dojo/cdej-main", [], 1);
-require(["curam/define","curam/debug","curam/util","curam/GlobalVars","curam/date","curam/dialog","curam/date/locale","curam/validation","curam/html","curam/i18n","curam/lnf","curam/tab","curam/charting","curam/UIMController","curam/FastUIMController","curam/contentPanel","curam/inPageNavigation","curam/codetable-hierarchy","curam/omega3-util","curam/widgets","curam/ajax","curam/ModalDialog","curam/layout/EmptyContentPane","curam/layout/CuramTabContainer","curam/layout/TabContainer","curam/pagination","curam/pagination/ControlPanel","curam/pagination/StateController","curam/pagination/ExpandableListModel","curam/pagination/DefaultListModel","curam/validation/calendar","curam/tab/util","curam/tab/TabSessionManager","curam/tab/TabDescriptor","curam/ui/PageRequest","curam/ui/OpenTabEvent","curam/ui/ClientDataAccessor","curam/ui/UIMPageAdaptor","curam/ui/SectionShortcutsPanel","curam/util/ScreenContext","curam/util/WordFileEdit","curam/util/TabActionsMenu","curam/util/ExpandableLists","curam/util/ListSort","curam/util/TabNavigation","curam/util/onLoad","curam/util/UimDialog","curam/util/Request","curam/util/LocalConfig","curam/util/Refresh","curam/util/external","curam/util/RuntimeContext","curam/util/portlet/PortletAdaptor","curam/util/FrequencyEditor","curam/util/Navigation","curam/util/Dialog","curam/ModalUIMController","curam/widget/_TabButton","curam/widget/ComboBox","curam/widget/DropDownButton","curam/widget/DeferredDropDownButton","curam/widget/DivButton","curam/widget/FilteringSelect","curam/widget/Menu","curam/widget/OptimalBrowserMessage","curam/widget/Select","curam/widget/TransferList","dojo/require","dojo/parser","dojo/html","dojo/aspect","dojo/data/ItemFileReadStore","dojo/data/util/sorter","dojo/data/util/simpleFetch","dojo/data/util/filter","dojo/io/iframe","dojo/dnd/common","dojo/dnd/autoscroll","dojo/dnd/Mover","dojo/dnd/Moveable","dojo/dnd/TimedMoveable","dojo/dnd/move","dojo/i18n","dojo/regexp","dojo/cookie","dojo/DeferredList","dijit/main","dijit/MenuItem","dijit/_KeyNavContainer","dijit/PopupMenuItem","dijit/CheckedMenuItem","dijit/MenuSeparator","dijit/Menu","dijit/_HasDropDown","dijit/_DialogMixin","dijit/form/Select","dijit/form/FilteringSelect","dijit/form/ComboBox","dijit/form/ComboButton","dijit/form/_FormMixin","dijit/form/Button","dijit/form/ToggleButton","dijit/form/_FormSelectWidget","dijit/form/TextBox","dijit/layout/StackController","dijit/layout/AccordionPane","dijit/TitlePane","dijit/layout/BorderContainer","dijit/layout/TabController","dijit/layout/StackContainer","dijit/layout/_TabContainerBase","dijit/layout/TabContainer","dijit/MenuBar","dijit/MenuBarItem","dijit/PopupMenuBarItem","dijit/tree/TreeStoreModel","dijit/tree/ForestStoreModel","dijit/Tree","dijit/TooltipDialog","dijit/DialogUnderlay","dijit/Dialog","curam/ui/UIController","dijit/layout/ScrollingTabController","dojox/encoding/digests/_base","dojox/encoding/digests/SHA1","dojox/storage","dojox/storage/_common","dojox/storage/manager","dojox/storage/Provider","dojox/storage/LocalStorageProvider","dojox/storage/CookieStorageProvider","dojox/storage/WhatWGStorageProvider","dojox/storage/BehaviorStorageProvider","dojox/html/_base","dojox/layout/ExpandoPane","dojox/layout/ContentPane","curam/layout/ExpandoPane","curam/layout/AccordionContainer"]);
+require(["curam/define","curam/debug","curam/util","curam/GlobalVars","curam/date","curam/dialog","curam/date/locale","curam/validation","curam/html","curam/i18n","curam/lnf","curam/tab","curam/charting","curam/UIMController","curam/FastUIMController","curam/contentPanel","curam/inPageNavigation","curam/codetable-hierarchy","curam/omega3-util","curam/widgets","curam/ajax","curam/ModalDialog","curam/layout/EmptyContentPane","curam/layout/CuramTabContainer","curam/layout/TabContainer","curam/pagination","curam/pagination/ControlPanel","curam/pagination/StateController","curam/pagination/ExpandableListModel","curam/pagination/DefaultListModel","curam/validation/calendar","curam/tab/util","curam/tab/TabSessionManager","curam/tab/TabDescriptor","curam/ui/PageRequest","curam/ui/OpenTabEvent","curam/ui/ClientDataAccessor","curam/ui/UIMPageAdaptor","curam/ui/SectionShortcutsPanel","curam/util/ScreenContext","curam/util/WordFileEdit","curam/util/TabActionsMenu","curam/util/ExpandableLists","curam/util/ListSort","curam/util/TabNavigation","curam/util/onLoad","curam/util/UimDialog","curam/util/Request","curam/util/LocalConfig","curam/util/Refresh","curam/util/external","curam/util/RuntimeContext","curam/util/portlet/PortletAdaptor","curam/util/FrequencyEditor","curam/util/Navigation","curam/util/Dialog","curam/util/SessionTimeout","curam/ModalUIMController","curam/widget/_TabButton","curam/widget/ComboBox","curam/widget/DropDownButton","curam/widget/DeferredDropDownButton","curam/widget/DivButton","curam/widget/FilteringSelect","curam/widget/Menu","curam/widget/OptimalBrowserMessage","curam/widget/Select","curam/widget/TransferList","dojo/require","dojo/parser","dojo/html","dojo/aspect","dojo/data/ItemFileReadStore","dojo/data/util/sorter","dojo/data/util/simpleFetch","dojo/data/util/filter","dojo/io/iframe","dojo/dnd/common","dojo/dnd/autoscroll","dojo/dnd/Mover","dojo/dnd/Moveable","dojo/dnd/TimedMoveable","dojo/dnd/move","dojo/i18n","dojo/regexp","dojo/cookie","dojo/DeferredList","dijit/main","dijit/MenuItem","dijit/_KeyNavContainer","dijit/PopupMenuItem","dijit/CheckedMenuItem","dijit/MenuSeparator","dijit/Menu","dijit/_HasDropDown","dijit/_DialogMixin","dijit/form/Select","dijit/form/FilteringSelect","dijit/form/ComboBox","dijit/form/ComboButton","dijit/form/_FormMixin","dijit/form/Button","dijit/form/ToggleButton","dijit/form/_FormSelectWidget","dijit/form/TextBox","dijit/layout/StackController","dijit/layout/AccordionPane","dijit/TitlePane","dijit/layout/BorderContainer","dijit/layout/TabController","dijit/layout/StackContainer","dijit/layout/_TabContainerBase","dijit/layout/TabContainer","dijit/MenuBar","dijit/MenuBarItem","dijit/PopupMenuBarItem","dijit/tree/TreeStoreModel","dijit/tree/ForestStoreModel","dijit/Tree","dijit/TooltipDialog","dijit/DialogUnderlay","dijit/Dialog","dijit/_BidiSupport","curam/ui/UIController","dijit/layout/ScrollingTabController","dojox/encoding/digests/_base","dojox/encoding/digests/SHA1","dojox/storage","dojox/storage/_common","dojox/storage/manager","dojox/storage/Provider","dojox/storage/LocalStorageProvider","dojox/storage/CookieStorageProvider","dojox/storage/WhatWGStorageProvider","dojox/storage/BehaviorStorageProvider","dojox/html/_base","dojox/layout/ExpandoPane","dojox/layout/ContentPane","curam/layout/ExpandoPane","curam/layout/AccordionContainer"]);

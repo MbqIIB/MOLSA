@@ -8,7 +8,12 @@ if(!dojo.attr(_2,"src")){
 var _3=dojo.query(".outer-navigation-tab")[0];
 var _4=_3?dijit.byNode(_3):null;
 if(_4){
-var _5=_4.getSplitter("right");
+var _5=null;
+if(dojo.isBodyLtr()){
+_5=_4.getSplitter("right");
+}else{
+_5=_4.getSplitter("left");
+}
 _5.connect(_5,"onMouseUp",curam.smartPanel.loadSmartPanelIframe);
 }
 }

@@ -534,15 +534,6 @@ terms of the license agreement you entered into with Curam Software.
   <target name="-staging-components">
     <echo message="Staging client components..."/>
 
-    <copy todir="${dir.bld.stylesheets}">
-      <fileset dir="${dir.curam.xsl.jsp}">
-        <include name="gen-page-footer.xsl"/>
-        <include name="gen-page-header.xsl"/>
-        <include name="gen-side-bar.xsl"/>
-        <include name="gen-toolbar.xsl"/>
-      </fileset>
-    </copy>
-
     <componentorder to="components.path" coredir="${dir.core}"
                     locales="${prp.locale.list}"
                     componentsdir="${dir.src.components}"
@@ -728,23 +719,6 @@ terms of the license agreement you entered into with Curam Software.
     <property name="prp.preview" value="false"/>
     <property name="prp.cc.path" value="${dir.web.inf}/curam-config.xml" />
 
-    <!-- Create footer.jspx (un-escaped) -->
-    <transform in="${dir.curam.xml.build}/page.xml"
-               out="${dir.bld.tmp}/footer.jspxue"
-               style="${fil.xsl.footer}" classpathref="xml.cp">
-      <param name="static-content-server-url"
-             expression="${static.content.url}"/>
-    </transform>
-
-    <!-- Escape all of the unescaped JSP files just created. -->
-    <transform destdir="${dir.bld.tmp}" basedir="${dir.bld.tmp}"
-               style="${fil.xsl.escape}" classpathref="xml.cp"
-               extension=".jspx">
-      <include name="*.jspxue"/>
-      <param name="static-content-server-url"
-             expression="${static.content.url}"/>
-    </transform>
-
     <!--
     "ximTemp" is also defined in GeneratorConfiguration.java. NOTE:
     there is also a screen preview specific "XIM" folder, but this files
@@ -759,41 +733,24 @@ terms of the license agreement you entered into with Curam Software.
     </copy>
 
     <for list="${prp.locale.list}" delimiter="," param="locale" trim="true">
-      <sequential>
-        <!--
-        Localize header, footer, locale-select .jspx files.
-        -->
-        <copy todir="${dir.web}/@{locale}/common" encoding="UTF-8"
-              outputencoding="UTF-8">
-          <fileset dir="${dir.bld.tmp}" includes="*.jspx"/>
-          <filterchain>
-            <filterreader classname="curam.omega3.anttasks.PropertyFilter">
-              <classpath refid="base.generator.cp"/>
-              <param name="locale" value="@{locale}"/>
-              <param name="xml" value="true"/>
-            </filterreader>
-          </filterchain>
-        </copy>
-        <!-- Localize various JSP files -->
+      
+    	<sequential>
+        
+    		<!-- Localize various JSP files -->
         <copy todir="${dir.web}/@{locale}" encoding="UTF-8"
               outputencoding="UTF-8">
           <fileset dir="${dir.curam.jsp}">
             <include name="wizardnav.jspx"/>
             <include name="loading.jspx"/>
             <include name="generic-modal-error.jspx"/>
+          	<include name="external-session-timeout-warning-dialog.jspx"/>
+          	<include name="external-session-timeout-dialog.jspx"/>
             <include name="modal-closing.jspx"/>
             <include name="user-prefs-editor.jspx"/>
             <include name="user-locale-selector.jspx"/>
             <include name="empty-error-page.jspx"/>
             <include name="about.jsp"/>
           </fileset>
-          <filterchain>
-            <filterreader classname="curam.omega3.anttasks.PropertyFilter">
-              <classpath refid="base.generator.cp"/>
-              <param name="locale" value="@{locale}"/>
-              <param name="xml" value="true"/>
-            </filterreader>
-          </filterchain>
         </copy>
         <copy todir="${dir.web}/@{locale}"
               file="${dir.curam.jsp}/wizard-header.jspx"
@@ -805,15 +762,6 @@ terms of the license agreement you entered into with Curam Software.
           <fileset dir="${dir.web.popups}">
             <include name="frequency-editor.jsp"/>
           </fileset>
-          <filterchain>
-            <filterreader classname="curam.omega3.anttasks.PropertyFilter">
-              <classpath refid="base.generator.cp"/>
-              <param name="locale" value="@{locale}"/>
-              <param name="xml" value="true"/>
-              <param name="properties"
-                     value="curam.omega3.i18n.FrequencyPatternSelector"/>
-            </filterreader>
-          </filterchain>
         </copy>
         <!-- Copy empty.html to each locale folder -->
         <copy todir="${dir.web}/@{locale}"

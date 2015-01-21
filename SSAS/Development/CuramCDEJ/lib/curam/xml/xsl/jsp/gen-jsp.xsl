@@ -314,7 +314,7 @@ of the license agreement you entered into with Curam Software.
               <xsl:apply-templates select="JSP_SCRIPTLET"/>
             </xsl:when>
             <xsl:otherwise>
-              <html lang="${{htmlLanguage}}" dir="${{htmlDirection}}">
+              <html lang="${{htmlLanguage}}" dir="${{htmlDirection}}" class="${{htmlDirection}}">
 
                 <xsl:apply-templates select="." mode="html-head">
                   <xsl:with-param name="page-locale" select="$page-locale"/>
@@ -539,6 +539,11 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
       
       <!-- including all CSS files on page -->
       <jsp:include page="../../css-file-links.jsp" />
+      <jsp:scriptlet>
+        if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+          </jsp:scriptlet><jsp:include page="../../css-file-links_rtl.jsp"/><jsp:scriptlet>
+        }
+      </jsp:scriptlet>
       
       <!-- TODO: CSS Printing -->
       <!--  <link rel="stylesheet" type="text/css" media="print"
@@ -4225,7 +4230,8 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
   -->
   <xsl:template match="DETAILS_ROW" mode="in-list">
     <xsl:param name="empty" select="0"/>
-    <td class="first-field list-details-row-toggle-cell">
+    <!-- Added scope row to solve accessibility issues on expandable lists. -->
+    <td scope="row" class="first-field list-details-row-toggle-cell">
       <xsl:choose>
         <xsl:when test="$empty = 0">
           <xsl:choose>
@@ -4281,7 +4287,8 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
       <xsl:value-of select="generate-id()"/>
     </xsl:variable>
 
-    <td class="last-field list-row-menu">
+    <!-- Added scope row to solve accessibility issues on expandable lists. -->
+    <td scope="row" class="last-field list-row-menu">
       <xsl:choose>
         <xsl:when test="$empty = 0">
           <div dojoType="curam.widget.DeferredDropDownButton"
@@ -4344,7 +4351,8 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
     <xsl:param name="packForPagination" select="'false'" />
     <xsl:param name="column-count" />
 
-    <td>
+    <!-- Added scope row to solve accessibility issues on expandable lists. -->
+    <td scope="row">
       <xsl:apply-templates select="." mode="add-css-class">
         <xsl:with-param name="other-classes">
           <!--
@@ -4498,7 +4506,8 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
   "first-header" CSS class.
   -->
   <xsl:template match="DETAILS_ROW" mode="list-header">
-    <th class="first-header-expanding-list" abbr="TODO: some abbreviation mesage here">
+    <!-- Added scope col to solve accessibility issues on expandable lists. -->
+    <th scope="col" class="first-header-expanding-list" abbr="TODO: some abbreviation mesage here">
       <!-- Adding a hidden column header when list column contains toggle button -->
       <span>
           <xsl:attribute name="class">hidden</xsl:attribute>
@@ -4518,8 +4527,8 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
   -->
   <xsl:template match="ACTION_SET[@TYPE='LIST_ROW_MENU']" mode="list-header">
     <xsl:param name="scrollable-context" />
-    
-    <th>
+    <!-- Added scope col to solve accessibility issues on expandable lists. -->
+    <th scope="col">
       <xsl:attribute name="class">
         <xsl:choose>
           <xsl:when test="$scrollable-context = 'true'">
@@ -4565,7 +4574,8 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
     <xsl:param name="column-count" />
     <xsl:param name="column-count" />
     
-    <th>
+    <!-- Added scope col to solve accessibility issues on expandable lists. -->
+    <th scope="col">
       <xsl:apply-templates select="." mode="table-header-abbr" />
       <xsl:apply-templates select="." mode="add-css-class">
         <xsl:with-param name="other-classes">
@@ -4741,7 +4751,9 @@ restricted by GSA ADP Schedule Contract with IBM Corp.
       <!-- Give the widget a chance to provide a label -->
       <xsl:when test="@LABEL and (not(WIDGET[@TYPE = 'MULTISELECT']) and
                                   not(WIDGET[@TYPE = 'SINGLESELECT']))">
-        <th>
+        <!-- Added scope col to solve accessibility issues on expandable
+        lists. -->
+        <th scope="col">
           <xsl:apply-templates select="." mode="table-header-abbr" />
           <xsl:apply-templates select="." mode="add-css-class">
             <xsl:with-param name="other-classes" select="$extra-class"/>

@@ -4729,9 +4729,10 @@ define("dijit/place", [
        * around the actions menu button, set the overflow variable with the maximum value
        * to prevent placing the popup window from these two places.
        */
+	  var l = domGeometry.isBodyLtr();
       if(lang.exists("curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm")
           && curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm == true) {
-        if( (corner.charAt(0) == 'T' || corner.charAt(1) == 'L')
+        if( (corner.charAt(0) == 'T' || (corner.charAt(1) == 'L' && l) || (corner.charAt(1) == 'R' && !l) )
           && overflow > 0 ){
 
           overflow = mb.w + mb.h;
@@ -4769,7 +4770,7 @@ define("dijit/place", [
 		// In RTL mode, set style.right rather than style.left so in the common case,
 		// window resizes move the popup along with the aroundNode.
 		var l = domGeometry.isBodyLtr(),
-			s = node.style;
+		   	s = node.style;
 		s.top = best.y + "px";
 		s[l ? "left" : "right"] = (l ? best.x : view.w - best.x - best.w) + "px";
 		s[l ? "right" : "left"] = "auto";	// needed for FF or else tooltip goes to far left

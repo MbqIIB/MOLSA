@@ -8,7 +8,9 @@ Software, Ltd. ("Confidential Information"). You shall not disclose
 such Confidential Information and shall use it only in accordance with the
 terms of the license agreement you entered into with Curam Software.
 -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils"
+  exclude-result-prefixes="bidi-utils">
   <xsl:output method="xml" indent="no" omit-xml-declaration="yes"/>
 
   <xsl:param name="questionnaire-id-param-name"/>
@@ -26,6 +28,9 @@ terms of the license agreement you entered into with Curam Software.
                   select="concat('mainTabContainer_', generate-id(.))"/>
     <div id="{$node-id}" dojoType="dijit.layout.TabContainer"
          doLayout="false" class="evidence-comparison">
+         <xsl:attribute name="textDir">
+           <xsl:value-of select="bidi-utils:getBaseTextDirection()"/>
+         </xsl:attribute>          
       <xsl:apply-templates select="QUESTIONNAIRE"/>
     </div>    
     <script type="text/javascript">
@@ -36,12 +41,18 @@ terms of the license agreement you entered into with Curam Software.
   <xsl:template match="QUESTIONNAIRE">
     <div label="{@LABEL}" dojoType="dijit.layout.ContentPane" id="{@LABEL}"
          class="list list-with-header" title="{@LABEL}">
+         <xsl:attribute name="textDir">
+           <xsl:value-of select="bidi-utils:getBaseTextDirection()"/>
+         </xsl:attribute> 
       <table>
         <thead>
           <tr>
             <th class="field first-header">
             	<span>
-              	<xsl:value-of select="$table-header-label"/>
+              	<xsl:attribute name="dir">
+              	   <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-header-label)"/>
+              	</xsl:attribute>               	
+              	<xsl:value-of select="$table-header-label"/>              	
               </span>
             </th>
             <th class="field">
@@ -76,12 +87,18 @@ terms of the license agreement you entered into with Curam Software.
         <xsl:attribute name="class">last-row</xsl:attribute>
       </xsl:if>
       <td class="{$css-class} first-field">
+        <xsl:attribute name="dir">
+          <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(@LABEL)"/>
+        </xsl:attribute>      
         <xsl:value-of select="@LABEL"/>
       </td>
       <td class="{$css-class}">
         <xsl:apply-templates select="BASELINE1"/>
         <xsl:if test="not(@HIGHLIGHT = 'false')">
           <span class="changed">
+          	<xsl:attribute name="dir">
+          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-different-next)"/>
+          	</xsl:attribute>                
           	<xsl:value-of select="$table-different-next" />
           </span>
         </xsl:if>
@@ -90,6 +107,9 @@ terms of the license agreement you entered into with Curam Software.
         <xsl:apply-templates select="BASELINE2"/>
         <xsl:if test="not(@HIGHLIGHT = 'false')">
           <span class="changed">
+          	<xsl:attribute name="dir">
+          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(table-different-previous)"/>
+          	</xsl:attribute>                
             <xsl:value-of select="$table-different-previous" />
           </span>
         </xsl:if>
@@ -101,12 +121,20 @@ terms of the license agreement you entered into with Curam Software.
     <!-- Text takes precedence over answer value. -->
     <xsl:choose>
       <xsl:when test="@DISPLAY_TEXT">
+          	<xsl:attribute name="dir">
+          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(@DISPLAY_TEXT)"/>
+          	</xsl:attribute>                      
         <xsl:value-of select="@DISPLAY_TEXT"/>          
       </xsl:when>
       <xsl:otherwise>
+          	<xsl:attribute name="dir">
+          	  <xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(@ANSWER)"/>
+          	</xsl:attribute>                      
         <xsl:value-of select="@ANSWER"/>          
       </xsl:otherwise>
     </xsl:choose>
+    
+    <xsl:text>&#x2029;</xsl:text><!-- Bidi paragraph separator -->
 
     <xsl:if test="@SHOW_LINK = 'true'">
       <xsl:variable name="linkURI"

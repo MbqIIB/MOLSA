@@ -329,6 +329,394 @@ define("dijit/_TemplatedMixin", [
 
 },
 'url:curam/app/templates/ExternalApplication.html':"<div class=\"app-container\">\r\n  <div class=\"app-container-bc\" \r\n    data-dojo-type=\"dijit/layout/BorderContainer\"\r\n    data-dojo-props=\"gutters:false\"\r\n    data-dojo-attach-point=\"_borderContainer\">\r\n    <div class=\"app-banner\"\r\n      data-dojo-type=\"dojox/layout/ContentPane\"\r\n      data-dojo-props=\"region: 'top'\"\r\n      data-dojo-attach-point=\"_appBanner\" role=\"banner\">\r\n    </div>\r\n    <div id=\"app-nav\"\r\n      data-dojo-type=\"curam/widget/menu/MenuPane\"\r\n      data-dojo-props=\"region: 'leading', startExpanded: false\"\r\n      data-dojo-attach-point=\"_appNav\"\r\n      class=\"leftNavMenu\">\r\n    </div>\r\n\t\t<div id=\"app-content\"\r\n\t\t\tdata-dojo-type=\"curam/widget/containers/TransitionContainer\"\r\n\t\t\tdata-dojo-attach-point=\"_appContentBody\" class=\"mainBody\"\r\n\t\t\tdata-dojo-props='region:\"center\", style : {padding : 0, border : 0}' role=\"main\">\r\n\t\t</div>\r\n  </div>\r\n</div>",
+'curam/util/UimDialog':function(){
+/*
+ * Copyright 2010-2011 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+/*
+ * Modification History
+ * --------------------
+ * 25-Mar-2014  MV  [CR00423311] Handle usage from an external application.   
+ * 06-Jul-2011  KW  [CR00275353] Correctly set the o3rpu value in openUrl()
+ *                                function.
+ * 01-Feb-2011  MV  [CR00250399] Fix the call to openModalDialog() function.
+ * 21-Jan-2011  MV  [CR00243263] Fix the new openUrl function to return
+ *    the dialog object. 
+ * 14-Jan-2011  MK  [CR00240138] Added the openUrl() function. 
+ * 13-Jan-2011  MV  [CR00241667] Added ready() function, updated documentation.
+ * 19-Nov-2010  MV  [CR00231655] Added the get() function.
+ * 01-Nov-2010  SD  [CR00225331] Initial version.
+ */
+
+define("curam/util/UimDialog", ["curam/util/RuntimeContext",
+        "curam/util/external",
+        "curam/util",
+        "curam/define",
+        "curam/dialog",
+        "curam/util/DialogObject"
+        ], function(RuntimeContext, external) {
+  
+  /**
+   * @name curam.util.UimDialog
+   * @namespace Provides the ability to open UIM content in a Curam dialog
+   * and interact with the dialog window.<p/>
+   * 
+   * The API provides support for both opening a UIM page in a new dialog
+   * and for accessing a dialog which is already open. See the <code>open()</code>
+   * and <code>get()</code> functions.<p/>
+   *  
+   * It is required that the UIM page you are opening in the dialog resides
+   * on the same Internet domain as the page the API is used from.<p/>
+   * 
+   * Example:<p/>
+   * <pre>
+   * dojo.require('curam.util.UimDialog');
+   * 
+   * var dialogObject = curam.util.UimDialog.open(
+   *   'MyPage.do', { myParam:'1' }, {width:500,height:300});
+   * 
+   * dialogObject.registerBeforeCloseHandler(function() { alert("test"); });
+   * dialogObject.registerOnDisplayHandler(function() {
+   *   setTimeout(1000, function() { dialogObject.close() });
+   * });
+   * </pre><p/>
+   *
+   * It is possible to execute custom code on dialog open and/or close.<p/>
+   * 
+   * To add a customised handler function to a supported event:<ul>
+   * <li>Make the UimDialog API call to open or get the dialog, which will
+   *  return a {@link curam.util.DialogObject} object.
+   * <li>This object will let you register handlers for the supported
+   * <code>OnDisplay</code> and <code>BeforeClose</code> events.</li></ul>
+   * <p/>
+   * 
+   * Lastly you can close the dialog by calling the <code>close()</code>
+   * function.<p/>
+   */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  curam.define.singleton("curam.util.UimDialog",
+  /**
+   * @lends curam.util.UimDialog.prototype
+   */
+  {
+    /**
+     * Opens the specified UIM page in a Curam dialog.
+     * 
+     * @param {String} path URL path to the page to display in the dialog, without
+     *              the query string.
+     * @param {Object} pageParameters An object containing the required page
+     *      parameters, or null if no page parameters are required.
+     *      The following format is expected:
+     *                        <code>{ param1Name:"value", param2Name:248 }</code>
+     *      The infrastructure handles URL-encoding the values so do NOT encode
+     *      them yourself.
+     * @param {Object} [dialogSize] An object representing the required size
+     *    of the dialog in pixels. The following form is required:
+     *        <code>{ width:500, height:300 }</code> If size is not specified
+     *      the default size will be used instead.
+     *      
+     * @returns {curam.util.DialogObject} An object, representing the dialog.
+     */
+    open: function(path, pageParameters, dialogSize) {    
+      var url = path + curam.util.makeQueryString(pageParameters);    
+      return this.openUrl(url, dialogSize);
+    },
+
+    /**
+     * Opens the specified UIM page in a Curam dialog.
+     * 
+     * @param {String} path URL path to the page to display in the dialog, including
+     *              the query string.
+     *              
+     * @param {Object} [dialogSize] An object representing the required size
+     *    of the dialog in pixels. The following form is required:
+     *        <code>{ width:500, height:300 }</code> If size is not specified
+     *      the default size will be used instead.
+     *
+     * @returns {curam.util.DialogObject} An object, representing the dialog.
+     */
+    openUrl: function(url, dialogSize) {
+
+
+
+
+
+
+
+
+
+
+
+
+      // generate a unique token, this is to be used to retrieve the
+      // correct dialogID
+      var uimToken = curam.util.getCacheBusterParameter();
+
+      // create dialog object to be returned to the user
+      var myDialogObject = new curam.util.DialogObject(uimToken);
+
+      var windowOptions = null;
+      if (dialogSize) {
+        windowOptions = "width=" + dialogSize.width
+        + ",height=" + dialogSize.height;
+      }
+
+      // call into modal logic with unique token
+      curam.util.openModalDialog({ href: this._addRpu(url) },
+          windowOptions, null, null, uimToken);
+
+      return myDialogObject;
+    },
+    
+    _addRpu: function(url) {
+      var newUrl = url;
+      
+      if (curam.tab.inTabbedUI()) {
+        // we are in tabbed UI, set RPU to the active tab content iframe
+        var iframe = curam.tab.getContentPanelIframe();
+        if (iframe) {
+          newUrl = curam.util.setRpu(
+              url, new RuntimeContext(iframe.contentWindow));
+        }
+
+      } else if (external.inExternalApp()) {
+        // we are in the external application, try to get parent UIM iframe
+        var parent = external.getUimParentWindow();
+        if (parent) {
+          newUrl = curam.util.setRpu(
+              url, new RuntimeContext(parent));
+        }
+      }
+      // else - unable to set RPU, this is valid for example in ext app fragment
+      // scenarios
+
+      return newUrl;
+    },
+    
+    /**
+     * Returns a dialog object corresponding to the runtime context
+     * of the calling page.
+     * 
+     * If the calling page is not loaded in a dialog or the dialog infrastructure
+     * is not yet initialized then exception will be thrown. In this case use the
+     * ready() function to execute your code at the right point in time. 
+     * 
+     * @returns {curam.util.DialogObject} An object, representing the dialog.
+     */
+    get: function() {
+      if (curam.dialog._id == null) {
+        throw "Dialog infrastructure not ready.";
+      }
+      return new curam.util.DialogObject(null, curam.dialog._id);
+    },
+
+    /**
+     * Executes the callback function when the dialog infrastructure
+     * in the current runtime context becomes ready. If the infrastructure
+     * is ready by the time this function is called, then the callback function
+     * is executed immediately.
+     * 
+     * @param {Function} callback
+     *    The function to run.
+     */
+    ready: function(callback) {
+      if (curam.dialog._id == null) {
+        // Dialog infrastructure not ready.
+        dojo.subscribe("/curam/dialog/ready", callback);
+
+      } else {
+        // infrastructure ready - call the code now
+        callback();
+      }
+    },
+
+    /**
+     * @private
+     */
+    _getDialogFrameWindow: function(dialogId) {
+      var dialogWidget = window.top.dijit.byId(dialogId);
+      return dialogWidget.uimController.getIFrame().contentWindow;
+    }
+  });
+  
+  return curam.util.UimDialog;
+});
+
+},
+'curam/util/DialogObject':function(){
+/*
+ * Copyright 2010 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+/**
+ * @name curam.util.DialogObject
+ * @namespace Provides access to a dialog instance.
+ * 
+ */
+define("curam/util/DialogObject", ["curam/dialog",
+        "curam/util"
+        ], function() { 
+/*
+ * Modification History
+ * --------------------
+ * 05-Feb-2013  MV  [CR00366128] Fix documentation comment.
+ * 02-May-2012  MK  [CR00323691] Use new Dojo AMD format.
+ * 13-Jan-2011  MV  [CR00241667] Added close() function. Updated documentation.
+ * 19-Nov-2010  MV  [CR00231655] Added the registerOnDisplayHandler() function.
+ * 04-Nov-2010  MV  [CR00229849] Unsubscribe handlers in the right context.
+ * 01-Nov-2010  SD  [CR00225331] Initial version.
+ */
+
+
+var DialogObject = dojo.declare("curam.util.DialogObject", null, 
+/** @lends curam.util.DialogObject.prototype */{  
+
+    /**
+     * Holds ID of the dialog in the current context.
+     * @private
+     */
+    _id: null,
+    
+    /**
+     * Constructor takes the input token and uses it to listen for a 
+     * specific publish event which will return the dialogId for the
+     * opened dialog.
+     *
+     * @constructor
+     * @private
+     */
+    constructor: function(tokenValue, id) {
+      if (!id) {
+        var unSubConstructor = 
+          window.top.dojo.subscribe(
+            "/curam/dialog/uim/opened/" + tokenValue, this, function(dialogID) {
+          this._id = dialogID;
+          window.top.dojo.unsubscribe(unSubConstructor);
+        });
+      
+      } else {
+        this._id = id;
+      }
+    },
+    
+    /**
+     * Registers a custom function that will be called before the dialog
+     * is closed.
+     * 
+     * @param {Function} handler The handler function for the BeforeClose event.
+     */
+    registerBeforeCloseHandler: function(handler) {
+      var unSubClose = 
+        window.top.dojo.subscribe(
+          "/curam/dialog/BeforeClose", this, function(dialogID) {
+            if (dialogID == this._id) {
+              handler();
+            }
+            window.top.dojo.unsubscribe(unSubClose);
+      });
+    },
+    
+    /**
+     * Registers a custom handler for the onDispaly event of the dialog. 
+     * If the handler is registered after the dialog has been displayed, then
+     * it is executed immediately.
+     * 
+     * @param handler
+     *    The handler function for the dialog OnDisplay event. The handler
+     *    will be passed the size object in the following form:
+     *    {width: 125, height: 236}
+     */
+    registerOnDisplayHandler: function(handler) {
+      if (curam.dialog._displayed == true) {
+        handler(curam.dialog._size);
+        
+      } else {
+        var ut = window.top.dojo.subscribe(
+            "/curam/dialog/displayed", this, function(dialogID, size) {
+              if (dialogID == this._id) {
+                handler(size);
+              }
+              window.top.dojo.unsubscribe(ut);
+            });
+      }
+    },
+    
+    /**
+     * Closes the dialog, optionally refreshing or redirecting the parent window.
+     * 
+     * @param {Boolean} [refreshParent=false] Should the parent be refreshed
+     *              when this dialog closes?
+     * @param {String} [newPageIdOrFullUrl] ID of the page the parent window
+     *      should be redirected to when this dialog closes. Alternatively
+     *      a full URL including the page parameters can be passed.
+     * @param {Object} [pageParameters] Page parameters to be used when
+     *        redirecting the parent to the new page. The following format
+     *        is expected: <code>{ param1Name:"value", param2Name:248 }</code>
+     *        The infrastructure handles URL-encoding the values so do NOT encode
+     *        them yourself.
+     *        If full URL is specified then the pageParameters are ignored.
+     */
+    close: function(/*optional*/ refreshParent, /*optional*/ newPageIdOrFullUrl,
+        /*optional*/ pageParameters) {
+      
+      var win = curam.util.UimDialog._getDialogFrameWindow(this._id);
+      var parentWindow = win.curam.dialog.getParentWindow(win);
+      if (refreshParent && !newPageIdOrFullUrl) {
+        win.curam.dialog.forceParentRefresh();
+        curam.dialog.doRedirect(parentWindow, null);
+        
+      } else if (newPageIdOrFullUrl) {
+        var newParentUrl = newPageIdOrFullUrl;
+        // distinguish between pageId and full URL
+        if (newPageIdOrFullUrl.indexOf("Page.do") == -1) {
+          newParentUrl = newPageIdOrFullUrl + "Page.do"
+              + curam.util.makeQueryString(pageParameters);
+        }
+  
+        curam.dialog.doRedirect(parentWindow, newParentUrl);
+      }
+  
+      curam.dialog.closeModalDialog();
+    }
+  });
+  
+  return DialogObject;  
+});
+
+},
 'dijit/_CssStateMixin':function(){
 define("dijit/_CssStateMixin", [
 	"dojo/touch",
@@ -649,6 +1037,7 @@ define(
     "dijit/form/ComboButton",
     "curam/widget/menu/BannerMenuItem",
     /* END ONE UI banner requirements */
+    "curam/util/SessionTimeout",
     "curam/util/ui/AppExitConfirmation"
     ],
   function(
@@ -768,6 +1157,19 @@ define(
   _setupUserLeavingGuard: function() {
     if (this.guardAgainstLeaving) {
       curam.util.ui.AppExitConfirmation.install();
+    }
+  },
+  
+  _checkSessionExpired: function() { 
+    if (this._appConfig != null) {
+	  var timeoutWarningConfig = this._appConfig.timeoutWarning;
+	  if (timeoutWarningConfig) {
+	    var width = timeoutWarningConfig.width;
+		var height = timeoutWarningConfig.height;
+		var timeout = timeoutWarningConfig.timeout;
+		var bufferingPeriod = timeoutWarningConfig.bufferingPeriod;
+		curam.util.SessionTimeout.checkSessionExpired(width, height, timeout, bufferingPeriod);  
+	  }
     }
   },
   
@@ -1252,8 +1654,7 @@ define(
     
     this._makeNavBarAccessible();
     this._loadBanner();
-    this._loadLandingPage();
-    
+    this._loadLandingPage();    
   },
   
   _initNavBar: function(uimPageID, callBack) {
@@ -2017,9 +2418,10 @@ define("dijit/place", [
        * around the actions menu button, set the overflow variable with the maximum value
        * to prevent placing the popup window from these two places.
        */
+	  var l = domGeometry.isBodyLtr();
       if(lang.exists("curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm")
           && curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm == true) {
-        if( (corner.charAt(0) == 'T' || corner.charAt(1) == 'L')
+        if( (corner.charAt(0) == 'T' || (corner.charAt(1) == 'L' && l) || (corner.charAt(1) == 'R' && !l) )
           && overflow > 0 ){
 
           overflow = mb.w + mb.h;
@@ -2057,7 +2459,7 @@ define("dijit/place", [
 		// In RTL mode, set style.right rather than style.left so in the common case,
 		// window resizes move the popup along with the aroundNode.
 		var l = domGeometry.isBodyLtr(),
-			s = node.style;
+		   	s = node.style;
 		s.top = best.y + "px";
 		s[l ? "left" : "right"] = (l ? best.x : view.w - best.x - best.w) + "px";
 		s[l ? "right" : "left"] = "auto";	// needed for FF or else tooltip goes to far left
@@ -3415,6 +3817,910 @@ return declare("dijit._MenuBase",
 	}
 });
 
+});
+
+},
+'curam/dialog':function(){
+/*
+ * Copyright 2012-2013 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+define("curam/dialog", ["curam/util",
+        "curam/debug",
+        "curam/util/external",
+        "curam/util/Refresh",
+        "curam/tab",
+        "curam/util/RuntimeContext",
+        "curam/define",
+        "curam/util/onLoad",
+        "cm/_base/_dom",
+        "curam/util/ResourceBundle"
+        ], function(util, trace, external) {
+
+/*
+ * Modification History
+ * --------------------
+ * 25-Mar-2014  MV  [CR00423311] Handle usage from an external application.
+ * 10-Jul-2013  KW  [CR00391894] Remove reference o3_artificial_post parameter.
+ * 26-Jun-2013  BOS [CR00390466] Adding requireLocalization to specifically
+ *                include required bundle.
+ * 11-Mar-2013  MV  [CR00373738] Remove change to close dialog when page
+ *    is loaded. We'll do it differently in curam/ModalDialog.
+ * 23-Oct-2012  MV  [CR00347543] Refer to top level UIController.
+ * 24-Sep-2012  MV  [CR00345119] Revert the change to the function used for
+ *      detecting when page unloads in a modal.
+ * 24-Jul-2012  MK  [CR00336401] Wrapped contents of the closeModalDialog
+ *    method in dojo.ready to prevent it closing the model before the page has
+ *    finished loading.
+ * 07-Feb-2012  MV  [CR00301458] Code cleanup.
+ * 15-Sept-2011 MK  [CR00287680] Change the function that is used to detect a 
+ *      page unloading in a modal. Changing from addOnUnload to addOnWindowUnload
+ * 02-Aug-2011  MV  [CR00283023] Refactored modalEventHandler to allow
+ *      unit testing. Avoid unwanted refresh when parent is an Action.do page.
+ * 29-Jul-2011  MV [CR00269970] Add support for refreshing based on submit with
+ *      inline page as parent. 
+ * 11-Feb-2011  PK  [CR00251730] Added support for refreshing main content
+ *                    panel on submit.
+ * 28-Jan-2011  MV  [CR00245381] Catch Access denied error when accessing
+ *    external sites.
+ * 21-Jan-2011  DG  [CR00243540] Changed "console.log" to "curam.debug.log".
+ * 13-Jan-2011  MV  [CR00241667] Fire event when the dialog infrastructure
+ *    is ready.
+ * 05-Jan-2011  SK  [CR00239843] Previous page id parameter is not added any
+ *                  longer to the form submits from Agenda Player.
+ * 12-Jan-2011  SK  [CR00241719] Added the option to close modal without
+ *                               the parent redirect.
+ * 29-Nov-2010  MV  [CR00232623] Add in a hack to properly unregister a handler
+ *    on page unload when using agenda player.
+ * 23-Nov-2010  MV  [CR00232063] Remove page loading mask.
+ * 19-Nov-2010 MV [CR00231655] Store the display status and dialog size
+ *     in the runtime context.
+ * 18-Nov-2010 MV [CR00231387] Connect to DOM events with a function that will
+ *    automatically disconnect on page unload.
+ * 27-Oct-2010  MV  [CR00224488] Refactor for the dialog closing to work well
+ *    with new HTML structure.
+ * 26-Oct-2010  SK  [CR00224193] The situation where the dialog is opened from
+ *                               non-page parent is now handled correctly.
+   * 14-Oct-2010  MV  [CR00223441] Move functions to util namespace. Remove
+ *    double invoking of a function.
+ * 07-Oct-2010  MV  [CR00221605] Refactor for dialogs to work with the generic
+ *    key handler that submits the page when Enter is pressed.
+ * 17-Sep-2010  MV  [CR00220607] Removed a dead branch of code.
+ * 27-Aug-2010  MV  [CR00217499] Refactored to remove hacks previously needed
+ *                    to support the agenda player. Documentation comments
+ *                    switched to jsdoc.
+ * 21-Jul-2010  MV  [CR00211225] Indicate in the `onLoad` context that modal
+ *                    is closing.
+ * 24-Jun-2010  AF  [CR00202526] Removing reference to content-panel class name
+ *                               in the calculateHeightByContents method.
+ * 24-Jun-2010  MV  [CR00203864] Add debug output to autoheight calculation.
+ * 09-Jun-2010  MV  [CR00202971] Remove the curam.iframeLoaded event,
+ *                               add the height calculation function.
+ * 04-Jun-2010  MV  [CR00202412] Simplify getting event identifier.
+ * 23-Apr-2010  MV  [CR00194352] Fix screen context handling for HTML forms.
+ * 11-Feb-2010  MV  [CR00188844] Add event identifier to the iframeLoaded event.
+ * 11-Dec-2009  MV  [CR00173949] Remove the "SrPopUp" window name.
+ * 24-Nov-2009  MV  [CR00175899] Only call the closeModal function if there
+ *                                are no informational messages.
+ * 20-Nov-2009  MV  [CR00175581] Replace curam.tab.refreshCurrentTab() call
+   *                               with the correct util.redirectWindow().
+   * 20-Nov-2009  MV  [CR00175615] Use the util.firePageSubmittedEvent
+ *                                function.
+ * 03-Sep-2009  MLB [CR00164883] Updated to refresh the current tab for user
+ *                  preferences.
+ * 07-Aug-2009  MV  [CR00164029] Notify the tabbed UI refresh mechanism
+                                on submit. Reverted the previous change as now
+                                the refresh is working as expected.
+ * 23-Jul-2009  MV  [CR00162771] Updated to not refresh parent window when
+ *                  in Tabbed UI.
+ */
+
+/**
+ * Creating Resource Bundle Object to access localized resources.
+ */
+dojo.requireLocalization("curam.application", "Debug");
+var bundle = new curam.util.ResourceBundle("Debug");
+  
+/**
+ * @namespace Functions related to the Curam dialog support for UIMs.
+ */
+curam.define.singleton("curam.dialog", {
+  MODAL_PREV_FLAG: "o3modalprev",
+  MODAL_PREV_FLAG_INPUT: "curam_dialog_prev_marker",
+  FORCE_CLOSE: false,
+  ERROR_MESSAGES_HEADER: "error-messages-header",
+
+  /**
+   * Keeps track of the hierarchy of window objects for the open dialogs.
+   * @private
+   */
+  _hierarchy: [],
+
+  /**
+   * ID of the dialog for the current context.
+   * @private
+   */
+  _id: null,
+
+  /**
+   * @private
+   */
+  _displayedHandlerUnsToken: null,
+
+  /**
+   * True if the dialog has been displayed, false otherwise.
+   * @private
+   */
+  _displayed: false,
+
+  /**
+   * Holds the current size of the dialog or null if it was not yet published.
+   * @private
+   */
+  _size: null,
+
+  /**
+   * Indicates if the dialog should close without the parent redirection. 
+   * @private
+   */
+  _justClose: false,
+
+  validTargets: {
+    "_top":true,"_self":true
+  },
+
+  initModal: function(pageId, messagesExist) {
+    curam.dialog.pageId = pageId;
+    curam.dialog.messagesExist = messagesExist;
+
+      var topWin = util.getTopmostWindow();
+    // receive the ID of the dialog
+    var isIdSet = false;
+    var unsToken = topWin.dojo.subscribe(
+        "/curam/dialog/SetId", this, function(dialogId) {
+            trace.log("curam.dialog: " 
+              + bundle.getProperty("curam.dialog.id"), dialogId);
+          curam.dialog._id = dialogId;
+          isIdSet = true;
+
+          topWin.dojo.unsubscribe(unsToken);
+        });
+
+    // trigger the dialog infrastructure init
+    // also sets the dialog ID - see above
+    topWin.dojo.publish("/curam/dialog/init");
+    if (!isIdSet) {
+      // unsubscribe, the modal infrastructure already initialized
+      // or nobody listening for this particular event
+        trace.log("curam.dialog: " + bundle.getProperty("curam.dialog.no.id"));
+      topWin.dojo.unsubscribe(unsToken);
+    }
+
+    if(curam.dialog.closeDialog(false)) {
+      // Do not do any more modal processing. Either the body is hidden off to
+      // the left of the screen and messages are being displayed, or the window
+      // has been closed.
+      return;
+    }
+
+    // let us know when we are displayed
+    curam.dialog._displayedHandlerUnsToken =
+          util.getTopmostWindow().dojo.subscribe(
+        "/curam/dialog/displayed", null, function(dialogID, size) {
+          if (dialogID == curam.dialog._id) {
+            curam.dialog._displayed = true;
+            curam.dialog._size = size;
+
+              util.getTopmostWindow().dojo.unsubscribe(
+                curam.dialog._displayedHandlerUnsToken);
+            curam.dialog._displayedHandlerUnsToken = null;
+          }
+        });
+    // a hack to unsubscribe for agenda pages
+    if (jsScreenContext.hasContextBits("AGENDA")
+        || jsScreenContext.hasContextBits("TREE")) {
+
+      dojo.addOnUnload(function() {
+          util.getTopmostWindow().dojo.unsubscribe(
+            curam.dialog._displayedHandlerUnsToken);
+        curam.dialog._displayedHandlerUnsToken = null;
+      });
+    }
+
+    //Wait for the page to load, then add onClick and onKey listeners to the
+    //body element
+    dojo.addOnLoad(function() {
+      // Handle clicks in the dialog window
+        util.connect(dojo.body(), "onclick", curam.dialog.modalEventHandler);
+
+      // setup the forms in the page
+      for (var i = 0; i < document.forms.length; i++) {
+        var form = document.forms[i];
+        curam.dialog.addFormInput(form, 'hidden', 'o3frame', 'modal');
+
+        var ctxField = dojo.byId('o3ctx');
+        var sc = new curam.util.ScreenContext(jsScreenContext.getValue());
+        sc.addContextBits("ACTION|ERROR");
+        ctxField.value = sc.getValue();
+
+          util.connect(form, "onsubmit", curam.dialog.formSubmitHandler);
+      }
+
+      // mark as modal window - for later detection
+        // by util.isModalWindow()
+      window.curamModal = true;
+    });
+
+    dojo.addOnUnload(function() {
+        util.getTopmostWindow().dojo.publish(
+          "/curam/dialog/iframeUnloaded", [ curam.dialog._id, window ]);
+    });
+
+    if (isIdSet) {
+      dojo.publish("/curam/dialog/ready");
+    }
+  },
+
+  closeDialog: function(force) {
+    if(force) {
+      curam.dialog.forceClose();
+    }
+    var closeFunction = curam.dialog.checkClose(curam.dialog.pageId);
+    if(closeFunction) {
+        util.onLoad.addPublisher(function(context) {
+        context.modalClosing = true;
+      });
+
+      //If the dialog window should close, but informational messages exist,
+      //delay the closing of the window. Add a class to the messages to make
+      //them visible, and place a button under them to close the window.action
+      //If no messages exist, then just close the window, and optionally
+      //redirect the parent page.
+      if(curam.dialog.messagesExist) {
+        dojo.addOnLoad(function(){
+            var errMsgContainer = dojo.byId(util.ERROR_MESSAGES_CONTAINER);
+            var errMsgNode = dojo.byId(util.ERROR_MESSAGES_LIST);
+          var errMsgHeaderNode = dojo.byId(curam.dialog.ERROR_MESSAGES_HEADER);
+
+          if(errMsgNode && errMsgHeaderNode) {
+            //Save the messages locally, to be loaded by the next page that loads
+            //which should be the parent page. The closeFunction is called
+            //once the messages have been saved.
+              util.saveInformationalMsgs(closeFunction);
+
+            //Disable loading of informational messages in the popup,
+            //so it doesn't run. This prevents a race condition which would wipe
+            //out the messages before the parent page loads.
+              util.disableInformationalLoad();
+
+          } else {
+            closeFunction();
+          }
+        });
+
+      } else {
+        //If no error messages exist, just run the close function.
+        closeFunction();
+      }
+      //Return true, stating that the dialog is closing.
+      return true;
+    }
+    //Return false, that the dialog is not closing.
+    return false;
+  },
+
+  addFormInput: function(form, type, name, value) {
+    return dojo.create("input", {
+      "type": type,
+      "name": name,
+      "value": value
+    }, form);
+  },
+
+  /**
+   * Checks if the window should be closed. If the window should close, this
+   * function returns another function which, when executed, closes the dialog,
+   * and optionally redirects the parent page. If the window should not close,
+   * it returns false.
+   */
+  checkClose: function(pageId) {
+    if (curam.dialog._justClose) {
+      return function() {
+        curam.dialog.closeModalDialog();
+      };
+    }
+	
+    var parentWindow = curam.dialog.getParentWindow(window);
+    if (!parentWindow) {
+      return false;
+    }
+
+    //Check if the page is in a modal dialog, and if it is, whether or not
+    //it should be closed.
+    var href = window.location.href;
+    var prevFlag = curam.dialog.MODAL_PREV_FLAG;
+
+      var oldPageId = util.getUrlParamValue(href, prevFlag);
+    var doClose = true;
+    if (oldPageId) {
+      if (parentWindow) {
+        // If the URL parameter MODAL_PREV_FLAG is set, and is not the same
+        // as the current page id, then shut down the dialog and redirect
+        // the parent page the current URL. Remove the MODAL_PREV_FLAG
+        if(oldPageId == pageId) {
+          doClose=false;
+        }
+      }
+    
+    } else {
+      doClose = false;
+    }
+
+      var scReq = util.getUrlParamValue(href, "o3ctx");
+    if (scReq) {
+      var sc = new curam.util.ScreenContext();
+      sc.setContext(scReq);
+      if (sc.hasContextBits('TREE|ACTION')) {
+        doClose=false;
+      }
+    }
+
+    if (doClose || curam.dialog.FORCE_CLOSE) {
+      if (!curam.dialog.FORCE_CLOSE) {
+        if (oldPageId=="user-prefs-editor") {
+          return function() {
+            if (parentWindow && parentWindow.location
+                               !== util.getTopmostWindow().location) {
+              curam.dialog.doRedirect(parentWindow);
+            }
+            curam.dialog.closeModalDialog();
+          };
+        }
+        return function() {
+            var rp = util.removeUrlParam;
+          // Remove the modal and prevent cache flags from the url
+          // before telling the parent to change it's location.
+            href = rp(rp(rp(href, prevFlag), "o3frame"),util.PREVENT_CACHE_FLAG);
+            href = util.adjustTargetContext(parentWindow, href);
+          if (parentWindow && parentWindow.location
+                                 !== util.getTopmostWindow().location) {
+            curam.dialog.doRedirect(parentWindow, href, true);
+
+          } else {
+            curam.tab.getTabController().handleLinkClick(href);
+          }
+          curam.dialog.closeModalDialog();
+        };
+
+      } else {
+        return function() {
+          // In case there are some informational messages on the modal dialog,
+          // make sure they are loaded in to the parent page, even if it
+          // isn't refreshed.
+            if (parentWindow !== util.getTopmostWindow()) {
+            parentWindow.curam.util.loadInformationalMsgs();
+          } //otherwise nowhere to show them
+          
+          curam.dialog.closeModalDialog();
+        };
+      }
+    }
+    return false;
+  },
+
+  /**
+   * Returns the parent window of either the current window or of the specified
+   * window.
+   *
+   * @param {window} [child] If specified, the dialog hierarchy will be used
+   *      to look up the parent window.
+   */
+  getParentWindow: function(/*optional*/child) {
+    if (!child) {
+        trace.log("curam.dialog.getParentWindow(): " 
+          + bundle.getProperty("curam.dialog.no.child"), window);
+        trace.log("returning as parent = ", window.parent.location.href);
+      return window.parent;
+    }
+      trace.log("curam.dialog.getParentWindow(): " 
+        + bundle.getProperty("curam.dialog.child"), child.location.href);
+    var hierarchy = curam.dialog._getDialogHierarchy();
+    for (var i = 0; i < hierarchy.length; i++) {
+      if (hierarchy[i] == child) {
+        // the child found in the stack, parent is at the previous index
+        var realParent = (i > 0) ? hierarchy[i - 1] : hierarchy[0];
+          trace.log("curam.dialog.getParentWindow(): " 
+            + bundle.getProperty("curam.dialog.parent.window"), realParent);
+        return realParent;
+      }
+    }
+    // the child NOT found in the stack
+      trace.log("curam.dialog.getParentWindow(): " 
+        + bundle.getProperty("curam.dialog.child.not.found"), 
+        child.location.href);
+      trace.log("curam.dialog.getParentWindow(): " 
+        + bundle.getProperty("curam.dialog.hierarchy"), hierarchy);
+    var ret = hierarchy.length > 0 ? hierarchy[hierarchy.length - 1] : undefined;
+      trace.log("curam.dialog.getParentWindow(): " 
+        + bundle.getProperty("curam.dialog.returning.parent"), 
+          ret ? ret.location.href : "undefined");
+    return ret;
+  },
+
+  /**
+   * Dialog hierarchy is a way for the code to keep track of parent/opener
+   * windows for the open modal dialogs. The window.parent property
+   * cannot be used for this purpose, because for dojo dialogs it is always
+   * pointing at the same parent window, so it does not reflect the real
+   * dialog hierarchy.
+   *
+   * The hierarchy is implemented as a simple stack of consecutive window
+   * objects.
+   *
+   * @returns Array The hierarchy of window objects.
+   * @private
+   */
+  _getDialogHierarchy: function() {
+    // the hierarchy is stored in the topmost window - the truly global context
+      var topmostWindow = util.getTopmostWindow();
+      topmostWindow.require(["curam/dialog"]);
+    return topmostWindow.curam.dialog._hierarchy;
+  },
+
+  /**
+   * Pushes the specified window onto the dialog hierarchy stack,
+   * unless the window is already part of the stack.
+   */
+  pushOntoDialogHierarchy: function(newParent) {
+    var hierarchy = curam.dialog._getDialogHierarchy();
+    if (dojo.indexOf(hierarchy, newParent) < 0) {
+      hierarchy.push(newParent);
+        trace.log(bundle.getProperty("curam.dialog.add.hierarchy"), 
+          newParent.location.href);
+        trace.log(bundle.getProperty("curam.dialog.full.hierarchy"), hierarchy);
+    }
+  },
+
+  /**
+   * Removes the specified window from the dialog hierarchy stack.
+   *
+   * @param child The window object to remove from the dialog hierarchy.
+   */
+  removeFromDialogHierarchy: function(child) {
+    var hierarchy = curam.dialog._getDialogHierarchy();
+    if(!child || hierarchy[hierarchy.length - 1] == child) {
+      hierarchy.pop();
+
+    } else {
+        trace.log("curam.dialog.removeFromDialogHierarchy(): " 
+          + bundle.getProperty("curam.dialog.ignore.request"));
+      try {
+          trace.log(child.location.href);
+      
+      } catch(e) {
+        // in scenarios where we open external site in a dialog, this call
+        // causes Access denied exception - we just  catch it and continue
+          trace.log(e.message);
+      }
+    }
+  },
+
+  stripPageOrActionFromUrl: function(url) {
+    var idx = url.lastIndexOf("Page.do");
+    var len = 7;
+    if(idx < 0) {
+      idx = url.lastIndexOf("Action.do");
+      len = 9;
+    }
+    if(idx < 0) {
+      idx = url.lastIndexOf("Frame.do");
+      len = 8;
+    }
+    if(idx > -1 && idx == url.length - len){
+      return url.substring(0, idx);
+    }
+    return url;
+  },
+
+  /**
+   * @private
+   * 
+   * @param href
+   * @param rtc
+   * @param stripPageOrAction
+   * @returns {Boolean}
+   */
+  _isSameBaseUrl: function(href, rtc, stripPageOrAction) {
+    if(href && href.indexOf('#') == 0){return true;}
+    var hrefSplit = href.split("?");
+    var hereSplit = rtc.getHref().split("?");
+
+    //If one url is relative, and the other is absolute, compensate by removing
+    //everything except what's after the last "/"
+    if(hrefSplit[0].indexOf("/") < 0) {
+      var parts = hereSplit[0].split("/");
+      hereSplit[0] = parts[parts.length -1];
+    }
+    if(hereSplit[0].indexOf("/") < 0) {
+      var parts = hrefSplit[0].split("/");
+      hrefSplit[0] = parts[parts.length -1];
+    }
+
+    if (stripPageOrAction && stripPageOrAction == true) {
+      hrefSplit[0] = curam.dialog.stripPageOrActionFromUrl(hrefSplit[0]);
+      hereSplit[0] = curam.dialog.stripPageOrActionFromUrl(hereSplit[0]);
+    }
+
+    if(hrefSplit[0] == hereSplit[0]){
+      return true;
+    }
+
+    return false;
+  },
+
+  modalEventHandler: function(event) {
+    curam.dialog._doHandleModalEvent(event,
+        new curam.util.RuntimeContext(window),
+        curam.dialog.closeModalDialog,
+        curam.dialog.doRedirect);
+  },
+  
+  /**
+   * Hanldes the specified event.
+   * 
+   * @param e The event to handle.
+   * @param rtc Runtime context.
+   * @param closeDialog The function to be called to close the dialog.
+   * @param doRedirect The function to be called to redirect the parent window
+   *    to a new location.
+   * @returns {Boolean} True if the event should continue, false if it should
+   *    be stopped.
+   */
+  _doHandleModalEvent: function(e, rtc, closeDialog, doRedirect) {
+    var target = e.target;
+      var u = util;
+
+    switch(target.tagName) {
+      case 'INPUT':
+        // If the user clicks a submit control, copy its "keepModal" attribute
+        // on to the form it is in so that can be read by the onSubmit handler
+        if(dojo.attr(target, "type") == "submit"
+            && typeof target.form != "undefined") {
+
+          target.form.setAttribute("keepModal", target.getAttribute("keepModal"));
+        }
+        return true;
+
+      case 'IMG': case 'SPAN': case 'DIV':
+        target = cm.getParentByType(target, 'A');
+        if (target == null) {
+          return;
+        }
+        //If the IMG, SPAN or DIV node has an anchor tag parent, leave it run
+        //into the 'A' case after changing the target to the parent anchor tag.
+      case 'A':
+      //If the target is an anchor tag, just get out of the switch statement
+        //and keep going in the function, unless the anchor tag is a
+        //dynamically generated tag used to replace a submit button.
+          //This replacement is done in util.replaceSubmitButton function.
+        if(target._submitButton) {
+          target._submitButton.form.setAttribute("keepModal",
+                                target._submitButton.getAttribute("keepModal"));
+          return;
+        }
+        break;
+      default:
+        //If we're not interested in this tag, ignore the event
+        return true;
+    }
+    var stopEvent = dojo.stopEvent;
+
+    var href = target.getAttribute("href");
+
+    // handling the case of a cancel link where there is no o3rpu
+    if (href == '') {
+      closeDialog();
+      return false;
+    }
+
+    if (href.indexOf("javascript") == 0) {
+      return false;
+    }
+    var ctx = jsScreenContext;
+    ctx.addContextBits('MODAL');
+
+    // If the anchor tag does not have a href, we simply cancel the event.
+    // Any onlick handlers attached directly to the anchor element will have
+    // completed by the time this handler is called.
+    if (!href) {
+      return false;
+    }
+
+    //If the anchor tag is trying to open a new window, open it separately,
+    //and do not change this page, or redirect the parent
+    var targetWindow = target.getAttribute("target");
+    if(targetWindow && !curam.dialog.validTargets[targetWindow]) {
+      return true;
+    }
+    //Make sure that file download links do not close the modal dialog.
+    //Instead, create an iframe on the fly, and set it's source to the file
+    //that is to be downloaded.
+    if(href && href.indexOf("/servlet/FileDownload?") > -1) {
+      var iframe = dojo.create("iframe", {
+        src: href
+      }, dojo.body());
+      iframe.style.display = 'none';
+      stopEvent(e);
+      return false;
+    }
+
+    //If the link is to a URL outside the Curam application, open the link in
+    //a new window.
+    if(dojo.hasClass(target, "external-link")) {
+      return true;
+    }
+
+    // If the link is not going to result in the page changing,
+    // then do nothing
+      if(util.isSameUrl(href, null, rtc)) {
+      // If the link is not simply linking in this page, then redirect the page.
+      // otherwise just let the page jump to the local anchor tag.
+      if(href.indexOf("#") < 0) {
+         href = u.replaceUrlParam(href, "o3frame", "modal");
+         href = u.replaceUrlParam(href, "o3ctx", ctx.getValue());
+         doRedirect(window, href);
+         return false;
+      }
+      return true;
+    }
+    if(href && curam.dialog._isSameBaseUrl(href, rtc, true)
+        && !target.getAttribute("keepModal")){
+
+      target.setAttribute("keepModal", "true");
+    }
+
+    var parentWindow = curam.dialog.getParentWindow(rtc.contextObject());
+    
+    if(target && target.getAttribute) {
+      stopEvent(e);
+
+      //If the link has the 'keepModal' attribute set to true, then
+      // the new page should be opened in the same modal dialog.
+      if(target.getAttribute("keepModal") == "true") {
+        href = u.replaceUrlParam(href, "o3frame", "modal");
+        href = u.replaceUrlParam(href, "o3ctx", ctx.getValue());
+        doRedirect(window, href);
+
+      // Otherwise the dialog will close and target will be opened in the parent
+      // page
+      } else if(parentWindow) {
+        href = u.removeUrlParam(href, "o3frame");
+        href = u.removeUrlParam(href, curam.dialog.MODAL_PREV_FLAG);
+        
+        if (parentWindow.location !== util.getTopmostWindow().location) {
+          var parentRtc = new curam.util.RuntimeContext(parentWindow);
+          var phref = parentRtc.getHref(); 
+          phref = u.removeUrlParam(phref, "o3frame");
+          
+          // only redirect if the parent window is not already on the target
+          // page 
+
+          // for submitted action pages in the parent window only comapare
+          // the base URL, ignoring any page parameters, because they are not
+          // included in the Action.do type URL anyway
+          if (util.isActionPage(phref)) {
+            if (!curam.dialog._isSameBaseUrl(href, parentRtc, true)) {
+              href = u.adjustTargetContext(parentWindow, href);
+              doRedirect(parentWindow, href);
+            }
+            
+          // for all other pages compare full URLS and only redirect if
+          // the same page is not already loaded
+          } else {
+            if (!util.isSameUrl(href, phref)) {
+              href = u.adjustTargetContext(parentWindow, href);
+              curam.dialog.doRedirect(parentWindow, href);
+            }
+          }
+        
+        } else {
+          //no tab opened
+          var tabContext = new curam.util.ScreenContext('TAB');
+          href = u.replaceUrlParam(href, "o3ctx", tabContext.getValue());
+          curam.tab.getTabController().handleLinkClick(href);
+        }
+
+        closeDialog();
+      }
+
+      return false;
+    }
+
+    if (parentWindow && typeof(target) == "undefined" || target == null
+      || target == "_self" || target == "") {
+      stopEvent(e);
+      href = href.replace(/[&?]o3frame=modal/g, "")
+        .replace("%3Fo3frame%3Dmodal", "")
+        .replace("?o3frame%3Dmodal", "");
+      //modal closes, so the context should be replaced by the previous.
+        href = util.updateCtx(href);
+        if (parentWindow.location !== util.getTopmostWindow().location) {
+        doRedirect(parentWindow, href);
+      
+      } else {
+        //no tab opened
+        var tabContext = new curam.util.ScreenContext('TAB');
+        href = u.replaceUrlParam(href, "o3ctx", tabContext.getValue());
+        curam.tab.getTabController().handleLinkClick(href);
+      }
+      
+      closeDialog();
+      return false;
+    }
+
+    //In this case, the page wants to open a popup window
+    return true;
+  },
+
+  /**
+   * This listener handles the onSubmit event of all forms on the page.
+   * It adds the current page ID to the URL as the 'oldPageId' parameter
+   * and if the window should be closed, it adds the 'MODAL_PREV_FLAG=true'
+   * parameter to the URL.
+   */
+  formSubmitHandler: function(e) {
+    var parentWindow = curam.dialog.getParentWindow(window);
+    if(typeof parentWindow == "undefined") {
+      return true;
+    }
+
+    e.target.method="post";
+    e.target.setAttribute("target", window.name);
+    var action = e.target.action;
+
+    var prevFlag = curam.dialog.MODAL_PREV_FLAG;
+    var flagInputId = curam.dialog.MODAL_PREV_FLAG_INPUT;
+      var u = util;
+
+    // If the input has previously been written to the form, delete it.
+    // This is to handle multiple submissions, which can happen if an exception
+    // is thrown during submission.
+    var input = dojo.byId(flagInputId);
+    if(input) {
+      input.parentNode.removeChild(input);
+    }
+
+    // Set the page id in the url if the following page should close the modal
+    // dialog if the id has changed. Add a hidden input to the form too, which
+    // will be used if the form is a multi-part post containing a file.
+    if(e.target.getAttribute("keepModal") != "true"
+         && !jsScreenContext.hasContextBits('AGENDA')) {
+      var multipart = 'multipart/form-data';
+      if(e.target.enctype == multipart || e.target.encoding==multipart) {
+        e.target.action = u.removeUrlParam(action, prevFlag);
+        input = curam.dialog.addFormInput(e.target, "hidden", prevFlag,
+                                          curam.dialog.pageId);
+        input.setAttribute("id", flagInputId);
+        input.id = flagInputId;
+
+      } else {
+        e.target.action = u.replaceUrlParam(action, prevFlag, curam.dialog.pageId);
+      }
+
+    } else {
+      e.target.action = u.removeUrlParam(action, prevFlag);
+    }
+
+    //Tell the parent page that the modal it opened has submitted a form, so
+    //that if the user clicks a 'Cancel' link later, the parent page will
+    //refresh itself.
+    parentWindow.curam.util.invalidatePage();
+
+    // Hook into the overall tabbed UI refresh mechanism (except for external
+    // application).
+    if (!jsScreenContext.hasContextBits("EXTAPP")) {
+      util.firePageSubmittedEvent("dialog");
+    }
+    return true;
+  },
+
+  /**
+   * If this is called in the document head, then initModal will shut down
+   * no matter what the conditions. This is like a window.close call,
+   * except it will refresh the parent if necessary.
+   */
+  forceClose: function() {
+    curam.dialog.FORCE_CLOSE = true;
+  },
+
+  /**
+   * If this is called in the document head, then any call to
+     * util.redirectWindow in the parent window will only refresh it,
+   * instead of redirecting it to another URL.  This is primarily used
+   * in the user preferences dialog.
+   */
+  forceParentRefresh: function() {
+    var parentWindow = curam.dialog.getParentWindow(window);
+    if(!parentWindow){return;}
+    parentWindow.curam.util.FORCE_REFRESH = true;
+  },
+
+  closeModalDialog: function() {
+    var topmostWindow = util.getTopmostWindow();
+    if (curam.dialog._displayedHandlerUnsToken != null) {
+      topmostWindow.dojo.unsubscribe(curam.dialog._displayedHandlerUnsToken);
+      curam.dialog._displayedHandlerUnsToken = null;
+    }
+
+    if (typeof(curam.dialog._id) == "undefined" || curam.dialog._id == null) {
+      var frameID = window.frameElement.id;
+      var modalID = frameID.substring(7);  // remove "iframe-" prefix
+      curam.dialog._id=modalID;
+      trace.log("curam.dialog.closeModalDialog() " 
+          + bundle.getProperty("curam.dialog.modal.id") + modalID);
+    }
+  
+    trace.log("publishing /curam/dialog/close for ", curam.dialog._id);
+    util.getTopmostWindow().dojo.publish(
+        "/curam/dialog/close", [ curam.dialog._id ]);
+    trace.log("publishing /curam/dialog/close for ", curam.dialog._id);
+  },
+
+  /**
+   * Parses the window options string.
+   *
+   * @returns An object with window option properties. In case no windowOptions
+   *          were passed if, empty object (with no properties) is returned.
+   */
+  parseWindowOptions: function(windowOptions) {
+    var opts = {};
+
+    if(windowOptions) {
+        trace.log("curam.dialog.parseWindowOptions " 
+          + bundle.getProperty("curam.dialog.parsing"), windowOptions);
+      var tokens = windowOptions.split(',');
+      var splitToken;
+      for(var i = 0; i < tokens.length; i++) {
+        splitToken = tokens[i].split('=');
+        opts[splitToken[0]] = splitToken[1];
+      }
+        trace.log("done:", dojo.toJson(opts));
+
+    } else {
+        trace.log("curam.dialog.parseWindowOptions " 
+          + bundle.getProperty("curam.dialog.no.options"));
+    }
+
+    return opts;
+  },
+
+  /**
+   * Redirects to a new URL in the specified context.
+   * 
+   * @param context The runtime context in which the redirect will take place.
+   * @param [href] URL of the target page or null.
+   * @param [force] Indicates if the refresh should take place even
+   *    if the href is the same as the current href.
+   * @param [ignoreFrames] If true, then any other frames on the page are
+   *    not refreshed.
+   */
+  doRedirect: function(context, href, force, ignoreFrames) {
+    window.curamDialogRedirecting = true;
+
+    context.curam.util.redirectWindow(href, force, ignoreFrames);
+  },
+  
+  closeGracefully: function() {
+    curam.dialog._justClose = true;
+  }
+  });
+  
+  return curam.dialog;
 });
 
 },
@@ -7922,6 +9228,64 @@ define("curam/define", [], function() {
 });
 
 },
+'curam/util/external':function(){
+/*
+ * Copyright 2014 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+  /*
+   * Modification History
+   * --------------------
+   * 25-Mar-2014 MV  [CR00423311] Initial version.  
+   */
+define("curam/util/external", ['curam/util'
+        ], function(util) {
+  
+  /**
+   * @name curam.util.external
+   * @namespace Contains functions of general use for the external application
+   *    container.
+   */
+  curam.define.singleton("curam.util.external",
+  /**
+   * @lends curam.util.external.prototype
+   */
+  {
+    /**
+     * Determines whether we are running within an external application
+     * container or not.
+     * 
+     * @return True if we are in external app container, otherwise false.
+     */
+    inExternalApp: function() {
+      return jsScreenContext.hasContextBits("EXTAPP");
+    },
+    
+    /**
+     * Determines the iframe to be used as parent for a UIM modal dialog.
+     * 
+     * @returns iframe or null.
+     */
+    getUimParentWindow: function() {
+      if (util.getTopmostWindow() === dojo.global) {
+        return null;
+
+      } else {
+        return dojo.global;
+      }
+    }
+  });
+
+  return curam.util.external;
+});
+
+},
 'idx/oneui/MenuDialog':function(){
 require({cache:{
 'url:idx/oneui/templates/MenuDialog.html':"<div role=\"presentation\">\r\n\t<div class=\"dijitTooltipContainer\" role=\"presentation\">\r\n\t\t<div class =\"dijitTooltipContents dijitTooltipFocusNode\" data-dojo-attach-point=\"containerNode\" role=\"dialog\" tabIndex=\"-1\"></div>\r\n\t</div>\r\n\t<div class=\"dijitTooltipConnector\" role=\"presentation\" data-dojo-attach-point=\"connectorNode\"></div>\r\n</div>\r\n"}});
@@ -9103,6 +10467,78 @@ define("dojo/dnd/TimedMoveable", ["../main", "./Moveable"], function(dojo) {
 });
 
 },
+'dijit/_BidiSupport':function(){
+define("dijit/_BidiSupport", ["./_WidgetBase"], function(_WidgetBase){
+
+/*=====
+	var _WidgetBase = dijit._WidgetBase;
+====*/
+
+	// module:
+	//		dijit/_BidiSupport
+	// summary:
+	//		Module that deals with BIDI, special with the auto
+	//		direction if needed without changing the GUI direction.
+	//		Including this module will extend _WidgetBase with BIDI related methods.
+	// description:
+	//		There's a special need for displaying BIDI text in rtl direction
+	//		in ltr GUI, sometimes needed auto support.
+	//		In creation of widget, if it's want to activate this class,
+	//		the widget should define the "textDir".
+
+	_WidgetBase.extend({
+
+		getTextDir: function(/*String*/ text){
+			// summary:
+			//		Gets the right direction of text.
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+			return this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+		},
+
+		_checkContextual: function(text){
+			// summary:
+			//		Finds the first strong (directional) character, return ltr if isLatin
+			//		or rtl if isBidiChar.
+			//	tags:
+			//		private.
+
+			// look for strong (directional) characters
+			var fdc = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(text);
+			// if found return the direction that defined by the character, else return widgets dir as defult.
+			return fdc ? ( fdc[0] <= 'z' ? "ltr" : "rtl" ) : this.dir ? this.dir : this.isLeftToRight() ? "ltr" : "rtl";
+		},
+
+		applyTextDir: function(/*Object*/ element, /*String*/ text){
+			// summary:
+			//		Set element.dir according to this.textDir
+			// element:
+			//		The text element to be set. Should have dir property.
+			// text:
+			//		Used in case this.textDir is "auto", for calculating the right transformation
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+
+			var textDir = this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+			// update only when there's a difference
+			if(element.dir != textDir){
+				element.dir = textDir;
+			}
+		}
+	});
+
+	return _WidgetBase;
+});
+
+},
 'dojo/cookie':function(){
 define("dojo/cookie", ["./_base/kernel", "./regexp"], function(dojo, regexp) {
 	// module:
@@ -9213,6 +10649,303 @@ define("dojo/cache", ["./_base/kernel", "./text"], function(dojo, text){
 
 	//dojo.cache is defined in dojo/text
 	return dojo.cache;
+});
+
+},
+'curam/util/ui/refresh/TabRefreshController':function(){
+/*
+ * Copyright 2011-2013 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+define("curam/util/ui/refresh/TabRefreshController", ["curam/debug",
+        "curam/util/ui/refresh/RefreshEvent",
+        "curam/util/ResourceBundle"
+        ], function() {
+
+  /*
+   * Modification History
+   * --------------------
+   * 26-Jun-2013  BOS [CR00390466] Adding requireLocalization to specifically
+   *                include required bundle.
+   * 07-May-2013  MV  [CR00383012] Fix destroy function to properly
+   *    re-initialize members. 
+   * 07-Mar-2013  MV  [CR00373496] Fix member variable values handling.
+   * 22-Oct-2012  SK  [CR00346419] Now destroys the configuration references
+   *                  to avoid memory leak.
+   * 09-Oct-2012  BOS [CR00346368] Localized debug messages to console.
+   * 04-Jul-2011  MV  [CR00269970] Initial version.
+   */
+
+  /**
+   * Creating Resource Bundle Object to access localized resources.
+   */
+  dojo.requireLocalization("curam.application", "Debug");
+  var bundle = new curam.util.ResourceBundle("Debug");
+
+  /**
+   * @name curam.util.ui.refresh.TabRefreshController
+   * @namespace Manages refreshing of the the tab UI components.
+   *
+   */
+  var TabRefreshController = dojo.declare("curam.util.ui.refresh.TabRefreshController", null,
+  /**
+   * @lends curam.util.ui.refresh.TabRefreshController.prototype
+   */
+  {
+    /** Event name for menu refresh. */
+    EVENT_REFRESH_MENU: "/curam/refresh/menu",
+
+    /** Event name for navigation refresh. */
+    EVENT_REFRESH_NAVIGATION: "/curam/refresh/navigation",
+
+    /** Event name for context panel refresh. */
+    EVENT_REFRESH_CONTEXT: "/curam/refresh/context",
+
+    /** Event name for the main content panel refresh. */
+    EVENT_REFRESH_MAIN: "/curam/refresh/main-content",
+
+    /** ID of the related tab widget. */
+    _tabWidgetId: null,
+
+    /** The configuration for onsubmit handling. */
+    _configOnSubmit: null,
+
+    /** The configuration for onload handling. */
+    _configOnLoad: null,
+
+    /** The handler function that performs the actual refresh based on the
+     * generated events. */
+    _handler: null,
+
+    /**
+     * Holds the last submit event to be processed. This is needed because page
+     * submits are processed only when the next page loads. It is done for two
+     * reasons: a) to make sure any server updates caused by the submit are
+     * reflected when the UI is refreshed and b) to avoid double refreshes
+     * when they are configured on both one page submit and the next page load.
+     * If this is the case the refresh list is optimized and only done once.
+     */
+    _lastSubmitted: null,
+
+    /**
+     * Holds the current refresh event sent to the main content panel. This is
+     * used to break potential infinite recursion when we are notified of page
+     * events caused by our own refresh event.
+     */
+    _currentlyRefreshing: null,
+
+    /**
+     * Creates an instance of the refresh controller.
+     *
+     * @param {String} tabWidgetId Id of the tab widget this controller
+     *            belongs to.
+     * @param {Object} [config] The tab refresh configuration object.
+     *            The expected structure is the one output
+     *            by curam.util.client.render.component.TabRenderer.
+     *            Configuration is optional as some tabs have no associated
+     *            refresh configuration. If not provided, the controller will not
+     *            be active, i.e. will not send out any refresh events ever.
+     */
+    constructor: function(tabWidgetId, config) {
+      this._configOnSubmit = {};
+      this._configOnLoad = {};
+
+      if (!config) {
+        // is null controller
+        return;
+      }
+
+      this._tabWidgetId = tabWidgetId;
+
+      // Expand the configuration data structure so that it is easily
+      // used in the controller.
+      dojo.forEach(config.config, dojo.hitch(this, function(item) {
+        this._configOnSubmit[item.page] = item.onsubmit;
+        this._configOnLoad[item.page] = item.onload;
+      }));
+    },
+
+    /**
+     * Notifies the controller of a page submit in the specified context.
+     *
+     * @param pageId ID of the page that has been submitted.
+     * @param context Context in which the page has been submitted. The expected
+     *            values for this parameter are defined as constants
+     *            in the curam.util.ui.refresh.RefreshEvent class.
+     */
+    pageSubmitted: function(pageId, context) {
+      // create event object - validates the parameters
+      new curam.util.ui.refresh.RefreshEvent(
+          curam.util.ui.refresh.RefreshEvent.prototype.TYPE_ONSUBMIT, context);
+      curam.debug.log("curam.util.ui.refresh.TabRefreshController: " +
+          bundle.getProperty("curam.util.ui.refresh.TabRefreshController.submit",
+                             [pageId, context]));
+      if (this._configOnSubmit[pageId]) {
+        // if we are interested in this submit, record the event
+        // it will be processed when a next page loads
+        this._lastSubmitted = pageId;
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController: "
+          + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+            + "submit.notify"));
+      }
+    },
+
+    /**
+     * Notifies the controller of a page load in the specified context.
+     *
+     * @param pageId ID of the page that has been loaded.
+     * @param context Context in which the page has been loaded. The expected
+     *            values for this parameter are defined as constants
+     *            in the curam.util.ui.refresh.RefreshEvent class.
+     */
+    pageLoaded: function(pageId, context) {
+      // create event object - also validates the parameters
+      var event = new curam.util.ui.refresh.RefreshEvent(
+          curam.util.ui.refresh.RefreshEvent.prototype.TYPE_ONLOAD, context);
+
+      curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+        + bundle.getProperty("curam.util.ui.refresh.TabRefreshController.load",
+          [pageId, context]));
+
+      // do not react to onload event if it was caused by our refresh event
+      // this avoids possible infinite recursion
+      if (this._currentlyRefreshing && this._currentlyRefreshing.equals(event)) {
+        this._currentlyRefreshing = null;
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+          + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+            + "refresh"));
+        return;
+      }
+
+      // if a refresh is configured for both previous page submit and next page
+      // load we merge the configurations and only refresh once
+      var mergedRefreshConfig = {};
+
+      // only support onload event for the main content panel
+      if(context == event.SOURCE_CONTEXT_MAIN && this._configOnLoad[pageId]) {
+        mergedRefreshConfig = this._configOnLoad[pageId];
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+            + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+              + ".load.config"));
+      }
+      // else ->
+      // load in other contexts will be only used to dispatch
+      // any previous onsubmit event
+      if (this._lastSubmitted) {
+        // merge the configs if we have both onsubmit and onload
+        var cfg = this._configOnSubmit[this._lastSubmitted];
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+            + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+              + ".submit.config", [this._lastSubmitted]));
+
+        mergedRefreshConfig.details = mergedRefreshConfig.details || cfg.details;
+        mergedRefreshConfig.menubar = mergedRefreshConfig.menubar || cfg.menubar;
+        mergedRefreshConfig.navigation =
+            mergedRefreshConfig.navigation || cfg.navigation;
+        mergedRefreshConfig.mainContent =
+            mergedRefreshConfig.mainContent || cfg.mainContent;
+
+        this._lastSubmitted = null;
+      }
+
+      this._fireRefreshEvents(mergedRefreshConfig);
+    },
+
+    /**
+     * Invokes the refresh handler with events based on the received
+     * page load/submit events and refresh configuration.
+     *
+     * @private
+     *
+     * @param cfg The relevant configuration fragment.
+     */
+    _fireRefreshEvents: function(cfg) {
+      var events = [];
+      if (cfg.details) {
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+          + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+            + ".refresh.context"));
+        events.push(this.EVENT_REFRESH_CONTEXT + "/" + this._tabWidgetId);
+      }
+      if (cfg.menubar) {
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+          + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+            + ".refresh.menu"));
+        events.push(this.EVENT_REFRESH_MENU + "/" + this._tabWidgetId);
+      }
+      if (cfg.navigation) {
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+          + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+            + ".refresh.nav"));
+        events.push(this.EVENT_REFRESH_NAVIGATION + "/" + this._tabWidgetId);
+      }
+      if (cfg.mainContent) {
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+          + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+            + ".refresh.main"));
+        // store the refresh event for later use in the infinite recursion
+        // breaking code above
+        this._currentlyRefreshing = new curam.util.ui.refresh.RefreshEvent(
+            curam.util.ui.refresh.RefreshEvent.prototype.TYPE_ONLOAD,
+            curam.util.ui.refresh.RefreshEvent.prototype.SOURCE_CONTEXT_MAIN,
+            null);
+        events.push(this.EVENT_REFRESH_MAIN + "/" + this._tabWidgetId);
+      }
+      if (events.length > 0) {
+        curam.debug.log("curam.util.ui.refresh.TabRefreshController:"
+            + bundle.getProperty("curam.util.ui.refresh.TabRefreshController"
+              + ".refresh.log", [events.length, events]));
+        this._handler(events);
+      }
+    },
+
+    /**
+     * Specifies the refresh handler function to be invoked when some tab UI
+     * parts should be refreshed.
+     *
+     * @param {Function} handler A function to be invoked in response to tab UI
+     *    refresh events. The function will be passed one parameter
+     *    which is an array of refresh event names. The format of the refresh
+     *    event names is the following: event_name/tab_widget_id, where
+     *    the supported event_names are defined as constants in this class
+     *    and tab_widget_id is ID of the tab the events are related to. Please
+     *    note that all the events in the array will always refer to the same tab.
+     */
+    setRefreshHandler: function(handler) {
+      this._handler = handler;
+    },
+
+    /**
+     * Releases any resources related to this controller instance.
+     * It is the responsibility of this class' clients to call this function when
+     * the tab that owns the controller instance is closed.
+     */
+    destroy: function() {
+      for (prop in this._configOnSubmit) {
+        if (this._configOnSubmit.hasOwnProperty(prop)) {
+        delete this._configOnSubmit[prop];
+      }
+      }
+      for (prop in this._configOnLoad) {
+        if (this._configOnLoad.hasOwnProperty(prop)) {
+        delete this._configOnLoad[prop];
+      }
+      }
+      this._configOnSubmit = {};
+      this._configOnLoad = {};
+      this._handler = null;
+      this._lastSubmitted = null;
+      this._currentlyRefreshing = null;
+    }
+  });
+
+  return TabRefreshController;
 });
 
 },
@@ -10343,6 +12076,110 @@ return dojo.string;
 
 },
 'url:dijit/templates/MenuSeparator.html':"<tr class=\"dijitMenuSeparator\">\n\t<td class=\"dijitMenuSeparatorIconCell\">\n\t\t<div class=\"dijitMenuSeparatorTop\"></div>\n\t\t<div class=\"dijitMenuSeparatorBottom\"></div>\n\t</td>\n\t<td colspan=\"3\" class=\"dijitMenuSeparatorLabelCell\">\n\t\t<div class=\"dijitMenuSeparatorTop dijitMenuSeparatorLabel\"></div>\n\t\t<div class=\"dijitMenuSeparatorBottom\"></div>\n\t</td>\n</tr>",
+'curam/util/ui/refresh/RefreshEvent':function(){
+/*
+ * Copyright 2011 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+define("curam/util/ui/refresh/RefreshEvent", [], function() {
+  
+  /*
+   * Modification History
+   * --------------------
+   * 04-Jul-2011  MV  [CR00269970] Initial version.
+   */
+
+  /**
+   * @name curam.util.ui.refresh.RefreshEvent
+   * @namespace Represents a UI element refresh event.
+   * 
+   */
+  var RefreshEvent = dojo.declare("curam.util.ui.refresh.RefreshEvent", null,
+  /**
+   * @lends curam.util.ui.refresh.RefreshEvent.prototype
+   */
+  {
+    /** Event type constant. */
+    TYPE_ONLOAD: "onload",
+    
+    /** Event type constant. */
+    TYPE_ONSUBMIT: "onsubmit",
+    
+    /** Event context constant. */
+    SOURCE_CONTEXT_MAIN: "main-content",
+    
+    /** Event context constant. */
+    SOURCE_CONTEXT_DIALOG: "dialog",
+    
+    /** Event context constant. */
+    SOURCE_CONTEXT_INLINE: "inline",
+
+    /** Holds the type of the event. */
+    _type: null,
+    
+    /** Holds the context of the event. */
+    _context: null,
+    
+    /**
+     * Creates an instance of the refresh event.
+     * 
+     * @param {String}
+     *                type The event type. Only accepted values will be the ones
+     *                provided as constants in this class.
+     * @param {String}
+     *                context The event context. Only accepted values will be the
+     *                ones provided as constants in this class.
+     */
+    constructor: function(type, context) {
+      if (!type || !context) {
+        throw "Required parameters missing.";
+      }
+      if (!(type == this.TYPE_ONLOAD || type == this.TYPE_ONSUBMIT)) {
+        throw "Unknown type: " + type;
+      }
+      if (!(context == this.SOURCE_CONTEXT_DIALOG
+          || context == this.SOURCE_CONTEXT_INLINE
+          || context == this.SOURCE_CONTEXT_MAIN)) {
+        throw "Unknown context: " + context;
+      }
+
+      this._type = type;
+      this._context = context;
+    },
+    
+    /**
+     * Determines if the specified event is the same as this one.
+     * 
+     * @param other
+     *                The event to check.
+     * @returns {Boolean} True if the other event is the same, otherwise false.
+     */
+    equals: function(other) {
+      // check for undefined, null and variable types other than object
+      if (typeof other != "object") {
+        return false;
+      }
+      
+      // check for Dojo class name
+      if (other.declaredClass != this.declaredClass) {
+        return false;
+      }
+      
+      return this._type === other._type
+          && this._context === other._context;
+    }
+  });
+  
+  return RefreshEvent;
+});
+
+},
 'dijit/dijit':function(){
 define("dijit/dijit", [
 	".",
@@ -13213,6 +15050,388 @@ define("dijit/layout/_LayoutWidget", [
 });
 
 },
+'curam/util/SessionTimeout':function(){
+/*
+ * Copyright 2014 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+define("curam/util/SessionTimeout", ["curam/util",
+        "dojo/_base/lang",
+        "curam/debug",
+        "curam/html",
+        "curam/util/UimDialog",
+        "curam/util/ResourceBundle"],
+       function(util, lang, debug, html, uimDialog) {
+  /*
+   * Modification History
+   * --------------------
+   * 28-Jun-2014 BOS [CR00435242] Update the configuration for the expired user
+   * message.
+   * 03-Jun-2014 BOS [CR00434187] Initial Version.
+   */
+  /**
+   * @name curam.util.SessionTimeout
+   * @namespace Checks if and when a timeout warning modal is displayed to a
+   * user immediately before their session times out.
+   * 
+   * This API provides methods for a session timeout warning modal dialog.
+   * 
+   * It reads a specific cookie that is set by the <code>RequestFilter</code>
+   * Servlet and uses the information within that cookie to check if a modal
+   * dialog needs to be displayed to the user to warn them that their session is
+   * about to timeout.
+   * 
+   * This API is tightly coupled with the 
+   * <code>external-session-timeout-dialog.jspx</code> and the 
+   * <code>RequestFilter.java</code> Servlet.
+   * 
+   */
+	
+	/**
+	 * Creating Resource Bundle Object to access localized resources.
+	 */ 
+	dojo.requireLocalization("curam.application", "TimeoutWarning");
+	var bundle = new curam.util.ResourceBundle("TimeoutWarning");
+  
+  curam.define.singleton("curam.util.SessionTimeout", {
+	// The page identifier for the logout page that will end the session if
+	// a user clicks the logout button or the session automatically logs out.
+	logoutPageID:"",
+	
+	// The minutes displayed for the countdown timer to inform user of time in
+	// minutes that they have to take action within the modal before it 
+	// automatically terminates the session.
+	minutes:0,
+	
+	// The seconds displayed for the countdown timer to inform user of time in
+	// seconds that they have to take action within the modal before it 
+	// automatically terminates the session.
+	seconds:0,
+	
+	// The node that display the user message
+	userMessageNode:null,
+	
+	// The identifier of the node that displays the user message in the modal 
+	userMessageNodeID:"userMessage",
+	
+	// The identifier of the node that displays the time left in the modal
+	displayTimerNodeID:"displayTimer",
+	
+	// Indicates if the countdown timer should be stopped or not
+	stopTimer:false,
+	
+	// The updated user message to be displayed in the modal dialog
+	updatedUserMessage:null,
+	
+	// The text that will be supplied to modal button to inform user that they
+	// should dismiss modal
+	dismissModalBtnTxt:null,
+	
+	// CCS class name for modal buttons that are displayed to user. These class
+	// names can be used to retrieve the DOM for these buttons and update the
+	// style and text on them.
+	displayButtonCssNames:".initially-hidden-widget.btn-id-1",
+	
+	// Indicates if a modal button action should logout a user.
+	doLogout:true,
+	
+	// The length of time that it takes for the dialog to be displayed.
+	timeForDialogToAppear:0,
+	
+	// The JSPX file used to display the session timeout warning dialog to the user.
+	sessTimeoutWarningJSPXDialog:"external-session-timeout-warning-dialog.jspx",
+	
+	// The JSPX file used to display the session timeout dialog to the user.
+	sessTimeoutJSPXDialog:"external-session-timeout-dialog.jspx",
+	
+	// The grace period afforded to the user when taking action within the modal.
+	bufferingPeriod:null,
+
+	/**
+	 * Checks if a timeout warning dialog should be displayed to a user if their
+	 * session is about to expire.
+	 *  
+	 * @param width                The configured width of the timeout warning 
+	 * dialog.
+	 * @param height               The configured height of the timeout warning 
+	 * dialog.
+	 * @param timeoutPeriod        The configured timeout period of the timeout
+	 * warning dialog.
+	 * @param timeoutWarningIssued Indicates if a timeout warning dialog has
+	 * already been displayed to the user.
+	 */
+    checkSessionExpired: function(width, height, timeoutPeriod, bufferingPeriod) {     
+      this.width = width;
+	  this.height = height;
+	  this.timeoutPeriod = timeoutPeriod;
+	  this.stopChecking = false;
+	
+	  // 10 seconds is the default check for how often the check will be
+	  // executed.
+	  this.interval = 10000;
+	
+	  // if a grace period for checking that the session has not expired has not 
+      // been explicitly set then set it to default of 30 seconds (30000 miliseconds)
+      this.bufferingPeriod = bufferingPeriod == undefined ? 30000 : bufferingPeriod * 1000;
+
+	  this.executeChecking = setInterval(function(){curam.util.SessionTimeout._executeSessionExpiredCheck();},this.interval);
+    },
+    
+    /*
+     * Executes the actual check to assess if the timeout warning dialog should
+     * be displayed to the user.
+     */
+    _executeSessionExpiredCheck: function() {
+      // get the latest session expiry cookie
+      var latestSessionExpCookie = curam.util.getCookie('sessionExpiry');
+      // the currsessionExpCookie holds the current cookie reference, if they do
+      // not match then a new request has been issued so reset the timer back to
+      
+      // -10 seconds (as 10s has already passed) need to restart back to before 0
+      if (this.currSessionExpCookie) {
+    	if (this.currSessionExpCookie != latestSessionExpCookie) {
+    	  this.timeForDialogToAppear = -10000;
+    	  // TODO: Would be better to refactor _sessionExpiryCookieIsAsExpected
+    	  // function and just set global variables in that function -- BOS
+    	  this.validCookie
+  	        = this._sessionExpiryCookieIsAsExpected(latestSessionExpCookie);
+    	 
+    	}
+      } else {
+    	// current cookie undefined indicates a new checking period so validate
+    	// cookies
+    	this.validCookie
+  	      = this._sessionExpiryCookieIsAsExpected(latestSessionExpCookie);
+    	this._ammendTimeoutPeriodForMisconfiguration(this.validCookie);  	
+      }
+      this.currSessionExpCookie = latestSessionExpCookie;
+      
+      this.timeForDialogToAppear = this.timeForDialogToAppear + this.interval;
+      
+      if (this.validCookie) {
+    	  this.sessionExpiry = Math.abs(this.validCookie[0]);
+    	  this.serverTime = Math.abs(this.validCookie[1]);
+    	// total offset time is the configured session timeout (data set on cookie)
+        // plus the total interval period so far plus the grace period allowed
+        // Timezone difference taken into account here..
+    	// Client side time is not important in this calculation..
+    	var totalCurrServerTime
+          = this.serverTime + this.timeForDialogToAppear + this.bufferingPeriod;
+    	var totalExpirySeverTime = this.sessionExpiry - (this.timeoutPeriod * 1000);
+    	// these two variables useful for debugging purposes
+    	this.totalExpirySeverTime = totalExpirySeverTime;
+    	this.totalCurrServerTime = totalCurrServerTime;
+	    if (totalCurrServerTime >= totalExpirySeverTime && this.stopChecking!=true) {
+	      this.stopChecking = true;
+	      if (window.top.openModal != undefined) {
+	        window.top.openModal(this.sessTimeoutWarningJSPXDialog, {width:this.width,height:this.height});
+	        
+	      }
+	      clearInterval(this.executeChecking);
+	    }  
+      }
+    },
+      
+    /**
+     * Checks that the cookie that contains data about the session timeout is
+     * secure and that its data has not been manipulated maliciously.
+     * 
+     * @param sessionExpiryCookie The cookie to check for security.
+     * @returns                   the secure cookie.
+     */
+    _sessionExpiryCookieIsAsExpected:function(sessionExpiryCookie) {
+    	// TODO: Might be better to do this validation in the request filter and
+    	// just set the difference between server and expiry time i.e
+    	// expiryTime - serverTime -- BOS
+        var validDate = true;
+        if (sessionExpiryCookie != null) {
+      	// There is a contract here between the addSessionTimeoutCookie() method
+      	// that sets this cookie in the 'RequestFilter' servlet and check we do
+      	// here to ensure that cookie is as expected. The cookie should have 
+      	// only 2 tokens delimited by a hyphen character (-) and each token
+      	// must be in the date format.
+          var tokens = sessionExpiryCookie.split("-", 2);
+          if (tokens && tokens.length == 2) {
+            for (token in tokens) {
+          	  // first convert to int as it must in miliseconds from 1 Jan 1970..
+          	  var millisecondsToken = Math.abs(token);
+          	  if (isNaN(millisecondsToken)) {
+          		validDate = false;
+              }
+            }
+            if (validDate == true) {	
+              return tokens;	  
+            }
+          }
+        }
+     },
+     
+     /**
+      * Ammends the timeout configuration if the timeout period is incorrectly
+      * configured to be greater than the session timeout period or is 
+      * configured to be a negative value..
+      * @param validCookie
+      */
+     _ammendTimeoutPeriodForMisconfiguration: function(validCookie) {
+       // TODO: Even though this only happens once. It would be better to do this in
+       // RequestFilter and TabLayoutResolver. However would have to do examine
+       // the timeout configuration and validate that set correctly -- BOS 
+       if (validCookie) {
+    	  var sessionExpiry = Math.abs(this.validCookie[0]);
+     	  var serverTime = Math.abs(this.validCookie[1]);  
+     	  // session timeout configuration in seconds  
+     	  var sessionTimeoutConfig = (sessionExpiry 
+     	    - (serverTime + this.interval + this.bufferingPeriod))/1000;
+     	 sessionTimeoutConfig = sessionTimeoutConfig <= 0 ? 0 : sessionTimeoutConfig;
+     	  var timeoutConfig = this.getTimeoutWarningConfig();
+     	  if (timeoutConfig) {
+     		var timeoutPeriodConfig = timeoutConfig.timeout;
+     		timeoutPeriodConfig = timeoutPeriodConfig <= 0 ? 0 : timeoutPeriodConfig;
+     		if (timeoutPeriodConfig >= sessionTimeoutConfig) {
+     		  this.getTimeoutWarningConfig("timeout", sessionTimeoutConfig); 
+     		}
+     	  } 
+       }
+     },
+    
+    /**
+     * The application configuration for the timeout warning.
+     * @returns The application configuration for the timeout warning.
+     */
+    getTimeoutWarningConfig: function(timeoutConfigKey, timeoutConfigVal) {
+      if (window.top.getAppConfig) {
+    	  var config = window.top.getAppConfig();
+          var timeoutConfig = config.timeoutWarning;
+          if (timeoutConfig && timeoutConfigKey && timeoutConfigVal) {
+            timeoutConfig[timeoutConfigKey] = timeoutConfigVal;
+          }
+          return timeoutConfig;	  
+      }
+    },
+    
+    /**
+     * Displays countdown timer to the user and logs user out.
+     * 
+     * @param logoutPageID         The specified logout page identifier.
+     * @param timeoutPeriod        The specified timeout period to initiate the
+     * countdown timer.
+     * @param sessionExpiryUserMsg The expiry user message to be displayed to
+     * the user when the user does not take action within the user after the
+     * timer has timed out.
+     * @param dismissModalBtnTxt The text for the dismiss modal button.
+     */
+    displayTimerAndLogout:function(logoutPageID, timeoutPeriod, sessionExpiryUserMsg, dismissModalBtnTxt, expiredTitleText, titleNodeID){
+    	this.executeTimer = setInterval(function(){curam.util.SessionTimeout.timer();}, 1000);
+    	this.minutes  = ~~(timeoutPeriod / 60);
+    	this.seconds = timeoutPeriod % 60;
+    	this.timerNode = dojo.byId(this.displayTimerNodeID);
+    	this.userMessageNode = dojo.byId(this.userMessageNodeID);
+    	this.logoutPageID = logoutPageID;
+    	this.updatedUserMessage = sessionExpiryUserMsg;
+    	this.dismissModalBtnTxt = dismissModalBtnTxt;
+    	this.expiredTitleText = expiredTitleText;
+    	this.titleNode = window.top.dojo.byId(titleNodeID);	
+    },
+    
+    /**
+     * Executes the timer.
+     */
+    timer:function(){
+      if (this.stopTimer !=true) {
+    	var timerMessage = "";
+    	if (this.seconds < 10) {
+    	  timerMessage = this.minutes+" : 0"+this.seconds; 	
+        } else {
+    	  timerMessage = this.minutes+" : "+this.seconds;	
+    	}
+
+		//Ensure LTR direction: LRE + text + PDF
+		this.timerNode.innerHTML = "&#x202A;" + timerMessage + "&#x202C;"
+        
+        if (this.seconds == 0) {
+          this.seconds = 59;
+          this.minutes = this.minutes - 1;
+        } else {
+      	  this.seconds = this.seconds - 1;	
+        }
+        
+        if(this.minutes==0 && this.seconds ==0){
+          this.quitTimeoutWarningDialog();
+      	  this.stopTimer();
+        }
+      
+        if (this.seconds==0) {
+          this.minutes = this.minutes - 1;
+      	this.seconds = 59;
+        } 
+      }
+    },
+    
+    stopTimer:function() {
+      clearInterval(this.executeTimer);
+    },
+    
+    /**
+     * Quits the session from the session timeout warning dialog.
+     */
+    quitTimeoutWarningDialog: function(close){
+      var logoutPage = {pageID:this.logoutPageID};
+      window.top.displayContent(logoutPage);  
+    },
+    
+    /**
+     * Dismisses the session timeout dialog and restarts the session again.
+     */
+    dismissTimeoutDialog: function() {
+      window.top.location = jsBaseURL + "/" + "application.do";
+    },
+    
+    /**
+     * Enables the user to continue using the application when they click the
+     * localized Continue button within the modal.
+     */
+    continueUsingApp:function() {
+    	debug.log(bundle.getProperty("continueApp"));
+    	this.stopTimer();
+    },
+    
+    /**
+     * Enables the user to dismiss the timeout warning modal when a session has
+     * timed out and starts checking again for when the new session times out.
+     */
+    dismissTimeoutWarningModal:function() {
+    	debug.log(bundle.getProperty("dismissTimeoutModal"));
+    },
+    
+    /**
+     * Format the user message and displays it as paragraphs to the user.
+     * 
+     * @param msg             The user message to be displayed.
+     * @param userMessageNode The user message node to be updated.
+     */
+    displayUserMsgAsParagraphs: function(msg, userMessageNode) {
+      var userMessageWithParagraphs;
+      if (userMessageNode) {
+        userMessageWithParagraphs = userMessageNode;
+      } else {
+    	userMessageWithParagraphs = dojo.byId(this.userMessageNodeID);  
+      }
+      
+      var paragaphTxt = curam.html.splitWithTag(msg, "\\n", "p");	
+      userMessageWithParagraphs.innerHTML = paragaphTxt;
+      this.userMessageNode = userMessageWithParagraphs;
+    }});
+   
+  return curam.util.SessionTimeout;
+  
+});
+},
 'dijit/popup':function(){
 define("dijit/popup", [
 	"dojo/_base/array", // array.forEach array.some
@@ -14095,6 +16314,147 @@ define("curam/widget/containers/TransitionContainer", ["dojo/_base/declare",
 	
 	});
 });
+},
+'curam/util/onLoad':function(){
+/* Licensed Materials - Property of IBM
+ *
+ * Copyright IBM Corporation 2013. All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ */
+
+  /*
+   * Modification History
+   * --------------------
+   * 06-May-2014 AB   [Cr00430639]Adding title to Iframe-RPT project
+   * 26-Jun-2013  BOS [CR00390466] Adding requireLocalization to specifically
+   *                include required bundle.
+   * 09-Oct-2012  BOS [CR00346368] Localized debug messages to console.
+   * 21-Jan-2011  DG  [CR00243540] Changed "console.log" to "curam.debug.log".
+   * 14-Dec-2010  MV  [CR00238518] Ensure the hidden iframe is not picked up by
+   *    WordIntegration control.
+   * 06-Dec-2010  MV  [CR00233442] Avoid never ending progress bar in IE.
+   * 19-Nov-2010  MV  [CR00231655] Subscribe/connect to events with
+   *    a function that will automatically unsubscribe/disconnect on page unload.
+   * 30-Jun-2010 MV [CR00161271] Update documentation.
+   * 11-Jun-2010 MV [CR00202971] Fixed function for removing subscribers.
+   * 02-Jun-2010 MV [CR00202412] Initial version.
+   */
+
+define("curam/util/onLoad", ["curam/util",
+        "curam/define",
+        "curam/util/ResourceBundle"
+        ], function() {
+
+  /**
+   * Creating Resource Bundle Object to access localized resources.
+   */
+  dojo.requireLocalization("curam.application", "Debug");
+  var bundle = new curam.util.ResourceBundle("Debug");
+  
+  curam.define.singleton("curam.util.onLoad", {
+    EVENT: "/curam/frame/load",
+
+    // Used in the context of the iframe.
+    publishers: [],
+
+    /* Used in the context of the parent window and contains subscribers
+     * for all the iframes that exist in this window context.
+     */
+    subscribers: [],
+
+    defaultGetIdFunction: function(iframeNode) {
+      // summary:
+      // This is the default function for getting a unique ID of an iframe.
+      // If the iframe has a CSS class that starts with "iframe-" then this class
+      // is returned as the unique ID of the iframe.
+      var classes = dojo.attr(iframeNode, "class").split(" ");
+      return dojo.filter(classes, function(className) {
+        return className.indexOf("iframe-") == 0;
+      })[0];
+    },
+
+    addPublisher: function(callback) {
+      // summary:
+      //   Public function, is called in the context of the iframe window.
+      curam.util.onLoad.publishers.push(callback);
+    },
+
+    addSubscriber: function(iframeId, callback, /*optional*/getId) {
+      // summary:
+      //   This is called in the context of the parent window.
+      //   Multiple subscribers per iframe can be registered, provided each
+      //   has a different handler function.
+      // parameter: getId
+      //   optional, if not specified the default getId function will be used
+
+      curam.util.onLoad.subscribers.push({
+        "getId": getId ? getId : curam.util.onLoad.defaultGetIdFunction,
+        "callback": callback,
+        "iframeId": iframeId
+      });
+    },
+
+    removeSubscriber: function(iframeId, callback, /*optional*/getId) {
+      // summary:
+      //  Must be called in the context of the parent window.
+
+      curam.util.onLoad.subscribers =
+        dojo.filter(curam.util.onLoad.subscribers, function(subscriberData) {
+          return !(subscriberData.iframeId == iframeId
+              && subscriberData.callback == callback);
+        });
+    },
+
+    execute: function() {
+      // summary:
+      //   Public function, is called in the context of the iframe window.
+
+      if(window.parent == window) {
+        curam.debug.log("curam.util.onLoad.execute(): " 
+          + bundle.getProperty("curam.util.onLoad.exit"));
+        return;
+      }
+
+      var context = {};
+
+      dojo.forEach(curam.util.onLoad.publishers, function(callback) {
+        // Allow each of the publishers to add to the context object
+        callback(context);
+      });
+
+      // Free up references to functions
+      curam.util.onLoad.publishers = [];
+
+      // A hack to avoid never ending progress bar in IE when multiple iframes
+      // exist in the application.
+      //Adding title - RPT project 
+      require(["dojo/io/iframe"]);
+      var iframe = dojo.io.iframe.create(null, null, "about:blank");
+      dojo.attr(iframe, "id", "ie-progress-indicator-helper");
+      dojo.attr(iframe, "title", "ie-progress-indicator-helper");
+
+      // publish the event into the parent context
+      window.parent.dojo.publish(curam.util.onLoad.EVENT, [window.frameElement, context]);
+    }
+  });
+
+  /* Subscribe to events in the context this file is being loaded in.
+   * This is meant for parent window contexts.
+   */
+  curam.util.subscribe(curam.util.onLoad.EVENT, function(iframeNode, context) {
+    dojo.forEach(curam.util.onLoad.subscribers, function(subscriberData) {
+      var currentId = subscriberData.getId(iframeNode);
+      if (subscriberData.iframeId == currentId) {
+        subscriberData.callback(currentId, context);
+      }
+    });
+  });
+  
+  return curam.util.onLoad;
+});
+
 },
 'url:dijit/templates/TooltipDialog.html':"<div role=\"presentation\" tabIndex=\"-1\">\n\t<div class=\"dijitTooltipContainer\" role=\"presentation\">\n\t\t<div class =\"dijitTooltipContents dijitTooltipFocusNode\" data-dojo-attach-point=\"containerNode\" role=\"dialog\"></div>\n\t</div>\n\t<div class=\"dijitTooltipConnector\" role=\"presentation\"></div>\n</div>\n",
 'dojo/dnd/Mover':function(){
@@ -15760,11 +18120,669 @@ return declare("dijit._WidgetBase", Stateful, {
 });
 
 },
+'curam/util/Refresh':function(){
+/*
+ * Licensed Materials - Property of IBM
+ *
+ * Copyright IBM Corporation 2012. All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ */
+
+  /*
+   * Modification History
+   * -------------------- 
+   * 07-Oct-2013  BOS [CR00396277] Refactored to take account that the selected
+   *                    tab may be undefined.
+   */
+
+define("curam/util/Refresh", ["curam/util/Request",
+        "curam/define",
+        "curam/util",
+        "curam/tab",
+        "curam/debug",
+        "curam/util/ContextPanel",
+        "curam/util/ui/refresh/TabRefreshController",
+        "curam/util/ResourceBundle"
+        ], function(curamRequest) {
+  
+  /*
+   * Modification History
+   * --------------------
+   * 11-Apr-2014  MV  [CR00424825] Move to common AJAX request API.
+   * 07-Oct-2013  BOS [CR00396277] Refactoring to take account of the fact that
+   *                    the selected tab may not be defined. 
+   * 09-Oct-2012  BOS [CR00346368] Localized debug messages to console.
+   * 05-Aug-2011  MV  [CR00283589] Stop the click event in refreshPage() function.
+   * 29-Jul-2011  MV  [CR00269970] Make use of the new refresh controller.
+   * 24-May-2011  MV  [CR00267843] Disallow auto refresh on submitted action pages.
+   * 29-Apr-2011  SC  [CR00264826] Removed incorrect usage of getselectedtab.
+   * 11-Feb-2011  PK  [CR00251730] Added support for refreshing main content
+   *                    panel on submit.
+   * 22-Dec-2010  MV  [CR00239864] Only call menu/nav loaders if there is request
+   *                    for menu/nav update.
+   * 14-Dec-2010  DG  [CR00217921] Updated for "tabDescriptor" on a tab panel.
+   *                    Added copyright.
+   * 30-Nov-2010  FG  [CR00232780] Add a new function that may be used to refresh
+   *                    the page content and smart panel of a page.
+   * 13-Jul-2010  MV  [CR00210064] Ensure tab menu and navigation is not updated
+   *                   twice on tab load.
+   * 07-Jul-2010  MV  [CR00180694] Refactor to unify dynamic updates of actions
+   *                  menu and tab navigation. Move JavaScript code from renderer
+   *                  to here.
+   * 29-Apr-2010  MV  [CR00195109] Uncomment menu bar refresh code.
+   * 26-Apr-2010  JS  [CR00197709] Removed refresh navigation bar code.
+   * 27-Nov-2009  MV  [CR00180297] Pass the tab widget ID to the handlers.
+   * 18-Nov-2009  MV  [CR00172452] Only call handlers for the corresponding tab.
+   * 03-Aug-2009  MLB [CR00163869] Full refresh implementation.
+   * 16-Jul-2009  MLB [CR00162701] Initial version.
+   */
+  
+  /**
+   * Creating Resource Bundle Object to access localized resources.
+   */ 
+  dojo.requireLocalization("curam.application", "Debug");
+  var bundle = new curam.util.ResourceBundle("Debug");
+
+  /**
+   * Contains functions for refreshing the various panels.
+   */
+  curam.define.singleton("curam.util.Refresh", {
+    // flag if the content panel has been submitted
+    submitted : false,
+    // the id of the page that was submitted
+    pageSubmitted : "",
+    // array of refresh configuration for all tabs
+    refreshConfig : [],
+
+    menuBarCallback: null,
+    navigationCallback: null,
+    refreshedOnTabOpen: {},
+    
+    /** Holds references to refresh controllers for individual tabs. */
+    _controllers: {},
+    
+    /** Holds reference to the page level refresh button anchor. */
+    _pageRefreshButton: undefined,
+
+    /**
+     * Called by the MenuBarRenderer to register functions to be used
+     * for dynamically updating the menu items.
+     * 
+     * The function is called once for each opened tab that has dynamic menu
+     * items. The assumption is that all such tabs are using the same callbacks
+     * so only the first call to this function is used to set the callbacks.
+     * Subsequent calls are ignored.
+     * 
+     * @param updateMenuItemStates
+     * @param getRefreshParams
+     */
+    setMenuBarCallbacks: function(updateMenuItemStates, getRefreshParams) {
+      if (!curam.util.Refresh.menuBarCallback) {
+        curam.util.Refresh.menuBarCallback = {
+          updateMenuItemStates: updateMenuItemStates,
+          getRefreshParams: getRefreshParams
+        };
+      }
+    },
+
+    /**
+     * Called by the NavigationTabRenderer to register functions to be used
+     * for dynamically updating the navigation items.
+     * 
+     * The function is called once for each opened tab that has dynamic
+     * navigation items. The assumption is that all such tabs are using the same
+     * callbacks so only the first call to this function is used to set
+     * the callbacks. Subsequent calls are ignored.
+     * 
+     * @param updateNavItemStates
+     * @param getRefreshParams
+     */
+    setNavigationCallbacks: function(updateNavItemStates, getRefreshParams) {
+      if (!curam.util.Refresh.navigationCallback) {
+        curam.util.Refresh.navigationCallback = {
+          updateNavItemStates: updateNavItemStates,
+          getRefreshParams: getRefreshParams
+        };
+      }
+    },
+
+    refreshMenuAndNavigation: function(tabWidgetId, refreshMenuBar,
+        refreshNavigation, onTabOpen) {
+      // Summary:
+      //    Sends an AJAX request to get dynamic menu and navigation data
+      //    and calls the functions for updating these components.
+      curam.debug.log("curam.util.Refresh.refreshMenuAndNavigation: "
+          + "tabWidgetId=%s, refreshMenuBar || refreshNavigation: %s || %s",
+          tabWidgetId, refreshMenuBar, refreshNavigation);
+
+      if (onTabOpen && curam.util.Refresh.refreshedOnTabOpen[tabWidgetId]) {
+        // guard against situations where both menu and navigation onTabOpen
+        // is called simultaneously
+        curam.debug.log(bundle.getProperty("curam.util.Refresh.stop"));
+        return;
+
+      } else if(onTabOpen
+            && !curam.util.Refresh.refreshedOnTabOpen[tabWidgetId]) {
+
+        curam.debug.log(bundle.getProperty("curam.util.Refresh.tab.open"));
+        // flag the fact onTabOpen was called and proceed with refreshing
+        curam.util.Refresh.refreshedOnTabOpen[tabWidgetId] = true;
+
+      } else {
+        curam.debug.log(bundle
+          .getProperty("curam.util.Refresh.detect.refresh"));
+        // otherwise refresh as requested
+        curam.debug.log(bundle.getProperty("curam.util.Refresh.refresh"));
+      }
+
+      if (!refreshMenuBar && !refreshNavigation) {
+        // do nothing
+        curam.debug.log(bundle.getProperty("curam.util.Refresh.no.refresh"));
+        // reset the onTabOpen flag
+        curam.util.Refresh.refreshedOnTabOpen[tabWidgetId] = false;
+        return;
+      }
+
+      var callbacks = {
+        /**
+         * Handles the successful return of the AJAX call.
+         */
+        update: function(tabWidgetId, result, ioargs) {
+          curam.debug.log(bundle
+            .getProperty("curam.util.Refresh.dynamic.refresh"), result);
+          var ncb = curam.util.Refresh.navigationCallback;
+          curam.debug.log("refreshNavigation? ", refreshNavigation);
+          if (refreshNavigation && result.navData && ncb) {
+            ncb.updateNavItemStates(tabWidgetId, result);
+          };
+          var mcb = curam.util.Refresh.menuBarCallback;
+          curam.debug.log("refreshMenuBar? ", refreshMenuBar);
+          if (refreshMenuBar && result.menuData && mcb) {
+            mcb.updateMenuItemStates(tabWidgetId, result);
+          }
+        },
+
+        /**
+         * Handles the failure case of the AJAX call made to get data
+         * for the dynamic items.
+         */
+        error: function(error, ioargs) {
+          curam.debug.log("========= " + bundle
+            .getProperty("curam.util.Refresh.dynamic.failure") 
+              + " ===========");
+          curam.debug.log(bundle
+            .getProperty("curam.util.Refresh.dynamic.error"), error);
+          curam.debug.log(bundle
+            .getProperty("curam.util.Refresh.dynamic.args"), ioargs);
+          curam.debug.log("==================================================");
+        }
+      };
+
+      // send the AJAX request
+      var fullUrl = "servlet/JSONServlet?o3c=TAB_DYNAMIC_STATE_QUERY";
+      var mcb = curam.util.Refresh.menuBarCallback;
+      if (refreshMenuBar && mcb) {
+        var menuParams = mcb.getRefreshParams( tabWidgetId);
+        if (menuParams) {
+          fullUrl += "&" + menuParams;
+        }
+      }
+      var ncb = curam.util.Refresh.navigationCallback;
+      if (refreshNavigation && ncb) {
+        var navParams = ncb.getRefreshParams(tabWidgetId);
+        if (navParams) {
+          fullUrl += "&" + navParams;
+        }
+      }
+      curam.debug.log(bundle
+          .getProperty("curam.util.Refresh.dynamic.refresh.req"));
+      curamRequest.post({
+         url: fullUrl,
+         handleAs: "json",
+         preventCache: true,
+         load: dojo.hitch(callbacks, "update", tabWidgetId),
+         error: dojo.hitch(callbacks, "error")
+      });
+    },
+    
+    /**
+     * Called by the tab renderer this function ensures that if config is added
+     * repeatedly, it overrides any existing config for the same tab.
+     * 
+     * This caters for closing and reopening tabs.
+     * 
+     * @param {Object} config The tab refresh configuration to add.
+     */
+    addConfig: function(config) {
+      var updated = false;
+      
+      // if the config for the tab is already added, replace it with the new one
+      dojo.forEach(curam.util.Refresh.refreshConfig, function(existingConfig) {
+        if (existingConfig.tab == config.tab) {
+          existingConfig.config = config.config;
+          
+          updated = true;
+        }
+      });
+      
+      // otherwise just add as a new config
+      if (!updated) {
+        curam.util.Refresh.refreshConfig.push(config);
+      }
+    },
+
+    /**
+     * Called by the tab renderer this function instantiates the refresh
+     * controller for the specified tab.
+     * 
+     * @param {String} tabWidgetId Widget ID of the tab to create refresh
+     *    controller for.
+     */
+    setupRefreshController: function(tabWidgetId) {
+      curam.debug.log("curam.util.Refresh.setupRefreshController " 
+         + bundle.getProperty("curam.util.ExpandableLists.load.for"), 
+           tabWidgetId);
+      
+      var selectedTab = dijit.byId(tabWidgetId);
+      var tabId = selectedTab.tabDescriptor.tabID;
+      
+      var filteredConfigs = dojo.filter(curam.util.Refresh.refreshConfig,
+          function(item) { return item.tab == tabId; });
+
+      if (filteredConfigs.length == 1) {
+        var refreshConfigTab = filteredConfigs[0];
+        var ctl = new curam.util.ui.refresh.TabRefreshController(tabWidgetId, refreshConfigTab);
+        curam.util.Refresh._controllers[tabWidgetId] = ctl;
+        ctl.setRefreshHandler(curam.util.Refresh.handleRefreshEvent);
+      
+      } else {
+        if (filteredConfigs.length == 0) {
+          curam.debug.log(bundle
+            .getProperty("curam.util.Refresh.no.dynamic.refresh"), tabWidgetId);
+          var ctl = new curam.util.ui.refresh.TabRefreshController(tabWidgetId, null);
+          curam.util.Refresh._controllers[tabWidgetId] = ctl;
+        
+        } else {
+          throw "curam.util.Refresh: multiple dynamic refresh "
+              + "configurations found for tab " + tabWidgetId;
+
+        }
+      }
+      
+      // destroy controller reference on tab close
+      curam.tab.executeOnTabClose(function() {
+        curam.util.Refresh._controllers[tabWidgetId].destroy();
+        curam.util.Refresh._controllers[tabWidgetId] = undefined;
+      }, tabWidgetId);
+    },
+    
+    /**
+     * Returns the refresh controller for the specified tab, throwing exception
+     * in case controller doesn't exist for the tab.
+     * 
+     * @param tabWidgetId Widget ID of the tab.
+     * 
+     * @returns The refresh controller.
+     */
+    getController: function(tabWidgetId) {
+      var ctl = curam.util.Refresh._controllers[tabWidgetId];
+      if (!ctl) {
+        throw "Refresh controller for tab '" + tabWidgetId + "' not found!";
+      }
+      return ctl;
+    },
+    
+    /**
+     * This is called by nested frames to notify the refresh controller of a page
+     * load.
+     * 
+     * @param iframeId ID of the source iframe.
+     * @param context The context in which the load happened.
+     */
+    handleOnloadNestedInlinePage: function(iframeId, context) {
+      curam.debug.log("curam.util.Refresh.handleOnloadNestedInlinePage " 
+        + bundle.getProperty("curam.util.Refresh.iframe", [iframeId, context]));
+       var topmostWin = curam.util.getTopmostWindow();
+       var tabWidgetId = undefined;
+
+      // get the source tab of the nested page
+      var sourceTab = curam.tab.getSelectedTab();
+      if (sourceTab) {
+        tabWidgetId = curam.tab.getTabWidgetId(sourceTab);  
+      }
+
+      if (tabWidgetId) {
+        curam.debug.log(bundle.getProperty("curam.util.Refresh.parent"), 
+                      tabWidgetId);
+        topmostWin.curam.util.Refresh.getController(tabWidgetId).pageLoaded(
+          context.pageID,
+          curam.util.ui.refresh.RefreshEvent.prototype.SOURCE_CONTEXT_INLINE);
+        topmostWin.dojo.publish("/curam/main-content/page/loaded",
+          [context.pageID, tabWidgetId]);
+        return true;
+      }
+      return false;
+    },
+
+    /**
+     * Handles refresh events emitted by refresh controllers for tabs in the UI.
+     * 
+     * @param {Array} eventIds A list of refresh events to be processed.
+     */
+    handleRefreshEvent: function(eventIds) {
+      var contextPanelRefreshHandler = function(tabWidgetId) {
+        curam.util.ContextPanel.refresh(dijit.byId(tabWidgetId));
+      };
+      var mainContentRefreshHandler = function(tabWidgetId) {
+        curam.tab.refreshMainContentPanel(dijit.byId(tabWidgetId));
+      };
+      var menuAndNavigationRefreshHandler =
+      function(tabWidgetId, refreshMenuBar, refreshNavigation) {
+        curam.util.Refresh.refreshMenuAndNavigation(
+            tabWidgetId, refreshMenuBar, refreshNavigation);
+      };
+      curam.util.Refresh._doRefresh(eventIds, contextPanelRefreshHandler,
+        mainContentRefreshHandler, menuAndNavigationRefreshHandler);
+    },
+    
+    /**
+     * Performs the actual refresh using the specified handlers.
+     * THis is factored out to a separate function so that it can be unit tested.
+     * 
+     * @param {Array} eventIds A list of refresh events to be processed.
+     * @param {Function} refreshContextPanel A handler to be called when context
+     *            panel refresh is required.
+     * @param refreshMainContent A handler to be called when main content panel
+     *            refresh is required.
+     * @param refreshMenuAndNavigation A handler to be called when menu
+     *            and navigation refresh is required.
+     */
+    _doRefresh: function(eventIds, refreshContextPanel, refreshMainContent,
+        refreshMenuAndNavigation) {
+
+      var tabWidgetId = null;
+      var refreshMenuBar = false;
+      var refreshNavigation = false;
+      var refreshContext = false;
+      var refreshMain = false;
+      var trc = curam.util.ui.refresh.TabRefreshController.prototype;
+      dojo.forEach(eventIds, function(eventId) {
+        var lastSlashIndex = eventId.lastIndexOf("/");
+        var target = eventId.slice(0, lastSlashIndex);
+        // all events are for the same tabWidgetId so just read the first one
+        if (!tabWidgetId) {
+          tabWidgetId = eventId.slice(lastSlashIndex + 1, eventId.length);
+        }
+        // now read the target part
+        if (target == trc.EVENT_REFRESH_MENU) {
+          refreshMenuBar = true;
+        }
+        if (target == trc.EVENT_REFRESH_NAVIGATION) {
+          refreshNavigation = true;
+        }
+        if (target == trc.EVENT_REFRESH_CONTEXT) {
+          refreshContext = true;
+        }
+        if (target == trc.EVENT_REFRESH_MAIN) {
+          refreshMain = true;
+        }
+      });
+      
+      // perform the refreshes
+      if (refreshContext) {
+        // refreshes the context panel
+        refreshContextPanel(tabWidgetId);
+      }
+      if (refreshMain) {
+        refreshMainContent(tabWidgetId);
+      }
+      refreshMenuAndNavigation(tabWidgetId, refreshMenuBar, refreshNavigation);
+    },
+    
+    setupRefreshButton:function(buttonClass) {
+      dojo.ready(function() {
+        var button = dojo.query("." + buttonClass)[0];
+        if (!button) {
+          throw "Refresh button not found: " + buttonClass;
+        }
+        curam.util.Refresh._pageRefreshButton = button;
+        var href = window.location.href;
+        if (curam.util.isActionPage(href)) {
+          // disable the button
+          dojo.addClass(button, "disabled");
+          curam.util.Refresh._pageRefreshButton._curamDisable = true;
+
+        } else {
+          dojo.addClass(button, "enabled");
+          curam.util.Refresh._pageRefreshButton["_curamDisable"] = undefined;
+        }
+        
+        curam.util.getTopmostWindow().curam.util.setupPreferencesLink(href);
+      });
+    },
+    
+    /**
+     * Sets the force refresh flag to true and then invokes the function
+     * that refreshes the main content area of a page. An event is also fired
+     * that ensures that the associated smart panel is also refreshed.
+     */
+    refreshPage: function(event){
+      dojo.stopEvent(event);
+
+      var href = window.location.href;
+      var buttonDisabled = curam.util.Refresh._pageRefreshButton._curamDisable;
+      if(buttonDisabled) {
+        // do nothing
+        return;
+      }
+
+      // Ensure that the force refresh flag is set to true and make a call to
+      // the function that will carry out the refresh operation.
+      curam.util.FORCE_REFRESH = true;
+      curam.util.redirectWindow(href, true);
+    }
+  });
+  
+  return curam.util.Refresh;
+});
+
+},
+'curam/util/ContextPanel':function(){
+/*
+ * Copyright 2010-2013 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of
+ * Curam Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+define("curam/util/ContextPanel", ["curam/util",
+        "curam/tab",
+        "curam/debug",
+        "curam/define",
+        "curam/util/ResourceBundle"
+        ], function() {
+
+/*
+ * Modification History
+ * --------------------
+ * 26-Jun-2013  BOS [CR00390466] Adding requireLocalization to specifically
+ *                include required bundle.
+ * 21-Oct-2012  SK  [CR00346419] Correctly unsubscribes from the onload registry
+ *                               when a tab is closed.
+ * 09-Oct-2012  BOS [CR00346368] Localized debug messages to console.
+ * 10-Sep-2012  MV  [CR00344216] Only subscribe one listener to tab ready event.
+ * 31-Jul-2012  MV  [CR00336202] Refactor to also work in IE7.
+ * 17-Jul-2012  MV  [CR00329547] Load context panel only after tab is ready.
+ * 15-Dec-2011  MV [CR00299726] Synchronize initial load of panel with
+ *                              subsequent refreshes. 
+ * 26-Aug-2011  JK [TEC-7914]   Added title to context panel.
+ * 29-Jul-2011  MV [CR00269970] Added refresh() function.
+ * 20-Jan-2011  MV [CR00244126] Initial version.
+ */
+
+/**
+ * Creating Resource Bundle Object to access localized resources.
+ */
+dojo.requireLocalization("curam.application", "Debug");  
+var bundle = new curam.util.ResourceBundle("Debug");
+  
+/**
+ * @namespace Functions specific to the context panel.
+ */
+  curam.define.singleton("curam.util.ContextPanel", {
+    
+    /** Name of the attribute on content iframe that holds the URL of the frame
+     * content. */
+    CONTENT_URL_ATTRIB: "data-content-url",
+  
+    /**
+     * Setup the page load handler to drive further actions after context panel
+     * loads.
+     *
+     * @param eventName Name of the page event to listen to.
+     * @param tabWidgetId Id of the tab widget.
+     * @param iframeId Id of the context panel iframe.
+     */
+    setupLoadEventPublisher: function(eventName, tabWidgetId, iframeId) {
+      curam.util.ContextPanel._doSetup(eventName, tabWidgetId, iframeId,
+          function(tabWidgetId) { return dijit.byId(tabWidgetId); });
+    },
+  
+    /**
+     * Setup the page load handler to drive further actions after context panel
+     * loads.
+     *
+     * @param eventName Name of the page event to listen to.
+     * @param tabWidgetId Id of the tab widget.
+     * @param iframeId Id of the context panel iframe.
+     * @param getTab A function to get tab widget based on ID.
+     */
+    _doSetup: function(eventName, tabWidgetId, iframeId, getTab) {
+    var unsToken = curam.util.getTopmostWindow().dojo.subscribe(
+          eventName, function() {
+            var tab = getTab(tabWidgetId);
+            var iframe = curam.util.ContextPanel._getIframe(tab);
+  
+          //publish when the detailsPanel is fully loaded
+            curam.debug
+              .log(bundle.getProperty("curam.util.ContextPanel.loaded"));
+            curam.util.getTopmostWindow().dojo.publish(
+                '/curam/frame/detailsPanelLoaded', [{ loaded: true }, tabWidgetId]);
+  
+            // mark the frame as loaded
+            iframe._finishedLoading = true;
+  
+            // effect a scheduled refresh if there is one
+            if (iframe._scheduledRefresh) {
+              curam.util.ContextPanel.refresh(tab);
+              // scheduled refresh done - reset the indicator
+              iframe._scheduledRefresh = false;
+            }
+        });
+
+    curam.util.onLoad.addSubscriber(iframeId, curam.util.ContextPanel.addTitle);
+    
+    curam.tab.unsubscribeOnTabClose(unsToken, tabWidgetId);
+    curam.tab.executeOnTabClose(function() {
+      curam.util.onLoad.removeSubscriber(iframeId, curam.util.ContextPanel.addTitle);
+    }, tabWidgetId);
+  },
+  
+  /**
+   * Refreshes the content panel of the specified tab.
+   * This function is expected to be called in the top window runtime context. 
+   */
+  refresh: function(tab) {
+      var iframe = curam.util.ContextPanel._getIframe(tab);
+      if (iframe) {
+        curam.debug.log(bundle
+          .getProperty("curam.util.ContextPanel.refresh.prep"));
+        if (iframe._finishedLoading) {
+          curam.debug.log(bundle
+            .getProperty("curam.util.ContextPanel.refresh"));
+          // we will be reloading so reset the flag to guard against in-flight
+          // refreshes interrupting
+          iframe._finishedLoading = false;
+          var doc =  iframe.contentDocument // W3C
+                  || iframe.contentWindow.document; //IE
+          // force reload of the context panel
+      doc.location.reload(true);
+  
+        } else {
+          // frame not yet loaded, delay the refresh after it has loaded fully
+          curam.debug.log(bundle
+            .getProperty("curam.util.ContextPanel.refresh.delay"));
+          iframe._scheduledRefresh = true;
+        }
+      }
+    },
+    
+    /**
+     * 
+     * @param tab The tab to look for context panel in.
+     * @returns A context panel iframe or undefined if it was not found. 
+     */
+    _getIframe: function(tab) {
+      var frames = dojo.query("iframe.detailsPanelFrame", tab.domNode);
+      return frames[0];
+  },
+  
+  addTitle: function(iframeId) {
+    var iframe = dojo.query("." + iframeId)[0];
+    var pageTitle = iframe.contentWindow.document.title;
+    iframe.setAttribute("title", CONTEXT_PANEL_TITLE + " - " + pageTitle);
+    },
+    
+    /**
+     * Loads the context panel content in its iframe.
+     * The function gracefully handles situations where there is no context
+     * panel on the tab or it has been loaded already.
+     * 
+     * Initially context panel iframe has no src attribute so that we can
+     * control at which point in time the content is loaded.
+     * 
+     * @param tab The tab object to load context panel content for.
+     */
+    load: function(tab) {
+      var iframe = curam.util.ContextPanel._getIframe(tab);
+      if (iframe) {
+        var source = dojo.attr(iframe,
+            curam.util.ContextPanel.CONTENT_URL_ATTRIB);
+        if (source && source != "undefined") {
+          iframe[curam.util.ContextPanel.CONTENT_URL_ATTRIB] = undefined;
+          dojo.attr(iframe, "src", source);
+        }
+      }
+    }
+  });
+  
+  /* Only load the context panel when the tab is setup completely.
+   * This is to work around the issue in IE9 that was causing the iframe to be
+   * garbage collected inadvertently.
+   */
+  var topWin = curam.util.getTopmostWindow();
+  if (typeof topWin._curamContextPanelTabReadyListenerRegistered != "boolean") {
+    topWin.dojo.subscribe(
+        "/curam/application/tab/ready", null, function(newTab) {
+          curam.util.ContextPanel.load(newTab);
+        });
+    topWin._curamContextPanelTabReadyListenerRegistered = true;
+  }
+  
+  return curam.util.ContextPanel;
+});
+
+},
 'curam/util':function(){
 /*
  * Licensed Materials - Property of IBM
  *
- * Copyright IBM Corporation 2012,2013. All Rights Reserved.
+ * Copyright IBM Corporation 2012,2014. All Rights Reserved.
  *
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -15773,6 +18791,9 @@ return declare("dijit._WidgetBase", Stateful, {
 /*
  * Modification History
  * --------------------
+ * 06-Jun-2014  AS [CR00428142] TEC-17091. Skiplink should become visible when focused
+ * 03-Jun-2014 BOS [CR00434187] Added the getCookie() function and updated 
+ *                    replaceSubmitButton() to support timeout warning dialog.
  * 15-Apr-2014  JY [CR00425261] Refactored the print function to allow printing
  *                              the context panel.
  * 20-Feb-2014  AS [CR00414442] Skipped arrow and validation div of filtering 
@@ -16006,6 +19027,7 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/dom-attr",
         "dojo/_base/lang",
         "dojo/on",
+		"dijit/_BidiSupport",		
         
         "curam/define",
         /* "dojox/storage", */
@@ -16015,9 +19037,10 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/_base/sniff",
         "cm/_base/_dom",
         "curam/util/ResourceBundle"
+        
         ], function(dom, registry, domConstruct, ready, windowBase, style,
             array, domClass, topic, dojoEvent, query, has, unload,
-            geom, json, attr, lang, on) {
+            geom, json, attr, lang, on, bidi) {
 
 /**
  * Creating Resource Bundle Object to access localized resources.
@@ -17958,6 +20981,23 @@ curam.define.singleton("curam.util",
   },
   
   /**
+   * TEC-17091. Skiplink should become visible when focused (i.e. a user tabs on it)
+   * and it should be visible only when it has focus, so it should hide again when 
+   * the user tabs off it.
+   */
+  showHideSkipLink: function(e) {
+    var skipLink = dojo.byId("skipLink");
+    if (skipLink) {
+      var skipLinkDiv = skipLink.parentNode;
+      if (e.type == "focus" && domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.remove(skipLinkDiv, "hidden");
+      } else if (e.type == "blur" && !domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.add(skipLinkDiv, "hidden");
+      }
+    }
+  },
+  
+  /**
   * Registers a handler for submitting a form when Enter key is pressed.
   *
   * Called from the PageTag - will be called on every page in any context,
@@ -18275,8 +21315,10 @@ curam.define.singleton("curam.util",
  
   /**
   * Replaces standard submit buttons with anchor tags when no images are used.
+  * @param {String} buttonText
+  *            The text to be displayed on submit button.
   */
-  replaceSubmitButton: function(name) {
+  replaceSubmitButton: function(name, buttonText) {
     if(curam.replacedButtons[name] == "true") {
       return;
     }
@@ -18303,6 +21345,14 @@ curam.define.singleton("curam.util",
     * The current node, the index, and the node list itself.
     */
     inputList.forEach(function(replacedButton, index, theButtons) {
+    	// if there is a paramter passed in for button text then set the 'value'
+        // of the second button (the button dipalyed to user) node to the button
+        // text specified.
+        // Note: This will replace any value set in the value attribute already!
+        if (buttonText) {
+          var buttonDisplayed = theButtons[1];
+          buttonDisplayed.setAttribute("value",buttonText);
+        }
       replacedButton.tabIndex = -1;
       var parentSpan = replacedButton.parentNode;
  
@@ -18825,6 +21875,28 @@ curam.define.singleton("curam.util",
     highContrastModeType: function(){      
       var highContrastMode = dojo.query("body.high-contrast")[0];
       return highContrastMode;
+    },	
+		  
+	processBidiContextual: function (target){
+		target.dir = bidi.prototype._checkContextual(target.value);			
+	},
+	
+	getCookie: function(name) {
+	    var dc=document.cookie;
+	    var prefix=name+"=";
+	    var begin=dc.indexOf("; "+prefix);
+	    if(begin==-1) {
+	      begin=dc.indexOf(prefix);
+	      if(begin!=0)
+	        return null;
+	    } else {
+	      begin+=2;
+	    }
+	    var end=document.cookie.indexOf(";",begin);
+	    if(end==-1) {
+	      end=dc.length;
+	    }
+	    return unescape(dc.substring(begin+prefix.length,end));
     }
   });
 
@@ -24283,6 +27355,48 @@ define("dijit/_base/typematic", ["../typematic"], function(){
 });
 
 },
+'curam/html':function(){
+/*
+ This file provides general html manipulation functions.
+*/
+define("curam/html", ["curam/define"
+        ], function() {
+  
+  curam.define.singleton("curam.html", {
+    splitWithTag: function(value, delim, tagName, fnModifier) {
+      // summary: Splits a string value into tokenized elements, then wraps
+      //          the specified tag name, or "div" if no tagName is specified.
+      //          E.g. calling 
+      //            curam.html.splitWithTag("hello\nworld", "\n", "div")
+      //          returns
+      //            "<div>hello</div><div>world</div>
+      //          If fnModifier is speficied, it should be a function to which
+      //          each split element is passed, and should return a new value for
+      //          that element.
+      var splitVal = value.split(delim || "\n");
+      
+      // If there are no delimiters found, do not wrap any tags around the value.
+      if(splitVal.length < 2) {
+        return fnModifier ? fnModifier(value) : value;
+      }
+      var t = (tagName || "div") + ">";
+      var tagStart = "<" + t, tagEnd = "</" + t;
+      
+      if(fnModifier) {
+        for(var i = 0; i < splitVal.length; i++) {
+          splitVal[i] = fnModifier(splitVal[i]);
+        }
+      }
+      
+      // Join the array of tokenized values together with an end and start tag.
+      return tagStart + splitVal.join(tagEnd + tagStart) + tagEnd;
+    }
+  });
+  
+  return curam.html;
+});
+
+},
 'dojo/window':function(){
 define("dojo/window", ["./_base/lang", "./_base/sniff", "./_base/window", "./dom", "./dom-geometry", "./dom-style"],
 	function(lang, has, baseWindow, dom, geom, style) {
@@ -27286,6 +30400,418 @@ define("dijit/_base/place", [
 	};
 
 	return dijit;
+});
+
+},
+'curam/tab':function(){
+/*
+ * Copyright 2009-2013 Curam Software Ltd.
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of Curam
+ * Software, Ltd. ("Confidential Information"). You shall not disclose
+ * such Confidential Information and shall use it only in accordance with the
+ * terms of the license agreement you entered into with Curam Software.
+ */
+
+define("curam/tab", ["curam/define",
+        "curam/util",
+        "curam/util/ScreenContext"
+        ], function() {
+  
+  /*
+   * Modification History
+   * --------------------
+   * 25-Mar-2014  MV  [CR00423311] Add function to detect internal application.  
+   * 28-Sep-2013  BOS [CR00396277] Modified getSelectedTab() and 
+   *                    onSectionSelected() functions to ensure an undefined. 
+   *                    tab container handled correctly.
+   * 28-Sep-2011  MV  [CR00288956] Refactored code to get separate
+   *      getCurrentSectionId function.
+   * 29-Jul-2011  MV  [CR00269970] Added missing semicolons.
+   * 14-Feb-2011  PK  [CR00251730] Added "refreshMainContentPanel" method.
+   * 14-Jan-2011  DG  [CR00242400] Changed "getContainerTab" to do a bottom-up
+   *                    search. This is much, much simpler.
+   * 12-Jan-2011  DG  [CR00238642] Fixed "getContainerTab" to find the tab for an
+   *                    node even if the tab is not in the currently selected
+   *                    section. Added copyright notice.
+   * 17-Nov-2010  DG  [CR00217921] Clean-up of selected tab retrieval.
+   * 27-Oct-2010  SK  [CR00224193] the situation where the content panel frame
+   *                    is not present is now allowed.
+   * 28-Jul-2010  PK  [CR00211736] Updated due to re-factoring of
+   *                    tab-app-controller.js.
+   * 21-Jul-2010  PK  [CR00211095] Added methods for handling default pages in a
+   *                    section.
+   * 16-Jul-2010  MV  [CR00210541] Fixed the getTabContainer() function to also
+   *                    work in contexts other than the main window.
+   * 28-Jun-2010  SD  [CR00204622] Smart Panel additions.
+   * 02-Jul-2010  PK  [CR00203531] Updated to support section tab container.
+   * 04-Jun-2010  MV  [CR00202412] Generalize the code that executes functions
+   *                    on tab close.
+   * 11-Feb-2010  MV  [CR00188844] Code format cleanup.
+   * 27-Nov-2009  MV  [CR00180297] Pass the tab widget ID to the handlers.
+   * 24-Nov-2009  MV  [CR00175837] Remove debug output from getTabCOntainer.
+   * 20-Nov-2009  MV  [CR00175581] Fix getSelectedTab function, remove
+   *                    refreshCurrentTab function, add getTabController function.
+   * 18-Nov-2009  MV  [CR00172452] Add more tab related functions.
+   * 03-Sep-2009  MLB [CR00164883] Added function to refresh the current tab.
+   * 06-Aug-2009  MV  [CR00164029] Initial version.
+   * 24-Jun-2010 BD  [CR00204119] Updated how the content panel iframe is returned
+   */
+  /**
+   * Contains functions of general use for the tabbed UI.
+   */
+  curam.define.singleton("curam.tab", {
+    SECTION_TAB_CONTAINER_ID: "app-sections-container-dc",
+    SMART_PANEL_IFRAME_ID: "curam_tab_SmartPanelIframe",
+    toBeExecutedOnTabClose: [],
+    
+    /**
+     * @private
+     *
+     * Used for testing: when this is set by the test code the value
+     * will be returned from the getSelectedTab() function instead of the real
+     * selected tab.
+     */
+    _mockSelectedTab: null,
+
+    // Returns the currently selected tab widget.
+    getSelectedTab: function(sectionID) {
+      // supports testing code that uses curam.tab API
+      if (curam.tab._mockSelectedTab) {
+        return curam.tab._mockSelectedTab;
+      }
+
+      if (curam.tab.getTabContainer(sectionID)) {
+        return curam.tab.getTabContainer(sectionID).selectedChildWidget;
+      }    
+    },
+
+    getTabContainer: function(sectionID) {
+      return curam.tab.getTabContainerFromSectionID(sectionID
+          || curam.tab.getCurrentSectionId());
+    },
+    
+    /**
+     * Determines ID of the currently selected section.
+     * By default throws an error when no current section is found.
+     * 
+     * @param {boolean} [suppressNotFoundError] If this option is set to true
+     *          the function will not throw err when no current section
+     *          is found.
+     * 
+     * @return ID of the currently selected section or null
+     *          if "suppressNotFoundError" parameter is true.
+     */
+    getCurrentSectionId: function(suppressNotFoundError) {
+      var sectionTabContainer = curam.util.getTopmostWindow().dijit.byId(
+          curam.tab.SECTION_TAB_CONTAINER_ID);
+      if (sectionTabContainer) {
+        // children of the curam.tab.SECTION_TAB_CONTAINER_ID have id's that
+        // start with the section ID and have a 4 character suffix. See
+        // the ApplicationSectionRenderer.
+        var childID = sectionTabContainer.selectedChildWidget.domNode.id;
+        return childID.substring(0, childID.length - 4);
+
+      } else {
+        if (!suppressNotFoundError) {
+          throw new Error(
+              "curam.tab.getCurrentSectionId() - application section"
+                + " tab container not found");
+        }
+      }
+
+      return null;
+    },
+    
+    /**
+     * Determines whether we are running within a tabbed UI (internal
+     * application) or not.
+     * 
+     * @return True if we are in tabbed UI, otherwise false.
+     */
+    inTabbedUI: function() {
+      return curam.tab.getCurrentSectionId(true) != null;
+    },
+
+    getTabContainerFromSectionID: function(sectionID) {
+      var tabContainer = dijit.byId(sectionID + "-stc");
+      // TODO: not sure what this should do now that sections have been
+      // introduced
+      if (!tabContainer && window.parent && window.parent != window) {
+        tabContainer =
+          curam.util.getTopmostWindow().dijit.byId(sectionID + "-stc");
+      }
+      return tabContainer;
+    },
+
+    // Returns the unique widget ID for the specified tab.
+    getTabWidgetId: function(tab) {
+      return tab.id;
+    },
+
+    // Returns the unique widget ID for the currently selected tab.
+    getSelectedTabWidgetId: function() {
+      return curam.tab.getTabWidgetId(curam.tab.getSelectedTab());
+    },
+
+    /**
+     * Gets the tab that contains the given node. The node is typically the
+     * "iframe" element (or its parent element) within the tab, but it can be
+     * any other descendant node of the tab widget.
+     *
+     * @param {Node} node The node within the tab to be identified.
+     * @return The tab content pane containing the given node.
+     */
+    getContainerTab: function(node) {
+      var widget = dijit.getEnclosingWidget(node);
+
+      if (widget && !widget.tabDescriptor) {
+        // A valid tab has a "curam.tab.TabDescriptor" object. This is probably
+        // a different widget nested within the tab. Look further up the tree.
+        widget = curam.tab.getContainerTab(widget.domNode.parentNode);
+      }
+
+      if (!widget || !widget.tabDescriptor) {
+        throw "Containing tab widget could not be found for node: " + node;
+      }
+      return widget;
+    },
+
+    // Returns the iframe corresponding to the main content panel
+    // of the specified tab.
+    // If the tab parameter is not provided the selected tab will be used instead.
+    getContentPanelIframe: function(tab) {
+      var targetTab = tab ? tab : curam.tab.getSelectedTab(),
+          iframe = null;
+      
+      if (targetTab) {
+        iframe = dojo.query("iframe", targetTab.domNode).filter(
+            function(item) {
+              // is-cp-iframe output by "ContentPanelRenderer".
+              return dojo.attr(item,"iscpiframe") == "true";
+            })[0];
+      }
+      return iframe ? iframe : null;
+    },
+    
+    /**
+     * Refreshes the main content panel for the specified tab. If the tab is not
+     * specified, the currently selected one will be used.
+     * @tab The tab to reload the main content panel for. 
+     */
+    refreshMainContentPanel: function(tab) {
+      var iframe = curam.tab.getContentPanelIframe(tab);
+      iframe.contentWindow.curam.util.publishRefreshEvent();
+      iframe.contentWindow.location.reload(true);
+    },
+
+    // Returns the iframe corresponding to the main content panel
+    // of the specified tab.
+    // If the tab parameter is not provided the selected tab will be used instead.
+    getSmartPanelIframe: function(tab) {
+      var targetTab = tab ? tab : curam.tab.getSelectedTab();
+      var iframe =
+        dojo.query("iframe", targetTab.domNode).filter(
+            function(item) {
+              return item.id == curam.tab.SMART_PANEL_IFRAME_ID;
+            })[0];
+
+      return iframe;
+    },
+
+    unsubscribeOnTabClose: function(unsubscribeToken, tabWidgetId) {
+      curam.tab.toBeExecutedOnTabClose.push(function(actualTabWidgetId) {
+        if (tabWidgetId == actualTabWidgetId) {
+          dojo.unsubscribe(unsubscribeToken);
+          return true;
+        }
+
+        return false;
+      });
+    },
+
+    executeOnTabClose: function(func, tabWidgetId) {
+      curam.tab.toBeExecutedOnTabClose.push(function(actualTabWidgetId) {
+        if (tabWidgetId == actualTabWidgetId) {
+          func();
+          return true;
+        }
+
+        return false;
+      });
+    },
+
+    doExecuteOnTabClose: function(tabWidgetId) {
+      var remainingFuncs = new Array();
+      for (var i = 0; i < curam.tab.toBeExecutedOnTabClose.length; i ++) {
+        var func = curam.tab.toBeExecutedOnTabClose[i];
+        if (!func(tabWidgetId)) {
+          remainingFuncs.push(func);
+        }
+      }
+
+      curam.tab.toBeExecutedOnTabClose = remainingFuncs;
+    },
+
+    // Returns a handler function that handles the /curam/main-content/page/loaded events,
+    // but only for the specified tab.
+    getHandlerForTab: function(handler, tabWidgetId) {
+      return function(pageId, actualTabWidgetId) {
+        if (actualTabWidgetId == tabWidgetId) {
+          handler(pageId, tabWidgetId);
+        } else {
+          // no action - event was for a different tab
+        }
+      };
+    },
+
+    getTabController: function() {
+      return curam.util.getTopmostWindow().curam.ui.UIController;
+    },
+
+    initTabLinks: function(tabWindow) {
+      if (typeof(window.pageContainsClassicIEG) != "undefined"
+          && window.pageContainsClassicIEG == true) {
+        return;      
+      }
+      dojo.query("a").forEach(
+        function(link) {
+          if (link.href.indexOf('#') != 0
+              && link.href.indexOf('javascript:') != 0
+              && (link.href.indexOf('Page.do') > -1
+                        || link.href.indexOf('Frame.do') > -1)) {
+            if (link.href.indexOf('&o3ctx') < 0
+              && link.href.indexOf('?o3ctx') < 0) {
+              var separator = (link.href.indexOf('?') > -1) ? "&" : "?";
+          link.href += separator + jsScreenContext.toRequestString();
+            }
+          }
+       });
+      elements = document.forms;
+      for (var i = 0; i < elements.length; ++i) {
+        elem = elements[i];
+        var ctxField = dojo.byId('o3ctx');
+        if (!ctxField) {
+          var ctx = new curam.util.ScreenContext();
+          ctx.setContextBits('ACTION');
+          dojo.create("input", {"type": "hidden", "name": "o3ctx",
+                                 "value": ctx.getValue()
+                               }, elem);
+        }
+        dojo.create("input", {"type": "hidden", "name": "o3prv",
+              "value": jsPageID}, elem);
+      }
+
+      if (elements.length > 0) {
+        curam.util.getTopmostWindow().dojo.publish("curam.fireNextRequest", []);
+      }
+    },
+
+    initContent: function(window, pageId) {
+      var contentDiv = dojo.byId('content');
+      dojo.removeClass(contentDiv, "hidden-panel");
+      return;
+    },
+
+    /**
+     * This setups a listener on the SECTION_TAB_CONTAINER_ID tab container to
+     * handle when a section tab is selected. This method is invoked from
+     * JavaScript output from the ApplicationsSectionsRenderer Java class.
+     */
+    setupSectionSelectionListener: function() {
+      dojo.subscribe(curam.tab.SECTION_TAB_CONTAINER_ID + "-selectChild",
+          curam.tab.onSectionSelected) ;
+    },
+
+    /**
+     * Checks if a section has a default page specified and if the section is
+     * currently "empty" (i.e. nothing displayed in it). If so, it loads the
+     * default default in the section.
+     *
+     * This function responds to the standard "selectChild" event provided by the
+     * Dijit TabContainer and is setup by the setupSectionSelectionListener method
+     * above.
+     */
+    onSectionSelected: function(section) {
+      // The curamDefaultPageID attribute is added by the setSectionDefaultPage
+      // method below. The Dijit TabContainer selectChild event passes the
+       // selected child to the listener.
+      if (section.curamDefaultPageID) {
+        // The section has a default page. Check if anything has been opened up
+        // in this section already. If not, then we trigger a request for that
+        // page.
+
+        // The tab container containing the "object" tabs will either be a direct
+        // child of the sections tab container, or it will be nested within
+        // a border container.
+        var objectTabContainer;
+        if (section.id.substring(
+              section.id.length - 4, section.id.length) == "-sbc") {
+          // This means it's a border container so extract the section ID and
+          // find the nested tab container.
+          var sectionID = section.id.substring(0, section.id.length - 4);
+          objectTabContainer = curam.tab.getTabContainer(sectionID);
+        } else {
+          // This means the object tab container is a direct child of the section
+          // tab container, so it's passed in by the "selectChild" event of the
+          // section tab container.
+          objectTabContainer = section;
+        }
+
+        // If the tab container does not have any children, then load the
+        // default page.
+        if (objectTabContainer 
+          && objectTabContainer.getChildren().length == 0) {
+            curam.tab.getTabController().handleUIMPageID(
+              section.curamDefaultPageID, true);
+         // TODO: now that the page has been loaded, can we set a flag on the
+         // section so the code *before* the getChildren().length == 0 above
+         // is not executed again. Just a minor optimization.
+        }
+        return true;
+      }
+      return false;
+    },
+
+    /**
+     * Sets the section's default pageID as a custom attribute on the Dijit
+     * container. The container can be either a border container or a tab
+     * container which has a specific naming convention which is the section ID
+     * plus a suffix of "-sbc" for a border container and "-stc" for a tab
+     * container. The ApplicationSectionsRenderer generates the call to this
+     * function and will set the containers ID appropriately.
+     */
+    setSectionDefaultPage: function(sectionDijitContainerID, defaultPageID) {
+      var dijitContainer = dijit.byId(sectionDijitContainerID);
+      if (dijitContainer) {
+        // The "curamDefaultPageID" custom attribute is used by the
+        // onSectionSelected method above.
+        dijitContainer.curamDefaultPageID = defaultPageID;
+      } else {
+        throw "curam.tab.setSectionDefaultPage() - cannot find section dijit ID:"
+              + sectionDijitContainerID;
+      }
+    },
+    
+    /**
+     * Notifies the Smart Panel that its content page is loaded and ready to
+     * receive updates from the tab's content page. This is done by publishing
+     * an event, or, if the listeners are not set up yet, an attribute set on
+     * the Smart Panel frame is used.
+     */
+    publishSmartPanelContentReady: function() {
+            var rendererLoadedEvent = "smartpanel.content.loaded";
+            //use the window object as cannot assume the currently selected tab is
+            //the tab containing the Smart Panel of interest.
+            var smartPanel = window.frameElement; 
+            smartPanel.setAttribute("_SPContentLoaded", "true");
+            curam.util.getTopmostWindow().dojo.publish(rendererLoadedEvent, [smartPanel]);
+    }
+    
+  });
+
+  return curam.tab;
 });
 
 },

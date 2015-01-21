@@ -5,6 +5,16 @@
         <value>properties/ProspectEmployerWorkforceReport</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl")
+    designHandle.setProperty("bidiTextDirection","rtl");
+else
+    designHandle.setProperty("bidiTextDirection","ltr");        ]]></method>
     <method name="beforeFactory"><![CDATA[var mychart2 =this.getReportElementByID(120);
  
 if(params["OutputType"].value == "1") {
@@ -21,6 +31,7 @@ if(params["db2numbertype"].value == "bitdata") {
 ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
+    <property name="bidiTextDirection">ltr</property>
     <list-property name="libraries">
         <structure>
             <property name="fileName">library/CEFLibrary.rptlibrary</property>
@@ -100,14 +111,63 @@ if(params["db2numbertype"].value == "bitdata") {
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="bidi" id="525">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="g11n-btd" id="526">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>		
     </parameters>
     <data-sources>
-        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="CuramDB" id="7"
- extends="CEFLibrary.CuramDB">
-            <property name="odaDriverClass">COM.ibm.db2os390.sqlj.jdbc.DB2SQLJDriver</property>
-            <property name="odaURL">jdbc:db2://zavijava:456/D9ST1111</property>
-            <property name="odaUser">C60W803</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">cGFzc3dvcmQ=</encrypted-property>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="CuramDB" id="7" extends="CEFLibrary.CuramDB">
+            <property name="odaDriverClass">oracle.jdbc.driver.OracleDriver</property>
+            <property name="odaURL">jdbc:oracle:thin:@eos.curamsoftware.com:1521:orcl</property>
+            <property name="odaUser">curam</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">UjNwcnQxbmc=</encrypted-property>
             <property name="odaJndiName">java:comp/env/jdbc/D9ST1111</property>
         </oda-data-source>
     </data-sources>
@@ -329,8 +389,7 @@ FROM ProspectEmployer]]></xml-property>
         </simple-master-page>
     </page-setup>
     <body>
-        <extended-item extensionName="Chart" name="Pie" extends="ReportItemLibrary.Pie"
- id="120">
+        <extended-item extensionName="Chart" name="Pie" extends="ReportItemLibrary.Pie" id="120">
             <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithoutAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.5.1</Version>
   <Type>Pie Chart</Type>
@@ -377,14 +436,22 @@ FROM ProspectEmployer]]></xml-property>
         <Caption>
           <Value>Report.chart.title=Number of Employees</Value>
           <Font>
-            <Name>all-fonts</Name>
-            <Size>9.0</Size>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
+            <Bold>true</Bold>
+            <Italic>true</Italic>
             <Alignment>
               <horizontalAlignment>Center</horizontalAlignment>
               <verticalAlignment>Bottom</verticalAlignment>
             </Alignment>
             <Rotation>0.0</Rotation>
           </Font>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
           <Transparency>0</Transparency>
@@ -614,6 +681,32 @@ FROM ProspectEmployer]]></xml-property>
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>&#xD;
+/**&#xD;
+ * Called before generation of chart model to GeneratedChartState.&#xD;
+ * &#xD;
+ * @param chart&#xD;
+ *            Chart&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeGeneration( chart, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		//Import for Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		//Move legend to left. This will not mirror the legend contents. Only the legend position will be changed.&#xD;
+		chart.getLegend().setPosition(Position.get(Position.LEFT));&#xD;
+		&#xD;
+		//Rotatate 180 degree in clockwise direction&#xD;
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setClockwise(true);&#xD;
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setRotation(180);&#xD;
+	}&#xD;
+}&#xD;
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <GridColumnCount>0</GridColumnCount>
@@ -665,7 +758,7 @@ FROM ProspectEmployer]]></xml-property>
       <Bottom>10.0</Bottom>
       <Right>10.0</Right>
     </Insets>
-    <Visible>false</Visible>
+    <Visible>true</Visible>
   </EmptyMessage>
   <SeriesDefinitions>
     <Query>
@@ -685,7 +778,7 @@ FROM ProspectEmployer]]></xml-property>
           <Green>165</Green>
           <Blue>205</Blue>
         </EndColor>
-        <Direction>-45.0</Direction>
+        <Direction>-90.0</Direction>
       </Entries>
       <Entries xsi:type="attribute:Gradient">
         <StartColor>
@@ -961,7 +1054,7 @@ FROM ProspectEmployer]]></xml-property>
             <Green>165</Green>
             <Blue>205</Blue>
           </EndColor>
-          <Direction>-45.0</Direction>
+          <Direction>-90.0</Direction>
         </Entries>
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
@@ -1263,7 +1356,7 @@ FROM ProspectEmployer]]></xml-property>
             <AggregateExpression xsi:nil="true"/>
           </Grouping>
         </DataDefinition>
-        <SeriesIdentifier>Series 1</SeriesIdentifier>
+        <SeriesIdentifier></SeriesIdentifier>
         <DataPoint>
           <Components>
             <Type>Orthogonal_Value</Type>
@@ -1989,9 +2082,10 @@ FROM ProspectEmployer]]></xml-property>
       <Definition>row[&quot;STAFF_LOCALIZED&quot;]</Definition>
     </SortKey>
   </SeriesDefinitions>
+  <Coverage>0.5</Coverage>
 </model:ChartWithoutAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <property name="inheritColumns">false</property>
             <property name="dataSet">Employer Workforce Data Set</property>
             <property name="height">100px</property>

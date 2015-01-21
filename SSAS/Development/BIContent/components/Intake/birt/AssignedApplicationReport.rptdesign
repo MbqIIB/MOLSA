@@ -5,6 +5,18 @@
         <value>properties/AssignedApplicationReport</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}        ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <list-property name="libraries">
@@ -40,6 +52,31 @@
             </simple-property-list>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="558">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
@@ -590,9 +627,15 @@ reportContext.getMessage( row["PROCESSINGDEADLINECATEGORY"],reportContext.getLoc
         <Value></Value>
         <Font>
           <Name>Tahoma</Name>
-          <Size>8.0</Size>
+          <Size>10.0</Size>
           <Alignment/>
         </Font>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
       </Text>
       <Orientation>Vertical</Orientation>
       <Direction>Top_Bottom</Direction>
@@ -684,6 +727,32 @@ reportContext.getMessage( row["PROCESSINGDEADLINECATEGORY"],reportContext.getLoc
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>&#xD;
+/**&#xD;
+ * Called before generation of chart model to GeneratedChartState.&#xD;
+ * &#xD;
+ * @param chart&#xD;
+ *            Chart&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeGeneration( chart, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;ltr&quot;.equals(bidiLayout)) {&#xD;
+		//Import for Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		//Move legend to left. This will not mirror the legend contents. Only the legend position will be changed.&#xD;
+		chart.getLegend().setPosition(Position.get(Position.LEFT));&#xD;
+		&#xD;
+		//Rotatate 180 degree in clockwise direction&#xD;
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setClockwise(true);&#xD;
+		chart.getSeriesDefinitions().get(0).getSeriesDefinitions().get(0).getSeries().get(1).setRotation(180);&#xD;
+	}&#xD;
+}&#xD;
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <GridColumnCount>0</GridColumnCount>
@@ -2059,9 +2128,10 @@ reportContext.getMessage( row["PROCESSINGDEADLINECATEGORY"],reportContext.getLoc
       <Definition>row[&quot;PROCESSINGCATEGORYVALUE&quot;]</Definition>
     </SortKey>
   </SeriesDefinitions>
+  <Coverage>0.5</Coverage>
 </model:ChartWithoutAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <property name="inheritColumns">false</property>
             <property name="dataSet">AssignedApplicationsDataSet</property>
             <property name="height">1.8020833333333333in</property>

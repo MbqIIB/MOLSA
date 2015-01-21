@@ -5,6 +5,18 @@
         <value>properties/SingleComponentGraphicalBenefitStatement</value>
     </simple-property-list>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[var designHandle = reportContext.getReportRunnable().designHandle;
+if (params['bidi'].value == "rtl")
+    designHandle.setProperty("bidiLayoutOrientation","rtl");
+else
+    designHandle.setProperty("bidiLayoutOrientation","ltr");
+
+if (params['g11n-btd'].value == "rtl"){
+//    designHandle.setProperty("bidiTextDirection","rtl");
+}
+else {
+//    designHandle.setProperty("bidiTextDirection","ltr");
+}     ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -29,6 +41,56 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <property name="paramType">simple</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="bidi" id="56">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="g11n-btd" id="57">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">ltr</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">ltr</property>
+                </structure>
+                <structure>
+                    <property name="value">rtl</property>
+                </structure>
+            </list-property>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">false</property>
+            <property name="fixedOrder">true</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
@@ -276,14 +338,21 @@ AND
         <Caption>
           <Value>Report.chart.title=Initial And Reassessed Payments</Value>
           <Font>
-            <Name>all-fonts</Name>
+            <Name>Tahoma</Name>
             <Size>10.0</Size>
             <Bold>true</Bold>
+            <Italic>true</Italic>
             <Alignment>
               <horizontalAlignment>Center</horizontalAlignment>
               <verticalAlignment>Bottom</verticalAlignment>
             </Alignment>
           </Font>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
           <Transparency>0</Transparency>
@@ -438,7 +507,7 @@ AND
       <ItemType>Series</ItemType>
       <Title>
         <Caption>
-          <Value></Value>
+          <Value>Font Tahoma,Size 10, Color Black</Value>
           <Font>
             <Alignment/>
           </Font>
@@ -506,6 +575,43 @@ AND
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>&#xD;
+/**&#xD;
+ * Called before generation of chart model to GeneratedChartState.&#xD;
+ * &#xD;
+ * @param chart&#xD;
+ *            Chart&#xD;
+ * @param icsc&#xD;
+ *            IChartScriptContext&#xD;
+ */&#xD;
+&#xD;
+function beforeGeneration( chart, icsc )&#xD;
+{&#xD;
+	var bidiLayout = icsc.getExternalContext().getScriptable().getParameterValue(&quot;bidi&quot;);&#xD;
+	if(&quot;rtl&quot;.equals(bidiLayout)) {&#xD;
+		//Reverse the direction of the categories on X-Axis &#xD;
+		chart.setReverseCategory(true);&#xD;
+		&#xD;
+		//Import for IntersectionType, Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		var xAxis = chart.getPrimaryBaseAxes()[0];&#xD;
+		var yAxis = chart.getPrimaryOrthogonalAxis(xAxis);&#xD;
+		&#xD;
+		//Move Y-Axis to maximum right&#xD;
+		yAxis.getOrigin().setType(IntersectionType.get(IntersectionType.MAX));&#xD;
+		&#xD;
+		//Flip position of Y-Axis label&#xD;
+		yAxis.setLabelPosition(Position.get(Position.RIGHT));&#xD;
+		&#xD;
+		//Import for Position&#xD;
+		importPackage(org.eclipse.birt.chart.model.attribute);&#xD;
+		&#xD;
+		//Move legend to left. This will not mirror the legend contents. Only the legend position will be changed.&#xD;
+		chart.getLegend().setPosition(Position.get(Position.LEFT));&#xD;
+	}&#xD;
+}&#xD;
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <ExtendedProperties>
@@ -514,7 +620,7 @@ AND
   </ExtendedProperties>
   <SampleData>
     <BaseSampleData>
-      <DataSetRepresentation>01/05/2000,02/01/2000,04/12/2000,03/12/2000,02/29/2000</DataSetRepresentation>
+      <DataSetRepresentation>'A','B','C','D','E'</DataSetRepresentation>
     </BaseSampleData>
     <OrthogonalSampleData>
       <DataSetRepresentation>5,4,12</DataSetRepresentation>
@@ -563,7 +669,7 @@ AND
     <Visible>false</Visible>
   </EmptyMessage>
   <Axes>
-    <Type>DateTime</Type>
+    <Type>Text</Type>
     <Title>
       <Caption>
         <Value>Compliance</Value>
@@ -663,11 +769,11 @@ AND
             </StartColor>
             <EndColor>
               <Transparency>255</Transparency>
-              <Red>96</Red>
+              <Red>95</Red>
               <Green>165</Green>
               <Blue>205</Blue>
             </EndColor>
-            <Direction>-45.0</Direction>
+            <Direction>-90.0</Direction>
           </Entries>
           <Entries xsi:type="attribute:Gradient">
             <StartColor>
@@ -967,7 +1073,7 @@ AND
               <AggregateExpression xsi:nil="true"/>
             </Grouping>
           </DataDefinition>
-          <SeriesIdentifier>Report.chart.yseries1=Actual Payment</SeriesIdentifier>
+          <SeriesIdentifier>Report.chart.yseries1=Count</SeriesIdentifier>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
@@ -1268,11 +1374,11 @@ AND
             </StartColor>
             <EndColor>
               <Transparency>255</Transparency>
-              <Red>96</Red>
+              <Red>95</Red>
               <Green>165</Green>
               <Blue>205</Blue>
             </EndColor>
-            <Direction>-45.0</Direction>
+            <Direction>-90.0</Direction>
           </Entries>
         </SeriesPalette>
         <Series xsi:type="type:BarSeries">
@@ -1317,7 +1423,7 @@ AND
               <AggregateExpression xsi:nil="true"/>
             </Grouping>
           </DataDefinition>
-          <SeriesIdentifier>Report.chart.yseries2=Reassessed Payment</SeriesIdentifier>
+          <SeriesIdentifier>Report.chart.yseries2=Count</SeriesIdentifier>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
@@ -1354,14 +1460,22 @@ AND
       <LineAttributes>
         <Style>Solid</Style>
         <Thickness>1</Thickness>
-        <Visible>false</Visible>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>200</Red>
+          <Green>208</Green>
+          <Blue>224</Blue>
+        </Color>
+        <Visible>true</Visible>
       </LineAttributes>
       <Label>
         <Caption>
           <Value></Value>
           <Font>
-            <Name>all-fonts</Name>
-            <Size>8.0</Size>
+            <Name>Tahoma</Name>
+            <Size>10.0</Size>
+            <Bold>true</Bold>
+            <Italic>true</Italic>
             <Alignment/>
             <Rotation>0.0</Rotation>
           </Font>
@@ -1411,21 +1525,21 @@ AND
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>196</Red>
-            <Green>196</Green>
-            <Blue>196</Blue>
+            <Red>238</Red>
+            <Green>238</Green>
+            <Blue>238</Blue>
           </Color>
           <Visible>true</Visible>
         </LineAttributes>
-        <TickStyle>Right</TickStyle>
+        <TickStyle>Across</TickStyle>
         <TickAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>172</Red>
-            <Green>172</Green>
-            <Blue>172</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
           <Visible>true</Visible>
         </TickAttributes>
@@ -1442,25 +1556,25 @@ AND
           </Color>
           <Visible>false</Visible>
         </LineAttributes>
-        <TickStyle>Right</TickStyle>
+        <TickStyle>Across</TickStyle>
         <TickAttributes>
           <Style>Solid</Style>
           <Thickness>1</Thickness>
           <Color>
             <Transparency>255</Transparency>
-            <Red>225</Red>
-            <Green>225</Green>
-            <Blue>225</Blue>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
           </Color>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
         </TickAttributes>
       </MinorGrid>
       <Scale>
-        <MinorGridsPerUnit>5</MinorGridsPerUnit>
+        <MinorGridsPerUnit>2</MinorGridsPerUnit>
         <AutoExpand>true</AutoExpand>
       </Scale>
       <Origin>
-        <Type>Min</Type>
+        <Type>Value</Type>
         <Value xsi:type="data:NumberDataElement">
           <Value>0.0</Value>
         </Value>
@@ -1484,11 +1598,11 @@ AND
           </StartColor>
           <EndColor>
             <Transparency>255</Transparency>
-            <Red>96</Red>
+            <Red>95</Red>
             <Green>165</Green>
             <Blue>205</Blue>
           </EndColor>
-          <Direction>-45.0</Direction>
+          <Direction>-90.0</Direction>
         </Entries>
         <Entries xsi:type="attribute:Gradient">
           <StartColor>
@@ -2419,14 +2533,22 @@ AND
     <LineAttributes>
       <Style>Solid</Style>
       <Thickness>1</Thickness>
-      <Visible>false</Visible>
+      <Color>
+        <Transparency>255</Transparency>
+        <Red>200</Red>
+        <Green>208</Green>
+        <Blue>224</Blue>
+      </Color>
+      <Visible>true</Visible>
     </LineAttributes>
     <Label>
       <Caption>
         <Value></Value>
         <Font>
-          <Name>all-fonts</Name>
+          <Name>Tahoma</Name>
           <Size>10.0</Size>
+          <Bold>true</Bold>
+          <Italic>true</Italic>
           <Alignment/>
         </Font>
         <Color>
@@ -2486,11 +2608,11 @@ AND
         <Thickness>1</Thickness>
         <Color>
           <Transparency>255</Transparency>
-          <Red>196</Red>
-          <Green>196</Green>
-          <Blue>196</Blue>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
         </Color>
-        <Visible>false</Visible>
+        <Visible>true</Visible>
       </TickAttributes>
     </MajorGrid>
     <MinorGrid>
@@ -2521,7 +2643,7 @@ AND
     <Scale>
       <MinorGridsPerUnit>5</MinorGridsPerUnit>
       <ShowOutside>false</ShowOutside>
-      <TickBetweenCategories>false</TickBetweenCategories>
+      <TickBetweenCategories>true</TickBetweenCategories>
     </Scale>
     <Origin>
       <Type>Value</Type>
@@ -2551,7 +2673,7 @@ AND
   <ReverseCategory>false</ReverseCategory>
 </model:ChartWithAxes>
 ]]></xml-property>
-            <property name="outputFormat">HTML</property>
+            <property name="outputFormat">PNG</property>
             <list-property name="action">
                 <structure>
                     <property name="targetWindow">_self</property>

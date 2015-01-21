@@ -545,7 +545,7 @@ Object.extend(ObjectRange.prototype, {
 var $R = function(start, end, exclusive) {
   return new ObjectRange(start, end, exclusive);
 }
-/*anthonyfarrell@ie.ibm.com*/
+
 var Ajax = {
   getTransport: function() {
 	var xmlhttp = false;

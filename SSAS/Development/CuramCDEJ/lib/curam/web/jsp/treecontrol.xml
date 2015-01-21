@@ -108,9 +108,22 @@
 		topmostWin.dojo.publish(curam.util.onLoad.EVENT, [window.frameElement.id, {pageID:pgId}]);
       </script>
     </head>
-    <frameset cols="30%,*" class="outer-frame" frameBorder="1" frameSpacing="5" borderColor="#e1ebfb">
-      <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet><c:out value="${navUrl}" escapeXml="true"/><jsp:scriptlet><![CDATA[out.print("\" frameBorder=\"0\" name=\"navframe\" id=\"navframe\" title=\"");]]></jsp:scriptlet><c:out value="${treecontrol_navigation_frame_title}"/><jsp:scriptlet><![CDATA[out.print("\"/>");]]></jsp:scriptlet>
-      <frame frameBorder="0" src="loading.jspx?o3ctx=${currentContext}" name="contentframe" id="contentframe" title="${treecontrol_content_frame_title}"/>
-    </frameset>
+    <jsp:scriptlet>
+      if(pageContext.getAttribute("htmlDirection").equals("rtl")) {
+        </jsp:scriptlet>
+          <frameset cols="*,30%" class="outer-frame" frameBorder="1" frameSpacing="5" borderColor="#e1ebfb">
+            <frame frameBorder="0" src="loading.jspx?o3ctx=${currentContext}" name="contentframe" id="contentframe" title="${treecontrol_content_frame_title}"/>
+            <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet><c:out value="${navUrl}" escapeXml="true"/><jsp:scriptlet><![CDATA[out.print("\" frameBorder=\"0\" name=\"navframe\" id=\"navframe\" title=\"");]]></jsp:scriptlet><c:out value="${treecontrol_navigation_frame_title}"/><jsp:scriptlet><![CDATA[out.print("\"/>");]]></jsp:scriptlet>
+          </frameset>
+        <jsp:scriptlet>
+      } else {
+        </jsp:scriptlet>
+          <frameset cols="30%,*" class="outer-frame" frameBorder="1" frameSpacing="5" borderColor="#e1ebfb">
+            <jsp:scriptlet><![CDATA[out.print("<frame src=\"");]]></jsp:scriptlet><c:out value="${navUrl}" escapeXml="true"/><jsp:scriptlet><![CDATA[out.print("\" frameBorder=\"0\" name=\"navframe\" id=\"navframe\" title=\"");]]></jsp:scriptlet><c:out value="${treecontrol_navigation_frame_title}"/><jsp:scriptlet><![CDATA[out.print("\"/>");]]></jsp:scriptlet>
+            <frame frameBorder="0" src="loading.jspx?o3ctx=${currentContext}" name="contentframe" id="contentframe" title="${treecontrol_content_frame_title}"/>
+          </frameset>
+        <jsp:scriptlet>
+      }
+    </jsp:scriptlet>
   </html>
 </jsp:root>

@@ -4,8 +4,9 @@
   Ltd. ("Confidential Information"). You shall not disclose such Confidential 
   Information and shall use it only in accordance with the terms of the license 
   agreement you entered into with Curam Software. -->
-<xsl:stylesheet exclude-result-prefixes="tag" version="1.0"
+<xsl:stylesheet exclude-result-prefixes="tag bidi-utils" version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:bidi-utils="http://xml.apache.org/xalan/java/curam.util.client.BidiUtils"
   xmlns:tag="http://xml.apache.org/xalan/java/curam.omega3.taglib.widget.MeetingViewTag">
   <xsl:output method="xml" indent="no" omit-xml-declaration="yes" />
   <xsl:param name="locale" />
@@ -74,9 +75,15 @@
                 title="{$MultiSelect.Column.One}" type="checkbox" />
             </th>
             <th class="user">
+		        <xsl:attribute name="dir">
+				<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(SingleSelect.Column.Two)"/>
+        		</xsl:attribute>                             
               <xsl:value-of select="$MultiSelect.Column.Two" />
             </th>
             <th class="schedule">
+		        <xsl:attribute name="dir">
+				<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(SingleSelect.Column.Three)"/>
+        		</xsl:attribute>                             
               <xsl:value-of select="$MultiSelect.Column.Three" />
             </th>
           </tr>
@@ -123,6 +130,9 @@
       <xsl:when test="$amPmMode = 'true'">
         <td class="user12">
           <span>
+		    <xsl:attribute name="dir">
+			<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(@NAME)"/>
+        	</xsl:attribute>                                     
             <xsl:value-of select="@NAME" />
           </span>
         </td>
@@ -130,6 +140,9 @@
       <xsl:otherwise>
         <td class="user">
           <span>
+		    <xsl:attribute name="dir">
+			<xsl:value-of select="bidi-utils:getResolvedBaseTextDirection(@NAME)"/>
+        	</xsl:attribute>                                     
             <xsl:value-of select="@NAME" />
           </span>
         </td>
@@ -177,6 +190,15 @@
             style="{concat('margin-right:18px;',
                   										'margin-left:', number($counter = 0)*number($interval = 30)*5 + number($counter = 0)*number($interval = 60)*10, 'px;')}">
             <xsl:value-of select="tag:getTime($tag, $counter)" />
+          </span>
+        </xsl:when>
+        <xsl:when test="starts-with($locale, 'ar') or starts-with($locale, 'iw') or starts-with($locale, 'he')">
+        <!-- Adding RLM marker before each time to be treated as RTL character so that the numbers are ordered correctly from right 
+             to left.-->
+          <span class="timeSlot"
+            style="{concat('margin-left:36px;',
+                  										'margin-right:', number($counter = 0)*number($interval = 30)*5 + number($counter = 0)*number($interval = 60)*10, 'px;')}">
+            <xsl:value-of select="concat('&#x200F;', tag:getTime($tag, $counter))" />
           </span>
         </xsl:when>
         <xsl:otherwise>

@@ -8,6 +8,8 @@ var workflowLinkInfo=null;
 var showInstanceData=false;
 var splitsAndJoins=null;
 var isIE=true;
+var nodesToBeMirrored=new Array();
+var textNodes=new Array();
 var ACTIVITY_WIDTH=90;
 var ACTIVITY_HEIGHT=60;
 var ACT_WIDTH_HALF=ACTIVITY_WIDTH/2;
@@ -75,6 +77,19 @@ drawEdge(_4,i,_6);
 }
 svgDocument.rootElement.appendChild(splitsAndJoins);
 setWidthAndHeight();
+if(!parent.dojo.isBodyLtr()){
+parent.direction="rtl";
+svgWidth=parent.document.getElementById("__o3__SVGWorkflow").width;
+for(var i=0;i<nodesToBeMirrored.length;i++){
+_4=nodesToBeMirrored[i];
+_4.setAttribute("transform","translate("+(svgWidth-4)+",0),scale(-1,1)");
+}
+for(var i=0;i<textNodes.length;i++){
+_4=textNodes[i];
+_4.setAttribute("x",svgWidth-_4.getAttribute("x")-ACT_WIDTH_HALF);
+_4.setAttribute("text-anchor","middle");
+}
+}
 };
 function init(){
 var _b=null;
@@ -150,6 +165,7 @@ if(!_18){
 _e=svgDocument.createElementNS(SVG_NS,"use");
 _e.setAttribute("x",x);
 _e.setAttribute("y",y);
+nodesToBeMirrored.push(_e);
 if(_17){
 _e.setAttributeNS(XLINK_NS,"xlink:href","#current-activity");
 }else{
@@ -165,6 +181,7 @@ _f=svgDocument.createElementNS(SVG_NS,"text");
 _f.setAttributeNS(CURAM_NS,"curam:popup-text-content",_12);
 _f.setAttribute("x",x+TEXT_BREADTH);
 _f.setAttribute("y",y+TEXT_DEPTH);
+textNodes.push(_f);
 _f.setAttribute("font-family",FONT_FAMILY);
 _f.setAttribute("class","box-text");
 if(_14.length>0){
@@ -182,6 +199,7 @@ _13=createUse(x+7,y+14,"#_i"+_14);
 _13=createUse(x+29,y+8,"#_i"+_14);
 }
 }
+nodesToBeMirrored.push(_13);
 _13.setAttributeNS(CURAM_NS,"curam:popup-text-content",_15);
 _13.addEventListener("mouseover",displayPopUp,false);
 _13.addEventListener("mouseout",removePopUp,false);
@@ -190,6 +208,7 @@ _11.appendChild(_13);
 _10=_f.cloneNode(true);
 _10.setAttribute("x",x+ACT_TYPE_BREADTH);
 _10.setAttribute("y",y+ACT_TYPE_DEPTH);
+nodesToBeMirrored.push(_10);
 _10.appendChild(svgDocument.createTextNode(_15));
 truncateText(_10,_15,ACTIVITY_TEXT_WIDTH);
 _11.appendChild(_10);
@@ -304,6 +323,7 @@ XOR.setAttribute("x",x+ACTIVITY_WIDTH-6);
 }else{
 XOR.setAttribute("x",x+6);
 }
+nodesToBeMirrored.push(XOR);
 XOR.setAttribute("y",y+XOR_DEPTH);
 splitsAndJoins.appendChild(XOR);
 };
@@ -316,6 +336,7 @@ AND.setAttribute("x",x+ACTIVITY_WIDTH-6);
 }else{
 AND.setAttribute("x",x+6);
 }
+nodesToBeMirrored.push(AND);
 AND.setAttribute("y",y+XOR_DEPTH);
 splitsAndJoins.appendChild(AND);
 };
@@ -426,6 +447,7 @@ _30.appendChild(_39);
 }
 _30.appendChild(createUse(null,null,id));
 svgDocument.rootElement.appendChild(_30);
+nodesToBeMirrored.push(_30);
 }
 };
 function drawTextArrow(id,_3a,ch,_3b){

@@ -6697,6 +6697,146 @@ define("dojox/main", ["dojo/_base/kernel"], function(dojo) {
 });
 },
 'url:dijit/templates/MenuSeparator.html':"<tr class=\"dijitMenuSeparator\">\n\t<td class=\"dijitMenuSeparatorIconCell\">\n\t\t<div class=\"dijitMenuSeparatorTop\"></div>\n\t\t<div class=\"dijitMenuSeparatorBottom\"></div>\n\t</td>\n\t<td colspan=\"3\" class=\"dijitMenuSeparatorLabelCell\">\n\t\t<div class=\"dijitMenuSeparatorTop dijitMenuSeparatorLabel\"></div>\n\t\t<div class=\"dijitMenuSeparatorBottom\"></div>\n\t</td>\n</tr>",
+'dojo/Stateful':function(){
+define("dojo/Stateful", ["./_base/declare", "./_base/lang", "./_base/array"], function(declare, lang, array) {
+	// module:
+	//		dojo/Stateful
+	// summary:
+	//		TODOC
+
+return declare("dojo.Stateful", null, {
+	// summary:
+	//		Base class for objects that provide named properties with optional getter/setter
+	//		control and the ability to watch for property changes
+	// example:
+	//	|	var obj = new dojo.Stateful();
+	//	|	obj.watch("foo", function(){
+	//	|		console.log("foo changed to " + this.get("foo"));
+	//	|	});
+	//	|	obj.set("foo","bar");
+	postscript: function(mixin){
+		if(mixin){
+			lang.mixin(this, mixin);
+		}
+	},
+
+	get: function(/*String*/name){
+		// summary:
+		//		Get a property on a Stateful instance.
+		//	name:
+		//		The property to get.
+		//	returns:
+		//		The property value on this Stateful instance.
+		// description:
+		//		Get a named property on a Stateful object. The property may
+		//		potentially be retrieved via a getter method in subclasses. In the base class
+		// 		this just retrieves the object's property.
+		// 		For example:
+		//	|	stateful = new dojo.Stateful({foo: 3});
+		//	|	stateful.get("foo") // returns 3
+		//	|	stateful.foo // returns 3
+
+		return this[name]; //Any
+	},
+	set: function(/*String*/name, /*Object*/value){
+		// summary:
+		//		Set a property on a Stateful instance
+		//	name:
+		//		The property to set.
+		//	value:
+		//		The value to set in the property.
+		//	returns:
+		//		The function returns this dojo.Stateful instance.
+		// description:
+		//		Sets named properties on a stateful object and notifies any watchers of
+		// 		the property. A programmatic setter may be defined in subclasses.
+		// 		For example:
+		//	|	stateful = new dojo.Stateful();
+		//	|	stateful.watch(function(name, oldValue, value){
+		//	|		// this will be called on the set below
+		//	|	}
+		//	|	stateful.set(foo, 5);
+		//
+		//	set() may also be called with a hash of name/value pairs, ex:
+		//	|	myObj.set({
+		//	|		foo: "Howdy",
+		//	|		bar: 3
+		//	|	})
+		//	This is equivalent to calling set(foo, "Howdy") and set(bar, 3)
+		if(typeof name === "object"){
+			for(var x in name){
+				if(name.hasOwnProperty(x) && x !="_watchCallbacks"){
+					this.set(x, name[x]);
+				}
+			}
+			return this;
+		}
+		var oldValue = this[name];
+		this[name] = value;
+		if(this._watchCallbacks){
+			this._watchCallbacks(name, oldValue, value);
+		}
+		return this; //dojo.Stateful
+	},
+	watch: function(/*String?*/name, /*Function*/callback){
+		// summary:
+		//		Watches a property for changes
+		//	name:
+		//		Indicates the property to watch. This is optional (the callback may be the
+		// 		only parameter), and if omitted, all the properties will be watched
+		// returns:
+		//		An object handle for the watch. The unwatch method of this object
+		// 		can be used to discontinue watching this property:
+		//		|	var watchHandle = obj.watch("foo", callback);
+		//		|	watchHandle.unwatch(); // callback won't be called now
+		//	callback:
+		//		The function to execute when the property changes. This will be called after
+		//		the property has been changed. The callback will be called with the |this|
+		//		set to the instance, the first argument as the name of the property, the
+		// 		second argument as the old value and the third argument as the new value.
+
+		var callbacks = this._watchCallbacks;
+		if(!callbacks){
+			var self = this;
+			callbacks = this._watchCallbacks = function(name, oldValue, value, ignoreCatchall){
+				var notify = function(propertyCallbacks){
+					if(propertyCallbacks){
+						propertyCallbacks = propertyCallbacks.slice();
+						for(var i = 0, l = propertyCallbacks.length; i < l; i++){
+							propertyCallbacks[i].call(self, name, oldValue, value);
+						}
+					}
+				};
+				notify(callbacks['_' + name]);
+				if(!ignoreCatchall){
+					notify(callbacks["*"]); // the catch-all
+				}
+			}; // we use a function instead of an object so it will be ignored by JSON conversion
+		}
+		if(!callback && typeof name === "function"){
+			callback = name;
+			name = "*";
+		}else{
+			// prepend with dash to prevent name conflicts with function (like "name" property)
+			name = '_' + name;
+		}
+		var propertyCallbacks = callbacks[name];
+		if(typeof propertyCallbacks !== "object"){
+			propertyCallbacks = callbacks[name] = [];
+		}
+		propertyCallbacks.push(callback);
+		return {
+			unwatch: function(){
+				propertyCallbacks.splice(array.indexOf(propertyCallbacks, callback), 1);
+			}
+		}; //Object
+	}
+
+});
+
+});
+
+},
 'curam/matrix/Answer':function(){
 // wrapped by build app
 define("curam/matrix/Answer", ["dijit","dojo","dojox","dojo/require!curam/matrix/Constants"], function(dijit,dojo,dojox){
@@ -7021,146 +7161,6 @@ dojo.declare("curam.matrix.Answer", null, {
   cm.setClass(this.validation, wrapperClass);
   }
   }
-});
-
-});
-
-},
-'dojo/Stateful':function(){
-define("dojo/Stateful", ["./_base/declare", "./_base/lang", "./_base/array"], function(declare, lang, array) {
-	// module:
-	//		dojo/Stateful
-	// summary:
-	//		TODOC
-
-return declare("dojo.Stateful", null, {
-	// summary:
-	//		Base class for objects that provide named properties with optional getter/setter
-	//		control and the ability to watch for property changes
-	// example:
-	//	|	var obj = new dojo.Stateful();
-	//	|	obj.watch("foo", function(){
-	//	|		console.log("foo changed to " + this.get("foo"));
-	//	|	});
-	//	|	obj.set("foo","bar");
-	postscript: function(mixin){
-		if(mixin){
-			lang.mixin(this, mixin);
-		}
-	},
-
-	get: function(/*String*/name){
-		// summary:
-		//		Get a property on a Stateful instance.
-		//	name:
-		//		The property to get.
-		//	returns:
-		//		The property value on this Stateful instance.
-		// description:
-		//		Get a named property on a Stateful object. The property may
-		//		potentially be retrieved via a getter method in subclasses. In the base class
-		// 		this just retrieves the object's property.
-		// 		For example:
-		//	|	stateful = new dojo.Stateful({foo: 3});
-		//	|	stateful.get("foo") // returns 3
-		//	|	stateful.foo // returns 3
-
-		return this[name]; //Any
-	},
-	set: function(/*String*/name, /*Object*/value){
-		// summary:
-		//		Set a property on a Stateful instance
-		//	name:
-		//		The property to set.
-		//	value:
-		//		The value to set in the property.
-		//	returns:
-		//		The function returns this dojo.Stateful instance.
-		// description:
-		//		Sets named properties on a stateful object and notifies any watchers of
-		// 		the property. A programmatic setter may be defined in subclasses.
-		// 		For example:
-		//	|	stateful = new dojo.Stateful();
-		//	|	stateful.watch(function(name, oldValue, value){
-		//	|		// this will be called on the set below
-		//	|	}
-		//	|	stateful.set(foo, 5);
-		//
-		//	set() may also be called with a hash of name/value pairs, ex:
-		//	|	myObj.set({
-		//	|		foo: "Howdy",
-		//	|		bar: 3
-		//	|	})
-		//	This is equivalent to calling set(foo, "Howdy") and set(bar, 3)
-		if(typeof name === "object"){
-			for(var x in name){
-				if(name.hasOwnProperty(x) && x !="_watchCallbacks"){
-					this.set(x, name[x]);
-				}
-			}
-			return this;
-		}
-		var oldValue = this[name];
-		this[name] = value;
-		if(this._watchCallbacks){
-			this._watchCallbacks(name, oldValue, value);
-		}
-		return this; //dojo.Stateful
-	},
-	watch: function(/*String?*/name, /*Function*/callback){
-		// summary:
-		//		Watches a property for changes
-		//	name:
-		//		Indicates the property to watch. This is optional (the callback may be the
-		// 		only parameter), and if omitted, all the properties will be watched
-		// returns:
-		//		An object handle for the watch. The unwatch method of this object
-		// 		can be used to discontinue watching this property:
-		//		|	var watchHandle = obj.watch("foo", callback);
-		//		|	watchHandle.unwatch(); // callback won't be called now
-		//	callback:
-		//		The function to execute when the property changes. This will be called after
-		//		the property has been changed. The callback will be called with the |this|
-		//		set to the instance, the first argument as the name of the property, the
-		// 		second argument as the old value and the third argument as the new value.
-
-		var callbacks = this._watchCallbacks;
-		if(!callbacks){
-			var self = this;
-			callbacks = this._watchCallbacks = function(name, oldValue, value, ignoreCatchall){
-				var notify = function(propertyCallbacks){
-					if(propertyCallbacks){
-						propertyCallbacks = propertyCallbacks.slice();
-						for(var i = 0, l = propertyCallbacks.length; i < l; i++){
-							propertyCallbacks[i].call(self, name, oldValue, value);
-						}
-					}
-				};
-				notify(callbacks['_' + name]);
-				if(!ignoreCatchall){
-					notify(callbacks["*"]); // the catch-all
-				}
-			}; // we use a function instead of an object so it will be ignored by JSON conversion
-		}
-		if(!callback && typeof name === "function"){
-			callback = name;
-			name = "*";
-		}else{
-			// prepend with dash to prevent name conflicts with function (like "name" property)
-			name = '_' + name;
-		}
-		var propertyCallbacks = callbacks[name];
-		if(typeof propertyCallbacks !== "object"){
-			propertyCallbacks = callbacks[name] = [];
-		}
-		propertyCallbacks.push(callback);
-		return {
-			unwatch: function(){
-				propertyCallbacks.splice(array.indexOf(propertyCallbacks, callback), 1);
-			}
-		}; //Object
-	}
-
 });
 
 });
@@ -7623,6 +7623,78 @@ return declare("dijit._CssStateMixin", [], {
 		this.watch("readOnly", setClass);
 	}
 });
+});
+
+},
+'dijit/_BidiSupport':function(){
+define("dijit/_BidiSupport", ["./_WidgetBase"], function(_WidgetBase){
+
+/*=====
+	var _WidgetBase = dijit._WidgetBase;
+====*/
+
+	// module:
+	//		dijit/_BidiSupport
+	// summary:
+	//		Module that deals with BIDI, special with the auto
+	//		direction if needed without changing the GUI direction.
+	//		Including this module will extend _WidgetBase with BIDI related methods.
+	// description:
+	//		There's a special need for displaying BIDI text in rtl direction
+	//		in ltr GUI, sometimes needed auto support.
+	//		In creation of widget, if it's want to activate this class,
+	//		the widget should define the "textDir".
+
+	_WidgetBase.extend({
+
+		getTextDir: function(/*String*/ text){
+			// summary:
+			//		Gets the right direction of text.
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+			return this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+		},
+
+		_checkContextual: function(text){
+			// summary:
+			//		Finds the first strong (directional) character, return ltr if isLatin
+			//		or rtl if isBidiChar.
+			//	tags:
+			//		private.
+
+			// look for strong (directional) characters
+			var fdc = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(text);
+			// if found return the direction that defined by the character, else return widgets dir as defult.
+			return fdc ? ( fdc[0] <= 'z' ? "ltr" : "rtl" ) : this.dir ? this.dir : this.isLeftToRight() ? "ltr" : "rtl";
+		},
+
+		applyTextDir: function(/*Object*/ element, /*String*/ text){
+			// summary:
+			//		Set element.dir according to this.textDir
+			// element:
+			//		The text element to be set. Should have dir property.
+			// text:
+			//		Used in case this.textDir is "auto", for calculating the right transformation
+			// description:
+			// 		If textDir is ltr or rtl returns the value.
+			//		If it's auto, calls to another function that responsible
+			//		for checking the value, and defining the direction.
+			//	tags:
+			//		protected.
+
+			var textDir = this.textDir == "auto" ? this._checkContextual(text) : this.textDir;
+			// update only when there's a difference
+			if(element.dir != textDir){
+				element.dir = textDir;
+			}
+		}
+	});
+
+	return _WidgetBase;
 });
 
 },
@@ -10014,9 +10086,10 @@ define("dijit/place", [
        * around the actions menu button, set the overflow variable with the maximum value
        * to prevent placing the popup window from these two places.
        */
+	  var l = domGeometry.isBodyLtr();
       if(lang.exists("curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm")
           && curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm == true) {
-        if( (corner.charAt(0) == 'T' || corner.charAt(1) == 'L')
+        if( (corner.charAt(0) == 'T' || (corner.charAt(1) == 'L' && l) || (corner.charAt(1) == 'R' && !l) )
           && overflow > 0 ){
 
           overflow = mb.w + mb.h;
@@ -10054,7 +10127,7 @@ define("dijit/place", [
 		// In RTL mode, set style.right rather than style.left so in the common case,
 		// window resizes move the popup along with the aroundNode.
 		var l = domGeometry.isBodyLtr(),
-			s = node.style;
+		   	s = node.style;
 		s.top = best.y + "px";
 		s[l ? "left" : "right"] = (l ? best.x : view.w - best.x - best.w) + "px";
 		s[l ? "right" : "left"] = "auto";	// needed for FF or else tooltip goes to far left
@@ -15102,7 +15175,7 @@ dojo.declare("curam.matrix.QuestionRight", null, {
 /*
  * Licensed Materials - Property of IBM
  *
- * Copyright IBM Corporation 2012,2013. All Rights Reserved.
+ * Copyright IBM Corporation 2012,2014. All Rights Reserved.
  *
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -15111,6 +15184,9 @@ dojo.declare("curam.matrix.QuestionRight", null, {
 /*
  * Modification History
  * --------------------
+ * 06-Jun-2014  AS [CR00428142] TEC-17091. Skiplink should become visible when focused
+ * 03-Jun-2014 BOS [CR00434187] Added the getCookie() function and updated 
+ *                    replaceSubmitButton() to support timeout warning dialog.
  * 15-Apr-2014  JY [CR00425261] Refactored the print function to allow printing
  *                              the context panel.
  * 20-Feb-2014  AS [CR00414442] Skipped arrow and validation div of filtering 
@@ -15344,6 +15420,7 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/dom-attr",
         "dojo/_base/lang",
         "dojo/on",
+		"dijit/_BidiSupport",		
         
         "curam/define",
         /* "dojox/storage", */
@@ -15353,9 +15430,10 @@ define("curam/util", ["dojo/dom", "dijit/registry",
         "dojo/_base/sniff",
         "cm/_base/_dom",
         "curam/util/ResourceBundle"
+        
         ], function(dom, registry, domConstruct, ready, windowBase, style,
             array, domClass, topic, dojoEvent, query, has, unload,
-            geom, json, attr, lang, on) {
+            geom, json, attr, lang, on, bidi) {
 
 /**
  * Creating Resource Bundle Object to access localized resources.
@@ -17296,6 +17374,23 @@ curam.define.singleton("curam.util",
   },
   
   /**
+   * TEC-17091. Skiplink should become visible when focused (i.e. a user tabs on it)
+   * and it should be visible only when it has focus, so it should hide again when 
+   * the user tabs off it.
+   */
+  showHideSkipLink: function(e) {
+    var skipLink = dojo.byId("skipLink");
+    if (skipLink) {
+      var skipLinkDiv = skipLink.parentNode;
+      if (e.type == "focus" && domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.remove(skipLinkDiv, "hidden");
+      } else if (e.type == "blur" && !domClass.contains(skipLinkDiv, "hidden")) {
+        domClass.add(skipLinkDiv, "hidden");
+      }
+    }
+  },
+  
+  /**
   * Registers a handler for submitting a form when Enter key is pressed.
   *
   * Called from the PageTag - will be called on every page in any context,
@@ -17613,8 +17708,10 @@ curam.define.singleton("curam.util",
  
   /**
   * Replaces standard submit buttons with anchor tags when no images are used.
+  * @param {String} buttonText
+  *            The text to be displayed on submit button.
   */
-  replaceSubmitButton: function(name) {
+  replaceSubmitButton: function(name, buttonText) {
     if(curam.replacedButtons[name] == "true") {
       return;
     }
@@ -17641,6 +17738,14 @@ curam.define.singleton("curam.util",
     * The current node, the index, and the node list itself.
     */
     inputList.forEach(function(replacedButton, index, theButtons) {
+    	// if there is a paramter passed in for button text then set the 'value'
+        // of the second button (the button dipalyed to user) node to the button
+        // text specified.
+        // Note: This will replace any value set in the value attribute already!
+        if (buttonText) {
+          var buttonDisplayed = theButtons[1];
+          buttonDisplayed.setAttribute("value",buttonText);
+        }
       replacedButton.tabIndex = -1;
       var parentSpan = replacedButton.parentNode;
  
@@ -18163,6 +18268,28 @@ curam.define.singleton("curam.util",
     highContrastModeType: function(){      
       var highContrastMode = dojo.query("body.high-contrast")[0];
       return highContrastMode;
+    },	
+		  
+	processBidiContextual: function (target){
+		target.dir = bidi.prototype._checkContextual(target.value);			
+	},
+	
+	getCookie: function(name) {
+	    var dc=document.cookie;
+	    var prefix=name+"=";
+	    var begin=dc.indexOf("; "+prefix);
+	    if(begin==-1) {
+	      begin=dc.indexOf(prefix);
+	      if(begin!=0)
+	        return null;
+	    } else {
+	      begin+=2;
+	    }
+	    var end=document.cookie.indexOf(";",begin);
+	    if(end==-1) {
+	      end=dc.length;
+	    }
+	    return unescape(dc.substring(begin+prefix.length,end));
     }
   });
 

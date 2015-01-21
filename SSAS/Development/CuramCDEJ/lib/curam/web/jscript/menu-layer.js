@@ -1025,8 +1025,9 @@ _122.display=_123;
 _122.visibility=_124;
 var _125={"L":pos.x,"R":pos.x-mb.w,"M":Math.max(view.l,Math.min(view.l+view.w,pos.x+(mb.w>>1))-mb.w)}[_11f.charAt(1)],_126={"T":pos.y,"B":pos.y-mb.h,"M":Math.max(view.t,Math.min(view.t+view.h,pos.y+(mb.h>>1))-mb.h)}[_11f.charAt(0)],_127=Math.max(view.l,_125),_128=Math.max(view.t,_126),endX=Math.min(view.l+view.w,_125+mb.w),endY=Math.min(view.t+view.h,_126+mb.h),_129=endX-_127,_12a=endY-_128;
 _120+=(mb.w-_129)+(mb.h-_12a);
+var l=_115.isBodyLtr();
 if(lang.exists("curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm")&&curam.widget.DeferredDropDownButton.prototype.useCustomPlaceAlgorithm==true){
-if((_11f.charAt(0)=="T"||_11f.charAt(1)=="L")&&_120>0){
+if((_11f.charAt(0)=="T"||(_11f.charAt(1)=="L"&&l)||(_11f.charAt(1)=="R"&&!l))&&_120>0){
 _120=mb.w+mb.h;
 }
 }
