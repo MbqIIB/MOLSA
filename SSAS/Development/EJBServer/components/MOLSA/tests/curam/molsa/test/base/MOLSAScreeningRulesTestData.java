@@ -85,9 +85,9 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
   protected void tearDownCuramServerTest() {
     // TODO Auto-generated method stub
     super.tearDownCuramServerTest();
-    final File sessionDocOutputDirectory = new File(
-        "C:/temp/sessiondoc/ScreeningHelperTest/" + getName());
-    sessionDoc.write(sessionDocOutputDirectory);
+//    final File sessionDocOutputDirectory = new File(
+//        "C:/temp/sessiondoc/ScreeningHelperTest/" + getName());
+//    sessionDoc.write(sessionDocOutputDirectory);
   }
 
   /**
