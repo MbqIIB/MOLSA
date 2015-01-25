@@ -195,7 +195,7 @@ public class MOLSAArabdoxHelper {
     documentInfo.setArabdoxSessionKey(loginResponse.getSessionKey());
     documentInfo.setDocumentId((int) documentID);
     documentInfo.setFileName(fileName);
-    //documentInfo.setStoreIntoAttachments(isAttachment);
+    documentInfo.setStoreIntoAttachments(isAttachment);
 
     documentInformation.setDocumentInformation(documentInfo);
 
