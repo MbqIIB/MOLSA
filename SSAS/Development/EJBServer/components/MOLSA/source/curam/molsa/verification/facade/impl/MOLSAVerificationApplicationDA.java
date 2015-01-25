@@ -6,11 +6,13 @@ import curam.molsa.verification.sl.intf.MOLSAVerificationAttachmentLinkDA;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
+import curam.verification.facade.infrastructure.struct.CreateVerificationAttachmentDetails;
 import curam.verification.facade.infrastructure.struct.ModifyVerificationAttachmentDetails;
 import curam.verification.facade.infrastructure.struct.NewUserProvidedVerificationItemDetails;
 import curam.verification.facade.infrastructure.struct.ReadVerificationAttachmentDetails;
 import curam.verification.facade.infrastructure.struct.ReadVerificationAttachmentLinkKey;
 import curam.verification.facade.infrastructure.struct.UserProvidedVerificationItemKey;
+import curam.verification.facade.infrastructure.struct.VerificationAttachmentLinkKey;
 import curam.verification.sl.struct.VerificationMessage;
 /**
  * 
@@ -18,6 +20,20 @@ import curam.verification.sl.struct.VerificationMessage;
  *
  */
 public class MOLSAVerificationApplicationDA extends curam.molsa.verification.facade.base.MOLSAVerificationApplicationDA{
+
+  @Override
+  public VerificationAttachmentLinkKey createVerificationAttachment(CreateVerificationAttachmentDetails details) throws AppException, InformationalException {
+    
+    final MOLSAVerificationAttachmentLinkDA verificationAttachmentLink = MOLSAVerificationAttachmentLinkDAFactory.newInstance();
+    // Create a Verification Attachment record and populate the return struct
+    final VerificationAttachmentLinkKey verificationAttachmentLinkKey = new VerificationAttachmentLinkKey();
+
+    verificationAttachmentLinkKey.dtls = verificationAttachmentLink.createVerificationAttachmentLink(
+      details.details);
+
+    return verificationAttachmentLinkKey;
+
+  }
 
   @Override
   public ReadVerificationAttachmentDetails readVerificationAttachment(ReadVerificationAttachmentLinkKey key) throws AppException, InformationalException {
@@ -30,7 +46,8 @@ public class MOLSAVerificationApplicationDA extends curam.molsa.verification.fac
 
     viewVerificationAttachmentDetails.details = verificationAttachmentLink.readVerificationAttachmentLink(
       key.key);
-
+    
+    
     return viewVerificationAttachmentDetails;
   }
 
