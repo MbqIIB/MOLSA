@@ -1,17 +1,11 @@
 package curam.molsa.core.facade.impl;
 
 import curam.codetable.CASETYPECODE;
-import curam.core.facade.fact.CaseFactory;
-import curam.core.facade.intf.Case;
 import curam.core.facade.struct.CreateCaseAttachmentDetails;
 import curam.core.facade.struct.ModifyCaseAttachmentDetails;
 import curam.core.facade.struct.ReadAttachmentDetails;
 import curam.core.facade.struct.ReadAttachmentKey;
-import curam.core.facade.struct.ReadCaseAttachmentDetails;
-import curam.core.facade.struct.ReadCaseAttachmentKey;
 import curam.core.fact.CaseHeaderFactory;
-import curam.core.fact.MaintainAttachmentFactory;
-import curam.core.intf.MaintainAttachment;
 import curam.core.struct.CaseKey;
 import curam.core.struct.CaseTypeCode;
 import curam.molsa.core.fact.MOLSAMaintainAttachmentDAFactory;
@@ -24,13 +18,24 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 
 /**
- * Overridden from OOTB class - Case.
  * 
+ * Overridden from OOTB class - Case.
+ * Overridden for integration with ArabDox.
+ *
  */
 public class MOLSACaseDA extends curam.molsa.core.facade.base.MOLSACaseDA{
 
 
 
+  /**
+   * Overridden to Calls the new Service layer.
+   *
+   * 
+   * @param key ReadAttachmentKey
+   * @return ReadAttachmentDetails.
+   * @throws AppException General Exception
+   * @throws InformationalException General Exception
+   */
   @Override
   public ReadAttachmentDetails readAttachment(ReadAttachmentKey key) throws AppException, InformationalException {
     ReadAttachmentDetails readAttachmentDetails = new ReadAttachmentDetails();
@@ -39,6 +44,15 @@ public class MOLSACaseDA extends curam.molsa.core.facade.base.MOLSACaseDA{
     return readAttachmentDetails;
   }
 
+  /**
+   * Overridden to Calls the new Service layer.
+   *
+   * 
+   * @param details ModifyCaseAttachmentDetails
+   * @return void.
+   * @throws AppException General Exception
+   * @throws InformationalException General Exception
+   */
   @Override
   public void modifyCaseAttachment(ModifyCaseAttachmentDetails details) throws AppException, InformationalException {
     MOLSAMaintainAttachmentDA maintainAttachmentObj = MOLSAMaintainAttachmentDAFactory.newInstance();
@@ -58,6 +72,15 @@ public class MOLSACaseDA extends curam.molsa.core.facade.base.MOLSACaseDA{
     maintainAttachmentObj.modifyCaseAttachment(details.modifyAttachmentDetails);
   }
 
+  /**
+   * Overridden to Calls the new Service layer.
+   *
+   * 
+   * @param details CreateCaseAttachmentDetails
+   * @return void.
+   * @throws AppException General Exception
+   * @throws InformationalException General Exception
+   */
   @Override
   public void createCaseAttachment(CreateCaseAttachmentDetails details) throws AppException, InformationalException {
     MOLSAMaintainAttachmentDA maintainAttachmentObj = MOLSAMaintainAttachmentDAFactory.newInstance();
