@@ -104,7 +104,9 @@ import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderKey;
 import curam.core.struct.ConcernRoleAddressDtls;
 import curam.core.struct.ConcernRoleAlternateIDDtls;
+import curam.core.struct.ConcernRoleAlternateIDDtlsStruct1;
 import curam.core.struct.ConcernRoleAlternateIDKey;
+import curam.core.struct.ConcernRoleAlternateIDKeyStruct1;
 import curam.core.struct.ConcernRoleAlternateIDRMKey;
 import curam.core.struct.ConcernRoleAlternateReadKey;
 import curam.core.struct.ConcernRoleDtls;
@@ -2001,13 +2003,14 @@ class IntakeDataMapperImpl implements IntakeDataMapper {
         if (details.typeCode.equals(alternateIDType)) {
 
           // Process the alternate id!
-          final AlternateIDTypeCodeKey alternateIDTypeCodeKey = new AlternateIDTypeCodeKey();
+         ConcernRoleAlternateIDKeyStruct1 alternateIDTypeCodeKey = new ConcernRoleAlternateIDKeyStruct1();
 
           alternateIDTypeCodeKey.alternateID = details.alternateID;
           alternateIDTypeCodeKey.statusCode = curam.codetable.RECORDSTATUS.NORMAL;
           alternateIDTypeCodeKey.typeCode = details.typeCode;
+          alternateIDTypeCodeKey.concernRoleID = concernRoleID;
 
-          final ConcernRoleAlternateIDDtls concernRoleAlternateIDDtls = concernRoleAlternateIDObj.readByAltIDTypeCode(
+          ConcernRoleAlternateIDDtlsStruct1 concernRoleAlternateIDDtls  =  concernRoleAlternateIDObj.readByConcernRoleIDAndType(
             alternateIDTypeCodeKey);
 
           // If the alternate IDs are not the same, see if then needs to be
