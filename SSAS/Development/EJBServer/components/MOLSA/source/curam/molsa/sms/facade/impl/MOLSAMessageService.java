@@ -51,268 +51,410 @@ import curam.util.resources.impl.PropertiesResourceCache;
 import curam.util.type.StringList;
 import curam.util.type.UniqueID;
 
+/**
+ * The message service façade is used to send SMS messages, export the
+ * participant list to excel, list SMS exceptions, Re send the failed SMS.
+ */
+public abstract class MOLSAMessageService extends
+		curam.molsa.sms.facade.base.MOLSAMessageService {
 
-public abstract class MOLSAMessageService extends curam.molsa.sms.facade.base.MOLSAMessageService {
+	/**
+	 * Sends the message to the list of participants received in the input
+	 * parameter.
+	 * 
+	 * @param key
+	 *            Contains a key details.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
 
+	public void sendSMS(MOLSAConcernRoleListAndMessageText key)
+			throws AppException, InformationalException {
 
-  public void sendSMS(MOLSAConcernRoleListAndMessageText key) throws AppException, InformationalException {
-    
-    
 		MOLSAConcernRoleListAndMessageTextDetails details = new MOLSAConcernRoleListAndMessageTextDetails();
-		StringList concernRoleIDList = StringUtil
-        .delimitedText2StringList(
-            key.concernRoleTabbedList,
-            CuramConst.gkTabDelimiterChar);
-		if(concernRoleIDList.size()<=1){
-		  details.dtls.concernRoleTabbedList = key.concernRoleTabbedList;
-	    details.dtls.smsMessageText = key.smsMessageText;
-	    details.dtls.smsMessageType = key.smsMessageType;
-	    details.dtls.caseID=key.caseID;
-	    MOLSASMSUtilFactory.newInstance().sendSMS(details);
-		}else{
-		//Invoke the deferred process to send the bulk SMS
-	     final DeferredProcessing deferredProcessingObj =
-	          DeferredProcessingFactory.newInstance();
-	        MOLSASMSWMInstance molsasmswmInstanceObj=MOLSASMSWMInstanceFactory.newInstance();
-	        MOLSASMSWMInstanceDtls instanceDtls = new MOLSASMSWMInstanceDtls();
-	        instanceDtls.idTabbedList=key.concernRoleTabbedList;
-	        instanceDtls.instDataID=UniqueID.nextUniqueID(KeySet.kKeySetDefault);
-	        instanceDtls.messageText=key.smsMessageText;
-	        instanceDtls.smsTemplate=key.smsMessageType;
-	        instanceDtls.caseID=key.caseID;
-	        molsasmswmInstanceObj.insert(instanceDtls);
-	
-	        deferredProcessingObj.startProcess("DEFERREDSMSPROCESSING",instanceDtls.instDataID);
-		}	
-  }
+		StringList concernRoleIDList = StringUtil.delimitedText2StringList(
+				key.concernRoleTabbedList, CuramConst.gkTabDelimiterChar);
+		if (concernRoleIDList.size() <= 1) {
+			details.dtls.concernRoleTabbedList = key.concernRoleTabbedList;
+			details.dtls.smsMessageText = key.smsMessageText;
+			details.dtls.smsMessageType = key.smsMessageType;
+			details.dtls.caseID = key.caseID;
+			MOLSASMSUtilFactory.newInstance().sendSMS(details);
+		} else {
+			// Invoke the deferred process to send the bulk SMS
+			final DeferredProcessing deferredProcessingObj = DeferredProcessingFactory
+					.newInstance();
+			MOLSASMSWMInstance molsasmswmInstanceObj = MOLSASMSWMInstanceFactory
+					.newInstance();
+			MOLSASMSWMInstanceDtls instanceDtls = new MOLSASMSWMInstanceDtls();
+			instanceDtls.idTabbedList = key.concernRoleTabbedList;
+			instanceDtls.instDataID = UniqueID
+					.nextUniqueID(KeySet.kKeySetDefault);
+			instanceDtls.messageText = key.smsMessageText;
+			instanceDtls.smsTemplate = key.smsMessageType;
+			instanceDtls.caseID = key.caseID;
+			molsasmswmInstanceObj.insert(instanceDtls);
 
-  @Override
-  public MOLSAMessageText getSMSMessageText(MOLSAMessageTextKey key) throws AppException, InformationalException {
-    
-    MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-    curam.molsa.sms.sl.struct.MOLSAMessageTextKey messageTextKey=new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
-    MOLSAMessageText messageText = new MOLSAMessageText();
-    messageTextKey.dtls.category=key.category;
-    messageTextKey.dtls.template=key.template;
-    curam.molsa.sms.sl.struct.MOLSAMessageText text = molsasmsUtilObj.getSMSMessageText(messageTextKey);
-    messageText.smsMessageText=text.dtls.smsMessageText;
-    return messageText;
-  }
+			deferredProcessingObj.startProcess("DEFERREDSMSPROCESSING",
+					instanceDtls.instDataID);
+		}
+	}
 
-  @Override
-  public void getParticipantForSMS() throws AppException, InformationalException {
-    // TODO Auto-generated method stub
+	/**
+	 * Gets the message text based on the SMS Template and SMS category.
+	 * 
+	 * @param key
+	 *            Contains a key details.
+	 * 
+	 * @return MOLSAMessageText Description of the SMS Message Text.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
 
-  }
+	public MOLSAMessageText getSMSMessageText(MOLSAMessageTextKey key)
+			throws AppException, InformationalException {
 
-  @Override
-  public void listSMSFailuresByDate() throws AppException, InformationalException {
-    // TODO Auto-generated method stub
+		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+		curam.molsa.sms.sl.struct.MOLSAMessageTextKey messageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
+		MOLSAMessageText messageText = new MOLSAMessageText();
+		messageTextKey.dtls.category = key.category;
+		messageTextKey.dtls.template = key.template;
+		curam.molsa.sms.sl.struct.MOLSAMessageText text = molsasmsUtilObj
+				.getSMSMessageText(messageTextKey);
+		messageText.smsMessageText = text.dtls.smsMessageText;
+		return messageText;
+	}
 
-  }
+	@Override
+	public void getParticipantForSMS() throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
 
-  @Override
-  public MOLSAFailedSMSDetailsList listAllFailedMessages() throws AppException, InformationalException {
+	}
 
-    MOLSAFailedSMSDetailsList smsDetailsList = new MOLSAFailedSMSDetailsList();
-    MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-    curam.molsa.sms.sl.struct.MOLSAFailedSMSDetailsList failedSMSDetailsList = molsasmsUtilObj.listAllFailedMessages();
-    
-    smsDetailsList.dtls.addAll(failedSMSDetailsList.dtls.dtls);
+	@Override
+	public void listSMSFailuresByDate() throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
 
-return smsDetailsList;
-  }
- 
+	}
 
-  public MOLSAParticipantDetailsList listParticipantByCriteria(MOLSAParticipantFilterCriteriaDetails key) throws AppException, InformationalException {
-    MOLSAParticipantDetailsList molsaParticipantDetailsList = new MOLSAParticipantDetailsList();
+	/**
+	 * List the failed messages with exceptions details logged while sending the
+	 * message to the participants.
+	 * 
+	 * @return MOLSAFailedSMSDetailsList List of failed SMS details.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
 
-    MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-    curam.molsa.sms.sl.struct.MOLSAParticipantFilterCriteriaDetails filterCriteriaDetails=new curam.molsa.sms.sl.struct.MOLSAParticipantFilterCriteriaDetails();
-    filterCriteriaDetails.dtls=key;
-    curam.molsa.sms.sl.struct.MOLSAParticipantDetailsList detailsList =molsasmsUtilObj.listParticipantByCriteria(filterCriteriaDetails);
-    molsaParticipantDetailsList.dtls.addAll(detailsList.dtls.dtls);
-    
-    return molsaParticipantDetailsList;
-  }
+	public MOLSAFailedSMSDetailsList listAllFailedMessages()
+			throws AppException, InformationalException {
 
-  @Override
-  public MOLSAAdditionalBenefitDetailsList listParticipantAdditionalBenefits(ConcernRoleKey key) throws AppException, InformationalException {
-    MOLSAAdditionalBenefitDetailsList additionalBenefitDetailsList = new MOLSAAdditionalBenefitDetailsList();
-    MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
-    curam.molsa.sms.sl.struct.MOLSAAdditionalBenefitDetailsList benefitDetailsList = molsasmsUtilObj.listParticipantAdditionalBenefits(key);
-    if(benefitDetailsList.dtls.dtls.size()>0){
-      additionalBenefitDetailsList.dtls.addAll(benefitDetailsList.dtls.dtls);
-    }
-    return additionalBenefitDetailsList;
-  }
+		MOLSAFailedSMSDetailsList smsDetailsList = new MOLSAFailedSMSDetailsList();
+		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+		curam.molsa.sms.sl.struct.MOLSAFailedSMSDetailsList failedSMSDetailsList = molsasmsUtilObj
+				.listAllFailedMessages();
 
-  @Override
-  public void exportParticipantsToExcel(MOLSAConcernRoleListAndMessageText key) throws AppException, InformationalException {
-    
-    MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
-    MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails
-    = new MOLSAConcernRoleListAndMessageTextDetails();
-    concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=key.concernRoleTabbedList;
-    molsasmsUtilObj.exportParticipantsToExcel(concernRoleListAndMessageTextDetails);
-    
-  }
+		smsDetailsList.dtls.addAll(failedSMSDetailsList.dtls.dtls);
 
-  @Override
-  public MOLSACommunicationDetailList listFilteredCommunication(CommunicationFilterKey key) throws AppException, InformationalException {
+		return smsDetailsList;
+	}
 
-    MOLSACommunicationDetailList molsaCommunicationDetailList = new MOLSACommunicationDetailList();
-      CommunicationDetailList communicationDetailList = new CommunicationDetailList();   
+	/**
+	 * Return the list of participants based on the user search criteria to send
+	 * the SMS.
+	 * 
+	 * @param key
+	 *            Contains a key details.
+	 * 
+	 * @return MOLSAFailedSMSDetailsList List of Participant details.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
 
-      final ReadProFormaCommKey readProFormaCommKey = new ReadProFormaCommKey();
+	public MOLSAParticipantDetailsList listParticipantByCriteria(
+			MOLSAParticipantFilterCriteriaDetails key) throws AppException,
+			InformationalException {
+		MOLSAParticipantDetailsList molsaParticipantDetailsList = new MOLSAParticipantDetailsList();
 
+		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+		curam.molsa.sms.sl.struct.MOLSAParticipantFilterCriteriaDetails filterCriteriaDetails = new curam.molsa.sms.sl.struct.MOLSAParticipantFilterCriteriaDetails();
+		filterCriteriaDetails.dtls = key;
+		curam.molsa.sms.sl.struct.MOLSAParticipantDetailsList detailsList = molsasmsUtilObj
+				.listParticipantByCriteria(filterCriteriaDetails);
+		molsaParticipantDetailsList.dtls.addAll(detailsList.dtls.dtls);
 
-      // If the value for name is 'All' and the concernRoleID is 0 return all
-      // of the communications for the case
-      if (key.concernRoleID == 0) {
+		return molsaParticipantDetailsList;
+	}
 
-        ListCommunicationsKey listCommunicationsKey = new ListCommunicationsKey();
+	/**
+	 * Lists the additional benefits received by the participant.
+	 * 
+	 * @param key
+	 *            Contains a key details.
+	 * 
+	 * @return MOLSAAdditionalBenefitDetailsList List of participants who
+	 *         receives the additional benefit.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
 
-        listCommunicationsKey.caseID = key.caseID;
+	public MOLSAAdditionalBenefitDetailsList listParticipantAdditionalBenefits(
+			ConcernRoleKey key) throws AppException, InformationalException {
+		MOLSAAdditionalBenefitDetailsList additionalBenefitDetailsList = new MOLSAAdditionalBenefitDetailsList();
+		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+		curam.molsa.sms.sl.struct.MOLSAAdditionalBenefitDetailsList benefitDetailsList = molsasmsUtilObj
+				.listParticipantAdditionalBenefits(key);
+		if (benefitDetailsList.dtls.dtls.size() > 0) {
+			additionalBenefitDetailsList.dtls
+					.addAll(benefitDetailsList.dtls.dtls);
+		}
+		return additionalBenefitDetailsList;
+	}
 
-        communicationDetailList = CaseFactory.newInstance().listCaseCommunication(
-          listCommunicationsKey);
+	/**
+	 * Export the selected participant list returned from the search criteria to
+	 * excel.
+	 * 
+	 * @param key
+	 *            Contains a key details.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
 
-      } // A case member has been selected display the communications for them
-      else {
-        CommunicationKey communicationKey = new CommunicationKey();
+	public void exportParticipantsToExcel(MOLSAConcernRoleListAndMessageText key)
+			throws AppException, InformationalException {
 
-        communicationKey.caseID = key.caseID;
-        communicationKey.concernRoleID = key.concernRoleID;
+		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+		MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+		concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = key.concernRoleTabbedList;
+		molsasmsUtilObj
+				.exportParticipantsToExcel(concernRoleListAndMessageTextDetails);
 
-        CaseMemberCommDetailsList caseMemberCommDetailsList = curam.core.sl.fact.CommunicationFactory.newInstance().listRegardingCaseMemberCommunication(
-          communicationKey);
+	}
 
-        // Assign the details returned to a new struct that also contains
-        // the
-        // display indicators and fields required for the actions
-        String communicationFormat = "";
-        MOLSACommunicationAndListRowActionDetails communicationDtls;
+	/**
+	 * List the Communications.
+	 * 
+	 * @param key
+	 *            Contains a key details.
+	 * 
+	 * @return MOLSACommunicationDetailList List of communication details.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
 
-        for (final CaseMemberCommunicationDetails caseMemberCommunicationDetails : caseMemberCommDetailsList.dtls.items()) {
+	public MOLSACommunicationDetailList listFilteredCommunication(
+			CommunicationFilterKey key) throws AppException,
+			InformationalException {
 
-          communicationDtls = new MOLSACommunicationAndListRowActionDetails();
+		MOLSACommunicationDetailList molsaCommunicationDetailList = new MOLSACommunicationDetailList();
+		CommunicationDetailList communicationDetailList = new CommunicationDetailList();
 
-           communicationDtls.dtls.assign(caseMemberCommunicationDetails);
+		final ReadProFormaCommKey readProFormaCommKey = new ReadProFormaCommKey();
 
-          if (RECORDSTATUS.CANCELLED.equals( communicationDtls.dtls.statusCode)) {
+		// If the value for name is 'All' and the concernRoleID is 0 return all
+		// of the communications for the case
+		if (key.concernRoleID == 0) {
 
-             communicationDtls.dtls.canceledInd = true;
+			ListCommunicationsKey listCommunicationsKey = new ListCommunicationsKey();
 
-            if (COMMUNICATIONFORMAT.MSWORD.equals(
-               communicationDtls.dtls.communicationFormat)) {
-               communicationDtls.dtls.msWordInd = true;          
-            } else if (COMMUNICATIONFORMAT.PROFORMA.equals(
-               communicationDtls.dtls.communicationFormat)) {            
-              readProFormaCommKey.proFormaCommKey.communicationID =  communicationDtls.dtls.communicationID;
-               communicationDtls.dtls.localeIdentifier = CommunicationFactory.newInstance().readProForma1(readProFormaCommKey).readProFormaCommDetails.localeIdentifier;
-            }
-          } else {
-            communicationFormat =  communicationDtls.dtls.communicationFormat;
+			listCommunicationsKey.caseID = key.caseID;
 
-            if (COMMUNICATIONFORMAT.EMAIL.equals(communicationFormat)
-              && COMMUNICATIONSTATUS.DRAFT.equals(
-                 communicationDtls.dtls.communicationStatus)) {
+			communicationDetailList = CaseFactory.newInstance()
+					.listCaseCommunication(listCommunicationsKey);
 
-               communicationDtls.dtls.draftEmailInd = true;
+		} // A case member has been selected display the communications for them
+		else {
+			CommunicationKey communicationKey = new CommunicationKey();
 
-            } else if (COMMUNICATIONFORMAT.MSWORD.equals(communicationFormat)) {
+			communicationKey.caseID = key.caseID;
+			communicationKey.concernRoleID = key.concernRoleID;
 
-               communicationDtls.dtls.msWordInd = true;
+			CaseMemberCommDetailsList caseMemberCommDetailsList = curam.core.sl.fact.CommunicationFactory
+					.newInstance().listRegardingCaseMemberCommunication(
+							communicationKey);
 
-              final AttachmentLinkKey attachmentLinkKey = new AttachmentLinkKey();
+			// Assign the details returned to a new struct that also contains
+			// the
+			// display indicators and fields required for the actions
+			String communicationFormat = "";
+			MOLSACommunicationAndListRowActionDetails communicationDtls;
 
-              attachmentLinkKey.attachmentLinkID =  communicationDtls.dtls.communicationID;
+			for (final CaseMemberCommunicationDetails caseMemberCommunicationDetails : caseMemberCommDetailsList.dtls
+					.items()) {
 
-              AttachmentLinkDetails attachmentLinkDetails;
+				communicationDtls = new MOLSACommunicationAndListRowActionDetails();
 
-              try {
-                attachmentLinkDetails = AttachmentFactory.newInstance().readAttachment(
-                  attachmentLinkKey);
+				communicationDtls.dtls.assign(caseMemberCommunicationDetails);
 
-                 communicationDtls.dtls.attachmentDtls.attachmentName = attachmentLinkDetails.attachmentDtls.attachmentName;
-                 communicationDtls.dtls.attachmentDtls.attachmentContents = attachmentLinkDetails.attachmentDtls.attachmentContents;
+				if (RECORDSTATUS.CANCELLED
+						.equals(communicationDtls.dtls.statusCode)) {
 
-              } catch (final RecordNotFoundException rnfe) {// Do
-                // nothing
-                // there
-                // are
-                // no
-                // attachments
-                // associated
-                // with
-                // this communication
-              }
+					communicationDtls.dtls.canceledInd = true;
 
-            } else if (COMMUNICATIONFORMAT.PROFORMA.equals(communicationFormat)) {
+					if (COMMUNICATIONFORMAT.MSWORD
+							.equals(communicationDtls.dtls.communicationFormat)) {
+						communicationDtls.dtls.msWordInd = true;
+					} else if (COMMUNICATIONFORMAT.PROFORMA
+							.equals(communicationDtls.dtls.communicationFormat)) {
+						readProFormaCommKey.proFormaCommKey.communicationID = communicationDtls.dtls.communicationID;
+						communicationDtls.dtls.localeIdentifier = CommunicationFactory
+								.newInstance().readProForma1(
+										readProFormaCommKey).readProFormaCommDetails.localeIdentifier;
+					}
+				} else {
+					communicationFormat = communicationDtls.dtls.communicationFormat;
 
-               communicationDtls.dtls.proFormaInd = true;         
-              
-              readProFormaCommKey.proFormaCommKey.communicationID =  communicationDtls.dtls.communicationID;
-               communicationDtls.dtls.localeIdentifier = CommunicationFactory.newInstance().readProForma1(readProFormaCommKey).readProFormaCommDetails.localeIdentifier;
-            }  
-            else if (COMMUNICATIONFORMAT.SMS.equals(communicationFormat)) {
+					if (COMMUNICATIONFORMAT.EMAIL.equals(communicationFormat)
+							&& COMMUNICATIONSTATUS.DRAFT
+									.equals(communicationDtls.dtls.communicationStatus)) {
 
-                communicationDtls.smsInd = true;         
-                
-                readProFormaCommKey.proFormaCommKey.communicationID =  communicationDtls.dtls.communicationID;
-                 communicationDtls.dtls.localeIdentifier = CommunicationFactory.newInstance().readProForma1(readProFormaCommKey).readProFormaCommDetails.localeIdentifier;
-              }  
-          }        
-          // Get the delete page link
-          CommunicationAndListRowActionDetails communicationDetails = new CommunicationAndListRowActionDetails();
-          communicationDetails.assign(communicationDtls);
-           communicationDtls.dtls.deletePage.deletePageName = CommunicationFactory.newInstance().getDeletePageName(communicationDetails).deletePageName;
-          
-          
-           molsaCommunicationDetailList.dtls.addRef(communicationDtls);
-          // Add this list item to the return struct
-          //-communicationDetailList.communicationDtls.addRef(communicationDtls);
-        }
+						communicationDtls.dtls.draftEmailInd = true;
 
-      }
+					} else if (COMMUNICATIONFORMAT.MSWORD
+							.equals(communicationFormat)) {
 
-      return molsaCommunicationDetailList;
-  }
+						communicationDtls.dtls.msWordInd = true;
 
-  @Override
-  public void resendSMS(MOLSASMSLogKey key) throws AppException, InformationalException {
+						final AttachmentLinkKey attachmentLinkKey = new AttachmentLinkKey();
 
-    if(key.smsLogIDTabbedList.length()==0){
-      curam.core.sl.infrastructure.impl.ValidationManagerFactory
-      .getManager()
-      .throwWithLookup(
-          new AppException(
-              MOLSASMSSERVICE.NO_CONCERNROLE_SELECTED),
-          curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
-          0);
-    }
-    
-   MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-   curam.molsa.sms.sl.struct.MOLSASMSLogKey logKey=new curam.molsa.sms.sl.struct.MOLSASMSLogKey();
-   StringList concernRoleIDList = StringUtil
-       .delimitedText2StringList(
-           key.smsLogIDTabbedList,
-           CuramConst.gkTabDelimiterChar);
-   if(CuramConst.gkOne==concernRoleIDList.size()){
-     logKey.dtls.smsLogIDTabbedList=key.smsLogIDTabbedList;
-     molsasmsUtilObj.resendSMS(logKey);
-   }else{
-   //Invoke the deferred process to send the bulk SMS
-      final DeferredProcessing deferredProcessingObj =
-           DeferredProcessingFactory.newInstance();
-         MOLSASMSWMInstance molsasmswmInstanceObj=MOLSASMSWMInstanceFactory.newInstance();
-         MOLSASMSWMInstanceDtls instanceDtls = new MOLSASMSWMInstanceDtls();
-         instanceDtls.idTabbedList=key.smsLogIDTabbedList;
-         instanceDtls.instDataID=UniqueID.nextUniqueID(KeySet.kKeySetDefault);
-         molsasmswmInstanceObj.insert(instanceDtls);
- 
-         deferredProcessingObj.startProcess("DEFERREDRESENDSMSPROCESSING",instanceDtls.instDataID);
-  }
-  }
+						attachmentLinkKey.attachmentLinkID = communicationDtls.dtls.communicationID;
+
+						AttachmentLinkDetails attachmentLinkDetails;
+
+						try {
+							attachmentLinkDetails = AttachmentFactory
+									.newInstance().readAttachment(
+											attachmentLinkKey);
+
+							communicationDtls.dtls.attachmentDtls.attachmentName = attachmentLinkDetails.attachmentDtls.attachmentName;
+							communicationDtls.dtls.attachmentDtls.attachmentContents = attachmentLinkDetails.attachmentDtls.attachmentContents;
+
+						} catch (final RecordNotFoundException rnfe) {// Do
+							// nothing
+							// there
+							// are
+							// no
+							// attachments
+							// associated
+							// with
+							// this communication
+						}
+
+					} else if (COMMUNICATIONFORMAT.PROFORMA
+							.equals(communicationFormat)) {
+
+						communicationDtls.dtls.proFormaInd = true;
+
+						readProFormaCommKey.proFormaCommKey.communicationID = communicationDtls.dtls.communicationID;
+						communicationDtls.dtls.localeIdentifier = CommunicationFactory
+								.newInstance().readProForma1(
+										readProFormaCommKey).readProFormaCommDetails.localeIdentifier;
+					} else if (COMMUNICATIONFORMAT.SMS
+							.equals(communicationFormat)) {
+
+						communicationDtls.smsInd = true;
+
+						readProFormaCommKey.proFormaCommKey.communicationID = communicationDtls.dtls.communicationID;
+						communicationDtls.dtls.localeIdentifier = CommunicationFactory
+								.newInstance().readProForma1(
+										readProFormaCommKey).readProFormaCommDetails.localeIdentifier;
+					}
+				}
+				// Get the delete page link
+				CommunicationAndListRowActionDetails communicationDetails = new CommunicationAndListRowActionDetails();
+				communicationDetails.assign(communicationDtls);
+				communicationDtls.dtls.deletePage.deletePageName = CommunicationFactory
+						.newInstance().getDeletePageName(communicationDetails).deletePageName;
+
+				molsaCommunicationDetailList.dtls.addRef(communicationDtls);
+				// Add this list item to the return struct
+				// -communicationDetailList.communicationDtls.addRef(communicationDtls);
+			}
+
+		}
+
+		return molsaCommunicationDetailList;
+	}
+
+	/**
+	 * Resends the message to the list of participants received in the input
+	 * parameter.
+	 * 
+	 * @param key
+	 *            Contains a key details.
+	 * 
+	 * @throws AppException
+	 *             Generic Exception Signature.
+	 * 
+	 * @throws InformationalException
+	 *             Generic Exception Signature.
+	 */
+
+	public void resendSMS(MOLSASMSLogKey key) throws AppException,
+			InformationalException {
+
+		if (key.smsLogIDTabbedList.length() == 0) {
+			curam.core.sl.infrastructure.impl.ValidationManagerFactory
+					.getManager()
+					.throwWithLookup(
+							new AppException(
+									MOLSASMSSERVICE.NO_CONCERNROLE_SELECTED),
+							curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
+							0);
+		}
+
+		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+		curam.molsa.sms.sl.struct.MOLSASMSLogKey logKey = new curam.molsa.sms.sl.struct.MOLSASMSLogKey();
+		StringList concernRoleIDList = StringUtil.delimitedText2StringList(
+				key.smsLogIDTabbedList, CuramConst.gkTabDelimiterChar);
+		if (CuramConst.gkOne == concernRoleIDList.size()) {
+			logKey.dtls.smsLogIDTabbedList = key.smsLogIDTabbedList;
+			molsasmsUtilObj.resendSMS(logKey);
+		} else {
+			// Invoke the deferred process to send the bulk SMS
+			final DeferredProcessing deferredProcessingObj = DeferredProcessingFactory
+					.newInstance();
+			MOLSASMSWMInstance molsasmswmInstanceObj = MOLSASMSWMInstanceFactory
+					.newInstance();
+			MOLSASMSWMInstanceDtls instanceDtls = new MOLSASMSWMInstanceDtls();
+			instanceDtls.idTabbedList = key.smsLogIDTabbedList;
+			instanceDtls.instDataID = UniqueID
+					.nextUniqueID(KeySet.kKeySetDefault);
+			molsasmswmInstanceObj.insert(instanceDtls);
+
+			deferredProcessingObj.startProcess("DEFERREDRESENDSMSPROCESSING",
+					instanceDtls.instDataID);
+		}
+	}
 }

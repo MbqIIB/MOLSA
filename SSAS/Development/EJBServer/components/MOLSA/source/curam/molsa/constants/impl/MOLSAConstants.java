@@ -116,5 +116,10 @@ public abstract class MOLSAConstants {
    *workqueue name.
    */
   public static final String kCaseWorkerWorkQueue = "45008";
+  
+  /**
+   * SMS Error code.
+   */
+  public static final String kSMSPhoneNumerErrorCode = "600.4";
 
 }

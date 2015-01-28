@@ -34,7 +34,6 @@ import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
 import curam.codetable.PHONETYPE;
 import curam.codetable.PRODUCTCATEGORY;
 import curam.core.facade.fact.ParticipantFactory;
-import curam.core.facade.fact.ProductDeliveryFactory;
 import curam.core.fact.AddressFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.ConcernRoleFactory;
@@ -42,7 +41,6 @@ import curam.core.fact.ConcernRolePhoneNumberFactory;
 import curam.core.fact.UniqueIDFactory;
 import curam.core.impl.CuramConst;
 import curam.core.impl.EnvVars;
-import curam.core.impl.ProductDelivery;
 import curam.core.intf.Address;
 import curam.core.intf.ConcernRole;
 import curam.core.sl.fact.CommunicationFactory;
@@ -71,17 +69,20 @@ import curam.dynamicevidence.impl.DynamicEvidenceDataDetails;
 import curam.dynamicevidence.sl.impl.EvidenceGenericSLFactory;
 import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
-import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.GENERAL;
 import curam.message.GENERALSEARCH;
 import curam.message.MOLSASMSSERVICE;
+import curam.molsa.codetable.MOLSASMSERRORCODEDESC;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.sms.entity.fact.MOLSASMSErrorCodeFactory;
 import curam.molsa.sms.entity.fact.MOLSASMSLogFactory;
+import curam.molsa.sms.entity.intf.MOLSASMSErrorCode;
 import curam.molsa.sms.entity.intf.MOLSASMSLog;
 import curam.molsa.sms.entity.struct.MOLSASMSErrorCodeDtls;
+import curam.molsa.sms.entity.struct.MOLSASMSErrorCodeDtlsList;
+import curam.molsa.sms.entity.struct.MOLSASMSErrorCodeKeyStruct1;
 import curam.molsa.sms.entity.struct.MOLSASMSLogDtls;
 import curam.molsa.sms.entity.struct.MOLSASMSLogDtlsList;
 import curam.molsa.sms.entity.struct.MOLSASMSLogKeyStruct3;
@@ -124,6 +125,11 @@ import curam.util.type.CodeTable;
 import curam.util.type.Date;
 import curam.util.type.StringList;
 
+/**
+ * Service layer class is used to send SMS messages, export the 
+ * participant list to excel, list SMS exceptions, Re send the failed SMS.
+ */
+
 public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   
   @Inject
@@ -154,7 +160,20 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
-  @Override
+
+  /**
+   *  Sends the message to the list of participants received in the input parameter. 
+   * 
+   * @param key
+   *            Contains a key details.
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
   public void sendSMS(MOLSAConcernRoleListAndMessageTextDetails key) throws AppException, InformationalException {
 
     if(key.dtls.concernRoleTabbedList.length()==0){
@@ -180,7 +199,6 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
           messenger._getServiceClient().getOptions().setProperty(HTTPConstants.CHUNKED, false);
           SendSms sendSms = null;
           for (String concernRoleID : concernRoleIDList) {
-            //String smscaseID = null;
             phNumber = getPersonPreferredPhoneNumber(concernRoleID);
             molsasmsLogDtls.deliveryStatus = COMMUNICATIONSTATUS.FAILED;
             if(!phNumber.equals("")){
@@ -202,11 +220,9 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
               smsStatus.setDetailed(true);
               GetSmsStatusResponse statusresponse = messenger.getSmsStatus(smsStatus);
               if (!sendResult.getSendSmsResult().getResult().equals("OK")) {
-                errorCodeDtls.errorCodeID = 1123456;
-                errorCodeDtls.errorCode = 1l;
-                errorCodeDtls.description = "Failure";
-                molsasmsLogDtls.deliveryStatus = COMMUNICATIONSTATUS.FAILED;
-                MOLSASMSErrorCodeFactory.newInstance().insert(errorCodeDtls);
+              //Read the proper error code and update the same in the MOLSASMSLog Entity
+                String errorCode=sendResult.getSendSmsResult().getResult();
+                molsasmsLogDtls.errorCode = errorCode.substring(0, 5);
               } else {
                 if (statusresponse.getGetSmsStatusResult().getDetails().getExtraElement().getFirstElement().getLocalName().equals("SUCCESS")) {
                   molsasmsLogDtls.deliveryStatus = COMMUNICATIONSTATUS.SUCCESS;
@@ -227,6 +243,9 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
                 }
 
               }
+            } else{
+            	//If phone number is not present,update the MOLSASMSLog entity with the correct error code.
+            	 molsasmsLogDtls.errorCode=MOLSAConstants.kSMSPhoneNumerErrorCode;
             }
             molsasmsLogDtls.concernRoleID = Long.parseLong(concernRoleID);
             molsasmsLogDtls.createdBy = TransactionInfo.getProgramUser();
@@ -235,7 +254,6 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
             molsasmsLogDtls.smsTemplate = key.dtls.smsMessageType;
             molsasmsLogDtls.smsCategory = CodeTable.getParentCode(MOLSASMSMESSAGETEMPLATE.TABLENAME, key.dtls.smsMessageType);
-            molsasmsLogDtls.errorCode = 12345;
             molsasmsLogDtls.createdDateTime = TransactionInfo.getSystemDateTime();
 
             SMSCommDetails smsDetails = new SMSCommDetails();
@@ -290,6 +308,21 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
+  /**
+   *  Gets the person phone number. 
+   * 
+   * @param concernRoleID
+   *            Contains a key details.
+   *  
+   * @return String phoneNuber
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
   public String getPersonPreferredPhoneNumber(String concernRoleID) throws AppException, InformationalException {
     String phNumber = "";
     ConcernRoleKey concernRoleKey = new ConcernRoleKey();
@@ -344,6 +377,16 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
+  /**
+   *  Validates the person phone number. 
+   * 
+   * @param recipientPhone
+   *            Contains a key details.
+
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
   public void validateMobile(String recipientPhone) throws InformationalException {
 
     if (recipientPhone.trim().length() != 10) {
@@ -355,6 +398,18 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
+  /**
+   *  Authenticates the user.
+   * 
+   * @param user
+   *            Contains a key details.
+   *            
+   * @return Boolean
+
+   * @throws RemoteException
+   *             Generic Exception Signature.
+   */
+  
   private Boolean authenticateSoapUser(SoapUser user) throws RemoteException {
     SoapUser soapUser = getUserDetails();
     Authenticate authenticate = new Authenticate();
@@ -375,7 +430,23 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     return false;
   }
 
-  @Override
+
+  /**
+   * Return the list of participants based on the user search criteria to send the SMS.
+   * 
+   * @param key
+   *          Contains a key details.
+   *            
+   * @return MOLSAFailedSMSDetailsList
+   *          List of Participant details.
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
   public MOLSAParticipantDetailsList listParticipantByCriteria(MOLSAParticipantFilterCriteriaDetails key) throws AppException, InformationalException {
 
     MOLSAParticipantDetailsList molsaParticipantDetailsList = new MOLSAParticipantDetailsList();
@@ -409,6 +480,18 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     return molsaParticipantDetailsList;
   }
 
+  /**
+   * Validates the user entered search criteria.
+   * 
+   * @param key
+   *          Contains a key details.
+   *            
+   * @throws AppException
+   *             Generic Exception Signature.
+   *             
+   * 
+   */
+  
   protected void validateSearchCriteria(MOLSAParticipantFilterCriteriaDetails key) throws AppException {
 
     if (!(key.dtls.hasIncome) && !(key.dtls.isIncludeHouseHoldMembers) && (key.dtls.age == CuramConst.gkZero) && (key.dtls.caseStatus.length() == CuramConst.gkZero)
@@ -421,6 +504,22 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
+  /**
+   * Sql query to retrieve the records based on the search criteria.
+   * 
+   * @param dtls
+   *          Contains a key details.
+   *          
+   * @return SQLStatement
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   *             
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   * 
+   */
+  
   protected SQLStatement formatSQL(curam.molsa.sms.facade.struct.MOLSAParticipantFilterCriteriaDetails dtls) throws AppException, InformationalException {
     SQLStatement sqlStatement = new SQLStatement();
     StringBuffer selectStrBuf = new StringBuffer();
@@ -524,7 +623,21 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
-  @Override
+  /**
+   *Lists the additional benefits received by the participant.
+   * 
+   * @param key
+   *          Contains a key details.
+   *            
+   * @return MOLSAAdditionalBenefitDetailsList
+   *          List of participants who receives the additional benefit.
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
   public MOLSAAdditionalBenefitDetailsList listParticipantAdditionalBenefits(curam.citizenaccount.facade.struct.ConcernRoleKey key) throws AppException, InformationalException {
 
     final String KAmount = "amount";
@@ -580,7 +693,20 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     return additionalBenefitDetailsList;
   }
 
-  @Override
+
+  /**
+   * Export the selected participant list returned from the search criteria to excel.
+   * 
+   * @param key
+   *          Contains a key details.
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
   public void exportParticipantsToExcel(MOLSAConcernRoleListAndMessageTextDetails key) throws AppException, InformationalException {
 
     MOLSAParticipantDetailsList molsaParticipantDetailsList = new MOLSAParticipantDetailsList();
@@ -624,6 +750,14 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
+  /**
+   * Gets the participant details.
+   * 
+   * @param concernRoleKey
+   * 
+   * @return SQLStatement
+   */
+  
   protected SQLStatement getParticipantDetailsQuery(ConcernRoleKey concernRoleKey) {
     SQLStatement sqlStatement = new SQLStatement();
     StringBuffer selectStrBuf = new StringBuffer();
@@ -651,7 +785,20 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     return sqlStatement;
   }
 
-  @Override
+  /**
+   * List the failed messages with exceptions details logged while 
+   * sending the message to the participants.
+   *            
+   * @return MOLSAFailedSMSDetailsList
+   *          List of failed SMS details.
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
   public MOLSAFailedSMSDetailsList listAllFailedMessages() throws AppException, InformationalException {
     MOLSASMSLog molsasmsLogObj = MOLSASMSLogFactory.newInstance();
 
@@ -669,14 +816,26 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
         MOLSASMSLogKeyStruct4 molsasmsLogKeyStruct = new MOLSASMSLogKeyStruct4();
         molsasmsLogKeyStruct.messageLoggedID = dtls.messageLoggedID;
         MOLSASMSLogDtlsList failesSMSDtlsList = molsasmsLogObj.listByMessageLoggedID(molsasmsLogKeyStruct);
-
+        MOLSASMSErrorCode errorCodeObj=MOLSASMSErrorCodeFactory.newInstance();
+        MOLSASMSErrorCodeKeyStruct1 codeKeyStruct1=new MOLSASMSErrorCodeKeyStruct1();
         if (failesSMSDtlsList.dtls.size() == 1) {
           MOLSAFailedSMSDetails details = new MOLSAFailedSMSDetails();
           ConcernRole concernRoleObj = ConcernRoleFactory.newInstance();
           ConcernRoleKey concernRoleKey = new ConcernRoleKey();
           concernRoleKey.concernRoleID = dtls.concernRoleID;
           String concernRoleID = String.valueOf(dtls.concernRoleID);
-          details.failedReason = "Incorrect Phone Number";
+          
+          //Read the Failed Reason from the MOLSASMSErrorCode entity
+          codeKeyStruct1.errorCodeID=dtls.errorCode;
+		  MOLSASMSErrorCodeDtlsList errorCodeDtlsList = errorCodeObj.listByErrorCodeID(codeKeyStruct1);
+		
+		if(errorCodeDtlsList.dtls.size()>0){
+			MOLSASMSErrorCodeDtls errorCodeDtls = errorCodeDtlsList.dtls.item(0);
+			 details.failedReason = CodeTable.getOneItem(MOLSASMSERRORCODEDESC.TABLENAME,errorCodeDtls.errorCode);
+		}else{
+			 details.failedReason = MOLSASMSSERVICE.SMS_GENERIC_FAILED_REASON.toString();
+		}
+         
           details.message = dtls.messsageText;
           details.failureDate = dtls.createdDateTime;
           details.smsMessageID = dtls.messageID;
@@ -698,7 +857,16 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
           ConcernRoleKey concernRoleKey = new ConcernRoleKey();
           concernRoleKey.concernRoleID = latestFailedSMSLogDetails.concernRoleID;
           String concernRoleID = String.valueOf(latestFailedSMSLogDetails.concernRoleID);
-          details.failedReason = "Incorrect Phone Number";
+          //Read the Failed Reason from the MOLSASMSErrorCode entity
+          codeKeyStruct1.errorCodeID=dtls.errorCode;
+		  MOLSASMSErrorCodeDtlsList errorCodeDtlsList = errorCodeObj.listByErrorCodeID(codeKeyStruct1);
+		
+		if(errorCodeDtlsList.dtls.size()>0){
+			MOLSASMSErrorCodeDtls errorCodeDtls = errorCodeDtlsList.dtls.item(0);
+			 details.failedReason = CodeTable.getOneItem(MOLSASMSERRORCODEDESC.TABLENAME,errorCodeDtls.errorCode);
+		}else{
+			 details.failedReason = MOLSASMSSERVICE.SMS_GENERIC_FAILED_REASON.toString();
+		}
           details.message = latestFailedSMSLogDetails.messsageText;
           details.smsMessageID = latestFailedSMSLogDetails.messageID;
           details.failureDate = latestFailedSMSLogDetails.createdDateTime;
@@ -712,7 +880,19 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     return molsaFailedSMSDetailsList;
   }
 
-  @Override
+  /**
+   * Resends the message to the list of participants received in the input parameter. 
+   * 
+   * @param key
+   *            Contains a key details.
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
   public void resendSMS(MOLSASMSLogKey key) throws AppException, InformationalException {
     
     if(key.dtls.smsLogIDTabbedList.length()==0){
@@ -769,11 +949,9 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
               smsStatus.setDetailed(true);
               GetSmsStatusResponse statusresponse = messenger.getSmsStatus(smsStatus);
               if (!sendResult.getSendSmsResult().getResult().equals("OK")) {
-                errorCodeDtls.errorCodeID = 1123456;
-                errorCodeDtls.errorCode = 1l;
-                errorCodeDtls.description = "Failure";
-                molsasmsLogDtls.deliveryStatus = COMMUNICATIONSTATUS.FAILED;
-                MOLSASMSErrorCodeFactory.newInstance().insert(errorCodeDtls);
+                  //Read the proper error code and update the same in the MOLSASMSLog Entity
+                  String errorCode=sendResult.getSendSmsResult().getResult();
+                  molsasmsLogDtls.errorCode = errorCode.substring(0, 5);
               }
 
               if (statusresponse.getGetSmsStatusResult().getDetails().getExtraElement().getFirstElement().getLocalName().equals("SUCCESS")) {
@@ -794,13 +972,16 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
                 molsasmsLogDtls.deliveryStatus = COMMUNICATIONSTATUS.FAILED;
               }
 
+            }else{
+                	//If phone number is not present,update the MOLSASMSLog entity with the correct error code.
+                	 molsasmsLogDtls.errorCode=MOLSAConstants.kSMSPhoneNumerErrorCode;
             }
             molsasmsLogDtls.concernRoleID = Long.parseLong(concernRoleID);
             molsasmsLogDtls.createdBy = TransactionInfo.getProgramUser();
             molsasmsLogDtls.messageLoggedID = logDtls.messageLoggedID;
             molsasmsLogDtls.messsageText = logDtls.messsageText;
             molsasmsLogDtls.relatedID = logDtls.relatedID;
-            molsasmsLogDtls.errorCode = 12345;
+            //molsasmsLogDtls.errorCode = 12345;
             molsasmsLogDtls.smsCategory=logDtls.smsCategory;
             molsasmsLogDtls.smsTemplate=logDtls.smsTemplate;
             molsasmsLogDtls.createdDateTime = TransactionInfo.getSystemDateTime();
@@ -866,6 +1047,12 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
   }
 
+  /**
+   * 
+   * Compares the SMS log details based on the date.
+   *
+   */
+  
   static class LatestFailedSMSDetailsComparator implements Comparator<MOLSASMSLogDtls>, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -877,7 +1064,21 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     }
   }
 
-  @Override
+  /**
+  * Gets the message text based on the SMS Template and SMS category. 
+  * 
+  * @param key
+  *            Contains a key details.
+  *            
+  * @return MOLSAMessageText
+  *          Description of the SMS Message Text.
+  * 
+  * @throws AppException
+  *             Generic Exception Signature.
+  * 
+  * @throws InformationalException
+  *             Generic Exception Signature.
+  */
   public MOLSAMessageText getSMSMessageText(MOLSAMessageTextKey key) throws AppException, InformationalException {
     MOLSAMessageText messageText = new MOLSAMessageText();
     StringBuffer stringBuffer = new StringBuffer();
@@ -887,4 +1088,39 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     messageText.dtls.smsMessageText = PropertiesResourceCache.getInstance().getProperty(MOLSAConstants.kCategoryandTemplatePropertyFile, stringBuffer.toString());
     return messageText;
   }
+
+  /**
+   *  Sends the message to the list of participants received in the input parameter in deferred process mode. 
+   * 
+   * @param key
+   *            Contains a key details.
+   * 
+   * @throws AppException
+   *             Generic Exception Signature.
+   * 
+   * @throws InformationalException
+   *             Generic Exception Signature.
+   */
+  
+public void sendSMSDPMode(MOLSAConcernRoleListAndMessageTextDetails key)
+		throws AppException, InformationalException {
+	sendSMS(key);
+}
+
+/**
+ * Resends the message to the list of participants received in the input parameter in the deferred process mode. 
+ * 
+ * @param key
+ *            Contains a key details.
+ * 
+ * @throws AppException
+ *             Generic Exception Signature.
+ * 
+ * @throws InformationalException
+ *             Generic Exception Signature.
+ */
+public void resendSMSDPMode(MOLSASMSLogKey key) throws AppException,
+		InformationalException {
+	resendSMS(key);
+}
 }

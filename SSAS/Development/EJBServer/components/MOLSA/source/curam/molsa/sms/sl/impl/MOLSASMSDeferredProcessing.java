@@ -24,12 +24,12 @@ public class MOLSASMSDeferredProcessing extends curam.molsa.sms.sl.base.MOLSASMS
     MOLSASMSWMInstance molsasmswmInstanceObj=MOLSASMSWMInstanceFactory.newInstance();
     MOLSASMSWMInstanceKey instanceKey=new MOLSASMSWMInstanceKey();
     instanceKey.instDataID=instDataID;
-    final MOLSASMSWMInstanceDtls instanceDtls =molsasmswmInstanceObj.read(instanceKey);
+    final MOLSASMSWMInstanceDtls instanceDtls = molsasmswmInstanceObj.read(instanceKey);
     key.dtls.concernRoleTabbedList=instanceDtls.idTabbedList;
     key.dtls.smsMessageText=instanceDtls.messageText;
     key.dtls.smsMessageType=instanceDtls.smsTemplate;
     key.dtls.caseID=instanceDtls.caseID;
-    molsasmsUtilObj.sendSMS(key);
+    molsasmsUtilObj.sendSMSDPMode(key);
     
   }
 

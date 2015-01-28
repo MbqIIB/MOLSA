@@ -24,6 +24,6 @@ public class MOLSAResendSMSDeferredProcessing extends curam.molsa.sms.sl.base.MO
     instanceKey.instDataID=instDataID;
     final MOLSASMSWMInstanceDtls instanceDtls =molsasmswmInstanceObj.read(instanceKey); 
     molsasmsLogKey.dtls.smsLogIDTabbedList=instanceDtls.idTabbedList;
-    molsasmsUtilObj.resendSMS(molsasmsLogKey);
+    molsasmsUtilObj.resendSMSDPMode(molsasmsLogKey);
   }
 }
