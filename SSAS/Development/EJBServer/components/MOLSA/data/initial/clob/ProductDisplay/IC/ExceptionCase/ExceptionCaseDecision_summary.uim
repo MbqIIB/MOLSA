@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<PAGE PAGE_ID="ExceptionCaseDecision_summary">
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE NAME="TEXT" PROPERTY="Page.Title"/>
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <SERVER_INTERFACE CLASS="CREOLEProgramRecommendation" NAME="DISPLAY"
+    OPERATION="viewDisplayRulesCategoryXML"/>
+
+
+  <PAGE_PARAMETER NAME="creoleProgramRecommendationID"/>
+  <PAGE_PARAMETER NAME="simulatedDeterminationID"/>
+  <PAGE_PARAMETER NAME="date"/>
+
+
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="creoleProgramRecommendationID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="creoleProgramRecommendationID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="simulatedDeterminationID"/>
+    <TARGET NAME="DISPLAY" PROPERTY="simulatedDeterminationID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="date"/>
+    <TARGET NAME="DISPLAY" PROPERTY="date"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="TEXT" PROPERTY="categoryRef"/>
+    <TARGET NAME="DISPLAY" PROPERTY="categoryRef"/>
+  </CONNECT>
+
+  <CLUSTER NUM_COLS="2">
+    <CLUSTER TITLE="Cluster.Title.AssistanceUnit">
+      <CONDITION>
+        <IS_TRUE
+          EXTENDED_PATH="/DecisionDetails/ExceptionCaseSummaryCategory/doesHouseholdHaveEligibleMembersTimeline"
+          NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+      </CONDITION>
+      <LIST>
+        <FIELD LABEL="Field.Label.HouseholdMember">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/ExceptionCaseSummaryCategory/eligibilityUnitMemberDetails/Item[]"
+              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+          </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Reason">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/ExceptionCaseSummaryCategory/eligibilityUnitMembersReason/Item[]"
+              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+          </CONNECT>
+        </FIELD>
+      </LIST>
+    </CLUSTER>
+
+    <CLUSTER>
+      <LIST STYLE="dr-standard-list">
+        <FIELD LABEL="Field.Label.Programs">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/ExceptionCaseSummaryCategory/exceptionDisplayListItems/Item[]/displayType"
+              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+          </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.Amount" ALIGNMENT="CENTER">
+          <CONNECT>
+            <SOURCE
+              EXTENDED_PATH="/DecisionDetails/ExceptionCaseSummaryCategory/exceptionDisplayListItems/Item[]/displayAmount"
+              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+          </CONNECT>
+        </FIELD>
+      </LIST>
+      <CLUSTER>
+        <FIELD LABEL="Cluster.Title.TotalAmount" ALIGNMENT="CENTER">
+          <CONNECT>
+            <SOURCE EXTENDED_PATH="/DecisionDetails/ExceptionCaseSummaryCategory/totalAmount"
+              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+          </CONNECT>
+        </FIELD>
+      </CLUSTER>
+    </CLUSTER>
+  </CLUSTER>
+
+
+</PAGE>
