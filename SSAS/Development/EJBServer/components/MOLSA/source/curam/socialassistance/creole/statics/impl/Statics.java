@@ -2,21 +2,34 @@ package curam.socialassistance.creole.statics.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Comparator;
+
 import curam.core.impl.CuramConst;
 import curam.core.struct.PersonRegistrationDetails;
 import curam.creole.execution.RuleObject;
 import curam.creole.execution.session.Session;
+import curam.creole.ruleclass.MOLSARuleSet.impl.HouseholdUnit;
+import curam.creole.ruleclass.MOLSARuleSet.impl.HouseholdUnitMember;
+import curam.creole.ruleclass.SocialAssistanceRuleSet.impl.SAHouseholdUnitCalculator;
+import curam.creole.ruleclass.SocialAssistanceRuleSet.impl.SAHouseholdUnitMember;
 import curam.creole.value.BoundedInterval;
 import curam.creole.value.Interval;
 import curam.creole.value.Timeline;
+import curam.creole.value.XmlMessage;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.DateTime;
 
@@ -67,8 +80,8 @@ public final class Statics {
 	public static Timeline<Number> yearlyAnniversaryTimeline(Session session,
 			Date startDate) {
 		int intNumberOfAnniversaries = 110;
-	    final List<Interval<Number>> resultIntervals = new ArrayList<Interval<Number>>();
-		
+		final List<Interval<Number>> resultIntervals = new ArrayList<Interval<Number>>();
+
 		List anniversaryIntervals = new ArrayList(112);
 
 		anniversaryIntervals.add(new Interval(null, Integer.valueOf(0)));
@@ -102,14 +115,15 @@ public final class Statics {
 			}
 			if (intervalStartDate != null) {
 
-				if(interval.value().doubleValue()==17 || interval.value().doubleValue()==18 || interval.value().doubleValue()==60){
+				if (interval.value().doubleValue() == 17
+						|| interval.value().doubleValue() == 18
+						|| interval.value().doubleValue() == 60) {
 					intervalStartDate = shiftToStartOfNextMonth(intervalStartDate);
 					sortedStartDates.add(intervalStartDate);
-				}
-				else{
+				} else {
 					sortedStartDates.add(intervalStartDate);
 				}
-				
+
 			}
 		}
 		Iterator<Date> iterator = sortedStartDates.iterator();
@@ -117,8 +131,8 @@ public final class Statics {
 
 		while (iterator.hasNext()) {
 			final Date startDate1 = iterator.next();
-			resultIntervals.add(new Interval<Number>(startDate1, anniversaryTimeline
-					.valueOn(startDate1)));
+			resultIntervals.add(new Interval<Number>(startDate1,
+					anniversaryTimeline.valueOn(startDate1)));
 		}
 		Timeline<Number> ageTimeline = new Timeline<Number>(resultIntervals);
 
@@ -246,6 +260,52 @@ public final class Statics {
 			}
 		} else
 			return false;
+	}
+
+	public static List<RuleObject> removeDuplicateRuleObjects(
+			final Session session, List<RuleObject> units)
+			throws AppException, InformationalException {
+
+		
+		Map<XmlMessage, RuleObject> map = new HashMap<XmlMessage, RuleObject>();
+		
+		final List<RuleObject> uniqueRuleObjects = new ArrayList<RuleObject>();
+        
+		
+		for(RuleObject unit : units){
+			map.put( (XmlMessage) unit.description().getValue(), unit);
+		}
+		 
+		uniqueRuleObjects.addAll(map.values());
+		
+		return uniqueRuleObjects;
+	}
+
+	private static <T> String getCaseParticipantRoleIDasString(final RuleObject firstUnit) {
+		Timeline<List<RuleObject>> householdUnitMembers ;
+		ArrayList<Number> ids = new ArrayList<Number>();
+		householdUnitMembers =  (Timeline<List<RuleObject>>) firstUnit.getAttributeValue("mandatoryEligibleMembersTimeline").getValue();
+		String caseParticipantRoleIDList ="";
+		for(BoundedInterval<List<RuleObject>> member :householdUnitMembers.intervals()){
+			List<RuleObject> ruleObjectList = member.value();
+			for (Iterator iterator = ruleObjectList.iterator(); iterator
+					.hasNext();) {
+				RuleObject ruleObject = (RuleObject) iterator.next();
+              ids.add( (Number) ruleObject.getAttributeValue("caseParticipantRoleID").getValue());
+			}
+		}
+		ArrayList<Long> idlong = new ArrayList<Long>();
+		
+		for(Number number : ids){
+			idlong.add(number.longValue());
+		}
+		
+		Collections.sort(idlong);
+		for(Long value : idlong){
+			caseParticipantRoleIDList = caseParticipantRoleIDList+value;
+		}
+		
+		return caseParticipantRoleIDList.trim();
 	}
 
 }
