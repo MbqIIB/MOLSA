@@ -162,6 +162,9 @@ public class Module extends AbstractModule {
 		registerKeyImplementations.addBinding(
 				PRODUCTTYPEEntry.INCAPABLEOFWORKING).to(
 						MOLSAIncapableOfWorkingRegisterPDKey.class);
+		registerKeyImplementations.addBinding(
+				PRODUCTTYPEEntry.MOLSADETERMINEPRODUCT).to(
+				MOLSASocialAssistanceRegisterPDKey.class);
 
 	}
 }

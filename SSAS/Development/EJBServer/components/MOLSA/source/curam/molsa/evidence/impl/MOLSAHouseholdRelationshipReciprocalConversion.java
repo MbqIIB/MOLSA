@@ -424,7 +424,7 @@ public class MOLSAHouseholdRelationshipReciprocalConversion implements
 		// created.
 		long caseParticipantRoleIDRelatedRec = getCaseParticipantRoleID(
 				targetCaseID, relParticipantIDRec,
-				CASEPARTICIPANTROLETYPE.RELATEDPERSON);
+				CASEPARTICIPANTROLETYPE.MEMBER);
 
 		if (0 == caseParticipantRoleIDRelatedRec) {
 
@@ -438,7 +438,7 @@ public class MOLSAHouseholdRelationshipReciprocalConversion implements
 			caseParticipantRoleDetails.dtls.participantRoleID = relParticipantIDRec;
 			caseParticipantRoleDetails.dtls.recordStatus = RECORDSTATUS.NORMAL;
 			caseParticipantRoleDetails.dtls.toDate = Date.kZeroDate;
-			caseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.RELATEDPERSON;
+			caseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.MEMBER;
 
 			caseParticipantRoleObj
 					.insertCaseParticipantRole(caseParticipantRoleDetails);
