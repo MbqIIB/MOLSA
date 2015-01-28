@@ -12,6 +12,7 @@ import com.google.inject.Provider;
 
 import curam.application.impl.Application;
 import curam.application.impl.ApplicationDAO;
+import curam.codetable.CASEEVIDENCE;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASETRANSACTIONEVENTS;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
@@ -765,18 +766,21 @@ public abstract class MOLSAMaintainProductDelivery extends
 			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
 			MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
 			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+			//molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+			//Harisha to comment over and below line
+			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIUPDATED;
 			MOLSAMessageText messageText = molsasmsUtilObj
 					.getSMSMessageText(molsaMessageTextKey);
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
 			// Construct the input details
+			//Harisha to comment below line
 			concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
 			Long concernRoleID = productDeliveryDAO.get(key.caseID)
 					.getConcernRole().getID();
 			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 					.valueOf(concernRoleID);
 			// Need to point to the right template
-			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.MOIUPDATED;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
 			
