@@ -430,7 +430,7 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
     absentCaseParticipantRoleDetails.dtls.caseID = caseHeader.getID();
     absentCaseParticipantRoleDetails.dtls.participantRoleID = representativeID.representativeID;
     absentCaseParticipantRoleDetails.dtls.fromDate = Date.getCurrentDate();
-    absentCaseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.MEMBER;
+    absentCaseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.NOMINATEDREPRESENTATIVE;
 
     caseParticipantRoleObject.insertCaseParticipantRole(absentCaseParticipantRoleDetails);
 
