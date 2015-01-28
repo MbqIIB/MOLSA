@@ -31,6 +31,7 @@ import curam.codetable.COMMUNICATIONSTATUS;
 import curam.codetable.CONCERNROLETYPE;
 import curam.codetable.CORRESPONDENT;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
+import curam.codetable.LOCALE;
 import curam.codetable.PHONETYPE;
 import curam.codetable.PRODUCTCATEGORY;
 import curam.core.facade.fact.ParticipantFactory;
@@ -1085,7 +1086,10 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     stringBuffer.append(key.dtls.category);
     stringBuffer.append(".");
     stringBuffer.append(key.dtls.template);
-    messageText.dtls.smsMessageText = PropertiesResourceCache.getInstance().getProperty(MOLSAConstants.kCategoryandTemplatePropertyFile, stringBuffer.toString());
+    if(TransactionInfo.getProgramLocale().equals(MOLSAConstants.kAR))
+    	messageText.dtls.smsMessageText = PropertiesResourceCache.getInstance().getProperty(MOLSAConstants.kCategoryandTemplatePropertyFileArabic, stringBuffer.toString());
+    else
+    	messageText.dtls.smsMessageText = PropertiesResourceCache.getInstance().getProperty(MOLSAConstants.kCategoryandTemplatePropertyFile, stringBuffer.toString());
     return messageText;
   }
 

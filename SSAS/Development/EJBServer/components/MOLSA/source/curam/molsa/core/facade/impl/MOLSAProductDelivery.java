@@ -246,7 +246,7 @@ public abstract class MOLSAProductDelivery extends
 	      MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
 	      MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
 	      molsaMessageTextKey.dtls.category=MOLSASMSMessageType.NOTIFICATION;
-	      molsaMessageTextKey.dtls.template=MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+	      molsaMessageTextKey.dtls.template=MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
 	      MOLSAMessageText messageText = molsasmsUtilObj.getSMSMessageText(molsaMessageTextKey );
 	      MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
 	          new MOLSAConcernRoleListAndMessageTextDetails();
@@ -254,7 +254,7 @@ public abstract class MOLSAProductDelivery extends
 	      concernRoleListAndMessageTextDetails.dtls.smsMessageText=messageText.dtls.smsMessageText;
 	      concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(caseHeader.getConcernRole().getID());
 	      //Need to point to the right template
-	      concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+	      concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
 	      if(details.reasonCode.equals(CASECLOSEREASON.MANAGERREJECTION))
 	    	  molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 	    	  

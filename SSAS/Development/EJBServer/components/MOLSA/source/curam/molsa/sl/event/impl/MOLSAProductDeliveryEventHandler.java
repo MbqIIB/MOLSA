@@ -36,8 +36,8 @@ public class MOLSAProductDeliveryEventHandler implements EventHandler,
 		// SMS Integration
 		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
 		MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
-		molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-		molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+		molsaMessageTextKey.dtls.category = MOLSASMSMessageType.FOLLOWUP;
+		molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.SUSPENDEDCASE;
 		MOLSAMessageText messageText = molsasmsUtilObj
 				.getSMSMessageText(molsaMessageTextKey);
 		MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
@@ -46,7 +46,7 @@ public class MOLSAProductDeliveryEventHandler implements EventHandler,
 		concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 				.valueOf(caseHeader.getConcernRole().getID());
 		// Need to point to the right template
-		concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+		concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.SUSPENDEDCASE;
 		molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 	}
 

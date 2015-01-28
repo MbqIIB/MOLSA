@@ -439,7 +439,7 @@ public class MOLSAGenerateEFTBatchStream extends
 					.newInstance();
 			curam.molsa.sms.sl.struct.MOLSAMessageTextKey molsaMessageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
 			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.EFTBATCH;
+			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.SALARYINFORMATION;
 			curam.molsa.sms.sl.struct.MOLSAMessageText messageText = molsasmsUtilObj
 					.getSMSMessageText(molsaMessageTextKey);
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
@@ -448,7 +448,7 @@ public class MOLSAGenerateEFTBatchStream extends
 			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 					.valueOf(paymentInstrumentDtls.concernRoleID);
 			// Pointing to the message template.
-			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.EFTBATCH;
+			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.SALARYINFORMATION;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 		}
 	}

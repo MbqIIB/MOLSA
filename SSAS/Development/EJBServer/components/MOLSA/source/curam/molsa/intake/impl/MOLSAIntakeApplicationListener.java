@@ -52,6 +52,7 @@ import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.GenericSLDataDetails;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.message.BPOADDRESS;
+import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
@@ -64,6 +65,7 @@ import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.molsa.sms.sl.struct.MOLSAMessageText;
 import curam.molsa.sms.sl.struct.MOLSAMessageTextKey;
 import curam.participant.impl.ConcernRoleDAO;
+import curam.participantmessages.impl.ParticipantMessage;
 import curam.pdc.facade.fact.PDCPersonFactory;
 import curam.pdc.facade.intf.PDCPerson;
 import curam.pdc.facade.struct.PDCEvidenceDetails;
@@ -230,17 +232,19 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
           }
      
         MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-        MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
-        molsaMessageTextKey.dtls.category=MOLSASMSMessageType.NOTIFICATION;
-        molsaMessageTextKey.dtls.template=MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
-        MOLSAMessageText messageText = molsasmsUtilObj.getSMSMessageText(molsaMessageTextKey );
+        String applicationID=intakeApplication.getReference();
+        AppException msg =new AppException(MOLSASMSSERVICE.APPLICATIONSUBMITTED);
+        msg.arg(applicationID);
+        String message=msg.getLocalizedMessage();
+        
+
         MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
             new MOLSAConcernRoleListAndMessageTextDetails();
         //Construct the input details
-        concernRoleListAndMessageTextDetails.dtls.smsMessageText=messageText.dtls.smsMessageText;
+        concernRoleListAndMessageTextDetails.dtls.smsMessageText=message;
         concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(concernRoleID);
         //Need to point to the right template
-        concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+        concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.APPLICATIONSUBMITTED;
         molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
     } catch (final NoSuchAttributeException e) {
       throw new AppException(WORKSPACESERVICESDATAMAPPING.ERR_READING_FROM_DATASTORE, e);

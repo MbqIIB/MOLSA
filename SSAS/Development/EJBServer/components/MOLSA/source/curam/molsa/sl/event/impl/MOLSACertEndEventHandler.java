@@ -10,6 +10,7 @@ import curam.codetable.TARGETITEMTYPE;
 import curam.codetable.TASKPRIORITY;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.message.MOLSABPORECERTIFICATION;
+import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSAConstants;
@@ -77,12 +78,12 @@ public class MOLSACertEndEventHandler implements EventHandler {
 				.newInstance();
 		MOLSAMessageTextKey messageTextKey = new MOLSAMessageTextKey();
 		messageTextKey.category = MOLSASMSMessageType.FOLLOWUP;
-		messageTextKey.template = MOLSASMSMESSAGETEMPLATE.BIRTHCERTIFICATE;
-
+		messageTextKey.template = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
+		
 		MOLSAMessageText messageText = messageServiceObj
 				.getSMSMessageText(messageTextKey);
 		MOLSAConcernRoleListAndMessageText roleListAndMessageText = new MOLSAConcernRoleListAndMessageText();
-		roleListAndMessageText.smsMessageType = MOLSASMSMESSAGETEMPLATE.BIRTHCERTIFICATE;
+		roleListAndMessageText.smsMessageType = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
 		roleListAndMessageText.smsMessageText = messageText.smsMessageText;
 		roleListAndMessageText.concernRoleTabbedList = String
 				.valueOf(caseHeader.getConcernRole().getID());

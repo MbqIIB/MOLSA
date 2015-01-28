@@ -373,7 +373,7 @@ public class MOLSAMoiBatchStream extends
 									.newInstance();
 							curam.molsa.sms.sl.struct.MOLSAMessageTextKey molsaMessageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
 							molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-							molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+							molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIUPDATED;
 							curam.molsa.sms.sl.struct.MOLSAMessageText messageText = molsasmsUtilObj
 									.getSMSMessageText(molsaMessageTextKey);
 							MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
@@ -382,7 +382,7 @@ public class MOLSAMoiBatchStream extends
 							concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 									.valueOf(concernRoleID);
 							// Pointing to the message template.
-							concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+							concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.MOIUPDATED;
 							molsasmsUtilObj
 									.sendSMS(concernRoleListAndMessageTextDetails);
 

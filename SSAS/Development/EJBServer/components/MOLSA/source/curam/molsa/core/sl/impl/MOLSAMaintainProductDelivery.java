@@ -2,11 +2,14 @@ package curam.molsa.core.sl.impl;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import curam.application.impl.Application;
+import curam.application.impl.ApplicationDAO;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASETRANSACTIONEVENTS;
 import curam.codetable.EVIDENCESTATUS;
@@ -85,6 +88,7 @@ import curam.message.BPOCASEEVENTS;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.BPOROUTEPRODUCTDELIVERYAPPROVAL;
 import curam.message.GENERALCASE;
+import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSAConstants;
@@ -121,6 +125,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 	@Inject
 	protected ProductDeliveryDAO productDeliveryDAO;
+	
+	@Inject
+	protected ApplicationDAO applicationDAO;
 
 	@Inject
 	private Map<PRODUCTTYPEEntry, MOLSAMilestoneDeliveryCreator> milestoneDeliveryCreator;
@@ -563,18 +570,27 @@ public abstract class MOLSAMaintainProductDelivery extends
 			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
 			MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
 			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
 			MOLSAMessageText messageText = molsasmsUtilObj
 					.getSMSMessageText(molsaMessageTextKey);
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+			
+			Long caseID=productDeliveryDAO.get(key.caseID).getParentCase().getID();
+		       List<Application> applications = applicationDAO.searchByCaseID(caseID);
+		      Application application = applications.get(0);
+		      String applicationID=application.getReference();
+		      AppException msg =new AppException(MOLSASMSSERVICE.APPLICATIONAPPROVED);
+		      msg.arg(applicationID);
+		      String message=msg.getLocalizedMessage();
+		      
 			// Construct the input details
-			concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
 			Long concernRoleID = productDeliveryDAO.get(key.caseID)
 					.getConcernRole().getID();
 			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 					.valueOf(concernRoleID);
 			// Need to point to the right template
-			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
 		}

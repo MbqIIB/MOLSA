@@ -106,11 +106,20 @@ public abstract class MOLSAConstants {
 	public static final int kOne = 1;
 	
 	public static final int kTwo = 2;
-
+	
+	/**
+	 * Property file identifier.
+	 */
+	public static final String kCategoryandTemplatePropertyFileArabic = "MOLSASMSMessageTextArabic.properties";
+	
 	/**
 	 * Property file identifier.
 	 */
 	public static final String kCategoryandTemplatePropertyFile = "MOLSASMSMessageText.properties";
+	
+	public static final String kAR = "ar";
+	
+	public static final String KApplicationSubmissionDate="Application.Submission.Date";
 	
 	/**
    *workqueue name.
