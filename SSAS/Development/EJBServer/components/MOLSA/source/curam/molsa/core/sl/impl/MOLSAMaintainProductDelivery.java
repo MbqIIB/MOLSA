@@ -46,6 +46,9 @@ import curam.core.intf.Product;
 import curam.core.intf.ProductDelivery;
 import curam.core.intf.SystemUser;
 import curam.core.intf.UniqueID;
+import curam.core.sl.entity.fact.MilestoneConfigurationFactory;
+import curam.core.sl.entity.struct.EarliestStartDay;
+import curam.core.sl.entity.struct.MilestoneConfigurationKey;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
 import curam.core.sl.impl.CaseTransactionLogIntf;
 import curam.core.sl.infrastructure.impl.ValidationManagerFactory;
@@ -61,6 +64,7 @@ import curam.core.struct.CaseReference;
 import curam.core.struct.CaseReferenceProductNameConcernRoleName;
 import curam.core.struct.CaseSearchKey;
 import curam.core.struct.CaseSecurityCheckKey;
+import curam.core.struct.CaseStartDate;
 import curam.core.struct.CaseStatusDtls;
 import curam.core.struct.CaseStatusKey;
 import curam.core.struct.ConcernRoleDtls;
@@ -556,22 +560,23 @@ public abstract class MOLSAMaintainProductDelivery extends
 			event.primaryEventData = key.caseID;
 			EventService.raiseEvent(event);
 
-			 
-      MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-      MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
-      molsaMessageTextKey.dtls.category=MOLSASMSMessageType.NOTIFICATION;
-      molsaMessageTextKey.dtls.template=MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
-      MOLSAMessageText messageText = molsasmsUtilObj.getSMSMessageText(molsaMessageTextKey );
-      MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
-          new MOLSAConcernRoleListAndMessageTextDetails();
-      //Construct the input details
-      concernRoleListAndMessageTextDetails.dtls.smsMessageText=messageText.dtls.smsMessageText;
-      Long concernRoleID = productDeliveryDAO.get(key.caseID).getConcernRole().getID();
-      concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(concernRoleID);
-      //Need to point to the right template
-      concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
-      molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
-    
+			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+			MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
+			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
+			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+			MOLSAMessageText messageText = molsasmsUtilObj
+					.getSMSMessageText(molsaMessageTextKey);
+			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+			// Construct the input details
+			concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+			Long concernRoleID = productDeliveryDAO.get(key.caseID)
+					.getConcernRole().getID();
+			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
+					.valueOf(concernRoleID);
+			// Need to point to the right template
+			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+
 		}
 
 	}
@@ -600,14 +605,29 @@ public abstract class MOLSAMaintainProductDelivery extends
 		milestoneDeliveryDtls.dtls.caseID = caseID;
 		milestoneDeliveryDtls.dtls.milestoneConfigurationID = certEndMSConfig
 				.get(productDeliveryDAO.get(caseID).getProductType());
-		milestoneDeliveryDtls.dtls.expectedStartDate = Date.getCurrentDate();
-		milestoneDeliveryDtls.dtls.actualStartDate = Date.getCurrentDate();
+
 		milestoneDeliveryDtls.dtls.expectedEndDate = certPriorEndDate;
 		milestoneDeliveryDtls.dtls.ownerUserName = TransactionInfo
 				.getProgramUser();
 		milestoneDeliveryDtls.dtls.createdBySystem = true;
 		milestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.INPROGRESS
 				.getCode();
+		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+
+		caseHeaderKey.caseID = caseID;
+
+		CaseStartDate caseStartDate = CaseHeaderFactory.newInstance()
+				.readStartDate(caseHeaderKey);
+		MilestoneConfigurationKey milestoneConfigurationKey = new MilestoneConfigurationKey();
+
+		milestoneConfigurationKey.milestoneConfigurationID = milestoneDeliveryDtls.dtls.milestoneConfigurationID;
+		EarliestStartDay earliestStartDay = MilestoneConfigurationFactory
+				.newInstance().readEarliestStartDay(milestoneConfigurationKey);
+		Date earliestStartDate = caseStartDate.startDate
+				.addDays(earliestStartDay.earliestStartDay);
+		milestoneDeliveryDtls.dtls.expectedStartDate = earliestStartDate;
+		milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
+
 		milestoneDeliveryObj.create(milestoneDeliveryDtls);
 	}
 
