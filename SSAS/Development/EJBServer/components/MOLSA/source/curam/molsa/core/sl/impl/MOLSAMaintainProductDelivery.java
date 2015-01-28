@@ -1,6 +1,8 @@
 package curam.molsa.core.sl.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import curam.application.impl.Application;
 import curam.application.impl.ApplicationDAO;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASETRANSACTIONEVENTS;
+import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
 import curam.codetable.EVIDENCESTATUS;
 import curam.codetable.PRODUCTNAME;
 import curam.codetable.PRODUCTTYPE;
@@ -54,15 +57,23 @@ import curam.core.sl.entity.struct.EarliestStartDay;
 import curam.core.sl.entity.struct.MilestoneConfigurationKey;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
 import curam.core.sl.impl.CaseTransactionLogIntf;
+import curam.core.sl.infrastructure.entity.base.EvidenceDescriptor;
+import curam.core.sl.infrastructure.entity.fact.EvidenceDescriptorFactory;
+import curam.core.sl.infrastructure.entity.struct.CaseIDEvidenceTypeStatusesKey;
+import curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorKey;
+import curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorKeyList;
 import curam.core.sl.infrastructure.impl.ValidationManagerFactory;
 import curam.core.sl.intf.MilestoneDelivery;
 import curam.core.sl.struct.CaseIDKey;
+import curam.core.sl.struct.EvidenceCaseKey;
+import curam.core.sl.struct.EvidenceTypeKey;
 import curam.core.sl.struct.MilestoneDeliveryDtls;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.core.struct.CaseEvidenceDtls;
 import curam.core.struct.CaseEvidenceReadNearestEvidenceKey;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderKey;
+import curam.core.struct.CaseKey;
 import curam.core.struct.CaseReference;
 import curam.core.struct.CaseReferenceProductNameConcernRoleName;
 import curam.core.struct.CaseSearchKey;
@@ -82,6 +93,10 @@ import curam.core.struct.ProductDeliveryTypeDetails;
 import curam.core.struct.ProductDtls;
 import curam.core.struct.ProductKey;
 import curam.core.struct.SubmitForApprovalKey;
+import curam.dynamicevidence.impl.DynamicEvidenceDataDetails;
+import curam.dynamicevidence.sl.impl.EvidenceGenericSLFactory;
+import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
+import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.events.MOLSAAPPROVALTASK;
 import curam.events.MOLSACoCEvent;
 import curam.message.BPOCASEEVENTS;
@@ -120,17 +135,23 @@ import curam.util.workflow.impl.EnactmentService;
 public abstract class MOLSAMaintainProductDelivery extends
 		curam.molsa.core.sl.base.MOLSAMaintainProductDelivery {
 
+	protected static final String kendDate ="endDate";
+	
+	protected static final String kdeductionEndDate="deductionEndDate";
+
 	@Inject
 	protected Provider<CaseTransactionLogIntf> caseTransactionLogProvider;
 
 	@Inject
 	protected ProductDeliveryDAO productDeliveryDAO;
-	
+
 	@Inject
 	protected ApplicationDAO applicationDAO;
 
 	@Inject
 	private Map<PRODUCTTYPEEntry, MOLSAMilestoneDeliveryCreator> milestoneDeliveryCreator;
+
+	private EvidenceDescriptor evidenceDescriptorObj;
 
 	private static Map<PRODUCTTYPEEntry, Long> certEndMSConfig = new HashMap<PRODUCTTYPEEntry, Long>();
 	static {
@@ -146,6 +167,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 		certEndMSConfig.put(PRODUCTTYPEEntry.ORPHAN, 45018L);
 		certEndMSConfig.put(PRODUCTTYPEEntry.SENIORCITIZEN, 45017l);
 		certEndMSConfig.put(PRODUCTTYPEEntry.WIDOW, 45016L);
+		certEndMSConfig.put(PRODUCTTYPEEntry.MOLSADETERMINEPRODUCT,45020l);
 
 	}
 
@@ -154,6 +176,11 @@ public abstract class MOLSAMaintainProductDelivery extends
 	 */
 	public MOLSAMaintainProductDelivery() {
 		GuiceWrapper.getInjector().injectMembers(this);
+
+		// evidenceControllerObj = (EvidenceController)
+		// EvidenceControllerFactory.newInstance();
+		evidenceDescriptorObj = (EvidenceDescriptor) EvidenceDescriptorFactory
+				.newInstance();
 	}
 
 	@Override
@@ -450,6 +477,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 	public void approve(ProductDeliveryApprovalKey1 key) throws AppException,
 			InformationalException {
 
+
+		ArrayList<Date> datelist = new ArrayList<Date>();
+
 		curam.core.facade.intf.ProductDelivery productDelivery = curam.core.facade.fact.ProductDeliveryFactory
 				.newInstance();
 		ProductDeliveryApprovalKey productdeliveryapprovalkey = new ProductDeliveryApprovalKey();
@@ -593,8 +623,169 @@ public abstract class MOLSAMaintainProductDelivery extends
 			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
-		}
+		} else {
 
+			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
+					.getID();
+			final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+			 evidenceTypeKey.evidenceType = CASEEVIDENCE.EXCEPTIONAL;
+
+			final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+					.instance(evidenceTypeKey, Date.getCurrentDate());
+			CaseKey caseKey = new CaseKey();
+			caseKey.caseID = productDeliveryDAO.get(key.caseID).getParentCase()
+					.getID();
+			CaseIDEvidenceTypeStatusesKey statusesKey = new CaseIDEvidenceTypeStatusesKey();
+			statusesKey.caseID = productDeliveryDAO.get(key.caseID)
+					.getParentCase().getID();
+			statusesKey.evidenceType = CASEEVIDENCE.EXCEPTIONAL;
+			statusesKey.statusCode1 = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
+			statusesKey.statusCode2 = EVIDENCEDESCRIPTORSTATUS.INEDIT;
+			EvidenceDescriptorKeyList keyList = evidenceDescriptorObj
+					.searchActiveInEditByCaseIDAndType(statusesKey);
+
+			EvidenceCaseKey evidenceCaseKey = null;
+			
+
+			for (final EvidenceDescriptorKey descriptorKey : keyList.dtls) {
+				evidenceCaseKey = new EvidenceCaseKey();
+				evidenceCaseKey.evidenceKey.evType = evidenceTypeKey.evidenceType;
+				evidenceCaseKey.caseIDKey.caseID = caseKey.caseID;
+				evidenceCaseKey.evidenceKey.evidenceID = evidenceDescriptorObj
+						.read(descriptorKey).relatedID;
+
+				final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
+						.readEvidence(evidenceCaseKey);
+
+				final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
+
+				final Date enddate1 = Date.fromISO8601(dynamicEvidenceDataDetails
+						.getAttribute(kendDate).getValue());
+				
+				
+				
+				datelist.add(enddate1);
+				
+				
+			
+				
+			
+
+			}
+
+			Collections.sort(datelist);
+			Date endDate = new Date();
+			for(Date date : datelist)
+			{
+				if(Date.getCurrentDate().before(date))
+				{
+					endDate = date;
+					break;
+				}
+			}
+			
+			IntegratedCase integratedCaseObj = IntegratedCaseFactory
+					.newInstance();
+			CertificationCaseIDKey caseIDKey = new CertificationCaseIDKey();
+			caseIDKey.caseID = key.caseID;
+			ListICProductDeliveryCertDetailsAndVersionNo certificationsList = integratedCaseObj
+					.listProductDeliveryCertificationAndVersionNo(caseIDKey);
+			Date certPriorEndDate = null;
+			if (CuramConst.gkZero == certificationsList.dtls.size()) {
+
+				MaintainCertification maintainCertificationObj = MaintainCertificationFactory
+						.newInstance();
+				Calendar calendar = Calendar.getInstance();
+				Date certificationStartDate = new Date();
+				Date certificationEndDate = new Date();
+				int currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+				String paymentDateString = Configuration
+						.getProperty(EnvVars.ENV_MOLSA_PAYMENT_DATE);
+				int paymentDate = Integer.parseInt(paymentDateString);
+
+				MaintainCertificationDetails maintainCertificationDetails = new MaintainCertificationDetails();
+
+				if (currentDayOfMonth > paymentDate) {
+					int nextMonth = calendar.get(Calendar.MONTH) + 1;
+					int year = calendar.get(Calendar.YEAR);
+					Calendar cal = Calendar.getInstance();
+					cal.clear();
+					cal.set(Calendar.YEAR, year);
+					cal.set(Calendar.MONTH, nextMonth);
+					cal.set(Calendar.DAY_OF_MONTH, 1);
+					certificationStartDate = new Date(cal.getTimeInMillis());
+
+					// Update the certification end date.
+					Calendar cal1 = Calendar.getInstance();
+					cal1.add(Calendar.YEAR, 1);
+					cal1.add(Calendar.MONTH, 1);
+					cal1.set(Calendar.DAY_OF_MONTH, 1);
+					cal1.add(Calendar.DATE, -1);
+					certificationEndDate = new Date( endDate.getCalendar().getTimeInMillis());
+
+				} else {
+					calendar.set(Calendar.DAY_OF_MONTH, 1);
+					certificationStartDate = new Date(
+							calendar.getTimeInMillis());
+
+					// Update the certification end date.
+					Calendar cal1 = Calendar.getInstance();
+					cal1.add(Calendar.YEAR, 1);
+					cal1.set(Calendar.DAY_OF_MONTH, 1);
+					cal1.add(Calendar.DATE, -1);
+					certificationEndDate = new Date(cal1.getTimeInMillis());
+
+				}
+
+				maintainCertificationDetails.periodFromDate = certificationStartDate;
+				maintainCertificationDetails.caseID = key.caseID;
+				maintainCertificationDetails.certificationReceivedDate = Date
+						.getCurrentDate();
+				maintainCertificationDetails.periodToDate = certificationEndDate;
+				maintainCertificationObj
+						.createCertification(maintainCertificationDetails);
+				curam.piwrapper.caseheader.impl.ProductDelivery productDelivery1 = productDeliveryDAO
+						.get(key.caseID);
+				MOLSAMilestoneDeliveryCreator deliveryCreator = milestoneDeliveryCreator
+						.get(productDelivery1.getProductType());
+				if (null != deliveryCreator) {
+					deliveryCreator.createMilestoneDelivery(key.caseID);
+				}
+
+				createCertificationEndPriorMilestone(certificationEndDate,
+						key.caseID);
+
+			}
+			Event event = new Event();
+			event.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventClass;
+			event.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventType;
+			event.primaryEventData = key.caseID;
+			EventService.raiseEvent(event);
+
+			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+			MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
+			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
+			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
+			MOLSAMessageText messageText = molsasmsUtilObj
+					.getSMSMessageText(molsaMessageTextKey);
+			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+			// Construct the input details
+			concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+			Long concernRoleID = productDeliveryDAO.get(key.caseID)
+					.getConcernRole().getID();
+			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
+					.valueOf(concernRoleID);
+			// Need to point to the right template
+			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.PDCAPPROVED;
+			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+
+			
+			
+			
+		}
+		
+		
+		
 	}
 
 	/**
