@@ -643,6 +643,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 
     final String KAmount = "amount";
     final String KDate = "date";
+    final String kBenefitProvider="benefitProvider";
 
     MOLSAAdditionalBenefitDetailsList additionalBenefitDetailsList = new MOLSAAdditionalBenefitDetailsList();
     EvidenceDescriptor descriptor = EvidenceDescriptorFactory.newInstance();
@@ -675,6 +676,8 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
       String receivedDate = dynamicEvidenceDataDetails.getAttribute(KDate).getValue();
 
       String amount = dynamicEvidenceDataDetails.getAttribute(KAmount).getValue();
+      
+      additionalBenefitDetails.benefitProvider=dynamicEvidenceDataDetails.getAttribute(kBenefitProvider).getValue();
 
       additionalBenefitDetails.amount = amount + " " + Configuration.getProperty("curam.financial.basecurrency");
 

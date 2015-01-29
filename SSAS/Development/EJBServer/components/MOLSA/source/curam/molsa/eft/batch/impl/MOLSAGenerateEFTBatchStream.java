@@ -449,7 +449,7 @@ public class MOLSAGenerateEFTBatchStream extends
 					.valueOf(paymentInstrumentDtls.concernRoleID);
 			// Pointing to the message template.
 			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.SALARYINFORMATION;
-			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+			molsasmsUtilObj.sendSMSDPMode(concernRoleListAndMessageTextDetails);
 		}
 	}
 

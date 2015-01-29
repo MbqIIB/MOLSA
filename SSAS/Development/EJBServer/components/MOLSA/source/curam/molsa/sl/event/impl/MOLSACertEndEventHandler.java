@@ -19,6 +19,8 @@ import curam.molsa.sms.facade.intf.MOLSAMessageService;
 import curam.molsa.sms.facade.struct.MOLSAConcernRoleListAndMessageText;
 import curam.molsa.sms.facade.struct.MOLSAMessageText;
 import curam.molsa.sms.facade.struct.MOLSAMessageTextKey;
+import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
+import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.util.events.impl.EventHandler;
@@ -73,21 +75,23 @@ public class MOLSACertEndEventHandler implements EventHandler {
 		curam.util.workflow.impl.EnactmentService
 				.startProcessInV3CompatibilityMode(MOLSAConstants.kmanualCase,
 						enactmentStructs);
-
-		MOLSAMessageService messageServiceObj = MOLSAMessageServiceFactory
-				.newInstance();
-		MOLSAMessageTextKey messageTextKey = new MOLSAMessageTextKey();
-		messageTextKey.category = MOLSASMSMessageType.FOLLOWUP;
-		messageTextKey.template = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
 		
-		MOLSAMessageText messageText = messageServiceObj
-				.getSMSMessageText(messageTextKey);
-		MOLSAConcernRoleListAndMessageText roleListAndMessageText = new MOLSAConcernRoleListAndMessageText();
-		roleListAndMessageText.smsMessageType = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
-		roleListAndMessageText.smsMessageText = messageText.smsMessageText;
-		roleListAndMessageText.concernRoleTabbedList = String
+		
+		curam.molsa.sms.sl.intf.MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory
+				.newInstance();
+		curam.molsa.sms.sl.struct.MOLSAMessageTextKey molsaMessageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
+		molsaMessageTextKey.dtls.category = MOLSASMSMessageType.FOLLOWUP;
+		molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
+		curam.molsa.sms.sl.struct.MOLSAMessageText messageText = molsasmsUtilObj
+				.getSMSMessageText(molsaMessageTextKey);
+		MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+		// Set the message details.
+		concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+		concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 				.valueOf(caseHeader.getConcernRole().getID());
-		messageServiceObj.sendSMS(roleListAndMessageText);
+		// Pointing to the message template.
+		concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
+		molsasmsUtilObj.sendSMSDPMode(concernRoleListAndMessageTextDetails);
 
 	}
 
