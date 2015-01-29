@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PAGE PAGE_ID="MOLSA_getDocumentMessageText">
+    <JSP_SCRIPTLET> 
+        
+        
+        
+        curam.interfaces.MOLSAProgramDocumentsPkg.MOLSAProgramDocuments_getDocumentMessageText_TH
+        getDocumentText = new curam.interfaces.MOLSAProgramDocumentsPkg.MOLSAProgramDocuments_getDocumentMessageText_TH();
+        
+       String category = request.getParameter("parent");
+       String template = request.getParameter("child");
+       System.out.println("Category"+category);
+       System.out.println("Template "+template);
+       
+        getDocumentText.setFieldValue(getDocumentText.key$category_idx,category);
+        getDocumentText.setFieldValue(getDocumentText.key$template_idx,template);
+        getDocumentText.callServer(); 
+        String text = getDocumentText.getFieldValue(getDocumentText.result$documentText_idx);  
+        System.out.println("Text "+text);
+        response.setContentType("text/xml"); 
+        response.setHeader("Cache-Control", "no-cache");
+        out.println(text);
+        
+    </JSP_SCRIPTLET>
+</PAGE>

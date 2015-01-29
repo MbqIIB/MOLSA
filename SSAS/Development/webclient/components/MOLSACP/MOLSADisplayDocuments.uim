@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PAGE PAGE_ID="MOLSADisplayDocuments" WINDOW_OPTIONS="width=700" SCRIPT_FILE="MOLSAGetDocumentsListText.js">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE PROPERTY="Document.title" NAME="TEXT"/>
+        </CONNECT>
+    </PAGE_TITLE>
+    
+    <SERVER_INTERFACE NAME="ACTION" CLASS="MOLSAProgramDocuments" OPERATION="readDocuments" PHASE="ACTION"/>
+   <SERVER_INTERFACE NAME="DOCMESSAGEACTION" CLASS="MOLSAProgramDocuments" OPERATION="getDocumentMessageText" PHASE="ACTION"/>
+
+   
+    <CLUSTER TITLE="Cluster.Title" NUM_COLS="2">
+         <FIELD LABEL="Field.Label.Document"
+            USE_BLANK="true">
+            <CONNECT>
+                <TARGET NAME="ACTION" PROPERTY="result$document"/>
+            </CONNECT>
+          <SCRIPT
+                 ACTION="getDocumentFormat()"
+                 EVENT="ONCHANGE"
+                 SCRIPT_FILE="MOLSAGetDocumentsListText.js"
+             />
+        </FIELD> 
+   </CLUSTER>
+   
+   <CLUSTER
+        TITLE="Cluster.DocumentText.Title"
+        SHOW_LABELS="false"
+        >
+        <FIELD HEIGHT="4" LABEL="Field.Label.DocumentText">
+            <CONNECT>
+                <TARGET PROPERTY="result$documentText" NAME="DOCMESSAGEACTION"/>
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
+    <ACTION_SET ALIGNMENT="CENTER" TOP="false">
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Submit"
+      TYPE="SUBMIT"
+    />
+    </ACTION_SET>
+   
+</PAGE>
