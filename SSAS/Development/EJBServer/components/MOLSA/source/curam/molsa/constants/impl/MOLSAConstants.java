@@ -130,5 +130,10 @@ public abstract class MOLSAConstants {
    * SMS Error code.
    */
   public static final String kSMSPhoneNumerErrorCode = "600.4";
+  
+	/**
+	 * Property file identifier.
+	 */
+	public static final String kMegaMenuPropertyFile = "MOLSAMegaMenuProgramDocuments.properties";
 
 }
