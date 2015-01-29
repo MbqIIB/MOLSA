@@ -178,8 +178,6 @@ public abstract class MOLSAMaintainProductDelivery extends
 	public MOLSAMaintainProductDelivery() {
 		GuiceWrapper.getInjector().injectMembers(this);
 
-		// evidenceControllerObj = (EvidenceController)
-		// EvidenceControllerFactory.newInstance();
 		evidenceDescriptorObj = (EvidenceDescriptor) EvidenceDescriptorFactory
 				.newInstance();
 	}
@@ -526,7 +524,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 			caseIDKey.caseID = key.caseID;
 			ListICProductDeliveryCertDetailsAndVersionNo certificationsList = integratedCaseObj
 					.listProductDeliveryCertificationAndVersionNo(caseIDKey);
-			Date certPriorEndDate = null;
+
 			if (CuramConst.gkZero == certificationsList.dtls.size()) {
 
 				MaintainCertification maintainCertificationObj = MaintainCertificationFactory
@@ -588,8 +586,8 @@ public abstract class MOLSAMaintainProductDelivery extends
 					deliveryCreator.createMilestoneDelivery(key.caseID);
 				}
 
-				createCertificationEndPriorMilestone(certificationEndDate,
-						key.caseID);
+				createCertificationEndPriorMilestone(certificationStartDate,
+						certificationEndDate, key.caseID);
 
 			}
 			Event event = new Event();
@@ -686,7 +684,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 			caseIDKey.caseID = key.caseID;
 			ListICProductDeliveryCertDetailsAndVersionNo certificationsList = integratedCaseObj
 					.listProductDeliveryCertificationAndVersionNo(caseIDKey);
-			Date certPriorEndDate = null;
+
 			if (CuramConst.gkZero == certificationsList.dtls.size()) {
 
 				MaintainCertification maintainCertificationObj = MaintainCertificationFactory
@@ -748,8 +746,8 @@ public abstract class MOLSAMaintainProductDelivery extends
 					deliveryCreator.createMilestoneDelivery(key.caseID);
 				}
 
-				createCertificationEndPriorMilestone(certificationEndDate,
-						key.caseID);
+				createCertificationEndPriorMilestone(certificationStartDate,
+						certificationEndDate, key.caseID);
 
 			}
 			Event event = new Event();
@@ -799,8 +797,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
-	private void createCertificationEndPriorMilestone(Date certEndDate,
-			long caseID) throws AppException, InformationalException {
+	private void createCertificationEndPriorMilestone(Date certStartDate,
+			Date certEndDate, long caseID) throws AppException,
+			InformationalException {
 		// Create milestone for Certification End date prior
 		// notification
 		Calendar cal2 = certEndDate.getCalendar();
@@ -832,6 +831,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 				.newInstance().readEarliestStartDay(milestoneConfigurationKey);
 		Date earliestStartDate = caseStartDate.startDate
 				.addDays(earliestStartDay.earliestStartDay);
+		if (certStartDate.after(earliestStartDate)) {
+			earliestStartDate = certStartDate;
+		}
 		milestoneDeliveryDtls.dtls.expectedStartDate = earliestStartDate;
 		milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
 
