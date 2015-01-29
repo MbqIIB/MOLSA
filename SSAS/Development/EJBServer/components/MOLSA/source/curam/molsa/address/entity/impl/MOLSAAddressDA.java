@@ -760,4 +760,46 @@ public abstract class MOLSAAddressDA extends curam.molsa.address.entity.base.MOL
     super.preinsertInternal(details);
   }
 
+  // ___________________________________________________________________________
+  /**
+   * Method decodes code table fields (e.g. city, state) to be in normal manner.
+   *
+   * @param addressDataString
+   * contains address data string.
+   *
+   *
+   * @throws AppException
+   * Generic Exception Signature.
+   * @throws InformationalException
+   * Generic Exception Signature.
+   */
+  @Override
+  public void getOneLineAddressString(final OtherAddressData addressDataString)
+    throws AppException, InformationalException {
+    
+    OtherAddressData otherAddressData= getShortFormat(addressDataString);
+    addressDataString.addressData = otherAddressData.addressData;
+  }
+  
+  
+  // ___________________________________________________________________________
+  /**
+   * Method takes in addressDataString and returns formatted address string.
+   *
+   * @param addressDataString
+   * contains address data string.
+   *
+   *
+   * @throws AppException
+   * Generic Exception Signature.
+   * @throws InformationalException
+   * Generic Exception Signature.
+   */
+  @Override
+  public void getLongFormat( OtherAddressData addressDataString)
+    throws AppException, InformationalException {
+    OtherAddressData otherAddressData= getShortFormat(addressDataString);
+    addressDataString.addressData = otherAddressData.addressData;
+  }
+  
 }
