@@ -33,8 +33,6 @@ public class MOLSAProgramDocuments extends
 			InformationalException {
 		curam.molsa.programdocuments.struct.MOLSADocumentService text = new MOLSADocumentService();
 		StringBuffer stringBuffer = new StringBuffer();
-	    stringBuffer.append(key.category);
-	    stringBuffer.append(".");
 	    stringBuffer.append(key.template);
 		text.documentText=PropertiesResourceCache.getInstance().getProperty(MOLSAConstants.kMegaMenuPropertyFile, stringBuffer.toString());
 		return text;
