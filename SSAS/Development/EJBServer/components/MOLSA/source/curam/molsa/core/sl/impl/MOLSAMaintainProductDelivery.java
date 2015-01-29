@@ -759,23 +759,24 @@ public abstract class MOLSAMaintainProductDelivery extends
 			EventService.raiseEvent(event);
 
 			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
-			MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
-			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-			//molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIMESSAGETEXT;
-			//Harisha to comment over and below line
-			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.MOIUPDATED;
-			MOLSAMessageText messageText = molsasmsUtilObj
-					.getSMSMessageText(molsaMessageTextKey);
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+			
+			Long caseID1 =productDeliveryDAO.get(key.caseID).getParentCase().getID();
+		       List<Application> applications = applicationDAO.searchByCaseID(caseID1);
+		      Application application = applications.get(0);
+		      String applicationID=application.getReference();
+		      AppException msg =new AppException(MOLSASMSSERVICE.APPLICATIONAPPROVED);
+		      msg.arg(applicationID);
+		      String message=msg.getLocalizedMessage();
+		      
 			// Construct the input details
-			//Harisha to comment below line
-			concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
 			Long concernRoleID = productDeliveryDAO.get(key.caseID)
 					.getConcernRole().getID();
 			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 					.valueOf(concernRoleID);
 			// Need to point to the right template
-			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.MOIUPDATED;
+			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
 			
