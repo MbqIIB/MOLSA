@@ -91,7 +91,7 @@ public class MOLSAArabdoxUtil {
   private int nameIndexID = Integer.parseInt(Configuration.getProperty(EnvVars.ARABDOX_DOCUMENT_INDEX_FOR_NAME));
   private int qidIndexID = Integer.parseInt(Configuration.getProperty(EnvVars.ARABDOX_DOCUMENT_INDEX_FOR_QID));
 
-  private String caseFolderPrefix = Configuration.getProperty(EnvVars.ARABDOX_CASE_FOLDER_PREFIX);
+ 
   private String documentIndexNotUsedTextIDs = Configuration.getProperty(EnvVars.ARABDOX_DOCUMENT_INDEX_DEFAULTED_TEXT_IDS);
   private String documentIndexNotUsedDateIDs = Configuration.getProperty(EnvVars.ARABDOX_DOCUMENT_INDEX_DEFAULTED_DATE_IDS);
 
@@ -444,7 +444,7 @@ public class MOLSAArabdoxUtil {
     caseSearchKey.caseID = caseID;
     CaseReference caseReference = caseHeaderObj.readCaseReferenceByCaseID(caseSearchKey);
 
-    String folderName = caseFolderPrefix + caseReference.caseReference;
+    String folderName = caseReference.caseReference;
     long currentDateTime = DateTime.getCurrentDateTime().asLong();
     String fileName = currentDateTime + attachmentName;
 
