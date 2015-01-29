@@ -599,11 +599,6 @@ public abstract class MOLSAMaintainProductDelivery extends
 			EventService.raiseEvent(event);
 
 			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
-			MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
-			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
-			MOLSAMessageText messageText = molsasmsUtilObj
-					.getSMSMessageText(molsaMessageTextKey);
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
 			
 			Long caseID=productDeliveryDAO.get(key.caseID).getParentCase().getID();
