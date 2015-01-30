@@ -397,55 +397,17 @@ public class MOLSAHouseholdRelationshipReciprocalConversion implements
 		long relParticipantRoleID = getParticipantID(originalDetails,
 				kRelatedCaseParticipantAttr);
 
+		long relCPRID = Long.parseLong(originalDetails
+				.getAttribute(kRelatedCaseParticipantAttr).getValue());
+		
+		long cprID = Long.parseLong(originalDetails
+				.getAttribute(kCaseParticipantAttr).getValue());
+		
+		
 		String relRelationshipType = determineRelatedPersonsRelationshipType(
 				originalDetails.getAttribute(kRelationshipTypeAttr).getValue(),
 				relParticipantRoleID, false);
-
-		// Reciprocal evidence 'primary participant' is 'related participant' on
-		// the original evidence
-		// and reciprocal evidence 'related participant' is 'primary
-		// participant' on the original evidence.
-		final long participantIDRec = getRelatedParticipant(originalDetails);
-		final long relParticipantIDRec = getPrimaryParticipant(originalDetails);
-
-		// Primary participant on the Relationships evidence should already
-		// have case participant role on the case which will be either
-		// PRIMARY or MEMBER.
-		long caseParticipantRoleIDRec = getCaseParticipantRoleID(targetCaseID,
-				participantIDRec, CASEPARTICIPANTROLETYPE.PRIMARY);
-
-		if (0 == caseParticipantRoleIDRec) {
-			caseParticipantRoleIDRec = getCaseParticipantRoleID(targetCaseID,
-					participantIDRec, CASEPARTICIPANTROLETYPE.MEMBER);
-		}
-
-		// Related participant must have case participant role of RELATEDPERSON.
-		// If it does not have it, then this case participant role must be
-		// created.
-		long caseParticipantRoleIDRelatedRec = getCaseParticipantRoleID(
-				targetCaseID, relParticipantIDRec,
-				CASEPARTICIPANTROLETYPE.MEMBER);
-
-		if (0 == caseParticipantRoleIDRelatedRec) {
-
-			final curam.core.sl.intf.CaseParticipantRole caseParticipantRoleObj = curam.core.sl.fact.CaseParticipantRoleFactory
-					.newInstance();
-
-			final CaseParticipantRoleDetails caseParticipantRoleDetails = new CaseParticipantRoleDetails();
-
-			caseParticipantRoleDetails.dtls.caseID = targetCaseID;
-			caseParticipantRoleDetails.dtls.fromDate = Date.getCurrentDate();
-			caseParticipantRoleDetails.dtls.participantRoleID = relParticipantIDRec;
-			caseParticipantRoleDetails.dtls.recordStatus = RECORDSTATUS.NORMAL;
-			caseParticipantRoleDetails.dtls.toDate = Date.kZeroDate;
-			caseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.MEMBER;
-
-			caseParticipantRoleObj
-					.insertCaseParticipantRole(caseParticipantRoleDetails);
-
-			caseParticipantRoleIDRelatedRec = caseParticipantRoleDetails.dtls.caseParticipantRoleID;
-
-		}
+		
 
 		// Assign all attributes from original details to reciprocal details.
 		for (final DynamicEvidenceDataAttributeDetails listDetails : originalDetails
@@ -466,13 +428,13 @@ public class MOLSAHouseholdRelationshipReciprocalConversion implements
 				.getAttribute(kCaseParticipantAttr);
 
 		DynamicEvidenceTypeConverter.setAttribute(participantAttrRec,
-				caseParticipantRoleIDRec);
+				relCPRID);
 
 		DynamicEvidenceDataAttributeDetails relatedParticipantAttrRec = reciprocalDetails
 				.getAttribute(kRelatedCaseParticipantAttr);
 
 		DynamicEvidenceTypeConverter.setAttribute(relatedParticipantAttrRec,
-				caseParticipantRoleIDRelatedRec);
+				cprID);
 
 		return reciprocalDetails;
 
