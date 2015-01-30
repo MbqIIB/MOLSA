@@ -1,3 +1,4 @@
+
 package curam.socialassistance.creole.statics.impl;
 
 import java.util.ArrayList;
@@ -29,9 +30,11 @@ import curam.creole.value.XmlMessage;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.resources.StringUtil;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.DateTime;
+import curam.util.type.StringList;
 
 public final class Statics {
 	protected Statics() {
@@ -142,20 +145,20 @@ public final class Statics {
 	/**
 	 * For a given timeline of rule objects, return the list of unique rule
 	 * objects.
-	 * 
+	 *
 	 * Interval1 = {RO1, RO2, RO3} Interval2 = {RO1, RO2} Interval3 = {RO3}
-	 * 
+	 *
 	 * E.G. For the above intervals, the unique list returned is {RO1, RO2,
 	 * RO3}.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param session
 	 *            The CREOLE Session
 	 * @param timeline
 	 *            The input timeline
-	 * 
+	 *
 	 * @return The list of unique rule objects derived from the input timeline
-	 * 
+	 *
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
@@ -262,49 +265,73 @@ public final class Statics {
 			return false;
 	}
 
-	public static List<RuleObject> removeDuplicateRuleObjects(
-			final Session session, List<RuleObject> units)
-			throws AppException, InformationalException {
+	/**
+	 * Removes the duplicate units that comes from household composition.
+	 *
+	 * @param session
+	 * @param units
+	 * @return unique household units
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
 
-		
-		Map<XmlMessage, RuleObject> map = new HashMap<XmlMessage, RuleObject>();
-		
+	public static List<RuleObject> removeDuplicateRuleObjects(
+			final Session session, List<RuleObject> units) throws AppException,
+			InformationalException {
+
+		Map<String, RuleObject> map = new HashMap<String, RuleObject>();
+
 		final List<RuleObject> uniqueRuleObjects = new ArrayList<RuleObject>();
-        
-		
-		for(RuleObject unit : units){
-			map.put( (XmlMessage) unit.description().getValue(), unit);
+
+		for (RuleObject unit : units) {
+			StringList list = StringUtil.delimitedText2StringList(unit
+					.description().getValue().toString(),
+					CuramConst.gkCommaDelimiterChar);
+			Collections.sort(list);
+
+			map.put(getCaseParticipantRoleIDasString(unit), unit);
 		}
-		 
+
 		uniqueRuleObjects.addAll(map.values());
-		
+
 		return uniqueRuleObjects;
 	}
 
-	private static <T> String getCaseParticipantRoleIDasString(final RuleObject firstUnit) {
-		Timeline<List<RuleObject>> householdUnitMembers ;
-		ArrayList<Number> ids = new ArrayList<Number>();
-		householdUnitMembers =  (Timeline<List<RuleObject>>) firstUnit.getAttributeValue("mandatoryEligibleMembersTimeline").getValue();
-		String caseParticipantRoleIDList ="";
-		for(BoundedInterval<List<RuleObject>> member :householdUnitMembers.intervals()){
+
+	/**
+	 * returns list of caseparticipantroleid of all the members in the unit sent as parameter
+	 * @param firstUnit
+	 * @return list of caseparticipantroleid as String
+	 */
+	private static <T> String getCaseParticipantRoleIDasString(
+			final RuleObject firstUnit) {
+		Timeline<List<RuleObject>> householdUnitMembers;
+		Set<Number> ids = new HashSet<Number>();
+		householdUnitMembers = (Timeline<List<RuleObject>>) firstUnit
+				.getAttributeValue("mandatoryEligibleMembersTimeline")
+				.getValue();
+		String caseParticipantRoleIDList = "";
+		for (BoundedInterval<List<RuleObject>> member : householdUnitMembers
+				.intervals()) {
 			List<RuleObject> ruleObjectList = member.value();
 			for (Iterator iterator = ruleObjectList.iterator(); iterator
 					.hasNext();) {
 				RuleObject ruleObject = (RuleObject) iterator.next();
-              ids.add( (Number) ruleObject.getAttributeValue("caseParticipantRoleID").getValue());
+				ids.add((Number) ruleObject.getAttributeValue(
+						"caseParticipantRoleID").getValue());
 			}
 		}
 		ArrayList<Long> idlong = new ArrayList<Long>();
-		
-		for(Number number : ids){
+
+		for (Number number : ids) {
 			idlong.add(number.longValue());
 		}
-		
+
 		Collections.sort(idlong);
-		for(Long value : idlong){
-			caseParticipantRoleIDList = caseParticipantRoleIDList+value;
+		for (Long value : idlong) {
+			caseParticipantRoleIDList = caseParticipantRoleIDList + value;
 		}
-		
+
 		return caseParticipantRoleIDList.trim();
 	}
 
