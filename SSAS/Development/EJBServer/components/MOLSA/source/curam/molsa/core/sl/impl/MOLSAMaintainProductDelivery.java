@@ -21,7 +21,6 @@ import curam.codetable.PRODUCTNAME;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
 import curam.codetable.impl.PRODUCTTYPEEntry;
-import curam.codetable.impl.PROGRAMTYPEEntry;
 import curam.core.facade.fact.IntegratedCaseFactory;
 import curam.core.facade.intf.IntegratedCase;
 import curam.core.facade.struct.CertificationCaseIDKey;
@@ -99,21 +98,16 @@ import curam.dynamicevidence.sl.impl.EvidenceGenericSLFactory;
 import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.events.MOLSAAPPROVALTASK;
-import curam.events.MOLSACoCEvent;
 import curam.message.BPOCASEEVENTS;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.BPOROUTEPRODUCTDELIVERYAPPROVAL;
 import curam.message.GENERALCASE;
 import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
-import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
-import curam.molsa.sms.sl.struct.MOLSAMessageText;
-import curam.molsa.sms.sl.struct.MOLSAMessageTextKey;
-import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
 import curam.util.events.impl.EventService;
 import curam.util.events.struct.Event;
@@ -136,9 +130,9 @@ import curam.util.workflow.impl.EnactmentService;
 public abstract class MOLSAMaintainProductDelivery extends
 		curam.molsa.core.sl.base.MOLSAMaintainProductDelivery {
 
-	protected static final String kendDate ="endDate";
-	
-	protected static final String kdeductionEndDate="deductionEndDate";
+	protected static final String kendDate = "endDate";
+
+	protected static final String kdeductionEndDate = "deductionEndDate";
 
 	@Inject
 	protected Provider<CaseTransactionLogIntf> caseTransactionLogProvider;
@@ -168,7 +162,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 		certEndMSConfig.put(PRODUCTTYPEEntry.ORPHAN, 45018L);
 		certEndMSConfig.put(PRODUCTTYPEEntry.SENIORCITIZEN, 45017l);
 		certEndMSConfig.put(PRODUCTTYPEEntry.WIDOW, 45016L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.MOLSADETERMINEPRODUCT,45020l);
+		certEndMSConfig.put(PRODUCTTYPEEntry.MOLSADETERMINEPRODUCT, 45020l);
 
 	}
 
@@ -476,7 +470,6 @@ public abstract class MOLSAMaintainProductDelivery extends
 	public void approve(ProductDeliveryApprovalKey1 key) throws AppException,
 			InformationalException {
 
-
 		ArrayList<Date> datelist = new ArrayList<Date>();
 
 		curam.core.facade.intf.ProductDelivery productDelivery = curam.core.facade.fact.ProductDeliveryFactory
@@ -598,15 +591,18 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
-			
-			Long caseID=productDeliveryDAO.get(key.caseID).getParentCase().getID();
-		       List<Application> applications = applicationDAO.searchByCaseID(caseID);
-		      Application application = applications.get(0);
-		      String applicationID=application.getReference();
-		      AppException msg =new AppException(MOLSASMSSERVICE.APPLICATIONAPPROVED);
-		      msg.arg(applicationID);
-		      String message=msg.getLocalizedMessage();
-		      
+
+			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
+					.getID();
+			List<Application> applications = applicationDAO
+					.searchByCaseID(caseID);
+			Application application = applications.get(0);
+			String applicationID = application.getReference();
+			AppException msg = new AppException(
+					MOLSASMSSERVICE.APPLICATIONAPPROVED);
+			msg.arg(applicationID);
+			String message = msg.getLocalizedMessage();
+
 			// Construct the input details
 			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
 			Long concernRoleID = productDeliveryDAO.get(key.caseID)
@@ -622,7 +618,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
 					.getID();
 			final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
-			 evidenceTypeKey.evidenceType = CASEEVIDENCE.EXCEPTIONAL;
+			evidenceTypeKey.evidenceType = CASEEVIDENCE.EXCEPTIONAL;
 
 			final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
 					.instance(evidenceTypeKey, Date.getCurrentDate());
@@ -639,7 +635,6 @@ public abstract class MOLSAMaintainProductDelivery extends
 					.searchActiveInEditByCaseIDAndType(statusesKey);
 
 			EvidenceCaseKey evidenceCaseKey = null;
-			
 
 			for (final EvidenceDescriptorKey descriptorKey : keyList.dtls) {
 				evidenceCaseKey = new EvidenceCaseKey();
@@ -653,31 +648,29 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 				final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
 
-				final Date enddate1 = Date.fromISO8601(dynamicEvidenceDataDetails
-						.getAttribute(kendDate).getValue());
-				
-				
-				
-				datelist.add(enddate1);
-				
-				
-			
-				
-			
+				if (null != dynamicEvidenceDataDetails.getAttribute(kendDate)
+						.getValue()
+						&& !dynamicEvidenceDataDetails.getAttribute(kendDate)
+								.getValue().equals("")) {
+					final Date enddate1 = Date
+							.fromISO8601(dynamicEvidenceDataDetails
+									.getAttribute(kendDate).getValue());
+
+					datelist.add(enddate1);
+
+				}
 
 			}
 
 			Collections.sort(datelist);
-			Date endDate = new Date();
-			for(Date date : datelist)
-			{
-				if(Date.getCurrentDate().before(date))
-				{
+			Date endDate = Date.kZeroDate;
+			for (Date date : datelist) {
+				if (Date.getCurrentDate().before(date)) {
 					endDate = date;
 					break;
 				}
 			}
-			
+
 			IntegratedCase integratedCaseObj = IntegratedCaseFactory
 					.newInstance();
 			CertificationCaseIDKey caseIDKey = new CertificationCaseIDKey();
@@ -709,13 +702,17 @@ public abstract class MOLSAMaintainProductDelivery extends
 					cal.set(Calendar.DAY_OF_MONTH, 1);
 					certificationStartDate = new Date(cal.getTimeInMillis());
 
-					// Update the certification end date.
-					Calendar cal1 = Calendar.getInstance();
-					cal1.add(Calendar.YEAR, 1);
-					cal1.add(Calendar.MONTH, 1);
-					cal1.set(Calendar.DAY_OF_MONTH, 1);
-					cal1.add(Calendar.DATE, -1);
-					certificationEndDate = new Date( endDate.getCalendar().getTimeInMillis());
+					if (endDate.isZero()) {
+						Calendar cal1 = certificationStartDate.getCalendar();
+						cal1.add(Calendar.YEAR, 1);
+						cal1.set(Calendar.DAY_OF_MONTH, 1);
+						cal1.add(Calendar.DATE, -1);
+						certificationEndDate = new Date(cal1.getTimeInMillis());
+					} else {
+						// Update the certification end date.
+						certificationEndDate = new Date(endDate.getCalendar()
+								.getTimeInMillis());
+					}
 
 				} else {
 					calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -758,15 +755,18 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
-			
-			Long caseID1 =productDeliveryDAO.get(key.caseID).getParentCase().getID();
-		       List<Application> applications = applicationDAO.searchByCaseID(caseID1);
-		      Application application = applications.get(0);
-		      String applicationID=application.getReference();
-		      AppException msg =new AppException(MOLSASMSSERVICE.APPLICATIONAPPROVED);
-		      msg.arg(applicationID);
-		      String message=msg.getLocalizedMessage();
-		      
+
+			Long caseID1 = productDeliveryDAO.get(key.caseID).getParentCase()
+					.getID();
+			List<Application> applications = applicationDAO
+					.searchByCaseID(caseID1);
+			Application application = applications.get(0);
+			String applicationID = application.getReference();
+			AppException msg = new AppException(
+					MOLSASMSSERVICE.APPLICATIONAPPROVED);
+			msg.arg(applicationID);
+			String message = msg.getLocalizedMessage();
+
 			// Construct the input details
 			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
 			Long concernRoleID = productDeliveryDAO.get(key.caseID)
@@ -777,13 +777,8 @@ public abstract class MOLSAMaintainProductDelivery extends
 			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
-			
-			
-			
 		}
-		
-		
-		
+
 	}
 
 	/**
