@@ -9,8 +9,6 @@
         
        String category = request.getParameter("parent");
        String template = request.getParameter("child");
-       System.out.println("Category"+category);
-       System.out.println("Template "+template);
        try{
       //  getDocumentText.setFieldValue(getDocumentText.key$category_idx,category);
         getDocumentText.setFieldValue(getDocumentText.key$template_idx,template);
@@ -19,12 +17,11 @@
          }catch(java.lang.Throwable ex){
          ex.printStackTrace();
          }
-         
-        String text = getDocumentText.getFieldValue(getDocumentText.result$documentText_idx);  
-        System.out.println("Text "+text);
+        String text = getDocumentText.getFieldValue(getDocumentText.result$documentText_idx).replace(',', '\n');
+        //System.out.println("Text "+text);
         response.setContentType("text/xml"); 
         response.setHeader("Cache-Control", "no-cache");
-        out.println(text);
+      //  out.println(text);
         
     </JSP_SCRIPTLET>
 </PAGE>
