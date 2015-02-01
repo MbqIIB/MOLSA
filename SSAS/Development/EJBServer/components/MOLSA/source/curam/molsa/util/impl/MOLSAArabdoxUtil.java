@@ -324,7 +324,7 @@ public class MOLSAArabdoxUtil {
       fileType = FileType.Image;
     }
     DocumentFileLoadResponse documentFileLoadResponse = arabdoxHelper.loadDocumentFile(arabdoxRemoteServiceStub, loginResponse, 
-        (int) molsaArabDoxCaseLinkDtls.arabDoxProDocID,
+        (int) molsaArabDoxAttachDtls.arabDoxDocumentID,
         (int) molsaArabDoxAttachDtls.arabDoxFileID, fileType);
 
     StreamBody streamBody = documentFileLoadResponse.getFileStream();
@@ -367,8 +367,8 @@ public class MOLSAArabdoxUtil {
     attachmentDtls.attachmentContents = Blob.kEmptyBlob;
     attachmentObj.modify(attachmentKey, attachmentDtls);
 
-    long currentDateTime = DateTime.getCurrentDateTime().asLong();
-    String fileName = currentDateTime + attachmentName;
+    
+    String fileName = attachmentID + attachmentName;
 
     MOLSAArabDoxAttach arabDoxAttachObj = MOLSAArabDoxAttachFactory.newInstance();
     MOLSAArabDoxAttachKey molsaArabDoxAttachKey = new MOLSAArabDoxAttachKey();
@@ -386,21 +386,23 @@ public class MOLSAArabdoxUtil {
     LoginResponse loginResponse = arabdoxSessionHelper.loginToArabdox(arabdoxRemoteServiceStub);
 
     FileType fileType;
+    long documentID = 0;
     if (molsaArabDoxAttachDtls.isAttachment) {
       fileType = FileType.Attachment;
     } else {
       fileType = FileType.Image;
     }
     DeleteDocumentFileResponse deleteDocumentFileResponse = arabdoxHelper.deleteDocumentFile(arabdoxRemoteServiceStub, loginResponse,
-        (int) molsaArabDoxCaseLinkDtls.arabDoxProDocID, (int) molsaArabDoxAttachDtls.arabDoxFileID, fileType);
+        (int) molsaArabDoxAttachDtls.arabDoxDocumentID, (int) molsaArabDoxAttachDtls.arabDoxFileID, fileType);
 
     DocumentFileAddResponse documentFileAddResponse = 
-      arabdoxHelper.addDocumentFilesEx(arabdoxRemoteServiceStub, loginResponse, molsaArabDoxCaseLinkDtls.arabDoxProDocID,
+      arabdoxHelper.addDocumentFilesEx(arabdoxRemoteServiceStub, loginResponse, molsaArabDoxAttachDtls.arabDoxDocumentID,
         attachmentContent, fileName, true);
+    
     MOLSAArabdoxUtil arabdoxUtilObj = MOLSAArabdoxUtil.newInstance();
     DocumentFile documentFile = 
       arabdoxUtilObj.getDocumentFile(arabdoxRemoteServiceStub, arabdoxHelper, loginResponse, 
-          (int) molsaArabDoxCaseLinkDtls.arabDoxProDocID,
+          (int) molsaArabDoxAttachDtls.arabDoxDocumentID,
         FileType.Attachment, fileName);
 
     molsaArabDoxAttachDtls.arabDoxFileID = documentFile.getSerial();
@@ -445,8 +447,7 @@ public class MOLSAArabdoxUtil {
     CaseReference caseReference = caseHeaderObj.readCaseReferenceByCaseID(caseSearchKey);
 
     String folderName = caseReference.caseReference;
-    long currentDateTime = DateTime.getCurrentDateTime().asLong();
-    String fileName = currentDateTime + attachmentName;
+    String fileName = attachmentID + attachmentName;
 
     MOLSAArabdoxSessionHelper arabdoxSessionHelper = MOLSAArabdoxSessionHelper.newInstance();
     MOLSAArabdoxHelper arabdoxHelper = MOLSAArabdoxHelper.newInstance();
@@ -457,14 +458,20 @@ public class MOLSAArabdoxUtil {
       createInitialFolderAndDocuments(arabdoxRemoteServiceStub, arabdoxHelper, loginResponse, caseID, folderName);
 
     DocumentFile documentFile = null;
+    long documentID = 0;
+    if (isProcess) {
+      documentID = arabDoxCaseLinkDtls.arabDoxProDocID;
+    } else {
+      documentID= arabDoxCaseLinkDtls.arabDoxVerDocID;
+    }
 
     try {
       DocumentFileAddResponse documentFileAddResponse = 
-        arabdoxHelper.addDocumentFilesEx(arabdoxRemoteServiceStub, loginResponse, arabDoxCaseLinkDtls.arabDoxProDocID,
+        arabdoxHelper.addDocumentFilesEx(arabdoxRemoteServiceStub, loginResponse, documentID,
           attachmentContent, fileName, true);
 
       documentFile = getDocumentFile(arabdoxRemoteServiceStub, arabdoxHelper, 
-          loginResponse, (int) arabDoxCaseLinkDtls.arabDoxProDocID, FileType.Attachment, fileName);
+          loginResponse, (int) documentID, FileType.Attachment, fileName);
     } catch (AppException appException) {
       TransactionInfo.getInfo().rollback();
       TransactionInfo.getInfo().begin();
@@ -487,11 +494,8 @@ public class MOLSAArabdoxUtil {
     arabDoxAttachDtls.attachmentID = attachmentID;
     arabDoxAttachDtls.arabDoxFileID = documentFile.getSerial();
     arabDoxAttachDtls.arabDoxFolderID = arabDoxCaseLinkDtls.arabDoxFolderID;
-    if (isProcess) {
-      arabDoxAttachDtls.arabDoxDocumentID = arabDoxCaseLinkDtls.arabDoxProDocID;
-    } else {
-      arabDoxAttachDtls.arabDoxDocumentID = arabDoxCaseLinkDtls.arabDoxVerDocID;
-    }
+    arabDoxAttachDtls.arabDoxDocumentID = documentID;
+
     // Always be Attachment.
     if (documentFile.getFileType().getValue().equals(FileType._Attachment)) {
       arabDoxAttachDtls.isAttachment = true;

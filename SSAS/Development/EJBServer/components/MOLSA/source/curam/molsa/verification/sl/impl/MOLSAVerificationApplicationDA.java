@@ -47,7 +47,7 @@ public class MOLSAVerificationApplicationDA extends curam.molsa.verification.sl.
       MOLSAArabdoxUtil arabdoxUtilObj = MOLSAArabdoxUtil.newInstance();
       arabdoxUtilObj.insertFileContentToArabDox(details.createVerificationAttachmentLinkDetails.createAttachmentDtls.attachmentID, 
           caseID,
-          details.itemProvidedDetailsdtls.fileName, 
+          details.createVerificationAttachmentLinkDetails.createAttachmentDtls.attachmentName, 
           details.createVerificationAttachmentLinkDetails.createAttachmentDtls.attachmentContents,
           false);
 
