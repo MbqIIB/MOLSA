@@ -18,6 +18,17 @@
     </derivation>
   </Attribute>
 
+  <Attribute name="productCase">
+    <type>
+      <ruleclass name="SocialAssistanceProductCase" ruleset="SocialAssistanceRuleSet"/>
+    </type>
+    <derivation>
+      <reference attribute="productCase">
+        <reference attribute="coverageTypeHouseholdIncomeCategory"/>
+      </reference>
+    </derivation>
+  </Attribute>
+  
   <Attribute name="primaryClientCPRRecord">
     <type>
       <ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
@@ -230,6 +241,92 @@
       <reference attribute="monthlyAmountTimeline">
         <reference attribute="coverageTypeHouseholdIncomeCategory"/>
       </reference>
+    </derivation>
+  </Attribute>
+  
+  <Attribute name="householdMembers">
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+          <filter>
+            <list>
+              <intervalvalue>
+                <reference attribute="mandatoryEligibleMembersTimeline">
+                  <reference attribute="eligibilityUnit"> 
+                  <reference attribute="productCase"/>
+                  </reference>
+                </reference>
+              </intervalvalue>
+            </list>
+            <listitemexpression>
+              <not>
+                <equals>
+                  <null/>
+                  <reference attribute="caseParticipantRoleRecord">
+                    <current/>
+                  </reference>
+                </equals>
+              </not>
+            </listitemexpression>
+          </filter>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+  
+  <Attribute name="isInEligibleMember">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="Boolean"/>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <all>
+          <dynamiclist>
+            <list>
+              <intervalvalue>
+                <reference attribute="householdMembers"/>
+              </intervalvalue>
+            </list>
+            <listitemexpression>
+              <choose>
+                <type>
+                  <javaclass name="Boolean"/>
+                </type>
+                <when>
+                  <condition>
+                    <equals>
+                      <intervalvalue>
+                        <reference attribute="filterTypeTimeline">
+                            <current/>
+                        </reference>
+                      </intervalvalue>
+                      <String value="InEligibleMember"/>
+                    </equals>
+                  </condition>
+                  <value>
+                    <true/>
+                  </value>
+                </when>
+                <otherwise>
+                  <value>
+                    <false/>
+                  </value>
+                </otherwise>
+              </choose>
+            </listitemexpression>
+          </dynamiclist>
+        </all>
+      </timelineoperation>
     </derivation>
   </Attribute>
 </Class>
