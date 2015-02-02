@@ -57,7 +57,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 
 		// populate the user data
 		curam.molsa.core.intf.MOLSAConcernRoleDocumentGenerationDA concernRoleDocumentGenerationObj=curam.molsa.core.fact.MOLSAConcernRoleDocumentGenerationDAFactory.newInstance();
-		//curam.core.intf.ConcernRoleDocumentGeneration concernRoleDocumentGenerationObj = curam.core.fact.ConcernRoleDocumentGenerationFactory.newInstance();
+		curam.core.intf.ConcernRoleDocumentGeneration concernRoleDocumentGenerationObjOOTB = curam.core.fact.ConcernRoleDocumentGenerationFactory.newInstance();
 
 		// get the closure details
 		curam.core.intf.MaintainCaseClosure maintainCaseClosureObj = curam.core.fact.MaintainCaseClosureFactory.newInstance();
@@ -131,8 +131,6 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 			proFormaDocumentData = populateCaseDetails(key, details,proFormaDocumentData);
 		}
 
-
-
 		MOLSAProFormaDocumentData molsaproFormaDocumentData =new MOLSAProFormaDocumentData();
 		molsaproFormaDocumentData.dtls=proFormaDocumentData;
 		MOLSAConcernRoleCommunicationKey concernRoleCommunicationKey = new MOLSAConcernRoleCommunicationKey();
@@ -140,9 +138,12 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		MOLSAConcernRoleCommunicationDtls concernRoleCommunicationDtls = MOLSACommunicationHelper.readAdditionalCommParams(concernRoleCommunicationKey);
 		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
 
-		// print the populated document
-		proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(
-				details, molsaproFormaDocumentData);    
+		// print the populated document with new struct MOLSAProFormaDocumentData
+		//proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
+		
+		//Currently calling the OOTB code.Will be replaced with customized struct MOLSAProFormaDocumentData
+		
+		proFormaReturnDocDetails = concernRoleDocumentGenerationObjOOTB.generateAndPreviewXMLDocument(details,proFormaDocumentData);
 
 		return proFormaReturnDocDetails;
 
