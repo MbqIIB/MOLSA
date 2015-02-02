@@ -613,8 +613,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
-		} else {
-
+		} else if(productDeliveryTypeDetails.productType
+				.equals(PRODUCTTYPE.MOLSADETERMINEPRODUCT)){
+			//TODO code duplication, refactor to remove duplication.
 			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
 					.getID();
 			final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
