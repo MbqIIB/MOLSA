@@ -8,7 +8,7 @@ import curam.codetable.ADDRESSELEMENTTYPE;
 import curam.codetable.ADDRESSLAYOUTTYPE;
 import curam.codetable.ADDRESSUSCOUNTY;
 import curam.codetable.COUNTRY;
-import curam.codetable.MOLSAZONE;
+import curam.molsa.codetable.MOLSAZONE;
 import curam.codetable.PROVINCEREGION_CHINA_ADF;
 import curam.codetable.PROVINCEREGION_JAPAN_ADF;
 import curam.codetable.STREETNUMBERSUFFIXTYPE;
@@ -34,7 +34,7 @@ import curam.core.struct.LayoutKey;
 import curam.core.struct.OtherAddressData;
 import curam.core.struct.ValidateAddressResult;
 import curam.message.BPOADDRESS;
-import curam.molsa.codetable.MOLSAMULTIPLICITY;
+import curam.molsa.codetable.MOLSAMUNICIPALITY;
 import curam.molsa.codetable.MOLSASTREET;
 import curam.molsa.core.fact.MOLSAAddressDataDAFactory;
 import curam.molsa.core.intf.MOLSAAddressDataDA;
@@ -257,7 +257,7 @@ public abstract class MOLSAAddressDA extends curam.molsa.address.entity.base.MOL
           addressString = formatAddressCityElement(addressFormatString, addressString);
         }
         //addressString.addressString = addressString.addressString.replace(((AddressMap)addressMapList.dtls.item(i)).name, ((AddressMap)addressMapList.dtls.item(i)).value);
-        addressString.addressString = addressString.addressString.replace(((AddressMap)addressMapList.dtls.item(i)).name, CodeTable.getOneItem(MOLSAMULTIPLICITY.TABLENAME, ((AddressMap)addressMapList.dtls.item(i)).value));
+        addressString.addressString = addressString.addressString.replace(((AddressMap)addressMapList.dtls.item(i)).name, CodeTable.getOneItem(MOLSAMUNICIPALITY.TABLENAME, ((AddressMap)addressMapList.dtls.item(i)).value));
       }
       else if ((ADDRESSELEMENTTYPE.LINE1 + "|").equals(((AddressMap)addressMapList.dtls.item(i)).name))
       {       
