@@ -263,6 +263,24 @@ public final class Statics {
 			}
 		} else
 			return false;
+  }
+	
+	public static Boolean validateQIDEntered(Session session, String qidNumber,
+			String absentPerson) throws AppException, InformationalException {
+
+		MOLSAParticipantHelper molsaParticipantHelper = new MOLSAParticipantHelper();
+		PersonRegistrationDetails personDetails = new PersonRegistrationDetails();
+		String name[] = absentPerson.split(CuramConst.gkSpace);
+		if (qidNumber.isEmpty()) {
+		  if(name.length!=0){
+		   return true;
+		  }
+		  else{
+			return false;
+		  }
+		}
+		return false;
+		
 	}
 
 	/**

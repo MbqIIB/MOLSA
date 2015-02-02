@@ -23,6 +23,7 @@
 					</listof>
 					<members>
 						<reference attribute="qidValidation" />
+						<reference attribute="qidEnteredValidation" />
 					</members>
 				</fixedlist>
 			</derivation>
@@ -115,5 +116,42 @@
 			</derivation>
 		</Attribute>
 		
+		<Attribute name="qidEnteredValidation">
+			<type>
+				<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation" ruleset="EvidenceValidationRuleSet">
+					<reference attribute="isValidQIDEntered" />
+					<ResourceMessage key="ERR_QID_ENTERED_INVALID"
+						resourceBundle="curam.evidence.MolsaAbsentPersonValidationRuleSet"/>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="isValidQIDEntered">
+			<type>
+    	<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<call class="curam.socialassistance.creole.statics.impl.Statics"
+					method="validateQIDEntered">
+					<type>
+    	<javaclass name="Boolean"/>
+					</type>
+					<arguments>
+						<reference attribute="qid">
+							<reference attribute="evidence" />
+						</reference>
+						 <reference attribute="concernRoleName">
+						<reference attribute="participantRole">
+							<reference attribute="related_absentPerson">
+								<reference attribute="evidence" />
+							</reference>
+							</reference>
+						</reference>
+					</arguments>
+				</call>
+			</derivation>
+		</Attribute>
 	</Class>
 </RuleSet>
