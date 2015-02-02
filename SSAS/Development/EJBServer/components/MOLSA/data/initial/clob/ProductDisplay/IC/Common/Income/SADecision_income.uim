@@ -34,100 +34,129 @@
   </CONNECT>
 
 
-  <CLUSTER NUM_COLS="2">
-    <CLUSTER TITLE="Cluster.Title.Benefits">
-      <LIST STYLE="dr-standard-list">
-        <CONTAINER ALIGNMENT="LEFT">
-          <FIELD LABEL="Field.Label.HouseholdMember">
-            <CONNECT>
-              <SOURCE
-                EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/householdMembersList/Item[]"
-                NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
-            </CONNECT>
-          </FIELD>
-        </CONTAINER>
-        <CONTAINER ALIGNMENT="CENTER" LABEL="Field.Label.Amount" SEPARATOR="Separator.Plus">
-		<FIELD CONTROL="SKIP"/>
-          <FIELD >
-            <CONNECT>
-              <SOURCE EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/amountList/Item[]"
-                NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
-            </CONNECT>
-          </FIELD>
-        </CONTAINER>
-      </LIST>
-      <CLUSTER STYLE="cgiss-display-totalAmountCluster">
-        <FIELD LABEL="Field.Label.Benefits" ALIGNMENT="CENTER">
-          <CONNECT>
-            <SOURCE
-              EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalGrossBenefitAmount"
-              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
-          </CONNECT>
-        </FIELD>
-      </CLUSTER>
-    </CLUSTER>
-
-    <CLUSTER>
-      <CLUSTER TITLE="Cluster.Title.BenefitCalculations" STYLE="cgiss-display-calculationCluster">
-        <CONTAINER LABEL="Field.Label.Benefits" ALIGNMENT="CENTER">
-	      <FIELD>
+  <CLUSTER >
+    <CLUSTER NUM_COLS="2">
+      <CONDITION>
+        <IS_FALSE
+          EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/isInEligibleMember"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONDITION>
+      <CLUSTER TITLE="Cluster.Title.Benefits">
+        <LIST STYLE="dr-standard-list">
+          <CONTAINER ALIGNMENT="LEFT">
+            <FIELD LABEL="Field.Label.HouseholdMember">
+              <CONNECT>
+                <SOURCE
+                  EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/householdMembersList/Item[]"
+                  NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+              </CONNECT>
+            </FIELD>
+          </CONTAINER>
+          <CONTAINER ALIGNMENT="CENTER" LABEL="Field.Label.Amount" SEPARATOR="Separator.Plus">
+            <FIELD CONTROL="SKIP"/>
+            <FIELD >
+              <CONNECT>
+                <SOURCE EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/amountList/Item[]"
+                  NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+              </CONNECT>
+            </FIELD>
+          </CONTAINER>
+        </LIST>
+        <CLUSTER STYLE="cgiss-display-totalAmountCluster">
+          <FIELD LABEL="Field.Label.Benefits" ALIGNMENT="CENTER">
             <CONNECT>
               <SOURCE
                 EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalGrossBenefitAmount"
                 NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
             </CONNECT>
           </FIELD>
-        </CONTAINER>
-        <CONTAINER LABEL="Field.Label.CountableIncome" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
-		<FIELD CONTROL="SKIP"/>
-          <FIELD>
+        </CLUSTER>
+      </CLUSTER>
+      
+      <CLUSTER>
+        <CLUSTER TITLE="Cluster.Title.BenefitCalculations" STYLE="cgiss-display-calculationCluster">
+          <CONTAINER LABEL="Field.Label.Benefits" ALIGNMENT="CENTER">
+            <FIELD>
+              <CONNECT>
+                <SOURCE
+                  EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalGrossBenefitAmount"
+                  NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+              </CONNECT>
+            </FIELD>
+          </CONTAINER>
+          <CONTAINER LABEL="Field.Label.CountableIncome" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
+            <FIELD CONTROL="SKIP"/>
+            <FIELD>
+              <CONNECT>
+                <SOURCE
+                  EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalCountableIncomeTimeline"
+                  NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+              </CONNECT>
+            </FIELD>
+          </CONTAINER>
+        </CLUSTER>
+        <CLUSTER STYLE="cgiss-display-totalAmountCluster">
+          <FIELD LABEL="Field.Label.MontlyBenefit" ALIGNMENT="CENTER">
+            <CONNECT>
+              <SOURCE EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/monthlyAmountTimeline"
+                NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+            </CONNECT>
+          </FIELD>
+        </CLUSTER>
+      </CLUSTER>
+      <CLUSTER>
+        <CLUSTER TITLE="Cluster.Title.IncomeCalculations" STYLE="cgiss-display-calculationCluster">
+          <CONTAINER LABEL="Field.Label.TotalIncome" ALIGNMENT="CENTER">
+            <FIELD>
+              <CONNECT>
+                <SOURCE EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalIncomeTimeline"
+                  NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+              </CONNECT>
+            </FIELD>
+          </CONTAINER>
+          <CONTAINER LABEL="Field.Label.Expense" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
+            <FIELD CONTROL="SKIP"/>
+            <FIELD>
+              <CONNECT>
+                <SOURCE
+                  EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalExpenseAmountTimeline"
+                  NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
+              </CONNECT>
+            </FIELD>
+          </CONTAINER>
+        </CLUSTER>
+        <CLUSTER STYLE="cgiss-display-totalAmountCluster">
+          <FIELD LABEL="Field.Label.TotalCountableIncome" ALIGNMENT="CENTER">
             <CONNECT>
               <SOURCE
                 EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalCountableIncomeTimeline"
                 NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
             </CONNECT>
           </FIELD>
-        </CONTAINER>
-      </CLUSTER>
-      <CLUSTER STYLE="cgiss-display-totalAmountCluster">
-        <FIELD LABEL="Field.Label.MontlyBenefit" ALIGNMENT="CENTER">
-          <CONNECT>
-            <SOURCE EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/monthlyAmountTimeline"
-              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
-          </CONNECT>
-        </FIELD>
+        </CLUSTER>
       </CLUSTER>
     </CLUSTER>
+    
     <CLUSTER>
-      <CLUSTER TITLE="Cluster.Title.IncomeCalculations" STYLE="cgiss-display-calculationCluster">
-        <CONTAINER LABEL="Field.Label.TotalIncome" ALIGNMENT="CENTER">
-          <FIELD>
-            <CONNECT>
-              <SOURCE EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalIncomeTimeline"
-                NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
-            </CONNECT>
-          </FIELD>
-        </CONTAINER>
-        <CONTAINER LABEL="Field.Label.Expense" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
-		<FIELD CONTROL="SKIP"/>
-          <FIELD>
-            <CONNECT>
-              <SOURCE
-                EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalExpenseAmountTimeline"
-                NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
-            </CONNECT>
-          </FIELD>
-        </CONTAINER>
-      </CLUSTER>
-      <CLUSTER STYLE="cgiss-display-totalAmountCluster">
-        <FIELD LABEL="Field.Label.TotalCountableIncome" ALIGNMENT="CENTER">
-          <CONNECT>
-            <SOURCE
-              EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/totalCountableIncomeTimeline"
-              NAME="DISPLAY" PROPERTY="result$decisionDetailsXML"/>
-          </CONNECT>
-        </FIELD>
-      </CLUSTER>
+     <CLUSTER >
+      <CONDITION>
+        <IS_TRUE
+          EXTENDED_PATH="/DecisionDetails/SAHouseholdIncomeCategory/isInEligibleMember"
+          NAME="DISPLAY"
+          PROPERTY="result$decisionDetailsXML"
+        />
+      </CONDITION>
+      <FIELD ALIGNMENT="LEFT">
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Message.Undertemined"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
     </CLUSTER>
   </CLUSTER>
 

@@ -49,6 +49,14 @@
   </CONNECT>
   
   <CLUSTER NUM_COLS="2">
+  <CLUSTER>
+      <CONDITION>
+        <IS_FALSE
+          EXTENDED_PATH="/DecisionDetails/WidowHouseholdIncomeCategory/isInEligibleMember"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONDITION>
     <CLUSTER TITLE="Cluster.Title.Benefits">
       <LIST STYLE="dr-standard-list">
         <CONTAINER ALIGNMENT="LEFT">
@@ -144,6 +152,24 @@
       </CLUSTER>
     </CLUSTER>
   </CLUSTER>
-
+  
+<CLUSTER>
+      <CONDITION>
+        <IS_TRUE
+          EXTENDED_PATH="/DecisionDetails/WidowHouseholdIncomeCategory/isInEligibleMember"
+          NAME="DISPLAY"
+          PROPERTY="result$xmlData"
+        />
+      </CONDITION>
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="TEXT"
+            PROPERTY="Field.Message.Undertemined"
+          />
+        </CONNECT>
+      </FIELD>
+    </CLUSTER>
+  </CLUSTER>
 
 </PAGE>
