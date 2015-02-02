@@ -273,7 +273,7 @@
                         <filter>
                             <list>
                                 <intervalvalue>
-                                    <reference attribute="eligibleMembersTimeline">
+                                    <reference attribute="mandatoryEligibleMembersTimeline">
                                         <reference attribute="eligibilityUnit"> </reference>
                                     </reference>
                                 </intervalvalue>
@@ -412,6 +412,7 @@
 
             </derivation>
         </Attribute>
+        
         <Attribute name="hasHouseholdPassedIncomeTestTimeline">
             <type>
                 <javaclass name="curam.creole.value.Timeline">
@@ -420,31 +421,12 @@
             </type>
             <derivation>
                 <timelineoperation>
-                    <compare comparison="&lt;">
-                        <intervalvalue>
-                            <reference attribute="totalCountableIncomeTimeline"/>
-                        </intervalvalue>
-                        <intervalvalue>
-                            <reference attribute="primaryBeneficiaryAmount"/>
-                        </intervalvalue>
-                    </compare>
-                </timelineoperation>
-            </derivation>
-        </Attribute>
-        <Attribute name="monthlyAmountTimeline">
-            <type>
-                <javaclass name="curam.creole.value.Timeline">
-                    <javaclass name="Number"/>
-                </javaclass>
-            </type>
-            <derivation>
-                <timelineoperation>
-                    <choose>
-                        <type>
-                            <javaclass name="Number"/>
-                        </type>
-                        <when>
-                            <condition>
+                    <all>
+                        <fixedlist>
+                            <listof>
+                                <javaclass name="Boolean"/>
+                            </listof>
+                            <members>
                                 <compare comparison="&lt;">
                                     <intervalvalue>
                                         <reference attribute="totalCountableIncomeTimeline"/>
@@ -452,29 +434,50 @@
                                     <intervalvalue>
                                         <reference attribute="primaryBeneficiaryAmount"/>
                                     </intervalvalue>
-
                                 </compare>
-                            </condition>
-                            <value>
-                                <arithmetic operation="-">
-                                    <intervalvalue>
-                                        <reference attribute="primaryBeneficiaryAmount"/>
-                                    </intervalvalue>
-                                    <intervalvalue>
-                                        <reference attribute="totalCountableIncomeTimeline"/>
-                                    </intervalvalue>
-                                </arithmetic>
-                            </value>
-                        </when>
-                        <otherwise>
-                            <value>
-                                <Number value="0"/>
-                            </value>
-                        </otherwise>
-                    </choose>
+                                <choose>
+                                    <type>
+                                        <javaclass name="Boolean"/>
+                                    </type>
+                                    <when>
+                                        <condition>
+                                            <not>
+                                                <equals>
+                                                    <null/>
+                                                    <intervalvalue>
+                                                        <reference attribute="widowHouseholdMember"/>
+                                                    </intervalvalue>
+                                                </equals>
+                                            </not>
+                                        </condition>
+                                        <value>
+                                            <not>
+                                            <intervalvalue>
+                                            <reference attribute="hasEarnedIncomeTimeline">
+                                                    <reference attribute="memberCPRCalculator">
+                                                        <intervalvalue>
+                                                            <reference attribute="widowHouseholdMember"/>
+                                                        </intervalvalue>
+                                                    </reference>
+                                                </reference>
+                                            </intervalvalue>
+                                            </not>
+                                        </value>
+                                    </when>
+                                    <otherwise>
+                                        <value>
+                                            <false/>
+                                        </value>
+                                    </otherwise>
+                                </choose>
+                            </members>
+                        </fixedlist>
+                    </all>
                 </timelineoperation>
             </derivation>
         </Attribute>
+
+
         <Attribute name="primaryBeneficiaryAmount">
             <type>
                 <javaclass name="curam.creole.value.Timeline">

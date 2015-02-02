@@ -1059,7 +1059,7 @@
 		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
 		<Attribute name="description">
 			<type>
-				<javaclass name="curam.creole.value.Message"/>
+				<javaclass name="curam.creole.value.Message" />
 			</type>
 			<derivation>
 				<concat>
@@ -1071,20 +1071,54 @@
 										method="getUniqueRuleObjects">
 										<type>
 											<javaclass name="List">
-												<ruleclass name="SAHouseholdUnitMember"/>
+												<ruleclass name="SAHouseholdUnitMember" />
 											</javaclass>
 										</type>
 										<arguments>
-											<reference attribute="eligibleMembersTimeline"/>
+											<timelineoperation>
+												<choose>
+													<type>
+														<javaclass name="List">
+															<ruleclass name="SAHouseholdUnitMember" />
+														</javaclass>
+													</type>
+													<when>
+														<condition>
+															<compare comparison="&gt;">
+																<property name="size">
+																	<object>
+																		<intervalvalue>
+																			<reference attribute="eligibleMembersTimeline" />
+																		</intervalvalue>
+																	</object>
+																</property>
+																<Number value="0"/>
+															</compare>
+														</condition>
+														<value>
+															<intervalvalue>
+																<reference attribute="eligibleMembersTimeline" />
+															</intervalvalue>
+														</value>
+													</when>
+													<otherwise>
+														<value>
+															<intervalvalue>
+																<reference attribute="mandatoryEligibleMembersTimeline"/>
+															</intervalvalue>
+														</value>
+													</otherwise>
+												</choose>
+											</timelineoperation>
 										</arguments>
 									</call>
 								</list>
 								<listitemexpression>
 									<not>
 										<equals>
-											<null/>
+											<null />
 											<reference attribute="caseParticipantRoleRecord">
-												<current alias="inner"/>
+												<current alias="inner" />
 											</reference>
 										</equals>
 									</not>
@@ -1095,7 +1129,7 @@
 							<ResourceMessage key="HouseholdUnit.MandatoryMembers"
 								resourceBundle="curam.molsa.rules.ProductDisplay">
 								<reference attribute="description">
-									<current alias="eligibleMandatoryMember"/>
+									<current alias="eligibleMandatoryMember" />
 								</reference>
 							</ResourceMessage>
 						</listitemexpression>
@@ -1110,12 +1144,17 @@
 				</javaclass>
 			</type>
 			<derivation>
-				<fixedlist>
-					<listof>
-						<ruleclass name="SAHouseholdUnitMember"/>
-					</listof>
-					<members/>
-				</fixedlist>
+				<call class="curam.socialassistance.creole.statics.impl.Statics"
+					method="getUniqueRuleObjects">
+					<type>
+						<javaclass name="List">
+							<ruleclass name="SAHouseholdUnitMember"/>
+						</javaclass>
+					</type>
+					<arguments>
+						<reference attribute="mandatoryEligibleMembersTimeline"/>
+					</arguments>
+				</call>
 			</derivation>
 		</Attribute>
 		<Attribute name="eligibleMembersTimeline">
@@ -1158,21 +1197,13 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<filter>
-						<list>
-							<reference attribute="mandatoryMembers"/>
-						</list>
-						<listitemexpression>
-							<equals>
-								<intervalvalue>
-									<reference attribute="filterTypeTimeline">
-										<current/>
-									</reference>
-								</intervalvalue>
-								<String value="EligibleMember"/>
-							</equals>
-						</listitemexpression>
-					</filter>
+					<fixedlist>
+						<listof>
+							<ruleclass name="SAHouseholdUnitMember"/>
+						</listof>
+						<members>
+						</members>
+					</fixedlist>
 				</timelineoperation>
 			</derivation>
 		</Attribute>
@@ -1531,7 +1562,6 @@
 									</members>
 								</fixedlist>
 							</all>
-
 						</listitemexpression>
 					</filter>
 				</timelineoperation>
@@ -2411,7 +2441,7 @@
 										</reference>
 									</intervalvalue>
 									<Code table="RelationshipTypeCode">
-										<String value="RT1"/>
+										<String value="RT2"/>
 									</Code>
 								</equals>
 							</listitemexpression>
@@ -3162,12 +3192,13 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<any>
+					<all>
 						<fixedlist>
 							<listof>
 								<javaclass name="Boolean"/>
 							</listof>
 							<members>
+								
 								<intervalvalue>
 									<reference attribute="pdcBirthAndDeathRecordExists">
 										<reference attribute="memberCPRCalculator"/>
@@ -3178,21 +3209,30 @@
 										<reference attribute="memberCPRCalculator"/>
 									</reference>
 								</intervalvalue>
-								<intervalvalue>
-									<reference attribute="isAgeUnderSixTimeline"/>
-								</intervalvalue>
-								<intervalvalue>
-									<reference attribute="isUnmarriedMaleStudentChild"/>
-								</intervalvalue>
-								<intervalvalue>
-									<reference attribute="isUnmarriedFemaleStudent"/>
-								</intervalvalue>
-								<intervalvalue>
-									<reference attribute="isUnmarriedFemaleNonWorking"/>
-								</intervalvalue>
+								<any>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean"/>
+										</listof>
+										<members>
+											<intervalvalue>
+												<reference attribute="isAgeUnderSixTimeline"/>
+											</intervalvalue>
+											<intervalvalue>
+												<reference attribute="isUnmarriedMaleStudentChild"/>
+											</intervalvalue>
+											<intervalvalue>
+												<reference attribute="isUnmarriedFemaleStudent"/>
+											</intervalvalue>
+											<intervalvalue>
+												<reference attribute="isUnmarriedFemaleNonWorking"/>
+											</intervalvalue>
+										</members>
+									</fixedlist>
+								</any>
 							</members>
 						</fixedlist>
-					</any>
+					</all>
 				</timelineoperation>
 			</derivation>
 		</Attribute>
@@ -3581,7 +3621,7 @@
 												</reference>
 												</intervalvalue>
 												<Code table="RelationshipTypeCode">
-												<String value="RT2"/>
+												<String value="RT1"/>
 												</Code>
 											</equals>
 										</members>

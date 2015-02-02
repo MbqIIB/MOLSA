@@ -485,6 +485,56 @@
 				</create>
 			</derivation>
 		</Attribute>
+	<Attribute name="isAgeBelowSixtyTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean" />
+						</type>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean" />
+										</listof>
+										<members>
+											<intervalvalue>
+												<reference attribute="pdcBirthAndDeathRecordExists">
+													<reference attribute="memberCPRCalculator" />
+												</reference>
+											</intervalvalue>
+										</members>
+									</fixedlist>
+								</all>
+							</condition>
+							<value>
+								<compare comparison="&lt;">
+									<intervalvalue>
+										<reference attribute="ageTimeline">
+											<reference attribute="memberCPRCalculator" />
+										</reference>
+									</intervalvalue>
+									<Number value="60" />
+								</compare>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false />
+							</value>
+						</otherwise>
+					</choose>
+
+				</timelineoperation>
+			</derivation>
+		</Attribute>
 		<Attribute name="isMarriedTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
@@ -595,6 +645,12 @@
 								</not>
 								<intervalvalue>
 									<reference attribute="isFemaleTimeline"/>
+								</intervalvalue>
+                                                               	<intervalvalue>
+									<reference attribute="isMarriedTimeline" />
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="isAgeBelowSixtyTimeline" />
 								</intervalvalue>
 							</members>
 						</fixedlist>
@@ -1654,7 +1710,9 @@
 												<intervalvalue>
 												<reference attribute="isEligibleWifeTimeline">
 												<create ruleclass="SeniorCitizenCPRCalculator">
-												<reference attribute="caseParticipantRoleRecord"/>
+												<reference attribute="related_relatedParticipant">
+																<current />
+															</reference>
 												</create>
 												</reference>
 												</intervalvalue>
@@ -1711,7 +1769,9 @@
 												<intervalvalue>
 												<reference attribute="isDependentChildTimeline">
 												<create ruleclass="SeniorCitizenCPRCalculator">
-												<reference attribute="caseParticipantRoleRecord"/>
+												<reference attribute="related_relatedParticipant">
+																<current />
+															</reference>
 												</create>
 												</reference>
 												</intervalvalue>
