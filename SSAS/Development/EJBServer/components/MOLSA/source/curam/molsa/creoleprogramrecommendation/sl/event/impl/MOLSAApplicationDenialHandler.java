@@ -10,6 +10,7 @@ import curam.application.entity.struct.ApplicationKey;
 import curam.application.impl.Application;
 import curam.application.impl.ApplicationDAO;
 import curam.application.impl.ProgramApplication;
+import curam.application.impl.ProgramApplicationStatusDAO;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
 import curam.core.sl.entity.struct.MilestoneDeliveryKey;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
@@ -77,8 +78,9 @@ public class MOLSAApplicationDenialHandler implements EventHandler {
 					.hasNext();) {
 				Application application = iterator.next();
 				key.applicationID = application.getID();
-				if (!APPLICATIONSTATUSEntry.DISPOSED.getCode().equals(
-						application.getStatus())) {
+				if (!(APPLICATIONSTATUSEntry.DISPOSED.getCode().equals(
+						application.getStatus().getCode()))) {
+				  
 					CREOLEProgramRecommendation creoleProgramRecommendationObj = CREOLEProgramRecommendationFactory
 							.newInstance();
 					SimulatedDeterminationDetailsList simulatedDeterminationDtlsList = creoleProgramRecommendationObj
@@ -113,7 +115,8 @@ public class MOLSAApplicationDenialHandler implements EventHandler {
 						if (actionTaken) {
 							programApplication.approve();
 						} else {
-							programApplication.deny();
+						  //The call of application denial has been changes to dispose because the application denial expects the status of the application to be 'Ready For Determination' 
+						  application.dispose();
 						}
 
 					}
