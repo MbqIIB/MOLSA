@@ -145,7 +145,7 @@
         <dynamiclist>
           <list>
             <intervalvalue>
-              <reference attribute="eligibleMembersTimeline">
+              <reference attribute="mandatoryEligibleMembersTimeline">
                 <reference attribute="eligibilityUnit">
                   <reference attribute="incapableOfWorkingProductCase"/>
                 </reference>
@@ -172,7 +172,85 @@
         </javaclass>
       </javaclass>
     </type>
-    <derivation>
+     <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="eligibilityUnitMembers"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <choose>
+              <type>
+               <javaclass name="curam.creole.value.Message"/>
+              </type>
+               <when>
+                <condition>
+                  <intervalvalue>
+                    <reference attribute="isIncapableOfWorkingTimeline">
+                      <create ruleclass="IncapableOfWorkingCPRCalculator" ruleset="IncapableOfWorkingEligibilityAndEntitlementRuleSet">
+                        <current/>
+                      </create>
+                    </reference>
+                  </intervalvalue>
+                </condition>
+                <value>
+                  <ResourceMessage
+                key="IncapableOfWorking.IsIncapableOfWorking"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+                </value>
+              </when>
+              <when>
+                <condition>
+                  <intervalvalue>
+                    <reference attribute="isEligibleWifeTimeline">
+                      <create ruleclass="IncapableOfWorkingCPRCalculator" ruleset="IncapableOfWorkingEligibilityAndEntitlementRuleSet">
+                        <current/>
+                      </create>
+                    </reference>
+                  </intervalvalue>
+                </condition>
+                <value>
+                 <ResourceMessage
+                key="Family.IsaElgibileWife"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+                </value>
+              </when>
+              <when>
+                <condition>
+                  <intervalvalue>
+                    <reference attribute="isDependentChildTimeline">
+                      <create ruleclass="IncapableOfWorkingCPRCalculator" ruleset="IncapableOfWorkingEligibilityAndEntitlementRuleSet">
+                        <current/>
+                      </create>
+                    </reference>
+                  </intervalvalue>
+                </condition>
+                <value>
+                 <ResourceMessage
+                key="Family.IsaDependentChild"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+                </value>
+              </when>
+               
+              <otherwise>
+                <value>
+                 <ResourceMessage
+                key="IncapableOfWorking.IsIncapableOfWorking"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+                </value>
+              </otherwise>
+            </choose>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  <!-- <derivation>
       <timelineoperation>
         <dynamiclist>
           <list>
@@ -184,7 +262,7 @@
             <choose>
               <type>
                 <javaclass name="curam.creole.value.Message"/>
-              </type>
+              </type> 
               <when>
                 <condition>
                   <intervalvalue>
@@ -214,7 +292,7 @@
           </listitemexpression>
         </dynamiclist>
       </timelineoperation>
-    </derivation>
+    </derivation>-->
   </Attribute>
 
 
