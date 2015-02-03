@@ -839,8 +839,11 @@
                       <reference attribute="age">
                         <reference attribute="person"/>
                       </reference>
-                      <Number value="17"/>
+                      <Number value="18"/>
                     </compare>
+                    <reference attribute="isSingle">
+                      <reference attribute="person"/>
+                    </reference>
                     <reference attribute="isMemberEnrolledInSchool">
                       <reference attribute="person"/>
                     </reference>
@@ -3061,6 +3064,34 @@
         </all>
       </derivation>
     </Attribute>
+    <Attribute name="isMaleHeadOfHouseholdMarriedAbove18">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="isMale">
+                <reference attribute="headOfHousehold"/>
+              </reference>
+              <reference attribute="isMarried">
+                <reference attribute="headOfHousehold"/>
+              </reference>
+              <compare comparison=">=">
+                <reference attribute="age">
+                  <reference attribute="headOfHousehold"/>
+                </reference>
+                <Number value="18"/>
+              </compare>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
     <Attribute name="isFamilyInNeed">
       <type>
         <javaclass name="Boolean"/>
@@ -3072,7 +3103,17 @@
               <javaclass name="Boolean"/>
             </listof>
             <members>
-              <reference attribute="isMaleHeadOfHouseholdMarriedUnder18AndEnrolledInEducation"/>
+              <any>
+                <fixedlist>
+                  <listof>
+                    <javaclass name="Boolean"/>
+                  </listof>
+                  <members>
+                    <reference attribute="isMaleHeadOfHouseholdMarriedUnder18AndEnrolledInEducation"/>
+                    <reference attribute="isMaleHeadOfHouseholdMarriedAbove18"/>
+                  </members>
+                </fixedlist>
+              </any>
               <any>
                 <dynamiclist>
                   <list>
