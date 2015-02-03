@@ -478,6 +478,52 @@
         </Attribute>
 
 
+<Attribute name="monthlyAmountTimeline">
+            <type>
+                <javaclass name="curam.creole.value.Timeline">
+                    <javaclass name="Number"/>
+                </javaclass>
+            </type>
+            <derivation>
+                <timelineoperation>
+                    <choose>
+                        <type>
+                            <javaclass name="Number"/>
+                        </type>
+                        <when>
+                            <condition>
+                                <compare comparison="&lt;">
+                                    <intervalvalue>
+                                        <reference attribute="totalCountableIncomeTimeline"/>
+                                    </intervalvalue>
+                                    <intervalvalue>
+                                        <reference attribute="primaryBeneficiaryAmount"/>
+                                    </intervalvalue>
+
+                                </compare>
+                            </condition>
+                            <value>
+                                <arithmetic operation="-">
+                                    <intervalvalue>
+                                        <reference attribute="primaryBeneficiaryAmount"/>
+                                    </intervalvalue>
+                                    <intervalvalue>
+                                        <reference attribute="totalCountableIncomeTimeline"/>
+                                    </intervalvalue>
+                                </arithmetic>
+                            </value>
+                        </when>
+                        <otherwise>
+                            <value>
+                                <Number value="0"/>
+                            </value>
+                        </otherwise>
+                    </choose>
+                </timelineoperation>
+            </derivation>
+        </Attribute>
+
+
         <Attribute name="primaryBeneficiaryAmount">
             <type>
                 <javaclass name="curam.creole.value.Timeline">
