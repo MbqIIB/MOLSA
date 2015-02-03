@@ -6,9 +6,12 @@ import java.util.List;
 import com.google.inject.Inject;
 
 import curam.application.codetable.impl.APPLICATIONSTATUSEntry;
+import curam.application.entity.struct.ApplicationDtls;
 import curam.application.entity.struct.ApplicationKey;
 import curam.application.impl.Application;
 import curam.application.impl.ApplicationDAO;
+import curam.application.impl.ApplicationStatus;
+import curam.application.impl.ApplicationStatusDAO;
 import curam.application.impl.ProgramApplication;
 import curam.application.impl.ProgramApplicationStatusDAO;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
@@ -25,17 +28,28 @@ import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationDet
 import curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendationDAO;
 import curam.creoleprogramrecommendation.impl.SimulatedDetermination;
 import curam.creoleprogramrecommendation.impl.SimulatedDeterminationManager;
+import curam.events.ApplicationDisposed;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
+import curam.piwrapper.user.impl.User;
+import curam.piwrapper.user.impl.UserDAO;
 import curam.util.events.impl.EventHandler;
+import curam.util.events.impl.EventService;
 import curam.util.events.struct.Event;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.persistence.GuiceWrapper;
+import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 
 public class MOLSAApplicationDenialHandler implements EventHandler {
 
+
+  @Inject
+  private ApplicationStatusDAO applicationStatusDAO;
+
+  @Inject
+  private UserDAO userDAO;
 	@Inject
 	private CREOLEProgramRecommendationDAO creoleProgramRecommendationDAO;
 
@@ -115,41 +129,34 @@ public class MOLSAApplicationDenialHandler implements EventHandler {
 						if (actionTaken) {
 							programApplication.approve();
 						} else {
+						  if(application.getStatus().getCode().equalsIgnoreCase(APPLICATIONSTATUSEntry.READY_FOR_DETERMINATION.getCode()))
+						  {
+						    programApplication.deny();
+						    application.dispose();
+						  }
 						  //The call of application denial has been changes to dispose because the application denial expects the status of the application to be 'Ready For Determination' 
-						  application.dispose();
+						  else{
+						    
+						    //change the status of application to ready for determination
+						    ApplicationStatus applicationStatus = (ApplicationStatus) this.applicationStatusDAO.newInstance();
+						    applicationStatus.setStatus(APPLICATIONSTATUSEntry.READY_FOR_DETERMINATION);
+						    applicationStatus.setUserName(((User) this.userDAO.get(TransactionInfo.getProgramUser())).getUsername());
+						    applicationStatus.setApplicationID(application.getID().longValue());
+						    applicationStatus.insert();
+						    application.setCurrentApplicationStatusID(applicationStatus.getID());
+						    application.modify(application.getVersionNo());
+						    //deny the program application
+						    programApplication.deny();
+						    //dispose the application
+						    application.dispose();
+						  }
 						}
-
 					}
-
 				}
 			}
-
-			completeMilestone(readMilestoneDeliveryDetails, event);
 
 		}
 
 	}
-
-	private void completeMilestone(
-			ReadMilestoneDeliveryDetails readMilestoneDeliveryDetails,
-			Event paramEvent) throws AppException, InformationalException {
-		MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
-				.newInstance();
-		MilestoneDeliveryDtls modifyMilestoneDeliveryDtls = new MilestoneDeliveryDtls();
-		modifyMilestoneDeliveryDtls.dtls.milestoneDeliveryID = paramEvent.primaryEventData;
-		modifyMilestoneDeliveryDtls.dtls.actualStartDate = readMilestoneDeliveryDetails.readDetails.actualStartDate;
-		modifyMilestoneDeliveryDtls.dtls.actualEndDate = Date.getCurrentDate();
-		modifyMilestoneDeliveryDtls.dtls.caseID = readMilestoneDeliveryDetails.readDetails.caseID;
-		modifyMilestoneDeliveryDtls.dtls.comments = readMilestoneDeliveryDetails.readDetails.comments;
-		modifyMilestoneDeliveryDtls.dtls.expectedEndDate = readMilestoneDeliveryDetails.readDetails.expectedEndDate;
-		modifyMilestoneDeliveryDtls.dtls.expectedStartDate = readMilestoneDeliveryDetails.readDetails.expectedStartDate;
-		modifyMilestoneDeliveryDtls.dtls.milestoneConfigurationID = readMilestoneDeliveryDetails.readDetails.milestoneConfigurationID;
-		modifyMilestoneDeliveryDtls.dtls.ownerUserName = readMilestoneDeliveryDetails.readDetails.ownerUserName;
-		modifyMilestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.COMPLETED
-				.toString();
-		modifyMilestoneDeliveryDtls.dtls.versionNo = readMilestoneDeliveryDetails.readDetails.versionNo;
-
-		milestoneDeliveryObj.modify(modifyMilestoneDeliveryDtls);
-	}
-
+	
 }
