@@ -257,6 +257,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -301,6 +302,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -343,6 +345,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"
 										/>
 									</members>
@@ -377,6 +380,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -422,6 +426,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -465,6 +470,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -506,6 +512,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -542,6 +549,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 									</members>
@@ -576,6 +584,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -613,6 +622,7 @@
 										</javaclass>
 									</listof>
 									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
 										<reference attribute="seniorCitizenSimulatedDeterminations"/>
 										<reference attribute="handicapSimulatedDeterminations"/>
 										<reference
@@ -651,7 +661,9 @@
 											/>
 										</javaclass>
 									</listof>
-									<members/>
+									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
+									</members>
 								</fixedlist>
 							</joinlists>
 						</specify>
@@ -685,7 +697,9 @@
 											/>
 										</javaclass>
 									</listof>
-									<members/>
+									<members>
+										<reference attribute="simulatedDeterminationsWithoutMaidAssistanceForLegacyCases"/>
+									</members>
 								</fixedlist>
 							</joinlists>
 						</specify>
@@ -2092,7 +2106,194 @@
 				</singleitem>
 			</derivation>
 		</Attribute>
-		<Attribute name="isWifeTimeline">
+		
+		<Attribute name="maritalStatusRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="MaritalStatus" ruleset="MaritalStatusDataRuleSet"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="MaritalStatus" ruleset="MaritalStatusDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="caseParticipantRoleRecord"/>
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="participant">
+								<current/>
+							</reference>
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="caseParticipantRoleRecord"/>
+							</reference>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="isSingleTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="maritalStatusRecords"/>
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS1" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isWidowTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="maritalStatusRecords"/>
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS17000" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isDesertedTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="maritalStatusRecords"/>
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS17001" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isMarriedTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="maritalStatusRecords"/>
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS2" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="isDivorcedTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="maritalStatusRecords"/>
+							</list>
+							<listitemexpression>
+								<equals>
+									<intervalvalue>
+										<reference attribute="maritalStatus">
+											<current />
+										</reference>
+									</intervalvalue>
+									<Code table="MaritalStatus">
+										<String value="MS4" />
+									</Code>
+								</equals>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		
+		
+		
+		
+		
+		
+		<Attribute name="maritalStatusTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
 					<javaclass name="Boolean"/>
@@ -2109,9 +2310,144 @@
 								<not>
 									<equals>
 										<null/>
-										<reference attribute="pdcGenderRecord"/>
+										<reference attribute="maritalStatusRecord"/>
 									</equals>
 								</not>
+							</condition>
+							<value>
+								<intervalvalue>
+									<reference attribute="exists">
+										<reference attribute="maritalStatusRecord"/>
+									</reference>
+								</intervalvalue>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false/>
+							</value>
+						</otherwise>
+					</choose>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="exceptionalRecords">
+			<type>
+				<javaclass name="List">
+					<ruleclass name="Exceptional" ruleset="ExceptionalDataRuleSet"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<filter>
+					<list>
+						<readall ruleclass="Exceptional" ruleset="ExceptionalDataRuleSet">
+							<match retrievedattribute="caseID">
+								<reference attribute="caseID">
+									<reference attribute="caseParticipantRoleRecord"/>
+								</reference>
+							</match>
+						</readall>
+					</list>
+					<listitemexpression>
+						<equals>
+							<reference attribute="caseParticipantRoleID">
+								<reference attribute="caseParticipantRoleRecord"/>
+							</reference>
+							<reference attribute="participant">
+								<current/>
+							</reference>
+						</equals>
+					</listitemexpression>
+				</filter>
+			</derivation>
+		</Attribute>
+		<Attribute name="exceptionaleligibilityTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<dynamiclist>
+							<list>
+								<reference attribute="exceptionalRecords"/>
+							</list>
+							<listitemexpression>
+								<intervalvalue>
+									<reference attribute="exists">
+										<current/>
+									</reference>
+								</intervalvalue>
+							</listitemexpression>
+						</dynamiclist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		<Attribute name="maritalStatusAndExceptionalEligiblityTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<any>
+						<fixedlist>
+							<listof>
+								<javaclass name="Boolean"/>
+							</listof>
+							<members>
+								<intervalvalue>
+									<reference attribute="exceptionaleligibilityTimeline"/>
+								</intervalvalue>
+								<intervalvalue>
+									<reference attribute="maritalStatusTimeline"/>
+								</intervalvalue>
+							</members>
+						</fixedlist>
+					</any>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+		
+		<Attribute name="isWifeTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean"/>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<choose>
+						<type>
+							<javaclass name="Boolean"/>
+						</type>
+						<when>
+							<condition>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean"/>
+										</listof>
+										<members>
+											<not>
+												<equals>
+													<null/>
+													<reference attribute="pdcGenderRecord"/>
+												</equals>
+											</not>
+											<not>
+												<equals>
+													<null/>
+													<reference attribute="maritalStatusRecord"/>
+												</equals>
+											</not>
+										</members>
+									</fixedlist>
+								</all>
 							</condition>
 							<value>
 								<all>
@@ -2982,56 +3318,81 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<all>
-						<fixedlist>
-							<listof>
-								<javaclass name="Boolean"/>
-							</listof>
-							<members>
-								<equals>
-									<intervalvalue>
-										<reference attribute="maritalStatus">
-											<reference attribute="maritalStatusRecord">
-												<reference attribute="memberCPRCalculator"/>
-											</reference>
-										</reference>
-									</intervalvalue>
-									<Code table="MaritalStatus">
-										<String value="MS1"/>
-									</Code>
-								</equals>
-								<equals>
-									<intervalvalue>
-										<reference attribute="gender">
-											<reference attribute="pdcGenderRecord">
-												<reference attribute="memberCPRCalculator"/>
-											</reference>
-										</reference>
-									</intervalvalue>
-									<Code table="Gender">
-										<String value="SX1"/>
-									</Code>
-								</equals>
+					<choose>
+						<type>
+							<javaclass name="Boolean"/>
+						</type>
+						<when>
+							<condition>
 								<not>
-									<intervalvalue>
-										<reference attribute="isAgeUnderSixTimeline"/>
-									</intervalvalue>
-								</not>
-								<intervalvalue>
-									<reference attribute="hasEnrolledForEducation">
-										<reference attribute="memberCPRCalculator"/>
-									</reference>
-								</intervalvalue>
-								<not>
-									<intervalvalue>
-										<reference attribute="hasEarnedIncomeTimeline">
+									<equals>
+										<null/>
+										<reference attribute="maritalStatusRecord">
 											<reference attribute="memberCPRCalculator"/>
 										</reference>
-									</intervalvalue>
+									</equals>
 								</not>
-							</members>
-						</fixedlist>
-					</all>
+							</condition>
+							<value>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean"/>
+										</listof>
+										<members>
+											<equals>
+												<intervalvalue>
+													<reference attribute="maritalStatus">
+														<reference attribute="maritalStatusRecord">
+															<reference attribute="memberCPRCalculator"/>
+														</reference>
+													</reference>
+												</intervalvalue>
+												<Code table="MaritalStatus">
+													<String value="MS1"/>
+												</Code>
+											</equals>
+											<equals>
+												<intervalvalue>
+													<reference attribute="gender">
+														<reference attribute="pdcGenderRecord">
+															<reference attribute="memberCPRCalculator"/>
+														</reference>
+													</reference>
+												</intervalvalue>
+												<Code table="Gender">
+													<String value="SX1"/>
+												</Code>
+											</equals>
+											<not>
+												<intervalvalue>
+													<reference attribute="isAgeUnderSixTimeline"/>
+												</intervalvalue>
+											</not>
+											<intervalvalue>
+												<reference attribute="hasEnrolledForEducation">
+													<reference attribute="memberCPRCalculator"/>
+												</reference>
+											</intervalvalue>
+											<not>
+												<intervalvalue>
+													<reference attribute="hasEarnedIncomeTimeline">
+														<reference attribute="memberCPRCalculator"/>
+													</reference>
+												</intervalvalue>
+											</not>
+										</members>
+									</fixedlist>
+								</all>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false/>
+							</value>
+						</otherwise>
+					</choose>
+					
 				</timelineoperation>
 			</derivation>
 		</Attribute>
@@ -3043,64 +3404,88 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<all>
-						<fixedlist>
-							<listof>
-								<javaclass name="Boolean"/>
-							</listof>
-							<members>
-								<equals>
-									<intervalvalue>
-										<reference attribute="maritalStatus">
-											<reference attribute="maritalStatusRecord">
-												<reference attribute="memberCPRCalculator"/>
-											</reference>
-										</reference>
-									</intervalvalue>
-									<Code table="MaritalStatus">
-										<String value="MS1"/>
-									</Code>
-								</equals>
-								<equals>
-									<intervalvalue>
-										<reference attribute="gender">
-											<reference attribute="pdcGenderRecord">
-												<reference attribute="memberCPRCalculator"/>
-											</reference>
-										</reference>
-									</intervalvalue>
-									<Code table="Gender">
-										<String value="SX2"/>
-									</Code>
-								</equals>
+					<choose>
+						<type>
+							<javaclass name="Boolean"/>
+						</type>
+						<when>
+							<condition>
 								<not>
-									<intervalvalue>
-										<reference attribute="isAgeUnderSixTimeline"/>
-									</intervalvalue>
-								</not>
-								<compare comparison="&lt;">
-									<intervalvalue>
-										<reference attribute="ageTimeline">
+									<equals>
+										<null/>
+										<reference attribute="maritalStatusRecord">
 											<reference attribute="memberCPRCalculator"/>
 										</reference>
-									</intervalvalue>
-									<Number value="18"/>
-								</compare>
-								<intervalvalue>
-									<reference attribute="hasEnrolledForEducation">
-										<reference attribute="memberCPRCalculator"/>
-									</reference>
-								</intervalvalue>
-								<not>
-									<intervalvalue>
-										<reference attribute="hasEarnedIncomeTimeline">
-											<reference attribute="memberCPRCalculator"/>
-										</reference>
-									</intervalvalue>
+									</equals>
 								</not>
-							</members>
-						</fixedlist>
-					</all>
+							</condition>
+							<value>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean"/>
+										</listof>
+										<members>
+											<equals>
+												<intervalvalue>
+													<reference attribute="maritalStatus">
+														<reference attribute="maritalStatusRecord">
+															<reference attribute="memberCPRCalculator"/>
+														</reference>
+													</reference>
+												</intervalvalue>
+												<Code table="MaritalStatus">
+													<String value="MS1"/>
+												</Code>
+											</equals>
+											<equals>
+												<intervalvalue>
+													<reference attribute="gender">
+														<reference attribute="pdcGenderRecord">
+															<reference attribute="memberCPRCalculator"/>
+														</reference>
+													</reference>
+												</intervalvalue>
+												<Code table="Gender">
+													<String value="SX2"/>
+												</Code>
+											</equals>
+											<not>
+												<intervalvalue>
+													<reference attribute="isAgeUnderSixTimeline"/>
+												</intervalvalue>
+											</not>
+											<compare comparison="&lt;">
+												<intervalvalue>
+													<reference attribute="ageTimeline">
+														<reference attribute="memberCPRCalculator"/>
+													</reference>
+												</intervalvalue>
+												<Number value="18"/>
+											</compare>
+											<intervalvalue>
+												<reference attribute="hasEnrolledForEducation">
+													<reference attribute="memberCPRCalculator"/>
+												</reference>
+											</intervalvalue>
+											<not>
+												<intervalvalue>
+													<reference attribute="hasEarnedIncomeTimeline">
+														<reference attribute="memberCPRCalculator"/>
+													</reference>
+												</intervalvalue>
+											</not>
+										</members>
+									</fixedlist>
+								</all>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false/>
+							</value>
+						</otherwise>
+					</choose>
 				</timelineoperation>
 			</derivation>
 		</Attribute>
@@ -3112,59 +3497,84 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<all>
-						<fixedlist>
-							<listof>
-								<javaclass name="Boolean"/>
-							</listof>
-							<members>
-								<equals>
-									<intervalvalue>
-										<reference attribute="maritalStatus">
-											<reference attribute="maritalStatusRecord">
-												<reference attribute="memberCPRCalculator"/>
-											</reference>
-										</reference>
-									</intervalvalue>
-									<Code table="MaritalStatus">
-										<String value="MS1"/>
-									</Code>
-								</equals>
-								<equals>
-									<intervalvalue>
-										<reference attribute="gender">
-											<reference attribute="pdcGenderRecord">
-												<reference attribute="memberCPRCalculator"/>
-											</reference>
-										</reference>
-									</intervalvalue>
-									<Code table="Gender">
-										<String value="SX2"/>
-									</Code>
-								</equals>
-								<intervalvalue>
-									<reference attribute="pdcBirthAndDeathRecordExists">
-										<reference attribute="memberCPRCalculator"/>
-									</reference>
-								</intervalvalue>
-								<compare comparison="&gt;=">
-									<intervalvalue>
-										<reference attribute="ageTimeline">
-											<reference attribute="memberCPRCalculator"/>
-										</reference>
-									</intervalvalue>
-									<Number value="18"/>
-								</compare>
+					<choose>
+						<type>
+							<javaclass name="Boolean"/>
+						</type>
+						<when>
+							<condition>
 								<not>
-									<intervalvalue>
-										<reference attribute="hasEarnedIncomeTimeline">
+									<equals>
+										<null/>
+										<reference attribute="maritalStatusRecord">
 											<reference attribute="memberCPRCalculator"/>
 										</reference>
-									</intervalvalue>
+									</equals>
 								</not>
-							</members>
-						</fixedlist>
-					</all>
+							</condition>
+							<value>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean"/>
+										</listof>
+										<members>
+											<equals>
+												<intervalvalue>
+													<reference attribute="maritalStatus">
+														<reference attribute="maritalStatusRecord">
+															<reference attribute="memberCPRCalculator"/>
+														</reference>
+													</reference>
+												</intervalvalue>
+												<Code table="MaritalStatus">
+													<String value="MS1"/>
+												</Code>
+											</equals>
+											<equals>
+												<intervalvalue>
+													<reference attribute="gender">
+														<reference attribute="pdcGenderRecord">
+															<reference attribute="memberCPRCalculator"/>
+														</reference>
+													</reference>
+												</intervalvalue>
+												<Code table="Gender">
+													<String value="SX2"/>
+												</Code>
+											</equals>
+											<intervalvalue>
+												<reference attribute="pdcBirthAndDeathRecordExists">
+													<reference attribute="memberCPRCalculator"/>
+												</reference>
+											</intervalvalue>
+											<compare comparison="&lt;=">
+												<intervalvalue>
+													<reference attribute="ageTimeline">
+														<reference attribute="memberCPRCalculator"/>
+													</reference>
+												</intervalvalue>
+												<Number value="18"/>
+											</compare>
+											<not>
+												<intervalvalue>
+													<reference attribute="hasEarnedIncomeTimeline">
+														<reference attribute="memberCPRCalculator"/>
+													</reference>
+												</intervalvalue>
+											</not>
+										</members>
+									</fixedlist>
+								</all>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false/>
+							</value>
+						</otherwise>
+					</choose>
+					
 				</timelineoperation>
 			</derivation>
 		</Attribute>

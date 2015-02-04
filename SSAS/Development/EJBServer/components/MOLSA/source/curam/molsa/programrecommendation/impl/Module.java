@@ -13,6 +13,7 @@ import curam.core.sl.infrastructure.assessment.event.impl.AssessmentEngineEvent;
 import curam.core.sl.infrastructure.impl.EvidenceControllerInterface;
 import curam.core.sl.infrastructure.impl.ReciprocalEvidenceConversion;
 import curam.creoleprogramrecommendation.impl.AuthorizationEvent;
+import curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendationEvent;
 import curam.creoleprogramrecommendation.impl.DeliveryCreator;
 import curam.molsa.casedetermination.sl.event.impl.MOLSAAssessmentEngineEventListener;
 import curam.molsa.core.sl.impl.MOLSAAnonymousMDCreator;
@@ -37,6 +38,16 @@ public class Module extends AbstractModule {
 				.newMapBinder(binder(), PROGRAMTYPEEntry.class,
 						DeliveryCreator.class);
 
+		 // Program Recommendation Event Bindings
+	    final Multibinder<CREOLEProgramRecommendationEvent>
+	    programRecommendationEventListeners = Multibinder
+	        .newSetBinder(binder(),
+	            new TypeLiteral<CREOLEProgramRecommendationEvent>() {
+	              // type literal - intentionally blank
+	            });
+	    programRecommendationEventListeners.addBinding().to(
+	        MOLSAProgramRecommendationEventListener.class);
+		
 		deliveryCreatorImplementations.addBinding(
 				PROGRAMTYPEEntry.SOCIALASSISTANCE).to(
 				MOLSAProductDeliveryCreator.class);
@@ -72,6 +83,8 @@ public class Module extends AbstractModule {
 
 		registerMilestoneDeliveryCreator();
 		registerProductDeliveryKey();
+		
+		
 		
 		// Authorize Event Bindings
 	    final Multibinder<AuthorizationEvent> authorizationEventListeners =

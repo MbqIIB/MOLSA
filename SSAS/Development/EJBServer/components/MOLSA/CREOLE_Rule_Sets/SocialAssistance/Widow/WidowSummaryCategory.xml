@@ -342,17 +342,50 @@
     </type>
     <derivation>
       <timelineoperation>
-        <intervalvalue>
-          <reference attribute="passFailMessageTimeline">
-            <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
-              <reference attribute="hasHouseholdPassedIncomeTestTimeline">
+        <choose>
+          <type>
+            <javaclass name="curam.creole.value.Message"/>
+          </type>
+          <when>
+            <condition>
+              <equals>
                 <intervalvalue>
-                  <reference attribute="widowEligibilityUnitCalculator"/>
+                  <reference attribute="filterTypeTimeline">
+                    <intervalvalue>
+                      <reference attribute="widowHouseholdMember">
+                        <intervalvalue>
+                          <reference attribute="widowEligibilityUnitCalculator"/>
+                        </intervalvalue>
+                      </reference>
+                    </intervalvalue>
+                  </reference>
                 </intervalvalue>
-              </reference>
-            </create>
-          </reference>
-        </intervalvalue>
+                <String value="InEligibleMember"/>
+              </equals>
+            </condition>
+            <value>
+              <ResourceMessage
+                key="SocialAssistance.Undetermined"
+                resourceBundle="curam.molsa.rules.ProductDisplay"
+              />
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <intervalvalue>
+                <reference attribute="passFailMessageTimeline">
+                  <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
+                    <reference attribute="hasHouseholdPassedIncomeTestTimeline">
+                      <intervalvalue>
+                        <reference attribute="widowEligibilityUnitCalculator"/>
+                      </intervalvalue>
+                    </reference>
+                  </create>
+                </reference>
+              </intervalvalue>
+            </value>
+          </otherwise>
+        </choose>
       </timelineoperation>
     </derivation>
   </Attribute>

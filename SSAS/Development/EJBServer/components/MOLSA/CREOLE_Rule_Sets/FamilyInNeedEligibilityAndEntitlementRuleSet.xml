@@ -492,57 +492,9 @@
 				</javaclass>
 			</type>
 			<derivation>
-				<timelineoperation>
-					<any>
-						<dynamiclist>
-							<list>
-								<filter>
-									<list>
-										<readall ruleclass="MaritalStatus"
-											ruleset="MaritalStatusDataRuleSet">
-											<match retrievedattribute="caseID">
-												<reference attribute="caseID">
-												<reference attribute="caseParticipantRoleRecord"/>
-												</reference>
-											</match>
-										</readall>
-									</list>
-									<listitemexpression>
-										<equals>
-											<reference attribute="caseParticipantRoleID">
-												<reference attribute="caseParticipantRoleRecord"/>
-											</reference>
-											<reference attribute="participant">
-												<current/>
-											</reference>
-										</equals>
-									</listitemexpression>
-								</filter>
-							</list>
-							<listitemexpression>
-								<all>
-									<fixedlist>
-										<listof>
-											<javaclass name="Boolean"/>
-										</listof>
-										<members>
-											<equals>
-												<intervalvalue>
-												<reference attribute="maritalStatus">
-												<current/>
-												</reference>
-												</intervalvalue>
-												<Code table="MaritalStatus">
-												<String value="MS2"/>
-												</Code>
-											</equals>
-										</members>
-									</fixedlist>
-								</all>
-							</listitemexpression>
-						</dynamiclist>
-					</any>
-				</timelineoperation>
+				<reference attribute="isMarriedTimeline">
+					<reference attribute="memberCPRCalculator"/>
+				</reference>
 			</derivation>
 		</Attribute>
 		<Attribute name="isFemaleTimeline">
@@ -1859,6 +1811,15 @@
 												<String value="RT1"/>
 												</Code>
 												</equals>
+												<intervalvalue>
+													<reference attribute="isDependentChildTimeline">
+														<create ruleclass="FamilyInNeedCPRCalculator">
+															<reference attribute="related_relatedParticipant">
+																<current/>
+															</reference>
+														</create>
+													</reference>
+												</intervalvalue>
 											</members>
 										</fixedlist>
 									</all>

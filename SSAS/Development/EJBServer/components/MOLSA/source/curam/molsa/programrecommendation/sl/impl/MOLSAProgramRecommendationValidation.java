@@ -13,6 +13,7 @@ import curam.core.sl.infrastructure.entity.intf.EvidenceDescriptor;
 import curam.core.sl.infrastructure.entity.struct.CaseIDAndEvidenceTypeKey;
 import curam.core.sl.infrastructure.fact.EvidenceControllerFactory;
 import curam.core.sl.infrastructure.impl.EvidenceControllerInterface;
+import curam.core.sl.infrastructure.struct.EIEvidenceKey;
 import curam.core.sl.infrastructure.struct.EIEvidenceKeyList;
 import curam.core.sl.struct.EvidenceCaseKey;
 import curam.core.sl.struct.EvidenceTypeKey;
@@ -47,7 +48,7 @@ public class MOLSAProgramRecommendationValidation
 
 	@Inject
 	private EvidenceTypeVersionDefDAO etVerDefDAO;
-
+	protected static final String kPerson = "person";
 	/**
 	 * Constructor. Guice Set-up.
 	 */
@@ -69,7 +70,7 @@ public class MOLSAProgramRecommendationValidation
 	@Override
 	public void validate(ValidateProgramRecommendationDetails details)
 			throws AppException, InformationalException {
-		validateHeadOfHouseholdEvidence(details);
+		//validateHeadOfHouseholdEvidence(details);
 		validateHouseholdMemberEvidence(details);
 
 		TransactionInfo.getInformationalManager().failOperation();
@@ -208,9 +209,9 @@ public class MOLSAProgramRecommendationValidation
 						Long.parseLong(caseParticipantRoleIDAttribute
 								.getValue()));
 
-				validateMaritalStatusEvidence(details,
+				/*validateMaritalStatusEvidence(details,
 						Long.parseLong(caseParticipantRoleIDAttribute
-								.getValue()));
+								.getValue()));*/
 				validateGenderEvidence(details,
 						Long.parseLong(caseParticipantRoleIDAttribute
 								.getValue()));
@@ -361,6 +362,7 @@ public class MOLSAProgramRecommendationValidation
 			long caseParticipantRoleID) throws AppException,
 			InformationalException {
 
+		Boolean flag = false;
 		final CaseIDAndEvidenceTypeKey caseIDAndEvidenceTypeKey = new CaseIDAndEvidenceTypeKey();
 		EIEvidenceKeyList eiEvidenceKeyList = new EIEvidenceKeyList();
 		final EvidenceControllerInterface evidenceControllerObj = (EvidenceControllerInterface) EvidenceControllerFactory
@@ -384,9 +386,47 @@ public class MOLSAProgramRecommendationValidation
 
 		// get the caseID and participantID
 		caseParticipantRoleKey.caseParticipantRoleID = caseParticipantRoleID;
+		EvidenceCaseKey evidenceCaseKey = new EvidenceCaseKey();
+		EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+		evidenceTypeKey.evidenceType =  CASEEVIDENCE.BIRTHDEATHDETAILS;
+		EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+				.instance(evidenceTypeKey, Date.getCurrentDate());
+		
 
-		if (eiEvidenceKeyList.dtls.size() < 1) {
+		if (eiEvidenceKeyList.dtls.size() >= 1) {
+			
+			for(EIEvidenceKey evidence : eiEvidenceKeyList.dtls){
+				evidenceCaseKey.evidenceKey.evType = CASEEVIDENCE.BIRTHDEATHDETAILS;
+				evidenceCaseKey.caseIDKey.caseID = details.caseID;
+				evidenceCaseKey.evidenceKey.evidenceID = evidence.evidenceID;
+				ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
+						.readEvidence(evidenceCaseKey);
 
+				DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
+
+				final curam.dynamicevidence.definition.impl.EvidenceTypeDef evidenceType = etDefDAO
+						.readActiveEvidenceTypeDefByTypeCode(evidenceTypeKey.evidenceType);
+
+				curam.dynamicevidence.definition.impl.EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+						.getActiveEvidenceTypeVersionAtDate(evidenceType,
+								Date.getCurrentDate());
+
+				if (null != evTypeVersion) {
+					DynamicEvidenceDataAttributeDetails caseParticipantRoleIDAttribute = dynamicEvidenceDataDetails
+							.getAttribute(kPerson);
+
+					if(Long.parseLong(caseParticipantRoleIDAttribute.getValue())==caseParticipantRoleID){
+						flag = true;
+					}
+					
+
+				}
+				
+			}
+
+		}
+
+		if(!flag){
 			final AppException appException = new AppException(
 					MOLSAPROGRAMRECOMMENDATIONCHECKELIGIBILITY.ERR_HHOLDMEMBER_XRV_BIRTH_AND_DEATH_EVIDENCE_DOES_NOT_EXIST);
 			// get the caseID and participantID
@@ -406,5 +446,6 @@ public class MOLSAProgramRecommendationValidation
 							0);
 			return;
 		}
+		
 	}
 }

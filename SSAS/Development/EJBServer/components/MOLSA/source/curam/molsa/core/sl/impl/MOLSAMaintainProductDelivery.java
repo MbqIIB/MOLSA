@@ -648,7 +648,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 						.readEvidence(evidenceCaseKey);
 
 				final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
-
+ 
 				if (null != dynamicEvidenceDataDetails.getAttribute(kendDate)
 						.getValue()
 						&& !dynamicEvidenceDataDetails.getAttribute(kendDate)
