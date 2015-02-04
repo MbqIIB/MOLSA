@@ -186,6 +186,16 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
           curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
           0);
     }
+    
+    if(key.dtls.smsMessageType.length()==0){
+        curam.core.sl.infrastructure.impl.ValidationManagerFactory
+        .getManager()
+        .throwWithLookup(
+            new AppException(
+                MOLSASMSSERVICE.SMS_CATEGOEY_AND_TEMPLATE_MUST_BE_ENTERED),
+            curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
+            0);
+      }
     SoapUser soapUser = getUserDetails();
     Authenticate authenticate = new Authenticate();
     authenticate.setUser(soapUser);
