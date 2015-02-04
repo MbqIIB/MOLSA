@@ -1,174 +1,346 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Licensed Materials - Property of IBM
-  
-  Copyright IBM Corporation 2012. All Rights Reserved.
- 
-  US Government Users Restricted Rights - Use, duplication or disclosure 
-  restricted by GSA ADP Schedule Contract with IBM Corp.
--->
-<!--
-    Copyright 2011-2012 Curam Software Ltd.
-    All rights reserved.
-
-    This software is the confidential and proprietary information of Curam
-    Software, Ltd. ("Confidential Information").  You shall not disclose such
-    Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Curam Software.
--->
+<!-- Licensed Materials - Property of IBM Copyright IBM Corporation 2012. 
+	All Rights Reserved. US Government Users Restricted Rights - Use, duplication 
+	or disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+<!-- Copyright 2011-2012 Curam Software Ltd. All rights reserved. This software 
+	is the confidential and proprietary information of Curam Software, Ltd. ("Confidential 
+	Information"). You shall not disclose such Confidential Information and shall 
+	use it only in accordance with the terms of the license agreement you entered 
+	into with Curam Software. -->
 <Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="../../../../../../../../../Curam/catalog/RuleSet.xsd"
-  extends="SASummaryCategory"
-  extendsRuleSet="SocialAssistanceDisplayRuleSet" name="OrphanSummaryCategory">
+	xsi:noNamespaceSchemaLocation="../../../../../../../../../Curam/catalog/RuleSet.xsd"
+	extends="SASummaryCategory" extendsRuleSet="SocialAssistanceDisplayRuleSet"
+	name="OrphanSummaryCategory">
 
 
-  <!-- 
-    The eligibility rule object for the case.    
-    At program recommendation level, this attribute will be specified. 
-  -->
-  <Attribute name="orphanProductCase">
-    <type>
-      <ruleclass name="OrphanProductCase" ruleset="OrphanRuleSet"/>
-    </type>
-    <derivation>
-      <create ruleclass="OrphanProductCase" ruleset="OrphanRuleSet">
-        <specify attribute="productDeliveryCase">
-          <reference attribute="productDeliveryCase"/>
-        </specify>
-      </create>
-    </derivation>
-  </Attribute>
+	<!-- The eligibility rule object for the case. At program recommendation 
+		level, this attribute will be specified. -->
+	<Attribute name="orphanProductCase">
+		<type>
+			<ruleclass name="OrphanProductCase" ruleset="OrphanRuleSet" />
+		</type>
+		<derivation>
+			<create ruleclass="OrphanProductCase" ruleset="OrphanRuleSet">
+				<specify attribute="productDeliveryCase">
+					<reference attribute="productDeliveryCase" />
+				</specify>
+			</create>
+		</derivation>
+	</Attribute>
 
 
-  <!-- orphan calculator -->
-  <Attribute name="orphanEligibilityUnitCalculator">
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <ruleclass name="OrphanEligibilityUnitCalculator" ruleset="OrphanRuleSet"/>
-      </javaclass>
-    </type>
-    <derivation>
-      <reference attribute="orphanEligibilityUnitCalculator">
-        <reference attribute="orphanProgramCalculator">
-          <reference attribute="orphanProductCase"/>
-        </reference>
-      </reference>
-    </derivation>
-  </Attribute>
+	<!-- orphan calculator -->
+	<Attribute name="orphanEligibilityUnitCalculator">
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<ruleclass name="OrphanEligibilityUnitCalculator" ruleset="OrphanRuleSet" />
+			</javaclass>
+		</type>
+		<derivation>
+			<reference attribute="orphanEligibilityUnitCalculator">
+				<reference attribute="orphanProgramCalculator">
+					<reference attribute="orphanProductCase" />
+				</reference>
+			</reference>
+		</derivation>
+	</Attribute>
 
 
-  <Attribute name="eligibilityUnitTimeline">
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
-      </javaclass>
-    </type>
-    <derivation>
-      <timelineoperation>
-        <reference attribute="eligibilityUnit">
-          <reference attribute="orphanProductCase"/>
-        </reference>
-      </timelineoperation>
-    </derivation>
-  </Attribute>
+	<Attribute name="eligibilityUnitTimeline">
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+			</javaclass>
+		</type>
+		<derivation>
+			<timelineoperation>
+				<reference attribute="eligibilityUnit">
+					<reference attribute="orphanProductCase" />
+				</reference>
+			</timelineoperation>
+		</derivation>
+	</Attribute>
 
 
-  <Attribute name="dummyHouseholdUnit">
-    <type>
-      <ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
-    </type>
-    <derivation>
-      <create ruleclass="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet">
-        <specify attribute="mandatoryMembers">
-          <fixedlist>
-            <listof>
-              <ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
-            </listof>
-            <members/>
-          </fixedlist>
-        </specify>
-      </create>
-    </derivation>
-  </Attribute>
+	<Attribute name="dummyHouseholdUnit">
+		<type>
+			<ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet" />
+		</type>
+		<derivation>
+			<create ruleclass="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet">
+				<specify attribute="mandatoryMembers">
+					<fixedlist>
+						<listof>
+							<ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet" />
+						</listof>
+						<members />
+					</fixedlist>
+				</specify>
+			</create>
+		</derivation>
+	</Attribute>
 
 
-  <Attribute name="saContextPanelSubscreen">
-    <Annotations>
-      <DisplaySubscreen/>
-    </Annotations>
-    <type>
-      <javaclass name="List">
-        <ruleclass
-          name="SAContextPanelSubscreen"
-          ruleset="SocialAssistanceDisplayRuleSet"
-        />
-      </javaclass>
-    </type>
-    <derivation>
-      <fixedlist>
-        <listof>
-          <ruleclass
-            name="SAContextPanelSubscreen"
-            ruleset="SocialAssistanceDisplayRuleSet"
-          />
-        </listof>
-        <members>
-          <create
-            ruleclass="SAContextPanelSubscreen"
-            ruleset="SocialAssistanceDisplayRuleSet"
-          >
-            <reference attribute="eligibilityUnitTimeline"/>
-            <reference attribute="orphanProductCase"/>
-            <reference attribute="isProductDelivery">
-              <reference attribute="orphanProductCase"/>
-            </reference>
-            <reference attribute="caseID">
-              <reference attribute="orphanProductCase"/>
-            </reference>
-          </create>
-        </members>
-      </fixedlist>
-    </derivation>
-  </Attribute>
+	<Attribute name="saContextPanelSubscreen">
+		<Annotations>
+			<DisplaySubscreen />
+		</Annotations>
+		<type>
+			<javaclass name="List">
+				<ruleclass name="SAContextPanelSubscreen" ruleset="SocialAssistanceDisplayRuleSet" />
+			</javaclass>
+		</type>
+		<derivation>
+			<fixedlist>
+				<listof>
+					<ruleclass name="SAContextPanelSubscreen" ruleset="SocialAssistanceDisplayRuleSet" />
+				</listof>
+				<members>
+					<create ruleclass="SAContextPanelSubscreen" ruleset="SocialAssistanceDisplayRuleSet">
+						<reference attribute="eligibilityUnitTimeline" />
+						<reference attribute="orphanProductCase" />
+						<reference attribute="isProductDelivery">
+							<reference attribute="orphanProductCase" />
+						</reference>
+						<reference attribute="caseID">
+							<reference attribute="orphanProductCase" />
+						</reference>
+					</create>
+				</members>
+			</fixedlist>
+		</derivation>
+	</Attribute>
 
 
-  <Attribute name="eligibilityUnitMembers">
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <javaclass name="List">
-          <ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
-        </javaclass>
-      </javaclass>
-    </type>
-    <derivation>
-      <timelineoperation>
-        <dynamiclist>
-          <list>
-            <intervalvalue>
-              <reference attribute="mandatoryEligibleMembersTimeline">
-                <reference attribute="eligibilityUnit">
-                  <reference attribute="orphanProductCase"/>
-                </reference>
-              </reference>
-            </intervalvalue>
-          </list>
-          <listitemexpression>
-            <reference attribute="caseParticipantRoleRecord">
-              <current/>
-            </reference>
-          </listitemexpression>
-        </dynamiclist>
-      </timelineoperation>
-    </derivation>
-  </Attribute>
-  <Attribute name="eligibilityUnitMembersReason">
+	<Attribute name="eligibilityUnitMembers">
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<javaclass name="List">
+					<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+				</javaclass>
+			</javaclass>
+		</type>
+		<derivation>
+			<timelineoperation>
+				<dynamiclist>
+					<list>
+						<intervalvalue>
+							<reference attribute="eligibleMembersTimeline">
+								<reference attribute="eligibilityUnit">
+									<reference attribute="orphanProductCase" />
+								</reference>
+							</reference>
+						</intervalvalue>
+					</list>
+					<listitemexpression>
+						<reference attribute="caseParticipantRoleRecord">
+							<current />
+						</reference>
+					</listitemexpression>
+				</dynamiclist>
+			</timelineoperation>
+		</derivation>
+	</Attribute>
+	<Attribute name="eligibilityUnitMembersReason">
+		<Annotations>
+			<Display />
+		</Annotations>
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<javaclass name="List">
+					<javaclass name="curam.creole.value.Message" />
+				</javaclass>
+			</javaclass>
+		</type>
+		<derivation>
+			<timelineoperation>
+				<dynamiclist>
+					<list>
+						<intervalvalue>
+							<reference attribute="eligibilityUnitMembers" />
+						</intervalvalue>
+					</list>
+					<listitemexpression>
+						<choose>
+							<type>
+								<javaclass name="curam.creole.value.Message" />
+							</type>
+							<when>
+								<condition>
+									<intervalvalue>
+										<reference attribute="isOrphanTimeline">
+											<create ruleclass="OrphanCPRCalculator" ruleset="OrphanRuleSet">
+												<current />
+											</create>
+										</reference>
+									</intervalvalue>
+								</condition>
+								<value>
+									<ResourceMessage key="Orphan.IsOrphan"
+										resourceBundle="curam.molsa.rules.ProductDisplay" />
+								</value>
+							</when>
+							<otherwise>
+								<value>
+									<ResourceMessage key="Orphan.IsnotanOrphan"
+										resourceBundle="curam.molsa.rules.ProductDisplay" />
+								</value>
+							</otherwise>
+						</choose>
+					</listitemexpression>
+				</dynamiclist>
+			</timelineoperation>
+		</derivation>
+	</Attribute>
+
+
+	<Attribute name="eligibilityUnitMemberDetails">
+		<Annotations>
+			<Display />
+		</Annotations>
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<javaclass name="List">
+					<javaclass name="String" />
+				</javaclass>
+			</javaclass>
+		</type>
+		<derivation>
+			<timelineoperation>
+				<dynamiclist>
+					<list>
+						<intervalvalue>
+							<reference attribute="eligibilityUnitMembers" />
+						</intervalvalue>
+					</list>
+					<listitemexpression>
+						<reference attribute="concernRoleName">
+							<reference attribute="participantRole">
+								<current />
+							</reference>
+						</reference>
+					</listitemexpression>
+				</dynamiclist>
+			</timelineoperation>
+		</derivation>
+	</Attribute>
+
+
+	<Attribute name="isEligibleTimeline">
+		<Annotations>
+			<Display />
+		</Annotations>
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<javaclass name="Boolean" />
+			</javaclass>
+		</type>
+		<derivation>
+			<reference attribute="isEligibleTimeline">
+				<reference attribute="orphanProductCase" />
+			</reference>
+		</derivation>
+	</Attribute>
+
+
+	<Attribute name="doesHouseholdHaveEligibleMembersTimeline">
+		<Annotations>
+			<Display />
+		</Annotations>
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<javaclass name="Boolean" />
+			</javaclass>
+		</type>
+		<derivation>
+			<timelineoperation>
+				<not>
+					<equals>
+						<property name="size">
+							<object>
+								<intervalvalue>
+									<reference attribute="eligibilityUnitMembers" />
+								</intervalvalue>
+							</object>
+						</property>
+						<Number value="0" />
+					</equals>
+				</not>
+			</timelineoperation>
+		</derivation>
+	</Attribute>
+
+	<Attribute name="hasHouseholdPassedNonFinancialMessage">
+		<Annotations>
+			<Display />
+		</Annotations>
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<javaclass name="curam.creole.value.Message" />
+			</javaclass>
+		</type>
+		<derivation>
+			<reference attribute="passFailMessageTimeline">
+				<create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
+					<timelineoperation>
+						<all>
+							<dynamiclist>
+								<list>
+									<intervalvalue>
+										<reference attribute="eligibilityUnitMembers" />
+									</intervalvalue>
+								</list>
+								<listitemexpression>
+									<intervalvalue>
+										<reference attribute="hasPassedNonFinancialTestTimeline">
+											<create ruleclass="SANonFinancialCPRCalculator"
+												ruleset="SocialAssistanceRuleSet">
+												<current />
+											</create>
+										</reference>
+									</intervalvalue>
+								</listitemexpression>
+							</dynamiclist>
+						</all>
+					</timelineoperation>
+				</create>
+			</reference>
+		</derivation>
+	</Attribute>
+	<Attribute name="hasHouseholdPassedIncomeMessage">
+		<Annotations>
+			<Display />
+		</Annotations>
+		<type>
+			<javaclass name="curam.creole.value.Timeline">
+				<javaclass name="curam.creole.value.Message" />
+			</javaclass>
+		</type>
+		<derivation>
+			<timelineoperation>
+				<intervalvalue>
+					<reference attribute="passFailMessageTimeline">
+						<create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
+							<reference attribute="hasHouseholdPassedIncomeTestTimeline">
+								<intervalvalue>
+									<reference attribute="orphanEligibilityUnitCalculator" />
+								</intervalvalue>
+							</reference>
+						</create>
+					</reference>
+				</intervalvalue>
+			</timelineoperation>
+		</derivation>
+	</Attribute>
+
+	<Attribute name="inEligibilityUnitMembersReason">
     <Annotations>
       <Display/>
     </Annotations>
     <type>
       <javaclass name="curam.creole.value.Timeline">
         <javaclass name="List">
-            <javaclass name="curam.creole.value.Message"/>
+          <javaclass name="curam.creole.value.Message"/>
         </javaclass>
       </javaclass>
     </type>
@@ -177,19 +349,19 @@
         <dynamiclist>
           <list>
             <intervalvalue>
-              <reference attribute="eligibilityUnitMembers"/>
+              <reference attribute="inEligibileUnitMembersCPRRecords"/>
             </intervalvalue>
           </list>
           <listitemexpression>
             <choose>
               <type>
-                  <javaclass name="curam.creole.value.Message"/>
+                <javaclass name="curam.creole.value.Message"/>
               </type>
               <when>
                 <condition>
                   <intervalvalue>
-                    <reference attribute="isOrphanTimeline">
-                      <create ruleclass="OrphanCPRCalculator" ruleset="OrphanRuleSet">
+                    <reference attribute="hasEarnedIncomeTimeline">
+                      <create ruleclass="MemberCPRCalculator" ruleset="SocialAssistanceRuleSet">
                         <current/>
                       </create>
                     </reference>
@@ -197,162 +369,22 @@
                 </condition>
                 <value>
                   <ResourceMessage
-                key="Orphan.IsOrphan"
-                resourceBundle="curam.molsa.rules.ProductDisplay"
-              />
+                    key="SASummaryCategory.IsEmployed"
+                    resourceBundle="curam.molsa.rules.ProductDisplay"
+                  />
                 </value>
               </when>
               <otherwise>
                 <value>
                   <ResourceMessage
-                key="Orphan.IsnotanOrphan"
-                resourceBundle="curam.molsa.rules.ProductDisplay"
-              />
+                    key="OrphanSummaryCategory.NotEnrolledForEducation"
+                    resourceBundle="curam.molsa.rules.ProductDisplay"
+                 />
                 </value>
               </otherwise>
             </choose>
           </listitemexpression>
         </dynamiclist>
-      </timelineoperation>
-    </derivation>
-  </Attribute>
-
-
-  <Attribute name="eligibilityUnitMemberDetails">
-    <Annotations>
-      <Display/>
-    </Annotations>
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <javaclass name="List">
-          <javaclass name="String"/>
-        </javaclass>
-      </javaclass>
-    </type>
-    <derivation>
-      <timelineoperation>
-        <dynamiclist>
-          <list>
-            <intervalvalue>
-              <reference attribute="eligibilityUnitMembers"/>
-            </intervalvalue>
-          </list>
-          <listitemexpression>
-            <reference attribute="concernRoleName">
-              <reference attribute="participantRole">
-                <current/>
-              </reference>
-            </reference>
-          </listitemexpression>
-        </dynamiclist>
-      </timelineoperation>
-    </derivation>
-  </Attribute>
-
-
-  <Attribute name="isEligibleTimeline">
-    <Annotations>
-      <Display/>
-    </Annotations>
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <javaclass name="Boolean"/>
-      </javaclass>
-    </type>
-    <derivation>
-      <reference attribute="isEligibleTimeline">
-        <reference attribute="orphanProductCase"/>
-      </reference>
-    </derivation>
-  </Attribute>
-
-
-  <Attribute name="doesHouseholdHaveEligibleMembersTimeline">
-    <Annotations>
-      <Display/>
-    </Annotations>
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <javaclass name="Boolean"/>
-      </javaclass>
-    </type>
-    <derivation>
-      <timelineoperation>
-        <not>
-          <equals>
-            <property name="size">
-              <object>
-                <intervalvalue>
-                  <reference attribute="eligibilityUnitMembers"/>
-                </intervalvalue>
-              </object>
-            </property>
-            <Number value="0"/>
-          </equals>
-        </not>
-      </timelineoperation>
-    </derivation>
-  </Attribute>
-
-  <Attribute name="hasHouseholdPassedNonFinancialMessage">
-    <Annotations>
-      <Display/>
-    </Annotations>
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <javaclass name="curam.creole.value.Message"/>
-      </javaclass>
-    </type>
-    <derivation>
-      <reference attribute="passFailMessageTimeline">
-        <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
-          <timelineoperation>
-            <all>
-              <dynamiclist>
-                <list>
-                  <intervalvalue>
-                    <reference attribute="eligibilityUnitMembers"/>
-                  </intervalvalue>
-                </list>
-                <listitemexpression>
-                  <intervalvalue>
-                    <reference attribute="hasPassedNonFinancialTestTimeline">
-                      <create ruleclass="SANonFinancialCPRCalculator"
-                        ruleset="SocialAssistanceRuleSet">
-                        <current/>
-                      </create>
-                    </reference>
-                  </intervalvalue>
-                </listitemexpression>
-              </dynamiclist>
-            </all>
-          </timelineoperation>
-        </create>
-      </reference>
-    </derivation>
-  </Attribute>
-  <Attribute name="hasHouseholdPassedIncomeMessage">
-    <Annotations>
-      <Display/>
-    </Annotations>
-    <type>
-      <javaclass name="curam.creole.value.Timeline">
-        <javaclass name="curam.creole.value.Message"/>
-      </javaclass>
-    </type>
-    <derivation>
-      <timelineoperation>
-        <intervalvalue>
-          <reference attribute="passFailMessageTimeline">
-            <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
-              <reference attribute="hasHouseholdPassedIncomeTestTimeline">
-                <intervalvalue>
-                  <reference attribute="orphanEligibilityUnitCalculator"/>
-                </intervalvalue>
-              </reference>
-            </create>
-          </reference>
-        </intervalvalue>
       </timelineoperation>
     </derivation>
   </Attribute>
