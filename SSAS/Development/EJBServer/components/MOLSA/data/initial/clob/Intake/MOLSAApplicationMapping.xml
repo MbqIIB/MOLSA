@@ -127,16 +127,7 @@
           <set-attribute name="reason" value="MHUW17001"/>
         </target-entity>
       </condition>
-      <condition expression="Person.isUnfitToWork==true">
-        <target-entity id="unableToWork" name="UnableToWork">
-          <map-attribute from="unfitToWorkStartDate" to="startDate"/>
-          <!--<map-attribute from="isPermanentCondition" to="permanentCondition"/>
-          <map-attribute from="unfitToWorkEndDate" to="endDate"/>-->
-          <set-attribute name="permanentCondition" value="true"/>
-          <set-attribute name="reason" value="MHUW17002"/>
-        </target-entity>
-      </condition>
-      <condition expression="Person.isUnfitToWork==true and Person.requiresMaidAssistance==true">
+        <condition expression="Person.isUnfitToWork==true and Person.requiresMaidAssistance==true">
         <target-entity id="unfitAndunableToWork" name="UnableToWork">
           <map-attribute from="unfitToWorkStartDate" to="startDate"/>
           <!--<map-attribute from="isPermanentCondition" to="permanentCondition"/>
@@ -145,7 +136,16 @@
           <set-attribute name="reason" value="MHUW17003"/>
         </target-entity>
       </condition>
-      <condition expression="Person.requiresMaidAssistance==true">
+       <condition expression="Person.isUnfitToWork==true and Person.requiresMaidAssistance==false" >
+        <target-entity id="unableToWork" name="UnableToWork">
+          <map-attribute from="unfitToWorkStartDate" to="startDate"/>
+          <!--<map-attribute from="isPermanentCondition" to="permanentCondition"/>
+          <map-attribute from="unfitToWorkEndDate" to="endDate"/>-->
+          <set-attribute name="permanentCondition" value="true"/>
+          <set-attribute name="reason" value="MHUW17002"/>
+        </target-entity>
+      </condition>
+      <condition expression="Person.requiresMaidAssistance==true and Person.isUnfitToWork==false">
         <target-entity id="requiresMaidAssistance" name="UnableToWork">
           <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
           <set-attribute name="permanentCondition" value="true"/>
