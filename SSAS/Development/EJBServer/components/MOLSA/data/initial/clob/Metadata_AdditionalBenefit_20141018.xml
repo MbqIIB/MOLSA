@@ -1,96 +1,112 @@
-<EvidenceTypeVersion enableSaveAndNew="true" modifiable="true" relatedParticipant="participant">
-  <Model>
-    <Attributes>
-      <Attribute>
-        <RelatedCPAttribute cpRoleType="MEM" name="participant" participantType="Person"/>
-      </Attribute>
-      <Attribute>
-        <DataAttribute mandatory="true" name="date">
-          <DomainType dataType="Date"/>
-        </DataAttribute>
-      </Attribute>
-      <Attribute>
-        <DataAttribute mandatory="true" name="amount">
-          <DomainType dataType="Money"/>
-        </DataAttribute>
-      </Attribute>
-      <Attribute>
-        <DataAttribute mandatory="true" name="benefitType">
-          <DomainType dataType="Codetable">
-            <CodetableOptions codetableName="MOLSABenefitType"/>
-          </DomainType>
-        </DataAttribute>
-      </Attribute>
-      <Attribute>
-        <CommentsAttribute name="comments"/>
-      </Attribute>
-      <Attribute>
-        <DataAttribute name="benefitProvider">
-          <DomainType dataType="String">
-            <StringOptions maxSize="100"/>
-          </DomainType>
-        </DataAttribute>
-      </Attribute>
-    </Attributes>
-    <Relationships/>
-  </Model>
-  <Validations>
-    <PatternValidations>
-      <Validator>
-        <ComparisonValidator operator="GreaterThan" shallow="false" source="amount" target="0.00" useClause="false" useLiteral="true"/>
-      </Validator>
-    </PatternValidations>
-  </Validations>
-  <SummaryInformation>
-    <SummaryMapping participantDetails="participant">
-      <Summary>
-        <parameter name="amount"/>
-        <parameter name="benefitType"/>
-        <SummaryResource id="Benefit"/>
-      </Summary>
-    </SummaryMapping>
-  </SummaryInformation>
-  <UserInterface>
-    <Cluster>
-      <RelCPCluster fullCreateParticipant="false" isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" modifyOption="multiple" showParticipantTypeFilter="true" useSingleName="false">
-        <StandardField source="participant"/>
-        <LabelName id="Name.Label.ID3"/>
-        <FirstName id="First.Name.Label.ID3"/>
-        <SecondName id="Second.Name.Label.ID3"/>
-      </RelCPCluster>
-    </Cluster>
-    <Cluster>
-      <StandardCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true" labelWidth="40" numberOfColumns="2">
-        <StandardClusterField>
-          <StandardField modifiable="true" source="benefitType" useBlank="true" useDefault="false">
-            <Label id="Field.Label.ID2"/>
-          </StandardField>
-        </StandardClusterField>
-        <StandardClusterField>
-          <StandardField modifiable="true" source="amount" useDefault="true">
-            <Label id="Field.Label.ID3"/>
-          </StandardField>
-        </StandardClusterField>
-        <StandardClusterField>
-          <StandardField modifiable="true" source="date" useDefault="false">
-            <Label id="Field.Label.ID4"/>
-          </StandardField>
-        </StandardClusterField>
-        <StandardClusterField>
-          <SkipField/>
-        </StandardClusterField>
-        <StandardClusterField>
-          <StandardField modifiable="true" source="benefitProvider" useDefault="true">
-            <Label id="Field.Label.ID6"/>
-          </StandardField>
-        </StandardClusterField>
-      </StandardCluster>
-    </Cluster>
-    <Cluster>
-      <CommentsCluster isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true">
-        <Description id="Description.ID4"/>
-        <StandardField source="comments"/>
-      </CommentsCluster>
-    </Cluster>
-  </UserInterface>
+<EvidenceTypeVersion enableSaveAndNew="true"
+	modifiable="true" relatedParticipant="participant">
+	<Model>
+		<Attributes>
+			<Attribute>
+				<RelatedCPAttribute cpRoleType="MEM" name="participant"
+					participantType="Person" />
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="date">
+					<DomainType dataType="Date">
+						<DateOptions currentDate="LessThanOrEqualTo" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="amount">
+					<DomainType dataType="Money" />
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<DataAttribute mandatory="true" name="benefitType">
+					<DomainType dataType="Codetable">
+						<CodetableOptions codetableName="MOLSABenefitType" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+			<Attribute>
+				<CommentsAttribute name="comments" />
+			</Attribute>
+			<Attribute>
+				<DataAttribute name="benefitProvider">
+					<DomainType dataType="String">
+						<StringOptions maxSize="100" />
+					</DomainType>
+				</DataAttribute>
+			</Attribute>
+		</Attributes>
+		<Relationships />
+	</Model>
+	<Validations>
+		<PatternValidations>
+			<Validator>
+				<ComparisonValidator operator="GreaterThan"
+					shallow="false" source="amount" target="0.00" useClause="false"
+					useLiteral="true" />
+			</Validator>
+		</PatternValidations>
+	</Validations>
+	<SummaryInformation>
+		<SummaryMapping participantDetails="participant">
+			<Summary>
+				<parameter name="amount" />
+				<parameter name="benefitType" />
+				<SummaryResource id="Benefit" />
+			</Summary>
+		</SummaryMapping>
+	</SummaryInformation>
+	<UserInterface>
+		<Cluster>
+			<RelCPCluster fullCreateParticipant="false"
+				isOnCreatePage="true" isOnModifyPage="true" isOnViewPage="true"
+				modifyOption="multiple" showParticipantTypeFilter="true"
+				useSingleName="false">
+				<StandardField source="participant" />
+				<LabelName id="Name.Label.ID3" />
+				<FirstName id="First.Name.Label.ID3" />
+				<SecondName id="Second.Name.Label.ID3" />
+			</RelCPCluster>
+		</Cluster>
+		<Cluster>
+			<StandardCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true" labelWidth="40"
+				numberOfColumns="2">
+				<StandardClusterField>
+					<StandardField modifiable="true" source="benefitType"
+						useBlank="true" useDefault="false">
+						<Label id="Field.Label.ID2" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="amount"
+						useDefault="true">
+						<Label id="Field.Label.ID3" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="date"
+						useDefault="false">
+						<Label id="Field.Label.ID4" />
+					</StandardField>
+				</StandardClusterField>
+				<StandardClusterField>
+					<SkipField />
+				</StandardClusterField>
+				<StandardClusterField>
+					<StandardField modifiable="true" source="benefitProvider"
+						useDefault="true">
+						<Label id="Field.Label.ID6" />
+					</StandardField>
+				</StandardClusterField>
+			</StandardCluster>
+		</Cluster>
+		<Cluster>
+			<CommentsCluster isOnCreatePage="true"
+				isOnModifyPage="true" isOnViewPage="true">
+				<Description id="Description.ID4" />
+				<StandardField source="comments" />
+			</CommentsCluster>
+		</Cluster>
+	</UserInterface>
 </EvidenceTypeVersion>
