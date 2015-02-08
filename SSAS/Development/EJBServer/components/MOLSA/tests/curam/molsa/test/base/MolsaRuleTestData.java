@@ -1,5 +1,7 @@
 package curam.molsa.test.base;
 
+import java.util.Iterator;
+
 import com.google.inject.Inject;
 
 import curam.codetable.CITIZENSHIPCODE;
@@ -9,7 +11,7 @@ import curam.codetable.GENDER;
 import curam.codetable.INCOMETYPECODE;
 import curam.codetable.MARITALSTATUS;
 import curam.codetable.RELATIONSHIPTYPECODE;
-import curam.codetable.SCHOOLTYPE;
+import curam.core.sl.infrastructure.entity.struct.CaseIDAndEvidenceTypeKey;
 import curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorInsertDtls;
 import curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorKey;
 import curam.core.sl.infrastructure.fact.EvidenceControllerFactory;
@@ -18,6 +20,8 @@ import curam.core.sl.infrastructure.impl.EvidenceControllerInterface;
 import curam.core.sl.infrastructure.struct.ECActiveEvidenceDtls;
 import curam.core.sl.infrastructure.struct.ECActiveEvidenceDtlsList;
 import curam.core.sl.infrastructure.struct.EIEvidenceKey;
+import curam.core.sl.infrastructure.struct.EvidenceVerificationDisplayDetails;
+import curam.core.sl.infrastructure.struct.EvidenceVerificationDisplayDetailsList;
 import curam.core.sl.struct.EvidenceCaseKey;
 import curam.core.sl.struct.EvidenceTypeKey;
 import curam.core.struct.CaseKey;
@@ -40,10 +44,22 @@ import curam.molsa.codetable.EXPENSE;
 import curam.molsa.codetable.HANDICAPPEDUNABLETOWORK;
 import curam.molsa.codetable.MOLSABENEFITTYPE;
 import curam.molsa.codetable.RESIDENCY;
+import curam.molsa.verification.sl.fact.MOLSAVerificationApplicationDAFactory;
+import curam.molsa.verification.sl.intf.MOLSAVerificationApplicationDA;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.type.Date;
+import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
+import curam.verification.facade.infrastructure.intf.VerificationApplication;
+import curam.verification.facade.infrastructure.struct.CreateVerificaitonItemProvidedDetails;
+import curam.verification.facade.infrastructure.struct.ListVerificationItemNameAndLevelDetails;
+import curam.verification.facade.infrastructure.struct.VDIEDLinkKey;
+import curam.verification.sl.infrastructure.fact.VerificationControllerFactory;
+import curam.verification.sl.infrastructure.fact.VerificationItemProvidedFactory;
+import curam.verification.sl.infrastructure.intf.VerificationController;
+import curam.verification.sl.infrastructure.intf.VerificationItemProvided;
+import curam.verification.sl.infrastructure.struct.NewUserProvidedVerificationItemDetails;
 
 /**
  * 
@@ -871,7 +887,7 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 	public EIEvidenceKey createAbsentPersonEvidence(final CaseKey caseKey,
 			final long concernRoleID, final long caseParticipantRoleID,
 			final long afCPRID, final Date receivedDate,
-			final String absenceReason, final String d) throws AppException,
+			final String absenceReason, final String apQID) throws AppException,
 			InformationalException {
 
 		final EvidenceTypeKey eType = new EvidenceTypeKey();
@@ -908,7 +924,7 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 		final DynamicEvidenceDataAttributeDetails qid = dynamicEvidenceDataDetails
 				.getAttribute("qid");
 		DynamicEvidenceTypeConverter.setAttribute(participant,
-				caseParticipantRoleID);
+				apQID);
 
 		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
@@ -930,4 +946,53 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 
 	}
 
+	void addVerification(long caseID, String evidenceType) throws AppException,
+			InformationalException {
+		final VerificationController verificationControllerObj = VerificationControllerFactory
+				.newInstance();
+		final VerificationApplication verificationApplicationObj = VerificationApplicationFactory
+				.newInstance();
+
+		// MOLSAVerificationApplicationDA applicationDAOjb =
+		// MOLSAVerificationApplicationDAFactory
+		// .newInstance();
+		VerificationItemProvided verificationItemProvidedObj = VerificationItemProvidedFactory
+				.newInstance();
+
+		NewUserProvidedVerificationItemDetails itemDetails = new NewUserProvidedVerificationItemDetails();
+		final CaseIDAndEvidenceTypeKey key = new CaseIDAndEvidenceTypeKey();
+		key.caseID = caseID;
+		key.evidenceType = evidenceType;
+		EvidenceVerificationDisplayDetailsList detailsList = verificationControllerObj
+				.listVerificationsForCaseAndEvidence(key);
+
+		CreateVerificaitonItemProvidedDetails details = new CreateVerificaitonItemProvidedDetails();
+
+		for (Iterator<EvidenceVerificationDisplayDetails> iterator = detailsList.list
+				.iterator(); iterator.hasNext();) {
+			EvidenceVerificationDisplayDetails verificationDetails = iterator
+					.next();
+
+			details = new CreateVerificaitonItemProvidedDetails();
+
+			details.dtls.itemDtls.caseID = caseID;
+			details.dtls.itemDtls.caseParticipantConcernRoleID = verificationDetails.concernRoleID;
+
+			details.dtls.createDtls.dateReceived = Date.getCurrentDate();
+			details.dtls.createDtls.VDIEDLinkID = verificationDetails.vdIEDLinkID;
+
+			final VDIEDLinkKey vDIEDLinkKey = new VDIEDLinkKey();
+			vDIEDLinkKey.dtls.VDIEDLinkID = verificationDetails.vdIEDLinkID;
+
+			final ListVerificationItemNameAndLevelDetails listVerificationItemNameAndLevelDetails = verificationApplicationObj
+					.readAllActiveVerificationItemNameAndLevel(vDIEDLinkKey);
+
+			details.dtls.createDtls.verificationItemUtilizationID = listVerificationItemNameAndLevelDetails.listDtls.dtls
+					.get(0).code;
+			verificationItemProvidedObj
+					.createVerificationItemProvided(details.dtls);
+
+		}
+
+	}
 }
