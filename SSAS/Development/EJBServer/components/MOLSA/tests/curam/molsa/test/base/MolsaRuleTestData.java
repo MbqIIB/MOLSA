@@ -48,10 +48,10 @@ import curam.util.type.Date;
 /**
  * 
  * Populates the required evidences to create the product delivery case.
- *
+ * 
  */
 public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
-	
+
 	protected static final String kParticipant = "participant";
 
 	@Inject
@@ -66,7 +66,7 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 	 * 
 	 * Constructor of the class.
 	 * 
-	 *
+	 * 
 	 */
 	public MolsaRuleTestData(String arg0) {
 		super(arg0);
@@ -74,11 +74,11 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 		evidenceControllerObj = (EvidenceControllerInterface) EvidenceControllerFactory
 				.newInstance();
 	}
-	
+
 	/**
 	 * 
 	 * Create the birth and death evidence.
-	 *
+	 * 
 	 */
 
 	public void createBirthAndDeathEvidence(final CaseKey caseKey,
@@ -128,10 +128,10 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 	}
 
 	/**
-   * 
-   * Create the household member evidence.
-   *
-   */
+	 * 
+	 * Create the household member evidence.
+	 * 
+	 */
 	public void createHouseholdMemberEvidence(final CaseKey caseKey,
 			final long concernRoleID, final long caseParticipantRoleID,
 			final Date receivedDate, final String citizenship,
@@ -189,10 +189,10 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 	}
 
 	/**
-   * 
-   * Create the marital status evidence.
-   *
-   */
+	 * 
+	 * Create the marital status evidence.
+	 * 
+	 */
 	public void createMaritalStatusEvidence(final CaseKey caseKey,
 			final long concernRoleID, final long caseParticipantRoleID,
 			final Date receivedDate, final String maritalStatus)
@@ -245,10 +245,10 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 	}
 
 	/**
-   * 
-   * Create the education evidence.
-   *
-   */
+	 * 
+	 * Create the education evidence.
+	 * 
+	 */
 	public void createEducationEvidence(final CaseKey caseKey,
 			final long concernRoleID, final long caseParticipantRoleID,
 			final Date receivedDate, final String studentStatus,
@@ -307,12 +307,13 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 	}
 
 	/**
-   * 
-   * Create the absent father evidence.
-   *
-   */
+	 * 
+	 * Create the absent father evidence.
+	 * 
+	 */
 	public EIEvidenceKey createAbsentFatherEvidence(final CaseKey caseKey,
-			final long concernRoleID, final long caseParticipantRoleID, final long concernRoleID1, final long caseParticipantRoleID2,
+			final long concernRoleID, final long caseParticipantRoleID,
+			final long concernRoleID1, final long caseParticipantRoleID2,
 			final Date receivedDate, final String absenceReason)
 			throws AppException, InformationalException {
 
@@ -334,13 +335,11 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 				.getAttribute("participant");
 		DynamicEvidenceTypeConverter.setAttribute(participant,
 				caseParticipantRoleID);
-		
+
 		final DynamicEvidenceDataAttributeDetails absentPerson = dynamicEvidenceDataDetails
 				.getAttribute("absentPerson");
 		DynamicEvidenceTypeConverter.setAttribute(absentPerson,
 				caseParticipantRoleID2);
-		
-		
 
 		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
 				.getAttribute("startDate");
@@ -372,17 +371,17 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 	}
 
 	/**
-   * 
-   * Create the absent father children evidence.
-   *
-   */
+	 * 
+	 * Create the absent father children evidence.
+	 * 
+	 */
 	public void createAbsentParentChildrenEvidence(final CaseKey caseKey,
-	    /**
-	     * 
-	     * Create the additional benefit type evidence.
-	     *
-	     */
-			final long concernRoleID, final long caseParticipantRoleID,
+	/**
+	 * 
+	 * Create the additional benefit type evidence.
+	 * 
+	 */
+	final long concernRoleID, final long caseParticipantRoleID,
 			final Date receivedDate, final EIEvidenceKey evidenceKey)
 			throws AppException, InformationalException {
 
@@ -409,7 +408,6 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 				.getAttribute("startDate");
 		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
 
-
 		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
 		evidenceDescriptorInsertDtls.participantID = concernRoleID;
@@ -428,440 +426,508 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
 
 	}
-	
-	 public void createAdditionalBenefitEvidence(CaseKey caseKey, long concernRoleID, 
-	     long caseParticipantRoleID, Date receivedDate, int amount, String benefitType) throws AppException, InformationalException {
-	   
-	   final EvidenceTypeKey eType = new EvidenceTypeKey();
-
-	    eType.evidenceType = "DET0001536";
-
-	    final EvidenceTypeDef evidenceType = etDefDAO
-	        .readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
-
-	    final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
-	        .getActiveEvidenceTypeVersionAtDate(evidenceType,
-	            Date.getCurrentDate());
-
-	    final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
-	        .newInstance(evTypeVersion);
-
-	    final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
-	        .getAttribute("participant");
-	    DynamicEvidenceTypeConverter.setAttribute(participant,
-	        caseParticipantRoleID);
-
-	    final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
-	        .getAttribute("date");
-	    DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
-	    
-	    final DynamicEvidenceDataAttributeDetails amount1 = dynamicEvidenceDataDetails
-          .getAttribute("amount");
-      DynamicEvidenceTypeConverter.setAttribute(amount1, amount);
-      
-      final DynamicEvidenceDataAttributeDetails benefitType1 = dynamicEvidenceDataDetails
-          .getAttribute("benefitType");
-      DynamicEvidenceTypeConverter.setAttribute(benefitType1, new CodeTableItem(MOLSABENEFITTYPE.TABLENAME, benefitType));
-
-
-
-	    final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
-
-	    evidenceDescriptorInsertDtls.participantID = concernRoleID;
-	    evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
-	    evidenceDescriptorInsertDtls.receivedDate = receivedDate;
-	    evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
-
-	    final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
-
-	    eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
-	    eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
-	    eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
-	    eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
-
-	    evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
-	   
-	   
-	 }
-
-	 public void createIncomeEvidence(CaseKey caseKey, long concernRoleID, 
-		     long caseParticipantRoleID, Date receivedDate, String frequency, String incomeType, int amount) throws AppException, InformationalException {
-		   
-		   final EvidenceTypeKey eType = new EvidenceTypeKey();
 
-		    eType.evidenceType = "DET0000514";
-
-		    final EvidenceTypeDef evidenceType = etDefDAO
-		        .readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
-
-		    final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
-		        .getActiveEvidenceTypeVersionAtDate(evidenceType,
-		            Date.getCurrentDate());
-
-		    final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
-		        .newInstance(evTypeVersion);
+	public void createAdditionalBenefitEvidence(CaseKey caseKey,
+			long concernRoleID, long caseParticipantRoleID, Date receivedDate,
+			int amount, String benefitType) throws AppException,
+			InformationalException {
 
-		    final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
-		        .getAttribute("participant");
-		    DynamicEvidenceTypeConverter.setAttribute(participant,
-		        caseParticipantRoleID);
-
-		    final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
-		        .getAttribute("startDate");
-		    DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
-		    
-		    final DynamicEvidenceDataAttributeDetails amount1 = dynamicEvidenceDataDetails
-	          .getAttribute("amount");
-	      DynamicEvidenceTypeConverter.setAttribute(amount1, amount);
-	      
-	      final DynamicEvidenceDataAttributeDetails frequency1 = dynamicEvidenceDataDetails
-	          .getAttribute("frequency");
-	      DynamicEvidenceTypeConverter.setAttribute(frequency1, new CodeTableItem(FREQUENCYCODE.TABLENAME, frequency));
-	      
-	      final DynamicEvidenceDataAttributeDetails incomeType1 = dynamicEvidenceDataDetails
-		          .getAttribute("incomeType");
-		      DynamicEvidenceTypeConverter.setAttribute(incomeType1, new CodeTableItem(INCOMETYPECODE.TABLENAME, incomeType));
-
-
-
-		    final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
-
-		    evidenceDescriptorInsertDtls.participantID = concernRoleID;
-		    evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
-		    evidenceDescriptorInsertDtls.receivedDate = receivedDate;
-		    evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
 
-		    final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+		eType.evidenceType = "DET0001536";
 
-		    eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
-		    eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
-		    eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
-		    eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
 
-		    evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
-		   
-		   
-		 }
-	 
-	 public void createGenderEvidence(final CaseKey caseKey,
-				final long concernRoleID, final long caseParticipantRoleID,
-				final Date receivedDate, final String gender) throws AppException,
-				InformationalException {
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
 
-			final EvidenceTypeKey eType = new EvidenceTypeKey();
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
 
-			eType.evidenceType = "PDC0000262";
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
 
-			final EvidenceTypeDef evidenceType = etDefDAO
-					.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+				.getAttribute("date");
+		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
 
-			final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
-					.getActiveEvidenceTypeVersionAtDate(evidenceType,
-							Date.getCurrentDate());
+		final DynamicEvidenceDataAttributeDetails amount1 = dynamicEvidenceDataDetails
+				.getAttribute("amount");
+		DynamicEvidenceTypeConverter.setAttribute(amount1, amount);
 
-			final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
-					.newInstance(evTypeVersion);
+		final DynamicEvidenceDataAttributeDetails benefitType1 = dynamicEvidenceDataDetails
+				.getAttribute("benefitType");
+		DynamicEvidenceTypeConverter.setAttribute(benefitType1,
+				new CodeTableItem(MOLSABENEFITTYPE.TABLENAME, benefitType));
 
-			final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
-					.getAttribute("person");
-			DynamicEvidenceTypeConverter.setAttribute(participant,
-					caseParticipantRoleID);
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
-			final DynamicEvidenceDataAttributeDetails genderType = dynamicEvidenceDataDetails
-					.getAttribute("gender");
-			DynamicEvidenceTypeConverter.setAttribute(genderType,
-					new CodeTableItem(GENDER.TABLENAME, gender));
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
 
-			final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
 
-			evidenceDescriptorInsertDtls.participantID = concernRoleID;
-			evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
-			evidenceDescriptorInsertDtls.receivedDate = receivedDate;
-			evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
 
-			final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
 
-			eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
-			eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
-			eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
-			eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+	}
 
-			evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+	public void createIncomeEvidence(CaseKey caseKey, long concernRoleID,
+			long caseParticipantRoleID, Date receivedDate, String frequency,
+			String incomeType, int amount) throws AppException,
+			InformationalException {
 
-		}
-	 
-	 public void createHeadOfHouseholdEvidence(final CaseKey caseKey,
-				final long concernRoleID, final long caseParticipantRoleID,
-				final Date receivedDate) throws AppException,
-				InformationalException {
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
 
-			final EvidenceTypeKey eType = new EvidenceTypeKey();
+		eType.evidenceType = "DET0000514";
 
-			eType.evidenceType = "DET0000258";
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
 
-			final EvidenceTypeDef evidenceType = etDefDAO
-					.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
 
-			final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
-					.getActiveEvidenceTypeVersionAtDate(evidenceType,
-							Date.getCurrentDate());
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
 
-			final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
-					.newInstance(evTypeVersion);
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
 
-			final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
-					.getAttribute("participant");
-			DynamicEvidenceTypeConverter.setAttribute(participant,
-					caseParticipantRoleID);
+		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+				.getAttribute("startDate");
+		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
 
-			final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
-					.getAttribute("startDate");
-			DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
-			final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+		final DynamicEvidenceDataAttributeDetails amount1 = dynamicEvidenceDataDetails
+				.getAttribute("amount");
+		DynamicEvidenceTypeConverter.setAttribute(amount1, amount);
 
-			evidenceDescriptorInsertDtls.participantID = concernRoleID;
-			evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
-			evidenceDescriptorInsertDtls.receivedDate = receivedDate;
-			evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+		final DynamicEvidenceDataAttributeDetails frequency1 = dynamicEvidenceDataDetails
+				.getAttribute("frequency");
+		DynamicEvidenceTypeConverter.setAttribute(frequency1,
+				new CodeTableItem(FREQUENCYCODE.TABLENAME, frequency));
 
-			final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+		final DynamicEvidenceDataAttributeDetails incomeType1 = dynamicEvidenceDataDetails
+				.getAttribute("incomeType");
+		DynamicEvidenceTypeConverter.setAttribute(incomeType1,
+				new CodeTableItem(INCOMETYPECODE.TABLENAME, incomeType));
 
-			eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
-			eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
-			eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
-			eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
-			evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
 
-		}
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
 
-		public void createUnableToWorkEvidnece(final CaseKey caseKey,
-				final long concernRoleID, final long caseParticipantRoleID,
-				final Date receivedDate, final String unabletowork)
-				throws AppException, InformationalException {
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
 
-			final EvidenceTypeKey eType = new EvidenceTypeKey();
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
 
-			eType.evidenceType = "DET0000769";
+	}
 
-			final EvidenceTypeDef evidenceType = etDefDAO
-					.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+	public void createGenderEvidence(final CaseKey caseKey,
+			final long concernRoleID, final long caseParticipantRoleID,
+			final Date receivedDate, final String gender) throws AppException,
+			InformationalException {
 
-			final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
-					.getActiveEvidenceTypeVersionAtDate(evidenceType,
-							Date.getCurrentDate());
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
 
-			final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
-					.newInstance(evTypeVersion);
+		eType.evidenceType = "PDC0000262";
 
-			final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
-					.getAttribute("participant");
-			DynamicEvidenceTypeConverter.setAttribute(participant,
-					caseParticipantRoleID);
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
 
-			final DynamicEvidenceDataAttributeDetails permanentcondition = dynamicEvidenceDataDetails
-					.getAttribute("permanentCondition");
-			DynamicEvidenceTypeConverter.setAttribute(permanentcondition, true);
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
 
-			final DynamicEvidenceDataAttributeDetails unableToWorkEvd = dynamicEvidenceDataDetails
-					.getAttribute("reason");
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
 
-			DynamicEvidenceTypeConverter.setAttribute(unableToWorkEvd,
-					new CodeTableItem(HANDICAPPEDUNABLETOWORK.TABLENAME,
-							unabletowork.toString()));
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("person");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
 
-			final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
-					.getAttribute("startDate");
+		final DynamicEvidenceDataAttributeDetails genderType = dynamicEvidenceDataDetails
+				.getAttribute("gender");
+		DynamicEvidenceTypeConverter.setAttribute(genderType,
+				new CodeTableItem(GENDER.TABLENAME, gender));
 
-			DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
-			final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
 
-			evidenceDescriptorInsertDtls.participantID = concernRoleID;
-			evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
-			evidenceDescriptorInsertDtls.receivedDate = receivedDate;
-			evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
 
-			final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
 
-			eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
-			eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
-			eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
-			eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
 
-			evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+	}
 
-		}
+	public void createHeadOfHouseholdEvidence(final CaseKey caseKey,
+			final long concernRoleID, final long caseParticipantRoleID,
+			final Date receivedDate) throws AppException,
+			InformationalException {
 
-		/**
-		 * 
-		 * Create the household relationship evidence.
-		 * 
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
+
+		eType.evidenceType = "DET0000258";
+
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
+
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
+
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
+
+		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+				.getAttribute("startDate");
+		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+
+	}
+
+	public void createUnableToWorkEvidnece(final CaseKey caseKey,
+			final long concernRoleID, final long caseParticipantRoleID,
+			final Date receivedDate, final String unabletowork)
+			throws AppException, InformationalException {
+
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
+
+		eType.evidenceType = "DET0000769";
+
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
+
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
+
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
+
+		final DynamicEvidenceDataAttributeDetails permanentcondition = dynamicEvidenceDataDetails
+				.getAttribute("permanentCondition");
+		DynamicEvidenceTypeConverter.setAttribute(permanentcondition, true);
+
+		final DynamicEvidenceDataAttributeDetails unableToWorkEvd = dynamicEvidenceDataDetails
+				.getAttribute("reason");
+
+		DynamicEvidenceTypeConverter.setAttribute(unableToWorkEvd,
+				new CodeTableItem(HANDICAPPEDUNABLETOWORK.TABLENAME,
+						unabletowork.toString()));
+
+		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+				.getAttribute("startDate");
+
+		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
+
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+
+	}
+
+	/**
+	 * 
+	 * Create the household relationship evidence.
+	 * 
+	 */
+	public void createHouseholdRelationshipEvidence(final CaseKey caseKey,
+
+	final long concernRoleID, final long caseParticipantRoleID,
+			final long relatedcaseParticipantRoleID, final Date receivedDate,
+			final String relationship) throws AppException,
+			InformationalException {
+
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
+
+		eType.evidenceType = "DET0001280";
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
+
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
+
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
+		final DynamicEvidenceDataAttributeDetails relatedParticipant = dynamicEvidenceDataDetails
+				.getAttribute("relatedParticipant");
+		DynamicEvidenceTypeConverter.setAttribute(relatedParticipant,
+				relatedcaseParticipantRoleID);
+		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+				.getAttribute("fromDate");
+		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
+		/*
+		 * final DynamicEvidenceDataAttributeDetails endReasonType =
+		 * dynamicEvidenceDataDetails .getAttribute("endReason");
+		 * DynamicEvidenceTypeConverter.setAttribute(endReasonType, new
+		 * CodeTableItem(RELATIONSHIPENDREASON.TABLENAME, endReason));
 		 */
-		public void createHouseholdRelationshipEvidence(final CaseKey caseKey,
+		final DynamicEvidenceDataAttributeDetails relationshipTypeEvd = dynamicEvidenceDataDetails
+				.getAttribute("relationshipType");
+		DynamicEvidenceTypeConverter
+				.setAttribute(relationshipTypeEvd, new CodeTableItem(
+						RELATIONSHIPTYPECODE.TABLENAME, relationship));
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
-		final long concernRoleID, final long caseParticipantRoleID,
-				final long relatedcaseParticipantRoleID, final Date receivedDate,
-				final String relationship) throws AppException,
-				InformationalException {
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
 
-			final EvidenceTypeKey eType = new EvidenceTypeKey();
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
 
-			eType.evidenceType = "DET0001280";
-			final EvidenceTypeDef evidenceType = etDefDAO
-					.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
 
-			final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
-					.getActiveEvidenceTypeVersionAtDate(evidenceType,
-							Date.getCurrentDate());
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
 
-			final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
-					.newInstance(evTypeVersion);
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+	}
 
-			final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
-					.getAttribute("participant");
-			DynamicEvidenceTypeConverter.setAttribute(participant,
-					caseParticipantRoleID);
-			final DynamicEvidenceDataAttributeDetails relatedParticipant = dynamicEvidenceDataDetails
-					.getAttribute("relatedParticipant");
-			DynamicEvidenceTypeConverter.setAttribute(relatedParticipant,
-					relatedcaseParticipantRoleID);
-			final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
-					.getAttribute("fromDate");
-			DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
-			/*
-			 * final DynamicEvidenceDataAttributeDetails endReasonType =
-			 * dynamicEvidenceDataDetails .getAttribute("endReason");
-			 * DynamicEvidenceTypeConverter.setAttribute(endReasonType, new
-			 * CodeTableItem(RELATIONSHIPENDREASON.TABLENAME, endReason));
-			 */
-			final DynamicEvidenceDataAttributeDetails relationshipTypeEvd = dynamicEvidenceDataDetails
-					.getAttribute("relationshipType");
-			DynamicEvidenceTypeConverter.setAttribute(relationshipTypeEvd, new CodeTableItem(
-							RELATIONSHIPTYPECODE.TABLENAME, relationship));
-			final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+	public void createExpenseEvidence(final CaseKey caseKey,
+			final long concernRoleID, final long caseParticipantRoleID,
+			final Date receivedDate, final String rentType,
+			final String frequency, int rentamount) throws AppException,
+			InformationalException {
 
-			evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
 
-			evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
-			evidenceDescriptorInsertDtls.receivedDate = receivedDate;
-			evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+		eType.evidenceType = "DET0000515";
 
-			final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
 
-			eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
-			eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
-			eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
-			eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
 
-			evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
-		}
-		
-		public void createExpenseEvidence(final CaseKey caseKey,
-				final long concernRoleID, final long caseParticipantRoleID,
-				final Date receivedDate, final String rentType,final String frequency,int rentamount) throws AppException,
-				InformationalException {
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
 
-			final EvidenceTypeKey eType = new EvidenceTypeKey();
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
 
-			eType.evidenceType = "DET0000515";
+		final DynamicEvidenceDataAttributeDetails frequencyType = dynamicEvidenceDataDetails
+				.getAttribute("frequency");
+		DynamicEvidenceTypeConverter.setAttribute(frequencyType,
+				new CodeTableItem(FREQUENCYCODE.TABLENAME, frequency));
 
-			final EvidenceTypeDef evidenceType = etDefDAO
-					.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+		final DynamicEvidenceDataAttributeDetails rentTypeEvd = dynamicEvidenceDataDetails
+				.getAttribute("rentType");
+		DynamicEvidenceTypeConverter.setAttribute(rentTypeEvd,
+				new CodeTableItem(EXPENSE.TABLENAME, rentType));
 
-			final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
-					.getActiveEvidenceTypeVersionAtDate(evidenceType,
-							Date.getCurrentDate());
+		final DynamicEvidenceDataAttributeDetails rentAmountEvd = dynamicEvidenceDataDetails
+				.getAttribute("rentAmount");
+		DynamicEvidenceTypeConverter.setAttribute(rentAmountEvd, rentamount);
+		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+				.getAttribute("startDate");
+		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
 
-			final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
-					.newInstance(evTypeVersion);
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
-			final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
-					.getAttribute("participant");
-			DynamicEvidenceTypeConverter.setAttribute(participant,
-					caseParticipantRoleID);
-			
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
 
-			final DynamicEvidenceDataAttributeDetails frequencyType = dynamicEvidenceDataDetails
-					.getAttribute("frequency");
-			DynamicEvidenceTypeConverter.setAttribute(frequencyType,
-					new CodeTableItem(FREQUENCYCODE.TABLENAME,frequency ));
-			
-			final DynamicEvidenceDataAttributeDetails rentTypeEvd = dynamicEvidenceDataDetails
-			.getAttribute("rentType");
-	DynamicEvidenceTypeConverter.setAttribute(rentTypeEvd,
-			new CodeTableItem(EXPENSE.TABLENAME,rentType ));
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
 
-			final DynamicEvidenceDataAttributeDetails rentAmountEvd = dynamicEvidenceDataDetails
-			.getAttribute("rentAmount");
-			DynamicEvidenceTypeConverter.setAttribute(rentAmountEvd,rentamount);
-			final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
-			.getAttribute("startDate");
-			DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
 
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
 
-			final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+	}
 
-			evidenceDescriptorInsertDtls.participantID = concernRoleID;
-			evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
-			evidenceDescriptorInsertDtls.receivedDate = receivedDate;
-			evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+	/**
+	 * 
+	 * @param caseKey
+	 * @param concernRoleID
+	 * @param caseParticipantRoleID
+	 * @param evidenceType
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
+	public void deleteEvidence(CaseKey caseKey, long caseParticipantRoleID,
+			String evidenceType) throws AppException, InformationalException {
 
-			final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+		evidenceTypeKey.evidenceType = evidenceType;
 
-			eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
-			eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
-			eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
-			eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+		final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+				.instance(evidenceTypeKey, Date.getCurrentDate());
 
-			evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+		final ECActiveEvidenceDtlsList activeEvidenceDtlsList = evidenceControllerObj
+				.listActive(caseKey);
+		EvidenceCaseKey evidenceCaseKey = null;
 
-		}
+		for (final ECActiveEvidenceDtls activeEvidenceDtls : activeEvidenceDtlsList.dtls) {
 
-	 /**
-		 * 
-		 * @param caseKey
-		 * @param concernRoleID
-		 * @param caseParticipantRoleID
-		 * @param evidenceType
-		 * @throws AppException
-		 * @throws InformationalException
-		 */
-		public void deleteEvidence(CaseKey caseKey, long caseParticipantRoleID,
-				String evidenceType) throws AppException, InformationalException {
-
-			final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
-			evidenceTypeKey.evidenceType = evidenceType;
-
-			final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
-					.instance(evidenceTypeKey, Date.getCurrentDate());
-
-			final ECActiveEvidenceDtlsList activeEvidenceDtlsList = evidenceControllerObj
-					.listActive(caseKey);
-			EvidenceCaseKey evidenceCaseKey = null;
-
-			for (final ECActiveEvidenceDtls activeEvidenceDtls : activeEvidenceDtlsList.dtls) {
-
-				if (evidenceTypeKey.evidenceType
-						.equals(activeEvidenceDtls.evidenceType)) {
-					evidenceCaseKey = new EvidenceCaseKey();
-					evidenceCaseKey.evidenceKey.evType = evidenceTypeKey.evidenceType;
-					evidenceCaseKey.caseIDKey.caseID = caseKey.caseID;
-					evidenceCaseKey.evidenceKey.evidenceID = activeEvidenceDtls.evidenceID;
-					final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
-							.readEvidence(evidenceCaseKey);
-					final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
-					final String cprID = dynamicEvidenceDataDetails.getAttribute(
-							kParticipant).getValue();
-					if (caseParticipantRoleID == Long.parseLong(cprID)) {
-						EvidenceDescriptorKey key = new EvidenceDescriptorKey();
-						key.evidenceDescriptorID = activeEvidenceDtls.evidenceDescriptorID;
-						evidenceControllerObj.removeEvidence(key);
-					}
-
+			if (evidenceTypeKey.evidenceType
+					.equals(activeEvidenceDtls.evidenceType)) {
+				evidenceCaseKey = new EvidenceCaseKey();
+				evidenceCaseKey.evidenceKey.evType = evidenceTypeKey.evidenceType;
+				evidenceCaseKey.caseIDKey.caseID = caseKey.caseID;
+				evidenceCaseKey.evidenceKey.evidenceID = activeEvidenceDtls.evidenceID;
+				final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
+						.readEvidence(evidenceCaseKey);
+				final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
+				final String cprID = dynamicEvidenceDataDetails.getAttribute(
+						kParticipant).getValue();
+				if (caseParticipantRoleID == Long.parseLong(cprID)) {
+					EvidenceDescriptorKey key = new EvidenceDescriptorKey();
+					key.evidenceDescriptorID = activeEvidenceDtls.evidenceDescriptorID;
+					evidenceControllerObj.removeEvidence(key);
 				}
-			}
 
+			}
 		}
+
+	}
+
+	/**
+	 * 
+	 * Create the absent person evidence.
+	 * 
+	 */
+	public EIEvidenceKey createAbsentPersonEvidence(final CaseKey caseKey,
+			final long concernRoleID, final long caseParticipantRoleID,
+			final long afCPRID, final Date receivedDate,
+			final String absenceReason, final String d) throws AppException,
+			InformationalException {
+
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
+
+		eType.evidenceType = "DET0000259";
+
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
+
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
+
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
+
+		final DynamicEvidenceDataAttributeDetails absentPerson = dynamicEvidenceDataDetails
+				.getAttribute("absentPerson");
+		DynamicEvidenceTypeConverter.setAttribute(absentPerson, afCPRID);
+
+		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+				.getAttribute("startDate");
+		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
+
+		final DynamicEvidenceDataAttributeDetails absenceReasonType = dynamicEvidenceDataDetails
+				.getAttribute("absenceReason");
+		DynamicEvidenceTypeConverter.setAttribute(absenceReasonType,
+				new CodeTableItem(ABSENTFATHER.TABLENAME, absenceReason));
+		final DynamicEvidenceDataAttributeDetails qid = dynamicEvidenceDataDetails
+				.getAttribute("qid");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
+
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+
+		EIEvidenceKey eiEvidenceKey = evidenceControllerObj
+				.insertEvidence(eiEvidenceInsertDtls);
+		return eiEvidenceKey;
+
+	}
 
 }
