@@ -946,53 +946,5 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 
 	}
 
-	void addVerification(long caseID, String evidenceType) throws AppException,
-			InformationalException {
-		final VerificationController verificationControllerObj = VerificationControllerFactory
-				.newInstance();
-		final VerificationApplication verificationApplicationObj = VerificationApplicationFactory
-				.newInstance();
-
-		// MOLSAVerificationApplicationDA applicationDAOjb =
-		// MOLSAVerificationApplicationDAFactory
-		// .newInstance();
-		VerificationItemProvided verificationItemProvidedObj = VerificationItemProvidedFactory
-				.newInstance();
-
-		NewUserProvidedVerificationItemDetails itemDetails = new NewUserProvidedVerificationItemDetails();
-		final CaseIDAndEvidenceTypeKey key = new CaseIDAndEvidenceTypeKey();
-		key.caseID = caseID;
-		key.evidenceType = evidenceType;
-		EvidenceVerificationDisplayDetailsList detailsList = verificationControllerObj
-				.listVerificationsForCaseAndEvidence(key);
-
-		CreateVerificaitonItemProvidedDetails details = new CreateVerificaitonItemProvidedDetails();
-
-		for (Iterator<EvidenceVerificationDisplayDetails> iterator = detailsList.list
-				.iterator(); iterator.hasNext();) {
-			EvidenceVerificationDisplayDetails verificationDetails = iterator
-					.next();
-
-			details = new CreateVerificaitonItemProvidedDetails();
-
-			details.dtls.itemDtls.caseID = caseID;
-			details.dtls.itemDtls.caseParticipantConcernRoleID = verificationDetails.concernRoleID;
-
-			details.dtls.createDtls.dateReceived = Date.getCurrentDate();
-			details.dtls.createDtls.VDIEDLinkID = verificationDetails.vdIEDLinkID;
-
-			final VDIEDLinkKey vDIEDLinkKey = new VDIEDLinkKey();
-			vDIEDLinkKey.dtls.VDIEDLinkID = verificationDetails.vdIEDLinkID;
-
-			final ListVerificationItemNameAndLevelDetails listVerificationItemNameAndLevelDetails = verificationApplicationObj
-					.readAllActiveVerificationItemNameAndLevel(vDIEDLinkKey);
-
-			details.dtls.createDtls.verificationItemUtilizationID = listVerificationItemNameAndLevelDetails.listDtls.dtls
-					.get(0).code;
-			verificationItemProvidedObj
-					.createVerificationItemProvided(details.dtls);
-
-		}
-
-	}
+	
 }

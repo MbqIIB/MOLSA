@@ -94,6 +94,7 @@ import curam.piwrapper.casemanager.impl.CaseParticipantRole;
 import curam.piwrapper.casemanager.impl.CaseParticipantRoleDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.exception.InformationalManager;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.StringUtil;
 import curam.util.transaction.TransactionInfo;
@@ -176,7 +177,7 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 
 	@Override
 	public void testScenario() throws AppException, InformationalException {
-		//return null;
+		// return null;
 
 	}
 
@@ -308,7 +309,8 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 					simulatedDeterminationKey.creoleProgramRecommendationID = determinationDetails.creoleProgramRecommendationID;
 					ProductDeliveryKey productDeliveryKey = programRecommendation
 							.authorize(simulatedDeterminationKey);
-
+					InformationalManager manager = TransactionInfo
+							.getInformationalManager();
 					TransactionInfo.enactStubbedDeferredProcessCalls();
 					TransactionInfo.setTransactionType(TransactionType.kOnline);
 
@@ -327,6 +329,7 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 									.getStatus().getCode())) {
 						molsaProductDeliveryObj
 								.submitPDCForApproval(approvalKey);
+						manager = TransactionInfo.getInformationalManager();
 					}
 
 					// Assert the condition.
@@ -339,8 +342,8 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 
 					deliveryApprovalKey = new SubmitForApprovalKey();
 					deliveryApprovalKey.caseID = productDeliveryKey.caseID;
-					
-					
+
+					// addPDCVerification(approvalKey);
 					molsaProductDeliveryObj.approve(deliveryApprovalKey);
 
 					TransactionInfo.enactStubbedDeferredProcessCalls();
@@ -387,7 +390,7 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 			}
 		}
 		postAssertionOnCase(caseKey);
-//		return caseKey;
+		// return caseKey;
 	}
 
 	/**

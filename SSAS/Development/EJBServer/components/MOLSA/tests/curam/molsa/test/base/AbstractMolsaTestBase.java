@@ -229,7 +229,7 @@ public abstract class AbstractMolsaTestBase extends CuramServerTest {
 
 	protected static final String ASIFA_UNIQUE_NAME = "Asifa";
 
-	protected static final String MOHAMMED_UNIQUE_NAME = "Mohammed";
+	protected static final String MOHAMMED_UNIQUE_NAME = "Mohammad";
 
 	protected static final String HAMEED_SURNAME = "Hameed";
 
@@ -341,7 +341,7 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 	private long integratedCaseID;
 
 	// An array list of all the participants in the household
-	private ArrayList participantTestDetailsList = new ArrayList();
+	protected ArrayList participantTestDetailsList = new ArrayList();
 
 	// The product delivery case id
 	private long productDeliveryCaseID;
@@ -1614,16 +1614,15 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		this.liabilityProductID = productID;
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * Runs initialization at the start of the test.
 	 */
 	protected void setUpCuramServerTest() {
 
-		if (Boolean.valueOf(System.getProperty("isproduct.showgui"))
-				.booleanValue()) {
-			showStartupGui();
-		}
+//		if (Boolean.valueOf(System.getProperty("isproduct.showgui"))
+//				.booleanValue()) {
+//			showStartupGui();
+//		}
 
 		// determine in which mode to run the test
 		if ("quick".equalsIgnoreCase(System.getProperty("isproduct.testmode"))) {
@@ -1664,7 +1663,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * Shows a GUI enabling the developer to choose options for the test.
 	 */
@@ -1730,7 +1728,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * Runs the test for the specified claim date.
 	 * 
@@ -1760,7 +1757,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * Runs the test for the specified claim date.
 	 * 
@@ -1792,7 +1788,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * Runs the test for the specified claim date.
 	 * 
@@ -1817,7 +1812,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * Add all persons to the member group of the additional product delivery.
 	 * Members can be add using the addMemberToProductDelivery(String) method
@@ -1829,7 +1823,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 	public abstract void addMembersToProductDelivery() throws AppException,
 			InformationalException;
 
-	// ___________________________________________________________________________
 	/**
 	 * Add all persons to the member group of the additional product delivery.
 	 * Members can be add using the addMemberToProductDelivery(String) method
@@ -1842,7 +1835,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 			InformationalException {
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * Tests the Scenario. This is overridden by each test subclass.
 	 * 
@@ -1850,7 +1842,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 	public abstract void testScenario() throws AppException,
 			InformationalException;
 
-	// ___________________________________________________________________________
 	/**
 	 * Sets the participantTestDetails to be the first item in the
 	 * participantTestDetailsList.
@@ -1861,7 +1852,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		participantTestDetailsList.add(0, participantTestDetails);
 	}
 
-	// ___________________________________________________________________________
 	/**
 	 * updates the participantTestDetails with the array list list.
 	 * 
@@ -1879,9 +1869,7 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		}
 	}
 
-	// ___________________________________________________________________________
 
-	// ___________________________________________________________________________
 	/**
 	 * Create a Integrated Case, add the case evidence and apply changes to the
 	 * evidence.
@@ -1933,15 +1921,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		// save integrated case Id for use.
 		integratedCaseID = integratedCaseIDKey.caseID;
 
-		/*
-		 * ParticipantTestDetails participantTestDetails =
-		 * (ParticipantTestDetails) participantTestDetailsList.get(0);
-		 * 
-		 * participantTestDetails.caseParticipantRoleID =
-		 * ispCaseRegistrationDetails
-		 * .iSPCaseRegistrationDetails.createHholdMember
-		 * .dtls.caseParticipantRoleID;
-		 */
 		// Add case evidence
 		caseKey.caseID = integratedCaseIDKey.caseID;
 		addEvidence(caseKey);
@@ -2063,11 +2042,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 		maintainConcernRoleAltIDKey.concernRoleID = concernRoleID;
 		alternateIDDetails.concernRoleID = concernRoleID;
-		// Appending '1' to the returning string to insure that it really is
-		// unique
-		// The whole ISP Person Register needs to be investigated because of a
-		// change
-		// in CEF ref ticket 77440
 		alternateIDDetails.alternateID = uniquePersonIDObj.getNextPersonID()
 				+ "1";
 		alternateIDDetails.startDate = registrationDate;
@@ -2168,10 +2142,8 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 		}
 
-		caseEvidenceVerificationDisplayDetailsList = verificationApplicationObj
-				.listCaseEvidenceOutstandingVerificationDetails(caseKey);
-		System.out.println(caseEvidenceVerificationDisplayDetailsList.list
-				.size());
+		TransactionInfo.setInformationalManager();
+		
 	}
 	
 	/**
