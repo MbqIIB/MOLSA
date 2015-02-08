@@ -923,7 +923,7 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 				new CodeTableItem(ABSENTFATHER.TABLENAME, absenceReason));
 		final DynamicEvidenceDataAttributeDetails qid = dynamicEvidenceDataDetails
 				.getAttribute("qid");
-		DynamicEvidenceTypeConverter.setAttribute(participant,
+		DynamicEvidenceTypeConverter.setAttribute(qid,
 				apQID);
 
 		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
