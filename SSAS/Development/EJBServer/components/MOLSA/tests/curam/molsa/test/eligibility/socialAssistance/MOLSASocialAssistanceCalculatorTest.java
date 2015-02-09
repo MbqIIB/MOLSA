@@ -55,8 +55,7 @@ import curam.util.type.Date;
  * 
  */
 @SuppressWarnings("restriction")
-public class MOLSASocialAssistanceCalculatorTest extends
-		MOLSACreoleBaseTest {
+public class MOLSASocialAssistanceCalculatorTest extends MOLSACreoleBaseTest {
 
 	public static final String MOLSA_RULESET = "SocialAssistanceRuleSet";
 
@@ -112,7 +111,8 @@ public class MOLSASocialAssistanceCalculatorTest extends
 			final String personBirthName, final Date dateOfBirth,
 			final Date dateOfDeath, final String gender,
 			final String maritalStatusCode) {
-		final Person personRecord = Person_Factory.getFactory().newInstance(this.getSession());
+		final Person personRecord = Person_Factory.getFactory().newInstance(
+				this.getSession());
 		personRecord.concernRoleID().specifyValue(concernRoleID);
 		personRecord.personBirthName().specifyValue(personBirthName);
 		personRecord.dateOfBirth().specifyValue(dateOfBirth);
@@ -156,9 +156,6 @@ public class MOLSASocialAssistanceCalculatorTest extends
 		saHouseholdUnitMemberList.add(saHouseholdUnitMember3);
 		return saHouseholdUnitMemberList;
 	}
-	
-
-		  
 
 	/**
 	 * Creates an object of SAHouseholdUnitMember.
@@ -248,495 +245,417 @@ public class MOLSASocialAssistanceCalculatorTest extends
 		super.setFileName(MOLSA_RULESET);
 	}
 
-	
-	    /**
-	   * Test case for 'HouseholdMemberRecordsExists' attribute. 
-	   * Test Data:Set exists attribute of household member to true/false in timeline
-	   * Test Class: MemberCPRCalculator
-	   */
-	
-	public void testHouseholdMemberRecordsExists(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
+	/**
+	 * Test case for 'HouseholdMemberRecordsExists' attribute. Test Data:Set
+	 * exists attribute of household member to true/false in timeline Test
+	 * Class: MemberCPRCalculator
+	 */
 
-		    CaseParticipantRole person1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
-			 
-		    // Initially setting true later changing the value to false
-		    
-		    final List<Interval<Boolean>> exists = new ArrayList<Interval<Boolean>>();
-		    exists.add(new Interval<Boolean>(null, true));
-		    exists.add(new Interval<Boolean>(Date.fromISO8601("20040601"), false));
-			final Timeline<Boolean> existsTimeline = new Timeline<Boolean>(exists);  
-			
-		    HouseholdMember householdMemberObj = HouseholdMember_Factory.getFactory().newInstance(getSession());
-		    householdMemberObj.caseID().specifyValue(caseID);
-		    householdMemberObj.participant().specifyValue(person1.caseParticipantRoleID().getValue());
-		    householdMemberObj.exists().specifyValue(existsTimeline);
-		    
-			final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
-			intervals.add(new Interval<Boolean>(null, true));
-			intervals.add(new Interval<Boolean>(Date.fromISO8601("20040601"), false));
-			final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
-			
-		    MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), person1);
+	public void testHouseholdMemberRecordsExists() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
 
-			CREOLETestHelper.assertEquals(timeline,
-					memberCPR.householdMemberRecordsExists().getValue());
+		CaseParticipantRole person1 = createCaseParticipantRoleRecord(caseID,
+				caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+
+		// Initially setting true later changing the value to false
+
+		final List<Interval<Boolean>> exists = new ArrayList<Interval<Boolean>>();
+		exists.add(new Interval<Boolean>(null, true));
+		exists.add(new Interval<Boolean>(Date.fromISO8601("20040601"), false));
+		final Timeline<Boolean> existsTimeline = new Timeline<Boolean>(exists);
+
+		HouseholdMember householdMemberObj = HouseholdMember_Factory
+				.getFactory().newInstance(getSession());
+		householdMemberObj.caseID().specifyValue(caseID);
+		householdMemberObj.participant().specifyValue(
+				person1.caseParticipantRoleID().getValue());
+		householdMemberObj.exists().specifyValue(existsTimeline);
+
+		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
+		intervals.add(new Interval<Boolean>(null, true));
+		intervals
+				.add(new Interval<Boolean>(Date.fromISO8601("20040601"), false));
+		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
+
+		MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory
+				.getFactory().newInstance(getSession(), person1);
+
+		CREOLETestHelper.assertEquals(timeline, memberCPR
+				.householdMemberRecordsExists().getValue());
 	}
-	
-	   /**
-	   * Test case for 'AgeTimeline' attribute. 
-	   * Test Data:Set date of birth and check the age
-	   */
-	
-	public void testAgeTimeline(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
 
-		    CaseParticipantRole person1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
-		    
-		   // Setting age as 13
-			PDCBirthAndDeath pdcBirthAndDeathObj = PDCBirthAndDeath_Factory
-			.getFactory().newInstance(getSession());
-			 Calendar calendar =  Date.getCurrentDate().getCalendar();
-			 calendar.add(Calendar.YEAR, -13);
-			 Date dob1= new Date(calendar);
-	          pdcBirthAndDeathObj.dateOfBirth().specifyValue(dob1);
-			pdcBirthAndDeathObj.caseID().specifyValue(caseID);
-	        pdcBirthAndDeathObj.person().specifyValue(person1.caseParticipantRoleID().getValue());
-	        
-			final List<Interval<Number>> intervals = new ArrayList<Interval<Number>>();
-			intervals.add(new Interval<Number>(null, 0));
-			intervals.add(new Interval<Number>(Date.getCurrentDate(), 13));
-			final Timeline<Number> timeline = new Timeline<Number>(intervals);
-			
-	        MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), person1);
-            
-	        final Number value1 = memberCPR.ageTimeline().getValue().valueOn(getToday());
-	        final Number value2 = memberCPR.ageTimeline().getValue().valueOn(null);
-	        
-			final List<Interval<Number>> intervals2 = new ArrayList<Interval<Number>>();
-			intervals2.add(new Interval<Number>(null, value2));
-			intervals2.add(new Interval<Number>(Date.getCurrentDate(), value1));
-			final Timeline<Number> timeline2 = new Timeline<Number>(intervals2);
-	        
-			CREOLETestHelper.assertEquals(timeline,
-					timeline2);
-	       }
-	
-	   /**
-	   * Test case for 'HasEnrolledForEducation' attribute. 
-	   * Test Data:Set date of birth and check the age
-	   */
-	
-	public void testHasEnrolledForEducation(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
+	/**
+	 * Test case for 'AgeTimeline' attribute. Test Data:Set date of birth and
+	 * check the age
+	 */
 
-		    CaseParticipantRole person1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
-		    
-		    final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-			test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(EDUCATION.TABLENAME, EDUCATION.ENROLLED)));
-			final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-			
-		    MolsaEducation education = MolsaEducation_Factory.getFactory().newInstance(getSession());
-		    education.caseID().specifyValue(caseID);
-		    education.studentStatus().specifyValue(firstTimeline);
-		    education.participant().specifyValue(person1.caseParticipantRoleID().getValue());
-		    
-			final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
-			intervals.add(new Interval<Boolean>(null, false));
-			intervals.add(new Interval<Boolean>(Date.getCurrentDate(), false));
-			final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
-		    
-	        MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), person1);
-            memberCPR.householdMemberRecord().specifyValue(person1);
-            
-	        CREOLETestHelper.assertEquals(timeline,
-					memberCPR.hasEnrolledForEducation().getValue());
-		    
-		    }
-	
+	public void testAgeTimeline() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
+
+		CaseParticipantRole person1 = createCaseParticipantRoleRecord(caseID,
+				caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+
+		// Setting age as 13
+		PDCBirthAndDeath pdcBirthAndDeathObj = PDCBirthAndDeath_Factory
+				.getFactory().newInstance(getSession());
+		Calendar calendar = Date.getCurrentDate().getCalendar();
+		calendar.add(Calendar.YEAR, -13);
+		Date dob1 = new Date(calendar);
+		pdcBirthAndDeathObj.dateOfBirth().specifyValue(dob1);
+		pdcBirthAndDeathObj.caseID().specifyValue(caseID);
+		pdcBirthAndDeathObj.person().specifyValue(
+				person1.caseParticipantRoleID().getValue());
+
+		final List<Interval<Number>> intervals = new ArrayList<Interval<Number>>();
+		intervals.add(new Interval<Number>(null, 0));
+		intervals.add(new Interval<Number>(Date.getCurrentDate(), 13));
+		final Timeline<Number> timeline = new Timeline<Number>(intervals);
+
+		MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory
+				.getFactory().newInstance(getSession(), person1);
+
+		final Number value1 = memberCPR.ageTimeline().getValue()
+				.valueOn(getToday());
+		final Number value2 = memberCPR.ageTimeline().getValue().valueOn(null);
+
+		final List<Interval<Number>> intervals2 = new ArrayList<Interval<Number>>();
+		intervals2.add(new Interval<Number>(null, value2));
+		intervals2.add(new Interval<Number>(Date.getCurrentDate(), value1));
+		final Timeline<Number> timeline2 = new Timeline<Number>(intervals2);
+
+		CREOLETestHelper.assertEquals(timeline, timeline2);
+	}
+
 	/* *//**
-	   * Test case for 'hasPassedCitizenshipTimeline' attribute. 
-	   * Test Data:Set exists and citizenship of household member rule set
-	   * Test Class: SANonFinancialCPRCalculator
-	   */
-	
-	public void testHasPassedCitizenshipTimeline(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
+	 * Test case for 'hasPassedCitizenshipTimeline' attribute. Test
+	 * Data:Set exists and citizenship of household member rule set Test Class:
+	 * SANonFinancialCPRCalculator
+	 */
 
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
-		    
-            // Setting citizenship as Qatari
-    
-			final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
-			intervals.add(new Interval<Boolean>(null, true));
-			intervals.add(new Interval<Boolean>(Date.getCurrentDate(), true));
-			final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
-     
-	        final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-			test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(CITIZENSHIPCODE.TABLENAME, CITIZENSHIPCODE.QATARI)));
-			final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-		    
-	        HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(getSession());
-	        hh.exists().specifyValue(Timeline.TRUE_FOREVER);
-	        hh.citizenship().specifyValue(firstTimeline);
-	        hh.caseID().specifyValue(caseID);
-	        hh.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-	        
-	        SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-	        
+	public void testHasPassedCitizenshipTimeline() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
 
-	        CREOLETestHelper.assertEquals(timeline,
-	        		test.hasPassedCitizenshipTimeline().getValue());
-	        }
-	
-	public void testHasPassedCitizenshipTimeline1(){
-	    final Number caseID = 1111L;
-	    final Number caseParticipantRoleIDOne = 1234L;
-	    final Number participantRoleIDOne = 101L;
-	    final Number caseParticipantRoleIDTwo = 12345L;
-	    final Number participantRoleIDTwo = 102L;
-	    final Number caseParticipantRoleIDThree = 123456L;
-	    final Number participantRoleIDThree = 103L;
-	    final Number caseParticipantRoleIDFour = 1234567L;
-	    final Number participantRoleIDFour = 104L;
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
 
-	    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-	        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-	        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-	        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-	        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
-	    
-        // Setting citizenship as Qatari
+		// Setting citizenship as Qatari
+
+		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
+		intervals.add(new Interval<Boolean>(null, true));
+		intervals.add(new Interval<Boolean>(Date.getCurrentDate(), true));
+		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
+
+		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				CITIZENSHIPCODE.TABLENAME, CITIZENSHIPCODE.QATARI)));
+		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
+				test1);
+
+		HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(
+				getSession());
+		hh.exists().specifyValue(Timeline.TRUE_FOREVER);
+		hh.citizenship().specifyValue(firstTimeline);
+		hh.caseID().specifyValue(caseID);
+		hh.participant().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+
+		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+
+		CREOLETestHelper.assertEquals(timeline, test
+				.hasPassedCitizenshipTimeline().getValue());
+	}
+
+	public void testHasPassedCitizenshipTimeline1() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
+
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+
+		// Setting citizenship as Qatari
 
 		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
 		intervals.add(new Interval<Boolean>(null, false));
 		intervals.add(new Interval<Boolean>(Date.getCurrentDate(), false));
 		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
- 
-        final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(CITIZENSHIPCODE.TABLENAME, CITIZENSHIPCODE.NOT_A_QATARI)));
-		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-	    
-        HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(getSession());
-        hh.exists().specifyValue(Timeline.TRUE_FOREVER);
-        hh.citizenship().specifyValue(firstTimeline);
-        hh.caseID().specifyValue(caseID);
-        hh.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-        
-        SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-        
 
-        CREOLETestHelper.assertEquals(timeline,
-        		test.hasPassedCitizenshipTimeline().getValue());
-        }
-	
+		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				CITIZENSHIPCODE.TABLENAME, CITIZENSHIPCODE.NOT_A_QATARI)));
+		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
+				test1);
+
+		HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(
+				getSession());
+		hh.exists().specifyValue(Timeline.TRUE_FOREVER);
+		hh.citizenship().specifyValue(firstTimeline);
+		hh.caseID().specifyValue(caseID);
+		hh.participant().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+
+		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+
+		CREOLETestHelper.assertEquals(timeline, test
+				.hasPassedCitizenshipTimeline().getValue());
+	}
+
 	/* *//**
-	   * Test case for 'hasPassedResiencyTimeline' attribute. 
-	   * Test Data:Set date of birth and check the age
-	   */
-	
-	public void testHasPassedResiencyTimeline(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
+	 * Test case for 'hasPassedResiencyTimeline' attribute. Test Data:Set
+	 * date of birth and check the age
+	 */
 
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+	public void testHasPassedResiencyTimeline() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
 
-            // Setting residency to Yes
-		    
-			final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
-			intervals.add(new Interval<Boolean>(null, true));
-			intervals.add(new Interval<Boolean>(Date.getCurrentDate(), true));
-			final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
-   
-	        final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-			test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(RESIDENCY.TABLENAME, RESIDENCY.YES)));
-			final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-		    
-	        HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(getSession());
-	        hh.exists().specifyValue(Timeline.TRUE_FOREVER);
-	        hh.residency().specifyValue(firstTimeline);
-	        hh.caseID().specifyValue(caseID);
-	        hh.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-	        
-	        SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-	        
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
 
-	        CREOLETestHelper.assertEquals(timeline,
-	        		test.hasPassedResiencyTimeline().getValue());
-	        }
-	
-	public void testHasPassedResiencyTimeline1(){
-	    final Number caseID = 1111L;
-	    final Number caseParticipantRoleIDOne = 1234L;
-	    final Number participantRoleIDOne = 101L;
-	    final Number caseParticipantRoleIDTwo = 12345L;
-	    final Number participantRoleIDTwo = 102L;
-	    final Number caseParticipantRoleIDThree = 123456L;
-	    final Number participantRoleIDThree = 103L;
-	    final Number caseParticipantRoleIDFour = 1234567L;
-	    final Number participantRoleIDFour = 104L;
+		// Setting residency to Yes
 
-	    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-	        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-	        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-	        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-	        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
+		intervals.add(new Interval<Boolean>(null, true));
+		intervals.add(new Interval<Boolean>(Date.getCurrentDate(), true));
+		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
 
-        // Setting residency to No
-	    
+		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				RESIDENCY.TABLENAME, RESIDENCY.YES)));
+		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
+				test1);
+
+		HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(
+				getSession());
+		hh.exists().specifyValue(Timeline.TRUE_FOREVER);
+		hh.residency().specifyValue(firstTimeline);
+		hh.caseID().specifyValue(caseID);
+		hh.participant().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+
+		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+
+		CREOLETestHelper.assertEquals(timeline, test
+				.hasPassedResiencyTimeline().getValue());
+	}
+
+	public void testHasPassedResiencyTimeline1() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
+
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+
+		// Setting residency to No
+
 		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
 		intervals.add(new Interval<Boolean>(null, false));
 		intervals.add(new Interval<Boolean>(Date.getCurrentDate(), false));
 		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
 
-        final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(RESIDENCY.TABLENAME, RESIDENCY.NO)));
-		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-	    
-        HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(getSession());
-        hh.exists().specifyValue(Timeline.TRUE_FOREVER);
-        hh.residency().specifyValue(firstTimeline);
-        hh.caseID().specifyValue(caseID);
-        hh.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-        
-        SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-        
-        CREOLETestHelper.assertEquals(timeline,
-        		test.hasPassedResiencyTimeline().getValue());
-        }
-	
+		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				RESIDENCY.TABLENAME, RESIDENCY.NO)));
+		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
+				test1);
+
+		HouseholdMember hh = HouseholdMember_Factory.getFactory().newInstance(
+				getSession());
+		hh.exists().specifyValue(Timeline.TRUE_FOREVER);
+		hh.residency().specifyValue(firstTimeline);
+		hh.caseID().specifyValue(caseID);
+		hh.participant().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+
+		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+
+		CREOLETestHelper.assertEquals(timeline, test
+				.hasPassedResiencyTimeline().getValue());
+	}
+
 	/* *//**
-	   * Test case for 'hasPassedNonFinancialTestTimeline' attribute. 
-	   * Test Data:Set hasPassedCitizenshipTimeline and hasPassedResiencyTimeline
-	   */
-	
-	public void testhasPassedNonFinancialTestTimeline(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
+	 * Test case for 'hasPassedNonFinancialTestTimeline' attribute. Test
+	 * Data:Set hasPassedCitizenshipTimeline and hasPassedResiencyTimeline
+	 */
 
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+	public void testhasPassedNonFinancialTestTimeline() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
 
-          // Setting Set hasPassedCitizenshipTimeline and hasPassedResiencyTimeline to True
-		    
-			final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
-			intervals.add(new Interval<Boolean>(null, true));
-			intervals.add(new Interval<Boolean>(Date.getCurrentDate(), true));
-			final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
- 
-	        
-	        SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-	        test.hasPassedCitizenshipTimeline().specifyValue(Timeline.TRUE_FOREVER);
-	        test.hasPassedResiencyTimeline().specifyValue(Timeline.TRUE_FOREVER);
-	        
-	        CREOLETestHelper.assertEquals(timeline,
-	        		test.hasPassedNonFinancialTestTimeline().getValue());
-	        }
-	
-	public void testhasPassedNonFinancialTestTimeline1(){
-	    final Number caseID = 1111L;
-	    final Number caseParticipantRoleIDOne = 1234L;
-	    final Number participantRoleIDOne = 101L;
-	    final Number caseParticipantRoleIDTwo = 12345L;
-	    final Number participantRoleIDTwo = 102L;
-	    final Number caseParticipantRoleIDThree = 123456L;
-	    final Number participantRoleIDThree = 103L;
-	    final Number caseParticipantRoleIDFour = 1234567L;
-	    final Number participantRoleIDFour = 104L;
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
 
-	    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-	        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-	        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-	        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-	        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+		// Setting Set hasPassedCitizenshipTimeline and
+		// hasPassedResiencyTimeline to True
 
-      // Setting Set hasPassedCitizenshipTimeline and hasPassedResiencyTimeline to True and False
-	    
+		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
+		intervals.add(new Interval<Boolean>(null, true));
+		intervals.add(new Interval<Boolean>(Date.getCurrentDate(), true));
+		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
+
+		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+		test.hasPassedCitizenshipTimeline().specifyValue(Timeline.TRUE_FOREVER);
+		test.hasPassedResiencyTimeline().specifyValue(Timeline.TRUE_FOREVER);
+
+		CREOLETestHelper.assertEquals(timeline, test
+				.hasPassedNonFinancialTestTimeline().getValue());
+	}
+
+	public void testhasPassedNonFinancialTestTimeline1() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
+
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+
+		// Setting Set hasPassedCitizenshipTimeline and
+		// hasPassedResiencyTimeline to True and False
+
 		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
 		intervals.add(new Interval<Boolean>(null, false));
 		intervals.add(new Interval<Boolean>(Date.getCurrentDate(), false));
 		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
 
-        
-        SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-        test.hasPassedCitizenshipTimeline().specifyValue(Timeline.TRUE_FOREVER);
-        test.hasPassedResiencyTimeline().specifyValue(Timeline.FALSE_FOREVER);
-        
-        CREOLETestHelper.assertEquals(timeline,
-        		test.hasPassedNonFinancialTestTimeline().getValue());
-        }
-	
-	/* *//**
-	   * Test case for 'isAgeUnderSixTimeline' attribute. 
-	   * Test Data:Set ageTimeline
-	   * Class : DependentChildCalculator
-	   */
-	
-	public void testIsAgeUnderSixTimeline(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
+		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+		test.hasPassedCitizenshipTimeline().specifyValue(Timeline.TRUE_FOREVER);
+		test.hasPassedResiencyTimeline().specifyValue(Timeline.FALSE_FOREVER);
 
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    
-			final List<Interval<Number>> intervals = new ArrayList<Interval<Number>>();
-			intervals.add(new Interval<Number>(null, 5));
-			intervals.add(new Interval<Number>(Date.fromISO8601("20040601"), 10));
-			final Timeline<Number> timeline = new Timeline<Number>(intervals);
-			
-			final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
-			intervals1.add(new Interval<Boolean>(null, true));
-			intervals1.add(new Interval<Boolean>(Date.fromISO8601("20100601"), false));
-			final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
-		    
-		    MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-		    memberCPR.ageTimeline().specifyValue(timeline);
-		    memberCPR.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-		    
-		    PDCBirthAndDeath pdcBirthAndDeathObj = PDCBirthAndDeath_Factory
-			.getFactory().newInstance(getSession());
-	        pdcBirthAndDeathObj.dateOfBirth().specifyValue(Date.fromISO8601("20040601"));
-	        pdcBirthAndDeathObj.caseID().specifyValue(caseID);
-	        pdcBirthAndDeathObj.person().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-		    
-		    DependentChildCalculator test = DependentChildCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-
-	        CREOLETestHelper.assertEquals(timeline1,
-	        		test.isAgeUnderSixTimeline().getValue());
-		  	}
+		CREOLETestHelper.assertEquals(timeline, test
+				.hasPassedNonFinancialTestTimeline().getValue());
+	}
 
 	/* *//**
-	   * Test case for 'isDependentChildTimeline' attribute. 
-	   * Test Data:Set ageTimeline
-	   */
-	
-	public void testisDependentChildTimeline(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
+	 * Test case for 'isRelationshipExistsTimeline' attribute. Test
+	 * Data:Set exists attribute Class : AmountCalculator
+	 */
 
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-
-			final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
-			intervals1.add(new Interval<Boolean>(null, true));
-			intervals1.add(new Interval<Boolean>(Date.getCurrentDate(), true));
-			final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
- 
-		    DependentChildCalculator test = DependentChildCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-		    test.isAgeUnderSixTimeline().specifyValue(Timeline.TRUE_FOREVER);
-		    test.isUnmarriedFemaleNonWorking().specifyValue(Timeline.TRUE_FOREVER);
-		    test.isUnmarriedFemaleNonWorking().specifyValue(Timeline.TRUE_FOREVER);
-		    test.isUnmarriedMaleStudentChild().specifyValue(Timeline.TRUE_FOREVER);
-		    
-	        CREOLETestHelper.assertEquals(timeline1,
-	        		test.isDependentChildTimeline().getValue());
-		  	}
-
-	/* *//**
-	   * Test case for 'isRelationshipExistsTimeline' attribute. 
-	   * Test Data:Set exists attribute
-	   * Class : AmountCalculator
-	   */
-	
-	public void testisRelationshipExistsTimeline(){
+	public void testisRelationshipExistsTimeline() {
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
 		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
@@ -745,343 +664,177 @@ public class MOLSASocialAssistanceCalculatorTest extends
 				.getFactory().newInstance(getSession());
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
-		
+
 		final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
 		intervals1.add(new Interval<Boolean>(null, false));
 		intervals1.add(new Interval<Boolean>(Date.getCurrentDate(), false));
 		final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
 
-	    MolsaRelationship test = MolsaRelationship_Factory.getFactory().newInstance(getSession());
-	    test.exists().specifyValue(Timeline.TRUE_FOREVER);
-	    
-	    RelationshipAmount test1 = RelationshipAmount_Factory.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0), caseParticipantRoleList.get(0));
-	    CREOLETestHelper.assertEquals(timeline1,
-	    		test1.isRelationshipExistsTimeline().getValue());
-	  	}
-	
-	/* *//**
-	   * Test case for 'amountTimeline' attribute. 
-	   * Test Data:
-	   */
-	
-	public void testamountTimeline(){
-		final Number caseID = 1111L;
-		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
+		MolsaRelationship test = MolsaRelationship_Factory.getFactory()
+				.newInstance(getSession());
+		test.exists().specifyValue(Timeline.TRUE_FOREVER);
 
-		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
-				.getFactory().newInstance(getSession());
-		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
-				saHouseholdUnitMemberList);
-		
-	    final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(RELATIONSHIPTYPECODE.TABLENAME, RELATIONSHIPTYPECODE.CHILD)));
-		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-
-	    MolsaRelationship test = MolsaRelationship_Factory.getFactory().newInstance(getSession());
-	    test.exists().specifyValue(Timeline.TRUE_FOREVER);
-	    test.relationshipType().specifyValue(firstTimeline);
-	    test.caseID().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());
-	    
-	    RelationshipAmount test2 = RelationshipAmount_Factory.getFactory().newInstance(getSession(), caseParticipantRoleList.get(1), saHouseholdUnitMemberList.get(0).caseParticipantRoleRecord().getValue());
-
-	    CREOLETestHelper.assertEquals(1000,
-	    		test2.amountTimeline().getValue());
-	  	}	
-	
-	public void testamountTimeline1(){
-		final Number caseID = 1111L;
-		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
-
-		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
-				.getFactory().newInstance(getSession());
-		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
-				saHouseholdUnitMemberList);
-		
-	    final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(RELATIONSHIPTYPECODE.TABLENAME, RELATIONSHIPTYPECODE.SPOUSE)));
-		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-
-	    MolsaRelationship test = MolsaRelationship_Factory.getFactory().newInstance(getSession());
-	    test.exists().specifyValue(Timeline.TRUE_FOREVER);
-	    test.relationshipType().specifyValue(firstTimeline);
-	    test.caseID().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());
-	    test.participant().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());
-	    test.relatedParticipant().specifyValue(caseParticipantRoleList.get(1).caseParticipantRoleID().getValue());
-	    RelationshipAmount test2 = RelationshipAmount_Factory.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0), caseParticipantRoleList.get(1));
-	    test2.relationshipRecord().specifyValue(test);
-	    CREOLETestHelper.assertEquals(2000,
-	    		test2.amountTimeline().getValue());
-	  	}	
-	
-	
-	/* *//**
-	   * Test case for 'hasPassedNonFinancialTestTimeline' attribute. 
-	   * Test Data:Set hasEarnedIncomeTimeline, hasEnrolledForEducation, Gender, Marital Status
-	   */
-	
-	public void testisUnmarriedMaleStudentChild(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
-
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
-
-			final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
-			intervals1.add(new Interval<Boolean>(null, true));
-			intervals1.add(new Interval<Boolean>(Date.getCurrentDate(), true));
-			final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
-			
-		    MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-		    memberCPR.hasEarnedIncomeTimeline().specifyValue(Timeline.FALSE_FOREVER);
-		    memberCPR.hasEnrolledForEducation().specifyValue(Timeline.TRUE_FOREVER);
-		    memberCPR.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-		    
-		    final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-			test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(GENDER.TABLENAME, GENDER.MALE)));
-			final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-			
-			final List<Interval<CodeTableItem>> test2 = new ArrayList<Interval<CodeTableItem>>();
-			test2.add(new Interval<CodeTableItem>(null, new CodeTableItem(MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
-			final Timeline<CodeTableItem> secondTimeline = new Timeline<CodeTableItem>(test2);
-			
-		    PDCGender pdcGenderObj = PDCGender_Factory
-			.getFactory().newInstance(getSession());
-		    pdcGenderObj.gender().specifyValue(firstTimeline);
-		    pdcGenderObj.caseID().specifyValue(caseID);
-		    pdcGenderObj.person().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-		    
-		    MaritalStatus status = MaritalStatus_Factory.getFactory().newInstance(getSession());
-		    status.caseID().specifyValue(caseID);
-		    status.maritalStatus().specifyValue(secondTimeline);
-		    status.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-		    memberCPR.maritalStatusRecord().specifyValue(status);
-		    
-			DependentChildCalculator test = DependentChildCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-			test.isAgeUnderSixTimeline().specifyValue(Timeline.FALSE_FOREVER);
-			test.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-			test.memberCPRCalculator().specifyValue(memberCPR);
-			
-		        CREOLETestHelper.assertEquals(timeline1,
-		        		test.isUnmarriedMaleStudentChild().getValue());
+		RelationshipAmount test1 = RelationshipAmount_Factory.getFactory()
+				.newInstance(getSession(), caseParticipantRoleList.get(0),
+						caseParticipantRoleList.get(0));
+		CREOLETestHelper.assertEquals(timeline1, test1
+				.isRelationshipExistsTimeline().getValue());
 	}
-	
-	public void testisUnmarriedMaleStudentChild1(){
-	    final Number caseID = 1111L;
-	    final Number caseParticipantRoleIDOne = 1234L;
-	    final Number participantRoleIDOne = 101L;
-	    final Number caseParticipantRoleIDTwo = 12345L;
-	    final Number participantRoleIDTwo = 102L;
-	    final Number caseParticipantRoleIDThree = 123456L;
-	    final Number participantRoleIDThree = 103L;
-	    final Number caseParticipantRoleIDFour = 1234567L;
-	    final Number participantRoleIDFour = 104L;
 
-	    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-	        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-	        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-	        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-	    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-	        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+	/* *//**
+	 * Test case for 'hasPassedNonFinancialTestTimeline' attribute. Test
+	 * Data:Set hasEarnedIncomeTimeline, hasEnrolledForEducation, Gender,
+	 * Marital Status
+	 */
+
+	public void testisUnmarriedMaleStudentChild() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
+
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
 
 		final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
-		intervals1.add(new Interval<Boolean>(null, false));
-		intervals1.add(new Interval<Boolean>(Date.getCurrentDate(), false));
+		intervals1.add(new Interval<Boolean>(null, true));
+		intervals1.add(new Interval<Boolean>(Date.getCurrentDate(), true));
 		final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
-		
-	    MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-	    memberCPR.hasEarnedIncomeTimeline().specifyValue(Timeline.FALSE_FOREVER);
-	    memberCPR.hasEnrolledForEducation().specifyValue(Timeline.TRUE_FOREVER);
-	    memberCPR.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-	    
-	    //Make gender as Female to check for false condition
-	    
-	    final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(GENDER.TABLENAME, GENDER.FEMALE)));
-		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-		
+
+		MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+		memberCPR.hasEarnedIncomeTimeline()
+				.specifyValue(Timeline.FALSE_FOREVER);
+		memberCPR.hasEnrolledForEducation().specifyValue(Timeline.TRUE_FOREVER);
+		memberCPR.caseParticipantRoleRecord().specifyValue(
+				caseParticipantRoleRecord1);
+
+		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				GENDER.TABLENAME, GENDER.MALE)));
+		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
+				test1);
+
 		final List<Interval<CodeTableItem>> test2 = new ArrayList<Interval<CodeTableItem>>();
-		test2.add(new Interval<CodeTableItem>(null, new CodeTableItem(MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
-		final Timeline<CodeTableItem> secondTimeline = new Timeline<CodeTableItem>(test2);
-		
-	    PDCGender pdcGenderObj = PDCGender_Factory
-		.getFactory().newInstance(getSession());
-	    pdcGenderObj.gender().specifyValue(firstTimeline);
-	    pdcGenderObj.caseID().specifyValue(caseID);
-	    pdcGenderObj.person().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-	    
-	    MaritalStatus status = MaritalStatus_Factory.getFactory().newInstance(getSession());
-	    status.caseID().specifyValue(caseID);
-	    status.maritalStatus().specifyValue(secondTimeline);
-	    status.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-	    memberCPR.maritalStatusRecord().specifyValue(status);
-	    
-		DependentChildCalculator test = DependentChildCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
+		test2.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
+		final Timeline<CodeTableItem> secondTimeline = new Timeline<CodeTableItem>(
+				test2);
+
+		PDCGender pdcGenderObj = PDCGender_Factory.getFactory().newInstance(
+				getSession());
+		pdcGenderObj.gender().specifyValue(firstTimeline);
+		pdcGenderObj.caseID().specifyValue(caseID);
+		pdcGenderObj.person().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+
+		MaritalStatus status = MaritalStatus_Factory.getFactory().newInstance(
+				getSession());
+		status.caseID().specifyValue(caseID);
+		status.maritalStatus().specifyValue(secondTimeline);
+		status.participant().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+		memberCPR.maritalStatusRecord().specifyValue(status);
+
+		DependentChildCalculator test = DependentChildCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
 		test.isAgeUnderSixTimeline().specifyValue(Timeline.FALSE_FOREVER);
-		test.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
+		test.caseParticipantRoleRecord().specifyValue(
+				caseParticipantRoleRecord1);
 		test.memberCPRCalculator().specifyValue(memberCPR);
-		
-	        CREOLETestHelper.assertEquals(timeline1,
-	        		test.isUnmarriedMaleStudentChild().getValue());
-}
-	
-	/* *//**
-	   * Test case for 'isUnmarriedFemaleStudent' attribute. 
-	   * Test Data:
-	   */
-	
-	public void testisUnmarriedFemaleStudent(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
 
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
-
-			final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
-			intervals1.add(new Interval<Boolean>(null, true));
-			intervals1.add(new Interval<Boolean>(Date.fromISO8601("20321123"), true));
-			intervals1.add(new Interval<Boolean>(Date.fromISO8601("20321124"), false));
-			final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
-			
-			
-			PDCBirthAndDeath pdcBirthAndDeathObj = PDCBirthAndDeath_Factory
-			.getFactory().newInstance(getSession());
-	          pdcBirthAndDeathObj.dateOfBirth().specifyValue(Date.fromISO8601("20141124"));
-			pdcBirthAndDeathObj.caseID().specifyValue(caseID);
-	        pdcBirthAndDeathObj.person().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-	        
-		    MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-		    memberCPR.hasEarnedIncomeTimeline().specifyValue(Timeline.FALSE_FOREVER);
-		    memberCPR.hasEnrolledForEducation().specifyValue(Timeline.TRUE_FOREVER);
-		    memberCPR.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-
-		    
-		    final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-			test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(GENDER.TABLENAME, GENDER.FEMALE)));
-			final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-			
-			final List<Interval<CodeTableItem>> test2 = new ArrayList<Interval<CodeTableItem>>();
-			test2.add(new Interval<CodeTableItem>(null, new CodeTableItem(MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
-			final Timeline<CodeTableItem> secondTimeline = new Timeline<CodeTableItem>(test2);
-			
-		    PDCGender pdcGenderObj = PDCGender_Factory
-			.getFactory().newInstance(getSession());
-		    pdcGenderObj.gender().specifyValue(firstTimeline);
-		    pdcGenderObj.caseID().specifyValue(caseID);
-		    pdcGenderObj.person().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-		    
-		    MaritalStatus status = MaritalStatus_Factory.getFactory().newInstance(getSession());
-		    status.caseID().specifyValue(caseID);
-		    status.maritalStatus().specifyValue(secondTimeline);
-		    status.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-		    memberCPR.maritalStatusRecord().specifyValue(status);
-		    
-			DependentChildCalculator test = DependentChildCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-			test.isAgeUnderSixTimeline().specifyValue(Timeline.FALSE_FOREVER);
-			test.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-			test.memberCPRCalculator().specifyValue(memberCPR);
-			
-		        CREOLETestHelper.assertEquals(timeline1,
-		        		test.isUnmarriedFemaleStudent().getValue());
+		CREOLETestHelper.assertEquals(timeline1, test
+				.isUnmarriedMaleStudentChild().getValue());
 	}
-	
-	/* *//**
-	   * Test case for 'isUnmarriedFemaleNonWorking' attribute. 
-	   * Test Data:
-	   */
-	
-	public void testisUnmarriedFemaleNonWorking(){
-		    final Number caseID = 1111L;
-		    final Number caseParticipantRoleIDOne = 1234L;
-		    final Number participantRoleIDOne = 101L;
-		    final Number caseParticipantRoleIDTwo = 12345L;
-		    final Number participantRoleIDTwo = 102L;
-		    final Number caseParticipantRoleIDThree = 123456L;
-		    final Number participantRoleIDThree = 103L;
-		    final Number caseParticipantRoleIDFour = 1234567L;
-		    final Number participantRoleIDFour = 104L;
 
-		    CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDOne,
-		        participantRoleIDOne, CASEPARTICIPANTROLETYPE.PRIMARY);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
-		        participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
-		        participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
-		    createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
-		        participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+	public void testisUnmarriedMaleStudentChild1() {
+		final Number caseID = 1111L;
+		final Number caseParticipantRoleIDOne = 1234L;
+		final Number participantRoleIDOne = 101L;
+		final Number caseParticipantRoleIDTwo = 12345L;
+		final Number participantRoleIDTwo = 102L;
+		final Number caseParticipantRoleIDThree = 123456L;
+		final Number participantRoleIDThree = 103L;
+		final Number caseParticipantRoleIDFour = 1234567L;
+		final Number participantRoleIDFour = 104L;
 
-			final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
-			intervals1.add(new Interval<Boolean>(null, false));
-			intervals1.add(new Interval<Boolean>(Date.fromISO8601("20321123"), false));
-			intervals1.add(new Interval<Boolean>(Date.fromISO8601("20321124"), true));
-			final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
-			
-			
-			PDCBirthAndDeath pdcBirthAndDeathObj = PDCBirthAndDeath_Factory
-			.getFactory().newInstance(getSession());
-	          pdcBirthAndDeathObj.dateOfBirth().specifyValue(Date.fromISO8601("20141124"));
-			pdcBirthAndDeathObj.caseID().specifyValue(caseID);
-	        pdcBirthAndDeathObj.person().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-	        
-		    MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-		    memberCPR.hasEarnedIncomeTimeline().specifyValue(Timeline.FALSE_FOREVER);
-		    memberCPR.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-  
-		    final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-			test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(GENDER.TABLENAME, GENDER.FEMALE)));
-			final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(test1);
-			
-			final List<Interval<CodeTableItem>> test2 = new ArrayList<Interval<CodeTableItem>>();
-			test2.add(new Interval<CodeTableItem>(null, new CodeTableItem(MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
-			final Timeline<CodeTableItem> secondTimeline = new Timeline<CodeTableItem>(test2);
-			
-		    PDCGender pdcGenderObj = PDCGender_Factory
-			.getFactory().newInstance(getSession());
-		    pdcGenderObj.gender().specifyValue(firstTimeline);
-		    pdcGenderObj.caseID().specifyValue(caseID);
-		    pdcGenderObj.person().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-		    
-		    MaritalStatus status = MaritalStatus_Factory.getFactory().newInstance(getSession());
-		    status.caseID().specifyValue(caseID);
-		    status.maritalStatus().specifyValue(secondTimeline);
-		    status.participant().specifyValue(caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
-		    memberCPR.maritalStatusRecord().specifyValue(status);
-		    
-			DependentChildCalculator test = DependentChildCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleRecord1);
-			test.isAgeUnderSixTimeline().specifyValue(Timeline.FALSE_FOREVER);
-			test.caseParticipantRoleRecord().specifyValue(caseParticipantRoleRecord1);
-			test.memberCPRCalculator().specifyValue(memberCPR);
-			
-		        CREOLETestHelper.assertEquals(timeline1,
-		        		test.isUnmarriedFemaleNonWorking().getValue());
+		CaseParticipantRole caseParticipantRoleRecord1 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleIDOne, participantRoleIDOne,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDTwo,
+				participantRoleIDTwo, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDThree,
+				participantRoleIDThree, CASEPARTICIPANTROLETYPE.MEMBER);
+		createCaseParticipantRoleRecord(caseID, caseParticipantRoleIDFour,
+				participantRoleIDFour, CASEPARTICIPANTROLETYPE.MEMBER);
+
+		final List<Interval<Boolean>> intervals1 = new ArrayList<Interval<Boolean>>();
+		intervals1.add(new Interval<Boolean>(null, false));
+		intervals1.add(new Interval<Boolean>(Date.getCurrentDate(), false));
+		final Timeline<Boolean> timeline1 = new Timeline<Boolean>(intervals1);
+
+		MemberCPRCalculator memberCPR = MemberCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+		memberCPR.hasEarnedIncomeTimeline()
+				.specifyValue(Timeline.FALSE_FOREVER);
+		memberCPR.hasEnrolledForEducation().specifyValue(Timeline.TRUE_FOREVER);
+		memberCPR.caseParticipantRoleRecord().specifyValue(
+				caseParticipantRoleRecord1);
+
+		// Make gender as Female to check for false condition
+
+		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				GENDER.TABLENAME, GENDER.FEMALE)));
+		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
+				test1);
+
+		final List<Interval<CodeTableItem>> test2 = new ArrayList<Interval<CodeTableItem>>();
+		test2.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
+		final Timeline<CodeTableItem> secondTimeline = new Timeline<CodeTableItem>(
+				test2);
+
+		PDCGender pdcGenderObj = PDCGender_Factory.getFactory().newInstance(
+				getSession());
+		pdcGenderObj.gender().specifyValue(firstTimeline);
+		pdcGenderObj.caseID().specifyValue(caseID);
+		pdcGenderObj.person().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+
+		MaritalStatus status = MaritalStatus_Factory.getFactory().newInstance(
+				getSession());
+		status.caseID().specifyValue(caseID);
+		status.maritalStatus().specifyValue(secondTimeline);
+		status.participant().specifyValue(
+				caseParticipantRoleRecord1.caseParticipantRoleID().getValue());
+		memberCPR.maritalStatusRecord().specifyValue(status);
+
+		DependentChildCalculator test = DependentChildCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleRecord1);
+		test.isAgeUnderSixTimeline().specifyValue(Timeline.FALSE_FOREVER);
+		test.caseParticipantRoleRecord().specifyValue(
+				caseParticipantRoleRecord1);
+		test.memberCPRCalculator().specifyValue(memberCPR);
+
+		CREOLETestHelper.assertEquals(timeline1, test
+				.isUnmarriedMaleStudentChild().getValue());
 	}
+
 }
