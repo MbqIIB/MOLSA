@@ -5,9 +5,7 @@ import java.util.List;
 
 import curam.codetable.CASEPARTICIPANTROLETYPE;
 import curam.codetable.CITIZENSHIPCODE;
-import curam.codetable.FREQUENCYCODE;
 import curam.codetable.GENDER;
-import curam.codetable.INCOMETYPECODE;
 import curam.codetable.MARITALSTATUS;
 import curam.creole.calculator.CREOLETestHelper;
 import curam.creole.ruleclass.AbsentFatherDataRuleSet.impl.AbsentFather;
@@ -20,20 +18,12 @@ import curam.creole.ruleclass.AnonymousParentsEligibilityAndEntitlementRuleSet.i
 import curam.creole.ruleclass.AnonymousParentsEligibilityAndEntitlementRuleSet.impl.AnonymousParentsHouseholdComposition_Factory;
 import curam.creole.ruleclass.CaseEntitiesRuleSet.impl.CaseParticipantRole;
 import curam.creole.ruleclass.CaseEntitiesRuleSet.impl.CaseParticipantRole_Factory;
-import curam.creole.ruleclass.ExpenseDataRuleSet.impl.Expense;
-import curam.creole.ruleclass.ExpenseDataRuleSet.impl.Expense_Factory;
 import curam.creole.ruleclass.HouseholdMemberDataRuleSet.impl.HouseholdMember;
 import curam.creole.ruleclass.HouseholdMemberDataRuleSet.impl.HouseholdMember_Factory;
-import curam.creole.ruleclass.IncomeDataRuleSet.impl.Income;
-import curam.creole.ruleclass.IncomeDataRuleSet.impl.Income_Factory;
 import curam.creole.ruleclass.MaritalStatusDataRuleSet.impl.MaritalStatus;
 import curam.creole.ruleclass.MaritalStatusDataRuleSet.impl.MaritalStatus_Factory;
 import curam.creole.ruleclass.MolsaEducationDataRuleSet.impl.MolsaEducation;
 import curam.creole.ruleclass.MolsaEducationDataRuleSet.impl.MolsaEducation_Factory;
-import curam.creole.ruleclass.OrphanRuleSet.impl.OrphanCPRCalculator;
-import curam.creole.ruleclass.OrphanRuleSet.impl.OrphanCPRCalculator_Factory;
-import curam.creole.ruleclass.OrphanRuleSet.impl.OrphanEligibilityUnitCalculator;
-import curam.creole.ruleclass.OrphanRuleSet.impl.OrphanEligibilityUnitCalculator_Factory;
 import curam.creole.ruleclass.PDCBirthAndDeathDataRuleSet.impl.PDCBirthAndDeath;
 import curam.creole.ruleclass.PDCBirthAndDeathDataRuleSet.impl.PDCBirthAndDeath_Factory;
 import curam.creole.ruleclass.ParticipantEntitiesRuleSet.impl.ConcernRole;
@@ -48,18 +38,14 @@ import curam.creole.ruleclass.SocialAssistanceRuleSet.impl.SAHouseholdUnitMember
 import curam.creole.ruleclass.SocialAssistanceRuleSet.impl.SAHouseholdUnitMember_Factory;
 import curam.creole.ruleclass.SocialAssistanceRuleSet.impl.SANonFinancialCPRCalculator;
 import curam.creole.ruleclass.SocialAssistanceRuleSet.impl.SANonFinancialCPRCalculator_Factory;
-import curam.creole.ruleclass.WidowEligibilityAndEntitlementRuleSet.impl.WidowHouseholdComposition;
-import curam.creole.ruleclass.WidowEligibilityAndEntitlementRuleSet.impl.WidowHouseholdComposition_Factory;
 import curam.creole.value.CodeTableItem;
 import curam.creole.value.Interval;
 import curam.creole.value.Timeline;
 import curam.molsa.codetable.ABSENTFATHER;
 import curam.molsa.codetable.EDUCATION;
-import curam.molsa.codetable.EXPENSE;
 import curam.molsa.codetable.RESIDENCY;
 import curam.molsa.test.eligibility.framework.MOLSACreoleBaseTest;
 import curam.util.type.Date;
-
 
 /**
  * Junit class for AnonymousParentsEligibilityAndEntitlementRuleSet
@@ -68,11 +54,11 @@ import curam.util.type.Date;
  */
 @SuppressWarnings("restriction")
 public class MOLSAAnonymousParentsEligibilityUnitCalculator extends
-MOLSACreoleBaseTest{
+		MOLSACreoleBaseTest {
 
 	public static final String MOLSA_RULESET = "AnonymousParentsEligibilityAndEntitlementRuleSet";
 
-	   /**
+	/**
 	 * Default constructor
 	 * 
 	 * @param arg0
@@ -83,7 +69,7 @@ MOLSACreoleBaseTest{
 		setRuleSetName();
 	}
 
-	   /**
+	/**
 	 * Creates the CaseParticipantRole record.
 	 * 
 	 * @param caseID
@@ -116,14 +102,15 @@ MOLSACreoleBaseTest{
 		return caseParticipantRoleRecord;
 	}
 
-	   /**
+	/**
 	 * Creates an Person.
 	 */
 	public Person createPersonRecord(final Number concernRoleID,
 			final String personBirthName, final Date dateOfBirth,
 			final Date dateOfDeath, final String gender,
 			final String maritalStatusCode) {
-		final Person personRecord = Person_Factory.getFactory().newInstance(this.getSession());
+		final Person personRecord = Person_Factory.getFactory().newInstance(
+				this.getSession());
 		personRecord.concernRoleID().specifyValue(concernRoleID);
 		personRecord.personBirthName().specifyValue(personBirthName);
 		personRecord.dateOfBirth().specifyValue(dateOfBirth);
@@ -135,7 +122,7 @@ MOLSACreoleBaseTest{
 		return personRecord;
 	}
 
-	   /**
+	/**
 	 * Creates an object of SAHouseholdUnitMember.
 	 */
 	public List<SAHouseholdUnitMember> createSAHouseholdUnitMember(
@@ -167,30 +154,30 @@ MOLSACreoleBaseTest{
 		saHouseholdUnitMemberList.add(saHouseholdUnitMember3);
 		return saHouseholdUnitMemberList;
 	}
-	
-	   /**
+
+	/**
 	 * Creates an object of a SAHouseholdUnitMember.
 	 */
-	public SAHouseholdUnitMember createASAHouseholdUnitMember( final CaseParticipantRole
-			caseParticipantRole) {
+	public SAHouseholdUnitMember createASAHouseholdUnitMember(
+			final CaseParticipantRole caseParticipantRole) {
 		final Number participantRoleID1 = caseParticipantRole
 				.participantRoleID().getValue();
-
 
 		final curam.util.type.Date relationshipStartDate = curam.util.type.Date
 				.fromISO8601("20000101");
 		final SAHouseholdUnitMember saHouseholdUnitMember1 = SAHouseholdUnitMember_Factory
-				.getFactory().newInstance(getSession(), caseParticipantRole.caseID().getValue(),
+				.getFactory().newInstance(getSession(),
+						caseParticipantRole.caseID().getValue(),
 						caseParticipantRole);
-		
+
 		return saHouseholdUnitMember1;
 	}
 
-	   /**
+	/**
 	 * Creates an object of SAHouseholdUnitMember.
 	 */
 
-	   /**
+	/**
 	 * Creates ConcernRole record.
 	 * 
 	 * @param concernRoleID
@@ -210,7 +197,7 @@ MOLSACreoleBaseTest{
 		return concernRoleRecord;
 	}
 
-	   /**
+	/**
 	 * creates an object of SAHouseholdUnitMember.
 	 */
 	public List<CaseParticipantRole> createCaseParticipantRole() {
@@ -251,7 +238,7 @@ MOLSACreoleBaseTest{
 		return caseParticipantRoleList;
 	}
 
-	   /**
+	/**
 	 * creates an object of one SAHouseholdUnitMember.
 	 */
 	public CaseParticipantRole createACaseParticipantRole() {
@@ -273,18 +260,17 @@ MOLSACreoleBaseTest{
 	protected void setRuleSetName() {
 		super.setFileName(MOLSA_RULESET);
 	}
-	
-	 /**
-	   * Test case for 'isSingleTimeline' attribute. 
-	   * Test Data:gender as single
-	   * Test Class : AnonymousParentsCPRCalculator
-	   */
-	  
-	public void testisSingleTimeline(){
+
+	/**
+	 * Test case for 'isSingleTimeline' attribute. Test Data:gender as single
+	 * Test Class : AnonymousParentsCPRCalculator
+	 */
+
+	public void testisSingleTimeline() {
 		final long caseParticipantRoleID = 11L;
 		final long participantRoleID = 111L;
 		final long caseID = 111L;
-		final String Name = "Pavan";
+		final String Name = "Test_Person";
 		createPersonRecord(participantRoleID, Name,
 				Date.fromISO8601("20110615"), Date.kZeroDate, GENDER.FEMALE,
 				MARITALSTATUS.SINGLE);
@@ -294,29 +280,32 @@ MOLSACreoleBaseTest{
 				CASEPARTICIPANTROLETYPE.PRIMARY);
 
 		final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
-		.getFactory().newInstance(getSession(), caseParticipantRole);
-			
+				.getFactory().newInstance(getSession(), caseParticipantRole);
+
 		// Specifying marital status as Single
-		
+
 		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
-		final Timeline<CodeTableItem> maritalStatusTimeline = new Timeline<CodeTableItem>(test1);
-		
-		MaritalStatus maritalStatus = MaritalStatus_Factory.getFactory().newInstance(getSession());
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				MARITALSTATUS.TABLENAME, MARITALSTATUS.SINGLE)));
+		final Timeline<CodeTableItem> maritalStatusTimeline = new Timeline<CodeTableItem>(
+				test1);
+
+		MaritalStatus maritalStatus = MaritalStatus_Factory.getFactory()
+				.newInstance(getSession());
 		maritalStatus.caseID().specifyValue(caseID);
 		maritalStatus.maritalStatus().specifyValue(maritalStatusTimeline);
-		maritalStatus.participant().specifyValue(caseParticipantRole.caseParticipantRoleID().getValue());
-		
-	
+		maritalStatus.participant().specifyValue(
+				caseParticipantRole.caseParticipantRoleID().getValue());
+
 		CREOLETestHelper.assertEquals(Timeline.TRUE_FOREVER,
 				anonymousParentsCPRCalculatorObj.isSingleTimeline().getValue());
 	}
-	
-	public void testisSingleTimeline1(){
+
+	public void testisSingleTimeline1() {
 		final long caseParticipantRoleID = 11L;
 		final long participantRoleID = 111L;
 		final long caseID = 111L;
-		final String Name = "Pavan";
+		final String Name = "Test_Person";
 		createPersonRecord(participantRoleID, Name,
 				Date.fromISO8601("20110615"), Date.kZeroDate, GENDER.FEMALE,
 				MARITALSTATUS.SINGLE);
@@ -326,32 +315,34 @@ MOLSACreoleBaseTest{
 				CASEPARTICIPANTROLETYPE.PRIMARY);
 
 		final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
-		.getFactory().newInstance(getSession(), caseParticipantRole);
-			
+				.getFactory().newInstance(getSession(), caseParticipantRole);
+
 		// Specifying marital status as Single
-		
+
 		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(MARITALSTATUS.TABLENAME, MARITALSTATUS.MARRIED)));
-		final Timeline<CodeTableItem> maritalStatusTimeline = new Timeline<CodeTableItem>(test1);
-		
-		MaritalStatus maritalStatus = MaritalStatus_Factory.getFactory().newInstance(getSession());
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				MARITALSTATUS.TABLENAME, MARITALSTATUS.MARRIED)));
+		final Timeline<CodeTableItem> maritalStatusTimeline = new Timeline<CodeTableItem>(
+				test1);
+
+		MaritalStatus maritalStatus = MaritalStatus_Factory.getFactory()
+				.newInstance(getSession());
 		maritalStatus.caseID().specifyValue(caseID);
 		maritalStatus.maritalStatus().specifyValue(maritalStatusTimeline);
-		maritalStatus.participant().specifyValue(caseParticipantRole.caseParticipantRoleID().getValue());
-		
-	
+		maritalStatus.participant().specifyValue(
+				caseParticipantRole.caseParticipantRoleID().getValue());
+
 		CREOLETestHelper.assertEquals(Timeline.FALSE_FOREVER,
 				anonymousParentsCPRCalculatorObj.isSingleTimeline().getValue());
 	}
-	
-	   /**
-	   * Test case for 'isHavingAnonymousFather' attribute. 
-	   * Test Data:absent father as Anonymous
-	   * Test Class : AnonymousParentsCPRCalculator
-	   */
+
+	/**
+	 * Test case for 'isHavingAnonymousFather' attribute. Test Data:absent
+	 * father as Anonymous Test Class : AnonymousParentsCPRCalculator
+	 */
 
 	public void testisHavingAnonymousFather() {
-		
+
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
 		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
@@ -360,39 +351,43 @@ MOLSACreoleBaseTest{
 				.getFactory().newInstance(getSession());
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
-		
+
 		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(ABSENTFATHER.TABLENAME, ABSENTFATHER.ANONYMOUS)));
-		final Timeline<CodeTableItem> absenceTimeline = new Timeline<CodeTableItem>(test1);
-		
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				ABSENTFATHER.TABLENAME, ABSENTFATHER.ANONYMOUS)));
+		final Timeline<CodeTableItem> absenceTimeline = new Timeline<CodeTableItem>(
+				test1);
+
 		final List<Interval<Boolean>> test3 = new ArrayList<Interval<Boolean>>();
 		test3.add(new Interval<Boolean>(null, true));
 		test3.add(new Interval<Boolean>(Date.fromISO8601("20141201"), true));
 		final Timeline<Boolean> firstTimeline = new Timeline<Boolean>(test3);
-		
-		AbsentFather test = AbsentFather_Factory.getFactory().newInstance(getSession());
+
+		AbsentFather test = AbsentFather_Factory.getFactory().newInstance(
+				getSession());
 		test.absenceReason().specifyValue(absenceTimeline);
 		test.caseID().specifyValue(caseID);
+		test.participant().specifyValue(
+				caseParticipantRoleList.get(0).caseParticipantRoleID()
+						.getValue());
 		final List<AbsentFather> absentList = new ArrayList<AbsentFather>();
 		absentList.add(test);
-		
-		/*ChildrenOfAbsentFather childrenOfAbsentFather = ChildrenOfAbsentFather_Factory.getFactory().newInstance(getSession());
-		childrenOfAbsentFather.caseID().specifyValue(caseID);
-		childrenOfAbsentFather.absentFather().specifyValue(test);
-		childrenOfAbsentFather.participant().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());*/
-		
-		MemberCPRCalculator memberCPRCalculator = MemberCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0));
+
+		MemberCPRCalculator memberCPRCalculator = MemberCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleList.get(0));
 		memberCPRCalculator.absentFatherRecords().specifyValue(absentList);
-	/*	memberCPRCalculator.isChildofAbsentFatherTimeline().specifyValue(Timeline.TRUE_FOREVER);*/
 		final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
-		.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0));
-		
-		CREOLETestHelper.assertEquals(firstTimeline,anonymousParentsCPRCalculatorObj.isHavingAnonymousFather()
-				.getValue());
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleList.get(0));
+
+		CREOLETestHelper.assertEquals(firstTimeline,
+				anonymousParentsCPRCalculatorObj.isHavingAnonymousFather()
+						.getValue());
 	}
-	
-public void testisHavingAnonymousFather1() {
-		
+
+	public void testisHavingAnonymousFather1() {
+
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
 		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
@@ -401,57 +396,73 @@ public void testisHavingAnonymousFather1() {
 				.getFactory().newInstance(getSession());
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
-		
+
 		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(ABSENTFATHER.TABLENAME, ABSENTFATHER.DECEASED)));
-		final Timeline<CodeTableItem> absenceTimeline = new Timeline<CodeTableItem>(test1);
-		
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				ABSENTFATHER.TABLENAME, ABSENTFATHER.DECEASED)));
+		final Timeline<CodeTableItem> absenceTimeline = new Timeline<CodeTableItem>(
+				test1);
+
 		final List<Interval<Boolean>> test3 = new ArrayList<Interval<Boolean>>();
 		test3.add(new Interval<Boolean>(null, false));
 		test3.add(new Interval<Boolean>(Date.fromISO8601("20141201"), false));
 		final Timeline<Boolean> firstTimeline = new Timeline<Boolean>(test3);
-		
-		AbsentFather test = AbsentFather_Factory.getFactory().newInstance(getSession());
+
+		AbsentFather test = AbsentFather_Factory.getFactory().newInstance(
+				getSession());
 		test.absenceReason().specifyValue(absenceTimeline);
 		test.caseID().specifyValue(caseID);
-		/*ChildrenOfAbsentFather childrenOfAbsentFather = ChildrenOfAbsentFather_Factory.getFactory().newInstance(getSession());
-		childrenOfAbsentFather.caseID().specifyValue(caseID);
-		childrenOfAbsentFather.absentFather().specifyValue(test);
-		childrenOfAbsentFather.participant().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());*/
-		final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
-		.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0));
-		
-		CREOLETestHelper.assertEquals(firstTimeline,anonymousParentsCPRCalculatorObj.isHavingAnonymousFather()
-				.getValue());
+		test.participant().specifyValue(
+				caseParticipantRoleList.get(0).caseParticipantRoleID()
+						.getValue());
+		final List<AbsentFather> absentList = new ArrayList<AbsentFather>();
+		absentList.add(test);
 
+		MemberCPRCalculator memberCPRCalculator = MemberCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleList.get(0));
+		memberCPRCalculator.absentFatherRecords().specifyValue(absentList);
+		final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleList.get(0));
+
+		CREOLETestHelper.assertEquals(firstTimeline,
+				anonymousParentsCPRCalculatorObj.isHavingAnonymousFather()
+						.getValue());
 	}
-	   /**
-	   * Test case for 'isAnonymousParentsTimeline' attribute. 
-	   * Test Data: Three conditions
-	   * Test Class : AnonymousParentsCPRCalculator
-	   */
+
+	/**
+	 * Test case for 'isAnonymousParentsTimeline' attribute. Test Data: Three
+	 * conditions Test Class : AnonymousParentsCPRCalculator
+	 */
 
 	public void testisAnonymousParentsTimeline() {
-		 final Number caseID = 1111L;
-			final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		 final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
-			.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0));
-		 anonymousParentsCPRCalculatorObj.isHavingAnonymousFather().specifyValue(Timeline.TRUE_FOREVER);
-		 anonymousParentsCPRCalculatorObj.isSingleTimeline().specifyValue(Timeline.TRUE_FOREVER);
-		 anonymousParentsCPRCalculatorObj.isAgeBelowSixtyTimeline().specifyValue(Timeline.TRUE_FOREVER);
-		 
-	     CREOLETestHelper.assertEquals(Timeline.TRUE_FOREVER,anonymousParentsCPRCalculatorObj.isAnonymousParentsTimeline()
-					.getValue());
-	 }
-	 
-	 /**
-	   * Test case for 'isEligibleTimeline' attribute. 
-	   * Test Data:hasPassedNonFinancialTestTimeline, hasHouseholdPassedIncomeTestTimeline, hasEarnedIncomeTimeline
-	   * Test Class : AnonymousParentsEligibilityUnitCalculator
-	   */
+		final Number caseID = 1111L;
+		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
+		final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleList.get(0));
+		anonymousParentsCPRCalculatorObj.isHavingAnonymousFather()
+				.specifyValue(Timeline.TRUE_FOREVER);
+		anonymousParentsCPRCalculatorObj.isSingleTimeline().specifyValue(
+				Timeline.TRUE_FOREVER);
+		anonymousParentsCPRCalculatorObj.isAgeBelowSixtyTimeline()
+				.specifyValue(Timeline.TRUE_FOREVER);
+
+		CREOLETestHelper.assertEquals(Timeline.TRUE_FOREVER,
+				anonymousParentsCPRCalculatorObj.isAnonymousParentsTimeline()
+						.getValue());
+	}
+
+	/**
+	 * Test case for 'isEligibleTimeline' attribute. Test
+	 * Data:hasPassedNonFinancialTestTimeline,
+	 * hasHouseholdPassedIncomeTestTimeline, hasEarnedIncomeTimeline Test Class
+	 * : AnonymousParentsEligibilityUnitCalculator
+	 */
 
 	public void testisEligibleTimeline() {
-		
+
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
 		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
@@ -460,12 +471,12 @@ public void testisHavingAnonymousFather1() {
 				.getFactory().newInstance(getSession());
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
-		
+
 		final List<Interval<Boolean>> test1 = new ArrayList<Interval<Boolean>>();
 		test1.add(new Interval<Boolean>(null, false));
 		test1.add(new Interval<Boolean>(Date.fromISO8601("20141201"), false));
 		final Timeline<Boolean> firstTimeline = new Timeline<Boolean>(test1);
-		
+
 		final List<Interval<Boolean>> test2 = new ArrayList<Interval<Boolean>>();
 		test2.add(new Interval<Boolean>(null, true));
 		test2.add(new Interval<Boolean>(Date.fromISO8601("20141201"), true));
@@ -475,188 +486,44 @@ public void testisHavingAnonymousFather1() {
 		test3.add(new Interval<Boolean>(null, false));
 		test3.add(new Interval<Boolean>(Date.fromISO8601("20141201"), false));
 		final Timeline<Boolean> thirdTimeline = new Timeline<Boolean>(test3);
-    
+
 		final List<Interval<Boolean>> test4 = new ArrayList<Interval<Boolean>>();
 		test4.add(new Interval<Boolean>(null, true));
 		test4.add(new Interval<Boolean>(Date.fromISO8601("20141201"), true));
 		final Timeline<Boolean> fourthTimeline = new Timeline<Boolean>(test4);
-		
-		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0));
+
+		SANonFinancialCPRCalculator test = SANonFinancialCPRCalculator_Factory
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleList.get(0));
 		test.hasPassedNonFinancialTestTimeline().specifyValue(secondTimeline);
-		test.caseParticipantRoleRecord().specifyValue(caseParticipantRoleList.get(0));
-		
+		test.caseParticipantRoleRecord().specifyValue(
+				caseParticipantRoleList.get(0));
+
 		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-		anonymousParentsCalculatorCalculatorObj.hasHouseholdPassedIncomeTestTimeline().specifyValue(fourthTimeline);
-		
+				.getFactory().newInstance(getSession(), caseID,
+						saHouseholdUnitCalculator);
+		anonymousParentsCalculatorCalculatorObj
+				.hasHouseholdPassedIncomeTestTimeline().specifyValue(
+						fourthTimeline);
+
 		final MemberCPRCalculator memberCPRCalculatorCalculatorObj = MemberCPRCalculator_Factory
-		.getFactory().newInstance(getSession(), caseParticipantRoleList.get(0));
-		memberCPRCalculatorCalculatorObj.hasEarnedIncomeTimeline().specifyValue(thirdTimeline);
-		
+				.getFactory().newInstance(getSession(),
+						caseParticipantRoleList.get(0));
+		memberCPRCalculatorCalculatorObj.hasEarnedIncomeTimeline()
+				.specifyValue(thirdTimeline);
+
 		CREOLETestHelper.assertEquals(firstTimeline,
-				anonymousParentsCalculatorCalculatorObj.isEligibleTimeline().getValue());
+				anonymousParentsCalculatorCalculatorObj.isEligibleTimeline()
+						.getValue());
 	}
 
-	  /**
-	   * Test case for 'UnearnedIncomeAmount' attribute. 
-	   * Test Data:Income type and Income amount
-	   * Test Class : AnonymousParentsEligibilityUnitCalculator
-	   */
-	/*	
-	public void testUnearnedIncomeAmount(){
-		final Number caseID = 1111L;
-		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
-
-		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
-				.getFactory().newInstance(getSession());
-		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
-				saHouseholdUnitMemberList);
-		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-		
-		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
-		amount.add(new Interval<Number>(null, 10));
-		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
-		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
-		final List<Interval<Number>> amount2 = new ArrayList<Interval<Number>>();
-		amount2.add(new Interval<Number>(null, 10));
-		amount2.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
-		final Timeline<Number> amount2Timeline = new Timeline<Number>(amount2);
- 
-		// When income type is not Commercial
-		
-		Income incomeObj = Income_Factory.getFactory().newInstance(getSession());
-		incomeObj.caseID().specifyValue(caseID);
-		incomeObj.amount().specifyValue(amount2Timeline);
-		incomeObj.incomeType().specifyValue(new CodeTableItem(INCOMETYPECODE.TABLENAME, INCOMETYPECODE.INHERITANCE));
-		incomeObj.frequency().specifyValue(new CodeTableItem(FREQUENCYCODE.TABLENAME, FREQUENCYCODE.MONTHLY));
-		incomeObj.participant().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());
-
-		CREOLETestHelper.assertEquals(amountTimeline,
-				anonymousParentsCalculatorCalculatorObj.unearnedIncomeAmount().getValue());
-	}
-	
-	public void testUnearnedIncomeAmount1(){
-		final Number caseID = 1111L;
-		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
-
-		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
-				.getFactory().newInstance(getSession());
-		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
-				saHouseholdUnitMemberList);
-		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-		
-		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
-		amount.add(new Interval<Number>(null, 0));
-		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
-		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
-		final List<Interval<Number>> amount2 = new ArrayList<Interval<Number>>();
-		amount2.add(new Interval<Number>(null, 100));
-		amount2.add(new Interval<Number>(Date.fromISO8601("20040601"), 1000));
-		final Timeline<Number> amount2Timeline = new Timeline<Number>(amount2);
- 
-		// When income type is commercial
-		
-		Income incomeObj = Income_Factory.getFactory().newInstance(getSession());
-		incomeObj.caseID().specifyValue(caseID);
-		incomeObj.amount().specifyValue(amount2Timeline);
-		incomeObj.incomeType().specifyValue(new CodeTableItem(INCOMETYPECODE.TABLENAME, INCOMETYPECODE.COMMERCIAL));
-		incomeObj.frequency().specifyValue(new CodeTableItem(FREQUENCYCODE.TABLENAME, FREQUENCYCODE.MONTHLY));
-		incomeObj.participant().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());
-
-		CREOLETestHelper.assertEquals(amountTimeline,
-				anonymousParentsCalculatorCalculatorObj.unearnedIncomeAmount().getValue());
-	}
-	*/
-	 /**
-	   * Test case for 'totalExpenseAmountTimeline' attribute. 
-	   * Test Data:Income type and Income amount
-	   * Test Class : AnonymousParentsEligibilityUnitCalculator
-	   */
-	/*	
-	public void testTotalExpenseAmountTimeline(){
-		final Number caseID = 1111L;
-		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
-
-		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
-				.getFactory().newInstance(getSession());
-		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
-				saHouseholdUnitMemberList);
-		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-		
-		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
-		amount.add(new Interval<Number>(null, 10));
-		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
-		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
-		final List<Interval<Number>> amount2 = new ArrayList<Interval<Number>>();
-		amount2.add(new Interval<Number>(null, 10));
-		amount2.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
-		final Timeline<Number> amount2Timeline = new Timeline<Number>(amount2);
-
-		// When rent type is Residential (Not Commercial)
-		
-		Expense ExpenseObj = Expense_Factory.getFactory().newInstance(getSession());
-		ExpenseObj.caseID().specifyValue(caseID);
-		ExpenseObj.rentAmount().specifyValue(amount2Timeline);
-		ExpenseObj.rentType().specifyValue(new CodeTableItem(EXPENSE.TABLENAME, EXPENSE.RESIDENTIAL));
-		ExpenseObj.frequency().specifyValue(new CodeTableItem(FREQUENCYCODE.TABLENAME, FREQUENCYCODE.MONTHLY));
-		ExpenseObj.participant().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());
-
-		CREOLETestHelper.assertEquals(amountTimeline,
-				anonymousParentsCalculatorCalculatorObj.totalExpenseAmountTimeline().getValue());
-	}
-	
-	public void testTotalExpenseAmountTimeline1(){
-		final Number caseID = 1111L;
-		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
-
-		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
-				.getFactory().newInstance(getSession());
-		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
-				saHouseholdUnitMemberList);
-		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-		
-		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
-		amount.add(new Interval<Number>(null, 0));
-		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
-		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
-		final List<Interval<Number>> amount2 = new ArrayList<Interval<Number>>();
-		amount2.add(new Interval<Number>(null, 100));
-		amount2.add(new Interval<Number>(Date.fromISO8601("20040601"), 1000));
-		final Timeline<Number> amount2Timeline = new Timeline<Number>(amount2);
-
-		// When rent type is Commercial
-		
-		Expense ExpenseObj = Expense_Factory.getFactory().newInstance(getSession());
-		ExpenseObj.caseID().specifyValue(caseID);
-		ExpenseObj.rentAmount().specifyValue(amount2Timeline);
-		ExpenseObj.rentType().specifyValue(new CodeTableItem(EXPENSE.TABLENAME, EXPENSE.COMMERCIAL));
-		ExpenseObj.rentType().specifyValue(new CodeTableItem(EXPENSE.TABLENAME, EXPENSE.RESIDENTIAL));
-		ExpenseObj.frequency().specifyValue(new CodeTableItem(FREQUENCYCODE.TABLENAME, FREQUENCYCODE.MONTHLY));
-		ExpenseObj.participant().specifyValue(caseParticipantRoleList.get(0).caseParticipantRoleID().getValue());
-
-		CREOLETestHelper.assertEquals(amountTimeline,
-				anonymousParentsCalculatorCalculatorObj.totalExpenseAmountTimeline().getValue());
-	}
-	*/
 	/**
-	   * Test case for 'TotalCountableIncomeTimeline' attribute. 
-	   * Test Data:Total expense amount and unearned income amount
-	   * Test Class : AnonymousParentsEligibilityUnitCalculator
-	   */
-	  
-	public void testTotalCountableIncomeTimeline(){
+	 * Test case for 'TotalCountableIncomeTimeline' attribute. Test Data:Total
+	 * expense amount and unearned income amount Test Class :
+	 * AnonymousParentsEligibilityUnitCalculator
+	 */
+
+	public void testTotalCountableIncomeTimeline() {
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
 		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
@@ -666,34 +533,37 @@ public void testisHavingAnonymousFather1() {
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
 		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-			
-    // When unearned income is greater than total expense amount
-		
+				.getFactory().newInstance(getSession(), caseID,
+						saHouseholdUnitCalculator);
+
+		// When unearned income is greater than total expense amount
+
 		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
 		amount.add(new Interval<Number>(null, 0));
 		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 8000));
 		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
+
 		final List<Interval<Number>> amount2 = new ArrayList<Interval<Number>>();
 		amount2.add(new Interval<Number>(null, 0));
 		amount2.add(new Interval<Number>(Date.fromISO8601("20040601"), 7000));
 		final Timeline<Number> amount2Timeline = new Timeline<Number>(amount2);
-		
+
 		final List<Interval<Number>> output = new ArrayList<Interval<Number>>();
 		output.add(new Interval<Number>(null, 0));
 		output.add(new Interval<Number>(Date.fromISO8601("20040601"), 1000));
 		final Timeline<Number> outputTimeline = new Timeline<Number>(output);
-    
-		anonymousParentsCalculatorCalculatorObj.totalExpenseAmountTimeline().specifyValue(amount2Timeline);
-		
+
+		anonymousParentsCalculatorCalculatorObj.totalExpenseAmountTimeline()
+				.specifyValue(amount2Timeline);
+
 		anonymousParentsCalculatorCalculatorObj.unearnedIncomeAmount()
 				.specifyValue(amountTimeline);
 		CREOLETestHelper.assertEquals(outputTimeline,
-				anonymousParentsCalculatorCalculatorObj.totalCountableIncomeTimeline().getValue());
+				anonymousParentsCalculatorCalculatorObj
+						.totalCountableIncomeTimeline().getValue());
 	}
-	
-	public void testTotalCountableIncomeTimeline1(){
+
+	public void testTotalCountableIncomeTimeline1() {
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
 		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
@@ -703,39 +573,42 @@ public void testisHavingAnonymousFather1() {
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
 		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-		
-    // When unearned income is lesser than total expense amount
-		
+				.getFactory().newInstance(getSession(), caseID,
+						saHouseholdUnitCalculator);
+
+		// When unearned income is lesser than total expense amount
+
 		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
 		amount.add(new Interval<Number>(null, 0));
 		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 4000));
 		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
+
 		final List<Interval<Number>> amount2 = new ArrayList<Interval<Number>>();
 		amount2.add(new Interval<Number>(null, 0));
 		amount2.add(new Interval<Number>(Date.fromISO8601("20040601"), 7000));
 		final Timeline<Number> amount2Timeline = new Timeline<Number>(amount2);
-		
+
 		final List<Interval<Number>> output = new ArrayList<Interval<Number>>();
 		output.add(new Interval<Number>(null, 0));
 		output.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
 		final Timeline<Number> outputTimeline = new Timeline<Number>(output);
-    
-		anonymousParentsCalculatorCalculatorObj.totalExpenseAmountTimeline().specifyValue(amount2Timeline);
-		
+
+		anonymousParentsCalculatorCalculatorObj.totalExpenseAmountTimeline()
+				.specifyValue(amount2Timeline);
+
 		anonymousParentsCalculatorCalculatorObj.unearnedIncomeAmount()
 				.specifyValue(amountTimeline);
 		CREOLETestHelper.assertEquals(outputTimeline,
-				anonymousParentsCalculatorCalculatorObj.totalCountableIncomeTimeline().getValue());
+				anonymousParentsCalculatorCalculatorObj
+						.totalCountableIncomeTimeline().getValue());
 	}
-	
+
 	/**
-	   * Test case for 'HasHouseholdPassedIncomeTestTimeline' attribute. 
-	   * Test Data:primaryBeneficiaryAmount a constant value of 6000 and unearned income amount
-	   * Test Class : AnonymousParentsEligibilityUnitCalculator
-	   */
-	
+	 * Test case for 'HasHouseholdPassedIncomeTestTimeline' attribute. Test
+	 * Data:primaryBeneficiaryAmount a constant value of 6000 and unearned
+	 * income amount Test Class : AnonymousParentsEligibilityUnitCalculator
+	 */
+
 	public void testHasHouseholdPassedIncomeTestTimeline() {
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
@@ -746,28 +619,32 @@ public void testisHavingAnonymousFather1() {
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
 		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
+				.getFactory().newInstance(getSession(), caseID,
+						saHouseholdUnitCalculator);
 
-		// When unearned income amount is greater than  6000
-		
 		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
 		amount.add(new Interval<Number>(null, 0));
 		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 7000));
 		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
 
 		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
-		intervals.add(new Interval<Boolean>(null, true));
-		intervals
-				.add(new Interval<Boolean>(Date.fromISO8601("20040601"), false));
-
+		intervals.add(new Interval<Boolean>(null, false));
 		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
-		anonymousParentsCalculatorCalculatorObj.unearnedIncomeAmount()
+
+		final List<Interval<Number>> amount1 = new ArrayList<Interval<Number>>();
+		amount1.add(new Interval<Number>(null, 0));
+		amount1.add(new Interval<Number>(Date.fromISO8601("20040601"), 6000));
+		final Timeline<Number> amountTimeline2 = new Timeline<Number>(amount1);
+
+		anonymousParentsCalculatorCalculatorObj.totalCountableIncomeTimeline()
 				.specifyValue(amountTimeline);
+		anonymousParentsCalculatorCalculatorObj.primaryBeneficiaryAmount()
+				.specifyValue(amountTimeline2);
+
 		CREOLETestHelper.assertEquals(timeline,
 				anonymousParentsCalculatorCalculatorObj
 						.hasHouseholdPassedIncomeTestTimeline().getValue());
 	}
-	
 
 	public void testHasHouseholdPassedIncomeTestTimeline2() {
 		final Number caseID = 1111L;
@@ -779,66 +656,43 @@ public void testisHavingAnonymousFather1() {
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
 		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
+				.getFactory().newInstance(getSession(), caseID,
+						saHouseholdUnitCalculator);
 
-		// When unearned income amount is lesser than 6000
-		
-		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
-		amount.add(new Interval<Number>(null, 0));
-		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 3000));
-		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-
-		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
-		intervals.add(new Interval<Boolean>(null, true));
-		intervals
-				.add(new Interval<Boolean>(Date.fromISO8601("20040601"), true));
-
-		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
-		anonymousParentsCalculatorCalculatorObj.unearnedIncomeAmount()
-				.specifyValue(amountTimeline);
-		CREOLETestHelper.assertEquals(timeline,
-				anonymousParentsCalculatorCalculatorObj
-						.hasHouseholdPassedIncomeTestTimeline().getValue());
-	}
-	
-	 /**
-	   * Test case for 'MonthlyAmountTimeline' attribute. 
-	   * Test Data:primaryBeneficiaryAmount a constant of 6000 and totalCountableIncomeTimeline
-	   * Test Class : AnonymousParentsEligibilityUnitCalculator
-	   */
-	  
-	public void testMonthlyAmountTimeline(){
-		final Number caseID = 1111L;
-		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
-		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
-
-		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
-				.getFactory().newInstance(getSession());
-		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
-				saHouseholdUnitMemberList);
-		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
-
-	    // When totalCountableIncomeTimeline is greater than 6000
-		
 		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
 		amount.add(new Interval<Number>(null, 0));
 		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 7000));
 		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
-		final List<Interval<Number>> output = new ArrayList<Interval<Number>>();
-		output.add(new Interval<Number>(null, 6000));
-		output.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
-		final Timeline<Number> outputTimeline = new Timeline<Number>(output);
 
-		
+		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
+		intervals.add(new Interval<Boolean>(null, false));
+		intervals
+				.add(new Interval<Boolean>(Date.fromISO8601("20040601"), true));
+		final Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
+
+		final List<Interval<Number>> amount1 = new ArrayList<Interval<Number>>();
+		amount1.add(new Interval<Number>(null, 0));
+		amount1.add(new Interval<Number>(Date.fromISO8601("20040601"), 8000));
+		final Timeline<Number> amountTimeline2 = new Timeline<Number>(amount1);
+
 		anonymousParentsCalculatorCalculatorObj.totalCountableIncomeTimeline()
 				.specifyValue(amountTimeline);
-		CREOLETestHelper.assertEquals(outputTimeline,
-				anonymousParentsCalculatorCalculatorObj.monthlyAmountTimeline().getValue());
+		anonymousParentsCalculatorCalculatorObj.primaryBeneficiaryAmount()
+				.specifyValue(amountTimeline2);
+
+		CREOLETestHelper.assertEquals(timeline,
+				anonymousParentsCalculatorCalculatorObj
+						.hasHouseholdPassedIncomeTestTimeline().getValue());
 	}
-	
-	public void testMonthlyAmountTimeline1(){
+
+	/**
+	 * Test case for 'MonthlyAmountTimeline' attribute. Test
+	 * Data:primaryBeneficiaryAmount a constant of 6000 and
+	 * totalCountableIncomeTimeline Test Class :
+	 * AnonymousParentsEligibilityUnitCalculator
+	 */
+
+	public void testMonthlyAmountTimeline() {
 		final Number caseID = 1111L;
 		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
 		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
@@ -848,149 +702,196 @@ public void testisHavingAnonymousFather1() {
 		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
 				saHouseholdUnitMemberList);
 		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
-		.getFactory().newInstance(getSession(), caseID, saHouseholdUnitCalculator);
+				.getFactory().newInstance(getSession(), caseID,
+						saHouseholdUnitCalculator);
 
-	    // When totalCountableIncomeTimeline is lesser than 6000
-		
+		// When totalCountableIncomeTimeline is greater than 6000
+
 		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
 		amount.add(new Interval<Number>(null, 0));
-		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 5000));
+		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 4000));
 		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
-		
+
+		final List<Interval<Number>> amount1 = new ArrayList<Interval<Number>>();
+		amount1.add(new Interval<Number>(null, 0));
+		amount1.add(new Interval<Number>(Date.fromISO8601("20040601"), 6000));
+		final Timeline<Number> amountTimeline2 = new Timeline<Number>(amount1);
+
 		final List<Interval<Number>> output = new ArrayList<Interval<Number>>();
-		output.add(new Interval<Number>(null, 6000));
-		output.add(new Interval<Number>(Date.fromISO8601("20040601"), 1000));
+		output.add(new Interval<Number>(null, 0));
+		output.add(new Interval<Number>(Date.fromISO8601("20040601"), 2000));
 		final Timeline<Number> outputTimeline = new Timeline<Number>(output);
 
-		
 		anonymousParentsCalculatorCalculatorObj.totalCountableIncomeTimeline()
 				.specifyValue(amountTimeline);
+		anonymousParentsCalculatorCalculatorObj.primaryBeneficiaryAmount()
+				.specifyValue(amountTimeline2);
 		CREOLETestHelper.assertEquals(outputTimeline,
-				anonymousParentsCalculatorCalculatorObj.monthlyAmountTimeline().getValue());
+				anonymousParentsCalculatorCalculatorObj.monthlyAmountTimeline()
+						.getValue());
 	}
-	
-	
-	 /**
-	   * Test case for 'HouseholdUnits' attribute. 
-	   * Test Class: WidowHouseholdComposition
-	   */
-   public void testHouseholdUnit() {
-			final long caseParticipantRoleID = 11L;
-			final long participantRoleID = 111L;
-			final long caseID = 111L;
-			final String Name = "Client_Name";
-			final long caseParticipantRoleID2 = 11L;
-			final long participantRoleID2 = 111L;
-			
-			createPersonRecord(participantRoleID, Name,
-					Date.fromISO8601("20110615"), Date.kZeroDate, GENDER.FEMALE,
-					MARITALSTATUS.SINGLE);
-			final CaseParticipantRole caseParticipantRole2 = createCaseParticipantRoleRecord(
-					caseID, caseParticipantRoleID2, participantRoleID2,
-					CASEPARTICIPANTROLETYPE.MEMBER);
-			final CaseParticipantRole caseParticipantRole = createCaseParticipantRoleRecord(
-					caseID, caseParticipantRoleID, participantRoleID,
-					CASEPARTICIPANTROLETYPE.PRIMARY);
-			createConcernRoleRecord(participantRoleID, Name);
-			SAHouseholdUnitMember householdUnitMember = createASAHouseholdUnitMember(caseParticipantRole);
-			List<SAHouseholdUnitMember> saHouseholdUnitMembers = new ArrayList<SAHouseholdUnitMember>();
-			saHouseholdUnitMembers.add(householdUnitMember);
-			
-			//  Person Birth and Death Record
-			PDCBirthAndDeath pdcBirthAndDeathObj = PDCBirthAndDeath_Factory
-					.getFactory().newInstance(getSession());
-			pdcBirthAndDeathObj.dateOfBirth().specifyValue(
-					Date.fromISO8601("20010615"));
-			pdcBirthAndDeathObj.caseID().specifyValue(caseID);
-			pdcBirthAndDeathObj.person().specifyValue(
-					caseParticipantRole.caseParticipantRoleID().getValue());
-			
-			// Education Record
-			MolsaEducation molsaEducation = MolsaEducation_Factory.getFactory()
-					.newInstance(getSession());
-			molsaEducation.caseID().specifyValue(caseID);
-			final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
-			test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
-					EDUCATION.TABLENAME, EDUCATION.ENROLLED)));
-			final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
-					test1);
-			molsaEducation.studentStatus().specifyValue(firstTimeline);
-			molsaEducation.participant().specifyValue(
-					caseParticipantRole.caseParticipantRoleID().getValue());
 
-			// Absent Father Record
-			AbsentFather absentFather = AbsentFather_Factory.getFactory()
-					.newInstance(getSession());
-			absentFather.caseID().specifyValue(caseID);
-			absentFather.absenceReason().specifyValue(
-					new Timeline<CodeTableItem>(new CodeTableItem(
-							ABSENTFATHER.TABLENAME, ABSENTFATHER.DECEASED)));
-			absentFather.participant().specifyValue(
-					caseParticipantRole2.caseParticipantRoleID().getValue());
-			
+	public void testMonthlyAmountTimeline1() {
+		final Number caseID = 1111L;
+		final List<CaseParticipantRole> caseParticipantRoleList = createCaseParticipantRole();
+		final List<SAHouseholdUnitMember> saHouseholdUnitMemberList = createSAHouseholdUnitMember(caseParticipantRoleList);
 
-			final List<Interval<CodeTableItem>> timeline1 = new ArrayList<Interval<CodeTableItem>>();
-			timeline1.add(new Interval<CodeTableItem>(null, new CodeTableItem(MARITALSTATUS.TABLENAME, MARITALSTATUS.WIDOWED)));
-			final Timeline<CodeTableItem> maritalStatusTimeline = new Timeline<CodeTableItem>(timeline1);
-			
-			MaritalStatus maritalStatus = MaritalStatus_Factory.getFactory().newInstance(getSession());
-			maritalStatus.caseID().specifyValue(caseID);
-			maritalStatus.maritalStatus().specifyValue(maritalStatusTimeline);
-			maritalStatus.participant().specifyValue(caseParticipantRole.caseParticipantRoleID().getValue());
+		final SAHouseholdUnitCalculator saHouseholdUnitCalculator = SAHouseholdUnitCalculator_Factory
+				.getFactory().newInstance(getSession());
+		saHouseholdUnitCalculator.mandatoryMembers().specifyValue(
+				saHouseholdUnitMemberList);
+		final AnonymousParentsEligibilityUnitCalculator anonymousParentsCalculatorCalculatorObj = AnonymousParentsEligibilityUnitCalculator_Factory
+				.getFactory().newInstance(getSession(), caseID,
+						saHouseholdUnitCalculator);
 
-	 		// Citizenship code as Qatari
-			final List<Interval<CodeTableItem>> citizenShip = new ArrayList<Interval<CodeTableItem>>();
-			citizenShip.add(new Interval<CodeTableItem>(null, new CodeTableItem(
-					CITIZENSHIPCODE.TABLENAME, CITIZENSHIPCODE.QATARI)));
-			final Timeline<CodeTableItem> citizenShipTimeline = new Timeline<CodeTableItem>(
-					citizenShip); 
-			
-			
-			final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
-			.getFactory().newInstance(getSession(), caseParticipantRole);
-		 anonymousParentsCPRCalculatorObj.isHavingAnonymousFather().specifyValue(Timeline.TRUE_FOREVER);
-		 anonymousParentsCPRCalculatorObj.isSingleTimeline().specifyValue(Timeline.TRUE_FOREVER);
-		 
-		 
-			// Residency as Yes
-			final List<Interval<CodeTableItem>> residency = new ArrayList<Interval<CodeTableItem>>();
-			residency.add(new Interval<CodeTableItem>(null, new CodeTableItem(
-					RESIDENCY.TABLENAME, RESIDENCY.YES)));
-			final Timeline<CodeTableItem> residencyTimeline = new Timeline<CodeTableItem>(
-					residency);
-	        // Specifying exists Timeline of ActivesuccessionSet
-			final List<Interval<Boolean>> exists = new ArrayList<Interval<Boolean>>();
-			exists.add(new Interval<Boolean>(null, false));
-			exists.add(new Interval<Boolean>(Date.fromISO8601("20111201"), true));
-			final Timeline<Boolean> existsTimeline = new Timeline<Boolean>(exists);
-			
-			// HouseholdMember Record
-			HouseholdMember householdMember = HouseholdMember_Factory.getFactory()
-					.newInstance(getSession());
-			householdMember.caseID().specifyValue(caseID);
-			householdMember.participant().specifyValue(
-					caseParticipantRole.caseParticipantRoleID().getValue());
-			householdMember.citizenship().specifyValue(citizenShipTimeline);
-			householdMember.residency().specifyValue(residencyTimeline);
-			householdMember.startDate().specifyValue(Date.fromISO8601("20110615"));
-			householdMember.endDate().specifyValue(Date.kZeroDate);
-			householdMember.exists().specifyValue(existsTimeline);
-			AnonymousParentsHouseholdComposition householdComposition = AnonymousParentsHouseholdComposition_Factory
-			.getFactory().newInstance(getSession());
-			
-			final java.util.List<Interval<List<SAHouseholdUnitMember>>> saHouseholdUnitMemberInt = new ArrayList<Interval<List<SAHouseholdUnitMember>>>();
-			saHouseholdUnitMemberInt.add(new Interval<List<SAHouseholdUnitMember>>(
-					null, saHouseholdUnitMembers));
-			saHouseholdUnitMemberInt.add(new Interval<List<SAHouseholdUnitMember>>(
-					Date.fromISO8601("20110615"), saHouseholdUnitMembers));
-			householdComposition.membersForHouseholdComposition().specifyValue(
-					new Timeline<List<SAHouseholdUnitMember>>(
-							saHouseholdUnitMemberInt));
+		// When totalCountableIncomeTimeline is greater than 6000
 
-			CREOLETestHelper.assertEquals(1, householdComposition.householdUnits()
-					.getValue().valueOn(Date.fromISO8601("20160101")).size());
-		}
-   
-	 
-	
+		final List<Interval<Number>> amount = new ArrayList<Interval<Number>>();
+		amount.add(new Interval<Number>(null, 0));
+		amount.add(new Interval<Number>(Date.fromISO8601("20040601"), 4000));
+		final Timeline<Number> amountTimeline = new Timeline<Number>(amount);
+
+		final List<Interval<Number>> amount1 = new ArrayList<Interval<Number>>();
+		amount1.add(new Interval<Number>(null, 0));
+		amount1.add(new Interval<Number>(Date.fromISO8601("20040601"), 1000));
+		final Timeline<Number> amountTimeline2 = new Timeline<Number>(amount1);
+
+		final List<Interval<Number>> output = new ArrayList<Interval<Number>>();
+		output.add(new Interval<Number>(null, 0));
+		output.add(new Interval<Number>(Date.fromISO8601("20040601"), 0));
+		final Timeline<Number> outputTimeline = new Timeline<Number>(output);
+
+		anonymousParentsCalculatorCalculatorObj.totalCountableIncomeTimeline()
+				.specifyValue(amountTimeline);
+		anonymousParentsCalculatorCalculatorObj.primaryBeneficiaryAmount()
+				.specifyValue(amountTimeline2);
+		CREOLETestHelper.assertEquals(outputTimeline,
+				anonymousParentsCalculatorCalculatorObj.monthlyAmountTimeline()
+						.getValue());
+	}
+
+	/**
+	 * Test case for 'HouseholdUnits' attribute. Test Class:
+	 * WidowHouseholdComposition
+	 */
+	public void testHouseholdUnit() {
+		final long caseParticipantRoleID = 11L;
+		final long participantRoleID = 111L;
+		final long caseID = 111L;
+		final String Name = "Client_Name";
+		final long caseParticipantRoleID2 = 11L;
+		final long participantRoleID2 = 111L;
+
+		createPersonRecord(participantRoleID, Name,
+				Date.fromISO8601("20110615"), Date.kZeroDate, GENDER.FEMALE,
+				MARITALSTATUS.SINGLE);
+		final CaseParticipantRole caseParticipantRole2 = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleID2, participantRoleID2,
+				CASEPARTICIPANTROLETYPE.MEMBER);
+		final CaseParticipantRole caseParticipantRole = createCaseParticipantRoleRecord(
+				caseID, caseParticipantRoleID, participantRoleID,
+				CASEPARTICIPANTROLETYPE.PRIMARY);
+		createConcernRoleRecord(participantRoleID, Name);
+		SAHouseholdUnitMember householdUnitMember = createASAHouseholdUnitMember(caseParticipantRole);
+		List<SAHouseholdUnitMember> saHouseholdUnitMembers = new ArrayList<SAHouseholdUnitMember>();
+		saHouseholdUnitMembers.add(householdUnitMember);
+
+		// Person Birth and Death Record
+		PDCBirthAndDeath pdcBirthAndDeathObj = PDCBirthAndDeath_Factory
+				.getFactory().newInstance(getSession());
+		pdcBirthAndDeathObj.dateOfBirth().specifyValue(
+				Date.fromISO8601("20010615"));
+		pdcBirthAndDeathObj.caseID().specifyValue(caseID);
+		pdcBirthAndDeathObj.person().specifyValue(
+				caseParticipantRole.caseParticipantRoleID().getValue());
+
+		// Education Record
+		MolsaEducation molsaEducation = MolsaEducation_Factory.getFactory()
+				.newInstance(getSession());
+		molsaEducation.caseID().specifyValue(caseID);
+		final List<Interval<CodeTableItem>> test1 = new ArrayList<Interval<CodeTableItem>>();
+		test1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				EDUCATION.TABLENAME, EDUCATION.ENROLLED)));
+		final Timeline<CodeTableItem> firstTimeline = new Timeline<CodeTableItem>(
+				test1);
+		molsaEducation.studentStatus().specifyValue(firstTimeline);
+		molsaEducation.participant().specifyValue(
+				caseParticipantRole.caseParticipantRoleID().getValue());
+
+		// Absent Father Record
+		AbsentFather absentFather = AbsentFather_Factory.getFactory()
+				.newInstance(getSession());
+		absentFather.caseID().specifyValue(caseID);
+		absentFather.absenceReason().specifyValue(
+				new Timeline<CodeTableItem>(new CodeTableItem(
+						ABSENTFATHER.TABLENAME, ABSENTFATHER.DECEASED)));
+		absentFather.participant().specifyValue(
+				caseParticipantRole2.caseParticipantRoleID().getValue());
+
+		final List<Interval<CodeTableItem>> timeline1 = new ArrayList<Interval<CodeTableItem>>();
+		timeline1.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				MARITALSTATUS.TABLENAME, MARITALSTATUS.WIDOWED)));
+		final Timeline<CodeTableItem> maritalStatusTimeline = new Timeline<CodeTableItem>(
+				timeline1);
+
+		MaritalStatus maritalStatus = MaritalStatus_Factory.getFactory()
+				.newInstance(getSession());
+		maritalStatus.caseID().specifyValue(caseID);
+		maritalStatus.maritalStatus().specifyValue(maritalStatusTimeline);
+		maritalStatus.participant().specifyValue(
+				caseParticipantRole.caseParticipantRoleID().getValue());
+
+		// Citizenship code as Qatari
+		final List<Interval<CodeTableItem>> citizenShip = new ArrayList<Interval<CodeTableItem>>();
+		citizenShip.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				CITIZENSHIPCODE.TABLENAME, CITIZENSHIPCODE.QATARI)));
+		final Timeline<CodeTableItem> citizenShipTimeline = new Timeline<CodeTableItem>(
+				citizenShip);
+
+		final AnonymousParentsCPRCalculator anonymousParentsCPRCalculatorObj = AnonymousParentsCPRCalculator_Factory
+				.getFactory().newInstance(getSession(), caseParticipantRole);
+		anonymousParentsCPRCalculatorObj.isHavingAnonymousFather()
+				.specifyValue(Timeline.TRUE_FOREVER);
+		anonymousParentsCPRCalculatorObj.isSingleTimeline().specifyValue(
+				Timeline.TRUE_FOREVER);
+
+		// Residency as Yes
+		final List<Interval<CodeTableItem>> residency = new ArrayList<Interval<CodeTableItem>>();
+		residency.add(new Interval<CodeTableItem>(null, new CodeTableItem(
+				RESIDENCY.TABLENAME, RESIDENCY.YES)));
+		final Timeline<CodeTableItem> residencyTimeline = new Timeline<CodeTableItem>(
+				residency);
+		// Specifying exists Timeline of ActivesuccessionSet
+		final List<Interval<Boolean>> exists = new ArrayList<Interval<Boolean>>();
+		exists.add(new Interval<Boolean>(null, false));
+		exists.add(new Interval<Boolean>(Date.fromISO8601("20111201"), true));
+		final Timeline<Boolean> existsTimeline = new Timeline<Boolean>(exists);
+
+		// HouseholdMember Record
+		HouseholdMember householdMember = HouseholdMember_Factory.getFactory()
+				.newInstance(getSession());
+		householdMember.caseID().specifyValue(caseID);
+		householdMember.participant().specifyValue(
+				caseParticipantRole.caseParticipantRoleID().getValue());
+		householdMember.citizenship().specifyValue(citizenShipTimeline);
+		householdMember.residency().specifyValue(residencyTimeline);
+		householdMember.startDate().specifyValue(Date.fromISO8601("20110615"));
+		householdMember.endDate().specifyValue(Date.kZeroDate);
+		householdMember.exists().specifyValue(existsTimeline);
+		AnonymousParentsHouseholdComposition householdComposition = AnonymousParentsHouseholdComposition_Factory
+				.getFactory().newInstance(getSession());
+
+		final java.util.List<Interval<List<SAHouseholdUnitMember>>> saHouseholdUnitMemberInt = new ArrayList<Interval<List<SAHouseholdUnitMember>>>();
+		saHouseholdUnitMemberInt.add(new Interval<List<SAHouseholdUnitMember>>(
+				null, saHouseholdUnitMembers));
+		saHouseholdUnitMemberInt.add(new Interval<List<SAHouseholdUnitMember>>(
+				Date.fromISO8601("20110615"), saHouseholdUnitMembers));
+		householdComposition.membersForHouseholdComposition().specifyValue(
+				new Timeline<List<SAHouseholdUnitMember>>(
+						saHouseholdUnitMemberInt));
+
+		CREOLETestHelper.assertEquals(1, householdComposition.householdUnits()
+				.getValue().valueOn(Date.fromISO8601("20160101")).size());
+	}
+
 }
