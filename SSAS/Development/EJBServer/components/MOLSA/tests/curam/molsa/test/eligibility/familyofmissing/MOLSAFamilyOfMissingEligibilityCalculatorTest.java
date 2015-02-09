@@ -881,17 +881,6 @@ public class MOLSAFamilyOfMissingEligibilityCalculatorTest extends
 		SAHouseholdUnitCalculator saHouseholdUnit = SAHouseholdUnitCalculator_Factory
 				.getFactory().newInstance(getSession());
 		saHouseholdUnit.mandatoryMembers().specifyValue(saHouseholdUnitMembers);
-
-		/*
-		 * FamilyOfMissingHouseholdCalculator fomCalculator =
-		 * FamilyOfMissingHouseholdCalculator_Factory
-		 * .getFactory().newInstance(getSession(), wifeRecord);
-		 * fomCalculator.fnHouseholdMemberRecords
-		 * ().specifyValue(saHouseholdUnitMembers);
-		 * 
-		 * CREOLETestHelper.assertEquals(1, fomCalculator.householdUnits()
-		 * .getValue().valueOn(Date.fromISO8601("20160101")).size());
-		 */
 	}
 
 }
