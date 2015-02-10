@@ -1085,9 +1085,17 @@
 															<compare comparison="&gt;">
 																<property name="size">
 																	<object>
-																		<intervalvalue>
-																			<reference attribute="eligibleMembersTimeline" />
-																		</intervalvalue>
+																		<call class="curam.socialassistance.creole.statics.impl.Statics"
+																			method="getUniqueRuleObjects">
+																			<type>
+																				<javaclass name="List">
+																					<ruleclass name="SAHouseholdUnitMember"/>
+																				</javaclass>
+																			</type>
+																			<arguments>
+																				<reference attribute="eligibleMembersTimeline"/>
+																			</arguments>
+																		</call>
 																	</object>
 																</property>
 																<Number value="0"/>
@@ -2960,9 +2968,11 @@
 							</list>
 							<listitemexpression>
 								<equals>
-									<reference attribute="studentStatus">
-										<current/>
-									</reference>
+									<intervalvalue>
+										<reference attribute="studentStatus">
+											<current/>
+										</reference>
+									</intervalvalue>
 									<Code table="MOLSAEducation">
 										<String value="MED17000"/>
 									</Code>
@@ -2970,7 +2980,6 @@
 							</listitemexpression>
 						</dynamiclist>
 					</any>
-
 				</timelineoperation>
 			</derivation>
 		</Attribute>
