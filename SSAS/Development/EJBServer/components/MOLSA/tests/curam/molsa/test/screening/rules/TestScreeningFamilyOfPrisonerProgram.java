@@ -11,6 +11,16 @@ public class TestScreeningFamilyOfPrisonerProgram extends
   public TestScreeningFamilyOfPrisonerProgram(String name) {
     super(name);
   }
+  
+  public void testFamilyOfPrisonerBaseScenario() {
+	  createFamilyOfPrisonerBaseScenario(ABSENTFATHEREntry.INPRISON.getCode());
+	    FamilyOfPrisonerProgram familyOfPrisonerProgram = FamilyOfPrisonerProgram_Factory
+	        .getFactory().newInstance(getSession());
+	    assertEquals(Boolean.TRUE,
+	        familyOfPrisonerProgram.getAttributeValue(isEligible).getValue());
+
+	  }
+
 
   public void testFamilyOfPrisonerProgram() {
     createFamilyOfPrisoner(ABSENTFATHEREntry.INPRISON.getCode());
