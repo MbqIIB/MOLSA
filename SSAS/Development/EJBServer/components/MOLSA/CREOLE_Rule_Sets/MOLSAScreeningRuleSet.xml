@@ -2871,7 +2871,7 @@
       </derivation>
     </Attribute>
   </Class>
-  <Class name="RulesCalculatorDispatcher">
+  <Class name="IncomeTestCalculator">
    <Attribute name="person">
      <type>
        <ruleclass name="Person"/>
@@ -2880,43 +2880,92 @@
        <specified/>
      </derivation>
    </Attribute>
-    <Attribute name="personCalculators">
+    <Attribute name="maxBenefitAmount">
       <type>
-        <javaclass name="List">
-          <ruleclass name="PersonCalculator"/>
-        </javaclass>
+        <javaclass name="Number"/>
       </type>
       <derivation>
-        <dynamiclist>
-          <list>
-            <readall ruleclass="Person"/>
-          </list>
-          <listitemexpression>
-            <create ruleclass="PersonCalculator">
-              <current/>
-            </create>
-          </listitemexpression>
-        </dynamiclist>
+       <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="personCalculator">
+    <Attribute name="passesIncomeTest">
       <type>
-        <ruleclass name="PersonCalculator"/>
+        <javaclass name="Boolean"/>
       </type>
       <derivation>
-        <singleitem onEmpty="returnNull" onMultiple="returnFirst">
-          <filter>
+        <choose>
+          <type>
+            <javaclass name="Boolean"/>
+          </type>
+          <when>
+            <condition>
+              <compare comparison="&lt;">
+                <arithmetic operation="-">
+                  <reference attribute="maxBenefitAmount"/>
+                  <arithmetic operation="-">
+                    <reference attribute="totalCountableIncome"/>
+                    <reference attribute="totalExpense"/>
+                  </arithmetic>
+                </arithmetic>
+                <Number value="0"/>
+              </compare>
+            </condition>
+            <value>
+              <false/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <true/>
+            </value>
+          </otherwise>
+        </choose>
+      </derivation>
+    </Attribute>
+    <Attribute name="totalCountableIncome">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <sum>
+          <dynamiclist>
             <list>
-              <reference attribute="personCalculators"/>
+              <reference attribute="incomeRecords">
+                <create ruleclass="PersonCalculator">
+                  <reference attribute="person"/>
+                </create>
+              </reference>
             </list>
             <listitemexpression>
-              <equals>
+              <reference attribute="amount">
                 <current/>
-                <reference attribute="person"/>
-              </equals>
+              </reference>
             </listitemexpression>
-          </filter>
-        </singleitem>
+          </dynamiclist>
+        </sum>
+      </derivation>
+    </Attribute>
+    <Attribute name="totalExpense">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <sum>
+          <dynamiclist>
+            <list>
+              <reference attribute="expenseRecords">
+                <create ruleclass="PersonCalculator" ruleset="MOLSAScreeningRuleSet">
+                  <reference attribute="person"/>
+                </create>
+              </reference>
+            </list>
+            <listitemexpression>
+              <reference attribute="amount">
+                <current/>
+              </reference>
+            </listitemexpression>
+          </dynamiclist>
+        </sum>
       </derivation>
     </Attribute>
   </Class>
