@@ -381,4 +381,60 @@
       </timelineoperation>
     </derivation>
   </Attribute>
+  <Attribute name="inEligibilityUnitMembersReason">
+    <Annotations>
+      <Display/>
+    </Annotations>
+    <type>
+      <javaclass name="curam.creole.value.Timeline">
+        <javaclass name="List">
+          <javaclass name="curam.creole.value.Message"/>
+        </javaclass>
+      </javaclass>
+    </type>
+    <derivation>
+      <timelineoperation>
+        <dynamiclist>
+          <list>
+            <intervalvalue>
+              <reference attribute="inEligibileUnitMembersCPRRecords"/>
+            </intervalvalue>
+          </list>
+          <listitemexpression>
+            <choose>
+              <type>
+                <javaclass name="curam.creole.value.Message"/>
+              </type>
+              <when>
+                <condition>
+                  <intervalvalue>
+                    <reference attribute="hasEarnedIncomeTimeline">
+                      <create ruleclass="MemberCPRCalculator" ruleset="SocialAssistanceRuleSet">
+                        <current/>
+                      </create>
+                    </reference>
+                  </intervalvalue>
+                </condition>
+                <value>
+                  <ResourceMessage
+                    key="SASummaryCategory.IsEmployed"
+                    resourceBundle="curam.molsa.rules.ProductDisplay"
+                  />
+                </value>
+              </when>
+              <otherwise>
+                <value>
+                  <ResourceMessage
+                    key="SASummaryCategory.NotEnrolledForEducation"
+                    resourceBundle="curam.molsa.rules.ProductDisplay"
+                 />
+                </value>
+              </otherwise>
+            </choose>
+          </listitemexpression>
+        </dynamiclist>
+      </timelineoperation>
+    </derivation>
+  </Attribute>
+  
 </Class>

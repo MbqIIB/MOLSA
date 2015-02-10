@@ -33,6 +33,7 @@ import curam.util.exception.InformationalException;
 import curam.util.resources.StringUtil;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
+import curam.util.type.DateRange;
 import curam.util.type.DateTime;
 import curam.util.type.StringList;
 
@@ -353,4 +354,39 @@ public final class Statics {
 		return caseParticipantRoleIDList.trim();
 	}
 
+	
+	public static String getHouseholdUnitDescription(Session session, Timeline<List<RuleObject>> timeline){
+		
+		String description = "";
+		   for(BoundedInterval<List<RuleObject>> interval : timeline.intervals()){
+			   
+			  if(new DateRange(interval.startDate(), interval.endDate()).contains(Date.getCurrentDate())){
+				   for(RuleObject interval2 :  interval.value()){
+					   description = description + interval2.description().toString();
+				   }
+			  }
+			   
+		   }
+		
+		
+		return description;
+	}
+	
+	
+public static List<RuleObject> getHouseholdUnitMembers(Session session, Timeline<List<RuleObject>> timeline){
+		
+		List<RuleObject>ruleObjects  = new ArrayList<RuleObject>(); 
+ 		   for(BoundedInterval<List<RuleObject>> interval : timeline.intervals()){
+			   
+			  if(new DateRange(interval.startDate(), interval.endDate()).contains(Date.getCurrentDate())){
+				  ruleObjects = interval.value();
+			  }
+			   
+		   }
+		
+		
+		return ruleObjects;
+	}
+	
+	
 }

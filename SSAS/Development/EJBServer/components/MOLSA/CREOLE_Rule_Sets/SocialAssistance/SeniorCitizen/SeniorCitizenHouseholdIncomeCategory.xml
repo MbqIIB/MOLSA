@@ -7,6 +7,7 @@
     The eligibility rule object for the case.    
     At program recommendation level, this attribute will be specified. 
     
+    
   -->
   <Attribute name="productCase">
     <type>
@@ -212,24 +213,26 @@
     </type>
     <derivation>
       <timelineoperation>
-        <fixedlist>
-          <listof>
-            <javaclass name="Number"/>
-          </listof>
-          <members>
+        <filter>
+          <list>
             <intervalvalue>
-              <reference attribute="primaryBeneficiaryAmount">
-                <intervalvalue>
-                  <reference attribute="seniorCitizenEligibilityUnitCalculator">
-                    <reference attribute="seniorCitizenProgramCalculator">
-                      <reference attribute="productCase"/>
-                    </reference>
-                  </reference>
-                </intervalvalue>
+              <reference attribute="amountList">
+                <create ruleclass="AmountCalculator" ruleset="SocialAssistanceRuleSet">
+                  <reference attribute="primaryClientCPRRecord"/>
+                  <reference attribute="eligibilityUnitMembers"/>
+                </create>
               </reference>
             </intervalvalue>
-          </members>
-        </fixedlist>
+          </list>
+          <listitemexpression>
+            <not>
+              <equals>
+                <null/>
+                <current/>
+              </equals>
+            </not>
+          </listitemexpression>
+        </filter>
       </timelineoperation>
     </derivation>
   </Attribute>
