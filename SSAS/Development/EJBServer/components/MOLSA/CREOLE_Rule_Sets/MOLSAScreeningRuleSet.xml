@@ -283,7 +283,9 @@
           <arguments>
             <dynamiclist>
               <list>
-                <reference attribute="allPersonRecords"/>
+                <reference attribute="financialUnit">
+                  <reference attribute="programCalculator"/>
+                </reference>
               </list>
               <listitemexpression>
                 <reference attribute="firstName">
@@ -1415,6 +1417,52 @@
         </choose>
       </derivation>
     </Attribute>
+    <Attribute name="eligibleUnits">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <reference attribute="eligibleList"/>
+              </list>
+              <listitemexpression>
+                <reference attribute="financialUnit">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
+    <Attribute name="inEligibleUnits">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Person"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <reference attribute="inEligibleList"/>
+              </list>
+              <listitemexpression>
+                <reference attribute="financialUnit">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
     <Attribute name="programTypeReference">
       <type>
         <javaclass name="String"/>
@@ -1641,14 +1689,7 @@
         <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="qidNumber">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
+ 
     <Attribute name="firstName">
       <type>
         <javaclass name="String"/>
@@ -1665,32 +1706,6 @@
         <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="isMale">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <equals>
-          <reference attribute="gender"/>
-          <Code table="Gender">
-            <String value="SX1"/>
-          </Code>
-        </equals>
-      </derivation>
-    </Attribute>
-    <Attribute name="isFemale">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <equals>
-          <reference attribute="gender"/>
-          <Code table="Gender">
-            <String value="SX2"/>
-          </Code>
-        </equals>
-      </derivation>
-    </Attribute>
     <Attribute name="dateOfBirth">
       <type>
         <javaclass name="curam.util.type.Date"/>
@@ -1699,16 +1714,27 @@
         <specified/>
       </derivation>
     </Attribute>
+    <Attribute name="currentDate">
+      <type>
+        <javaclass name="curam.util.type.Date"/>
+      </type>
+      <derivation>
+        <call class="curam.molsa.creole.statics.impl.MOLSAStatics" method="getCurrentDate">
+          <type>
+            <javaclass name="curam.util.type.Date"/>
+          </type>
+        </call>
+      </derivation>
+    </Attribute>
     <Attribute name="age">
       <type>
         <javaclass name="Number"/>
       </type>
       <derivation>
-        <reference attribute="age">
-          <create ruleclass="AgeCalculator" ruleset="MOLSAScreeningRulesUtilityCalculator">
-            <this/>
-          </create>
-        </reference>
+        <periodlength endDateInclusion="exclusive" unit="years">
+          <reference attribute="dateOfBirth"/>            
+          <reference attribute="currentDate"/>
+        </periodlength>
       </derivation>
     </Attribute>
     <Attribute name="isPrimaryParticipant">
@@ -1767,14 +1793,7 @@
         <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="physicallyChallengedStartDate">
-      <type>
-        <javaclass name="curam.util.type.Date"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
+   
     <Attribute name="isPhysicallyChallenged">
       <type>
         <javaclass name="Boolean"/>
@@ -1791,14 +1810,7 @@
         <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="unfitToWorkStartDate">
-      <type>
-        <javaclass name="curam.util.type.Date"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
+   
     <Attribute name="requiresMaidAssistance">
       <type>
         <javaclass name="Boolean"/>
@@ -1815,14 +1827,7 @@
         <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="householdMemberStartDate">
-      <type>
-        <javaclass name="curam.util.type.Date"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
+    
     <Attribute name="isMailingAddressSame">
       <type>
         <codetableentry table="IEGYesNo"/>
@@ -1855,70 +1860,7 @@
         <specified/>
       </derivation>
     </Attribute>
-    <Attribute name="homePhoneCode">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="homePhoneNumber">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="workPhoneCode">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="workPhoneNumber">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="cellPhoneCode">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="cellPhoneNumber">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="otherPhoneCode">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="otherPhoneNumber">
-      <type>
-        <javaclass name="String"/>
-      </type>
-      <derivation>
-        <specified/>
-      </derivation>
-    </Attribute>
+    
     <Attribute name="hasIncome">
       <type>
         <javaclass name="Boolean"/>
@@ -1941,133 +1883,6 @@
       </type>
       <derivation>
         <specified/>
-      </derivation>
-    </Attribute>
-    <Attribute name="incomeRecords">
-      <type>
-        <javaclass name="List">
-          <ruleclass name="Income"/>
-        </javaclass>
-      </type>
-      <derivation>
-        <readall ruleclass="Income">
-          <match retrievedattribute="parentEntity">
-            <this/>
-          </match>
-        </readall>
-      </derivation>
-    </Attribute>
-    <Attribute name="expenseRecords">
-      <type>
-        <javaclass name="List">
-          <ruleclass name="Expense"/>
-        </javaclass>
-      </type>
-      <derivation>
-        <readall ruleclass="Expense">
-          <match retrievedattribute="parentEntity">
-            <this/>
-          </match>
-        </readall>
-      </derivation>
-    </Attribute>
-    <Attribute name="isEmployed">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <any>
-          <dynamiclist>
-            <list>
-              <reference attribute="incomeRecords"/>
-            </list>
-            <listitemexpression>
-              <reference attribute="isEarnedIncome">
-                <current/>
-              </reference>
-            </listitemexpression>
-          </dynamiclist>
-        </any>
-      </derivation>
-    </Attribute>
-    <Attribute name="isSingle">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <equals>
-          <reference attribute="maritalStatus"/>
-          <Code table="MaritalStatus">
-            <String value="MS1"/>
-          </Code>
-        </equals>
-      </derivation>
-    </Attribute>
-    <Attribute name="isMarried">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <equals>
-          <reference attribute="maritalStatus"/>
-          <Code table="MaritalStatus">
-            <String value="MS2"/>
-          </Code>
-        </equals>
-      </derivation>
-    </Attribute>
-    <Attribute name="isSeparated">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <equals>
-          <reference attribute="maritalStatus"/>
-          <Code table="MaritalStatus">
-            <String value="MS3"/>
-          </Code>
-        </equals>
-      </derivation>
-    </Attribute>
-    <Attribute name="isDivorced">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <equals>
-          <reference attribute="maritalStatus"/>
-          <Code table="MaritalStatus">
-            <String value="MS4"/>
-          </Code>
-        </equals>
-      </derivation>
-    </Attribute>
-    <Attribute name="passesNonFinancials">
-      <type>
-        <javaclass name="Boolean"/>
-      </type>
-      <derivation>
-        <all>
-          <fixedlist>
-            <listof>
-              <javaclass name="Boolean"/>
-            </listof>
-            <members>
-              <equals>
-                <reference attribute="citizenshipStatus"/>
-                <Code table="CitizenshipCode">
-                  <String value="CC17000"/>
-                </Code>
-              </equals>
-              <equals>
-                <reference attribute="residencyStatus"/>
-                <Code table="MOLSAResidency">
-                  <String value="RD17000"/>
-                </Code>
-              </equals>
-            </members>
-          </fixedlist>
-        </all>
       </derivation>
     </Attribute>
   </Class>
@@ -2140,12 +1955,36 @@
     <!-- END, CR00414592,KR -->
   </Class>
   <Class name="Relationship">
+    <Attribute name="fromPersonID">
+      <type>
+        <javaclass name="Number"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
     <Attribute name="parentEntity">
       <type>
         <ruleclass name="Person"/>
       </type>
       <derivation>
-        <specified/>
+        <singleitem onEmpty="error" onMultiple="returnFirst">
+          <filter>
+            <list>
+              <reference attribute="allPersonRecords">
+                <reference attribute="householdCalculator"/>
+              </reference>
+            </list>
+            <listitemexpression>
+              <equals>
+                <reference attribute="fromPersonID"/>
+                <reference attribute="personID">
+                  <current/>
+                </reference>
+              </equals>
+            </listitemexpression>
+          </filter>
+        </singleitem>
       </derivation>
     </Attribute>
     <Attribute name="relationshipType">
@@ -2881,6 +2720,203 @@
       </type>
       <derivation>
         <specified/>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="PersonCalculator">
+    <Initialization>
+      <Attribute name="person">
+        <type>
+          <ruleclass name="Person"/>
+        </type>
+      </Attribute>
+    </Initialization>
+    <Attribute name="incomeRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Income"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="Income">
+          <match retrievedattribute="parentEntity">
+            <reference attribute="person"/>
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+    <Attribute name="expenseRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="Expense"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <readall ruleclass="Expense">
+          <match retrievedattribute="parentEntity">
+            <reference attribute="person"/>
+          </match>
+        </readall>
+      </derivation>
+    </Attribute>
+    <Attribute name="isEmployed">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <any>
+          <dynamiclist>
+            <list>
+              <reference attribute="incomeRecords"/>
+            </list>
+            <listitemexpression>
+              <reference attribute="isEarnedIncome">
+                <current/>
+              </reference>
+            </listitemexpression>
+          </dynamiclist>
+        </any>
+      </derivation>
+    </Attribute>
+    <Attribute name="isSingle">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus">
+            <reference attribute="person"/>
+          </reference>
+          <Code table="MaritalStatus">
+            <String value="MS1"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isMarried">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus">
+            <reference attribute="person"/>
+          </reference>
+          <Code table="MaritalStatus">
+            <String value="MS2"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isSeparated">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus">
+            <reference attribute="person"/>
+          </reference>
+          <Code table="MaritalStatus">
+            <String value="MS3"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isDivorced">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="maritalStatus">
+            <reference attribute="person"/>
+          </reference>
+          <Code table="MaritalStatus">
+            <String value="MS4"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="passesNonFinancials">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <equals>
+                <reference attribute="citizenshipStatus">
+                  <reference attribute="person"/>
+                </reference>
+                <Code table="CitizenshipCode">
+                  <String value="CC17000"/>
+                </Code>
+              </equals>
+              <equals>
+                <reference attribute="residencyStatus">
+                  <reference attribute="person"/>
+                </reference>
+                <Code table="MOLSAResidency">
+                  <String value="RD17000"/>
+                </Code>
+              </equals>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+  </Class>
+  <Class name="RulesCalculatorDispatcher">
+   <Attribute name="person">
+     <type>
+       <ruleclass name="Person"/>
+     </type>
+     <derivation>
+       <specified/>
+     </derivation>
+   </Attribute>
+    <Attribute name="personCalculators">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="PersonCalculator"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <dynamiclist>
+          <list>
+            <readall ruleclass="Person"/>
+          </list>
+          <listitemexpression>
+            <create ruleclass="PersonCalculator">
+              <current/>
+            </create>
+          </listitemexpression>
+        </dynamiclist>
+      </derivation>
+    </Attribute>
+    <Attribute name="personCalculator">
+      <type>
+        <ruleclass name="PersonCalculator"/>
+      </type>
+      <derivation>
+        <singleitem onEmpty="returnNull" onMultiple="returnFirst">
+          <filter>
+            <list>
+              <reference attribute="personCalculators"/>
+            </list>
+            <listitemexpression>
+              <equals>
+                <current/>
+                <reference attribute="person"/>
+              </equals>
+            </listitemexpression>
+          </filter>
+        </singleitem>
       </derivation>
     </Attribute>
   </Class>

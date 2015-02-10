@@ -32,5 +32,28 @@
         </filter>
       </derivation>
     </Attribute>
+    <Attribute name="householdRelationshipRecords">
+      <type>
+        <javaclass name="List">
+          <ruleclass name="OneWayRelationship" ruleset="MOLSAScreeningRuleSet"/>
+        </javaclass>
+      </type>
+      <derivation>
+        <removeduplicates>
+          <joinlists>
+            <dynamiclist>
+              <list>
+                <readall ruleclass="Relationship" ruleset="MOLSAScreeningRuleSet"/>
+              </list>
+              <listitemexpression>
+                <reference attribute="oneWayRelationshipsPair">
+                  <current/>
+                </reference>
+              </listitemexpression>
+            </dynamiclist>
+          </joinlists>
+        </removeduplicates>
+      </derivation>
+    </Attribute>
   </Class>
 </RuleSet>
