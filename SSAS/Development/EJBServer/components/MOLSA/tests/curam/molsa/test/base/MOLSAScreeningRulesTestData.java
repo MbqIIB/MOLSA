@@ -308,6 +308,86 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 		return personList;
 
 	}
+	
+	
+	public List<Person> createFamilyOfMissingBaseScenarioVariationOne(
+			String absentFatherReason) {
+		List<Person> personList = new ArrayList<Person>();
+		final Person firdoz = createPersonRecord("Firdoz", 101,
+				Date.fromISO8601("19800101"), Boolean.TRUE,
+				MARITALSTATUSEntry.MARRIED.getCode(),
+				GENDEREntry.FEMALE.getCode(),
+				CITIZENSHIPCODEEntry.QATARI.getCode(),
+				RESIDENCYEntry.YES.getCode());
+		firdoz.hasAbsentFather().specifyValue(Boolean.FALSE);
+		firdoz.hasAbsentHusband().specifyValue(Boolean.TRUE);
+		firdoz.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
+
+		final Person asifa = createPersonRecord("Asifa", 102,
+				Date.fromISO8601("19950101"), Boolean.FALSE,
+				MARITALSTATUSEntry.SINGLE.getCode(),
+				GENDEREntry.FEMALE.getCode(),
+				CITIZENSHIPCODEEntry.QATARI.getCode(),
+				RESIDENCYEntry.YES.getCode());
+		asifa.hasAbsentFather().specifyValue(Boolean.TRUE);
+		asifa.hasAbsentHusband().specifyValue(Boolean.FALSE);
+		asifa.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
+
+		final Person fathima = createPersonRecord("Fathima", 103,
+				Date.fromISO8601("19840101"), Boolean.FALSE,
+				MARITALSTATUSEntry.MARRIED.getCode(),
+				GENDEREntry.FEMALE.getCode(),
+				CITIZENSHIPCODEEntry.QATARI.getCode(),
+				RESIDENCYEntry.YES.getCode());
+		fathima.hasAbsentFather().specifyValue(Boolean.FALSE);
+		fathima.hasAbsentHusband().specifyValue(Boolean.TRUE);
+		fathima.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
+
+		createAbsentFatherRecord("Mohammad", "Hameed", 201,
+				Date.fromISO8601("19740101"), absentFatherReason);
+
+		personList.add(firdoz);
+		personList.add(fathima);
+		personList.add(asifa);
+
+		createRelationshipRecord(firdoz,
+				RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), asifa
+						.personID().getValue());
+		createRelationshipRecord(firdoz,
+				RELATIONSHIPTYPECOREDESCEntry.SISTERWIFE.getCode(), fathima
+						.personID().getValue());
+
+		createRelationshipRecord(fathima,
+				RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), asifa
+						.personID().getValue());
+
+		createOneWayRelationshipRecord(firdoz,
+				RELATIONSHIPTYPECOREDESCEntry.PARENT.getCode(), asifa);
+		createOneWayRelationshipRecord(asifa,
+				RELATIONSHIPTYPECOREDESCEntry.CHILD.getCode(), firdoz);
+
+		createOneWayRelationshipRecord(firdoz,
+				RELATIONSHIPTYPECOREDESCEntry.SISTERWIFE.getCode(), fathima);
+		createOneWayRelationshipRecord(fathima,
+				RELATIONSHIPTYPECOREDESCEntry.SISTERWIFE.getCode(), firdoz);
+
+		createOneWayRelationshipRecord(fathima,
+				RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), asifa);
+		createOneWayRelationshipRecord(asifa,
+				RELATIONSHIPTYPECOREDESCEntry.UNRELATED.getCode(), fathima);
+
+		createIncomeItemRecord(firdoz, 1500,
+				INCOMETYPECODEEntry.OtherHouseholdPaidEmployment.getCode(),
+				FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
+						.addDays(-30));
+		createIncomeItemRecord(fathima, 8500,
+				INCOMETYPECODEEntry.INHERITANCE.getCode(),
+				FREQUENCYCODEEntry.MONTHLY.getCode(), Date.getCurrentDate()
+						.addDays(-30));
+		
+		return personList;
+
+	}
 
 	/**
 	 * 
