@@ -67,19 +67,19 @@
         <map-attribute from="dateOfBirth" to="dateOfBirth"/>
       </target-entity>
 
-      <target-entity id="maritalStatus" name="MaritalStatus">
-        <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
-        <map-attribute from="maritalStatus" to="maritalStatus"/>
-      </target-entity>
-
-
-
-      <target-entity id="householdMember" name="HouseholdMember">
+           <target-entity id="householdMember" name="HouseholdMember">
         <map-attribute from="householdMemberStartDate" to="startDate"/>
         <map-attribute from="citizenshipStatus" to="citizenship"/>
         <map-attribute from="residencyStatus" to="residency"/>
       </target-entity>
-
+	  
+    <condition expression="Person.maritalStatusCaptured==true">
+      <target-entity id="maritalStatus" name="MaritalStatus">
+        <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+        <map-attribute from="maritalStatus" to="maritalStatus"/>
+      </target-entity>
+    </condition>
+ 
       <condition expression="Person.isPrimaryParticipant==true">
         <target-entity id="headOfHousehold" name="HeadOfHouse">
           <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
