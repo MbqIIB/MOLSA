@@ -7,6 +7,13 @@
     
     <SERVER_INTERFACE
         CLASS="MOLSAMessageService"
+        NAME="DISPLAY"
+        OPERATION="getSMSInitialSearchCriteria"
+    />
+
+        
+    <SERVER_INTERFACE
+        CLASS="MOLSAMessageService"
         NAME="ACTION"
         OPERATION="listParticipantByCriteria"
         PHASE="ACTION"
@@ -18,13 +25,20 @@
         TITLE="Cluster.Title.SearchCriteria"
         >
 
-
         <FIELD
+            CONTROL="CHECKBOXED_LIST"
+            HEIGHT="4"
             LABEL="Field.Label.CaseType"
-            USE_DEFAULT="false"
             USE_BLANK="true"
             WIDTH="75"
             >
+            <CONNECT>
+	                <INITIAL
+                    HIDDEN_PROPERTY="categoryType"
+                    NAME="DISPLAY"
+                    PROPERTY="typeDescription"
+                />
+            </CONNECT>
             <CONNECT>
                 <TARGET
                     NAME="ACTION"
@@ -114,7 +128,6 @@
         
         <FIELD
             LABEL="Field.Label.EducationLevel"
-            USE_DEFAULT="false"
             USE_BLANK="true"
             WIDTH="75"
             >
