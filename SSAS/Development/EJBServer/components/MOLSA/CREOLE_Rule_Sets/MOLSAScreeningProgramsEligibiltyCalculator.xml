@@ -2640,11 +2640,17 @@
                 </listof>
                 <members>
                   <reference attribute="passesNonFinancials">
-                    <reference attribute="personCalculator"/>
+                    <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
                   </reference>
                   <not>
                     <reference attribute="isEmployed">
-                      <reference attribute="personCalculator"/>
+                      <create ruleclass="PersonCalculator" ruleset="MOLSAScreeningRuleSet">
+                        <current/>
+                      </create>
                     </reference>
                   </not>
                 </members>
@@ -2742,22 +2748,30 @@
                   <javaclass name="Boolean"/>
                 </listof>
                 <members>
-                  <equals>
-                    <reference attribute="citizenshipStatus">
-                      <current/>
+                  <reference attribute="passesNonFinancials">
+                    <create ruleclass="NonFinancialCalculator" ruleset="MOLSAScreeningNonFinancialRuleSet">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                    </create>
+                  </reference>
+                  <not>
+                    <reference attribute="isEmployed">
+                      <create ruleclass="PersonCalculator" ruleset="MOLSAScreeningRuleSet">
+                        <current/>
+                      </create>
                     </reference>
-                    <Code table="CitizenshipCode">
-                      <String value="CC17000"/>
-                    </Code>
-                  </equals>
-                  <equals>
-                    <reference attribute="residencyStatus">
-                     <current/>
-                    </reference>
-                    <Code table="MOLSAResidency">
-                      <String value="RD17000"/>
-                    </Code>
-                  </equals>
+                  </not>
+                  <reference attribute="passesIncomeTest">
+                    <create ruleclass="IncomeTestCalculator" ruleset="MOLSAScreeningRuleSet">
+                      <specify attribute="person">
+                        <current/>
+                      </specify>
+                      <specify attribute="maxBenefitAmount">
+                        <Number value="6000"/>
+                      </specify>
+                    </create>
+                  </reference>
                 </members>
               </fixedlist>
             </all>
