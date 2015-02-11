@@ -7,12 +7,12 @@
         </CONNECT>
     </PAGE_TITLE>
     
-    <SERVER_INTERFACE NAME="ACTION" CLASS="MOLSAProgramDocuments" OPERATION="readDocuments" PHASE="ACTION"/>
-   <SERVER_INTERFACE NAME="DOCMESSAGEACTION" CLASS="MOLSAProgramDocuments" OPERATION="getDocumentMessageText" PHASE="ACTION"/>
 
-   
+    <SERVER_INTERFACE NAME="ACTION" CLASS="MOLSAProgramDocuments" OPERATION="readDocuments" PHASE="ACTION"/>
+    <SERVER_INTERFACE NAME="DOCMESSAGEACTION" CLASS="MOLSAProgramDocuments" OPERATION="getDocumentMessageText" PHASE="ACTION"/>
+
     <CLUSTER TITLE="Cluster.Title" NUM_COLS="2">
-         <FIELD LABEL="Field.Label.Document"
+        <FIELD CONTROL="CT_HIERARCHY_VERTICAL" CONFIG="CT_DISPLAY_LABELS" 
             USE_BLANK="true">
             <CONNECT>
                 <TARGET NAME="ACTION" PROPERTY="result$document"/>
@@ -23,24 +23,30 @@
                  SCRIPT_FILE="MOLSAGetDocumentsListText.js"
              />
         </FIELD> 
+        
+   
+        
    </CLUSTER>
    
    <CLUSTER
         TITLE="Cluster.DocumentText.Title"
         SHOW_LABELS="false"
         >
-        <FIELD HEIGHT="4" LABEL="Field.Label.DocumentText">
+        <FIELD HEIGHT="10" LABEL="Field.Label.DocumentText" WIDTH="300" >
             <CONNECT>
                 <TARGET PROPERTY="result$documentText" NAME="DOCMESSAGEACTION"/>
             </CONNECT>
         </FIELD>
     </CLUSTER>
+   
+   
     <ACTION_SET ALIGNMENT="CENTER" TOP="false">
     <ACTION_CONTROL
+        LABEL="ActionControl.Label.Submit"
       IMAGE="SaveButton"
-      LABEL="ActionControl.Label.Submit"
       TYPE="SUBMIT"
-    />
+    />    
     </ACTION_SET>
+    
    
 </PAGE>
