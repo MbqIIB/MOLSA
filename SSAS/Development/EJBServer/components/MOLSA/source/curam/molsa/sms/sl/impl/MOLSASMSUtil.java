@@ -148,22 +148,10 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   public MOLSASMSUtil() {
     GuiceWrapper.getInjector().injectMembers(this);
   }
-  
-  @Override
-  public void logSMSException() throws AppException, InformationalException {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void validateParticipantMobile() throws AppException, InformationalException {
-    // TODO Auto-generated method stub
-
-  }
 
 
   /**
-   *  Sends the message to the list of participants received in the input parameter. 
+   * Sends the message to the list of participants received in the input parameter. 
    * 
    * @param key
    *            Contains a key details.
@@ -552,7 +540,8 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     whereStrBuf.append("WHERE ");
 
     if (dtls.caseType.length() > CuramConst.gkZero) {
-      whereStrBuf.append("productdelivery.producttype= :caseType AND ");
+    	whereStrBuf.append(getCaseTypeCodesClause(dtls.caseType));
+    	whereStrBuf.append(" AND ");
     }
 
     if (dtls.caseStatus.length() > CuramConst.gkZero) {
@@ -581,7 +570,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     }
 
     if (dtls.educationLevel.length() > CuramConst.gkZero) {
-      fromStrBuf.append(", evidencetypedef as evddef, evidencedescriptor as evddes, dynamicevidencedataattribute, dynamicevidencedata ");
+      fromStrBuf.append(", evidencetypedef evddef, evidencedescriptor evddes, dynamicevidencedataattribute, dynamicevidencedata ");
       whereStrBuf.append("evddef.evidencetypecode='DET0000517' AND ");
       whereStrBuf.append("dynamicevidencedataattribute.value= :educationLevel AND ");
       whereStrBuf.append("evddef.evidencetypecode=evddes.evidencetype AND ");
@@ -590,7 +579,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     }
 
     if (dtls.isIncludeHouseHoldMembers) {
-      fromStrBuf.append(", evidencetypedef as edef, evidencedescriptor as edesc ");
+      fromStrBuf.append(", evidencetypedef edef, evidencedescriptor edesc ");
       whereStrBuf.append("edef.evidencetypecode='DET0000256' AND ");
       whereStrBuf.append("edef.evidencetypecode=edesc.evidencetype AND ");
       whereStrBuf.append("edesc.participantid=concernrole.concernroleID AND ");
@@ -617,7 +606,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     }
 
     if (!(dtls.incomeToDate.isZero())) {
-      fromStrBuf.append(", instructionlineitem as ilitem ");
+      fromStrBuf.append(", instructionlineitem ilitem ");
       whereStrBuf.append("ilitem.coverperiodfrom <= :incomeToDate AND ");
       whereStrBuf.append("ilitem.concernroleid=concernrole.concernroleid AND ");
       whereStrBuf.append("ilitem.statuscode in ('ALL', 'REC', 'PRO', 'REV', 'TRF') AND ");
@@ -635,7 +624,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   }
 
   /**
-   *Lists the additional benefits received by the participant.
+   * Lists the additional benefits received by the participant.
    * 
    * @param key
    *          Contains a key details.
@@ -1107,7 +1096,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   }
 
   /**
-   *  Sends the message to the list of participants received in the input parameter in deferred process mode. 
+   * Sends the message to the list of participants received in the input parameter in deferred process mode. 
    * 
    * @param key
    *            Contains a key details.
@@ -1139,5 +1128,39 @@ public void sendSMSDPMode(MOLSAConcernRoleListAndMessageTextDetails key)
 public void resendSMSDPMode(MOLSASMSLogKey key) throws AppException,
 		InformationalException {
 	resendSMS(key);
+}
+
+/**
+ * Generates part of a where clause which combines a number of product type codes.
+ *
+ * @param statusCodesString A tab delimited list of product type codes.
+ *
+ * @return Part of a WHERE clause specifying one or more product type codes.
+ */
+private String getCaseTypeCodesClause(final String caseTypeCodesString) {
+
+  final StringList statusList = StringUtil.tabText2StringListWithTrim(
+		  caseTypeCodesString);
+
+  final String result;
+
+  if (statusList.size() == 0) {
+    result = "";
+  } else if (statusList.size() < 2) {
+    result = " productdelivery.producttype = :caseType ";
+  } else {
+    final StringBuffer resultBuf = new StringBuffer(
+      " (productdelivery.producttype = :caseType");
+
+    for (int i = 1; i < statusList.size(); i++) {
+      resultBuf.append(" OR productdelivery.producttype = '");
+      resultBuf.append(statusList.item(i));
+      resultBuf.append("'");
+    }
+    resultBuf.append(" ) ");
+    result = resultBuf.toString();
+  }
+
+  return result;
 }
 }

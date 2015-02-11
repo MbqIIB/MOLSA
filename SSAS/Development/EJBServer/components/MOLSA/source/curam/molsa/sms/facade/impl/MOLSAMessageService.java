@@ -1,10 +1,15 @@
 package curam.molsa.sms.facade.impl;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import curam.attachmentlink.struct.AttachmentLinkDetails;
 import curam.attachmentlink.struct.AttachmentLinkKey;
 import curam.citizenaccount.facade.struct.ConcernRoleKey;
+import curam.codetable.CASESEARCHSTATUS;
 import curam.codetable.COMMUNICATIONFORMAT;
 import curam.codetable.COMMUNICATIONSTATUS;
+import curam.codetable.PRODUCTTYPE;
 import curam.codetable.RECORDSTATUS;
 import curam.core.facade.fact.AttachmentFactory;
 import curam.core.facade.fact.CaseFactory;
@@ -20,6 +25,7 @@ import curam.core.intf.WMInstanceData;
 import curam.core.sl.struct.CaseMemberCommDetailsList;
 import curam.core.sl.struct.CaseMemberCommunicationDetails;
 import curam.core.sl.struct.CommunicationKey;
+import curam.core.struct.CaseCategoryTypeDetails;
 import curam.core.struct.WMInstanceDataDtls;
 import curam.message.MOLSASMSSERVICE;
 import curam.molsa.sms.entity.fact.MOLSASMSLogFactory;
@@ -32,6 +38,7 @@ import curam.molsa.sms.facade.struct.MOLSACommunicationAndListRowActionDetails;
 import curam.molsa.sms.facade.struct.MOLSACommunicationDetailList;
 import curam.molsa.sms.facade.struct.MOLSAConcernRoleListAndMessageText;
 import curam.molsa.sms.facade.struct.MOLSAFailedSMSDetailsList;
+import curam.molsa.sms.facade.struct.MOLSAInitialCaseSearchCriteria;
 import curam.molsa.sms.facade.struct.MOLSAMessageText;
 import curam.molsa.sms.facade.struct.MOLSAMessageTextKey;
 import curam.molsa.sms.facade.struct.MOLSAParticipantDetailsList;
@@ -48,6 +55,8 @@ import curam.util.intf.DeferredProcessing;
 import curam.util.resources.KeySet;
 import curam.util.resources.StringUtil;
 import curam.util.resources.impl.PropertiesResourceCache;
+import curam.util.transaction.TransactionInfo;
+import curam.util.type.CodeTable;
 import curam.util.type.StringList;
 import curam.util.type.UniqueID;
 
@@ -133,19 +142,6 @@ public abstract class MOLSAMessageService extends
 		return messageText;
 	}
 
-	@Override
-	public void getParticipantForSMS() throws AppException,
-			InformationalException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void listSMSFailuresByDate() throws AppException,
-			InformationalException {
-		// TODO Auto-generated method stub
-
-	}
 
 	/**
 	 * List the failed messages with exceptions details logged while sending the
@@ -456,5 +452,32 @@ public abstract class MOLSAMessageService extends
 			deferredProcessingObj.startProcess("DEFERREDRESENDSMSPROCESSING",
 					instanceDtls.instDataID);
 		}
+	}
+
+	@Override
+	public MOLSAInitialCaseSearchCriteria getSMSInitialSearchCriteria()
+			throws AppException, InformationalException {
+
+		MOLSAInitialCaseSearchCriteria caseSearchCriteria  = new MOLSAInitialCaseSearchCriteria();
+		
+		java.util.LinkedHashMap<String, String> productTypeList = CodeTable.getAllEnabledItems(
+				PRODUCTTYPE.TABLENAME, TransactionInfo.getProgramLocale());
+		CaseCategoryTypeDetails caseCategoryTypeDetails;
+		
+		  if (!productTypeList.isEmpty()) {
+			  Set<String> keys = productTypeList.keySet();
+		      Iterator<String> itr = keys.iterator();
+		      while (itr.hasNext()) {
+		    	  caseCategoryTypeDetails=new CaseCategoryTypeDetails();
+		    	  caseCategoryTypeDetails.categoryType=itr.next();
+		    	  caseCategoryTypeDetails.typeDescription=productTypeList.get(
+		    			  caseCategoryTypeDetails.categoryType);
+		    	  
+		    	  caseSearchCriteria.caseTypeList.dtlsList.addRef(caseCategoryTypeDetails);
+		      }
+			  
+		  }
+		
+		return caseSearchCriteria;
 	}
 }
