@@ -50,7 +50,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 
 		// pro forma document data to be populated
 		ProFormaDocumentData proFormaDocumentData = new ProFormaDocumentData();
-		proFormaDocumentData.reason="Yes Joseph You are here Congrats";
+		
 
 		// Return type
 		ProFormaReturnDocDetails proFormaReturnDocDetails = new ProFormaReturnDocDetails();    
