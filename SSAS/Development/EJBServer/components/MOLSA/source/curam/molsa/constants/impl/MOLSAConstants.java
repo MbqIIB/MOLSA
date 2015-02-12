@@ -102,38 +102,40 @@ public abstract class MOLSAConstants {
 	public static String kDynEvdAttr_CaseParticipantRoleID = "participant";
 
 	public static final int gkEleven = 11;
-	
+
 	public static final int kOne = 1;
-	
+
 	public static final int kTwo = 2;
-	
+
 	/**
 	 * Property file identifier.
 	 */
 	public static final String kCategoryandTemplatePropertyFileArabic = "MOLSASMSMessageTextArabic.properties";
-	
+
 	/**
 	 * Property file identifier.
 	 */
 	public static final String kCategoryandTemplatePropertyFile = "MOLSASMSMessageText.properties";
-	
+
 	public static final String kAR = "ar";
-	
-	public static final String KApplicationSubmissionDate="Application.Submission.Date";
-	
+
+	public static final String KApplicationSubmissionDate = "Application.Submission.Date";
+
 	/**
-   *workqueue name.
-   */
-  public static final String kCaseWorkerWorkQueue = "45008";
-  
-  /**
-   * SMS Error code.
-   */
-  public static final String kSMSPhoneNumerErrorCode = "600.4";
-  
+	 * workqueue name.
+	 */
+	public static final String kCaseWorkerWorkQueue = "45008";
+
+	/**
+	 * SMS Error code.
+	 */
+	public static final String kSMSPhoneNumerErrorCode = "600.4";
+
 	/**
 	 * Property file identifier.
 	 */
 	public static final String kMegaMenuPropertyFile = "MOLSAMegaMenuProgramDocuments.properties";
+
+	public static final String kMolsaCaseWorkerRole = "MOLSACASEWORKERROLE";
 
 }
