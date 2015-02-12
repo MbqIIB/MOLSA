@@ -55,6 +55,7 @@ public class TestScreeningAnonymousParentsProgram extends
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     wife.hasAbsentFather().specifyValue(Boolean.FALSE);
+    wife.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
     wife.requiresMaidAssistance().specifyValue(Boolean.FALSE);
 
     final Person kidWithAbsentFather = createPersonRecord("Child",
@@ -62,6 +63,7 @@ public class TestScreeningAnonymousParentsProgram extends
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
     kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
+    kidWithAbsentFather.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
     kidWithAbsentFather.requiresMaidAssistance()
         .specifyValue(Boolean.FALSE);
     // Husband Relationships
