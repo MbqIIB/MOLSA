@@ -2667,16 +2667,18 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				RESIDENCYEntry.YES.getCode());
 		wife.hasAbsentFather().specifyValue(Boolean.FALSE);
 		wife.requiresMaidAssistance().specifyValue(Boolean.FALSE);
+		wife.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
 
 		final Person kidWithAbsentFather = createPersonRecord("Child",
 				kidWithAbsentFatherID, Date.fromISO8601("20020101"),
 				Boolean.FALSE, MARITALSTATUSEntry.SINGLE.getCode(),
-				GENDEREntry.MALE.getCode(),
+				GENDEREntry.FEMALE.getCode(),
 				CITIZENSHIPCODEEntry.QATARI.getCode(),
 				RESIDENCYEntry.YES.getCode());
 		kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
 		kidWithAbsentFather.requiresMaidAssistance()
 				.specifyValue(Boolean.FALSE);
+		kidWithAbsentFather.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
 
 		personList.add(husband);
 		personList.add(wife);
@@ -2760,6 +2762,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				RESIDENCYEntry.YES.getCode());
 		wife.hasAbsentFather().specifyValue(Boolean.FALSE);
 		wife.requiresMaidAssistance().specifyValue(Boolean.FALSE);
+		wife.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
 
 		final Person kidWithAbsentFather = createPersonRecord("Child",
 				kidWithAbsentFatherID, Date.fromISO8601("20020101"),
@@ -2770,6 +2773,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 		kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
 		kidWithAbsentFather.requiresMaidAssistance()
 				.specifyValue(Boolean.FALSE);
+		kidWithAbsentFather.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
 
 		personList.add(husband);
 		personList.add(wife);
