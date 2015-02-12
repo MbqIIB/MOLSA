@@ -48,9 +48,9 @@
     />
   </CONNECT>
   
-  <CLUSTER NUM_COLS="2">
   <CLUSTER>
-<CLUSTER>
+
+    <CLUSTER NUM_COLS="2">
       <CONDITION>
         <IS_FALSE
           EXTENDED_PATH="/DecisionDetails/SeniorCitizenHouseholdIncomeCategory/isInEligibleMember"
@@ -121,40 +121,42 @@
         </FIELD>
       </CLUSTER>
     </CLUSTER>
+    
     <CLUSTER>
-      <CLUSTER TITLE="Cluster.Title.IncomeCalculations" STYLE="cgiss-display-calculationCluster">
-        <CONTAINER LABEL="Field.Label.TotalIncome" ALIGNMENT="CENTER">
-          <FIELD>
-            <CONNECT>
-              <SOURCE EXTENDED_PATH="/DecisionDetails/SeniorCitizenHouseholdIncomeCategory/totalIncomeTimeline"
-                NAME="DISPLAY" PROPERTY="result$xmlData"/>
-            </CONNECT>
-          </FIELD>
-        </CONTAINER>
-        <CONTAINER LABEL="Field.Label.Expense" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
-		<FIELD CONTROL="SKIP"/>
-          <FIELD>
+          <CLUSTER TITLE="Cluster.Title.IncomeCalculations" STYLE="cgiss-display-calculationCluster">
+            <CONTAINER LABEL="Field.Label.TotalIncome" ALIGNMENT="CENTER">
+              <FIELD>
+                <CONNECT>
+                  <SOURCE EXTENDED_PATH="/DecisionDetails/SeniorCitizenHouseholdIncomeCategory/totalIncomeTimeline"
+                    NAME="DISPLAY" PROPERTY="result$xmlData"/>
+                </CONNECT>
+              </FIELD>
+            </CONTAINER>
+          <CONTAINER LABEL="Field.Label.Expense" ALIGNMENT="CENTER" SEPARATOR="Separator.Minus">
+  		<FIELD CONTROL="SKIP"/>
+            <FIELD>
+              <CONNECT>
+                <SOURCE
+                  EXTENDED_PATH="/DecisionDetails/SeniorCitizenHouseholdIncomeCategory/totalExpenseAmountTimeline"
+                  NAME="DISPLAY" PROPERTY="result$xmlData"/>
+              </CONNECT>
+            </FIELD>
+          </CONTAINER>
+        </CLUSTER>
+        <CLUSTER STYLE="cgiss-display-totalAmountCluster">
+          <FIELD LABEL="Field.Label.TotalCountableIncome" ALIGNMENT="CENTER">
             <CONNECT>
               <SOURCE
-                EXTENDED_PATH="/DecisionDetails/SeniorCitizenHouseholdIncomeCategory/totalExpenseAmountTimeline"
+                EXTENDED_PATH="/DecisionDetails/SeniorCitizenHouseholdIncomeCategory/totalCountableIncomeTimeline"
                 NAME="DISPLAY" PROPERTY="result$xmlData"/>
             </CONNECT>
           </FIELD>
-        </CONTAINER>
-      </CLUSTER>
-      <CLUSTER STYLE="cgiss-display-totalAmountCluster">
-        <FIELD LABEL="Field.Label.TotalCountableIncome" ALIGNMENT="CENTER">
-          <CONNECT>
-            <SOURCE
-              EXTENDED_PATH="/DecisionDetails/SeniorCitizenHouseholdIncomeCategory/totalCountableIncomeTimeline"
-              NAME="DISPLAY" PROPERTY="result$xmlData"/>
-          </CONNECT>
-        </FIELD>
-      </CLUSTER>
-    </CLUSTER>
-  </CLUSTER>
+           </CLUSTER>
+          </CLUSTER>
+
+   </CLUSTER>
   
-<CLUSTER>
+      <CLUSTER>
   <CLUSTER SHOW_LABELS="false">
       <CONDITION>
         <IS_TRUE
@@ -173,7 +175,7 @@
       </FIELD>
     </CLUSTER>
   </CLUSTER>
-   </CLUSTER>
+ 
   </CLUSTER>
 
 </PAGE>
