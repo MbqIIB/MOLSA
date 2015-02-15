@@ -3,9 +3,7 @@ package curam.molsa.training.facade.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import com.google.inject.Inject;
-
 import curam.codetable.impl.CASEPARTICIPANTROLETYPEEntry;
 import curam.codetable.impl.SENSITIVITYEntry;
 import curam.core.fact.CaseHeaderFactory;
@@ -23,6 +21,7 @@ import curam.cpm.sl.entity.intf.Provider;
 import curam.cpm.sl.entity.struct.ProviderDtls;
 import curam.cpm.sl.entity.struct.ProviderDtlsList;
 import curam.cpm.sl.entity.struct.ProviderKey;
+import curam.cpm.sl.entity.struct.ServiceOfferingKey;
 import curam.federalallowablecomponent.impl.FederalAllowableComponent;
 import curam.federalallowablecomponent.impl.FederalAllowableComponentDAO;
 import curam.molsa.sms.entity.struct.MOLSASMSWMInstanceDtls;
@@ -36,7 +35,9 @@ import curam.molsa.training.entity.fact.MOLSATrainingFactory;
 import curam.molsa.training.entity.intf.MOLSASerDelTraininingMapping;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtls;
 import curam.molsa.training.entity.struct.MOLSATrainingDtls;
+import curam.molsa.training.entity.struct.MOLSATrainingDtlsList;
 import curam.molsa.training.entity.struct.MOLSATrainingKey;
+import curam.molsa.training.entity.struct.MOLSATrainingKeyStruct1;
 import curam.molsa.training.struct.MOLSATrainingDetails;
 import curam.participant.impl.ConcernRole;
 import curam.participant.impl.ConcernRoleDAO;
@@ -81,9 +82,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 	@Inject
 	protected FederalAllowableComponentDAO federalAllowableComponentDAO;
 	@Inject
-	 protected ProviderDAO providerDAO;
+	protected ProviderDAO providerDAO;
 
-	
+
 	public MOLSATrainingService() {
 		GuiceWrapper.getInjector().injectMembers(this);
 
@@ -98,7 +99,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		System.out.println("Case:"+trainingDetails.trainingID);
 		curam.molsa.training.entity.intf.MOLSATraining trainingObj=MOLSATrainingFactory.newInstance();
 		MOLSATrainingKey key =  new MOLSATrainingKey();
-		
+
 		trainingObj.insert(trainingDetails);
 		key.trainingID=trainingDetails.trainingID;
 		return key;
@@ -140,7 +141,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		trainingKey=insertMOLSATraining(trainingDtls);
 
 
-		//-------------------------Adding Service Details to each Beneficiaries Integrated Case---------------------------------------------
+		//-------------------------Adding Service Details to each Integrated Case of Beneficiaries ---------------------------------------------
 
 		StringList concernRoleIDStringArr = StringUtil.delimitedText2StringList(trainingDetails.concernRoleList, CuramConst.gkTabDelimiterChar);
 		ArrayList<Long> concernRoleIDList = new ArrayList<Long>();
@@ -152,9 +153,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		for(long concernRoleIDListValue:concernRoleIDList){
 
 			List<curam.piwrapper.casemanager.impl.CaseParticipantRole> recipients = new ArrayList();
-			
+
 			//Getting  the integrated case id from the concernroleid
-			
+
 			long integratedCaseID=getCaseIDFromConcernRole(concernRoleIDListValue);
 			CaseHeader caseHeader = caseHeaderDAO.get(integratedCaseID);
 			List<CaseParticipantRole> primaryList = 
@@ -173,7 +174,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			}
 
 			//Getting the service offering id from the MOLSATrainingSMS Page
-			
+
 			long soID=trainingDetails.serviceOfferingID;
 			ServiceOffering serviceOffering = (ServiceOffering)this.serviceOfferingDAO.get(Long.valueOf(soID));
 			ServiceDeliveryConfigurationAccessor serviceDeliveryConfiguration = serviceOffering.getServiceDeliveryConfiguration();
@@ -202,27 +203,27 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 				serviceDelivery.setSupervisor(supervisor.userName);
 			}
 			serviceDelivery.insert(recipients);
-			
+
 			//-------------------------Adding Provider to The Beneficiary Service---------------------------------------------
 
 
 			//Get the provider ID and pass it to the OOTB function
-			
+
 			ProviderKey proKey=new ProviderKey();
 			proKey.providerConcernRoleID=trainingDetails.providerID;
 			ServiceDeliveryVersionKey serviceKey=new ServiceDeliveryVersionKey();			
 			serviceKey.key.serviceDeliveryID = serviceDelivery.getID();
 			addProvider(proKey,serviceKey);
-			
+
 			//Inserting ServiceDelivery ID ,Training ID to the new Mapping Table
-			
+
 			MOLSASerDelTraininingMappingDtls detailsObj= new MOLSASerDelTraininingMappingDtls();
 			detailsObj.serviceDeliveryID=serviceDelivery.getID();
 			detailsObj.trainingID=trainingKey.trainingID;		
 			MOLSASerDelTraininingMapping mappingObj=MOLSASerDelTraininingMappingFactory.newInstance();
 			mappingObj.insert(detailsObj);
-			
-			
+
+
 		}
 		//-------------------------Sending SMS To the Beneficiaries---------------------------------------------
 
@@ -234,9 +235,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		+" "+"End Date:"+trainingDetails.trainingEndDate+" "+"Training Location:"+trainingDetails.trainingLocation;
 		key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
 		//	key.dtls.caseID=instanceDtls.caseID;
-		molsasmsUtilObj.sendSMSDPMode(key);
-		
-		
+		//molsasmsUtilObj.sendSMSDPMode(key);
+
+
 
 	}
 
@@ -277,6 +278,21 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		}
 		return caseid;
 
+	}
+
+	@Override
+	public MOLSATrainingDtlsList searchByServiceOfferingID(
+			ServiceOfferingKey soID) throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
+
+		MOLSATrainingKey key =new MOLSATrainingKey() ;
+		curam.molsa.training.entity.intf.MOLSATraining trainingObj=MOLSATrainingFactory.newInstance();
+		MOLSATrainingKeyStruct1 soidKey=new MOLSATrainingKeyStruct1();
+		MOLSATrainingDtlsList dtlList= new MOLSATrainingDtlsList();
+		soidKey.serviceOfferingID=soID.serviceOfferingID;
+		dtlList=trainingObj.searchbyServiceOfferingID(soidKey);
+		return dtlList;
 	}
 
 
