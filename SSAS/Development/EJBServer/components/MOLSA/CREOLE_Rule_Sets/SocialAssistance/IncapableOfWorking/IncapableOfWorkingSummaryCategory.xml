@@ -382,31 +382,19 @@
       </javaclass>
     </type>
     <derivation>
-      <reference attribute="passFailMessageTimeline">
-        <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
-          <timelineoperation>
-            <all>
-              <dynamiclist>
-                <list>
-                  <intervalvalue>
-                    <reference attribute="eligibilityUnitMembers"/>
-                  </intervalvalue>
-                </list>
-                <listitemexpression>
-                  <intervalvalue>
-                    <reference attribute="hasPassedNonFinancialTestTimeline">
-                      <create ruleclass="SANonFinancialCPRCalculator"
-                        ruleset="SocialAssistanceRuleSet">
-                        <current/>
-                      </create>
-                    </reference>
-                  </intervalvalue>
-                </listitemexpression>
-              </dynamiclist>
-            </all>
-          </timelineoperation>
-        </create>
-      </reference>
+      <timelineoperation>
+        <intervalvalue>
+          <reference attribute="passFailMessageTimeline">
+            <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
+              <reference attribute="hasHouseholdPassedNonFinancialTestTimeline">
+                <intervalvalue>
+                  <reference attribute="incapableOfWorkingEligibilityUnitCalculator" />
+                </intervalvalue>
+              </reference>
+            </create>
+          </reference>
+        </intervalvalue>
+      </timelineoperation>
     </derivation>
   </Attribute>
   <Attribute name="hasHouseholdPassedIncomeMessage">

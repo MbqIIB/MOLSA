@@ -41,27 +41,53 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<all>
-						<dynamiclist>
-							<list>
-								<reference attribute="mandatoryMembers">
-									<reference attribute="eligibilityUnit" />
-								</reference>
-							</list>
-							<listitemexpression>
-								<intervalvalue>
-									<reference attribute="hasPassedNonFinancialTestTimeline">
-										<create ruleclass="SANonFinancialCPRCalculator"
-											ruleset="SocialAssistanceRuleSet">
-											<reference attribute="caseParticipantRoleRecord">
-												<current />
-											</reference>
-										</create>
-									</reference>
-								</intervalvalue>
-							</listitemexpression>
-						</dynamiclist>
-					</all>
+					<choose>
+						<type>
+							<javaclass name="Boolean"/>							
+						</type>
+						<when>
+							<condition>
+								<compare comparison="&gt;">
+									<property name="size">
+										<object>
+											<intervalvalue>
+												<reference attribute="eligibilityUnitMembersTimeline"/>
+											</intervalvalue>
+										</object>
+									</property>
+									<Number value="0"/>
+								</compare>
+							</condition>
+							<value>
+								<all>
+									<dynamiclist>
+										<list>
+											<intervalvalue>
+												<reference attribute="eligibilityUnitMembersTimeline" />
+											</intervalvalue>
+										</list>
+										<listitemexpression>
+											<intervalvalue>
+												<reference attribute="hasPassedCitizenshipTimeline">
+													<create ruleclass="SANonFinancialCPRCalculator"
+														ruleset="SocialAssistanceRuleSet">
+														<reference attribute="caseParticipantRoleRecord">
+															<current />
+														</reference>
+													</create>
+												</reference>
+											</intervalvalue>
+										</listitemexpression>
+									</dynamiclist>
+								</all>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false/>
+							</value>
+						</otherwise>
+					</choose>
 				</timelineoperation>
 			</derivation>
 		</Attribute>
@@ -137,14 +163,40 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<compare comparison="&gt;">
-						<intervalvalue>
-							<reference attribute="primaryBeneficiaryAmount" />
-						</intervalvalue>
-						<intervalvalue>
-							<reference attribute="totalCountableIncomeTimeline" />
-						</intervalvalue>
-					</compare>
+					<choose>
+						<type>
+							<javaclass name="Boolean"/>							
+						</type>
+						<when>
+							<condition>
+								<compare comparison="&gt;">
+									<property name="size">
+										<object>
+											<intervalvalue>
+												<reference attribute="eligibilityUnitMembersTimeline"/>
+											</intervalvalue>
+										</object>
+									</property>
+									<Number value="0"/>
+								</compare>
+							</condition>
+							<value>
+								<compare comparison="&lt;=">
+									<intervalvalue>
+										<reference attribute="totalCountableIncomeTimeline" />
+									</intervalvalue>
+									<intervalvalue>
+										<reference attribute="primaryBeneficiaryAmount" />
+									</intervalvalue>
+								</compare>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<false/>
+							</value>
+						</otherwise>
+					</choose>
 				</timelineoperation>
 			</derivation>
 		</Attribute>
