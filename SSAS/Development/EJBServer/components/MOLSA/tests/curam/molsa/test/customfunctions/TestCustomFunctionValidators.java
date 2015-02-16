@@ -7,6 +7,7 @@ import curam.datastore.impl.Entity;
 import curam.ieg.impl.IEG2Context;
 import curam.rules.functions.CustomFunctionIsValidDate;
 import curam.rules.functions.CustomFunctionIsValidDateRange;
+import curam.rules.functions.CustomFunctionIsValidName;
 import curam.rules.functions.CustomFunctionIsValidNumber;
 import curam.rules.functions.CustomFunctionIsValidString;
 import curam.util.exception.AppException;
@@ -37,6 +38,7 @@ public class TestCustomFunctionValidators extends MOLSAMockDataStore {
   public static final String KINVALIDNAME1 = "aditi2";
   public static final String KINVALIDNAME2 = "?aditi";
   public static final String KVALIDNAME3 = "    ";
+  public static final String KVALIDArabicCharacter = "بلدية أم صلال, ابن عمران";
   
   public final Date KDATEVALIDRANGE = Date.fromISO8601("20160101");
   /**
@@ -538,6 +540,38 @@ public class TestCustomFunctionValidators extends MOLSAMockDataStore {
     } catch (AppException e) {
       // TODO Auto-generated catch block
       fail(e.getMessage());
+    } catch (InformationalException e) {
+      // TODO Auto-generated catch block
+      fail();
+    }
+
+  }
+  
+  /**
+   * Tests for Custom function which Validates the
+   * String Containing only Characters
+   */
+
+  @SuppressWarnings("restriction")
+  public void testCustomFunctionIsValidArabicName() {
+
+    final CustomFunctionIsValidName customFunction = new CustomFunctionIsValidName();
+    final RulesParameters rulesParameters = new RulesParameters();
+    final List<Adaptor> dtls = new ArrayList<Adaptor>();
+
+    final Adaptor characters = AdaptorFactory.getStringAdaptor(KVALIDArabicCharacter);
+    dtls.add(characters);
+    try {
+      customFunction.setParameters(dtls);
+      final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+      final IEG2Context ieg2Context = new IEG2Context();
+      ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+      assertTrue(((BooleanAdaptor) customFunction.getAdaptorValue(rulesParameters)).getValue(rulesParameters));
+
+    } catch (AppException e) {
+      // TODO Auto-generated catch block
+      fail();
     } catch (InformationalException e) {
       // TODO Auto-generated catch block
       fail();
