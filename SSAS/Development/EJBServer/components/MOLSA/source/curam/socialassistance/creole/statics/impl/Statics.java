@@ -15,6 +15,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Comparator;
 
+import curam.creole.value.CodeTableItem;
 import curam.core.impl.CuramConst;
 import curam.core.struct.PersonRegistrationDetails;
 import curam.creole.execution.RuleObject;
@@ -388,5 +389,33 @@ public static List<RuleObject> getHouseholdUnitMembers(Session session, Timeline
 		return ruleObjects;
 	}
 	
+	
+	/**
+   * Validates BIC with IBAN.
+   *
+   * @param session
+   * @param bankAccountEvidence
+   * @return Boolean
+   * @throws AppException
+   * @throws InformationalException
+   */
+	public static Boolean validateBICNumber(Session session, RuleObject bankAccountEvidence) throws AppException, InformationalException {
+	    
+    String iban = (String) bankAccountEvidence.getAttributeValue("iban").getValue();
+    CodeTableItem bic = (CodeTableItem) bankAccountEvidence.getAttributeValue("bic").getValue();
+    
+    if (iban.length() >= 8)
+    {
+      if(iban.substring(4, 8).equalsIgnoreCase(bic.toString().substring(0, 4))){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }else{
+     return true;
+    }
+    
+  }
 	
 }

@@ -5,6 +5,14 @@ import java.text.ParsePosition;
 
 
 
+
+
+
+import org.apache.axis2.transport.http.HTTPConstants;
+
+import com.pmmsoapmessenger.MessengerStub;
+import com.pmmsoapmessenger.MessengerStub.SendSms;
+
 import curam.codetable.CASEEVIDENCE;
 import curam.codetable.CASEPARTICIPANTROLETYPE;
 import curam.codetable.CASESTATUS;
@@ -16,6 +24,7 @@ import curam.codetable.impl.CASEEVIDENCEEntry;
 import curam.core.facade.fact.CaseHeaderFactory;
 import curam.core.facade.intf.CaseHeader;
 import curam.core.facade.struct.ConcernRoleIDStatusCodeKey;
+import curam.core.impl.CuramConst;
 import curam.core.impl.EnvVars;
 import curam.core.sl.entity.struct.CaseParticipantRoleKey;
 import curam.core.sl.entity.struct.ParticipantRoleIDAndNameDetails;
@@ -43,10 +52,12 @@ import curam.dynamicevidence.sl.struct.impl.GenericSLDataDetails;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.dynamicevidence.type.impl.DynamicEvidenceTypeConverter;
 import curam.message.MOLSANOTIFICATION;
+import curam.message.MOLSASMSSERVICE;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.moi.entity.fact.MOLSAMoiFactory;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.molsa.moi.entity.struct.MOLSAMoiKey;
+import curam.molsa.moi.facade.struct.MOLSAConcernRoleTabbedList;
 import curam.molsa.moi.sl.fact.MOLSAMaintainMoiFactory;
 import curam.molsa.moi.sl.intf.MOLSAMaintainMoi;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
@@ -54,7 +65,9 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
 import curam.util.resources.Configuration;
+import curam.util.resources.StringUtil;
 import curam.util.type.Date;
+import curam.util.type.StringList;
 
 /**
  * The class contains implementation of MOI update and MOI read functionality.
@@ -96,13 +109,24 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 	 */
 	@SuppressWarnings("static-access")
 	@Override
-	public void updateMoiDetails(ConcernRoleID arg1) throws AppException,
+	public void updateMoiDetails(MOLSAConcernRoleTabbedList arg1) throws AppException,
 			InformationalException {
 
+	  if(arg1.concernRoleTabbedList.length()==0){
+      curam.core.sl.infrastructure.impl.ValidationManagerFactory
+      .getManager()
+      .throwWithLookup(
+          new AppException(
+              MOLSASMSSERVICE.NO_CONCERNROLE_SELECTED),
+          curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
+          0);
+    }
+	  StringList concernRoleIDList = StringUtil.delimitedText2StringList(arg1.concernRoleTabbedList, CuramConst.gkTabDelimiterChar);
+      for (String concernRoleID : concernRoleIDList) {
 		// get the case details based on concernroleID and status
 		CaseHeader caseHeader = CaseHeaderFactory.newInstance();
 		ConcernRoleIDStatusCodeKey paramConcernRoleIDStatusCodeKey = new ConcernRoleIDStatusCodeKey();
-		paramConcernRoleIDStatusCodeKey.dtls.concernRoleID = arg1.concernRoleID;
+		paramConcernRoleIDStatusCodeKey.dtls.concernRoleID = Long.parseLong(concernRoleID);
 		paramConcernRoleIDStatusCodeKey.dtls.statusCode = CASESTATUS.OPEN;
 		CaseHeaderDtlsList caseDtlsList = caseHeader
 				.searchByConcernRoleID(paramConcernRoleIDStatusCodeKey);
@@ -111,7 +135,7 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 		MOLSAParticipantHelper participantHelper = new MOLSAParticipantHelper();
 		// Getting QID from the concern role ID.
 		String qid = participantHelper.returnConcernRoleAlternateID(
-				arg1.concernRoleID, CONCERNROLEALTERNATEID.INSURANCENUMBER);
+		    Long.parseLong(concernRoleID), CONCERNROLEALTERNATEID.INSURANCENUMBER);
 		MOLSAMoiKey moiKey = new MOLSAMoiKey();
 		moiKey.qid = qid;
 		curam.molsa.moi.entity.intf.MOLSAMoi molsaMoi = MOLSAMoiFactory
@@ -156,7 +180,7 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 						idAndNameDetails.name);
 				// Read the name details from names evidence
 				readNameEvidence = readNameEvidenceDetails(integratedCaseID,
-						CASEEVIDENCEEntry.NAME, arg1.concernRoleID,
+						CASEEVIDENCEEntry.NAME, Long.parseLong(concernRoleID),
 						idAndNameDetails.name);
 
 				// Compare the person DOB details with MOI date of birth details
@@ -302,6 +326,7 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 
 			}
 		}
+      }
 	}
 
 	/**

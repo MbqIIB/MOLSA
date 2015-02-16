@@ -1,0 +1,110 @@
+<RuleSet name="PDCBankAccountIBANValidationRuleSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+	<Class extends="DefaultEvidenceValidationResult" extendsRuleSet="EvidenceValidationRuleSet"
+		name="MolsaPDCBankAccountIBANValidationResult">
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="PDCBankAccount" ruleset="PDCBankAccountRuleSet"/>
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="standardValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<fixedlist>
+					<listof>
+						<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+					</listof>
+					<members>
+						<reference attribute="bicValidation" />
+					</members>
+				</fixedlist>
+			</derivation>
+		</Attribute>
+		<Attribute name="detailsValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<null />
+			</derivation>
+		</Attribute>
+		<Attribute name="preCreateValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<null />
+			</derivation>
+		</Attribute>
+		<Attribute name="preModifyValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<null />
+			</derivation>
+		</Attribute>
+		<Attribute name="postCreateValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<null />
+			</derivation>
+		</Attribute>
+		<Attribute name="postModifyValidations">
+			<type>
+				<javaclass name="java.util.List">
+					<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+				</javaclass>
+			</type>
+			<derivation>
+				<null />
+			</derivation>
+		</Attribute>
+		<Attribute name="bicValidation">
+			<type>
+				<ruleclass name="Validation" ruleset="EvidenceValidationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="Validation" ruleset="EvidenceValidationRuleSet">
+					<reference attribute="isValidBIC" />
+					<ResourceMessage key="ERR_BIC_INVALID"
+						resourceBundle="curam.evidence.MolsaPDCBankAccountIBANValidationRuleSet"/>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="isValidBIC">
+			<type>
+    	<javaclass name="Boolean" />
+			</type>
+			<derivation>
+				<call class="curam.socialassistance.creole.statics.impl.Statics"
+					method="validateBICNumber">
+					<type>
+    	<javaclass name="Boolean"/>
+					</type>
+					<arguments>
+						<reference attribute="evidence" />
+						</arguments>
+				</call>
+			</derivation>
+		</Attribute>
+		
+	</Class>
+</RuleSet>
