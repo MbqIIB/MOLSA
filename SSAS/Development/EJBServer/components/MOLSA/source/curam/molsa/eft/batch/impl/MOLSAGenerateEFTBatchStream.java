@@ -53,6 +53,7 @@ import curam.core.struct.PaymentInstrumentDtlsList;
 import curam.core.struct.PaymentInstrumentKey;
 import curam.dynamicevidence.util.impl.DateUtil;
 import curam.evidence.sl.struct.MonthYearDetails;
+import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetail;
@@ -437,14 +438,13 @@ public class MOLSAGenerateEFTBatchStream extends
 			// correct message.
 			curam.molsa.sms.sl.intf.MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory
 					.newInstance();
-			curam.molsa.sms.sl.struct.MOLSAMessageTextKey molsaMessageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
-			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
-			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.SALARYINFORMATION;
-			curam.molsa.sms.sl.struct.MOLSAMessageText messageText = molsasmsUtilObj
-					.getSMSMessageText(molsaMessageTextKey);
+			 AppException msg =new AppException(MOLSASMSSERVICE.SALARYINFORMATION);
+		     msg.arg(paymentInstrumentDtls.amount);
+		     String message=msg.getLocalizedMessage();
+		        
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
 			// Set the message details.
-			concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
 			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
 					.valueOf(paymentInstrumentDtls.concernRoleID);
 			// Pointing to the message template.

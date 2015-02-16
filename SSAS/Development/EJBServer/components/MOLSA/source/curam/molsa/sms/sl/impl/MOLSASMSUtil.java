@@ -493,7 +493,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   
   protected void validateSearchCriteria(MOLSAParticipantFilterCriteriaDetails key) throws AppException {
 
-    if (!(key.dtls.hasIncome) && !(key.dtls.isIncludeHouseHoldMembers) && (key.dtls.age == CuramConst.gkZero) && (key.dtls.caseStatus.length() == CuramConst.gkZero)
+    if (!(key.dtls.hasIncome) && !(key.dtls.isIncludeHouseHoldMembers) && (key.dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty)) && (key.dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty))  && (key.dtls.caseStatus.length() == CuramConst.gkZero)
         && (key.dtls.caseType.length() == CuramConst.gkZero) && (key.dtls.educationLevel.length() == CuramConst.gkZero) && (key.dtls.gender.length() == CuramConst.gkZero)
         && (key.dtls.muncipality.length() == CuramConst.gkZero) && (key.dtls.incomeFromDate.isZero()) && (key.dtls.incomeToDate.isZero())) {
 
@@ -547,17 +547,37 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     if (dtls.caseStatus.length() > CuramConst.gkZero) {
       whereStrBuf.append("caseHeader.statuscode = :caseStatus AND ");
     }
-
-    if (dtls.age > CuramConst.gkZero) {
-      Date currentDate = TransactionInfo.getSystemDate();
-      Calendar calender = currentDate.getCalendar();
-      calender.add(Calendar.YEAR, -(dtls.age));
-      Date date = new Date(calender.getTimeInMillis());
-      dtls.caluclatedDateFromAge = date;
-
-      whereStrBuf.append("person.dateofbirth >= :caluclatedDateFromAge AND ");
+    
+    //Throw the validation if user either select one of the Age from or Age to field.
+    if((dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
+    		!dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty)) ||
+    		(!dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
+    	    		dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty))){
+    	 curam.core.sl.infrastructure.impl.ValidationManagerFactory
+         .getManager()
+         .throwWithLookup(
+             new AppException(
+                 MOLSASMSSERVICE.SMS_AGE_FROM_AND_TO_MUST_BE_ENTERED),
+             curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
+             0);
+    	 
+    }else if((!dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
+    		!dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty))){
+    	  Date currentDate = TransactionInfo.getSystemDate();
+          Calendar fromCalender = currentDate.getCalendar();
+          fromCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.fromAge)));
+          Date fromDate = new Date(fromCalender.getTimeInMillis());
+          dtls.caluclatedDateFromAge = fromDate;
+          
+          Calendar toCalender = currentDate.getCalendar();
+          toCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.toAge)));
+          Date toDate = new Date(toCalender.getTimeInMillis());
+          dtls.caluclatedDateToAge = toDate;
+          
+          whereStrBuf.append("person.dateofbirth <= :caluclatedDateFromAge AND ");
+          whereStrBuf.append("person.dateofbirth >= :caluclatedDateToAge AND ");
+    	
     }
-
     if (dtls.gender.length() > CuramConst.gkZero) {
       whereStrBuf.append("person.gender = :gender AND ");
     }
@@ -617,7 +637,8 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
     whereStrBuf.append("productdelivery.caseid=caseheader.caseid AND ");
     whereStrBuf.append("caseheader.casetypecode='CT2' ");
     
-
+   
+  
     sqlStatement.sqlStatement = selectStrBuf.toString() + intoStrBuf.toString() + fromStrBuf.toString() + whereStrBuf.toString();
     return sqlStatement;
 
