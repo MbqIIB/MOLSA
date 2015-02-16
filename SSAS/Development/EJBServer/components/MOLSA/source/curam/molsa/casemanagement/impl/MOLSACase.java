@@ -328,16 +328,6 @@ public class MOLSACase extends curam.molsa.casemanagement.base.MOLSACase {
 	public void validateSelectPrimaryClient(ConcernRoleKey key)
 			throws AppException, InformationalException {
 
-	    if (key.concernRoleID == CuramConst.kLongZero) {
-	      curam.core.sl.infrastructure.impl.ValidationManagerFactory
-				.getManager()
-				.addValidationHelperExceptionWithLookup(
-						MOLSANOTIFICATION
-								.ERR_FV_PRIMARY_CLIENT_NOT_SELECTED,
-						null, curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
-						0);
-	    }
-	    ValidationHelper.failIfErrorsExist();
 	}
 
 }
