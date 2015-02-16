@@ -13,34 +13,8 @@
     </CONNECT>
   </PAGE_TITLE>
   
-   <PAGE_PARAMETER NAME="caseID"/>
-  
-<!--
-  <CONNECT>
-    <SOURCE
-      NAME="PAGE"
-      PROPERTY="caseID"
-    />
-    <TARGET
-      NAME="ACTION"
-      PROPERTY="caseID"
-    />
-  </CONNECT>
--->
 
- <PAGE_PARAMETER NAME="concernRoleID"/>
-
-
-  <CONNECT>
-    <SOURCE
-      NAME="PAGE"
-      PROPERTY="concernRoleID"
-    />
-    <TARGET
-      NAME="ACTION"
-      PROPERTY="concernRoleID"
-    />
-  </CONNECT>
+ 
 
   <SERVER_INTERFACE
     CLASS="MOLSAMoi"
@@ -53,32 +27,150 @@
     TOP="false"
   >
     <ACTION_CONTROL
-      IMAGE="YesButton"
-      LABEL="ActionControl.Label.Yes"
+    IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Submit"
       TYPE="SUBMIT"
     />
     <ACTION_CONTROL
-      IMAGE="NoButton"
-      LABEL="ActionControl.Label.No"
+    IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
     >
         </ACTION_CONTROL>
   </ACTION_SET>
+  
 
 
-  <CLUSTER
-    SHOW_LABELS="false"
-    STYLE="outer-cluster-borderless"
-  >
-    <FIELD>
+
+
+
+
+
+  <SERVER_INTERFACE
+    CLASS="IntegratedCase"
+    NAME="DISPLAY"
+    OPERATION="listCaseMembers1"
+  />
+
+ 
+
+
+  <PAGE_PARAMETER NAME="caseID"/>
+
+
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="caseID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$caseID"
+    />
+  </CONNECT>
+
+
+  <LIST>
+
+
+
+    <CONTAINER
+      LABEL="Field.Label.Name"
+      WIDTH="50"
+    >
+    
+     <WIDGET
+                TYPE="MULTISELECT"
+                >
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+                    <CONNECT>
+                        <SOURCE
+                            NAME="DISPLAY"
+                            PROPERTY="participantRoleID"
+                        />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+                    <CONNECT>
+                        <TARGET
+                            NAME="ACTION"
+                            PROPERTY="concernRoleTabbedList"
+                        />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+            </WIDGET>
+    
+    
+    
+      <FIELD>
+        <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="participantList$name"
+          />
+        </CONNECT>
+        
+        <LINK PAGE_ID="Participant_resolve">
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="participantRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+        </LINK>
+       
+      </FIELD>
+      <ACTION_CONTROL IMAGE="SpecialCautionDefaultIcon">
+        <CONDITION>
+          <IS_TRUE
+            NAME="DISPLAY"
+            PROPERTY="result$participantList$specialCautionInd"
+          />
+        </CONDITION>
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="SpecialCaution_listFromCase"
+        >
+          <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="result$participantList$participantRoleID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="concernRoleID"
+            />
+          </CONNECT>
+          <CONNECT>
+            <SOURCE
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="caseID"
+            />
+          </CONNECT>
+        </LINK>
+      </ACTION_CONTROL>
+    </CONTAINER>
+
+
+    <FIELD
+      LABEL="Field.Label.Type"
+      WIDTH="15"
+    >
       <CONNECT>
         <SOURCE
-          NAME="TEXT"
-          PROPERTY="Field.StaticText.UpdateMoiDetails"
+          NAME="DISPLAY"
+          PROPERTY="typeCode"
         />
       </CONNECT>
     </FIELD>
-  </CLUSTER>
   
-
+  </LIST>
 
 </PAGE>
