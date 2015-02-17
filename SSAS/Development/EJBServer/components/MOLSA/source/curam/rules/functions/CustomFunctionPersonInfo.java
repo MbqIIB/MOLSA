@@ -6,6 +6,7 @@ import curam.datastore.impl.Datastore;
 import curam.datastore.impl.Entity;
 import curam.datastore.impl.NoSuchSchemaException;
 import curam.ieg.impl.IEG2Context;
+import curam.molsa.codetable.impl.EDUCATIONLEVELEntry;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
 import curam.molsa.datastore.impl.MOLSADatastoreUtility;
 import curam.molsa.util.impl.MOLSADateUtil;
@@ -83,15 +84,16 @@ public class CustomFunctionPersonInfo extends CustomFunctor {
 						} else if (!(Boolean) (personEntity
 								.getTypedAttribute(MOLSADatastoreConst.kIsMemberEnrolledInSchool))) {
 							if (null == personEntity
-									.getTypedAttribute("educationLevel")) {
+									.getTypedAttribute(MOLSADatastoreConst.kEducationLevel)) {
 								personEntity.setTypedAttribute(
 										MOLSADatastoreConst.kIsChild,
 										Boolean.TRUE);
 							}
 
 							else if ((Boolean) (personEntity
-									.getTypedAttribute("educationLevel")
-									.equals("MEL17010"))) {
+									.getTypedAttribute(MOLSADatastoreConst.kEducationLevel)
+									.equals(EDUCATIONLEVELEntry.NOTOFSCHOOLINGAGE
+											.getCode()))) {
 								personEntity.setTypedAttribute(
 										MOLSADatastoreConst.kIsChild,
 										Boolean.TRUE);
