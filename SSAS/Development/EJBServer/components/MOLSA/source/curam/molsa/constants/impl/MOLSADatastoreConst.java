@@ -783,6 +783,10 @@ public class MOLSADatastoreConst {
    * Phone Number
    */
   public static final String KCellPhoneNumber = "cellPhoneNumber";
+  /**
+   * Is Change of Circumstance
+   */
+  public static final String KIsCOC = "isCOC";
 
   
 }
