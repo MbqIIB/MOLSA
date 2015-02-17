@@ -14,7 +14,10 @@ import com.google.inject.Inject;
 
 import curam.application.impl.Application;
 import curam.application.impl.ProgramApplication;
+import curam.codetable.CASETYPECODE;
+import curam.codetable.PRODUCTTYPE;
 import curam.codetable.impl.PROGRAMSTATUSEntry;
+import curam.core.sl.struct.TaskCreateDetails;
 import curam.core.struct.CaseHeaderKey;
 import curam.creole.value.Timeline;
 import curam.creoleprogramrecommendation.codetable.impl.SIMULATEDDETERMINATIONSTATEEntry;
@@ -31,19 +34,31 @@ import curam.creoleprogramrecommendation.impl.SimulatedDeterminationAuthorizatio
 import curam.creoleprogramrecommendation.impl.SimulatedDeterminationManager;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProduct;
 import curam.creoleprogramrecommendation.struct.CREOLEProgramRecommendationKey;
+import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
+import curam.message.BPOROUTEPRODUCTDELIVERYAPPROVAL;
+import curam.message.MOLSABPORECERTIFICATION;
+import curam.molsa.constants.impl.MOLSAConstants;
 import curam.piwrapper.caseconfiguration.impl.ProductDAO;
+import curam.piwrapper.caseheader.impl.IntegratedCase;
 import curam.piwrapper.caseheader.impl.IntegratedCaseDAO;
+import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.transaction.TransactionInfo;
+import curam.util.type.CodeTable;
 import curam.util.type.DateRange;
+import curam.util.workflow.impl.EnactmentService;
 
 public class MOLSAAuthorizationEventListener extends AuthorizationEvent {
 
 	@Inject
 	private ProductDAO productDAO;
+
+	@Inject
+	private ProductDeliveryDAO productDeliveryDAO;
+
 	@Inject
 	private IntegratedCaseDAO integratedCaseDAO;
 
@@ -64,6 +79,41 @@ public class MOLSAAuthorizationEventListener extends AuthorizationEvent {
 	public void postAuthorization(
 			SimulatedDeterminationAuthorization simulatedDeterminationAuthorization)
 			throws InformationalException, AppException {
+
+		final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+		taskCreateDetails.caseID = simulatedDeterminationAuthorization.getDelivery().getID();
+
+		final LocalisableString subject = new LocalisableString(
+				BPOROUTEPRODUCTDELIVERYAPPROVAL.INF_CASE_SUBMITTED_TICKET);
+		IntegratedCase integratedCase = integratedCaseDAO
+				.get(taskCreateDetails.caseID);
+		subject.arg(integratedCase.getCaseReference());
+
+		String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+				productDeliveryDAO.get(taskCreateDetails.caseID)
+						.getProductType().getCode(),
+				TransactionInfo.getProgramLocale());
+		subject.arg(productName);
+		subject.arg(integratedCase.getConcernRole().getName());
+
+		taskCreateDetails.subject = subject.getMessage(TransactionInfo
+				.getProgramLocale());
+
+		final LocalisableString rejectMessage = new LocalisableString(
+				BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
+
+		subject.arg(integratedCase.getCaseReference());
+		subject.arg(productName);
+		subject.arg(integratedCase.getConcernRole().getName());
+
+		taskCreateDetails.subject = subject.getMessage(TransactionInfo
+				.getProgramLocale());
+		taskCreateDetails.comments = rejectMessage.getMessage(TransactionInfo
+				.getProgramLocale());
+		enactmentStructs.add(taskCreateDetails);
+		EnactmentService.startProcessInV3CompatibilityMode(
+				MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
 
 		boolean isEligibleForApprove = true;
 
