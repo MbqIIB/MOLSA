@@ -137,5 +137,11 @@ public abstract class MOLSAConstants {
 	public static final String kMegaMenuPropertyFile = "MOLSAMegaMenuProgramDocuments.properties";
 
 	public static final String kMolsaCaseWorkerRole = "MOLSACASEWORKERROLE";
+	
+	
+	/**
+	 * Molsa Product delivery approval workflow.
+	 */
+	public static final String kMOLSAProductDeliveryOpenTask = "MOLSAProductDeliveryOpenTask";
 
 }
