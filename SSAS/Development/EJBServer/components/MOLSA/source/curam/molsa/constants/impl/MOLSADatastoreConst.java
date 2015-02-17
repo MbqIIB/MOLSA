@@ -787,6 +787,11 @@ public class MOLSADatastoreConst {
    * Is Change of Circumstance
    */
   public static final String KIsCOC = "isCOC";
+  
+  /**
+   * EducationLevel
+   */
+  public static final String kEducationLevel="educationLevel";
 
   
 }
