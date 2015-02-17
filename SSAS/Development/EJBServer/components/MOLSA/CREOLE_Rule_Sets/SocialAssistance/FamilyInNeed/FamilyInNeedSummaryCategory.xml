@@ -396,7 +396,7 @@
               <when>
                 <condition>
                   <intervalvalue>
-                    <reference attribute="hasEarnedIncomeTimeline">
+                    <reference attribute="headOfHouseholdTimeline">
                       <create ruleclass="MemberCPRCalculator" ruleset="SocialAssistanceRuleSet">
                         <current/>
                       </create>
@@ -405,17 +405,43 @@
                 </condition>
                 <value>
                   <ResourceMessage
-                    key="SASummaryCategory.IsEmployed"
+                    key="SASummaryCategory.NotEnrolledForEducation"
                     resourceBundle="curam.molsa.rules.ProductDisplay"
                   />
                 </value>
               </when>
               <otherwise>
                 <value>
-                  <ResourceMessage
-                    key="SASummaryCategory.NotEnrolledForEducation"
-                    resourceBundle="curam.molsa.rules.ProductDisplay"
-                 />
+                  <choose>
+                    <type>
+                      <javaclass name="curam.creole.value.Message"/>
+                    </type>
+                    <when>
+                      <condition>
+                        <intervalvalue>
+                          <reference attribute="hasEarnedIncomeTimeline">
+                            <create ruleclass="MemberCPRCalculator" ruleset="SocialAssistanceRuleSet">
+                              <current/>
+                            </create>
+                          </reference>
+                        </intervalvalue>
+                      </condition>
+                      <value>
+                        <ResourceMessage
+                          key="SASummaryCategory.IsEmployed"
+                          resourceBundle="curam.molsa.rules.ProductDisplay"
+                        />
+                      </value>
+                    </when>
+                    <otherwise>
+                      <value>
+                        <ResourceMessage
+                          key="SASummaryCategory.NotEnrolledForEducation"
+                          resourceBundle="curam.molsa.rules.ProductDisplay"
+                        />
+                      </value>
+                    </otherwise>
+                  </choose>
                 </value>
               </otherwise>
             </choose>
@@ -424,5 +450,4 @@
       </timelineoperation>
     </derivation>
   </Attribute>
-  
 </Class>
