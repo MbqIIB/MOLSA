@@ -870,7 +870,7 @@
         <reference attribute="assistanceUnit"/>
       </derivation>
     </Attribute>
-    <Attribute name="hasAnonymousParents">
+    <Attribute name="isChildLessThan6AndSingle">
       <type>
         <javaclass name="Boolean"/>
       </type>
@@ -881,18 +881,42 @@
               <javaclass name="Boolean"/>
             </listof>
             <members>
-              <reference attribute="hasAbsentFather">
-                <reference attribute="person"/>
-              </reference>
-              <compare comparison="&gt;">
+              <compare comparison="&lt;">
                 <reference attribute="age">
                   <reference attribute="person"/>
                 </reference>
                 <Number value="6"/>
               </compare>
-              <reference attribute="isMemberEnrolledInSchool">
-                <reference attribute="person"/>
-              </reference>
+              <equals>
+                <reference attribute="maritalStatus">
+                  <reference attribute="person"/>
+                </reference>
+                <Code table="MaritalStatus">
+                  <String value="MS1"/>
+                </Code>
+              </equals>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+    <Attribute name="isChildGreaterThan6">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <compare comparison=">=">
+                <reference attribute="age">
+                  <reference attribute="person"/>
+                </reference>
+                <Number value="6"/>
+              </compare>
               <equals>
                 <reference attribute="maritalStatus">
                   <reference attribute="person"/>
@@ -907,28 +931,58 @@
                 </type>
                 <when>
                   <condition>
-                    <equals>
-                      <null/>
-                      <reference attribute="absentFather"/>
-                    </equals>
+                    <reference attribute="isMemberEnrolledInSchool">
+                      <reference attribute="person"/>
+                    </reference>
                   </condition>
                   <value>
-                    <false/>
+                    <true/>
                   </value>
                 </when>
                 <otherwise>
                   <value>
                     <equals>
-                      <reference attribute="absentPersonReason">
-                        <reference attribute="absentFather"/>
+                      <reference attribute="educationLevel">
+                        <reference attribute="person"/>
                       </reference>
-                      <Code table="MOLSAAbsentFatherReason">
-                        <String value="MAF17000"/>
+                      <Code table="MOLSAEducationLevel">
+                        <String value="MEL17010"/>
                       </Code>
                     </equals>
                   </value>
                 </otherwise>
               </choose>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+    <Attribute name="hasAnonymousParents">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"></javaclass>
+            </listof>
+            <members>
+              <reference attribute="hasAnonymousParents">
+                <reference attribute="person"/>
+              </reference>
+              <any>
+                <fixedlist>
+                  <listof>
+                    <javaclass name="Boolean"/>
+                  </listof>
+                  <members>
+                    <reference attribute="isChildLessThan6AndSingle"/>
+                    <reference attribute="isChildGreaterThan6"/>
+                  </members>
+                </fixedlist>
+              </any>
+              
             </members>
           </fixedlist>
         </all>
