@@ -1222,6 +1222,7 @@
 				</question>
 			</cluster>
 			<cluster>
+				<title id="AnonymousParentInfo.Title">Anonymous Parent Information</title>
 				<question id="isChildOfAnonymousParent" mandatory="false" control-question="true"
 					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="true">
 					<label id="hasAnonymousParents.Label">Is there anyone in the household from anonymous parents?</label>
@@ -1229,7 +1230,7 @@
 					<layout>
 						<type>flow</type>
 						<width>50</width>
-						<label-alignment>center</label-alignment>
+						<label-alignment>left</label-alignment>
 					</layout>
 				</question>
 			</cluster>
@@ -1763,6 +1764,40 @@
 					</column>
 				</list>
 			</condition>
+			
+			<cluster>
+				<title id="AnonymousParentsInformation.Title">Anonymous Parents Information</title>
+				<edit-link start-page="AbsentPersonInfo" skip-to-summary="true"/>
+				<layout>
+					<type>flow</type>
+					<num-cols>1</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="isChildOfAnonymousParent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="false">
+					<label id="isChildOfAnonymousParent.Label">Are there any children in the home who have a anonymous parents</label>
+				</question>
+			</cluster>
+			<condition expression="isChildOfAnonymousParent==&quot;YN1&quot;">
+				<list entity="Person" criteria="hasAnonymousParents==true" show-icons="false">
+					<column id="firstName">
+						<title id="FirstName.Title">First Name</title>
+					</column>
+					<column id="middleInitial">
+						<title id="MiddleName.Title">Middle Name</title>
+					</column>
+					<column id="lastName">
+						<title id="LastName.Title">Last Name</title>
+					</column>
+					<column id="qidNumber">
+						<title id="qNumber.Title">QID Number</title>
+					</column>
+					<column id="dateOfBirth">
+						<title id="DOB.Title">Date Of Birth</title>
+					</column>
+				</list>
+			</condition>
+			
 			<!--<cluster>
 				<title id="AbsentHusbandInformation.Title">Absent Husband Information</title>
 				<edit-link start-page="AbsentPersonInfo" end-page="AbsentHusbandDetails"
@@ -2629,6 +2664,43 @@
 				<title id="HomeRelationship.Title">Home Relationships</title>
 				<edit-link start-page="Relationship" skip-to-summary="true"/>
 			</relationship-summary-list>
+			
+			<cluster>
+				<title id="AnonymousParentsInformation.Title">Anonymous Parents Information</title>
+				<edit-link start-page="AbsentPersonInfo" skip-to-summary="false"/>
+				<layout>
+					<type>flow</type>
+					<num-cols>1</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="isChildOfAnonymousParent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false">
+					<label id="isChildOfAnonymousParent.Label">Is any one in the home handicapped ?</label>
+				</question>
+			</cluster>
+			<condition expression="isChildOfAnonymousParent==&quot;YN1&quot;">
+				<list show-icons="false" criteria="hasAnonymousParents==true">
+					<title id="AnonymousParentDetails.Title">Child Details</title>
+					<column id="firstName">
+						<title id="FirstName.Title">First Name</title>
+					</column>
+					<column id="middleInitial">
+						<title id="MiddleName.Title">Middle Name</title>
+					</column>
+					<column id="lastName">
+						<title id="LastName.Title">Last Name</title>
+					</column>
+					<column id="qidNumber">
+						<title id="QidNumber.Title">QID Number</title>
+					</column>
+					<column id="gender">
+						<title id="gender.Title">Gender</title>
+					</column>
+					<column id="dateOfBirth">
+						<title id="DOB.Title">Date Of Birth</title>
+					</column>
+				</list>
+			</condition>
 
 			<cluster>
 				<title id="GeneralInformation.Title">General Information</title>
