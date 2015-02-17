@@ -4,7 +4,12 @@ import curam.core.facade.fact.IntegratedCaseFactory;
 import curam.core.facade.intf.IntegratedCase;
 import curam.core.facade.struct.ListICClientKey;
 import curam.core.facade.struct.ListICClientRoleDetails1;
+import curam.core.sl.entity.struct.CaseParticipantRoleKey;
 import curam.core.sl.entity.struct.CaseParticipantRole_eoFullDetails;
+import curam.core.sl.entity.struct.ParticipantRoleIDAndNameDetails;
+import curam.core.sl.fact.CaseParticipantRoleFactory;
+import curam.core.sl.intf.CaseParticipantRole;
+import curam.core.struct.AlternateIDRMDtls;
 import curam.core.struct.CaseSearchKey;
 import curam.message.BPOMOLSAINFORMATIONPROVIDERBATCH;
 import curam.molsa.codetable.MOLSAINFORMATIONTYPE;
@@ -23,6 +28,7 @@ import curam.molsa.ip.entity.struct.MOLSAInformationResponseKeyStruct1;
 import curam.molsa.ip.entity.struct.MOLSARequestIDAndStatus;
 import curam.molsa.ip.facade.struct.MOLSARequestDetails;
 import curam.molsa.ip.facade.struct.MOLSARequestDetailsList;
+import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.type.CodeTable;
@@ -95,7 +101,19 @@ public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl
     }
 
     requestDetails.informationProvider = CodeTable.getParentCode(MOLSAINFORMATIONTYPE.TABLENAME, requestDetails.informationType);
-
+    requestDetails.requestDate = Date.getCurrentDate();
+    //code to set the QID value
+    CaseParticipantRole caseParticipantRole = CaseParticipantRoleFactory
+        .newInstance();
+    CaseParticipantRoleKey paramCaseParticipantRoleKey = new CaseParticipantRoleKey();
+    paramCaseParticipantRoleKey.caseParticipantRoleID = requestDetails.caseParticipantRoleID;
+    ParticipantRoleIDAndNameDetails idAndNameDetails = caseParticipantRole
+        .readParticipantRoleIDAndParticpantName(paramCaseParticipantRoleKey);
+    MOLSAParticipantHelper molsaParticipantHelper = new MOLSAParticipantHelper();
+    AlternateIDRMDtls alternateIDRMDtls = molsaParticipantHelper
+        .returnPreferredConcernRoleAlternateID(idAndNameDetails.participantRoleID);
+    requestDetails.qid = alternateIDRMDtls.alternateID;
+    
     MOLSAInformationRequestFactory.newInstance().insert(requestDetails);
     MOLSAInformationRequestKey requestKey = new MOLSAInformationRequestKey();
     requestKey.informationRequestID = requestDetails.informationRequestID;
