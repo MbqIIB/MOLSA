@@ -32,6 +32,7 @@ import curam.creole.value.Timeline;
 import curam.molsa.codetable.EXPENSE;
 import curam.molsa.codetable.RESIDENCY;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
+import curam.molsa.moi.facade.struct.MOLSAConcernRoleTabbedList;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
 import curam.molsa.test.framework.TestHelper;
@@ -328,7 +329,9 @@ public class MOLSAMoiUpdateTest extends CERScenarioTestBase {
 		moiDtls.dateOfBirth = Date.getCurrentDate();
 		moiDtls.firstName_ar = "Test";
 		moiDtls.fifthName_ar = "LastNameTest";
-		molsaMoi.updateMoiDetails(concernRoleID);
+		MOLSAConcernRoleTabbedList molsaconcernroletabbedList = new MOLSAConcernRoleTabbedList();
+		molsaconcernroletabbedList.concernRoleTabbedList = concernRoleID.toString();
+		molsaMoi.updateMoiDetails(molsaconcernroletabbedList);
 		
 	}
 }
