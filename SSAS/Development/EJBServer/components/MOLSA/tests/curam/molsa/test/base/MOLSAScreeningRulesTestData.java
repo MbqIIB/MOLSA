@@ -2651,7 +2651,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				GENDEREntry.MALE.getCode(),
 				CITIZENSHIPCODEEntry.QATARI.getCode(),
 				RESIDENCYEntry.YES.getCode());
-		husband.hasAbsentFather().specifyValue(Boolean.FALSE);
+		husband.hasAnonymousParents().specifyValue(Boolean.FALSE);
 		husband.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
 		husband.isUnfitToWork().specifyValue(Boolean.TRUE);
 		husband.requiresMaidAssistance().specifyValue(Boolean.TRUE);
@@ -2665,7 +2665,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				GENDEREntry.FEMALE.getCode(),
 				CITIZENSHIPCODEEntry.QATARI.getCode(),
 				RESIDENCYEntry.YES.getCode());
-		wife.hasAbsentFather().specifyValue(Boolean.FALSE);
+		wife.hasAnonymousParents().specifyValue(Boolean.FALSE);
 		wife.requiresMaidAssistance().specifyValue(Boolean.FALSE);
 		wife.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
 
@@ -2675,7 +2675,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				GENDEREntry.FEMALE.getCode(),
 				CITIZENSHIPCODEEntry.QATARI.getCode(),
 				RESIDENCYEntry.YES.getCode());
-		kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
+		kidWithAbsentFather.hasAnonymousParents().specifyValue(Boolean.TRUE);
 		kidWithAbsentFather.requiresMaidAssistance()
 				.specifyValue(Boolean.FALSE);
 		kidWithAbsentFather.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
@@ -2745,7 +2745,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				GENDEREntry.MALE.getCode(),
 				CITIZENSHIPCODEEntry.QATARI.getCode(),
 				RESIDENCYEntry.YES.getCode());
-		husband.hasAbsentFather().specifyValue(Boolean.FALSE);
+		husband.hasAnonymousParents().specifyValue(Boolean.FALSE);
 		husband.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
 		husband.isUnfitToWork().specifyValue(Boolean.TRUE);
 		husband.requiresMaidAssistance().specifyValue(Boolean.TRUE);
@@ -2760,7 +2760,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				GENDEREntry.FEMALE.getCode(),
 				CITIZENSHIPCODEEntry.QATARI.getCode(),
 				RESIDENCYEntry.YES.getCode());
-		wife.hasAbsentFather().specifyValue(Boolean.FALSE);
+		wife.hasAnonymousParents().specifyValue(Boolean.FALSE);
 		wife.requiresMaidAssistance().specifyValue(Boolean.FALSE);
 		wife.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
 
@@ -2770,7 +2770,7 @@ public abstract class MOLSAScreeningRulesTestData extends CuramServerTest {
 				GENDEREntry.MALE.getCode(),
 				CITIZENSHIPCODEEntry.QATARI.getCode(),
 				RESIDENCYEntry.YES.getCode());
-		kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
+		kidWithAbsentFather.hasAnonymousParents().specifyValue(Boolean.TRUE);
 		kidWithAbsentFather.requiresMaidAssistance()
 				.specifyValue(Boolean.FALSE);
 		kidWithAbsentFather.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
