@@ -1195,7 +1195,7 @@
 				</question>
 			</cluster>
 		</relationship-page>
-
+		<callout expression="PersonInfo()" id="PersonInfo"/>
 		<question-page id="AbsentPersonInfo" progress="35" show-person-tabs="false"
 			read-only="false" show-back-button="true" show-exit-button="true"
 			show-save-exit-button="false" show-next-button="true" set-focus="false">
@@ -1221,13 +1221,37 @@
 					</layout>
 				</question>
 			</cluster>
+			<cluster>
+				<question id="isChildOfAnonymousParent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="true">
+					<label id="hasAnonymousParents.Label">Is there anyone in the household from anonymous parents?</label>
+					<help-text id="hasAnonymousParents.Label.HelpText">Please tell us about any children who have anonymous parents?</help-text>
+					<layout>
+						<type>flow</type>
+						<width>50</width>
+						<label-alignment>center</label-alignment>
+					</layout>
+				</question>
+			</cluster>
+			<condition expression="isChildOfAnonymousParent==&quot;YN1&quot;">
+				<cluster entity="Person">
+					<layout>
+						<type>flow</type>
+						<label-width>0</label-width>
+					</layout>
+					<list-question id="hasAnonymousParents" mandatory="false" single-select="false"
+						criteria="age&lt;60 and (age&lt;18 or Person.isChild==true or (gender==&quot;SX2&quot; and age&gt;18 and maritalStatus==&quot;MS1&quot;))" display="horizontal"
+						show-field-help="false">
+						<label id="AnonymousParents.Label">Please check box for anyone whose parents are anonymous:</label>
+						<item-label>
+							<label-element attribute-id="firstName"/>
+						</item-label>
+					</list-question>
+				</cluster>
+			</condition>
 		</question-page>
 
-		<callout expression="PersonInfo()" id="PersonInfo"/>
-
 		<condition expression="isFatherAbsent==&quot;YN1&quot;">
-
-
 			<question-page id="AbsentFatherQID" entity="AbsentFather" progress="25"
 				show-person-tabs="false" read-only="false" show-back-button="true"
 				show-exit-button="true" show-save-exit-button="false" show-next-button="true"
