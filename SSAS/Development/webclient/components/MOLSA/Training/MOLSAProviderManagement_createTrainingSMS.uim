@@ -1,0 +1,194 @@
+<PAGE
+    PAGE_ID="MOLSAProviderManagement_createTrainingSMS"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE
+                NAME="TEXT"
+                PROPERTY="PageTitle.TrainingDetails"
+            />
+        </CONNECT>
+    </PAGE_TITLE> 
+    
+    <PAGE_PARAMETER NAME="concernRoleTabbedList"/>
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSATrainingService"
+        NAME="ACTION"
+        OPERATION="createBeneficiaryService"
+        PHASE="ACTION"
+    />
+  
+    <SERVER_INTERFACE
+        CLASS="ServiceOffering"
+        NAME="GETSERVICEOFFERING"
+        OPERATION="listServiceOfferings"
+    />
+    
+    
+    <CLUSTER
+        LABEL_WIDTH="55"
+        NUM_COLS="2"
+        TITLE="Cluster.Title.TrainingDetails"
+        >
+        <FIELD LABEL="Field.Label.ServiceOfferingID">
+            
+            <CONNECT>
+            <INITIAL NAME="GETSERVICEOFFERING" PROPERTY="name"
+                HIDDEN_PROPERTY="serviceOfferingID"/>
+                </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="serviceOfferingID"
+                />
+            </CONNECT>
+            
+        </FIELD>
+        
+        <FIELD LABEL="Field.Label.TargetAudience">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="targetAudience"
+                />
+            </CONNECT>
+            
+        </FIELD>
+        
+        
+        <FIELD LABEL="Field.Label.StartDate">
+            
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingStartDate"
+                />
+            </CONNECT>
+        </FIELD>
+         <FIELD LABEL="Field.Label.TrainingSubject">
+            
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingSubject"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.EndDate"
+            USE_DEFAULT="false"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingEndDate"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD LABEL="Field.Label.ProviderName">
+            
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="providerName"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD LABEL="Field.Label.TargetAudience">
+            
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="targetAudience"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD LABEL="Field.Label.TrainingGoal">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingGoal"
+                />
+            </CONNECT>
+            
+        </FIELD>
+        
+        
+        <FIELD LABEL="Field.Label.TrainingLocation">
+            
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingLocation"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD  LABEL="Field.Label.SMSMessage">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingSMSMessage"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD LABEL="Field.Label.TrainingTopic">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingTopic"
+                />
+            </CONNECT>
+        </FIELD>
+        <FIELD LABEL="Field.Label.TrainingType">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingType"
+                />
+            </CONNECT>
+        </FIELD>     
+        
+        
+    </CLUSTER>
+    
+     <CLUSTER
+    SHOW_LABELS="false"
+    TITLE="Field.Label.TableOfContent"
+  >
+   
+    <FIELD
+      HEIGHT="4"
+      LABEL="Field.Label.TableOfContent"
+    >
+    
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="tableOfContents"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+    <ACTION_SET>
+        
+        
+        <ACTION_CONTROL LABEL="ActionControl.Label.CreateTraining" TYPE="SUBMIT">
+        </ACTION_CONTROL>
+    </ACTION_SET>
+    
+    
+    
+</PAGE>
