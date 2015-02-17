@@ -295,6 +295,35 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		return dtlList;
 	}
 
+  @Override
+  public MOLSATrainingDtls readByTrainingID(MOLSATrainingKey arg1) throws AppException, InformationalException {
+    // TODO Auto-generated method stub
+    MOLSATrainingDtls trainingDtls=new MOLSATrainingDtls();
+    curam.molsa.training.entity.intf.MOLSATraining trainingObj=MOLSATrainingFactory.newInstance();
+    trainingObj.read(arg1);
+    trainingDtls=trainingObj.read(arg1);
+    return trainingDtls;
+  }
+
+  @Override
+  public void modifyTrainingDetails(MOLSATrainingDtls trainingDetails) throws AppException, InformationalException {
+    // TODO Auto-generated method stub
+    curam.molsa.training.entity.intf.MOLSATraining trainingObj=MOLSATrainingFactory.newInstance();
+    MOLSATrainingKey readKey =new MOLSATrainingKey();
+    readKey.trainingID=trainingDetails.trainingID;
+    //Reading the existing data for Start Date,End Date and Training Location
+    MOLSATrainingDtls readDetails=readByTrainingID(readKey);
+    MOLSATrainingDtls modifyDtls=new MOLSATrainingDtls(); 
+    
+    modifyDtls.trainingStartDate=readDetails.trainingStartDate;
+    modifyDtls.trainingEndDate=readDetails.trainingEndDate;
+    modifyDtls.trainingLocation=readDetails.trainingLocation; 
+    
+    trainingObj.modify(readKey, modifyDtls);
+    
+    
+  }
+
 
 
 }
