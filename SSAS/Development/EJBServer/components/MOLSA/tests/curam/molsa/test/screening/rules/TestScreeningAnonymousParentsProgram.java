@@ -42,7 +42,7 @@ public class TestScreeningAnonymousParentsProgram extends
         Date.fromISO8601("20000101"), Boolean.TRUE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.NOT_A_QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    husband.hasAbsentFather().specifyValue(Boolean.FALSE);
+    husband.hasAnonymousParents().specifyValue(Boolean.FALSE);
     husband.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
     husband.isUnfitToWork().specifyValue(Boolean.TRUE);
     husband.requiresMaidAssistance().specifyValue(Boolean.TRUE);
@@ -54,7 +54,7 @@ public class TestScreeningAnonymousParentsProgram extends
         Date.fromISO8601("19820101"), Boolean.FALSE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    wife.hasAbsentFather().specifyValue(Boolean.FALSE);
+    wife.hasAnonymousParents().specifyValue(Boolean.FALSE);
     wife.isMemberEnrolledInSchool().specifyValue(Boolean.FALSE);
     wife.requiresMaidAssistance().specifyValue(Boolean.FALSE);
 
@@ -62,7 +62,7 @@ public class TestScreeningAnonymousParentsProgram extends
         kidWithAbsentFatherID, Date.fromISO8601("20020101"), Boolean.FALSE,
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.YES.getCode());
-    kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
+    kidWithAbsentFather.hasAnonymousParents().specifyValue(Boolean.TRUE);
     kidWithAbsentFather.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
     kidWithAbsentFather.requiresMaidAssistance()
         .specifyValue(Boolean.FALSE);
@@ -119,7 +119,7 @@ public class TestScreeningAnonymousParentsProgram extends
         Date.fromISO8601("20000101"), Boolean.TRUE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.NO.getCode());
-    husband.hasAbsentFather().specifyValue(Boolean.FALSE);
+    husband.hasAnonymousParents().specifyValue(Boolean.FALSE);
     husband.isMemberEnrolledInSchool().specifyValue(Boolean.TRUE);
     husband.isUnfitToWork().specifyValue(Boolean.TRUE);
     husband.requiresMaidAssistance().specifyValue(Boolean.TRUE);
@@ -131,14 +131,14 @@ public class TestScreeningAnonymousParentsProgram extends
         Date.fromISO8601("19820101"), Boolean.FALSE,
         MARITALSTATUSEntry.MARRIED.getCode(), GENDEREntry.FEMALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.NO.getCode());
-    wife.hasAbsentFather().specifyValue(Boolean.FALSE);
+    wife.hasAnonymousParents().specifyValue(Boolean.FALSE);
     wife.requiresMaidAssistance().specifyValue(Boolean.FALSE);
 
     final Person kidWithAbsentFather = createPersonRecord("Child",
         kidWithAbsentFatherID, Date.fromISO8601("20020101"), Boolean.FALSE,
         MARITALSTATUSEntry.SINGLE.getCode(), GENDEREntry.MALE.getCode(),
         CITIZENSHIPCODEEntry.QATARI.getCode(), RESIDENCYEntry.NO.getCode());
-    kidWithAbsentFather.hasAbsentFather().specifyValue(Boolean.TRUE);
+    kidWithAbsentFather.hasAnonymousParents().specifyValue(Boolean.TRUE);
     kidWithAbsentFather.requiresMaidAssistance()
         .specifyValue(Boolean.FALSE);
     // Husband Relationships
@@ -216,7 +216,7 @@ public class TestScreeningAnonymousParentsProgram extends
     AnonymousParentsProgram anonymousParentsProgram = AnonymousParentsProgram_Factory
         .getFactory().newInstance(getSession());
     anonymousParentsProgram.eligible().getValue();
-    assertEquals(Boolean.FALSE,
+    assertEquals(Boolean.TRUE,
         anonymousParentsProgram.getAttributeValue(isEligible).getValue());
   }
 
