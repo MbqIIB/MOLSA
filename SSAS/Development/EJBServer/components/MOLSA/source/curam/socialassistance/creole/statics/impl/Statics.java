@@ -16,8 +16,14 @@ import java.util.TreeSet;
 import java.util.Comparator;
 
 import curam.creole.value.CodeTableItem;
+import curam.codetable.RECORDSTATUS;
+import curam.codetable.impl.RECORDSTATUSEntry;
+import curam.core.fact.ProductDeliveryCertDiaryFactory;
 import curam.core.impl.CuramConst;
+import curam.core.struct.PDCertDiaryCaseIDAndStatusCodeRMKey;
 import curam.core.struct.PersonRegistrationDetails;
+import curam.core.struct.ProductDeliveryCertDiaryDtls;
+import curam.core.struct.ProductDeliveryCertDiaryDtlsList;
 import curam.creole.execution.RuleObject;
 import curam.creole.execution.session.Session;
 import curam.creole.ruleclass.MOLSARuleSet.impl.HouseholdUnit;
@@ -417,5 +423,21 @@ public static List<RuleObject> getHouseholdUnitMembers(Session session, Timeline
     }
     
   }
-	
+
+	public static Timeline<Boolean> getCaseCertifications(Session session, Number caseID) throws AppException, InformationalException {
+	    
+		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
+
+		PDCertDiaryCaseIDAndStatusCodeRMKey paramPDCertDiaryCaseIDAndStatusCodeRMKey = new PDCertDiaryCaseIDAndStatusCodeRMKey();
+		paramPDCertDiaryCaseIDAndStatusCodeRMKey.caseID = caseID.longValue();
+		paramPDCertDiaryCaseIDAndStatusCodeRMKey.statusCode = RECORDSTATUS.NORMAL;
+		ProductDeliveryCertDiaryDtlsList productDeliveryCertDiaryDtlsList = ProductDeliveryCertDiaryFactory.newInstance().searchActiveByCaseID(paramPDCertDiaryCaseIDAndStatusCodeRMKey);
+		intervals.add(new Interval<Boolean>(null, false));
+		for(ProductDeliveryCertDiaryDtls details : productDeliveryCertDiaryDtlsList.dtls){
+			intervals.add(new Interval<Boolean>(details.periodFromDate, true));
+			intervals.add(new Interval<Boolean>(details.periodToDate.addDays(1), false));
+		}
+		Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
+		return timeline;
+	}
 }

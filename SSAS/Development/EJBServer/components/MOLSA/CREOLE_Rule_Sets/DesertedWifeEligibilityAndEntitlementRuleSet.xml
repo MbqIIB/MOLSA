@@ -1176,28 +1176,68 @@
         <Attribute name="isEligibleTimeline">
             <type>
                 <javaclass name="curam.creole.value.Timeline">
-                    <javaclass name="Boolean"/>
+                    <javaclass name="Boolean" />
                 </javaclass>
             </type>
             <derivation>
                 <timelineoperation>
-                    <all>
-                        <fixedlist>
-                            <listof>
-                                <javaclass name="Boolean"/>
-                            </listof>
-                            <members>
-                                <intervalvalue>
-                                    <reference attribute="isValidUnitTimeline"/>
-                                </intervalvalue>
-                                <intervalvalue>
-                                    <reference attribute="isEligibleTimeline">
-                                        <reference attribute="desertedWifeProgramCalculator"/>
-                                    </reference>
-                                </intervalvalue>
-                            </members>
-                        </fixedlist>
-                    </all>
+                    <choose>
+                        <type>
+                            <javaclass name="Boolean"/>
+                        </type>
+                        <when>
+                            <condition>
+                                <reference attribute="isProductDelivery"/>
+                            </condition>
+                            <value>
+                                <all>
+                                    <fixedlist>
+                                        <listof>
+                                            <javaclass name="Boolean" />
+                                        </listof>
+                                        <members>
+                                            <intervalvalue>
+                                                <reference attribute="isValidUnitTimeline" />
+                                            </intervalvalue>
+                                            <intervalvalue>
+                                                <reference attribute="isEligibleTimeline">
+                                                    <reference attribute="desertedWifeProgramCalculator" />
+                                                </reference>
+                                            </intervalvalue>
+                                            <intervalvalue>
+                                                <reference attribute="certificationPeriodTimeline">
+                                                    <create ruleclass="CertificationPeriodCalculator" ruleset="SocialAssistanceRuleSet">
+                                                        <reference attribute="caseID"/>
+                                                    </create>
+                                                </reference>
+                                            </intervalvalue>
+                                        </members>
+                                    </fixedlist>
+                                </all>
+                            </value>
+                        </when>
+                        <otherwise>
+                            <value>
+                                <all>
+                                    <fixedlist>
+                                        <listof>
+                                            <javaclass name="Boolean" />
+                                        </listof>
+                                        <members>
+                                            <intervalvalue>
+                                                <reference attribute="isValidUnitTimeline" />
+                                            </intervalvalue>
+                                            <intervalvalue>
+                                                <reference attribute="isEligibleTimeline">
+                                                    <reference attribute="desertedWifeProgramCalculator" />
+                                                </reference>
+                                            </intervalvalue>
+                                        </members>
+                                    </fixedlist>
+                                </all>
+                            </value>
+                        </otherwise>
+                    </choose>
                 </timelineoperation>
             </derivation>
         </Attribute>
