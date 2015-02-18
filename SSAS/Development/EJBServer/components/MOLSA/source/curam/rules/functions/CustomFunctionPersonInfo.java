@@ -83,21 +83,18 @@ public class CustomFunctionPersonInfo extends CustomFunctor {
 									MOLSADatastoreConst.kIsChild, Boolean.TRUE);
 						} else if (!(Boolean) (personEntity
 								.getTypedAttribute(MOLSADatastoreConst.kIsMemberEnrolledInSchool))) {
-							if (null == personEntity
+							if (null != personEntity
 									.getTypedAttribute(MOLSADatastoreConst.kEducationLevel)) {
-								personEntity.setTypedAttribute(
-										MOLSADatastoreConst.kIsChild,
-										Boolean.TRUE);
+								if ((Boolean) (personEntity
+										.getTypedAttribute(MOLSADatastoreConst.kEducationLevel)
+										.equals(EDUCATIONLEVELEntry.NOTOFSCHOOLINGAGE
+												.getCode()))) {
+									personEntity.setTypedAttribute(
+											MOLSADatastoreConst.kIsChild,
+											Boolean.TRUE);
+								}
 							}
 
-							else if ((Boolean) (personEntity
-									.getTypedAttribute(MOLSADatastoreConst.kEducationLevel)
-									.equals(EDUCATIONLEVELEntry.NOTOFSCHOOLINGAGE
-											.getCode()))) {
-								personEntity.setTypedAttribute(
-										MOLSADatastoreConst.kIsChild,
-										Boolean.TRUE);
-							}
 						}
 						personEntity.update();
 					} else if ((personEntity
