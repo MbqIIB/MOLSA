@@ -67,20 +67,37 @@
         <map-attribute from="dateOfBirth" to="dateOfBirth"/>
       </target-entity>
 
-           <target-entity id="householdMember" name="HouseholdMember">
-        <map-attribute from="householdMemberStartDate" to="startDate"/>
-        <map-attribute from="citizenshipStatus" to="citizenship"/>
-        <map-attribute from="residencyStatus" to="residency"/>
-      </target-entity>
-	  
-    <condition expression="Person.maritalStatusCaptured==true">
+      <condition expression=" Application.isCOC == true and Person.isPrimaryParticipant == false">
+        <target-entity id="householdMember" name="HouseholdMember">
+          <map-attribute from="householdMemberStartDate" to="startDate"/>
+          <map-attribute from="citizenshipStatus" to="citizenship"/>
+          <map-attribute from="residencyStatus" to="residency"/>
+        </target-entity>
+      </condition>
+      
+      <condition expression="Application.isCOC == false">
+        <target-entity id="householdMemberCOC" name="HouseholdMember">
+          <map-attribute from="householdMemberStartDate" to="startDate"/>
+          <map-attribute from="citizenshipStatus" to="citizenship"/>
+          <map-attribute from="residencyStatus" to="residency"/>
+        </target-entity>
+      </condition>
+      
+     <condition expression="Application.isCOC == true and Person.isPrimaryParticipant == false and Person.maritalStatusCaptured==true">
       <target-entity id="maritalStatus" name="MaritalStatus">
         <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
         <map-attribute from="maritalStatus" to="maritalStatus"/>
       </target-entity>
     </condition>
- 
-      <condition expression="Person.isPrimaryParticipant==true">
+    
+      <condition expression="Application.isCOC == false and Person.maritalStatusCaptured==true">
+        <target-entity id="maritalStatusCOC" name="MaritalStatus">
+          <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+          <map-attribute from="maritalStatus" to="maritalStatus"/>
+        </target-entity>
+      </condition>  
+      
+      <condition expression="Person.isPrimaryParticipant==true and Application.isCOC == false">
         <target-entity id="headOfHousehold" name="HeadOfHouse">
           <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
           <map-attribute from="personID" to="participant"/>
@@ -158,15 +175,22 @@
           <set-attribute name="reason" value="MHUW17004"/>
         </target-entity>
       </condition>
-      <condition expression="Person.isMemberEnrolledInSchool==true">
+      <condition expression="Application.isCOC == true and Person.isPrimaryParticipant == false and Person.isMemberEnrolledInSchool==true">
         <target-entity id="molsaEducation" name="MolsaEducation">
           <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
            <map-attribute to="educationLevel" from="educationLevel"/>
           <set-attribute name="studentStatus" value="MED17000"/>
-         
         </target-entity>
       </condition>
-      <condition expression="Person.isMemberEnrolledInSchool==false">
+      <condition expression="Application.isCOC == false and Person.isMemberEnrolledInSchool==true">
+        <target-entity id="molsaEducationCOC" name="MolsaEducation">
+          <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+          <map-attribute to="educationLevel" from="educationLevel"/>
+          <set-attribute name="studentStatus" value="MED17000"/>
+        </target-entity>
+      </condition>
+      
+      <condition expression="Application.isCOC == true and Person.isPrimaryParticipant == false and Person.isMemberEnrolledInSchool==false">
         <target-entity id="molsaEducationOther" name="MolsaEducation">
           <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
           <map-attribute to="educationLevel" from="educationLevel"/>
@@ -174,16 +198,26 @@
         </target-entity>
       </condition>
 
+      <condition expression="Application.isCOC == false and Person.isMemberEnrolledInSchool==false">
+        <target-entity id="molsaEducationOtherCOC" name="MolsaEducation">
+          <map-attribute entity="Application" from="applicationMonthStartDate" to="startDate"/>
+          <map-attribute to="educationLevel" from="educationLevel"/>
+          <set-attribute name="studentStatus" value="MED17001"/>
+        </target-entity>
+      </condition>
       <map-entity source="Address">
-        <target-entities>
-          <target-entity id="pdcAddress" name="PDCAddress">
-            <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
-            <map-attribute from="addressID" to="address"/>
-            <set-attribute name="addressType" value="AT6"/>
-          </target-entity>
-        </target-entities>
+        <condition expression="Application.isCOC == false">
+          <target-entities>
+            <target-entity id="pdcAddress" name="PDCAddress">
+              <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
+              <map-attribute from="addressID" to="address"/>
+              <set-attribute name="addressType" value="AT6"/>
+            </target-entity>
+          </target-entities>
+        </condition>
       </map-entity>
       <map-entity source="MailingAddress">
+        <condition expression="Application.isCOC == false">
         <target-entities>
           <target-entity id="pdcMailingAddress" name="PDCAddress">
             <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
@@ -191,6 +225,7 @@
             <set-attribute name="addressType" value="AT4"/>
           </target-entity>
         </target-entities>
+        </condition>
       </map-entity>
 
       <map-entity source="Relationship">
@@ -202,35 +237,35 @@
         </target-entity>
       </map-entity>
       <map-entity source="ContactDetails">
-        <condition expression="ContactDetails.mobileNumber!=&quot;&quot;">
+        <condition expression="ContactDetails.mobileNumber!=&quot;&quot; and Application.isCOC == false">
           <target-entity id="mobilePhoneNumber" name="PDCPhoneNumber">
             <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
             <map-attribute from="mobileNumber" to="phoneNumber"/>
             <set-attribute name="phoneType" value="PH3"/>
           </target-entity>
         </condition>
-        <condition expression="ContactDetails.otherPhoneNumber!=&quot;&quot;">
+        <condition expression="ContactDetails.otherPhoneNumber!=&quot;&quot; and Application.isCOC == false">
           <target-entity id="otherPhoneNumber" name="PDCPhoneNumber">
             <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
             <map-attribute from="otherPhoneNumber" to="phoneNumber"/>
             <set-attribute name="phoneType" value="PH6"/>
           </target-entity>
         </condition>
-        <condition expression="ContactDetails.homePhoneNumber!=&quot;&quot;">
+        <condition expression="ContactDetails.homePhoneNumber!=&quot;&quot; and Application.isCOC == false">
           <target-entity id="homePhoneNumber" name="PDCPhoneNumber">
             <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
             <map-attribute from="homePhoneNumber" to="phoneNumber"/>
             <set-attribute name="phoneType" value="PH1"/>
           </target-entity>
         </condition>
-        <condition expression="ContactDetails.workPhoneNumber!=&quot;&quot;">
+        <condition expression="ContactDetails.workPhoneNumber!=&quot;&quot; and Application.isCOC == false">
           <target-entity id="workPhoneNumber" name="PDCPhoneNumber">
             <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
             <map-attribute from="workPhoneNumber" to="phoneNumber"/>
             <set-attribute name="phoneType" value="PH2"/>
           </target-entity>
         </condition>
-        <condition expression="ContactDetails.emailAddress!=&quot;&quot;">
+        <condition expression="ContactDetails.emailAddress!=&quot;&quot; and Application.isCOC == false">
           <target-entity id="PDCEmailAddress" name="PDCEmailAddress">
             <map-attribute entity="Application" from="applicationMonthStartDate" to="fromDate"/>
             <map-attribute from="emailAddress" to="emailAddress"/>
@@ -239,10 +274,12 @@
         </condition>
       </map-entity>
       <map-entity source="ContactPreferences">
-        <target-entity id="contactPreference" name="PDCContactPreferences">
-          <map-attribute from="preferredLanguage" to="preferredLanguage"/>
-          <map-attribute from="preferredCommunication" to="preferredCommunication"/>
-        </target-entity>
+        <condition expression="Application.isCOC == false">
+          <target-entity id="contactPreference" name="PDCContactPreferences">
+            <map-attribute from="preferredLanguage" to="preferredLanguage"/>
+            <map-attribute from="preferredCommunication" to="preferredCommunication"/>
+          </target-entity>
+        </condition>
       </map-entity>
     </map-entity>
   </map-entity>
