@@ -1,6 +1,6 @@
 <RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="../../../../../../../Curam/catalog/RuleSet.xsd"
-	name="SocialAssistanceRuleSet">
+ xsi:noNamespaceSchemaLocation="D:\MolsaSVN\Development\EJBServer\build\svr\creole.gen\schema\RuleSet.xsd"
+ name="SocialAssistanceRuleSet">
 	<Class extends="DefaultProgramRecommender" extendsRuleSet="DefaultProgramRecommendationRuleSet"
 		name="SocialAssistanceProgramRecommender"
 		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
@@ -2446,6 +2446,28 @@
 			</derivation>
 		</Attribute>
 
+		<Attribute name="isFemaleTimeline">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="Boolean" />
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<equals>
+						<intervalvalue>
+							<reference attribute="gender">
+								<reference attribute="pdcGenderRecord"/>
+							</reference>
+						</intervalvalue>
+						<Code table="Gender">
+							<String value="SX2" />
+						</Code>
+					</equals>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
+
 		<Attribute name="isWifeTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
@@ -2804,7 +2826,109 @@
 				</timelineoperation>
 			</derivation>
 		</Attribute>
-
+		 
+		 <Attribute name="motherCPRRecords">
+		 	<type>
+		 		<javaclass name="curam.creole.value.Timeline">
+		 		<javaclass name="List">
+		 			<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
+		 		</javaclass>
+		 		</javaclass>
+		 	</type>
+		 	<derivation>
+		 		<timelineoperation>
+		 			<filter>
+		 				<list alias="cprRecords">
+		 					<dynamiclist>
+		 						<list alias="outer">
+		 							<filter>
+		 								<list alias="inner">
+		 									<reference attribute="allrelationshipRecords"/>
+		 								</list>
+		 								<listitemexpression>
+		 									<equals>
+		 										<intervalvalue>
+		 											<reference attribute="relationshipType">
+		 												<current alias="inner"/>
+		 											</reference>
+		 										</intervalvalue>
+		 										<Code table="RelationshipTypeCode">
+		 											<String value="RT2"/>
+		 										</Code>
+		 									</equals>
+		 								</listitemexpression>
+		 							</filter>
+		 						</list>
+		 						<listitemexpression>
+		 							<choose>
+		 								<type>
+		 									<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet"/>
+		 								</type>
+		 								<when>
+		 									<condition>
+		 										<equals>
+		 											<intervalvalue>
+		 												<reference attribute="gender">
+		 													<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+		 														<filter>
+		 															<list alias="gender">
+		 																<readall ruleclass="PDCGender" ruleset="PDCGenderDataRuleSet">
+		 																	<match retrievedattribute="caseID">
+		 																		<reference attribute="caseID">
+		 																			<reference attribute="caseParticipantRoleRecord"/>
+		 																		</reference>
+		 																	</match>
+		 																</readall>
+		 															</list>
+		 															<listitemexpression>
+		 																<equals>
+		 																	<reference attribute="person">
+		 																		<current alias="gender"/>
+		 																	</reference>
+		 																	<reference attribute="caseParticipantRoleID">
+		 																		<reference attribute="related_relatedParticipant">
+		 																			<current alias="outer"/>
+		 																		</reference>
+		 																	</reference>
+		 																</equals>
+		 															</listitemexpression>
+		 														</filter>
+		 													</singleitem>
+		 												</reference>
+		 											</intervalvalue>
+		 											<Code table="Gender">
+		 												<String value="SX2"/>
+		 											</Code>
+		 										</equals>
+		 									</condition>
+		 									<value>
+		 										<reference attribute="related_relatedParticipant">
+		 											<current alias="outer"/>
+		 										</reference>
+		 									</value>
+		 								</when>
+		 								<otherwise>
+		 									<value>
+		 										<null/>
+		 									</value>
+		 								</otherwise>
+		 							</choose>
+		 						</listitemexpression>
+		 					</dynamiclist>
+		 				</list>
+		 				<listitemexpression>
+		 					<not>
+		 						<equals>
+		 							<null/>
+		 							<current alias="cprRecords"/>
+		 						</equals>
+		 					</not>
+		 				</listitemexpression>
+		 			</filter>
+		 		</timelineoperation>
+		 	</derivation>
+		 </Attribute>
+		
 		<Attribute name="hasAbsentFatherRecordofMissing">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
