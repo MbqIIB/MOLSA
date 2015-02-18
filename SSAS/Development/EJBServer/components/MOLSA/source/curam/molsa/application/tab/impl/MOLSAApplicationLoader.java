@@ -93,7 +93,6 @@ public class MOLSAApplicationLoader implements DynamicMenuStateLoader {
 
 		final User user = userDAO.get(TransactionInfo.getProgramUser());
 
-
 		if (user.getRole().equals(MOLSAConstants.kMolsaCaseWorkerRole)) {
 
 			if (applicationStatus.getCode().equals(APPLICATIONSTATUS.SUBMITTED)) {
@@ -111,7 +110,7 @@ public class MOLSAApplicationLoader implements DynamicMenuStateLoader {
 							NavigationConst.kReadyForDetermination);
 					menuState.setEnabled(false,
 							NavigationConst.kReviewEligibilityResult);
-					
+
 				}
 
 			} else if (applicationStatus.getCode().equals(
@@ -126,6 +125,79 @@ public class MOLSAApplicationLoader implements DynamicMenuStateLoader {
 					menuState.setEnabled(true,
 							NavigationConst.kCheckEligibility);
 					menuState.setEnabled(true,
+							NavigationConst.kReadyForDetermination);
+
+					// if (creoleProgramRecommendationDAO
+					// .getLatestIfExistsForApplication(application) == null) {
+					// menuState.setEnabled(false,
+					// NavigationConst.kReviewEligibilityResult);
+					// }
+				}
+				menuState.setEnabled(false,
+						NavigationConst.kReviewEligibilityResult);
+				menuState.setEnabled(false,
+						NavigationConst.kReadyForDetermination);
+			} else if (applicationStatus.getCode().equals(
+					APPLICATIONSTATUS.DISPOSED)) {
+				menuState.setEnabled(false, NavigationConst.kCheckEligibility);
+				menuState.setEnabled(false,
+						NavigationConst.kReviewEligibilityResult);
+				menuState.setEnabled(false,
+						NavigationConst.kReadyForDetermination);
+				menuState.setEnabled(false, NavigationConst.kAddClient);
+				menuState.setEnabled(false, NavigationConst.kAddProgram);
+				menuState.setEnabled(false, NavigationConst.kNewInterview);
+				menuState.setEnabled(false,
+						NavigationConst.kViewEvidenceInNewTab);
+				menuState.setEnabled(false, NavigationConst.kEditDetails);
+				menuState.setEnabled(false, NavigationConst.kChangeOwnerToMe);
+
+				// BEGIN, CR00286692, BF
+			} else if ((applicationStatus.getCode().equals(
+					APPLICATIONSTATUS.IN_PROGRESS) || (applicationStatus
+					.getCode().equals(APPLICATIONSTATUS.SUBMIT_FAILED) || (applicationStatus
+					.getCode().equals(APPLICATIONSTATUS.SUBMITTING))))) {
+
+				// Should never reach this situation where you can edit an
+				// application
+				// with the above states but double validating here that the
+				// addProgram
+				// option should not be available.
+				menuState.setEnabled(false, NavigationConst.kAddProgram);
+			}
+			// END, CR00286692
+		} else if (user.getRole().equals(MOLSAConstants.kMolsaCaseAuditorRole)) {
+
+			if (applicationStatus.getCode().equals(APPLICATIONSTATUS.SUBMITTED)) {
+				if (isProspectPersonInApplication) {
+					menuState.setEnabled(false,
+							NavigationConst.kCheckEligibility);
+					menuState.setEnabled(false,
+							NavigationConst.kReadyForDetermination);
+					menuState.setEnabled(false,
+							NavigationConst.kReviewEligibilityResult);
+				} else {
+					menuState.setEnabled(true,
+							NavigationConst.kCheckEligibility);
+					menuState.setEnabled(false,
+							NavigationConst.kReadyForDetermination);
+					menuState.setEnabled(false,
+							NavigationConst.kReviewEligibilityResult);
+
+				}
+
+			} else if (applicationStatus.getCode().equals(
+					APPLICATIONSTATUS.READY_FOR_DETERMINATION)) {
+
+				if (isProspectPersonInApplication) {
+					menuState.setEnabled(false,
+							NavigationConst.kCheckEligibility);
+					menuState.setEnabled(false,
+							NavigationConst.kReadyForDetermination);
+				} else {
+					menuState.setEnabled(true,
+							NavigationConst.kCheckEligibility);
+					menuState.setEnabled(false,
 							NavigationConst.kReadyForDetermination);
 
 					if (creoleProgramRecommendationDAO
@@ -152,7 +224,6 @@ public class MOLSAApplicationLoader implements DynamicMenuStateLoader {
 						NavigationConst.kViewEvidenceInNewTab);
 				menuState.setEnabled(false, NavigationConst.kEditDetails);
 				menuState.setEnabled(false, NavigationConst.kChangeOwnerToMe);
-				
 
 				// BEGIN, CR00286692, BF
 			} else if ((applicationStatus.getCode().equals(
@@ -161,13 +232,12 @@ public class MOLSAApplicationLoader implements DynamicMenuStateLoader {
 					.getCode().equals(APPLICATIONSTATUS.SUBMITTING))))) {
 
 				// Should never reach this situation where you can edit an
-				// application
-				// with the above states but double validating here that the
-				// addProgram
-				// option should not be available.
+				// application with the above states but double validating here
+				// that the
+				// addProgram option should not be available.
 				menuState.setEnabled(false, NavigationConst.kAddProgram);
 			}
-			// END, CR00286692
+
 		}
 
 		return menuState;
