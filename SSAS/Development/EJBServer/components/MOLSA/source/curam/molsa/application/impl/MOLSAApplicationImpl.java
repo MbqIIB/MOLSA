@@ -1113,7 +1113,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 		final Entity rootEntity = datastore.readEntity(datastoreID);
 
 		// Create and populate the person data store entities
-		createDatastorePersonEntity(datastore, rootEntity, concernRoleKey);
+		createMOLSADatastorePersonEntity(datastore, rootEntity, concernRoleKey);
 
 		createMOLSACOCEntity(datastore, rootEntity);
 		return iegExecutionDetails.executionID;
@@ -1242,12 +1242,9 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 
 		final EntityType applicationDetailsEntityType = dataStore
 				.getEntityType(MOLSADatastoreConst.kApplicationDetails);
-		final Entity applicationDetails = dataStore.newEntity(applicationDetailsEntityType);
-
+		final Entity applicationDetails = dataStore.readEntity(rootEntity.getUniqueID());
 		  applicationDetails.setTypedAttribute(MOLSADatastoreConst.KIsCOC,
                   true);
-		  applicationDetails.update();
-		  rootEntity.addChildEntity(applicationDetails);
 		  rootEntity.update();
 
 	}
