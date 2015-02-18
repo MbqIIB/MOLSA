@@ -36,11 +36,29 @@ public class CustomFunctionIsValidString extends CustomFunctor {
     boolean valid = false;
     if (name.trim().isEmpty()) {
       return AdaptorFactory.getBooleanAdaptor(Boolean.valueOf(true));
-    } else if (name.trim().matches("[a-zA-Z]+")) {
+    } else if (name.trim().matches("[a-zA-Z]+|[[a-zA-Z]+\\s+[a-zA-Z]+]*")
+			|| name.matches("/^[\u0600-\u06FF]+\\s+$/")
+			|| isArabic(name.trim())) {
       valid = true;
     }
 
     return AdaptorFactory.getBooleanAdaptor(Boolean.valueOf(valid));
   }
+  
+  
+  /**
+	 * Checks for Arabic Characters
+	 * @param arabicString
+	 * @return
+	 */
+	public static boolean isArabic(String arabicString) {
+		for (int i = 0; i < arabicString.length();) {
+			int character = arabicString.codePointAt(i);
+			if (character >= 0x0600 && character <= 0x06E0)
+				return true;
+			i += Character.charCount(character);
+		}
+		return false;
+	}
 
 }
