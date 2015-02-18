@@ -3,6 +3,12 @@ package curam.molsa.pdc.generator.impl;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import curam.application.entity.fact.ApplicationFactory;
+import curam.application.entity.intf.Application;
+import curam.application.entity.struct.ApplicationDtls;
+import curam.application.entity.struct.ApplicationDtlsList;
+import curam.application.entity.struct.ApplicationKey;
+import curam.application.entity.struct.SearchByCaseIDKey;
 import curam.codetable.BATCHPROCESSNAME;
 import curam.core.fact.MaintainCaseFactory;
 import curam.core.impl.BatchStreamHelper;
@@ -15,7 +21,12 @@ import curam.core.struct.BatchProcessingSkippedRecordList;
 import curam.core.struct.CaseReferenceProductNameConcernRoleName;
 import curam.creoleprogramrecommendation.facade.intf.CREOLEProgramRecommendation;
 import curam.creoleprogramrecommendation.facade.struct.ApplicationProgramRecommendationDetails;
+import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationKey;
 import curam.creoleprogramrecommendation.facade.fact.CREOLEProgramRecommendationFactory;
+import curam.molsa.creoleprogramrecommendation.facade.fact.MOLSACREOLEProgramRecommendationFactory;
+import curam.molsa.creoleprogramrecommendation.facade.intf.MOLSACREOLEProgramRecommendation;
+import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetails;
+import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetailsList;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
@@ -79,11 +90,41 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
 
 			CaseIDKey caseIDKey = new CaseIDKey();
 			caseIDKey.caseID = batchProcessingID.recordID;
-			CREOLEProgramRecommendation creoleProgramRecommendationObj = CREOLEProgramRecommendationFactory.newInstance();
-			ApplicationProgramRecommendationDetails applicationProgramRecommendationDetails = new ApplicationProgramRecommendationDetails();
-			creoleProgramRecommendationObj.runProgramRecommendationForApplication(applicationProgramRecommendationDetails);
 			
+			Application applicationObj = ApplicationFactory.newInstance();
+			SearchByCaseIDKey searchByCaseIDKey = new SearchByCaseIDKey();
+			searchByCaseIDKey.caseID = batchProcessingID.recordID;
+			ApplicationDtlsList applicationDtlsList = applicationObj.searchByCaseID(searchByCaseIDKey);
 			
+			for(ApplicationDtls applicationDtls : applicationDtlsList.dtls.items()) {
+				
+			
+				
+				CREOLEProgramRecommendation creoleProgramRecommendationObj = CREOLEProgramRecommendationFactory.newInstance();
+				
+				ApplicationProgramRecommendationDetails applicationProgramRecommendationDetails = new ApplicationProgramRecommendationDetails();
+				applicationProgramRecommendationDetails.applicationID=applicationDtls.applicationID;
+				applicationProgramRecommendationDetails.selectedPrograms="4500";				
+				creoleProgramRecommendationObj.runProgramRecommendationForApplication(applicationProgramRecommendationDetails);
+				
+				
+				/*
+				MOLSACREOLEProgramRecommendation molsaCREOLEProgramRecommendationObj = MOLSACREOLEProgramRecommendationFactory.newInstance();
+				ApplicationKey applicationKey = new ApplicationKey();
+				applicationKey.applicationID = applicationDtls.applicationID;
+				MolsaSimulatedDeterminationDetailsList simulatedDeterminationDetailsList = 
+					molsaCREOLEProgramRecommendationObj.listLatestAppliedForEligibleSimulatedDeterminations(applicationKey);
+				SimulatedDeterminationKey simulatedDeterminationKey = new SimulatedDeterminationKey();
+				for (MolsaSimulatedDeterminationDetails simulatedDeterminationDetails : simulatedDeterminationDetailsList.dtls.items() ) {
+					if(!simulatedDeterminationDetails.dtls.isAuthorized){
+						simulatedDeterminationKey.creoleProgramRecommendationID = simulatedDeterminationDetails.dtls.creoleProgramRecommendationID;
+						simulatedDeterminationKey.simulatedDeterminationID = simulatedDeterminationDetails.dtls.simulatedDeterminationID;				
+						creoleProgramRecommendationObj.authorize(simulatedDeterminationKey);
+				    }
+				}
+				*/
+			
+			}
 			
 			CaseReferenceProductNameConcernRoleName caseRefProductNameConcernRoleName = MaintainCaseFactory
 					.newInstance()

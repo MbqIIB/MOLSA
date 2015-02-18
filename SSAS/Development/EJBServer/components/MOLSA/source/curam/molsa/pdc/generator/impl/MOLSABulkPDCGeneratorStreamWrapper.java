@@ -5,7 +5,6 @@ import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
 import curam.core.struct.BatchProcessingSkippedRecordList;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
-import curam.molsa.moi.intf.MOLSAMoiBatchStream;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 

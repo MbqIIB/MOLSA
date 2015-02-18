@@ -1,39 +1,21 @@
 package curam.molsa.pdc.generator.impl;
 
-import curam.core.impl.BatchStreamHelper;
-import curam.struct.CaseIDKey;
-import curam.core.impl.CuramBatch;
-import curam.core.sl.infrastructure.assessment.struct.CREOLEBulkCaseChunkReassessmentResult;
-import curam.core.struct.BatchProcessChunkDtlsList;
-import curam.core.struct.BatchProcessDtls;
-import curam.core.struct.ChunkMainParameters;
-import curam.molsa.pdc.generator.fact.MOLSABulkPDCGeneratorStreamFactory;
-import curam.util.dataaccess.CuramValueList;
-import curam.util.exception.AppException;
-import curam.util.exception.InformationalException;
 import curam.codetable.BATCHPROCESSNAME;
 import curam.core.impl.BatchStreamHelper;
-import curam.core.impl.CuramBatch;
 import curam.core.impl.EnvVars;
-import curam.core.sl.infrastructure.assessment.struct.CREOLEBulkCaseChunkReassessmentResult;
-import curam.core.struct.BatchProcessChunkDtls;
 import curam.core.struct.BatchProcessChunkDtlsList;
 import curam.core.struct.BatchProcessDtls;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingIDList;
 import curam.core.struct.ChunkMainParameters;
-import curam.core.struct.ConcernRoleAlternateIDKey1;
-import curam.message.BPOCREOLEBULKCASECHUNKREASSESSMENT;
-
+import curam.molsa.pdc.generator.fact.MOLSABulkPDCGeneratorStreamFactory;
 import curam.struct.CaseIDKey;
 import curam.util.dataaccess.CuramValueList;
 import curam.util.dataaccess.DynamicDataAccess;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.resources.Configuration;
-import curam.util.resources.ProgramLocale;
 import curam.util.resources.Trace;
-import curam.util.type.FacadeMethod;
 
 public class MOLSABulkPDCGeneratorBatch extends  curam.molsa.pdc.generator.base.MOLSABulkPDCGeneratorBatch{
 	
@@ -109,97 +91,7 @@ public class MOLSABulkPDCGeneratorBatch extends  curam.molsa.pdc.generator.base.
 			BatchProcessChunkDtlsList processedBatchProcessChunkDtlsList,
 			BatchProcessChunkDtlsList unprocessedBatchProcessChunkDtlsList)
 			throws AppException, InformationalException {
-		/**
-Trace.kTopLevelLogger.info("********  Sending Batch Report ******");
 		
-		//MM-3095, generate Ineligible client Report.
-		generateIneligibleReport();
-
-
-		long totalNumberOfCasesProcessed = 0L;
-		long totalNumberOfCasesSkipped = 0L;
-		long totalNumberOfCasesChanged = 0L;
-		long totalNumberOfUnprocessedChunks = unprocessedBatchProcessChunkDtlsList.dtls
-				.size();
-
-		CuramBatch curamBatchObj = new CuramBatch();
-
-		int kEmailMessageBufSize = 512;
-		StringBuffer emailMessage = new StringBuffer(512);
-
-		for (int i = 0; i < processedBatchProcessChunkDtlsList.dtls.size(); ++i) {
-			CREOLEBulkCaseChunkReassessmentResult creoleBulkCaseChunkReassessmentResult = 
-				decodeProcessChunkResult(((BatchProcessChunkDtls) processedBatchProcessChunkDtlsList.dtls
-					.item(i)).resultSummary);
-			totalNumberOfCasesProcessed += creoleBulkCaseChunkReassessmentResult.casesProcessedCount;
-			totalNumberOfCasesSkipped += creoleBulkCaseChunkReassessmentResult.casesSkippedCount;
-			totalNumberOfCasesChanged += creoleBulkCaseChunkReassessmentResult.casesChangedCount;
-
-		}
-
-		if (totalNumberOfUnprocessedChunks > 0L) {
-			AppException errChunksSkippedText = new AppException(
-					BPOCREOLEBULKCASECHUNKREASSESSMENT.ERR_CHUNKS_SKIPPED);
-
-			errChunksSkippedText.arg(totalNumberOfUnprocessedChunks);
-			errChunksSkippedText.arg(totalNumberOfUnprocessedChunks
-					* kChunkSize);
-
-			emailMessage
-					.append("\n")
-					.append(errChunksSkippedText.getMessage(ProgramLocale
-							.getDefaultServerLocale())).append("\n");
-
-		}
-
-		AppException infTotalCasesText = new AppException(
-				BPOCREOLEBULKCASECHUNKREASSESSMENT.INF_CASE_RECORDS_PROCESSED);
-
-		infTotalCasesText.arg(totalNumberOfCasesProcessed);
-
-		emailMessage
-				.append("\n")
-				.append(infTotalCasesText.getMessage(ProgramLocale
-						.getDefaultServerLocale())).append("\n");
-
-		AppException infTotalCasesChangedText = new AppException(
-				BPOCREOLEBULKCASECHUNKREASSESSMENT.INF_CASE_RECORDS_CHANGED);
-		infTotalCasesChangedText.arg(totalNumberOfCasesChanged);
-		emailMessage
-				.append("\n")
-				.append(infTotalCasesChangedText.getMessage(ProgramLocale
-						.getDefaultServerLocale())).append("\n");
-
-		if (totalNumberOfCasesSkipped > 0L) {
-			AppException infTotalSkippedCasesText = new AppException(
-					BPOCREOLEBULKCASECHUNKREASSESSMENT.INF_CASE_RECORDS_SKIPPED);
-
-			infTotalSkippedCasesText.arg(totalNumberOfCasesSkipped);
-
-			emailMessage
-					.append("\n")
-					.append(infTotalSkippedCasesText.getMessage(ProgramLocale
-							.getDefaultServerLocale())).append("\n");
-
-		}
-		curamBatchObj.emailMessage = emailMessage.toString();
-
-		// Write the Batch Report also
-		Trace.kTopLevelLogger
-				.info("********  The MM Bulk PD Case Creation Batch Report is  ==> "
-						+ emailMessage.toString());
-
-		curamBatchObj
-				.setEmailSubject(BPOCREOLEBULKCASECHUNKREASSESSMENT.INF_CREOLEBULKCASECHUNKREASSESSMENT_BYPRODUCT_SUB);
-
-		curamBatchObj.outputFileID = BPOCREOLEBULKCASECHUNKREASSESSMENT.INF_CREOLEBULKCASECHUNKREASSESSMENT_BYPRODUCT
-				.getMessageText(ProgramLocale.getDefaultServerLocale());
-
-		curamBatchObj.setStartTime(batchProcessDtls.startDateTime);
-		curamBatchObj.setEndTime();
-
-		curamBatchObj.sendEmail();
-		*/
 	}
 
 	@Override
@@ -218,6 +110,7 @@ Trace.kTopLevelLogger.info("********  Sending Batch Report ******");
 		// which already have PDC cases and that are failed in previous batch
 		// run.
 		CuramValueList<CaseIDKey> curamValueList = null;
+		/*
 		String sql = " SELECT caseID into :caseID FROM " +
 				" (SELECT UNIQUE ch.caseID as caseID " +
 				" FROM evidencedescriptor ed, caseheader ch left join caserelationship cr on ch.caseid = cr.relatedcaseid left join MMBatchProcessFailure mbpf on ch.caseid = mbpf.mmFailedRecordID and mbpf.batchProcessName = 'MMBPN2' " + 
@@ -227,6 +120,15 @@ Trace.kTopLevelLogger.info("********  Sending Batch Report ******");
 				" FROM evidencedescriptor ed, dynamicevidencedataattribute deda , caseheader ch left join caserelationship cr on ch.caseid = cr.relatedcaseid left join MMBatchProcessFailure mbpf on ch.caseid = mbpf.mmFailedRecordID and mbpf.batchProcessName = 'MMBPN2' " +
 				" WHERE ch.caseTypeCode = 'CT5' AND ed.caseid = ch.caseid AND ed.evidencetype = 'DET0026014'  AND ed.statusCode = 'EDS1' " + 
 				" AND deda.evidenceid = ed.relatedid AND deda.name = 'benefitType' AND deda.value = 'HCBT45000'  and cr.relatedcaseid is null and mbpf.mmFailedRecordID is null) ";
+				
+		 */
+		
+		String sql = " SELECT DISTINCT ch.caseID INTO :caseID "+
+		             "FROM evidencedescriptor ed, caseheader ch "+
+		             "WHERE ch.caseTypeCode = 'CT5' AND ed.caseid = ch.caseid "+
+		             " AND ed.evidencetype = 'DET0001281' AND ed.statusCode = 'EDS1'";
+		
+		
 		try {
 			curamValueList = DynamicDataAccess.executeNsMulti(CaseIDKey.class,
 					null, false, false, sql);
