@@ -51,37 +51,51 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<all>
-						<fixedlist>
-							<listof>
-								<javaclass name="Boolean" />
-							</listof>
-							<members>
-								<any>
-									<dynamiclist>
-										<list>
-											<reference attribute="absentFatherRecords">
-												<reference attribute="memberCPRCalculator" />
-											</reference>
-										</list>
-										<listitemexpression>
-											<equals>
-												<intervalvalue>
-													<reference attribute="absenceReason">
-														<current />
-													</reference>
-												</intervalvalue>
-												<Code table="MOLSAAbsentFatherReason">
-													<String value="MAF17000" />
-												</Code>
-											</equals>
-										</listitemexpression>
-									</dynamiclist>
-								</any>
-							</members>
-						</fixedlist>
-					</all>
-
+                     <choose>
+                     	<type>
+                     		<javaclass name="Boolean"/>
+                     	</type>
+                     	<when>
+                     		<condition>
+                     			<compare comparison="&gt;">
+                     				<property name="size">
+                     					<object>
+                     						<filter>
+                     							<list>
+                     								<readall ruleclass="AnonymousParents" ruleset="AnonymousParentsDataRuleSet">
+                     									<match retrievedattribute="caseID">
+                     										<reference attribute="caseID">
+                     											<reference attribute="caseParticipantRoleRecord"/>
+                     										</reference>
+                     									</match>
+                     								</readall>
+                     							</list>
+                     							<listitemexpression>
+                     								<equals>
+                     									<reference attribute="participant">
+                     										<current/>
+                     									</reference>
+                     									<reference attribute="caseParticipantRoleID">
+                     										<reference attribute="caseParticipantRoleRecord"/>
+                     									</reference>
+                     								</equals>
+                     							</listitemexpression>
+                     						</filter>
+                     					</object>
+                     				</property>
+                     				<Number value="0"/>
+                     			</compare>
+                     		</condition>
+                     		<value>
+                     			<true/>
+                     		</value>
+                     	</when>
+                     	<otherwise>
+                     		<value>
+                     			<false/>
+                     		</value>
+                     	</otherwise>
+                     </choose>
 				</timelineoperation>
 			</derivation>
 		</Attribute>
@@ -183,16 +197,37 @@
 														</reference>
 													</list>
 													<listitemexpression>
-														<equals>
-															<intervalvalue>
-																<reference attribute="studentStatus">
-																	<current />
-																</reference>
-															</intervalvalue>
-															<Code table="MOLSAEducation">
-																<String value="MED17000" />
-															</Code>
-														</equals>
+														<all>
+															<fixedlist>
+																<listof>
+																	<javaclass name="Boolean"/>
+																</listof>
+																<members>
+																	<not>
+																	  <equals>
+																	  	<intervalvalue>
+																	  		<reference attribute="educationLevel">
+																	  			<current/>
+																	  		</reference>
+																	  	</intervalvalue>
+																	  	<Code table="MOLSAEducationLevel">
+																	  		<String value="MEL17010"/>
+																	  	</Code>
+																	  </equals>																	
+																	</not>
+																	<equals>
+																		<intervalvalue>
+																			<reference attribute="studentStatus">
+																				<current />
+																			</reference>
+																		</intervalvalue>
+																		<Code table="MOLSAEducation">
+																			<String value="MED17000" />
+																		</Code>
+																	</equals>
+																</members>
+															</fixedlist>
+														</all>
 													</listitemexpression>
 												</dynamiclist>
 											</any>
