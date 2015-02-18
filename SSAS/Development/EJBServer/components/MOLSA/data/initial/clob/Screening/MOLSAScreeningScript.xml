@@ -736,7 +736,36 @@
 				<edit-link start-page="Relationship" skip-to-summary="true"/>
 
 			</relationship-summary-list>
-
+			<cluster>
+				<title id="AnonymousParentsInformation.Title">Anonymous Parents Information</title>
+				<edit-link start-page="GeneralInformation" skip-to-summary="false"/>
+				<layout>
+					<type>flow</type>
+					<num-cols>1</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="isChildOfAnonymousParent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false">
+					<label id="isChildOfAnonymousParent.Label">Is any one in the home handicapped ?</label>
+				</question>
+			</cluster>
+			<condition expression="isChildOfAnonymousParent==&quot;YN1&quot;">
+				<list show-icons="false" entity="Person" criteria="hasAnonymousParents==true">
+					<title id="AnonymousParentDetails.Title">Child Details</title>
+					<column id="firstName">
+						<title id="firstName.Title">First Name</title>
+					</column>
+					<column id="qidNumber">
+						<title id="QidNumber.Title">QID Number</title>
+					</column>
+					<column id="gender">
+						<title id="gender.Title">Gender</title>
+					</column>
+					<column id="dateOfBirth">
+						<title id="DOB.Title">Date Of Birth</title>
+					</column>
+				</list>
+			</condition>
 			<cluster>
 				<title id="GeneralInformation.Title">General Information</title>
 				<edit-link start-page="GeneralInformation" skip-to-summary="false"/>
