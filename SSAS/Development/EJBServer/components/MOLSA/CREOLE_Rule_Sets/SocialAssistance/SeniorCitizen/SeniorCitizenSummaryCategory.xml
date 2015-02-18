@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="../../../../../../../../../Curam/catalog/RuleSet.xsd"
-	extends="SASummaryCategory" extendsRuleSet="SocialAssistanceDisplayRuleSet"
-	name="SeniorCitizenSummaryCategory">
+ xsi:noNamespaceSchemaLocation="D:\MolsaSVN\Development\EJBServer\build\svr\creole.gen\schema\RuleSet.xsd"
+ extends="SASummaryCategory" extendsRuleSet="SocialAssistanceDisplayRuleSet"
+ name="SeniorCitizenSummaryCategory">
 
 
 	<!-- The eligibility rule object for the case. At program recommendation 
@@ -149,66 +149,86 @@
 		</type>
 		<derivation>
 			<timelineoperation>
-				<dynamiclist>
-					<list>
-						<intervalvalue>
-							<reference attribute="eligibilityUnitMembers" />
-						</intervalvalue>
-					</list>
-					<listitemexpression>
-						<choose>
-							<type>
-								<javaclass name="curam.creole.value.Message" />
-							</type>
-							<when>
-								<condition>
-									<all>
+				<choose>
+					<type>
+						<javaclass name="List">
+							<javaclass name="curam.creole.value.Message" />
+						</javaclass>
+					</type>
+					<when>
+						<condition>
+							<equals>
+								<property name="size">
+									<object>
+										<intervalvalue>
+											<reference attribute="eligibilityUnitMembers" />
+										</intervalvalue>
+									</object>
+								</property>
+								<Number value="1"/>
+							</equals>
+						</condition>
+						<value>
+							<choose>
+								<type>
+									<javaclass name="List">
+										<javaclass name="curam.creole.value.Message" />
+									</javaclass>
+								</type>
+								<when>
+									<condition>
+										<not>
+											<intervalvalue>
+												<reference attribute="isAgeAboveSixtyTimeline">
+													<create ruleclass="SeniorCitizenCPRCalculator"
+														ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+														<singleitem onEmpty="returnNull" onMultiple="returnFirst">
+															<intervalvalue>
+																<reference attribute="eligibilityUnitMembers" />
+															</intervalvalue>
+														</singleitem>
+													</create>
+												</reference>
+											</intervalvalue>
+										</not>
+									</condition>
+									<value>
 										<fixedlist>
 											<listof>
-												<javaclass name="Boolean" />
+												<javaclass name="curam.creole.value.Message" />
 											</listof>
 											<members>
-												<not>
-													<intervalvalue>
-														<reference attribute="isAgeAboveSixtyTimeline">
-															<create ruleclass="SeniorCitizenCPRCalculator"
-																ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
-																<current />
-															</create>
-														</reference>
-													</intervalvalue>
-												</not>
-												<not>
-													<intervalvalue>
-														<reference attribute="isEligibleWifeTimeline">
-															<create ruleclass="SeniorCitizenCPRCalculator"
-																ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
-																<current />
-															</create>
-														</reference>
-													</intervalvalue>
-												</not>
-												<not>
-													<intervalvalue>
-														<reference attribute="isDependentChildTimeline">
-															<create ruleclass="SeniorCitizenCPRCalculator"
-																ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
-																<current />
-															</create>
-														</reference>
-													</intervalvalue>
-												</not>
+												<ResourceMessage key="Family.IsNotSatisfyingAgeLimits"
+													resourceBundle="curam.molsa.rules.ProductDisplay" />
 											</members>
 										</fixedlist>
-									</all>
-								</condition>
-								<value>
-									<ResourceMessage key="Family.IsNotSatisfyingAgeLimits"
-										resourceBundle="curam.molsa.rules.ProductDisplay" />
-								</value>
-							</when>
-							<otherwise>
-								<value>
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<fixedlist>
+											<listof>
+												<javaclass name="curam.creole.value.Message" />
+											</listof>
+											<members>
+												<ResourceMessage key="Family.IsaPrimaryClient"
+													resourceBundle="curam.molsa.rules.ProductDisplay" />
+											</members>
+										</fixedlist>
+									</value>
+								</otherwise>
+							</choose>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<dynamiclist>
+								<list>
+									<intervalvalue>
+										<reference attribute="eligibilityUnitMembers" />
+									</intervalvalue>
+								</list>
+								<listitemexpression>
 									<choose>
 										<type>
 											<javaclass name="curam.creole.value.Message" />
@@ -231,51 +251,108 @@
 																	</reference>
 																</intervalvalue>
 															</not>
+															<not>
+																<intervalvalue>
+																	<reference attribute="isEligibleWifeTimeline">
+																		<create ruleclass="SeniorCitizenCPRCalculator"
+																			ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+																			<current />
+																		</create>
+																	</reference>
+																</intervalvalue>
+															</not>
+															<not>
+																<intervalvalue>
+																	<reference attribute="isDependentChildTimeline">
+																		<create ruleclass="SeniorCitizenCPRCalculator"
+																			ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+																			<current />
+																		</create>
+																	</reference>
+																</intervalvalue>
+															</not>
+														</members>
+													</fixedlist>
+												</all>
+											</condition>
+											<value>
+												<ResourceMessage key="Family.IsNotSatisfyingAgeLimits"
+													resourceBundle="curam.molsa.rules.ProductDisplay" />
+											</value>
+										</when>
+										<otherwise>
+											<value>
+												<choose>
+													<type>
+														<javaclass name="curam.creole.value.Message" />
+													</type>
+													<when>
+														<condition>
+															<all>
+																<fixedlist>
+																	<listof>
+																		<javaclass name="Boolean" />
+																	</listof>
+																	<members>
+																		<not>
+																			<intervalvalue>
+																				<reference attribute="isAgeAboveSixtyTimeline">
+																					<create ruleclass="SeniorCitizenCPRCalculator"
+																						ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+																						<current />
+																					</create>
+																				</reference>
+																			</intervalvalue>
+																		</not>
+																		<intervalvalue>
+																			<reference attribute="isEligibleWifeTimeline">
+																				<create ruleclass="SeniorCitizenCPRCalculator"
+																					ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+																					<current />
+																				</create>
+																			</reference>
+																		</intervalvalue>
+																	</members>
+																</fixedlist>
+															</all>
+														</condition>
+														<value>
+															<ResourceMessage key="Family.IsaElgibileWife"
+																resourceBundle="curam.molsa.rules.ProductDisplay" />
+														</value>
+													</when>
+													<when>
+														<condition>
 															<intervalvalue>
-																<reference attribute="isEligibleWifeTimeline">
+																<reference attribute="isDependentChildTimeline">
 																	<create ruleclass="SeniorCitizenCPRCalculator"
 																		ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
 																		<current />
 																	</create>
 																</reference>
 															</intervalvalue>
-														</members>
-													</fixedlist>
-												</all>
-											</condition>
-											<value>
-												<ResourceMessage key="Family.IsaElgibileWife"
-													resourceBundle="curam.molsa.rules.ProductDisplay" />
-											</value>
-										</when>
-										<when>
-											<condition>
-												<intervalvalue>
-													<reference attribute="isDependentChildTimeline">
-														<create ruleclass="SeniorCitizenCPRCalculator"
-															ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
-															<current />
-														</create>
-													</reference>
-												</intervalvalue>
-											</condition>
-											<value>
-												<ResourceMessage key="Family.IsaDependentChild"
-													resourceBundle="curam.molsa.rules.ProductDisplay" />
-											</value>
-										</when>
-										<otherwise>
-											<value>
-												<ResourceMessage key="Family.IsaPrimaryClient"
-													resourceBundle="curam.molsa.rules.ProductDisplay" />
+														</condition>
+														<value>
+															<ResourceMessage key="Family.IsaDependentChild"
+																resourceBundle="curam.molsa.rules.ProductDisplay" />
+														</value>
+													</when>
+													<otherwise>
+														<value>
+															<ResourceMessage key="Family.IsaPrimaryClient"
+																resourceBundle="curam.molsa.rules.ProductDisplay" />
+														</value>
+													</otherwise>
+												</choose>
 											</value>
 										</otherwise>
 									</choose>
-								</value>
-							</otherwise>
-						</choose>
-					</listitemexpression>
-				</dynamiclist>
+								</listitemexpression>
+							</dynamiclist>
+						</value>
+					</otherwise>
+				</choose>
+				
 			</timelineoperation>
 		</derivation>
 	</Attribute>
