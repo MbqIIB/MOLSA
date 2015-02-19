@@ -146,5 +146,7 @@ public abstract class MOLSAConstants {
 	 * Molsa Product delivery approval workflow.
 	 */
 	public static final String kMOLSAProductDeliveryOpenTask = "MOLSAProductDeliveryOpenTask";
+	
+	public static final String kMOLSAProductDeliveryRejectTask = "MOLSAProductDeliveryRejectTask";
 
 }
