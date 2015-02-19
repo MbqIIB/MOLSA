@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workflow-process id="1126999418470751" process-version="1" language-version="1.0" released="true" category="PC3" createdBy="admin" creationDate="20141202T093442">
+<workflow-process id="1126999418470751" process-version="1" language-version="1.0" released="true" category="PC3" createdBy="admin" creationDate="20150219T151846">
   <name>MOLSAProductDeliveryApprovalProcessTask</name>
   <process-display-name>
     <localized-text>
-      <locale language="en" country="US">MOLSA Product Delivery Approval Process Task</locale>
-      <locale language="ar">مهمة إحالة تسليم منتج الوزارة للموافقة</locale>
+      <locale language="en">MOLSA Product Delivery Approval Process Task</locale>
     </localized-text>
   </process-display-name>
   <enactment-mappings>
@@ -15,10 +14,6 @@
     <mapping>
       <source-attribute struct-name="curam.core.sl.struct.TaskCreateDetails" name="subject" />
       <target-attribute wdo-name="TaskCreateDetails" name="subject" />
-    </mapping>
-    <mapping>
-      <source-attribute struct-name="curam.core.sl.struct.TaskCreateDetails" name="comments" />
-      <target-attribute wdo-name="TaskCreateDetails" name="rejectMessageText" />
     </mapping>
   </enactment-mappings>
   <wdos>
@@ -49,18 +44,6 @@
             <localized-text>
               <locale language="en" country="US">Task  Subject</locale>
               <locale language="en">Task  Subject</locale>
-            </localized-text>
-          </display-name>
-          <type>STRING</type>
-          <required-at-enactment>true</required-at-enactment>
-          <process-output>false</process-output>
-        </attribute>
-        <attribute>
-          <attribute-name>rejectMessageText</attribute-name>
-          <display-name>
-            <localized-text>
-              <locale language="en" country="US">Reject Message Text</locale>
-              <locale language="en">Reject Message Text</locale>
             </localized-text>
           </display-name>
           <type>STRING</type>
@@ -101,7 +84,7 @@
           <locale language="en">The end process activity</locale>
         </localized-text>
       </description>
-      <join type="xor" />
+      <join type="none" />
     </end-process-activity>
     <manual-activity id="3" category="AC1">
       <name>
@@ -111,8 +94,7 @@
         </localized-text>
       </name>
       <join type="none" />
-      <split type="xor">
-        <transition-id idref="2" />
+      <split type="none">
         <transition-id idref="3" />
       </split>
       <task>
@@ -128,19 +110,6 @@
           </message-parameters>
         </message>
         <actions>
-          <action page-id="Case_resolveCaseHome" principal-action="false" open-modal="false">
-            <message>
-              <message-text>
-                <localized-text>
-                  <locale language="en" country="US">Case Home Page</locale>
-                  <locale language="en">Case Home Page</locale>
-                </localized-text>
-              </message-text>
-            </message>
-            <link-parameter name="caseID">
-              <wdo-attribute wdo-name="TaskCreateDetails" name="caseID" />
-            </link-parameter>
-          </action>
           <action page-id="MOLSAProductDelivery_reject" principal-action="true" open-modal="true">
             <message>
               <message-text>
@@ -154,17 +123,17 @@
               <wdo-attribute wdo-name="TaskCreateDetails" name="caseID" />
             </link-parameter>
           </action>
-          <action page-id="TaskManagement_forward" principal-action="true" open-modal="true">
+          <action page-id="Case_resolveCaseHome" principal-action="true" open-modal="false">
             <message>
               <message-text>
                 <localized-text>
                   <locale language="en" country="US">Forward</locale>
-                  <locale language="en">Forward</locale>
+                  <locale language="en">View Case</locale>
                 </localized-text>
               </message-text>
             </message>
-            <link-parameter name="taskID">
-              <wdo-attribute wdo-name="Context_Task" name="taskID" />
+            <link-parameter name="caseID">
+              <wdo-attribute wdo-name="TaskCreateDetails" name="caseID" />
             </link-parameter>
           </action>
         </actions>
@@ -174,9 +143,6 @@
       <allocation-strategy type="target" identifier="ManagerWorkqueue" />
       <event-wait wait-on-all-events="false">
         <events>
-          <event identifier="1" event-class="MOLSAAPPROVALTASK" event-type="PDCAPPROVALREJECTED">
-            <event-match-attribute wdo-name="TaskCreateDetails" name="caseID" />
-          </event>
           <event identifier="2" event-class="MOLSAAPPROVALTASK" event-type="PDCAPPROVALAPPROVED">
             <event-match-attribute wdo-name="TaskCreateDetails" name="caseID" />
           </event>
@@ -188,79 +154,10 @@
         </biz-object-association>
       </biz-object-associations>
     </manual-activity>
-    <route-activity id="4" category="AC1">
-      <name>
-        <localized-text>
-          <locale language="en" country="US">Approval Task Rejected Notification</locale>
-          <locale language="en">Approval Task Rejected Notification</locale>
-        </localized-text>
-      </name>
-      <notification delivery-mechanism="DM1">
-        <subject>
-          <message>
-            <message-text>
-              <localized-text>
-                <locale language="en" country="US">%1s</locale>
-                <locale language="en">%1s</locale>
-              </localized-text>
-            </message-text>
-            <message-parameters>
-              <wdo-attribute wdo-name="TaskCreateDetails" name="rejectMessageText" />
-            </message-parameters>
-          </message>
-        </subject>
-        <body>
-          <message>
-            <message-text>
-              <localized-text>
-                <locale language="en" country="US">The case submitted for approval is rejected. Please review the case details.</locale>
-                <locale language="en">The case submitted for approval is rejected. Please review the case details.</locale>
-              </localized-text>
-            </message-text>
-          </message>
-        </body>
-        <allocation-strategy type="function" identifier="curam.core.sl.intf.NotificationAllocationFunction.caseOwnerStrategy">
-          <function-mappings>
-            <formal-parameters>
-              <formal-parameter index="0">
-                <base-type type="INT64">
-                  <wdo-attribute wdo-name="TaskCreateDetails" name="caseID" />
-                </base-type>
-              </formal-parameter>
-            </formal-parameters>
-          </function-mappings>
-        </allocation-strategy>
-        <actions>
-          <action page-id="Case_resolveCaseHome" principal-action="false" open-modal="false">
-            <message>
-              <message-text>
-                <localized-text>
-                  <locale language="en" country="US">Case Home Page</locale>
-                  <locale language="en">Case Home Page</locale>
-                </localized-text>
-              </message-text>
-            </message>
-            <link-parameter name="caseID">
-              <wdo-attribute wdo-name="TaskCreateDetails" name="caseID" />
-            </link-parameter>
-          </action>
-        </actions>
-      </notification>
-      <join type="none" />
-      <split type="none">
-        <transition-id idref="4" />
-      </split>
-    </route-activity>
   </activities>
   <transitions>
     <transition id="1" from-activity-idref="1" to-activity-idref="3" />
-    <transition id="2" from-activity-idref="3" to-activity-idref="4">
-      <condition>
-        <expression id="1" data-item-lhs="Context_Event.fullyQualifiedEventType" operation="==" data-item-rhs="&quot;MOLSAAPPROVALTASK.PDCAPPROVALREJECTED&quot;" conjunction="and" />
-      </condition>
-    </transition>
     <transition id="3" from-activity-idref="3" to-activity-idref="2" />
-    <transition id="4" from-activity-idref="4" to-activity-idref="2" />
   </transitions>
 </workflow-process>
 
