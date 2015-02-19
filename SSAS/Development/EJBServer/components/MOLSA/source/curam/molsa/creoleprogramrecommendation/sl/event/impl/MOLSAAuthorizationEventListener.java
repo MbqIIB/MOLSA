@@ -37,6 +37,7 @@ import curam.creoleprogramrecommendation.struct.CREOLEProgramRecommendationKey;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.BPOROUTEPRODUCTDELIVERYAPPROVAL;
 import curam.message.MOLSABPORECERTIFICATION;
+import curam.message.MOLSANOTIFICATION;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.IntegratedCase;
@@ -85,7 +86,7 @@ public class MOLSAAuthorizationEventListener extends AuthorizationEvent {
 		taskCreateDetails.caseID = simulatedDeterminationAuthorization.getDelivery().getID();
 
 		final LocalisableString subject = new LocalisableString(
-				BPOROUTEPRODUCTDELIVERYAPPROVAL.INF_CASE_SUBMITTED_TICKET);
+				MOLSANOTIFICATION.INF_READY_FOR_FINAUDITOR_REVIEW);
 		IntegratedCase integratedCase = integratedCaseDAO
 				.get(taskCreateDetails.caseID);
 		subject.arg(integratedCase.getCaseReference());
@@ -100,16 +101,8 @@ public class MOLSAAuthorizationEventListener extends AuthorizationEvent {
 		taskCreateDetails.subject = subject.getMessage(TransactionInfo
 				.getProgramLocale());
 
-		final LocalisableString rejectMessage = new LocalisableString(
-				BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
-
-		subject.arg(integratedCase.getCaseReference());
-		subject.arg(productName);
-		subject.arg(integratedCase.getConcernRole().getName());
-
+		
 		taskCreateDetails.subject = subject.getMessage(TransactionInfo
-				.getProgramLocale());
-		taskCreateDetails.comments = rejectMessage.getMessage(TransactionInfo
 				.getProgramLocale());
 		enactmentStructs.add(taskCreateDetails);
 		EnactmentService.startProcessInV3CompatibilityMode(
