@@ -3117,22 +3117,44 @@
 								<reference attribute="moslaEducationRecords"/>
 							</list>
 							<listitemexpression>
-								<equals>
-									<intervalvalue>
-										<reference attribute="studentStatus">
-											<current/>
-										</reference>
-									</intervalvalue>
-									<Code table="MOLSAEducation">
-										<String value="MED17000"/>
-									</Code>
-								</equals>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean"/>
+										</listof>
+										<members>
+											<not>
+												<equals>
+													<intervalvalue>
+														<reference attribute="educationLevel">
+															<current/>
+														</reference>
+													</intervalvalue>
+													<Code table="MOLSAEducationLevel">
+														<String value="MEL17010"/>
+													</Code>
+												</equals>                                                                                                                                                                                                         
+											</not>
+											<equals>
+												<intervalvalue>
+													<reference attribute="studentStatus">
+														<current />
+													</reference>
+												</intervalvalue>
+												<Code table="MOLSAEducation">
+													<String value="MED17000" />
+												</Code>
+											</equals>
+										</members>
+									</fixedlist>
+								</all>
 							</listitemexpression>
 						</dynamiclist>
 					</any>
 				</timelineoperation>
 			</derivation>
 		</Attribute>
+		
 		<Attribute name="hasEarnedIncomeTimeline">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">

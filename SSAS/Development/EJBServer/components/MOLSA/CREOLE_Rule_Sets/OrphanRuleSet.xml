@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="../../../../../../../Curam/catalog/RuleSet.xsd" name="OrphanRuleSet">
+ xsi:noNamespaceSchemaLocation="D:\MolsaSVN\Development\EJBServer\build\svr\creole.gen\schema\RuleSet.xsd"
+ name="OrphanRuleSet">
 	<Class name="OrphanEligibilityUnitCalculator" extendsRuleSet="SocialAssistanceRuleSet"
 		extends="SocialAssistanceEligibilityUnitCalculator"
 		xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
@@ -481,27 +482,11 @@
 									</when>
 									<otherwise>
 										<value>
-											<any>
-												<dynamiclist>
-													<list>
-														<reference attribute="moslaEducationRecords">
-															<reference attribute="memberCPRCalculator" />
-														</reference>
-													</list>
-													<listitemexpression>
-														<equals>
-															<intervalvalue>
-																<reference attribute="studentStatus">
-																	<current />
-																</reference>
-															</intervalvalue>
-															<Code table="MOLSAEducation">
-																<String value="MED17000" />
-															</Code>
-														</equals>
-													</listitemexpression>
-												</dynamiclist>
-											</any>
+											<intervalvalue>
+												<reference attribute="hasEnrolledForEducation">
+													<reference attribute="memberCPRCalculator"/>
+												</reference>
+											</intervalvalue>
 										</value>
 									</otherwise>
 								</choose>
