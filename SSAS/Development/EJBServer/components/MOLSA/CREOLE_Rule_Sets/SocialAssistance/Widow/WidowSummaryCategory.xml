@@ -348,44 +348,76 @@
           </type>
           <when>
             <condition>
-              <equals>
-                <intervalvalue>
-                  <reference attribute="filterTypeTimeline">
+              <not>
+                <equals>
+                  <null/>
+                  <intervalvalue>
+                    <reference attribute="widowHouseholdMember">
+                      <intervalvalue>
+                        <reference attribute="widowEligibilityUnitCalculator"/>
+                      </intervalvalue>
+                    </reference>
+                  </intervalvalue>
+                </equals>
+              </not>
+            </condition>
+            <value>
+              <choose>
+                <type>
+                  <javaclass name="curam.creole.value.Message"/>
+                </type>
+                <when>
+                  <condition>
+                    <equals>
+                      <intervalvalue>
+                        <reference attribute="filterTypeTimeline">
+                          <intervalvalue>
+                            <reference attribute="widowHouseholdMember">
+                              <intervalvalue>
+                                <reference attribute="widowEligibilityUnitCalculator"/>
+                              </intervalvalue>
+                            </reference>
+                          </intervalvalue>
+                        </reference>
+                      </intervalvalue>
+                      <String value="InEligibleMember"/>
+                    </equals>
+                  </condition>
+                  <value>
+                    <ResourceMessage
+                      key="SocialAssistance.Undetermined"
+                      resourceBundle="curam.molsa.rules.ProductDisplay"
+                    />
+                  </value>
+                </when>
+                <otherwise>
+                  <value>
                     <intervalvalue>
-                      <reference attribute="widowHouseholdMember">
-                        <intervalvalue>
-                          <reference attribute="widowEligibilityUnitCalculator"/>
-                        </intervalvalue>
+                      <reference attribute="passFailMessageTimeline">
+                        <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
+                          <reference attribute="hasHouseholdPassedIncomeTestTimeline">
+                            <intervalvalue>
+                              <reference attribute="widowEligibilityUnitCalculator"/>
+                            </intervalvalue>
+                          </reference>
+                        </create>
                       </reference>
                     </intervalvalue>
-                  </reference>
-                </intervalvalue>
-                <String value="InEligibleMember"/>
-              </equals>
-            </condition>
+                  </value>
+                </otherwise>
+              </choose>
+            </value>
+          </when>
+          <otherwise>
             <value>
               <ResourceMessage
                 key="SocialAssistance.Undetermined"
                 resourceBundle="curam.molsa.rules.ProductDisplay"
               />
             </value>
-          </when>
-          <otherwise>
-            <value>
-              <intervalvalue>
-                <reference attribute="passFailMessageTimeline">
-                  <create ruleclass="DisplayRulesMessage" ruleset="SocialAssistanceRuleSet">
-                    <reference attribute="hasHouseholdPassedIncomeTestTimeline">
-                      <intervalvalue>
-                        <reference attribute="widowEligibilityUnitCalculator"/>
-                      </intervalvalue>
-                    </reference>
-                  </create>
-                </reference>
-              </intervalvalue>
-            </value>
           </otherwise>
         </choose>
+        
       </timelineoperation>
     </derivation>
   </Attribute>
