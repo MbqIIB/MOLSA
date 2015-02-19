@@ -534,9 +534,45 @@
 			</type>
 			<derivation>
 				<timelineoperation>
-					<intervalvalue>
-						<reference attribute="isValidUnitTimeline"/>
-					</intervalvalue>
+					<choose>
+						<type>
+							<javaclass name="Boolean"/>
+						</type>
+						<when>
+							<condition>
+								<reference attribute="isProductDelivery"/>
+							</condition>
+							<value>
+								<all>
+									<fixedlist>
+										<listof>
+											<javaclass name="Boolean"/>
+										</listof>
+										<members>
+											<intervalvalue>
+												<reference attribute="certificationPeriodTimeline">
+													<create ruleclass="CertificationPeriodCalculator" ruleset="SocialAssistanceRuleSet">
+														<reference attribute="caseID"/>
+													</create>
+												</reference>
+											</intervalvalue>
+											<intervalvalue>
+												<reference attribute="isValidUnitTimeline"/>
+											</intervalvalue>
+										</members>
+									</fixedlist>
+								</all>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<intervalvalue>
+									<reference attribute="isValidUnitTimeline"/>
+								</intervalvalue>
+							</value>
+						</otherwise>
+					</choose>
+					
 				</timelineoperation>
 			</derivation>
 		</Attribute>
