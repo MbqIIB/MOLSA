@@ -108,6 +108,7 @@ import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
+import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
 import curam.util.events.impl.EventService;
 import curam.util.events.struct.Event;
@@ -142,6 +143,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 	@Inject
 	protected ApplicationDAO applicationDAO;
+
+	@Inject
+	protected CaseHeaderDAO caseHeaderDAO;
 
 	@Inject
 	private Map<PRODUCTTYPEEntry, MOLSAMilestoneDeliveryCreator> milestoneDeliveryCreator;
@@ -315,17 +319,12 @@ public abstract class MOLSAMaintainProductDelivery extends
 		subjectMsg.arg(productName);
 		subjectMsg.arg(concernRoleDtls.concernRoleName);
 
-		AppException rejectMessage = new AppException(
-				BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
-		rejectMessage.arg(caseReference.caseReference);
-		rejectMessage.arg(productName);
-		rejectMessage.arg(concernRoleDtls.concernRoleName);
+		
 
 		taskCreateDetails.caseID = submitForApprovalKey.caseID;
 		taskCreateDetails.subject = subjectMsg.getMessage(TransactionInfo
 				.getProgramLocale());
-		taskCreateDetails.comments = rejectMessage.getMessage(TransactionInfo
-				.getProgramLocale());
+
 		enactmentStructs.add(taskCreateDetails);
 		EnactmentService.startProcessInV3CompatibilityMode(
 				MOLSAConstants.kPDCApprovalWorkFlow, enactmentStructs);
@@ -346,6 +345,12 @@ public abstract class MOLSAMaintainProductDelivery extends
 							CASETRANSACTIONEVENTS.PRODUCTDELIVERY_SUBMIT,
 							txndescription, submitForApprovalKey.caseID, 0L);
 		}
+
+		Event eventKey = new Event();
+		eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCSUBMITTEDFORAPPROVAL.eventClass;
+		eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCSUBMITTEDFORAPPROVAL.eventType;
+		eventKey.primaryEventData = submitForApprovalKey.caseID;
+		EventService.raiseEvent(eventKey);
 	}
 
 	/**
@@ -392,42 +397,46 @@ public abstract class MOLSAMaintainProductDelivery extends
 		CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
 		ConcernRoleKey concernRoleKey = new ConcernRoleKey();
 		concernRoleKey.concernRoleID = caseHeaderDtls.concernRoleID;
-		if (!caseHeaderDtls.statusCode.equals(CASESTATUS.COMPLETED)) {
+		if ((CASESTATUS.APPROVED.equals(caseHeaderDtls.statusCode) || CASESTATUS.ACTIVE
+				.equals(caseHeaderDtls.statusCode))) {
 			ValidationManagerFactory
 					.getManager()
 					.throwWithLookup(
 							new AppException(
 									BPOPRODUCTDELIVERYAPPROVAL.ERR_CASEREJECT_FV_CASESTATUS));
 		}
-		CurrentCaseStatusKey currentCaseStatusKey = new CurrentCaseStatusKey();
 
-		CaseStatusDtls mdfCaseStatusDtls = new CaseStatusDtls();
-		CaseStatusDtls insCaseStatusDtls = new CaseStatusDtls();
-		CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
-		CaseStatusKey mdfCaseStatusKey = new CaseStatusKey();
-		UniqueID uniqueIDObj = UniqueIDFactory.newInstance();
+		if (CASESTATUS.COMPLETED.equals(caseHeaderDtls.statusCode)) {
 
-		caseHeaderDtls.statusCode = CASESTATUS.OPEN;
-		caseHeaderObj.modify(caseHeaderKey, caseHeaderDtls);
-		currentCaseStatusKey.caseID = submitForApprovalKey.caseID;
-		currentCaseStatusKey.nullDate = Date.kZeroDate;
-		CaseStatusDtls caseStatusDtls = caseStatusObj
-				.readCurrentStatusByCaseID1(currentCaseStatusKey);
-		mdfCaseStatusDtls.assign(caseStatusDtls);
-		mdfCaseStatusDtls.endDate = TransactionInfo.getSystemDate();
-		mdfCaseStatusDtls.endDateTime = TransactionInfo.getSystemDateTime();
-		mdfCaseStatusKey.caseStatusID = caseStatusDtls.caseStatusID;
-		caseStatusObj.modify(mdfCaseStatusKey, mdfCaseStatusDtls);
-		insCaseStatusDtls.caseID = submitForApprovalKey.caseID;
-		insCaseStatusDtls.statusCode = CASESTATUS.OPEN;
-		insCaseStatusDtls.startDate = TransactionInfo.getSystemDate();
-		insCaseStatusDtls.endDate = Date.kZeroDate;
-		insCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
-		insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
-		insCaseStatusDtls.comments = "";
-		caseStatusObj.insert(insCaseStatusDtls);
+			CurrentCaseStatusKey currentCaseStatusKey = new CurrentCaseStatusKey();
 
-		// Update the transaction log.
+			CaseStatusDtls mdfCaseStatusDtls = new CaseStatusDtls();
+			CaseStatusDtls insCaseStatusDtls = new CaseStatusDtls();
+			CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
+			CaseStatusKey mdfCaseStatusKey = new CaseStatusKey();
+			UniqueID uniqueIDObj = UniqueIDFactory.newInstance();
+
+			caseHeaderDtls.statusCode = CASESTATUS.OPEN;
+			caseHeaderObj.modify(caseHeaderKey, caseHeaderDtls);
+			currentCaseStatusKey.caseID = submitForApprovalKey.caseID;
+			currentCaseStatusKey.nullDate = Date.kZeroDate;
+			CaseStatusDtls caseStatusDtls = caseStatusObj
+					.readCurrentStatusByCaseID1(currentCaseStatusKey);
+			mdfCaseStatusDtls.assign(caseStatusDtls);
+			mdfCaseStatusDtls.endDate = TransactionInfo.getSystemDate();
+			mdfCaseStatusDtls.endDateTime = TransactionInfo.getSystemDateTime();
+			mdfCaseStatusKey.caseStatusID = caseStatusDtls.caseStatusID;
+			caseStatusObj.modify(mdfCaseStatusKey, mdfCaseStatusDtls);
+			insCaseStatusDtls.caseID = submitForApprovalKey.caseID;
+			insCaseStatusDtls.statusCode = CASESTATUS.OPEN;
+			insCaseStatusDtls.startDate = TransactionInfo.getSystemDate();
+			insCaseStatusDtls.endDate = Date.kZeroDate;
+			insCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
+			insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
+			insCaseStatusDtls.comments = "";
+			caseStatusObj.insert(insCaseStatusDtls);
+
+		}
 		if (submitForApprovalKey != null && submitForApprovalKey.caseID != 0L) {
 			MaintainCase maintainCaseObj = MaintainCaseFactory.newInstance();
 			CaseIDKey caseIDKey = new CaseIDKey();
@@ -445,6 +454,31 @@ public abstract class MOLSAMaintainProductDelivery extends
 							txndescription, submitForApprovalKey.caseID, 0L);
 		}
 
+		final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+		taskCreateDetails.caseID = submitForApprovalKey.caseID;
+
+		final LocalisableString subject = new LocalisableString(
+				BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
+		curam.piwrapper.caseheader.impl.CaseHeader caseHeader = caseHeaderDAO
+				.get(submitForApprovalKey.caseID);
+
+		subject.arg(caseHeader.getCaseReference());
+
+		String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+				productDeliveryDAO.get(submitForApprovalKey.caseID)
+						.getProductType().getCode(),
+				TransactionInfo.getProgramLocale());
+		subject.arg(productName);
+		subject.arg(caseHeader.getConcernRole().getName());
+
+		taskCreateDetails.subject = subject.getMessage(TransactionInfo
+				.getProgramLocale());
+
+		enactmentStructs.add(taskCreateDetails);
+		EnactmentService.startProcessInV3CompatibilityMode(
+				MOLSAConstants.kMOLSAProductDeliveryRejectTask,
+				enactmentStructs);
 		Event eventKey = new Event();
 		eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventClass;
 		eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventType;
@@ -613,9 +647,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
 			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
-		} else if(productDeliveryTypeDetails.productType
-				.equals(PRODUCTTYPE.MOLSADETERMINEPRODUCT)){
-			//TODO code duplication, refactor to remove duplication.
+		} else if (productDeliveryTypeDetails.productType
+				.equals(PRODUCTTYPE.MOLSADETERMINEPRODUCT)) {
+			// TODO code duplication, refactor to remove duplication.
 			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
 					.getID();
 			final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
@@ -648,7 +682,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 						.readEvidence(evidenceCaseKey);
 
 				final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
- 
+
 				if (null != dynamicEvidenceDataDetails.getAttribute(kendDate)
 						.getValue()
 						&& !dynamicEvidenceDataDetails.getAttribute(kendDate)
