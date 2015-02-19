@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file:/D:/Curam/catalog/RuleSet.xsd"
+	name="MOLSAAnonymousParentsSummaryRuleSet">
+	<Class extends="DefaultEvidenceSummary" extendsRuleSet="EvidenceSummaryRuleSet"
+		name="MOLSAAnonymousParentsSummary">
+
+		<Attribute name="evidence">
+			<type>
+				<ruleclass name="AnonymousParents" ruleset="AnonymousParentsRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+
+		<Attribute name="summary">
+			<type>
+					<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+					<choose>
+						<type>
+							<javaclass name="curam.creole.value.Message" />
+						</type>
+						<when>
+							<condition>
+								<reference attribute="anonymousParents">
+									<reference attribute="evidence"/>
+								</reference>
+							</condition>
+							<value>
+								<ResourceMessage key="SUMMARY_MSG_1"
+									resourceBundle="curam.evidence.AnonymousParentsSummaryRuleSet">
+									<reference attribute="concernRoleName">
+										<reference attribute="participantRole">
+											<reference attribute="related_participant">
+												<reference attribute="evidence"/>
+											</reference>
+										</reference>
+									</reference>
+								</ResourceMessage>
+							</value>
+						</when>
+						<otherwise>
+							<value>
+								<ResourceMessage key="SUMMARY_MSG_2"
+									resourceBundle="curam.evidence.AnonymousParentsSummaryRuleSet">
+									<reference attribute="concernRoleName">
+										<reference attribute="participantRole">
+											<reference attribute="related_participant">
+												<reference attribute="evidence"/>
+											</reference>
+										</reference>
+									</reference>
+								</ResourceMessage>
+							</value>
+						</otherwise>
+					</choose>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>
