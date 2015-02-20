@@ -14,7 +14,8 @@ import curam.core.struct.BatchProcessDtls;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingIDList;
 import curam.core.struct.ChunkMainParameters;
-import curam.molsa.pdc.generator.fact.MOLSABulkPDCGeneratorStreamFactory;
+import curam.molsa.pdc.generator.fact.MOLSABulkPDCApproveStreamFactory;
+import curam.molsa.pdc.generator.fact.MOLSABulkPDCApproveStreamFactory;
 import curam.struct.CaseIDKey;
 import curam.util.dataaccess.CuramValueList;
 import curam.util.dataaccess.DynamicDataAccess;
@@ -25,7 +26,7 @@ import curam.util.resources.Trace;
 import curam.util.type.Date;
 import curam.util.type.NotFoundIndicator;
 
-public class MOLSABulkPDCGeneratorBatch extends curam.molsa.pdc.generator.base.MOLSABulkPDCGeneratorBatch {
+public class MOLSABulkPDCApproveBatch extends curam.molsa.pdc.generator.base.MOLSABulkPDCApproveBatch {
 
   protected static final int kFirstKeyValue = 1;
   protected final int kChunkSize;
@@ -34,7 +35,7 @@ public class MOLSABulkPDCGeneratorBatch extends curam.molsa.pdc.generator.base.M
   protected final int kUnProcessedChunkReadWait;
   protected final boolean kProcessUnProcessedChunks;
 
-  public MOLSABulkPDCGeneratorBatch() {
+  public MOLSABulkPDCApproveBatch() {
     String chunkSize = Configuration.getProperty(EnvVars.ENV_MOLSAINFORMATIONPROVIDER_CHUNK_SIZE);
     if (chunkSize == null) {
       this.kChunkSize = 500;
@@ -97,24 +98,23 @@ public class MOLSABulkPDCGeneratorBatch extends curam.molsa.pdc.generator.base.M
   public void process() throws AppException, InformationalException {
     BatchStreamHelper batchStreamHelper = new BatchStreamHelper();
     ChunkMainParameters chunkMainParameters = new ChunkMainParameters();
-    MOLSABulkPDCGeneratorBatchWrapper molsaBulkPDCGeneratorBatchWrapper = new MOLSABulkPDCGeneratorBatchWrapper(this);
-    curam.molsa.pdc.generator.intf.MOLSABulkPDCGeneratorStream mmBulkPDCGenerationStreamer = MOLSABulkPDCGeneratorStreamFactory.newInstance();
-    MOLSABulkPDCGeneratorStreamWrapper molsaBulkPDCGeneratorStreamWrapper = new MOLSABulkPDCGeneratorStreamWrapper(mmBulkPDCGenerationStreamer);
+    MOLSABulkPDCApproveBatchWrapper molsaBulkPDCApproveBatchWrapper = new MOLSABulkPDCApproveBatchWrapper(this);
+    curam.molsa.pdc.generator.intf.MOLSABulkPDCApproveStream mmBulkPDCApproveStreamer = MOLSABulkPDCApproveStreamFactory.newInstance();
+    MOLSABulkPDCApproveStreamWrapper molsaBulkPDCApproveStreamWrapper = new MOLSABulkPDCApproveStreamWrapper(mmBulkPDCApproveStreamer);
 
     // Querying only those IC cases which have at least one active Legacy
     // Benefit Evidence or active Benefit evidence of type 'Exception'. 
     CuramValueList<CaseIDKey> curamValueList = null;
    
 
-    String sql = " SELECT DISTINCT ch.caseID INTO :caseID " + "FROM evidencedescriptor ed, caseheader ch " + "WHERE ch.caseTypeCode = 'CT5' AND ed.caseid = ch.caseid "
-        + " AND ed.evidencetype = 'DET0001281' AND ed.statusCode = 'EDS1'";
+    String sql = " SELECT DISTINCT ch.caseID INTO :caseID " + "FROM caseheader ch " + "WHERE ch.caseTypeCode = 'CT2' ";
 
     try {
       curamValueList = DynamicDataAccess.executeNsMulti(CaseIDKey.class, null, false, false, sql);
-      Trace.kTopLevelLogger.info("********   Bulk PDC Generation Chunker. Total Cases with Legacy Benefit evidences and Benefit Evidence of type Exception is ==> "
+      Trace.kTopLevelLogger.info("********   Bulk PDC Approve Chunker. Total PDC Cases  ==> "
           + curamValueList.size());
     } catch (Exception e) {
-      Trace.kTopLevelLogger.info("********  Bulk PDC Generation Chunker. Couldn't read the IC cases to be procesed. See error below ******");
+      Trace.kTopLevelLogger.info("********  Bulk PDC Approve Chunker. Couldn't read the PDC cases to be procesed. See error below ******");
       e.printStackTrace();
     }
 
@@ -154,8 +154,8 @@ public class MOLSABulkPDCGeneratorBatch extends curam.molsa.pdc.generator.base.M
     chunkMainParameters.processUnProcessedChunks = kProcessUnProcessedChunks;
     chunkMainParameters.startChunkKey = 1L;
     chunkMainParameters.unProcessedChunkReadWait = kUnProcessedChunkReadWait;
-    batchStreamHelper.runChunkMain(BATCHPROCESSNAME.MOLSA_BULKPDC_GENERATOR, null, molsaBulkPDCGeneratorBatchWrapper, batchProcessingIDList, chunkMainParameters,
-        molsaBulkPDCGeneratorStreamWrapper);
+    batchStreamHelper.runChunkMain(BATCHPROCESSNAME.MOLSA_BULKPDC_APPROVE, null, molsaBulkPDCApproveBatchWrapper, batchProcessingIDList, chunkMainParameters,
+        molsaBulkPDCApproveStreamWrapper);
     
     String removePosHollink$SQLString = "Delete from PositionHolderLink where PositionHolderLinkID in ("+positionHolderLinkDtls.positionHolderLinkID+","+positionHolderLinkDtls1.positionHolderLinkID+")";
     System.out.println(removePosHollink$SQLString);

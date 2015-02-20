@@ -102,7 +102,7 @@ import curam.verification.sl.infrastructure.entity.struct.VerificationKey;
 import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetails;
 import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetailsList;
 
-public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.MOLSABulkPDCGeneratorStream {
+public class MOLSABulkCheckEligibilityStream extends curam.molsa.pdc.generator.base.MOLSABulkCheckEligibilityStream {
 
   protected static final CREOLEBulkCaseChunkReassessmentResult creoleBulkCaseChunkReassessmentResult = new CREOLEBulkCaseChunkReassessmentResult();
 
@@ -114,20 +114,20 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
   
   @Inject
   private CREOLEProgramRecommendationProductDAO creoleProgramRecommendationProductDAO;
-  public MOLSABulkPDCGeneratorStream() {
+  public MOLSABulkCheckEligibilityStream() {
     GuiceWrapper.getInjector().injectMembers(this);
   }
 
   @Override
   public void process(BatchProcessStreamKey batchProcessStreamKey) throws AppException, InformationalException {
     BatchStreamHelper batchStreamHelper = new BatchStreamHelper();
-    MOLSABulkPDCGeneratorStreamWrapper molsaBulkPDCGeneratorStreamWrapper = new MOLSABulkPDCGeneratorStreamWrapper(this);
+    MOLSABulkCheckEligibilityStreamWrapper molsaBulkCheckEligibilityStreamWrapper = new MOLSABulkCheckEligibilityStreamWrapper(this);
 
     if (batchProcessStreamKey.instanceID.length() == 0) {
-      batchProcessStreamKey.instanceID = BATCHPROCESSNAME.MOLSA_BULKPDC_GENERATOR;
+      batchProcessStreamKey.instanceID = BATCHPROCESSNAME.MOLSA_BULK_CHECKELIGIBILITY;
 
     }
-    batchStreamHelper.runStream(batchProcessStreamKey, molsaBulkPDCGeneratorStreamWrapper);
+    batchStreamHelper.runStream(batchProcessStreamKey, molsaBulkCheckEligibilityStreamWrapper);
 
   }
 
@@ -197,162 +197,14 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
         IntegratedCase integratedCase = (IntegratedCase)integratedCaseDAO.get(Long.valueOf(batchProcessingID.recordID));
         creoleProgramRecommendationCalculator.runProgramRecommendationInline(true, integratedCase, requestedProducts);
         removeICVerifications(batchProcessingID.recordID);
+        removePDVerifications(caseHeaderDtls.concernRoleID);
+        removeVerifications(batchProcessingID.recordID); 
       }
-      
-      CREOLEProgramRecommendationDetailsList1 creoleProgramRecommendationDetailsList1 = creoleProgramRecommendationObj.listProgramRecommendationsForCase1(caseHeaderKey);
-
-      MOLSACREOLEProgramRecommendation molsaCREOLEProgramRecommendationObj = MOLSACREOLEProgramRecommendationFactory.newInstance();
-
-      SimulatedDeterminationKey simulatedDeterminationKey = new SimulatedDeterminationKey();
-      CaseHeaderReadmultiKey1 caseHeaderReadmultiKey12 = new CaseHeaderReadmultiKey1();
-      caseHeaderReadmultiKey12.integratedCaseID=batchProcessingID.recordID;
-     
-      ProductDeliveryKey productDeliveryKey2 = new ProductDeliveryKey();
-      ProductDeliveryDtls productDeliveryDtls2;
-      ProductDelivery productDeliveryObj = ProductDeliveryFactory.newInstance();
-      Product productObj = ProductFactory.newInstance();
-      ProductKey productKey2 = new ProductKey();
-      ProductDtls productDtls;
-      CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List2 = caseHeaderObj.searchByIntegratedCaseID(caseHeaderReadmultiKey12);
-      
-      SubmitForApprovalKey submitForApprovalKey = new SubmitForApprovalKey();
-      
-      
-      for (CREOLEProgramRecommendationDetails creoleProgramRecommendationDetails : creoleProgramRecommendationDetailsList1.list.items()) {
-
-        CREOLEProgramRecommendationKey creoleProgramRecommendationKey = new CREOLEProgramRecommendationKey();
-        creoleProgramRecommendationKey.creoleProgramRecommendationID = creoleProgramRecommendationDetails.creoleProgramRecommendationID;
-        MolsaSimulatedDeterminationDetailsList molsaSimulatedDeterminationDetailsList = molsaCREOLEProgramRecommendationObj
-            .listEligibleSimulatedDeterminations(creoleProgramRecommendationKey);
-
-        
-        
-        for (MolsaSimulatedDeterminationDetails simulatedDeterminationDetails : molsaSimulatedDeterminationDetailsList.dtls.items()) {
-          if (!simulatedDeterminationDetails.dtls.isAuthorized) {
-            
-            boolean isAlreadyExists = false;
-            
-            simulatedDeterminationKey.creoleProgramRecommendationID = simulatedDeterminationDetails.dtls.creoleProgramRecommendationID;
-            simulatedDeterminationKey.simulatedDeterminationID = simulatedDeterminationDetails.dtls.simulatedDeterminationID;
-            
-            
-            for(CaseHeaderReadmultiDetails1 caseHeaderReadmultiDetails1 : caseHeaderReadmultiDetails1List2.dtls.items()){
-              productDeliveryKey2.caseID = caseHeaderReadmultiDetails1.caseID;
-              productDeliveryDtls2 = productDeliveryObj.read(productDeliveryKey2);
-              productKey2.productID = productDeliveryDtls2.productID;
-              productDtls = productObj.read(productKey2);
-              if(simulatedDeterminationDetails.dtls.productName.equals(productDtls.name)) {
-                isAlreadyExists = true;
-              }
-            }
-            
-            if(!isAlreadyExists) {
-              ProductDeliveryKey productDeliveryKey = creoleProgramRecommendationObj.authorize(simulatedDeterminationKey);
-              
-              
-            }
-          }
-        }
-
-      }
-      
-      
-   
-           
-      CaseHeaderReadmultiKey1 caseHeaderReadmultiKey1 = new CaseHeaderReadmultiKey1();
-      caseHeaderReadmultiKey1.integratedCaseID = batchProcessingID.recordID;
-      CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List = caseHeaderObj.searchByIntegratedCaseID(caseHeaderReadmultiKey1);
-      
-      
-      for(CaseHeaderReadmultiDetails1 caseHeaderReadmultiDetails1 : caseHeaderReadmultiDetails1List.dtls.items()){
-        submitForApprovalKey.caseID = caseHeaderReadmultiDetails1.caseID;        
-       
-        if(caseHeaderReadmultiDetails1.statusCode.equals(CASESTATUS.OPEN)) {
-            molsaProductDeliveryObj.submitPDCForApproval(submitForApprovalKey);
-        }
-        removePDCVerifications(caseHeaderReadmultiDetails1.caseID);
-        removePDVerifications(caseHeaderReadmultiDetails1.concernRoleID);
-        
-        
-      }
-
-      /*
-       * Application applicationObj = ApplicationFactory.newInstance();
-       * SearchByCaseIDKey searchByCaseIDKey = new SearchByCaseIDKey();
-       * searchByCaseIDKey.caseID = batchProcessingID.recordID;
-       * ApplicationDtlsList applicationDtlsList =
-       * applicationObj.searchByCaseID(searchByCaseIDKey);
-       * 
-       * for(ApplicationDtls applicationDtls :
-       * applicationDtlsList.dtls.items()) {
-       * 
-       * 
-       * 
-       * CREOLEProgramRecommendation creoleProgramRecommendationObj =
-       * CREOLEProgramRecommendationFactory.newInstance();
-       * 
-       * ApplicationProgramRecommendationDetails
-       * applicationProgramRecommendationDetails = new
-       * ApplicationProgramRecommendationDetails();
-       * applicationProgramRecommendationDetails
-       * .applicationID=applicationDtls.applicationID;
-       * applicationProgramRecommendationDetails.selectedPrograms="4500";
-       * creoleProgramRecommendationObj
-       * .runProgramRecommendationForApplication
-       * (applicationProgramRecommendationDetails);
-       * 
-       * 
-       * 
-       * MOLSACREOLEProgramRecommendation
-       * molsaCREOLEProgramRecommendationObj =
-       * MOLSACREOLEProgramRecommendationFactory.newInstance();
-       * ApplicationKey applicationKey = new ApplicationKey();
-       * applicationKey.applicationID = applicationDtls.applicationID;
-       * MolsaSimulatedDeterminationDetailsList
-       * simulatedDeterminationDetailsList =
-       * molsaCREOLEProgramRecommendationObj
-       * .listLatestAppliedForEligibleSimulatedDeterminations
-       * (applicationKey); SimulatedDeterminationKey
-       * simulatedDeterminationKey = new SimulatedDeterminationKey(); for
-       * (MolsaSimulatedDeterminationDetails simulatedDeterminationDetails
-       * : simulatedDeterminationDetailsList.dtls.items() ) {
-       * if(!simulatedDeterminationDetails.dtls.isAuthorized){
-       * simulatedDeterminationKey.creoleProgramRecommendationID =
-       * simulatedDeterminationDetails.dtls.creoleProgramRecommendationID;
-       * simulatedDeterminationKey.simulatedDeterminationID =
-       * simulatedDeterminationDetails.dtls.simulatedDeterminationID;
-       * creoleProgramRecommendationObj
-       * .authorize(simulatedDeterminationKey); } }
-       * 
-       * 
-       * }
-       */
-     
-     
       AlternateIDRMDtls alternateIDRMDtls = MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(caseHeaderDtls.concernRoleID);
       
       
       
-      ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
-      ProductDeliveryDtls productDeliveryDtls = null;
-      StringBuffer stringBuffer = new StringBuffer();
-      for(CaseHeaderReadmultiDetails1 caseHeaderReadmultiDetails1 : caseHeaderReadmultiDetails1List.dtls.items()){
-        productDeliveryKey.caseID = caseHeaderReadmultiDetails1.caseID;
-        productDeliveryDtls = productDeliveryObj.read(productDeliveryKey);
-        stringBuffer.append("********  Created PDC's "+ productDeliveryKey.caseID+ " "+
-            CodeTable.getOneItem(PRODUCTTYPE.TABLENAME, productDeliveryDtls.productType, TransactionInfo.getProgramLocale()));
-        Trace.kTopLevelLogger.info("********  Created PDC's "+ productDeliveryKey.caseID+ " "+
-            CodeTable.getOneItem(PRODUCTTYPE.TABLENAME, productDeliveryDtls.productType, TransactionInfo.getProgramLocale()));
-      }
-      if(caseHeaderReadmultiDetails1List.dtls.size() == 0) {
-        Trace.kTopLevelLogger.info("********  NO PDC Exists for "+ batchProcessingID.recordID + ": "+caseRefProductNameConcernRoleName.caseReference);
-        creoleBulkCaseChunkReassessmentResult.casesSkippedCount += 1;
-      } else {
-        Trace.kTopLevelLogger.info("********  Number of PDC created for "+ batchProcessingID.recordID 
-            + ": "+caseRefProductNameConcernRoleName.caseReference+ ": "+ caseHeaderReadmultiDetails1List.dtls.size());
-        creoleBulkCaseChunkReassessmentResult.casesChangedCount += caseHeaderReadmultiDetails1List.dtls.size() ;
-        System.out.println("Total PDC Created at this stage:"+creoleBulkCaseChunkReassessmentResult.casesChangedCount) ;
-      }
+     
       
       Trace.kTopLevelLogger.info("********  Processing caseID Successful ==> " +  
           batchProcessingID.recordID + ": "+caseRefProductNameConcernRoleName.caseReference+" "+
@@ -491,32 +343,6 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
     */
   }
   
-  private void createSupervisor(long caseID) throws AppException, InformationalException{
-    System.out.println("Creating Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
-    Case caseObj = CaseFactory.newInstance();
-    CreateCaseSupervisorDetails createCaseSupervisorDetails = new CreateCaseSupervisorDetails();
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.userName=TransactionInfo.getCustomUserID();
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.startDate= Date.getCurrentDate();
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.comments="Added By the Batch Program";
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.caseID = caseID;
-    caseObj.createCaseSupervisor(createCaseSupervisorDetails);
-    
-  }
   
-  private boolean isSupervisorExists(long caseID) throws AppException, InformationalException{
-    System.out.println("Checking Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
-    boolean isAlreadyExists = false;
-    curam.core.facade.intf.IntegratedCase integratedCaseObj = IntegratedCaseFactory.newInstance();
-    ListICAdminCaseRoleKey listICAdminCaseRoleKey = new ListICAdminCaseRoleKey();
-    listICAdminCaseRoleKey.caseID = caseID;
-    ListICAdminCaseRoleDetails listICAdminCaseRoleDetails = integratedCaseObj.listAdminCaseRole(listICAdminCaseRoleKey);
-    for(CaseUserRoleDetails caseUserRoleDetails : listICAdminCaseRoleDetails.caseUserRoleDetailsList.items()) {
-      if(caseUserRoleDetails.dtls.userName.equals(TransactionInfo.getCustomUserID()) 
-          && caseUserRoleDetails.dtls.recordStatus.equals(RECORDSTATUS.NORMAL)) {
-        isAlreadyExists = true;
-      }
-    }
-    return isAlreadyExists;
-  }
 
 }
