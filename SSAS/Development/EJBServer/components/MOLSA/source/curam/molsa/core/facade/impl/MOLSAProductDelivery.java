@@ -231,8 +231,9 @@ public abstract class MOLSAProductDelivery extends
 							InformationalElement.InformationalType.kError,
 							curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
 							0);
+			TransactionInfo.getInformationalManager().failOperation();
 		}
-		TransactionInfo.getInformationalManager().failOperation();
+		
 		productDeliveryFactoryObj.approve(key);
 	}
 
