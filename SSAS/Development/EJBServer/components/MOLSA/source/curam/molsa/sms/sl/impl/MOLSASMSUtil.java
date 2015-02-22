@@ -165,6 +165,11 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   
   public void sendSMS(MOLSAConcernRoleListAndMessageTextDetails key) throws AppException, InformationalException {
 
+    boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
+    if(!isSMSEnabled) {
+      return;
+    }
+    
     if(key.dtls.concernRoleTabbedList.length()==0){
       curam.core.sl.infrastructure.impl.ValidationManagerFactory
       .getManager()
@@ -1131,6 +1136,10 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   
 public void sendSMSDPMode(MOLSAConcernRoleListAndMessageTextDetails key)
 		throws AppException, InformationalException {
+  boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
+  if(!isSMSEnabled) {
+    return;
+  }
 	sendSMS(key);
 }
 
