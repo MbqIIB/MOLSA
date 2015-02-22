@@ -64,11 +64,13 @@ import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.piwrapper.caseheader.impl.IntegratedCaseDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.exception.RecordNotFoundException;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.Trace;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.type.NotFoundIndicator;
 import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
 import curam.verification.facade.infrastructure.intf.VerificationApplication;
 import curam.verification.facade.infrastructure.struct.CaseEvidenceVerificationDisplayDetails;
@@ -205,7 +207,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
         
       }
       */
-      removeICVerifications(batchProcessingID.recordID);
+      //removeICVerifications(batchProcessingID.recordID);
       CREOLEProgramRecommendationDetailsList1 creoleProgramRecommendationDetailsList1 = creoleProgramRecommendationObj.listProgramRecommendationsForCase1(caseHeaderKey);
 
       MOLSACREOLEProgramRecommendation molsaCREOLEProgramRecommendationObj = MOLSACREOLEProgramRecommendationFactory.newInstance();
@@ -277,8 +279,8 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
         if(caseHeaderReadmultiDetails1.statusCode.equals(CASESTATUS.OPEN)) {
             molsaProductDeliveryObj.submitPDCForApproval(submitForApprovalKey);
         }
-        removePDCVerifications(caseHeaderReadmultiDetails1.caseID);
-        removePDVerifications(caseHeaderReadmultiDetails1.concernRoleID);
+        //removePDCVerifications(caseHeaderReadmultiDetails1.caseID);
+        //removePDVerifications(caseHeaderReadmultiDetails1.concernRoleID);
         
         
       }
@@ -388,6 +390,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
     return null;
   }
   
+  /*
   private void removePDCVerifications(long caseID) throws AppException, InformationalException{
     CaseKeyStruct caseKeyStruct = new CaseKeyStruct();
     caseKeyStruct.caseID = caseID;
@@ -468,7 +471,12 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
       vdiedLinkObj.remove(vdiedLinkKey);
 
     }
-    /*
+   
+  }
+  */
+  
+  private void removeAllVerifications() throws AppException, InformationalException{
+   
     String verSql$SQLString = "delete from VERIFICATION";
     String vdiedSql$SQLString = "delete from VDIEDLINK";
     NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
@@ -495,35 +503,13 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
     } catch (RecordNotFoundException e ) {
       
     }
-    */
-  }
-  
-  private void createSupervisor(long caseID) throws AppException, InformationalException{
-    System.out.println("Creating Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
-    Case caseObj = CaseFactory.newInstance();
-    CreateCaseSupervisorDetails createCaseSupervisorDetails = new CreateCaseSupervisorDetails();
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.userName=TransactionInfo.getCustomUserID();
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.startDate= Date.getCurrentDate();
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.comments="Added By the Batch Program";
-    createCaseSupervisorDetails.newAdminCaseRoleDtls.caseID = caseID;
-    caseObj.createCaseSupervisor(createCaseSupervisorDetails);
     
   }
   
-  private boolean isSupervisorExists(long caseID) throws AppException, InformationalException{
-    System.out.println("Checking Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
-    boolean isAlreadyExists = false;
-    curam.core.facade.intf.IntegratedCase integratedCaseObj = IntegratedCaseFactory.newInstance();
-    ListICAdminCaseRoleKey listICAdminCaseRoleKey = new ListICAdminCaseRoleKey();
-    listICAdminCaseRoleKey.caseID = caseID;
-    ListICAdminCaseRoleDetails listICAdminCaseRoleDetails = integratedCaseObj.listAdminCaseRole(listICAdminCaseRoleKey);
-    for(CaseUserRoleDetails caseUserRoleDetails : listICAdminCaseRoleDetails.caseUserRoleDetailsList.items()) {
-      if(caseUserRoleDetails.dtls.userName.equals(TransactionInfo.getCustomUserID()) 
-          && caseUserRoleDetails.dtls.recordStatus.equals(RECORDSTATUS.NORMAL)) {
-        isAlreadyExists = true;
-      }
-    }
-    return isAlreadyExists;
-  }
+  
+  
+ 
+  
+  
 
 }

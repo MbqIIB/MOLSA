@@ -20,6 +20,7 @@ import curam.util.dataaccess.CuramValueList;
 import curam.util.dataaccess.DynamicDataAccess;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.exception.RecordNotFoundException;
 import curam.util.resources.Configuration;
 import curam.util.resources.Trace;
 import curam.util.type.Date;
@@ -191,8 +192,39 @@ public class MOLSABulkPDCGeneratorBatch extends curam.molsa.pdc.generator.base.M
     NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
     removePosHollink.execute(notFoundIndicator);
     
-    
+    removeAllVerifications();
 
+  }
+  
+  private void removeAllVerifications() throws AppException, InformationalException{
+    
+    String verSql$SQLString = "delete from VERIFICATION";
+    String vdiedSql$SQLString = "delete from VDIEDLINK";
+    NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
+    final curam.util.dataaccess.DataAccess removeAllVer = 
+      curam.util.dataaccess.DataAccessFactory.newInstance(new curam.util.dataaccess.DatabaseMetaData(
+        curam.util.dataaccess.DataAccess.kNoResultClass, curam.util.dataaccess.DataAccess.kNoArg1Class, 
+        curam.util.dataaccess.DataAccess.kNoArg2Class, 
+        curam.util.dataaccess.DataAccess.kNs, "VERIFICATION", "verSql", false , verSql$SQLString
+      ));
+    final curam.util.dataaccess.DataAccess removeAllVdied = 
+      curam.util.dataaccess.DataAccessFactory.newInstance(new curam.util.dataaccess.DatabaseMetaData(
+        curam.util.dataaccess.DataAccess.kNoResultClass, curam.util.dataaccess.DataAccess.kNoArg1Class, 
+        curam.util.dataaccess.DataAccess.kNoArg2Class, 
+        curam.util.dataaccess.DataAccess.kNs, "VDIEDLINK", "vdiedSql", false , vdiedSql$SQLString
+      ));
+    
+    try {
+      removeAllVer.execute(notFoundIndicator);
+    } catch (RecordNotFoundException e ) {
+      
+    }
+    try {
+            removeAllVdied.execute(notFoundIndicator);
+    } catch (RecordNotFoundException e ) {
+      
+    }
+    
   }
 
   
