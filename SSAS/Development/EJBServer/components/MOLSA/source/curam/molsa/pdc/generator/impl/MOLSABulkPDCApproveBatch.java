@@ -161,7 +161,7 @@ public class MOLSABulkPDCApproveBatch extends curam.molsa.pdc.generator.base.MOL
     positionHolderLinkObj.insert(positionHolderLinkDtls1);
    
     
-    Trace.kTopLevelLogger.info("********  Bulk PDC Generation Chunker. Total no of IC cases being processed ****** " + curamValueList.size());
+    Trace.kTopLevelLogger.info("********  Bulk PDC Generation Chunker. Total no of PDC cases being processed ****** " + curamValueList.size());
 
     chunkMainParameters.chunkSize = kChunkSize;
     chunkMainParameters.dontRunStream = kDontRunStream;
