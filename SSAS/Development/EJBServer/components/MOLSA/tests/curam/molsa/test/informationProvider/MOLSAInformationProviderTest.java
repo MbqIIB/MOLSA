@@ -92,6 +92,7 @@ public void testCreateInformationResponse() throws AppException, InformationalEx
     responseDtls.informationRequestID=requestKey.informationRequestID;
     responseDtls.receivedDate=Date.fromISO8601("12122014");
     responseDtls.response="completed";
+	 responseDtls.createdBy = TransactionInfo.getProgramUser();
     MOLSAInformationResponseKey responseKey= molsaInfoResponseObj.createInformationResponse(responseDtls);
    curam.molsa.ip.entity.intf.MOLSAInformationResponse molsaInformationResponseObj=curam.molsa.ip.entity.fact.MOLSAInformationResponseFactory.newInstance();
    MOLSAInformationResponseDtls responseDtls1=molsaInformationResponseObj.read(responseKey);
@@ -124,6 +125,7 @@ public void testCreateInformationResponse() throws AppException, InformationalEx
    responseDtls.informationRequestID=requestKey.informationRequestID;
    responseDtls.receivedDate=Date.fromISO8601("12122014");
    responseDtls.response="completed";
+    responseDtls.createdBy = TransactionInfo.getProgramUser();
    MOLSAInformationResponseKey responseKey1= molsaInfoResponseObj.createInformationResponse(responseDtls);
    
    MOLSAInformationRequestKey requestID=new MOLSAInformationRequestKey();
