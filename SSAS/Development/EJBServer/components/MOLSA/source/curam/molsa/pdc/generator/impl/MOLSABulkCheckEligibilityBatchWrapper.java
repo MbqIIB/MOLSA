@@ -10,7 +10,7 @@ import curam.util.exception.InformationalException;
 import curam.util.type.Blob;
 
 /**
- * This class is a wrapper class for MOLSA PDC Generator batch process.
+ * This class is a wrapper class for MOLSA Bulk CheckEligibilitybatch process.
  * 
  */
 public class MOLSABulkCheckEligibilityBatchWrapper implements BatchMain {

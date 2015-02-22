@@ -63,6 +63,10 @@ import curam.verification.sl.infrastructure.entity.struct.VerificationKey;
 import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetails;
 import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetailsList;
 
+/**
+ * 
+ * The Streamer class for MOLSABulkPDCApproveBatch.
+ */
 public class MOLSABulkPDCApproveStream extends curam.molsa.pdc.generator.base.MOLSABulkPDCApproveStream {
 
   protected static final CREOLEBulkCaseChunkReassessmentResult creoleBulkCaseChunkReassessmentResult = new CREOLEBulkCaseChunkReassessmentResult();

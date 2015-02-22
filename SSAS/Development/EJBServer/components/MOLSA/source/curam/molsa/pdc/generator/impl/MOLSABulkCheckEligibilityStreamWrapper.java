@@ -10,7 +10,7 @@ import curam.util.exception.InformationalException;
 
 /**
  * 
- * This class is a wrapper for the MOLSA Bulk PDC Generator batch streams.
+ * This class is a wrapper for the MOLSA Bulk CheckEligibility batch streams.
  * 
  */
 public class MOLSABulkCheckEligibilityStreamWrapper implements BatchStream {

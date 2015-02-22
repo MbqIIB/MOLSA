@@ -25,6 +25,13 @@ import curam.util.resources.Trace;
 import curam.util.type.Date;
 import curam.util.type.NotFoundIndicator;
 
+
+/**
+ * 
+ * One of the Batch used for Bulk Generation of PDC till the Approval for the migrated Data.
+ * This batch does the Bulk PDC Generation and Submit the PDC's for Migrated Data.
+ *
+ */
 public class MOLSABulkPDCGeneratorBatch extends curam.molsa.pdc.generator.base.MOLSABulkPDCGeneratorBatch {
 
   protected static final int kFirstKeyValue = 1;
