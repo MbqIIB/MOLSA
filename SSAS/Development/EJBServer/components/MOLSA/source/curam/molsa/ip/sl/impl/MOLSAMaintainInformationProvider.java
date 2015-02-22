@@ -12,6 +12,7 @@ import curam.core.sl.intf.CaseParticipantRole;
 import curam.core.struct.AlternateIDRMDtls;
 import curam.core.struct.CaseSearchKey;
 import curam.message.BPOMOLSAINFORMATIONPROVIDERBATCH;
+import curam.molsa.codetable.MOLSAINFORMATIONPROVIDER;
 import curam.molsa.codetable.MOLSAINFORMATIONTYPE;
 import curam.molsa.codetable.MOLSAREQUESTSTATUS;
 import curam.molsa.ip.entity.fact.MOLSAInformationRequestFactory;
@@ -31,6 +32,7 @@ import curam.molsa.ip.facade.struct.MOLSARequestDetailsList;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
 
@@ -95,12 +97,24 @@ public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl
 
     // inset the record into request entity and return back the requestID
     requestDetails.requestStatus = MOLSAREQUESTSTATUS.REQUESTED;
-    if ((!requestDetails.startDate.equals(Date.kZeroDate) || !requestDetails.endDate.equals(Date.kZeroDate)) && !requestDetails.informationType.equals(MOLSAINFORMATIONTYPE.INOUT)) {
+    requestDetails.informationProvider = CodeTable.getParentCode(MOLSAINFORMATIONTYPE.TABLENAME, requestDetails.informationType);
+    if ((!requestDetails.startDate.equals(Date.kZeroDate) || !requestDetails.endDate.equals(Date.kZeroDate)) && !requestDetails.informationProvider.equals(MOLSAINFORMATIONPROVIDER.MOI)) {
       AppException e = new AppException(BPOMOLSAINFORMATIONPROVIDERBATCH.START_DATE_END_DATE_NOT_APPLICABLE);
       throw e;
     }
-
-    requestDetails.informationProvider = CodeTable.getParentCode(MOLSAINFORMATIONTYPE.TABLENAME, requestDetails.informationType);
+    if (requestDetails.informationProvider.equals(MOLSAINFORMATIONPROVIDER.MOI)){
+      if (requestDetails.startDate.equals(Date.kZeroDate)){
+        requestDetails.startDate = Date.getCurrentDate();
+      }
+      if (requestDetails.endDate.equals(Date.kZeroDate)){
+        requestDetails.endDate = Date.getCurrentDate();
+      }
+      if(requestDetails.endDate.before(requestDetails.startDate)){
+        AppException e = new AppException(BPOMOLSAINFORMATIONPROVIDERBATCH.END_DATE_BEFORE_START_DATE);
+        throw e;
+      }   
+    }
+	
     requestDetails.requestDate = Date.getCurrentDate();
     //code to set the QID value
     CaseParticipantRole caseParticipantRole = CaseParticipantRoleFactory
@@ -144,7 +158,7 @@ public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl
       AppException e = new AppException(BPOMOLSAINFORMATIONPROVIDERBATCH.REQUEST_STATUS_ALREADY_COMPPLETED);
       throw e;
     }
-
+    responseDetails.createdBy = TransactionInfo.getProgramUser();
     MOLSAInformationResponseFactory.newInstance().insert(responseDetails);
     // modify the request status to completed
     MOLSARequestIDAndStatus requestIDAndStatus = new MOLSARequestIDAndStatus();
