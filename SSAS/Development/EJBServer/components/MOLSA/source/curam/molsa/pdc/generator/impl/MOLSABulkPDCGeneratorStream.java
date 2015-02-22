@@ -2,9 +2,6 @@ package curam.molsa.pdc.generator.impl;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 import com.google.inject.Inject;
 
@@ -27,18 +24,11 @@ import curam.core.impl.BatchStreamHelper;
 import curam.core.intf.CaseHeader;
 import curam.core.intf.Product;
 import curam.core.intf.ProductDelivery;
-
-import curam.core.sl.entity.fact.PositionHolderLinkFactory;
-import curam.core.sl.entity.intf.PositionHolderLink;
+import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.infrastructure.assessment.struct.CREOLEBulkCaseChunkReassessmentResult;
-
-import curam.core.sl.struct.CancelPositionHolderLinkKey;
 import curam.core.sl.struct.CaseIDKey;
 import curam.core.sl.struct.CaseUserRoleDetails;
 import curam.core.sl.struct.ParticipantKeyStruct;
-import curam.core.sl.entity.struct.CaseKeyStruct;
-import curam.core.sl.entity.struct.PositionHolderLinkDetails;
-import curam.core.sl.entity.struct.PositionHolderLinkDtls;
 import curam.core.struct.AlternateIDRMDtls;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
@@ -59,13 +49,9 @@ import curam.creoleprogramrecommendation.facade.fact.CREOLEProgramRecommendation
 import curam.creoleprogramrecommendation.facade.intf.CREOLEProgramRecommendation;
 import curam.creoleprogramrecommendation.facade.struct.CREOLEProgramRecommendationDetails;
 import curam.creoleprogramrecommendation.facade.struct.CREOLEProgramRecommendationDetailsList1;
-import curam.creoleprogramrecommendation.facade.struct.ProgramRecommendationDetails;
 import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationKey;
 import curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendationCalculator;
-import curam.creoleprogramrecommendation.impl.RequestedProduct;
-import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProduct;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProductDAO;
-import curam.creoleprogramrecommendation.product.impl.RecommendationPeriodUtils;
 import curam.creoleprogramrecommendation.struct.CREOLEProgramRecommendationKey;
 import curam.molsa.core.facade.fact.MOLSAProductDeliveryFactory;
 import curam.molsa.core.facade.intf.MOLSAProductDelivery;
@@ -75,20 +61,14 @@ import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeter
 import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetailsList;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
-import curam.piwrapper.caseheader.impl.IntegratedCase;
 import curam.piwrapper.caseheader.impl.IntegratedCaseDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
-import curam.util.exception.RecordNotFoundException;
 import curam.util.persistence.GuiceWrapper;
-import curam.util.resources.StringUtil;
 import curam.util.resources.Trace;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
-import curam.util.type.DateRange;
-import curam.util.type.NotFoundIndicator;
-import curam.util.type.StringList;
 import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
 import curam.verification.facade.infrastructure.intf.VerificationApplication;
 import curam.verification.facade.infrastructure.struct.CaseEvidenceVerificationDisplayDetails;
@@ -133,13 +113,33 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
 
   @Override
   public String getChunkResult(int skippedCasesCount) throws AppException, InformationalException {
-    // TODO Auto-generated method stub
-    return null;
+    StringBuffer result = new StringBuffer();
+    creoleBulkCaseChunkReassessmentResult.casesSkippedCount += skippedCasesCount;
+    result.append(creoleBulkCaseChunkReassessmentResult.casesSkippedCount);
+    result.append('\t');
+    result.append(creoleBulkCaseChunkReassessmentResult.casesProcessedCount);
+    result.append('\t');
+    result.append(creoleBulkCaseChunkReassessmentResult.casesChangedCount);
+
+    creoleBulkCaseChunkReassessmentResult.casesProcessedCount = 0;
+    creoleBulkCaseChunkReassessmentResult.casesSkippedCount = 0;
+    creoleBulkCaseChunkReassessmentResult.casesChangedCount = 0;
+    return result.toString();
   }
 
   @Override
   public void processSkippedCases(BatchProcessingSkippedRecordList batchProcessingSkippedRecordList) throws AppException, InformationalException {
-    // TODO Auto-generated method stub
+    for (BatchProcessingSkippedRecord batchProcessingSkippedRecord : batchProcessingSkippedRecordList.dtls)
+
+    {
+      
+      Trace.kTopLevelLogger
+          .info("********************* Inside processSkippedCases. SkippedCase ID ==> "
+              + batchProcessingSkippedRecord.recordID
+              + " ********** ");
+      Trace.kTopLevelLogger.info("***************** Error Message "
+          + batchProcessingSkippedRecord.errorMessage);
+    }
 
   }
 
@@ -164,10 +164,11 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
       caseHeaderKey.caseID = batchProcessingID.recordID;
       CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
       
+     
       CREOLEProgramRecommendation creoleProgramRecommendationObj = CREOLEProgramRecommendationFactory.newInstance();
 
   
-      
+      /*
       ProgramRecommendationDetails programRecommendationDetails = new ProgramRecommendationDetails();
       programRecommendationDetails.caseID=batchProcessingID.recordID;
       programRecommendationDetails.numberOfMonths=12;
@@ -196,9 +197,10 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
         
         IntegratedCase integratedCase = (IntegratedCase)integratedCaseDAO.get(Long.valueOf(batchProcessingID.recordID));
         creoleProgramRecommendationCalculator.runProgramRecommendationInline(true, integratedCase, requestedProducts);
-        removeICVerifications(batchProcessingID.recordID);
+        
       }
-      
+      */
+      removeICVerifications(batchProcessingID.recordID);
       CREOLEProgramRecommendationDetailsList1 creoleProgramRecommendationDetailsList1 = creoleProgramRecommendationObj.listProgramRecommendationsForCase1(caseHeaderKey);
 
       MOLSACREOLEProgramRecommendation molsaCREOLEProgramRecommendationObj = MOLSACREOLEProgramRecommendationFactory.newInstance();

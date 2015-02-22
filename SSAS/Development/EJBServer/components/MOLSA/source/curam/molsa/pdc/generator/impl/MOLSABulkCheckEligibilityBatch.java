@@ -79,7 +79,7 @@ public class MOLSABulkCheckEligibilityBatch extends curam.molsa.pdc.generator.ba
         creoleBulkCaseChunkReassessmentResult.casesChangedCount = Integer.parseInt(st.nextToken());
         break;
       }
-      // st.nextToken();
+      
 
     }
 
@@ -90,7 +90,21 @@ public class MOLSABulkCheckEligibilityBatch extends curam.molsa.pdc.generator.ba
   @Override
   public void sendBatchReport(String instanceID, BatchProcessDtls batchProcessDtls, BatchProcessChunkDtlsList processedBatchProcessChunkDtlsList,
       BatchProcessChunkDtlsList unprocessedBatchProcessChunkDtlsList) throws AppException, InformationalException {
+    long totalNumberOfCasesProcessed = 0L;
+    long totalNumberOfCasesSkipped = 0L;
+    long totalNumberOfCasesChanged = 0L;
     
+    for (int i = 0; i < processedBatchProcessChunkDtlsList.dtls.size(); ++i) {
+      CREOLEBulkCaseChunkReassessmentResult creoleBulkCaseChunkReassessmentResult = decodeProcessChunkResult(((curam.core.struct.BatchProcessChunkDtls) processedBatchProcessChunkDtlsList.dtls
+          .item(i)).resultSummary);
+      totalNumberOfCasesProcessed += creoleBulkCaseChunkReassessmentResult.casesProcessedCount;
+      totalNumberOfCasesSkipped += creoleBulkCaseChunkReassessmentResult.casesSkippedCount;
+      totalNumberOfCasesChanged += creoleBulkCaseChunkReassessmentResult.casesChangedCount;
+
+    }
+    
+    System.out.println("TOTAL NUMBER OF CASES PROCESSESED "+totalNumberOfCasesProcessed);
+    System.out.println("TOTAL NUMBER OF CASES SKIPPED "+totalNumberOfCasesSkipped);
   }
 
   @Override

@@ -133,18 +133,40 @@ public class MOLSABulkCheckEligibilityStream extends curam.molsa.pdc.generator.b
 
   @Override
   public String getChunkResult(int skippedCasesCount) throws AppException, InformationalException {
-    // TODO Auto-generated method stub
-    return null;
+    StringBuffer result = new StringBuffer();
+    creoleBulkCaseChunkReassessmentResult.casesSkippedCount += skippedCasesCount;
+    result.append(creoleBulkCaseChunkReassessmentResult.casesSkippedCount);
+    result.append('\t');
+    result.append(creoleBulkCaseChunkReassessmentResult.casesProcessedCount);
+    result.append('\t');
+    result.append(creoleBulkCaseChunkReassessmentResult.casesChangedCount);
+
+    creoleBulkCaseChunkReassessmentResult.casesProcessedCount = 0;
+    creoleBulkCaseChunkReassessmentResult.casesSkippedCount = 0;
+    creoleBulkCaseChunkReassessmentResult.casesChangedCount = 0;
+    return result.toString();
   }
 
   @Override
   public void processSkippedCases(BatchProcessingSkippedRecordList batchProcessingSkippedRecordList) throws AppException, InformationalException {
-    // TODO Auto-generated method stub
+    for (BatchProcessingSkippedRecord batchProcessingSkippedRecord : batchProcessingSkippedRecordList.dtls)
+
+    {
+      
+      Trace.kTopLevelLogger
+          .info("********************* Inside processSkippedCases. SkippedCase ID ==> "
+              + batchProcessingSkippedRecord.recordID
+              + " ********** ");
+      Trace.kTopLevelLogger.info("***************** Error Message "
+          + batchProcessingSkippedRecord.errorMessage);
+    }
 
   }
 
   @Override
   public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID, MOLSAMoiDtls MOLSAMoiDtls) throws AppException, InformationalException {
+    
+   
     Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
     TransactionInfo.setCustomUserID("SYSTEM");
     try {
