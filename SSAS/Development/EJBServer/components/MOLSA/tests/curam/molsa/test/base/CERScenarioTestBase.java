@@ -1,30 +1,26 @@
-/*
- * Licensed Materials - Property of IBM
- * 
- * Copyright IBM Corporation 2012. All Rights Reserved.
- * 
- * US Government Users Restricted Rights - Use, duplication or disclosure
- * restricted by GSA ADP Schedule Contract with IBM Corp.
- */
-/*
- * Copyright 2011-2012 Curam Software Ltd.
- * All rights reserved.
- * 
- * This software is the confidential and proprietary information of Curam
- * Software, Ltd. ("Confidential Information"). You shall not disclose such
- * Confidential Information and shall use it only in accordance with the
- * terms of the license agreement you entered into with Curam Software.
- */
 package curam.molsa.test.base;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.google.inject.Inject;
 
@@ -78,9 +74,9 @@ import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationDet
 import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationDetailsList;
 import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationKey;
 import curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendationDAO;
-import curam.creoleprogramrecommendation.impl.Member;
 import curam.creoleprogramrecommendation.impl.SimulatedDetermination;
 import curam.creoleprogramrecommendation.impl.SimulatedDeterminationAuthorizationDAO;
+import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationDecisionDisplayCategory;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProduct;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProductDAO;
 import curam.creoleprogramrecommendation.struct.CREOLEProgramRecommendationKey;
@@ -277,7 +273,7 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 					.listEligibleSimulatedDeterminations(programRecommendationKey);
 
 			compareUnits(getExpectedHouseholdUnits(),
-					getActualHouseholdUnits(simList));
+					getActualHouseholdUnits(simList, claimDate));
 
 			if (simList.list.size() > 0) {
 				application.setReadyForDetermination();
@@ -400,7 +396,6 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 	 */
 	protected void checkPDEligibilityResult(
 			final Timeline<? extends DeterminationInterval> determination) {
-		// TODO be overridden by all test cases.
 	}
 
 	/**
@@ -527,7 +522,6 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 	protected void checkClaimDateDecisions(
 			CaseDecisionSummaryList caseDecisionSummaryList)
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -535,14 +529,12 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 	protected void setClaimantRegistrationDetails(
 			PersonRegistrationDetails customerRegistrationDetails)
 			throws AppException, InformationalException {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void addMembersToProductDelivery() throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -632,21 +624,21 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 			throws AppException, InformationalException;
 
 	protected List<HouseholdUnit> getActualHouseholdUnits(
-			final SimulatedDeterminationDetailsList simList)
-			throws AppException, InformationalException {
+			final SimulatedDeterminationDetailsList simList,
+			final Date claimDate) throws AppException, InformationalException {
 
 		final List<HouseholdUnit> householdUnits = new ArrayList<HouseholdUnit>();
 
 		for (final SimulatedDeterminationDetails simDetails : simList.list) {
-			householdUnits.add(formatUnitMembers(simDetails));
+			householdUnits.add(formatUnitMembers(simDetails, claimDate));
 		}
 
 		return householdUnits;
 	}
 
 	protected HouseholdUnit formatUnitMembers(
-			final SimulatedDeterminationDetails simulatedDeterminationDetails)
-			throws AppException, InformationalException {
+			final SimulatedDeterminationDetails simulatedDeterminationDetails,
+			final Date claimDate) throws AppException, InformationalException {
 
 		final List<Long> mandatoryMembers = new ArrayList<Long>();
 		final List<Long> optionalMembers = new ArrayList<Long>();
@@ -659,14 +651,18 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 
 		final Long productID = simulatedDetermination.productID();
 
-		final List<Member> unitMembers = simulatedDetermination.getMembers();
+		for (Iterator<Entry<CREOLEProgramRecommendationDecisionDisplayCategory, Timeline<String>>> iterator = simulatedDetermination
+				.decisionDetailsTimelines().entrySet().iterator(); iterator
+				.hasNext();) {
+			Entry<CREOLEProgramRecommendationDecisionDisplayCategory, Timeline<String>> entry = iterator
+					.next();
+			String key = entry.getKey().getCategoryRef();
 
-		for (final curam.creoleprogramrecommendation.impl.Member unitMember : unitMembers) {
+			if (key.contains("SummaryCategory")) {
 
-			if (unitMember.mandatoryMemberIndicator()) {
-				mandatoryMembers.add(unitMember.caseParticipantRoleID());
-			} else {
-				optionalMembers.add(unitMember.caseParticipantRoleID());
+				mandatoryMembers.addAll(returnMembers(entry.getValue().valueOn(
+						claimDate)));
+				break;
 			}
 		}
 
@@ -683,6 +679,39 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 		CREOLETestHelper.assertEquals(expectedUnits.size(), actualUnits.size());
 		CREOLETestHelper.assertEquals(true,
 				expectedUnits.containsAll(actualUnits));
+	}
+
+	protected List<Long> returnMembers(String xml) throws AppException,
+			InformationalException {
+		List<Long> caseparticipantRoleIDs = new ArrayList<Long>();
+		try {
+			final Document document = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder()
+					.parse(new InputSource(new StringReader(xml.trim())));
+			final NodeList unitCompositionList = document
+					.getElementsByTagName("eligibilityUnitMemberDetails");
+			for (int i = 0; i < unitCompositionList.getLength(); i++) {
+				Node node = unitCompositionList.item(i);
+				Element element = (Element) node;
+				NodeList nodelist = element.getElementsByTagName("Item");
+
+				for (int j = 0; j < nodelist.getLength(); j++) {
+					Element element1 = (Element) nodelist.item(j);
+					String fullName = element1.getTextContent().toString();
+					String name[] = fullName.split(CuramConst.gkSpace);
+					caseparticipantRoleIDs
+							.add(getCaseParticipantRoleID(name[0]).caseParticipantRoleID);
+				}
+			}
+
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		return caseparticipantRoleIDs;
 	}
 
 }
