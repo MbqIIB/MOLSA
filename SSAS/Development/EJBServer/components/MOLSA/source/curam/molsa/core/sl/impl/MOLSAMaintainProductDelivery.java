@@ -788,6 +788,11 @@ public abstract class MOLSAMaintainProductDelivery extends
 			event.primaryEventData = key.caseID;
 			EventService.raiseEvent(event);
 
+			//Do not send the SMS, if it is not enabled.
+		  boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
+	    if(!isSMSEnabled) {
+	      return;
+	    }
 			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
 			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
 
