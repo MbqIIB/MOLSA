@@ -623,29 +623,36 @@ public abstract class MOLSAMaintainProductDelivery extends
 			event.primaryEventData = key.caseID;
 			EventService.raiseEvent(event);
 
-			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
-			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
-
-			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
-					.getID();
-			List<Application> applications = applicationDAO
-					.searchByCaseID(caseID);
-			Application application = applications.get(0);
-			String applicationID = application.getReference();
-			AppException msg = new AppException(
-					MOLSASMSSERVICE.APPLICATIONAPPROVED);
-			msg.arg(applicationID);
-			String message = msg.getLocalizedMessage();
-
-			// Construct the input details
-			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
-			Long concernRoleID = productDeliveryDAO.get(key.caseID)
-					.getConcernRole().getID();
-			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
-					.valueOf(concernRoleID);
-			// Need to point to the right template
-			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
-			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+		//Do not send the SMS, if it is not enabled.
+      boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
+      if(!isSMSEnabled) {
+       
+      
+  			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+  			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+  
+  			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
+  					.getID();
+  			List<Application> applications = applicationDAO
+  					.searchByCaseID(caseID);
+  			Application application = applications.get(0);
+  			String applicationID = application.getReference();
+  			AppException msg = new AppException(
+  					MOLSASMSSERVICE.APPLICATIONAPPROVED);
+  			msg.arg(applicationID);
+  			String message = msg.getLocalizedMessage();
+  
+  			// Construct the input details
+  			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
+  			Long concernRoleID = productDeliveryDAO.get(key.caseID)
+  					.getConcernRole().getID();
+  			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
+  					.valueOf(concernRoleID);
+  			// Need to point to the right template
+  			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
+  			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+			
+      }
 
 		} else if (productDeliveryTypeDetails.productType
 				.equals(PRODUCTTYPE.MOLSADETERMINEPRODUCT)) {
@@ -791,31 +798,31 @@ public abstract class MOLSAMaintainProductDelivery extends
 			//Do not send the SMS, if it is not enabled.
 		  boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
 	    if(!isSMSEnabled) {
-	      return;
+
+  			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+  			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+  
+  			Long caseID1 = productDeliveryDAO.get(key.caseID).getParentCase()
+  					.getID();
+  			List<Application> applications = applicationDAO
+  					.searchByCaseID(caseID1);
+  			Application application = applications.get(0);
+  			String applicationID = application.getReference();
+  			AppException msg = new AppException(
+  					MOLSASMSSERVICE.APPLICATIONAPPROVED);
+  			msg.arg(applicationID);
+  			String message = msg.getLocalizedMessage();
+  
+  			// Construct the input details
+  			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
+  			Long concernRoleID = productDeliveryDAO.get(key.caseID)
+  					.getConcernRole().getID();
+  			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
+  					.valueOf(concernRoleID);
+  			// Need to point to the right template
+  			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
+  			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 	    }
-			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
-			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
-
-			Long caseID1 = productDeliveryDAO.get(key.caseID).getParentCase()
-					.getID();
-			List<Application> applications = applicationDAO
-					.searchByCaseID(caseID1);
-			Application application = applications.get(0);
-			String applicationID = application.getReference();
-			AppException msg = new AppException(
-					MOLSASMSSERVICE.APPLICATIONAPPROVED);
-			msg.arg(applicationID);
-			String message = msg.getLocalizedMessage();
-
-			// Construct the input details
-			concernRoleListAndMessageTextDetails.dtls.smsMessageText = message;
-			Long concernRoleID = productDeliveryDAO.get(key.caseID)
-					.getConcernRole().getID();
-			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
-					.valueOf(concernRoleID);
-			// Need to point to the right template
-			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
-			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 
 		}
 
