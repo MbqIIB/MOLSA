@@ -1173,14 +1173,15 @@ private String getCaseTypeCodesClause(final String caseTypeCodesString) {
 		  caseTypeCodesString);
 
   final String result;
-
+  String caseType;
   if (statusList.size() == 0) {
     result = "";
   } else if (statusList.size() < 2) {
     result = " productdelivery.producttype = :caseType ";
   } else {
-    final StringBuffer resultBuf = new StringBuffer(
-      " (productdelivery.producttype = :caseType");
+    final StringBuffer resultBuf = new StringBuffer("(productdelivery.producttype = '");
+    resultBuf.append(statusList.item(0));
+    resultBuf.append("'");
 
     for (int i = 1; i < statusList.size(); i++) {
       resultBuf.append(" OR productdelivery.producttype = '");
