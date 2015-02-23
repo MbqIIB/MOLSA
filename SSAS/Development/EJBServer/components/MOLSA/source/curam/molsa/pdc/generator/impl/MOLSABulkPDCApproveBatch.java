@@ -127,7 +127,7 @@ public class MOLSABulkPDCApproveBatch extends curam.molsa.pdc.generator.base.MOL
     CuramValueList<CaseIDKey> curamValueList = null;
    
 
-    String sql = " SELECT DISTINCT ch.caseID INTO :caseID " + "FROM caseheader ch " + "WHERE ch.caseTypeCode = 'CT2' ";
+    String sql = " SELECT DISTINCT ch.caseID INTO :caseID " + "FROM caseheader ch " + "WHERE ch.caseTypeCode = 'CT2' and ch.statuscode='CS5' ";
 
     try {
       curamValueList = DynamicDataAccess.executeNsMulti(CaseIDKey.class, null, false, false, sql);
