@@ -153,7 +153,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
   @Override
   public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID, MOLSAMoiDtls MOLSAMoiDtls) throws AppException, InformationalException {
     Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
-    TransactionInfo.setCustomUserID("SYSTEM");
+   
     try {
 
       curam.core.struct.CaseKey key = new curam.core.struct.CaseKey();
@@ -162,6 +162,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
       CaseIDKey caseIDKey = new CaseIDKey();
       caseIDKey.caseID = batchProcessingID.recordID;
       
+      
       MOLSAProductDelivery molsaProductDeliveryObj = MOLSAProductDeliveryFactory.newInstance();
       
       CaseReferenceProductNameConcernRoleName caseRefProductNameConcernRoleName = 
@@ -169,9 +170,10 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
       CaseHeader  caseHeaderObj =  CaseHeaderFactory.newInstance();
       CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
       caseHeaderKey.caseID = batchProcessingID.recordID;
-      CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
+      //CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
       
-     
+    
+      
       CREOLEProgramRecommendation creoleProgramRecommendationObj = CREOLEProgramRecommendationFactory.newInstance();
 
   
@@ -279,8 +281,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
         if(caseHeaderReadmultiDetails1.statusCode.equals(CASESTATUS.OPEN)) {
             molsaProductDeliveryObj.submitPDCForApproval(submitForApprovalKey);
         }
-        //removePDCVerifications(caseHeaderReadmultiDetails1.caseID);
-        //removePDVerifications(caseHeaderReadmultiDetails1.concernRoleID);
+       
         
         
       }
@@ -338,10 +339,8 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
        */
      
      
+      /*
       AlternateIDRMDtls alternateIDRMDtls = MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(caseHeaderDtls.concernRoleID);
-      
-      
-      
       ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
       ProductDeliveryDtls productDeliveryDtls = null;
       StringBuffer stringBuffer = new StringBuffer();
@@ -368,6 +367,9 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
           caseRefProductNameConcernRoleName.concernRoleName +": "+
           alternateIDRMDtls.alternateID);
       
+      */
+      Trace.kTopLevelLogger.info("********  Processing caseID Successful ==> " +  
+          batchProcessingID.recordID);
       
     } catch (AppException appException) {
       Trace.kTopLevelLogger.info("********  Processing caseID Failed ==> " + batchProcessingID.recordID);
@@ -383,7 +385,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
       batchProcessingSkippedRecord.stackTrace = stringWriter.toString();
       return batchProcessingSkippedRecord;
     }
-    Trace.kTopLevelLogger.info("ENDING Processing caseID ==> " + batchProcessingID.recordID);
+   
     creoleBulkCaseChunkReassessmentResult.casesProcessedCount += 1;
     
 

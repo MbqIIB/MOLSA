@@ -172,7 +172,7 @@ public class MOLSABulkCheckEligibilityStream extends curam.molsa.pdc.generator.b
     
    
     Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
-    TransactionInfo.setCustomUserID("SYSTEM");
+   
     try {
 
       curam.core.struct.CaseKey key = new curam.core.struct.CaseKey();
@@ -181,14 +181,14 @@ public class MOLSABulkCheckEligibilityStream extends curam.molsa.pdc.generator.b
       CaseIDKey caseIDKey = new CaseIDKey();
       caseIDKey.caseID = batchProcessingID.recordID;
       
-      MOLSAProductDelivery molsaProductDeliveryObj = MOLSAProductDeliveryFactory.newInstance();
+    
       
       CaseReferenceProductNameConcernRoleName caseRefProductNameConcernRoleName = 
         MaintainCaseFactory.newInstance().readCaseReferenceConcernRoleNameProductNameByCaseID(caseIDKey);
       CaseHeader  caseHeaderObj =  CaseHeaderFactory.newInstance();
       CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
       caseHeaderKey.caseID = batchProcessingID.recordID;
-      CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
+      //CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
       
       CREOLEProgramRecommendation creoleProgramRecommendationObj = CREOLEProgramRecommendationFactory.newInstance();
 
@@ -222,20 +222,21 @@ public class MOLSABulkCheckEligibilityStream extends curam.molsa.pdc.generator.b
         
         IntegratedCase integratedCase = (IntegratedCase)integratedCaseDAO.get(Long.valueOf(batchProcessingID.recordID));
         creoleProgramRecommendationCalculator.runProgramRecommendationInline(true, integratedCase, requestedProducts);
-        removeICVerifications(batchProcessingID.recordID);
-        removePDVerifications(caseHeaderDtls.concernRoleID);
-        removeVerifications(batchProcessingID.recordID); 
+        
       }
+      
+      
+      Trace.kTopLevelLogger.info("********  Processing caseID Successful ==> " +  
+          batchProcessingID.recordID );
+      /*
+      
       AlternateIDRMDtls alternateIDRMDtls = MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(caseHeaderDtls.concernRoleID);
-      
-      
-      
-     
       
       Trace.kTopLevelLogger.info("********  Processing caseID Successful ==> " +  
           batchProcessingID.recordID + ": "+caseRefProductNameConcernRoleName.caseReference+" "+
           caseRefProductNameConcernRoleName.concernRoleName +": "+
           alternateIDRMDtls.alternateID);
+          */
       
       
     } catch (AppException appException) {
@@ -252,122 +253,13 @@ public class MOLSABulkCheckEligibilityStream extends curam.molsa.pdc.generator.b
       batchProcessingSkippedRecord.stackTrace = stringWriter.toString();
       return batchProcessingSkippedRecord;
     }
-    Trace.kTopLevelLogger.info("ENDING Processing caseID ==> " + batchProcessingID.recordID);
+    
     creoleBulkCaseChunkReassessmentResult.casesProcessedCount += 1;
     
 
     return null;
   }
   
-  private void removePDCVerifications(long caseID) throws AppException, InformationalException{
-    CaseKeyStruct caseKeyStruct = new CaseKeyStruct();
-    caseKeyStruct.caseID = caseID;
-    CaseEvidenceVerificationDetailsList caseEvidenceVerificationDetailsList = 
-      curam.verification.sl.infrastructure.fact.VerificationFactory.newInstance()
-    .listPDOutstandingCaseVerificationDetails(caseKeyStruct);
-
-    VDIEDLink vdiedLinkObj = VDIEDLinkFactory.newInstance();
-    VDIEDLinkKey vdiedLinkKey = new VDIEDLinkKey();
-    Verification verficationObj = VerificationFactory.newInstance();
-    VerificationKey verificationKey = new VerificationKey();
-    for(CaseEvidenceVerificationDetails caseEvidenceVerificationDetails : caseEvidenceVerificationDetailsList.dtls.items()) {
-      verificationKey.verificationID = caseEvidenceVerificationDetails.verificationID;
-      vdiedLinkKey.VDIEDLinkID = caseEvidenceVerificationDetails.vDIEDLinkID;
-      verficationObj.remove(verificationKey);
-      vdiedLinkObj.remove(vdiedLinkKey);
-    }
-    
-  }
-  
-  private void removeICVerifications(long caseID) throws AppException, InformationalException{
-    CaseKeyStruct caseKeyStruct = new CaseKeyStruct();
-    caseKeyStruct.caseID = caseID;
-    CaseEvidenceVerificationDetailsList caseEvidenceVerificationDetailsList = 
-      curam.verification.sl.infrastructure.fact.VerificationFactory.newInstance()
-    .listOutstandingIntegratedCaseVerificationDetails(caseKeyStruct);
-
-    VDIEDLink vdiedLinkObj = VDIEDLinkFactory.newInstance();
-    VDIEDLinkKey vdiedLinkKey = new VDIEDLinkKey();
-    Verification verficationObj = VerificationFactory.newInstance();
-    VerificationKey verificationKey = new VerificationKey();
-    for(CaseEvidenceVerificationDetails caseEvidenceVerificationDetails : caseEvidenceVerificationDetailsList.dtls.items()) {
-      verificationKey.verificationID = caseEvidenceVerificationDetails.verificationID;
-      vdiedLinkKey.VDIEDLinkID = caseEvidenceVerificationDetails.vDIEDLinkID;
-      verficationObj.remove(verificationKey);
-      vdiedLinkObj.remove(vdiedLinkKey);
-    }
-    
-  }
-  
-  private void removePDVerifications(long participantID) throws AppException, InformationalException{
-    
-    
-    ParticipantKeyStruct participantKeyStruct = new ParticipantKeyStruct();
-    participantKeyStruct.participantID = participantID;
-    CaseEvidenceVerificationDetailsList caseEvidenceVerificationDetailsList = 
-      curam.verification.sl.infrastructure.fact.VerificationFactory.newInstance()
-    .listPOutstandingVerificationDetails(participantKeyStruct);
-
-    VDIEDLink vdiedLinkObj = VDIEDLinkFactory.newInstance();
-    VDIEDLinkKey vdiedLinkKey = new VDIEDLinkKey();
-    Verification verficationObj = VerificationFactory.newInstance();
-    VerificationKey verificationKey = new VerificationKey();
-    for(CaseEvidenceVerificationDetails caseEvidenceVerificationDetails : caseEvidenceVerificationDetailsList.dtls.items()) {
-      verificationKey.verificationID = caseEvidenceVerificationDetails.verificationID;
-      vdiedLinkKey.VDIEDLinkID = caseEvidenceVerificationDetails.vDIEDLinkID;
-      verficationObj.remove(verificationKey);
-      vdiedLinkObj.remove(vdiedLinkKey);
-    }
-    
-  }
-  
-  
-  private void removeVerifications(long caseID) throws AppException, InformationalException{
-    CaseKey caseKey = new CaseKey();
-    caseKey.caseID = caseID;
-    VerificationApplication verificationApplicationObj = VerificationApplicationFactory.newInstance();
-    CaseEvidenceVerificationDisplayDetailsList caseEvidenceVerificationDisplayDetailsList = 
-      verificationApplicationObj.listVerificationDetailsforCaseEvidence(caseKey);
-    VDIEDLink vdiedLinkObj = VDIEDLinkFactory.newInstance();
-    VDIEDLinkKey vdiedLinkKey = new VDIEDLinkKey();
-    Verification verficationObj = VerificationFactory.newInstance();
-    VerificationKey verificationKey = new VerificationKey();
-    for(CaseEvidenceVerificationDisplayDetails caseEvidenceVerificationDisplayDetails : caseEvidenceVerificationDisplayDetailsList.dtls.items()) {
-      verificationKey.verificationID = caseEvidenceVerificationDisplayDetails.verificationID;
-      vdiedLinkKey.VDIEDLinkID = caseEvidenceVerificationDisplayDetails.vDIEDLinkID;
-      verficationObj.remove(verificationKey);
-      vdiedLinkObj.remove(vdiedLinkKey);
-
-    }
-    /*
-    String verSql$SQLString = "delete from VERIFICATION";
-    String vdiedSql$SQLString = "delete from VDIEDLINK";
-    NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
-    final curam.util.dataaccess.DataAccess removeAllVer = 
-      curam.util.dataaccess.DataAccessFactory.newInstance(new curam.util.dataaccess.DatabaseMetaData(
-        curam.util.dataaccess.DataAccess.kNoResultClass, curam.util.dataaccess.DataAccess.kNoArg1Class, 
-        curam.util.dataaccess.DataAccess.kNoArg2Class, 
-        curam.util.dataaccess.DataAccess.kNs, "VERIFICATION", "verSql", false , verSql$SQLString
-      ));
-    final curam.util.dataaccess.DataAccess removeAllVdied = 
-      curam.util.dataaccess.DataAccessFactory.newInstance(new curam.util.dataaccess.DatabaseMetaData(
-        curam.util.dataaccess.DataAccess.kNoResultClass, curam.util.dataaccess.DataAccess.kNoArg1Class, 
-        curam.util.dataaccess.DataAccess.kNoArg2Class, 
-        curam.util.dataaccess.DataAccess.kNs, "VDIEDLINK", "vdiedSql", false , vdiedSql$SQLString
-      ));
-    
-    try {
-      removeAllVer.execute(notFoundIndicator);
-    } catch (RecordNotFoundException e ) {
-      
-    }
-    try {
-            removeAllVdied.execute(notFoundIndicator);
-    } catch (RecordNotFoundException e ) {
-      
-    }
-    */
-  }
   
   
 

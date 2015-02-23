@@ -149,23 +149,23 @@ public class MOLSABulkPDCApproveStream extends curam.molsa.pdc.generator.base.MO
       caseHeaderKey.caseID = batchProcessingID.recordID;
       CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
       
-      removePDCVerifications(caseHeaderDtls.caseID);
-      removePDVerifications(caseHeaderDtls.concernRoleID);
+      //removePDCVerifications(caseHeaderDtls.caseID);
+      //removePDVerifications(caseHeaderDtls.concernRoleID);
       
       boolean isApproved = false;
       SubmitForApprovalKey submitForApprovalKey = new SubmitForApprovalKey();
       submitForApprovalKey.caseID = caseHeaderDtls.caseID;
       if(caseHeaderDtls.statusCode.equals(CASESTATUS.COMPLETED)) {                   
-        //if(!isSupervisorExists(caseHeaderReadmultiDetails1.caseID)) {
-        // createSupervisor(caseHeaderReadmultiDetails1.caseID);
-       // }
+        if(!isSupervisorExists(batchProcessingID.recordID)) {
+         createSupervisor(batchProcessingID.recordID);
+        }
         molsaProductDeliveryObj.approve(submitForApprovalKey); 
         isApproved = true;
 
       }   
       
    
-     
+     /*
       AlternateIDRMDtls alternateIDRMDtls = MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(caseHeaderDtls.concernRoleID);
       
     
@@ -189,7 +189,10 @@ public class MOLSABulkPDCApproveStream extends curam.molsa.pdc.generator.base.MO
               caseRefProductNameConcernRoleName.concernRoleName +": "+
               alternateIDRMDtls.alternateID);
         }
+        */
       
+        Trace.kTopLevelLogger.info("********  Processing caseID Successful ==> " +  
+            batchProcessingID.recordID );
       
     } catch (AppException appException) {
       Trace.kTopLevelLogger.info("********  Processing caseID Failed ==> " + batchProcessingID.recordID);
@@ -205,7 +208,7 @@ public class MOLSABulkPDCApproveStream extends curam.molsa.pdc.generator.base.MO
       batchProcessingSkippedRecord.stackTrace = stringWriter.toString();
       return batchProcessingSkippedRecord;
     }
-    Trace.kTopLevelLogger.info("ENDING Processing caseID ==> " + batchProcessingID.recordID);
+    
     creoleBulkCaseChunkReassessmentResult.casesProcessedCount += 1;
     
 
@@ -323,7 +326,7 @@ public class MOLSABulkPDCApproveStream extends curam.molsa.pdc.generator.base.MO
   }
   
   private void createSupervisor(long caseID) throws AppException, InformationalException{
-    System.out.println("Creating Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
+    //System.out.println("Creating Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
     Case caseObj = CaseFactory.newInstance();
     CreateCaseSupervisorDetails createCaseSupervisorDetails = new CreateCaseSupervisorDetails();
     createCaseSupervisorDetails.newAdminCaseRoleDtls.userName=TransactionInfo.getCustomUserID();
@@ -335,7 +338,7 @@ public class MOLSABulkPDCApproveStream extends curam.molsa.pdc.generator.base.MO
   }
   
   private boolean isSupervisorExists(long caseID) throws AppException, InformationalException{
-    System.out.println("Checking Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
+    //System.out.println("Checking Supervisor"+TransactionInfo.getCustomUserID()+" " +TransactionInfo.getProgramUser());
     boolean isAlreadyExists = false;
     curam.core.facade.intf.IntegratedCase integratedCaseObj = IntegratedCaseFactory.newInstance();
     ListICAdminCaseRoleKey listICAdminCaseRoleKey = new ListICAdminCaseRoleKey();
