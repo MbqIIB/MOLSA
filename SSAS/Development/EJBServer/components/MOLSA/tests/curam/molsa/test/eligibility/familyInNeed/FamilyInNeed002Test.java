@@ -226,10 +226,10 @@ public class FamilyInNeed002Test extends CERScenarioTestBase {
 				 getDate(1, 1, 2000),RELATIONSHIPTYPECODE.SPOUSE);
 		createHouseholdRelationshipEvidence(caseKey,
 				participantid,caseParticipantRoleID,childcaseParticipantRoleID,
-				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.CHILD);
+				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife1participantid,wife1caseParticipantRoleID,childcaseParticipantRoleID,
-				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.CHILD);
+				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife2participantid,wife2caseParticipantRoleID,childcaseParticipantRoleID,
 				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.UNRELATED);
@@ -240,10 +240,10 @@ public class FamilyInNeed002Test extends CERScenarioTestBase {
 		
 		createIncomeEvidence(caseKey, participantid,
 				caseParticipantRoleID,getDate(1, 1, 2013),
-				INCOMETYPECODE.FatherORHusbandPaidEmployment,FREQUENCYCODE.MONTHLY,incomeamount);
+				FREQUENCYCODE.MONTHLY,INCOMETYPECODE.FatherORHusbandPaidEmployment,incomeamount);
 		createIncomeEvidence(caseKey, wife2participantid,
 				wife2caseParticipantRoleID,getDate(1, 1, 2014),
-				INCOMETYPECODE.OtherHouseholdPaidEmployment,FREQUENCYCODE.MONTHLY,incomeamount1);
+				FREQUENCYCODE.MONTHLY,INCOMETYPECODE.OtherHouseholdPaidEmployment,incomeamount1);
 		
 		
 		

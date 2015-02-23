@@ -210,16 +210,16 @@ public class FamilyInNeed003Test extends CERScenarioTestBase {
 		
 		createHouseholdRelationshipEvidence(caseKey,
 				participantid,caseParticipantRoleID,childcaseParticipantRoleID,
-				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.CHILD);
+				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife1participantid,wife1caseParticipantRoleID,childcaseParticipantRoleID,
-				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.CHILD);
+				 getDate(1, 1, 2013),RELATIONSHIPTYPECODE.PARENT);
 		
 		
 		
 		createIncomeEvidence(caseKey, participantid,
 				caseParticipantRoleID,getDate(1, 1, 2013),
-				INCOMETYPECODE.FatherORHusbandPaidEmployment,FREQUENCYCODE.MONTHLY,incomeamount);
+				FREQUENCYCODE.MONTHLY,INCOMETYPECODE.FatherORHusbandPaidEmployment,incomeamount);
 		
 		
 		
