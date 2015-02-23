@@ -2056,6 +2056,9 @@ public abstract class AbstractMolsaTestBase extends CuramServerTest {
 			final String uniqueName) throws AppException,
 			InformationalException {
 
+		CaseKey caseKey = new CaseKey();
+		caseKey.caseID = caseID;
+		addVerifications(caseKey);
 		RegistrationIDDetails registrationIDDetails = this
 				.registerPerson(personRegistrationDetails);
 
