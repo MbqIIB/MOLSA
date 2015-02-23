@@ -14,6 +14,7 @@ import curam.molsa.ip.facade.struct.MOLSARequestDetailsList;
 import curam.molsa.test.framework.CuramServerTest;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 
 public class MOLSAInformationProviderTest extends CuramServerTest{
