@@ -625,7 +625,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 		//Do not send the SMS, if it is not enabled.
       boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
-      if(!isSMSEnabled) {
+      if(isSMSEnabled) {
        
       
   			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
@@ -797,7 +797,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 			//Do not send the SMS, if it is not enabled.
 		  boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
-	    if(!isSMSEnabled) {
+	    if(isSMSEnabled) {
 
   			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
   			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
