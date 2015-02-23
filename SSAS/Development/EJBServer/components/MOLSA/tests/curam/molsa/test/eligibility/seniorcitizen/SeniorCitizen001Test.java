@@ -214,31 +214,34 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 				participantid,caseParticipantRoleID,
 				wife1caseParticipantRoleID,getDate(1,1,2000),
 				RELATIONSHIPTYPECODE.SPOUSE);
-		
+		createHouseholdRelationshipEvidence(caseKey,
+				participantid,caseParticipantRoleID,
+				child2caseParticipantRoleID,getDate(1,1,2000),
+				RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				participantid,caseParticipantRoleID,
 				child1caseParticipantRoleID,getDate(1,1,2000),
-				RELATIONSHIPTYPECODE.CHILD);
+				RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife2participantid,wife2caseParticipantRoleID,
 				wife1caseParticipantRoleID,getDate(1,1,2000),
-				RELATIONSHIPTYPECODE.SIBLING);
+				RELATIONSHIPTYPECODE.SISTERWIFE);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife2participantid,wife2caseParticipantRoleID,
 				child2caseParticipantRoleID,getDate(1,1,1998),
-				RELATIONSHIPTYPECODE.CHILD);
+				RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife2participantid,wife2caseParticipantRoleID,
 				child1caseParticipantRoleID,getDate(1,1,2000),
-				RELATIONSHIPTYPECODE.CHILD);
+				RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife1participantid,wife1caseParticipantRoleID,
 				child2caseParticipantRoleID,getDate(1,1,1998),
-				RELATIONSHIPTYPECODE.CHILD);
+				RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				wife1participantid,wife1caseParticipantRoleID,
 				child1caseParticipantRoleID,getDate(1,1,2000),
-				RELATIONSHIPTYPECODE.CHILD);
+				RELATIONSHIPTYPECODE.PARENT);
 		createHouseholdRelationshipEvidence(caseKey,
 				child1participantid,child1caseParticipantRoleID,
 				child2caseParticipantRoleID,getDate(1,1,2000),
@@ -246,7 +249,7 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 		
 		createIncomeEvidence(caseKey,wife2participantid,
 				wife2caseParticipantRoleID,getDate(1, 1, 2013),
-				INCOMETYPECODE.OtherHouseholdPaidEmployment,FREQUENCYCODE.MONTHLY,incomeamount);
+				FREQUENCYCODE.MONTHLY,INCOMETYPECODE.OtherHouseholdPaidEmployment,incomeamount);
 		
 		createExpenseEvidence(caseKey,
 				participantid,caseParticipantRoleID,

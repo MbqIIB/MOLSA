@@ -216,7 +216,7 @@ public class SeniorCitizen002Test extends CERScenarioTestBase {
 		createHouseholdRelationshipEvidence(caseKey,
 				wife2participantid,wife2caseParticipantRoleID,
 				wife1caseParticipantRoleID,getDate(1,1,2000),
-				RELATIONSHIPTYPECODE.SIBLING);
+				RELATIONSHIPTYPECODE.SISTERWIFE);
 		
 	
 		
