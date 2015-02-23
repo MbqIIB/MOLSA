@@ -111,6 +111,7 @@ import curam.dynamicevidence.type.impl.DynamicEvidenceTypeConverter;
 import curam.intake.facade.struct.ParticipantRoleIDKey;
 import curam.message.BPOEVIDENCECONTROLLER;
 import curam.message.ENTTEMPEVAPPROVALCHECK;
+import curam.molsa.codetable.MOLSABICCODE;
 import curam.molsa.test.framework.CuramServerTest;
 import curam.pdc.fact.PDCUtilFactory;
 import curam.pdc.intf.PDCUtil;
@@ -234,30 +235,24 @@ public abstract class AbstractMolsaTestBase extends CuramServerTest {
 	protected static final String HAMEED_SURNAME = "Hameed";
 
 	protected static final String MOHAMMED_SURNAME = "Mohammed";
-	
+
 	protected static final String MAHEENA_UNIQUE_NAME = "Maheena";
-	
+
 	protected static final String FATHIMA_UNIQUE_NAME = "Fathima";
-	
+
 	protected static final String RAFI_UNIQUE_NAME = "Rafi";
-	
+
 	protected static final String KHAN_SURNAME = "Khan";
-	
-protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
-	
+
+	protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
+
 	protected static final String FIRDOZ_UNIQUE_NAME = "Firdoz";
-	
+
 	protected static final String ASMA_UNIQUE_NAME = "Asma";
-	
-	
-	
-	
+
 	protected static final String TASNEEM_UNIQUE_NAME = "Tasneem";
-	
+
 	protected static final String SULTANA_SURNAME = "Sultana";
-	
-	
-	
 
 	private static final String kMessageAmt = "' and amount: '";
 
@@ -271,9 +266,8 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	private static final String kMessageTo = "' to: '";
 
-	public static final String ADDRESS_DATA = "1\n0\nUS\nQA\n0\n0\nCITY=MM17005\nZIP=\nADD2=MS17003\n" 
-	    + "ADD1=MZ17083\nADD4=\nADD5=\nUNITNO=\nCOUNTRY=QA\nPOBOXNO=\n";
-
+	public static final String ADDRESS_DATA = "1\n0\nUS\nQA\n0\n0\nCITY=MM17005\nZIP=\nADD2=MS17003\n"
+			+ "ADD1=MZ17083\nADD4=\nADD5=\nUNITNO=\nCOUNTRY=QA\nPOBOXNO=\n";
 
 	// The partner's unique name
 	protected static final String PARTNER_UNIQUE_NAME = "Partner";
@@ -378,7 +372,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		integratedCaseID = caseID;
 	}
 
-
 	public long getIntegratedCaseID() {
 		return integratedCaseID;
 	}
@@ -390,7 +383,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 	public List<ParticipantTestDetails> getParticipantTestDetailsList() {
 		return participantTestDetailsList;
 	}
-
 
 	// ___________________________________________________________________________
 	/**
@@ -719,7 +711,7 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	}
 
-		// ___________________________________________________________________________
+	// ___________________________________________________________________________
 	/**
 	 * Activate all changes which have been made to evidence.
 	 */
@@ -1223,8 +1215,7 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 	 */
 	protected RegistrationIDDetails registerClaimant() throws AppException,
 			InformationalException {
-		
-		
+
 		PersonRegistrationDetails claimantRegistrationDetails = new PersonRegistrationDetails();
 
 		RegistrationIDDetails registrationIDDetails = new RegistrationIDDetails();
@@ -1266,19 +1257,18 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		RegistrationIDDetails registrationIDDetails = PersonRegistrationFactory
 				.newInstance().registerPerson(personRegistrationDetails);
 
-		
-	// Get the PDC case id and primary case participant role for that case.
-    PDCUtil pdcUtil = PDCUtilFactory.newInstance();
-    ConcernRoleKey concernRoleKey = new ConcernRoleKey();
+		// Get the PDC case id and primary case participant role for that case.
+		PDCUtil pdcUtil = PDCUtilFactory.newInstance();
+		ConcernRoleKey concernRoleKey = new ConcernRoleKey();
 
-    concernRoleKey.concernRoleID = registrationIDDetails.concernRoleID;
-    PDCCaseIDCaseParticipantRoleID pdcCaseIDCaseParticipantRoleID = pdcUtil
-        .getPDCCaseIDCaseParticipantRoleID(concernRoleKey);
-    
-    final CaseKey caseKey = new CaseKey();
-    caseKey.caseID = pdcCaseIDCaseParticipantRoleID.caseID;
-    addVerifications(caseKey);
-    
+		concernRoleKey.concernRoleID = registrationIDDetails.concernRoleID;
+		PDCCaseIDCaseParticipantRoleID pdcCaseIDCaseParticipantRoleID = pdcUtil
+				.getPDCCaseIDCaseParticipantRoleID(concernRoleKey);
+
+		final CaseKey caseKey = new CaseKey();
+		caseKey.caseID = pdcCaseIDCaseParticipantRoleID.caseID;
+		addVerifications(caseKey);
+
 		// Set the unique name of the participant in question
 		setUniqueName(personRegistrationDetails.firstForename);
 
@@ -1295,9 +1285,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		// Create an SSN alternate ID for this participant
 		// createSSNAlternateID(concernRoleID,
 		// personRegistrationDetails.registrationDate);
-		
-	
-    
 
 		// Return the unique name
 		return registrationIDDetails;
@@ -1332,22 +1319,27 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		DynamicEvidenceTypeConverter.setAttribute(dateOfBirth,
 				Date.getCurrentDate());
 
-		final DynamicEvidenceDataAttributeDetails accountnumber = dynamicEvidenceDataDetails
-				.getAttribute("accountNumber");
-		DynamicEvidenceTypeConverter.setAttribute(accountnumber, "12345");
-		
+//		final DynamicEvidenceDataAttributeDetails accountnumber = dynamicEvidenceDataDetails
+//				.getAttribute("accountNumber");
+//		DynamicEvidenceTypeConverter.setAttribute(accountnumber, "12345");
+
 		final DynamicEvidenceDataAttributeDetails accountName = dynamicEvidenceDataDetails
 				.getAttribute("accountName");
 		DynamicEvidenceTypeConverter.setAttribute(accountName, "Test");
 
-		// final DynamicEvidenceDataAttributeDetails iban =
-		// dynamicEvidenceDataDetails
-		// .getAttribute("iban");
-		// DynamicEvidenceTypeConverter.setAttribute(iban, "12345");
+		final DynamicEvidenceDataAttributeDetails bic = dynamicEvidenceDataDetails
+				.getAttribute("bic");
+		DynamicEvidenceTypeConverter.setAttribute(bic,
+				new CodeTableItem(MOLSABICCODE.TABLENAME,
+						MOLSABICCODE.ABQQQAQAXXX));
 
 		final DynamicEvidenceDataAttributeDetails iban = dynamicEvidenceDataDetails
-				.getAttribute("sortCode");
-		DynamicEvidenceTypeConverter.setAttribute(iban, "90-14-87");
+				.getAttribute("iban");
+		DynamicEvidenceTypeConverter.setAttribute(iban, "1234ABQQQAQA");
+
+//		final DynamicEvidenceDataAttributeDetails sortCode = dynamicEvidenceDataDetails
+//				.getAttribute("sortCode");
+//		DynamicEvidenceTypeConverter.setAttribute(sortCode, "90-14-87");
 
 		final DynamicEvidenceDataAttributeDetails accountStatus = dynamicEvidenceDataDetails
 				.getAttribute("accountStatus");
@@ -1360,8 +1352,7 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		DynamicEvidenceTypeConverter.setAttribute(accountType,
 				new CodeTableItem(BANKACCOUNTTYPE.TABLENAME,
 						BANKACCOUNTTYPE.PERSONALCURR));
-		
-		
+
 		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
 
 		evidenceDescriptorInsertDtls.participantID = concernRoleID;
@@ -1619,10 +1610,10 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 	 */
 	protected void setUpCuramServerTest() {
 
-//		if (Boolean.valueOf(System.getProperty("isproduct.showgui"))
-//				.booleanValue()) {
-//			showStartupGui();
-//		}
+		// if (Boolean.valueOf(System.getProperty("isproduct.showgui"))
+		// .booleanValue()) {
+		// showStartupGui();
+		// }
 
 		// determine in which mode to run the test
 		if ("quick".equalsIgnoreCase(System.getProperty("isproduct.testmode"))) {
@@ -1869,7 +1860,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		}
 	}
 
-
 	/**
 	 * Create a Integrated Case, add the case evidence and apply changes to the
 	 * evidence.
@@ -2052,7 +2042,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 
 	}
 
-
 	/***
 	 * Adds the case members into application.
 	 * 
@@ -2066,11 +2055,10 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 			PersonRegistrationDetails personRegistrationDetails,
 			final String uniqueName) throws AppException,
 			InformationalException {
-	 
+
 		RegistrationIDDetails registrationIDDetails = this
 				.registerPerson(personRegistrationDetails);
-		
-		
+
 		final AddClientRoleDetails caseMemberDetails = new AddClientRoleDetails();
 		caseMemberDetails.caseID = caseID;
 		caseMemberDetails.concernRoleID = registrationIDDetails.concernRoleID;
@@ -2078,10 +2066,6 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		Case caseObj = CaseFactory.newInstance();
 		caseObj.createCaseMember(caseMemberDetails);
 		CaseHeader caseHeader = caseHeaderDAO.get(caseID);
-		
-
-		
-		
 
 		List<CaseParticipantRole> caseParticipantDetails = caseParticipantRoleDAO
 				.listActiveMembersByCase(caseHeader);
@@ -2143,30 +2127,29 @@ protected static final String ZOHRA_UNIQUE_NAME = "Zohra";
 		}
 
 		TransactionInfo.setInformationalManager();
-		
+
 	}
-	
+
 	/**
-     * Will be called before the creation of Product Delivery cases.Can be used
-     * for generic Assertion.
-     * 
-      * @param caseKey
-     *            Contains caseID.
-     * 
-      */
-     protected abstract void preAssertionOnCase(CaseKey caseKey)
-                   throws AppException, InformationalException;
+	 * Will be called before the creation of Product Delivery cases.Can be used
+	 * for generic Assertion.
+	 * 
+	 * @param caseKey
+	 *            Contains caseID.
+	 * 
+	 */
+	protected abstract void preAssertionOnCase(CaseKey caseKey)
+			throws AppException, InformationalException;
 
-     /**
-     * Called after the creation of Product Delivery cases. Can be used for
-     * generic Assertion.
-     * 
-      * @param caseKey
-     *            Contains caseID.
-     * 
-      */
-     protected abstract void postAssertionOnCase(CaseKey caseKey)
-                   throws AppException, InformationalException;
-
+	/**
+	 * Called after the creation of Product Delivery cases. Can be used for
+	 * generic Assertion.
+	 * 
+	 * @param caseKey
+	 *            Contains caseID.
+	 * 
+	 */
+	protected abstract void postAssertionOnCase(CaseKey caseKey)
+			throws AppException, InformationalException;
 
 }
