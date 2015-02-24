@@ -946,5 +946,49 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 
 	}
 
+	public void createAnonymousParentsEvidence(final CaseKey caseKey,
+			final long concernRoleID, final long caseParticipantRoleID,final Date receivedDate,final Boolean anonymousInd)throws AppException,InformationalException {
+		final EvidenceTypeKey eType = new EvidenceTypeKey();
+
+		eType.evidenceType = "DET0001792";
+
+		final EvidenceTypeDef evidenceType = etDefDAO
+				.readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+
+		final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+				.getActiveEvidenceTypeVersionAtDate(evidenceType,
+						Date.getCurrentDate());
+
+		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+				.newInstance(evTypeVersion);
+
+		final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+				.getAttribute("participant");
+		DynamicEvidenceTypeConverter.setAttribute(participant,
+				caseParticipantRoleID);
+		final DynamicEvidenceDataAttributeDetails AnonymousParentInd = dynamicEvidenceDataDetails
+				.getAttribute("anonymousParents");
+		DynamicEvidenceTypeConverter.setAttribute(AnonymousParentInd,anonymousInd );
+//		final DynamicEvidenceDataAttributeDetails startDate = dynamicEvidenceDataDetails
+//				.getAttribute("startDate");
+//		DynamicEvidenceTypeConverter.setAttribute(startDate, receivedDate);
+
+		final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+
+		evidenceDescriptorInsertDtls.participantID = concernRoleID;
+		evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+		evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+		evidenceDescriptorInsertDtls.caseID = caseKey.caseID;
+
+		final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+
+		eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+		eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+		eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+		eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+
+		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+
+	}
 	
 }
