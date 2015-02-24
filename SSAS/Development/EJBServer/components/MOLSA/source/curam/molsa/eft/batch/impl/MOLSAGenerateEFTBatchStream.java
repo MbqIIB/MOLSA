@@ -54,6 +54,7 @@ import curam.core.struct.PaymentInstrumentKey;
 import curam.dynamicevidence.util.impl.DateUtil;
 import curam.evidence.sl.struct.MonthYearDetails;
 import curam.message.MOLSASMSSERVICE;
+import curam.molsa.codetable.MOLSABICCODE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetail;
@@ -70,6 +71,8 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
 import curam.util.resources.Configuration;
+import curam.util.transaction.TransactionInfo;
+import curam.util.type.CodeTable;
 import curam.util.type.Date;
 import curam.util.type.FrequencyPattern;
 import curam.util.type.Money;
@@ -476,7 +479,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		BankDtls bankDtls = MOLSAFinancialHelper
 				.returnBankDetails(bankBranchDtls.bankID);
 		generateEFTDetailList.bankCode = bankDtls.name;
-		generateEFTDetailList.compAccount = bankAccountDtls.bic;
+		generateEFTDetailList.compAccount = CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 
 		generateEFTDetailList.compCode = Configuration
 				.getProperty(EnvVars.EFT_COMP_CODE);
@@ -517,8 +520,10 @@ public class MOLSAGenerateEFTBatchStream extends
 				.getMonthYearDetail(Date.getCurrentDate());
 		List<MOLSAGenerateEFTDetail> generateEFTDetailListForSuspended = getSupendedCaseDetails();
 		for (MOLSAGenerateEFTDetail molsaGenerateEFTDetail : generateEFTDetailListForSuspended) {
-			totalAmount += molsaGenerateEFTDetail.amount.getValue();
-			generateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
+		  if(molsaGenerateEFTDetail.amount.getValue()>0) {
+  			totalAmount += molsaGenerateEFTDetail.amount.getValue();
+  			generateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
+		  }
 		}
 
 		LocalisableString remarks = new LocalisableString(
@@ -578,12 +583,14 @@ public class MOLSAGenerateEFTBatchStream extends
 			bankAccountDtls = MOLSAFinancialHelper
 					.returnBankAccountDetails(paymentInstrumentDtls.bankAccountID);
 			generateEFTDetail.accountNumber = bankAccountDtls.iban;
-			generateEFTDetail.bankSwift = bankAccountDtls.bic;
+			generateEFTDetail.bankSwift = CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 			generateEFTDetail.currencyCode = Configuration
 					.getProperty(EnvVars.ENV_BASECURRENCY);
 			generateEFTDetail.amount = paymentInstrumentDtls.amount;
-			totalAmount += generateEFTDetail.amount.getValue();
-			generateEFTDetailList.dtls.addRef(generateEFTDetail);
+			if(paymentInstrumentDtls.amount.getValue()> 0) {
+  			totalAmount += generateEFTDetail.amount.getValue();
+  			generateEFTDetailList.dtls.addRef(generateEFTDetail);
+			}
 
 		}
 
