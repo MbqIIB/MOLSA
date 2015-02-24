@@ -459,37 +459,6 @@
                 </timelineoperation>
             </derivation>
         </Attribute>
-        <Attribute name="totalExpenseAmountTimeline">
-            <type>
-                <javaclass name="curam.creole.value.Timeline">
-                    <javaclass name="Number"/>
-                </javaclass>
-            </type>
-            <derivation>
-                <timelineoperation>
-                    <sum>
-                        <dynamiclist>
-                            <list>
-                                <intervalvalue>
-                                    <reference attribute="eligibleMembersTimeline">
-                                        <reference attribute="eligibilityUnit"/>
-                                    </reference>
-                                </intervalvalue>
-                            </list>
-                            <listitemexpression>
-                                <intervalvalue>
-                                    <reference attribute="totalMonthlyExpenseAmountTimeline">
-                                        <reference attribute="memberCPRCalculator">
-                                            <current/>
-                                        </reference>
-                                    </reference>
-                                </intervalvalue>
-                            </listitemexpression>
-                        </dynamiclist>
-                    </sum>
-                </timelineoperation>
-            </derivation>
-        </Attribute>
         <Attribute name="totalCountableIncomeTimeline">
             <type>
                 <javaclass name="curam.creole.value.Timeline">
@@ -498,38 +467,9 @@
             </type>
             <derivation>
                 <timelineoperation>
-                    <choose>
-                        <type>
-                            <javaclass name="Number"/>
-                        </type>
-                        <when>
-                            <condition>
-                                <compare comparison="&gt;">
-                                    <intervalvalue>
-                                        <reference attribute="unearnedIncomeAmount"/>
-                                    </intervalvalue>
-                                    <intervalvalue>
-                                        <reference attribute="totalExpenseAmountTimeline"/>
-                                    </intervalvalue>
-                                </compare>
-                            </condition>
-                            <value>
-                                <arithmetic operation="-">
-                                    <intervalvalue>
-                                        <reference attribute="unearnedIncomeAmount"/>
-                                    </intervalvalue>
-                                    <intervalvalue>
-                                        <reference attribute="totalExpenseAmountTimeline"/>
-                                    </intervalvalue>
-                                </arithmetic>
-                            </value>
-                        </when>
-                        <otherwise>
-                            <value>
-                                <Number value="0"/>
-                            </value>
-                        </otherwise>
-                    </choose>
+                    <intervalvalue>
+                        <reference attribute="unearnedIncomeAmount"/>
+                    </intervalvalue>
                 </timelineoperation>
                 
             </derivation>
