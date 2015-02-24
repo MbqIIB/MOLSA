@@ -146,6 +146,8 @@ public class DesertedWife002Test extends CERScenarioTestBase {
 		long caseParticipantRoleID = getCaseParticipantRoleID(MAHEENA_UNIQUE_NAME).caseParticipantRoleID;
 		long sisterwifeparticipantid = getParticipantRoleID(TASNEEM_UNIQUE_NAME).participantRoleID;
 		long sisterwifecaseParticipantRoleID = getCaseParticipantRoleID(TASNEEM_UNIQUE_NAME).caseParticipantRoleID;
+		long apCPRID = getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID;
+		
 		
 		int amount=7500;
 		int amount1=1500;
@@ -184,9 +186,7 @@ public class DesertedWife002Test extends CERScenarioTestBase {
 		createIncomeEvidence(caseKey, participantid,
 				caseParticipantRoleID,getDate(1, 1, 2014),
 				INCOMETYPECODE.INHERITANCE,FREQUENCYCODE.MONTHLY,amount);
-		createIncomeEvidence(caseKey, sisterwifeparticipantid,
-				sisterwifecaseParticipantRoleID,getDate(1, 1, 2014),
-				INCOMETYPECODE.OtherHouseholdPaidEmployment,FREQUENCYCODE.MONTHLY,amount1);
+		
 		
 		
 		createExpenseEvidence(caseKey,
@@ -198,6 +198,12 @@ public class DesertedWife002Test extends CERScenarioTestBase {
 				participantid,caseParticipantRoleID,
 				sisterwifecaseParticipantRoleID,getDate(1, 1, 2000),
 				RELATIONSHIPTYPECODE.SIBLING);
+		createAbsentPersonEvidence(caseKey, participantid,
+				caseParticipantRoleID, apCPRID, currentDate,
+				ABSENTFATHER.DESERTED, "12345678915");
+		createAbsentPersonEvidence(caseKey, sisterwifeparticipantid,
+				sisterwifecaseParticipantRoleID, apCPRID, currentDate,
+				ABSENTFATHER.DESERTED, "12345678915");
 		
 		
 	}
@@ -252,6 +258,18 @@ public class DesertedWife002Test extends CERScenarioTestBase {
        
         registerPersonAndAddToCase(application.getCaseID(),registrationIDDetails,TASNEEM_UNIQUE_NAME);
 		
+        registrationIDDetails = new PersonRegistrationDetails();
+		registrationIDDetails.currentMaritalStatus = MARITALSTATUS.MARRIED;
+		registrationIDDetails.dateOfBirth = getDate(1, 1, 1974);
+		registrationIDDetails.addressData = ADDRESS_DATA;
+		registrationIDDetails.nationality = NATIONALITY.QATARI;
+		registrationIDDetails.firstForename = MOHAMMED_UNIQUE_NAME;
+		registrationIDDetails.surname = HAMEED_SURNAME;
+		registrationIDDetails.sex = GENDER.MALE;
+		registrationIDDetails.registrationDate = currentDate;
+
+		registerPersonAndAddToCase(application.getCaseID(),
+				registrationIDDetails, MOHAMMED_UNIQUE_NAME);
 	}
 	
 	@Override
@@ -266,7 +284,22 @@ public class DesertedWife002Test extends CERScenarioTestBase {
 		// TODO Auto-generated method stub
 		List<HouseholdUnit> householdUnitList = new ArrayList<HouseholdUnit>();
 		List<Long> mandatoryMembers = new ArrayList<Long>();
-		
+	mandatoryMembers
+		.add(getCaseParticipantRoleID(TASNEEM_UNIQUE_NAME).caseParticipantRoleID);
+Calendar calendar = Date.getCurrentDate().getCalendar();
+calendar.add(Calendar.MONTH, 13);
+calendar.set(Calendar.DATE, 1);
+List<Interval<Boolean>> eligibilityIntervals = new ArrayList<Interval<Boolean>>();
+eligibilityIntervals.add(new Interval<Boolean>(null, false));
+
+eligibilityIntervals.add(new Interval<Boolean>(Date.getCurrentDate(),
+		true));
+eligibilityIntervals.add(new Interval<Boolean>(new Date(calendar),
+		false));
+
+HouseholdUnit householdUnit = new HouseholdUnit(mandatoryMembers,  new ArrayList<Long>(),
+		(long) 45005, new Timeline<Boolean>(eligibilityIntervals));
+householdUnitList.add(householdUnit);
 		return householdUnitList;
 	}
 	/**

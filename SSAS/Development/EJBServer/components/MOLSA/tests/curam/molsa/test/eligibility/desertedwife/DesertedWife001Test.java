@@ -17,6 +17,7 @@ import curam.codetable.MARITALSTATUS;
 import curam.codetable.NATIONALITY;
 import curam.codetable.RELATIONSHIPTYPECODE;
 import curam.codetable.SCHOOLTYPE;
+import curam.codetable.VERIFICATIONSTATUS;
 import curam.codetable.impl.APPLICANTROLEEntry;
 import curam.codetable.impl.CASESTATUSEntry;
 import curam.core.facade.fact.IntegratedCaseFactory;
@@ -35,6 +36,7 @@ import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.fact.CachedCaseHeaderFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.intf.CachedCaseHeader;
+import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.infrastructure.assessment.impl.DeterminationInterval;
 import curam.core.sl.infrastructure.impl.CalenderConst;
 import curam.core.sl.infrastructure.struct.EIEvidenceKey;
@@ -61,8 +63,21 @@ import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
 import curam.util.transaction.TransactionInfo.TransactionType;
 import curam.util.type.Date;
+import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
+import curam.verification.facade.infrastructure.intf.VerificationApplication;
+import curam.verification.facade.infrastructure.struct.CreateVerificaitonItemProvidedDetails;
+import curam.verification.facade.infrastructure.struct.ListVerificationItemNameAndLevelDetails;
+import curam.verification.facade.infrastructure.struct.VDIEDLinkKey;
+import curam.verification.sl.infrastructure.fact.VerificationFactory;
+import curam.verification.sl.infrastructure.fact.VerificationItemProvidedFactory;
+import curam.verification.sl.infrastructure.intf.Verification;
+import curam.verification.sl.infrastructure.intf.VerificationItemProvided;
+import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetails;
+import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetailsList;
+import curam.verification.sl.infrastructure.struct.OutstandingIndicator;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
+import curam.molsa.test.base.ParticipantTestDetails;
 import curam.molsa.test.framework.TestHelper;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
@@ -147,7 +162,8 @@ public class DesertedWife001Test extends CERScenarioTestBase {
 		long caseParticipantRoleID = getCaseParticipantRoleID(MAHEENA_UNIQUE_NAME).caseParticipantRoleID;
 		long sisterwifeparticipantid = getParticipantRoleID(TASNEEM_UNIQUE_NAME).participantRoleID;
 		long sisterwifecaseParticipantRoleID = getCaseParticipantRoleID(TASNEEM_UNIQUE_NAME).caseParticipantRoleID;
-		
+		long apCPRID = getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID;
+
 		int amount=7000;
 		int amount1=500;
 		Date currentDate = Date.getCurrentDate();
@@ -193,8 +209,14 @@ public class DesertedWife001Test extends CERScenarioTestBase {
 
 				participantid,caseParticipantRoleID,
 				sisterwifecaseParticipantRoleID,getDate(1, 1, 2000),
-				RELATIONSHIPTYPECODE.SIBLING);
+				RELATIONSHIPTYPECODE.SISTERWIFE);
 		
+		createAbsentPersonEvidence(caseKey, participantid,
+				caseParticipantRoleID, apCPRID, currentDate,
+				ABSENTFATHER.DESERTED, "12345678915");
+		createAbsentPersonEvidence(caseKey, sisterwifeparticipantid,
+				sisterwifecaseParticipantRoleID, apCPRID, currentDate,
+				ABSENTFATHER.DESERTED, "12345678915");
 		
 	}
 
@@ -248,6 +270,18 @@ public class DesertedWife001Test extends CERScenarioTestBase {
        
         registerPersonAndAddToCase(application.getCaseID(),registrationIDDetails,TASNEEM_UNIQUE_NAME);
 		
+        registrationIDDetails = new PersonRegistrationDetails();
+		registrationIDDetails.currentMaritalStatus = MARITALSTATUS.MARRIED;
+		registrationIDDetails.dateOfBirth = getDate(1, 1, 1974);
+		registrationIDDetails.addressData = ADDRESS_DATA;
+		registrationIDDetails.nationality = NATIONALITY.QATARI;
+		registrationIDDetails.firstForename = MOHAMMED_UNIQUE_NAME;
+		registrationIDDetails.surname = HAMEED_SURNAME;
+		registrationIDDetails.sex = GENDER.MALE;
+		registrationIDDetails.registrationDate = currentDate;
+
+		registerPersonAndAddToCase(application.getCaseID(),
+				registrationIDDetails, MOHAMMED_UNIQUE_NAME);
 	}
 	
 	@Override
@@ -357,7 +391,60 @@ householdUnitList.add(householdUnit);
 		
 	}
 	
-	
+	protected void addPDCVerification(final SubmitForApprovalKey approvalKey)
+			throws AppException, InformationalException {
+
+		CreateVerificaitonItemProvidedDetails details = new CreateVerificaitonItemProvidedDetails();
+
+		final VerificationApplication verificationApplicationObj = VerificationApplicationFactory
+				.newInstance();
+
+		VerificationItemProvided verificationItemProvidedObj = VerificationItemProvidedFactory
+				.newInstance();
+		final Verification verificationObj = VerificationFactory.newInstance();
+		
+		final OutstandingIndicator outstandingIndicator = new OutstandingIndicator();
+
+	    outstandingIndicator.verificationStatus = VERIFICATIONSTATUS.NOTVERIFIED;
+
+	    final CaseKeyStruct caseKeyStruct = new CaseKeyStruct();
+
+	    caseKeyStruct.caseID = approvalKey.caseID;
+
+		for (int i = 0; i < participantTestDetailsList.size(); i++) {
+
+			ParticipantTestDetails participantTestDetails = (ParticipantTestDetails) participantTestDetailsList
+					.get(i);
+
+
+			final CaseEvidenceVerificationDetailsList participantList = verificationObj
+					.listCaseVerificationDetails(
+						      caseKeyStruct, outstandingIndicator);
+			for (final CaseEvidenceVerificationDetails verificationDetails : participantList.dtls) {
+				details = new CreateVerificaitonItemProvidedDetails();
+
+				details.dtls.itemDtls.caseID = approvalKey.caseID;
+				details.dtls.itemDtls.caseParticipantConcernRoleID = participantTestDetails.participantRoleID;
+
+				details.dtls.createDtls.dateReceived = Date.getCurrentDate();
+				details.dtls.createDtls.VDIEDLinkID = verificationDetails.vDIEDLinkID;
+
+				final VDIEDLinkKey vDIEDLinkKey = new VDIEDLinkKey();
+				vDIEDLinkKey.dtls.VDIEDLinkID = verificationDetails.vDIEDLinkID;
+
+				final ListVerificationItemNameAndLevelDetails listVerificationItemNameAndLevelDetails = verificationApplicationObj
+						.readAllActiveVerificationItemNameAndLevel(vDIEDLinkKey);
+
+				details.dtls.createDtls.verificationItemUtilizationID = listVerificationItemNameAndLevelDetails.listDtls.dtls
+						.get(0).code;
+				verificationItemProvidedObj
+						.createVerificationItemProvided(details.dtls);
+
+			}
+
+		}
+
+	}
 	
 
 }

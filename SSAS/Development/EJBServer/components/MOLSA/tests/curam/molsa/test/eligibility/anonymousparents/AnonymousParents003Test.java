@@ -15,6 +15,7 @@ import curam.codetable.MARITALSTATUS;
 import curam.codetable.NATIONALITY;
 import curam.codetable.RELATIONSHIPTYPECODE;
 import curam.codetable.SCHOOLTYPE;
+import curam.codetable.VERIFICATIONSTATUS;
 import curam.codetable.impl.APPLICANTROLEEntry;
 import curam.codetable.impl.CASESTATUSEntry;
 import curam.core.facade.fact.IntegratedCaseFactory;
@@ -33,6 +34,7 @@ import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.fact.CachedCaseHeaderFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.intf.CachedCaseHeader;
+import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.infrastructure.assessment.impl.DeterminationInterval;
 import curam.core.sl.infrastructure.impl.CalenderConst;
 import curam.core.sl.infrastructure.struct.EIEvidenceKey;
@@ -60,8 +62,21 @@ import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
 import curam.util.transaction.TransactionInfo.TransactionType;
 import curam.util.type.Date;
+import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
+import curam.verification.facade.infrastructure.intf.VerificationApplication;
+import curam.verification.facade.infrastructure.struct.CreateVerificaitonItemProvidedDetails;
+import curam.verification.facade.infrastructure.struct.ListVerificationItemNameAndLevelDetails;
+import curam.verification.facade.infrastructure.struct.VDIEDLinkKey;
+import curam.verification.sl.infrastructure.fact.VerificationFactory;
+import curam.verification.sl.infrastructure.fact.VerificationItemProvidedFactory;
+import curam.verification.sl.infrastructure.intf.Verification;
+import curam.verification.sl.infrastructure.intf.VerificationItemProvided;
+import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetails;
+import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetailsList;
+import curam.verification.sl.infrastructure.struct.OutstandingIndicator;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
+import curam.molsa.test.base.ParticipantTestDetails;
 import curam.molsa.test.framework.TestHelper;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
@@ -202,29 +217,15 @@ public class AnonymousParents003Test extends CERScenarioTestBase {
 				participantid,caseParticipantRoleID,
 				currentDate);
 		
-		createHouseholdRelationshipEvidence(caseKey,
-				participantid,caseParticipantRoleID,
-				fathercaseParticipantRoleID,getDate(1,1,2000),
-				RELATIONSHIPTYPECODE.PARENT);
+		
 		createHouseholdRelationshipEvidence(caseKey,
 				participantid,caseParticipantRoleID,
 				siblingcaseParticipantRoleID,getDate(10,1,2013),
 				RELATIONSHIPTYPECODE.SIBLING);
-		createHouseholdRelationshipEvidence(caseKey,
-				siblingparticipantid,siblingcaseParticipantRoleID,
-				fathercaseParticipantRoleID,getDate(10,1,2013),
-				RELATIONSHIPTYPECODE.PARENT);
 		
-		createAbsentFatherEvidence(caseKey,
-				participantid,
-				caseParticipantRoleID,fatherparticipantid,fathercaseParticipantRoleID,currentDate,
-				ABSENTFATHER.ANONYMOUS);
-		
-		createAbsentFatherEvidence(caseKey,
-				participantid,
-				siblingcaseParticipantRoleID,fatherparticipantid,fathercaseParticipantRoleID,currentDate,
-				ABSENTFATHER.ANONYMOUS);
-		
+		  createAnonymousParentsEvidence(caseKey, participantid, caseParticipantRoleID, getDate(1,1,2013), true);
+		    createAnonymousParentsEvidence(caseKey, siblingparticipantid, siblingcaseParticipantRoleID, getDate(1,1,2013), true);
+			
 		
 		createAdditionalBenefitEvidence(caseKey, participantid, caseParticipantRoleID,
         currentDate,amount,MOLSABENEFITTYPE.EID);
@@ -313,8 +314,9 @@ public class AnonymousParents003Test extends CERScenarioTestBase {
 		List<Long> mandatoryMembers1 = new ArrayList<Long>();
 		
 		
+		
 		mandatoryMembers
-				.add(getCaseParticipantRoleID(ASMA_UNIQUE_NAME).caseParticipantRoleID);
+		.add(getCaseParticipantRoleID(ASMA_UNIQUE_NAME).caseParticipantRoleID);
 		Calendar calendar = Date.getCurrentDate().getCalendar();
 		calendar.add(Calendar.MONTH, 13);
 		calendar.set(Calendar.DATE, 1);
@@ -329,6 +331,26 @@ public class AnonymousParents003Test extends CERScenarioTestBase {
 		HouseholdUnit householdUnit = new HouseholdUnit(mandatoryMembers,  new ArrayList<Long>(),
 				(long) 45011, new Timeline<Boolean>(eligibilityIntervals));
 		householdUnitList.add(householdUnit);
+		
+		//unit 2
+		
+		mandatoryMembers1
+		.add(getCaseParticipantRoleID(ZOHRA_UNIQUE_NAME).caseParticipantRoleID);
+		
+Calendar calendar1 = Date.getCurrentDate().getCalendar();
+calendar1.add(Calendar.MONTH, 13);
+calendar1.set(Calendar.DATE, 1);
+List<Interval<Boolean>> eligibilityIntervals1 = new ArrayList<Interval<Boolean>>();
+eligibilityIntervals1.add(new Interval<Boolean>(null, false));
+
+eligibilityIntervals1.add(new Interval<Boolean>(Date.getCurrentDate(),
+		true));
+eligibilityIntervals1.add(new Interval<Boolean>(new Date(calendar),
+		false));
+
+HouseholdUnit householdUnit1 = new HouseholdUnit(mandatoryMembers1,  new ArrayList<Long>(),
+		(long) 45011, new Timeline<Boolean>(eligibilityIntervals1));
+householdUnitList.add(householdUnit1);
 		
 		return householdUnitList;
 	}
@@ -393,6 +415,59 @@ public class AnonymousParents003Test extends CERScenarioTestBase {
 	}
 	
 	
-	
+	protected void addPDCVerification(final SubmitForApprovalKey approvalKey)
+			throws AppException, InformationalException {
+
+		CreateVerificaitonItemProvidedDetails details = new CreateVerificaitonItemProvidedDetails();
+
+		final VerificationApplication verificationApplicationObj = VerificationApplicationFactory
+				.newInstance();
+
+		VerificationItemProvided verificationItemProvidedObj = VerificationItemProvidedFactory
+				.newInstance();
+		final Verification verificationObj = VerificationFactory.newInstance();
+		
+		final OutstandingIndicator outstandingIndicator = new OutstandingIndicator();
+
+	    outstandingIndicator.verificationStatus = VERIFICATIONSTATUS.NOTVERIFIED;
+
+	    final CaseKeyStruct caseKeyStruct = new CaseKeyStruct();
+
+	    caseKeyStruct.caseID = approvalKey.caseID;
+
+		for (int i = 0; i < participantTestDetailsList.size(); i++) {
+
+			ParticipantTestDetails participantTestDetails = (ParticipantTestDetails) participantTestDetailsList
+					.get(i);
+
+
+			final CaseEvidenceVerificationDetailsList participantList = verificationObj
+					.listCaseVerificationDetails(
+						      caseKeyStruct, outstandingIndicator);
+			for (final CaseEvidenceVerificationDetails verificationDetails : participantList.dtls) {
+				details = new CreateVerificaitonItemProvidedDetails();
+
+				details.dtls.itemDtls.caseID = approvalKey.caseID;
+				details.dtls.itemDtls.caseParticipantConcernRoleID = participantTestDetails.participantRoleID;
+
+				details.dtls.createDtls.dateReceived = Date.getCurrentDate();
+				details.dtls.createDtls.VDIEDLinkID = verificationDetails.vDIEDLinkID;
+
+				final VDIEDLinkKey vDIEDLinkKey = new VDIEDLinkKey();
+				vDIEDLinkKey.dtls.VDIEDLinkID = verificationDetails.vDIEDLinkID;
+
+				final ListVerificationItemNameAndLevelDetails listVerificationItemNameAndLevelDetails = verificationApplicationObj
+						.readAllActiveVerificationItemNameAndLevel(vDIEDLinkKey);
+
+				details.dtls.createDtls.verificationItemUtilizationID = listVerificationItemNameAndLevelDetails.listDtls.dtls
+						.get(0).code;
+				verificationItemProvidedObj
+						.createVerificationItemProvided(details.dtls);
+
+			}
+
+		}
+
+	}
 
 }

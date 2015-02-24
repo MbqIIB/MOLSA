@@ -184,7 +184,7 @@ public class Widow001Test extends CERScenarioTestBase {
 				rentamount);
 		createHouseholdRelationshipEvidence(caseKey, participantid,
 				caseParticipantRoleID, sisterwifecaseParticipantRoleID,
-				currentDate, RELATIONSHIPTYPECODE.SIBLING);
+				currentDate, RELATIONSHIPTYPECODE.SISTERWIFE);
 
 		createAbsentPersonEvidence(caseKey, participantid,
 				caseParticipantRoleID, apCPRID, currentDate,
@@ -223,6 +223,7 @@ public class Widow001Test extends CERScenarioTestBase {
 		customerRegistrationDetails.currentMaritalStatus = MARITALSTATUS.WIDOWED;
 		customerRegistrationDetails.addressData = ADDRESS_DATA;
 		customerRegistrationDetails.addressType = ADDRESSLAYOUTTYPE.US;
+		
 
 	}
 
@@ -432,5 +433,7 @@ public class Widow001Test extends CERScenarioTestBase {
 		}
 
 	}
+
+
 
 }
