@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import curam.application.impl.Application;
 import curam.codetable.ADDRESSLAYOUTTYPE;
 import curam.codetable.CITIZENSHIPCODE;
+import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.COUNTRY;
 import curam.codetable.FREQUENCYCODE;
 import curam.codetable.GENDER;
@@ -198,6 +199,7 @@ public class MOLSAMoiUpdateTest extends CERScenarioTestBase {
 		customerRegistrationDetails.currentMaritalStatus = MARITALSTATUS.DESERTED;
 		customerRegistrationDetails.addressData = ADDRESS_DATA;
 		customerRegistrationDetails.addressType = ADDRESSLAYOUTTYPE.US;
+		customerRegistrationDetails.alternateIDTypeCodeOpt = CONCERNROLEALTERNATEID.INSURANCENUMBER;
 
 	}
 
@@ -230,27 +232,10 @@ public class MOLSAMoiUpdateTest extends CERScenarioTestBase {
 	protected List<HouseholdUnit> getExpectedHouseholdUnits()
 			throws AppException, InformationalException {
 		// TODO Auto-generated method stub
-		List<HouseholdUnit> householdUnitList = new ArrayList<HouseholdUnit>();
-		List<Long> mandatoryMembers = new ArrayList<Long>();
-
-		mandatoryMembers
-				.add(getCaseParticipantRoleID(TASNEEM_UNIQUE_NAME).caseParticipantRoleID);
-		Calendar calendar = Date.getCurrentDate().getCalendar();
-		calendar.add(Calendar.MONTH, 13);
-		calendar.set(Calendar.DATE, 1);
-		List<Interval<Boolean>> eligibilityIntervals = new ArrayList<Interval<Boolean>>();
-		eligibilityIntervals.add(new Interval<Boolean>(null, false));
-
-		eligibilityIntervals.add(new Interval<Boolean>(Date.getCurrentDate(),
-				true));
-		eligibilityIntervals.add(new Interval<Boolean>(new Date(calendar),
-				false));
-
-		HouseholdUnit householdUnit = new HouseholdUnit(mandatoryMembers,
-				new ArrayList<Long>(), (long) 45005, new Timeline<Boolean>(
-						eligibilityIntervals));
-		householdUnitList.add(householdUnit);
-		return householdUnitList;
+	   List<HouseholdUnit> householdUnitList = new ArrayList<HouseholdUnit>();
+	    
+	    
+	    return householdUnitList;
 	}
 
 	/**
@@ -330,7 +315,7 @@ public class MOLSAMoiUpdateTest extends CERScenarioTestBase {
 		moiDtls.firstName_ar = "Test";
 		moiDtls.fifthName_ar = "LastNameTest";
 		MOLSAConcernRoleTabbedList molsaconcernroletabbedList = new MOLSAConcernRoleTabbedList();
-		molsaconcernroletabbedList.concernRoleTabbedList = concernRoleID.toString();
+		molsaconcernroletabbedList.concernRoleTabbedList = String.valueOf(concernRoleID.concernRoleID);
 		molsaMoi.updateMoiDetails(molsaconcernroletabbedList);
 		
 	}
