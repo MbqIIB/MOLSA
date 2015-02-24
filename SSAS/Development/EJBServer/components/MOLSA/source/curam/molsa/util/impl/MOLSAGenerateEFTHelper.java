@@ -1,7 +1,9 @@
 package curam.molsa.util.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,7 +73,7 @@ public class MOLSAGenerateEFTHelper {
    * @param exelName String
    */
   public void generateExel(MOLSAGenerateEFTDetailList generateEFTDetailList, 
-      MOLSAGenerateEFTParam generateEFTParam, String exelName) {
+      MOLSAGenerateEFTParam generateEFTParam, String exelName) throws AppException, InformationalException {
     XSSFWorkbook workbook = populateExel(generateEFTDetailList, generateEFTParam);
     createExel(workbook, exelName);
   }
@@ -441,7 +443,7 @@ public class MOLSAGenerateEFTHelper {
    * @param exelName String
    */
   
-  private void createExel(XSSFWorkbook workbook,String exelName) {
+  private void createExel(XSSFWorkbook workbook,String exelName) throws AppException, InformationalException{
     try {
       // Write the workbook in file system
       String fileName = Configuration.getProperty("curam.molsa.financial.eft.exelGenerationFolder") 
@@ -453,6 +455,8 @@ public class MOLSAGenerateEFTHelper {
     } catch (Exception e) {
       Trace.kTopLevelLogger.error(
           "Error Occurred while writting the Exel to the disk. " + e, e.getCause());
+      throw new AppException(MOLSABPOGENERATEEFT.ERR_WORD_FILE_WRITE);
+      
     }
   }
   
@@ -461,7 +465,8 @@ public class MOLSAGenerateEFTHelper {
    * @param generateEFTMsWordDetail MOLSAGenerateEFTMsWordDetail
    * @param mswordName String
    */
-  public void generateMsWord(MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail, String mswordName) {
+  public void generateMsWord(MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail, String mswordName) 
+  throws AppException, InformationalException{
     XWPFDocument document = populateMsWord(generateEFTMsWordDetail);
     createMsWord(document, mswordName);
   }
@@ -534,7 +539,7 @@ public class MOLSAGenerateEFTHelper {
    * @param mswordName String
    */
   
-  private void createMsWord(XWPFDocument document,String mswordName) {
+  private void createMsWord(XWPFDocument document,String mswordName) throws AppException, InformationalException{
     try {
       // Write the workbook in file system
       String fileName = Configuration.getProperty(EnvVars.EFT_EXEL_GENERATION_FOLDER) 
@@ -546,6 +551,7 @@ public class MOLSAGenerateEFTHelper {
     } catch (Exception e) {
       Trace.kTopLevelLogger.error(
           "Error Occurred while writting the MSWord to the disk. " + e, e.getCause());
+      throw new AppException(MOLSABPOGENERATEEFT.ERR_WORD_FILE_WRITE);
     }
   }
   
