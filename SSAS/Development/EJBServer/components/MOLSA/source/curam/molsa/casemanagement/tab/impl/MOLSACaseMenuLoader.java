@@ -35,11 +35,12 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 	@Inject
 	private UserDAO userDAO;
 
-
 	@Inject(optional = true)
 	private Map<CASETYPECODEEntry, AppealableCaseType> appealableCaseTypeMap;
 
 	private static final CaseHeaderAdapter caseHeaderAdapter = new CaseHeaderAdapter();
+	
+	private static final String kCertification = "Certification";
 
 	/**
 	 * Constructor.
@@ -154,14 +155,28 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 		final User user = userDAO.get(TransactionInfo.getProgramUser());
 
 		if (statusCode.equals(CASESTATUSEntry.OPEN)) {
-			if (user.getRole().equals(MOLSAConstants.kMolsaCaseAuditorRole)) {
+
+			returnState.setVisible(true, TabLoaderConst.kEdit);
+			returnState.setEnabled(false, TabLoaderConst.kEdit);
+			
+			
+			if (user.getRole().equals(MOLSAConstants.kMolsaCaseWorkerRole)) {
+				returnState.setVisible(true, TabLoaderConst.kSubmit);
+				returnState.setEnabled(false, TabLoaderConst.kSubmit);
+
+			} else if (user.getRole().equals(
+					MOLSAConstants.kMolsaCaseAuditorRole)) {
 				returnState.setVisible(true, TabLoaderConst.kSubmit);
 				returnState.setEnabled(true, TabLoaderConst.kSubmit);
-
+				returnState.setVisible(true, kCertification);
+				returnState.setEnabled(false, kCertification);
+				
 			} else if (user.getRole().equals(MOLSAConstants.kMolsaManagerRole)) {
 
 				returnState.setVisible(true, TabLoaderConst.kSubmit);
 				returnState.setEnabled(false, TabLoaderConst.kSubmit);
+				
+				returnState.setEnabled(true, TabLoaderConst.kEdit);
 
 			}
 
@@ -198,12 +213,19 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 			// END, CR00282451
 
 		} else if (statusCode.equals(CASESTATUSEntry.COMPLETED)) {
-			
+
 			returnState.setVisible(true, TabLoaderConst.kSubmit);
 			returnState.setEnabled(false, TabLoaderConst.kSubmit);
-
 			
+			returnState.setVisible(true, TabLoaderConst.kEdit);
+			returnState.setEnabled(false, TabLoaderConst.kEdit);
+
 			if (user.getRole().equals(MOLSAConstants.kMolsaCaseAuditorRole)) {
+				returnState.setVisible(true, TabLoaderConst.kApprove);
+				returnState.setEnabled(false, TabLoaderConst.kApprove);
+
+			} else if (user.getRole().equals(
+					MOLSAConstants.kMolsaCaseAuditorRole)) {
 				returnState.setVisible(true, TabLoaderConst.kApprove);
 				returnState.setEnabled(false, TabLoaderConst.kApprove);
 
@@ -212,6 +234,7 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 				returnState.setVisible(true, TabLoaderConst.kApprove);
 				returnState.setEnabled(true, TabLoaderConst.kApprove);
 
+				returnState.setEnabled(true, TabLoaderConst.kEdit);
 			}
 
 			returnState.setVisible(true, TabLoaderConst.kReject);
@@ -243,6 +266,14 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 
 		} else if (statusCode.equals(CASESTATUSEntry.APPROVED)) {
 
+			returnState.setVisible(true, TabLoaderConst.kEdit);
+			returnState.setEnabled(false, TabLoaderConst.kEdit);
+			
+			if (user.getRole().equals(MOLSAConstants.kMolsaManagerRole)) {
+
+				returnState.setEnabled(true, TabLoaderConst.kEdit);
+			}
+			
 			returnState.setVisible(true, TabLoaderConst.kSubmit);
 			returnState.setEnabled(false, TabLoaderConst.kSubmit);
 
@@ -278,6 +309,14 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 
 		} else if (statusCode.equals(CASESTATUSEntry.ACTIVE)) {
 
+			returnState.setVisible(true, TabLoaderConst.kEdit);
+			returnState.setEnabled(false, TabLoaderConst.kEdit);
+			
+			if (user.getRole().equals(MOLSAConstants.kMolsaManagerRole)) {
+
+				returnState.setEnabled(true, TabLoaderConst.kEdit);
+			}
+			
 			returnState.setVisible(true, TabLoaderConst.kSubmit);
 			returnState.setEnabled(false, TabLoaderConst.kSubmit);
 
@@ -312,6 +351,15 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 			returnState.setEnabled(false, TabLoaderConst.kReOpen);
 
 		} else if (statusCode.equals(CASESTATUSEntry.SUSPENDED)) {
+			
+			returnState.setVisible(true, TabLoaderConst.kEdit);
+			returnState.setEnabled(false, TabLoaderConst.kEdit);
+			
+			if (user.getRole().equals(MOLSAConstants.kMolsaManagerRole)) {
+
+				returnState.setEnabled(true, TabLoaderConst.kEdit);
+			}
+			
 
 			returnState.setVisible(true, TabLoaderConst.kSubmit);
 			returnState.setEnabled(false, TabLoaderConst.kSubmit);
@@ -348,6 +396,14 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 
 		} else if (statusCode.equals(CASESTATUSEntry.PENDINGCLOSURE)) {
 
+			returnState.setVisible(true, TabLoaderConst.kEdit);
+			returnState.setEnabled(false, TabLoaderConst.kEdit);
+			
+			if (user.getRole().equals(MOLSAConstants.kMolsaManagerRole)) {
+
+				returnState.setEnabled(true, TabLoaderConst.kEdit);
+			}
+			
 			returnState.setVisible(true, TabLoaderConst.kSubmit);
 			returnState.setEnabled(false, TabLoaderConst.kSubmit);
 
@@ -383,6 +439,14 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 
 		} else if (statusCode.equals(CASESTATUSEntry.CLOSED)) {
 
+			returnState.setVisible(true, TabLoaderConst.kEdit);
+			returnState.setEnabled(false, TabLoaderConst.kEdit);
+			
+			if (user.getRole().equals(MOLSAConstants.kMolsaManagerRole)) {
+
+				returnState.setEnabled(true, TabLoaderConst.kEdit);
+			}
+			
 			returnState.setVisible(true, TabLoaderConst.kSubmit);
 			returnState.setEnabled(false, TabLoaderConst.kSubmit);
 
