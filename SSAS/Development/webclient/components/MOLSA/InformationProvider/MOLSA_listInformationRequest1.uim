@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <PAGE
-  PAGE_ID="MOLSA_listInformationRequest"
+  PAGE_ID="MOLSA_listInformationRequest1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
 >
@@ -14,6 +14,11 @@
     </CONNECT>
   </PAGE_TITLE>
 
+ <SERVER_INTERFACE
+    CLASS="MOLSAInformationProvider"
+    NAME="DISPLAY1"
+    OPERATION="getCaseIDFromApplicationID"
+  />
 
   <SERVER_INTERFACE
     CLASS="MOLSAInformationProvider"
@@ -22,14 +27,26 @@
   />
 
 
-  <PAGE_PARAMETER NAME="caseID"/>
+
+  <PAGE_PARAMETER NAME="applicationID"/>
 
 
 
   <CONNECT>
     <SOURCE
       NAME="PAGE"
-      PROPERTY="caseID"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="applicationID$applicationCaseID"
+    />
+  </CONNECT>
+  
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
     />
     <TARGET
       NAME="DISPLAY"
@@ -49,8 +66,8 @@
       >
        <CONNECT>
     <SOURCE
-      NAME="PAGE"
-      PROPERTY="caseID"
+      NAME="DISPLAY1"
+      PROPERTY="result$applicationCaseID"
     />
     <TARGET
       NAME="PAGE"
