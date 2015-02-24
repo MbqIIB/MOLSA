@@ -1,15 +1,20 @@
 package curam.molsa.ip.facade.impl;
 
+import com.google.inject.Inject;
+
+import curam.application.impl.ApplicationDAO;
 import curam.core.struct.CaseSearchKey;
 import curam.molsa.ip.entity.struct.MOLSAInformationRequestDtls;
 import curam.molsa.ip.entity.struct.MOLSAInformationRequestKey;
 import curam.molsa.ip.entity.struct.MOLSAInformationResponseDtls;
 import curam.molsa.ip.entity.struct.MOLSAInformationResponseDtlsList;
 import curam.molsa.ip.entity.struct.MOLSAInformationResponseKey;
+import curam.molsa.ip.facade.struct.MOLSAApplicationCaseID;
 import curam.molsa.ip.facade.struct.MOLSARequestDetailsList;
 import curam.molsa.ip.sl.fact.MOLSAMaintainInformationProviderFactory;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.persistence.GuiceWrapper;
 
 /**
  * This class will maintain request and response of Information Provider.
@@ -17,6 +22,36 @@ import curam.util.exception.InformationalException;
  */
 
 public abstract class MOLSAInformationProvider extends curam.molsa.ip.facade.base.MOLSAInformationProvider {
+
+  /* The Application DAO. */
+  @Inject
+  private ApplicationDAO applicationDAO;
+  
+  /**
+   * Constructor.
+   */
+  public MOLSAInformationProvider() {
+    super();
+    GuiceWrapper.getInjector().injectMembers(this);
+  }
+
+  /**
+   * This Method gets case ID from application ID.
+   * 
+   * @param applicationID
+   *          MOLSAApplicationCaseID
+   * @return MOLSAApplicationCaseID
+   * @throws AppException
+   *           General Exception
+   * @throws InformationalException
+   *           General Exception
+   */
+  @Override
+  public MOLSAApplicationCaseID getCaseIDFromApplicationID(MOLSAApplicationCaseID applicationID) throws AppException, InformationalException {
+    MOLSAApplicationCaseID caseID = new MOLSAApplicationCaseID();
+    caseID.applicationCaseID =  applicationDAO.get(applicationID.applicationCaseID).getCase().getID();
+    return caseID;
+  }
 
   /**
    * This Method retrieves list of Information Request.

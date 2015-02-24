@@ -1,5 +1,10 @@
 package curam.molsa.ip.sl.impl;
 
+import com.google.inject.Inject;
+
+import curam.application.impl.Application;
+import curam.application.impl.ApplicationDAO;
+import curam.application.impl.IntakeApplicantDAO;
 import curam.core.facade.fact.IntegratedCaseFactory;
 import curam.core.facade.intf.IntegratedCase;
 import curam.core.facade.struct.ListICClientKey;
@@ -30,11 +35,14 @@ import curam.molsa.ip.entity.struct.MOLSARequestIDAndStatus;
 import curam.molsa.ip.facade.struct.MOLSARequestDetails;
 import curam.molsa.ip.facade.struct.MOLSARequestDetailsList;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
+import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.persistence.GuiceWrapper;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+
 
 /**
  * This class will maintain request and response of Information Provider.
@@ -42,6 +50,20 @@ import curam.util.type.Date;
  */
 public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl.base.MOLSAMaintainInformationProvider {
 
+ 
+  /* The Application DAO. */
+  @Inject
+  private ApplicationDAO applicationDAO;
+  
+  /**
+   * Constructor.
+   */
+  public MOLSAMaintainInformationProvider() {
+    super();
+    GuiceWrapper.getInjector().injectMembers(this);
+  }
+
+  
   /**
    * This Method retrieves list of Information Request.
    * 
@@ -56,6 +78,12 @@ public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl
   @Override
   public MOLSARequestDetailsList listInformationRequest(CaseSearchKey caseID) throws AppException, InformationalException {
 
+    try{
+      caseID.caseID =  applicationDAO.get(caseID.caseID).getCase().getID();
+    }
+    catch(Exception e){
+     e.printStackTrace();
+    }
     // get all the case participants record associated with this case ID.
     IntegratedCase integratedCase = IntegratedCaseFactory.newInstance();
     ListICClientKey paramListICClientKey = new ListICClientKey();
