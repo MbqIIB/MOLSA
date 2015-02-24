@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 
 import curam.codetable.BATCHPROCESSNAME;
 import curam.codetable.CASESTATUS;
+import curam.codetable.PRODUCTNAME;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.RECORDSTATUS;
 import curam.core.facade.fact.CaseFactory;
@@ -243,6 +244,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
             
             boolean isAlreadyExists = false;
             
+            
             simulatedDeterminationKey.creoleProgramRecommendationID = simulatedDeterminationDetails.dtls.creoleProgramRecommendationID;
             simulatedDeterminationKey.simulatedDeterminationID = simulatedDeterminationDetails.dtls.simulatedDeterminationID;
             
@@ -258,9 +260,9 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
             }
             
             if(!isAlreadyExists) {
-              ProductDeliveryKey productDeliveryKey = creoleProgramRecommendationObj.authorize(simulatedDeterminationKey);
-              
-              
+              if(simulatedDeterminationDetails.dtls.productName.equals(PRODUCTNAME.MOLSADETERMINEPRODUCT)) {
+                ProductDeliveryKey productDeliveryKey = creoleProgramRecommendationObj.authorize(simulatedDeterminationKey);
+              } 
             }
           }
         }
