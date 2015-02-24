@@ -36,7 +36,7 @@ public class MOLSAPhoneNumberFormatter extends
 	      if (phoneNumberDtls.phoneAreaCode.length() != 0) {
 
 	        phoneNumberString.phoneNumberString = phoneNumberString.phoneNumberString
-	          + phoneNumberDtls.phoneAreaCode + CuramConst.gkSpace;
+	          + phoneNumberDtls.phoneAreaCode + CuramConst.gkDash;
 	      }
 
 	      phoneNumberString.phoneNumberString = phoneNumberString.phoneNumberString
