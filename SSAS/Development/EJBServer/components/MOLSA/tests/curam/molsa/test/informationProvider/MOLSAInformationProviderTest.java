@@ -24,6 +24,14 @@ public class MOLSAInformationProviderTest extends CuramServerTest{
     // TODO Auto-generated constructor stub
   }
   
+  /**
+   * Method to test successful create of information request
+   * 
+   * @throws AppException
+   *           General Exception
+   * @throws InformationalException
+   *           General Exception
+   */
   public void testCreateInformationRequest() throws AppException, InformationalException {
     
     curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoReqObj=MOLSAInformationProviderFactory.newInstance();
@@ -35,7 +43,6 @@ public class MOLSAInformationProviderTest extends CuramServerTest{
     requestDetails.informationType=MOLSAINFORMATIONTYPE.COMRECORD;
     requestDetails.requestDate=Date.fromISO8601("20112014");
     requestDetails.requestStatus=MOLSAREQUESTSTATUS.REQUESTED;
-    requestDetails.startDate=Date.fromISO8601("20112013");
     MOLSAInformationRequestKey requestKey = molsaInfoReqObj.createInformationRequest(requestDetails );
     
     curam.molsa.ip.entity.intf.MOLSAInformationRequest molsaInformationRequest= curam.molsa.ip.entity.fact.MOLSAInformationRequestFactory.newInstance();
@@ -45,7 +52,76 @@ public class MOLSAInformationProviderTest extends CuramServerTest{
    
   }     
   
+  /**
+   * Method to test exception on chosing the start date for MOF information provider
+   * 
+   * @throws AppException
+   *           General Exception
+   * @throws InformationalException
+   *           General Exception
+   */
+public void testCreateInformationRequestFailure() throws AppException, InformationalException {
+    
+    curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoReqObj=MOLSAInformationProviderFactory.newInstance();
+    MOLSAInformationRequestDtls requestDetails = new MOLSAInformationRequestDtls();
+    requestDetails.caseParticipantRoleID=45001;
+    requestDetails.endDate=Date.fromISO8601("20122014");
+    requestDetails.informationProvider = MOLSAINFORMATIONPROVIDER.MOF;
+    requestDetails.informationRequestID=1000l;
+    requestDetails.informationType=MOLSAINFORMATIONTYPE.COMRECORD;
+    requestDetails.requestDate=Date.fromISO8601("20112014");
+    requestDetails.requestStatus=MOLSAREQUESTSTATUS.REQUESTED;
+    requestDetails.startDate=Date.fromISO8601("20112013");
+    try{
+    MOLSAInformationRequestKey requestKey = molsaInfoReqObj.createInformationRequest(requestDetails );
+    }
+   catch(Exception e){
+     assertTrue(Boolean.TRUE);
+   }
+    
+   
+  }    
+  
+
+/**
+ * Method to test exception on chosing the start date greater than end date.
+ * 
+ * @throws AppException
+ *           General Exception
+ * @throws InformationalException
+ *           General Exception
+ */
+public void testCreateInformationRequestEndDateFailure() throws AppException, InformationalException {
+  
+  curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoReqObj=MOLSAInformationProviderFactory.newInstance();
+  MOLSAInformationRequestDtls requestDetails = new MOLSAInformationRequestDtls();
+  requestDetails.caseParticipantRoleID=45001;
+  requestDetails.endDate=Date.fromISO8601("20122014");
+  requestDetails.informationProvider = MOLSAINFORMATIONPROVIDER.MOI;
+  requestDetails.informationRequestID=1000l;
+  requestDetails.informationType=MOLSAINFORMATIONTYPE.CITIZENSHIP;
+  requestDetails.requestDate=Date.fromISO8601("20112014");
+  requestDetails.requestStatus=MOLSAREQUESTSTATUS.REQUESTED;
+  requestDetails.startDate=Date.fromISO8601("20112013");
+  requestDetails.endDate=Date.fromISO8601("21112013");
+  try{
+  MOLSAInformationRequestKey requestKey = molsaInfoReqObj.createInformationRequest(requestDetails );
+  }
+ catch(Exception e){
+   assertTrue(Boolean.TRUE);
+ }
+  
  
+}    
+  
+/**
+ * Method to test listing of information provider requests
+ * 
+ * @throws AppException
+ *           General Exception
+ * @throws InformationalException
+ *           General Exception
+ */
   public void testListInformationRequest() throws AppException, InformationalException {
     curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoReqObj=MOLSAInformationProviderFactory.newInstance();
     MOLSAInformationRequestDtls requestDetails = new MOLSAInformationRequestDtls();
@@ -74,6 +150,15 @@ public class MOLSAInformationProviderTest extends CuramServerTest{
     assertEquals(2, dtlsList.dtls.size());
     
   }
+  
+  /**
+   * Method to test add information reponse
+   * 
+   * @throws AppException
+   *           General Exception
+   * @throws InformationalException
+   *           General Exception
+   */
 public void testCreateInformationResponse() throws AppException, InformationalException {
     
     curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoReqObj=MOLSAInformationProviderFactory.newInstance();
@@ -85,15 +170,14 @@ public void testCreateInformationResponse() throws AppException, InformationalEx
     requestDetails.informationType=MOLSAINFORMATIONTYPE.COMRECORD;
     requestDetails.requestDate=Date.fromISO8601("20112014");
     requestDetails.requestStatus=MOLSAREQUESTSTATUS.REQUESTED;
-    requestDetails.startDate=Date.fromISO8601("20112013");
     MOLSAInformationRequestKey requestKey = molsaInfoReqObj.createInformationRequest(requestDetails );
     
     curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoResponseObj=MOLSAInformationProviderFactory.newInstance();
     MOLSAInformationResponseDtls responseDtls=new MOLSAInformationResponseDtls();
     responseDtls.informationRequestID=requestKey.informationRequestID;
     responseDtls.receivedDate=Date.fromISO8601("12122014");
-    responseDtls.response="completed";
-	 responseDtls.createdBy = TransactionInfo.getProgramUser();
+    responseDtls.response="Response Test";
+    responseDtls.createdBy = TransactionInfo.getProgramUser();
     MOLSAInformationResponseKey responseKey= molsaInfoResponseObj.createInformationResponse(responseDtls);
    curam.molsa.ip.entity.intf.MOLSAInformationResponse molsaInformationResponseObj=curam.molsa.ip.entity.fact.MOLSAInformationResponseFactory.newInstance();
    MOLSAInformationResponseDtls responseDtls1=molsaInformationResponseObj.read(responseKey);
@@ -102,6 +186,14 @@ public void testCreateInformationResponse() throws AppException, InformationalEx
     
   }
   
+/**
+ * Method to test listing of information response
+ * 
+ * @throws AppException
+ *           General Exception
+ * @throws InformationalException
+ *           General Exception
+ */
   public void testListInformationResponse() throws AppException, InformationalException {
     curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoReqObj=MOLSAInformationProviderFactory.newInstance();
     MOLSAInformationRequestDtls requestDetails = new MOLSAInformationRequestDtls();
@@ -112,7 +204,6 @@ public void testCreateInformationResponse() throws AppException, InformationalEx
     requestDetails.informationType=MOLSAINFORMATIONTYPE.COMRECORD;
     requestDetails.requestDate=Date.fromISO8601("20112014");
     requestDetails.requestStatus=MOLSAREQUESTSTATUS.REQUESTED;
-    requestDetails.startDate=Date.fromISO8601("20112013");
     MOLSAInformationRequestKey requestKey = molsaInfoReqObj.createInformationRequest(requestDetails );
     
     curam.molsa.ip.facade.intf.MOLSAInformationProvider molsaInfoResponseObj=MOLSAInformationProviderFactory.newInstance();
@@ -126,7 +217,7 @@ public void testCreateInformationResponse() throws AppException, InformationalEx
    responseDtls.informationRequestID=requestKey.informationRequestID;
    responseDtls.receivedDate=Date.fromISO8601("12122014");
    responseDtls.response="completed";
-    responseDtls.createdBy = TransactionInfo.getProgramUser();
+   responseDtls.createdBy = TransactionInfo.getProgramUser();
    MOLSAInformationResponseKey responseKey1= molsaInfoResponseObj.createInformationResponse(responseDtls);
    
    MOLSAInformationRequestKey requestID=new MOLSAInformationRequestKey();
