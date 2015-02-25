@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet name="IncomeVerificationRuleSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
+
+	<Class name="IncomeVerificationDeterminator" extends="VerificationDeterminator"
+		extendsRuleSet="VerificationRuleSet">
+
+		<Attribute name="verificationDeterminatorParams">
+			<type>
+				<ruleclass name="VerificationDeterminatorParams" ruleset="VerificationRuleSet" />
+			</type>
+			<derivation>
+				<specified />
+			</derivation>
+		</Attribute>
+		<Attribute name="displayName">
+			<type>
+				<javaclass name="curam.creole.value.Message" />
+			</type>
+			<derivation>
+				<ResourceMessage key="Verification.Income.DisplayName"
+					resourceBundle="curam.molsa.rules.Verification" />
+			</derivation>
+		</Attribute>
+		<Attribute name="determine">
+			<type>
+				<ruleclass name="VerificationDeterminatorResult" ruleset="VerificationRuleSet" />
+			</type>
+			<derivation>
+				<create ruleclass="VerificationDeterminatorResult" ruleset="VerificationRuleSet">
+					<specify attribute="result">
+						<reference attribute="isVerificationRequired" />
+					</specify>
+					<specify attribute="reason">
+						<Code table="VerificationSkippedReason">
+							<String value="VSR2001"></String>
+						</Code>
+					</specify>
+				</create>
+			</derivation>
+		</Attribute>
+		<Attribute name="isVerificationRequired">
+			<type>
+				<javaclass name="Boolean"/>
+			</type>
+			<derivation>
+				<choose>
+					<type>
+						<javaclass name="Boolean"/>
+					</type>
+					<when>
+						<condition>
+							<not>
+								<equals>
+									<reference attribute="incomeDetails" />
+									<null />
+								</equals>
+							</not>
+						</condition>
+						<value>
+							<choose>
+								<type>
+									<javaclass name="Boolean"/>
+								</type>
+								<when>
+									<condition>
+										<equals>
+											<reference attribute="incomeType">
+												<reference attribute="incomeDetails" />
+											</reference>
+											<Code table="IncomeTypeCode">
+												<String value="IT17006" />
+											</Code>
+										</equals>
+									</condition>
+									<value>
+										<true/>
+									</value>
+								</when>
+								<otherwise>
+									<value>
+										<false />
+									</value>
+								</otherwise>
+							</choose>
+						</value>
+					</when>
+					<otherwise>
+						<value>
+							<false/>
+						</value>
+					</otherwise>
+				</choose>
+			</derivation>
+		</Attribute>
+
+		<Attribute name="incomeDetails">
+			<type>
+				<ruleclass name="Income" ruleset="MOLSAIncomeVerificationRuleSet" />
+			</type>
+			<derivation>
+				<singleitem onMultiple="returnFirst" onEmpty="returnNull">
+					<readall ruleclass="Income" ruleset="MOLSAIncomeVerificationRuleSet">
+						<match retrievedattribute="evidenceDescriptorID">
+							<reference attribute="evidenceDescriptorID">
+								<reference attribute="verificationDeterminatorParams" />
+							</reference>
+						</match>
+					</readall>
+				</singleitem>
+			</derivation>
+		</Attribute>
+	</Class>
+</RuleSet>
