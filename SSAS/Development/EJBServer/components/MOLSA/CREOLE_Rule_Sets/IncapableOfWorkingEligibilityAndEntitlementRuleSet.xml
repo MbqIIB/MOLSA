@@ -1755,6 +1755,32 @@
 				<specified/>
 			</derivation>
 		</Attribute>
+		<Attribute name="membersForHHCompositionCPR">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<dynamiclist>
+						<list>
+							<intervalvalue>
+								<reference attribute="membersForHouseholdComposition" />
+							</intervalvalue>
+						</list>
+						<listitemexpression>
+							<reference attribute="caseParticipantRoleRecord">
+								<current />
+							</reference>
+						</listitemexpression>
+					</dynamiclist>
+				</timelineoperation>
+				
+			</derivation>
+		</Attribute>
 		<Attribute name="caseHeaderRecord">
 			<type>
 				<ruleclass name="CaseHeader" ruleset="CaseEntitiesRuleSet"/>
@@ -2087,6 +2113,39 @@
 				</timelineoperation>
 			</derivation>
 		</Attribute>
+		
+		<Attribute name="filteredEligibleWivesRecords">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<filter>
+						<list>
+							<intervalvalue>
+								<reference attribute="eligibleWivesRecords" />
+							</intervalvalue>
+						</list>
+						<listitemexpression>
+							<property name="contains">
+								<object>
+									<intervalvalue>
+										<reference attribute="membersForHHCompositionCPR" />
+									</intervalvalue>
+								</object>
+								<arguments>
+									<current />
+								</arguments>
+							</property>
+						</listitemexpression>
+					</filter>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
 		<Attribute name="eligibleDependentChildrenRecords">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
@@ -2147,6 +2206,38 @@
 				</timelineoperation>
 			</derivation>
 		</Attribute>
+		<Attribute name="filteredEligibleDepChildrenRecords">
+			<type>
+				<javaclass name="curam.creole.value.Timeline">
+					<javaclass name="List">
+						<ruleclass name="CaseParticipantRole" ruleset="CaseEntitiesRuleSet" />
+					</javaclass>
+				</javaclass>
+			</type>
+			<derivation>
+				<timelineoperation>
+					<filter>
+						<list>
+							<intervalvalue>
+								<reference attribute="eligibleDependentChildrenRecords" />
+							</intervalvalue>
+						</list>
+						<listitemexpression>
+							<property name="contains">
+								<object>
+									<intervalvalue>
+										<reference attribute="membersForHHCompositionCPR" />
+									</intervalvalue>
+								</object>
+								<arguments>
+									<current />
+								</arguments>
+							</property>
+						</listitemexpression>
+					</filter>
+				</timelineoperation>
+			</derivation>
+		</Attribute>
 		<Attribute name="householdUnitMemberCPRRecords">
 			<type>
 				<javaclass name="curam.creole.value.Timeline">
@@ -2167,10 +2258,10 @@
 							</listof>
 							<members>
 								<intervalvalue>
-									<reference attribute="eligibleWivesRecords"/>
+									<reference attribute="filteredEligibleWivesRecords"/>
 								</intervalvalue>
 								<intervalvalue>
-									<reference attribute="eligibleDependentChildrenRecords"/>
+									<reference attribute="filteredEligibleDepChildrenRecords"/>
 								</intervalvalue>
 								<fixedlist>
 									<listof>
