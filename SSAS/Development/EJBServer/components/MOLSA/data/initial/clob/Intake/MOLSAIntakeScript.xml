@@ -2664,6 +2664,46 @@
 				<title id="HomeRelationship.Title">Home Relationships</title>
 				<edit-link start-page="Relationship" skip-to-summary="true"/>
 			</relationship-summary-list>
+			<cluster>
+				<title id="AbsentFatherInformation.Title">Absent Father/Husband Information</title>
+				<edit-link start-page="AbsentPersonInfo" end-page="AbsentFatherDetails"
+					skip-to-summary="false"/>
+				<layout>
+					<type>flow</type>
+					<num-cols>1</num-cols>
+					<label-alignment>left</label-alignment>
+				</layout>
+				<question id="isFatherAbsent" mandatory="false" control-question="true"
+					control-question-type="IEG_YES_NO" multi-select="false" show-field-help="false">
+					<label id="isFatherAbsent.Label">Are there any children in the home who have a
+						father/husband not living in the home</label>
+				</question>
+			</cluster>
+			<condition expression="isFatherAbsent==&quot;YN1&quot;">
+				<list entity="AbsentFather" show-icons="false">
+					<delete-link/>
+					<add-link start-page="AbsentPersonInfo" end-page="AbsentFatherDetails"
+						skip-to-summary="false"/>
+					<column id="firstName">
+						<title id="FirstName.Title">First Name</title>
+					</column>
+					<column id="middleInitial">
+						<title id="MiddleName.Title">Middle Name</title>
+					</column>
+					<column id="lastName">
+						<title id="LastName.Title">Last Name</title>
+					</column>
+					<column id="qidNumber">
+						<title id="QidNumber.Label">QID Number</title>
+					</column>
+					<column id="dateOfBirth">
+						<title id="DOB.Title">Date Of Birth</title>
+					</column>
+					<column id="absentPersonReason">
+						<title id="AbsentPersonReason.Title">Reason for Absence</title>
+					</column>
+				</list>
+			</condition>
 			
 			<cluster>
 				<title id="AnonymousParentsInformation.Title">Anonymous Parents Information</title>
