@@ -19,7 +19,7 @@ public class TestScreeningWidowProgram extends MOLSAScreeningRulesTestData {
     super(name);
   }
 
-  public void testWidowProgramProgram() {
+  public void testWidowProgram() {
    final Person person =  createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
         Boolean.TRUE, MARITALSTATUSEntry.WIDOWED.getCode(),
         GENDEREntry.FEMALE.getCode(), CITIZENSHIPCODEEntry.QATARI.getCode(),
@@ -46,7 +46,7 @@ public class TestScreeningWidowProgram extends MOLSAScreeningRulesTestData {
 
   }
 
-  public void testWidowProgramProgramFailingNonFinancials() {
+  public void testWidowProgramFailingNonFinancials() {
     final Person person = createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
         Boolean.TRUE, MARITALSTATUSEntry.WIDOWED.getCode(),
         GENDEREntry.FEMALE.getCode(),
@@ -74,7 +74,7 @@ public class TestScreeningWidowProgram extends MOLSAScreeningRulesTestData {
 
   }
 
-  public void testWidowProgramProgramDiffMaritialStatus() {
+  public void testWidowProgramDiffMaritialStatus() {
     final Person person =   createPersonRecord("Asma Mohammed", 101, Date.fromISO8601("19620101"),
         Boolean.TRUE, MARITALSTATUSEntry.DESERTED.getCode(),
         GENDEREntry.FEMALE.getCode(), CITIZENSHIPCODEEntry.QATARI.getCode(),
@@ -98,7 +98,7 @@ public class TestScreeningWidowProgram extends MOLSAScreeningRulesTestData {
 
   }
 
-  public void testWidowProgramProgramWithIncomeUnderLimits() {
+  public void testWidowProgramWithIncomeUnderLimits() {
     final Person personRecord = createPersonRecord("Ummbarta Khan", 1001,
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.WIDOWED.getCode(), GENDEREntry.FEMALE.getCode(),
@@ -130,7 +130,7 @@ public class TestScreeningWidowProgram extends MOLSAScreeningRulesTestData {
 
   }
 
-  public void testWidowProgramProgramWithIncomeAndExpenseUnderLimits() {
+  public void testWidowProgramWithIncomeAndExpenseUnderLimits() {
     Person personRecord = createPersonRecord("Asma Mohammed", 101,
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.WIDOWED.getCode(), GENDEREntry.FEMALE.getCode(),
@@ -172,7 +172,7 @@ public class TestScreeningWidowProgram extends MOLSAScreeningRulesTestData {
 
   }
 
-  public void testWidowProgramProgramWithIncomeAndExpenseAboveLimits() {
+  public void testWidowProgramWithIncomeAndExpenseAboveLimits() {
     final Person personRecord= createPersonRecord("Asma Mohammed", 101,
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.WIDOWED.getCode(), GENDEREntry.FEMALE.getCode(),
@@ -205,7 +205,7 @@ public class TestScreeningWidowProgram extends MOLSAScreeningRulesTestData {
         widowProgram.getAttributeValue(isEligible).getValue());
   }
 
-  public void testWidowProgramProgramNegative() {
+  public void testWidowProgramNegative() {
     final Person person = createPersonRecord("Asma Mohammed", 101,
         Date.fromISO8601("19620101"), Boolean.TRUE,
         MARITALSTATUSEntry.COMMONLAW.getCode(), GENDEREntry.FEMALE.getCode(),
