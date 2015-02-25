@@ -4,14 +4,124 @@
     xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
     >
     
-  <PAGE_TITLE>
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE
+                NAME="TEXT"
+                PROPERTY="PageTitle.TrainingDetails"
+            />
+        </CONNECT>
+    </PAGE_TITLE> 
+    
+    <PAGE_PARAMETER NAME="trainingID"/>
+    
+    
+    
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSATrainingService"
+        NAME="DISPLAY"
+        OPERATION="readByTrainingID"
+        PHASE="DISPLAY"
+    />   
     <CONNECT>
-      <SOURCE
-        NAME="TEXT"
-        PROPERTY="PageTitle.TrainingDetails"
-      />
-    </CONNECT>
-  </PAGE_TITLE> 
-  
-  <PAGE_PARAMETER NAME="serviceOfferingID"/>
+        <SOURCE
+            NAME="PAGE"
+            PROPERTY="trainingID"
+        />
+        <TARGET
+            NAME="DISPLAY"
+            PROPERTY="arg1$trainingID"
+        />
+    </CONNECT>  
+    
+    
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSATrainingService"
+        NAME="ACTION"
+        OPERATION="rescheduleTrainingDetails"
+        PHASE="ACTION"
+    />
+    <CONNECT>
+        <SOURCE
+            NAME="PAGE"
+            PROPERTY="trainingID"
+        />
+        <TARGET
+            NAME="ACTION"
+            PROPERTY="trainingDetails$trainingID"
+        />
+    </CONNECT>     
+    <SERVER_INTERFACE
+        CLASS="ServiceOffering"
+        NAME="GETSERVICEOFFERING"
+        OPERATION="listServiceOfferings"
+    />
+    
+    
+    <CLUSTER
+        LABEL_WIDTH="55"
+        NUM_COLS="2"
+        TITLE="Cluster.Title.TrainingDetails"
+        >
+        
+        <FIELD LABEL="Field.Label.StartDate">
+            
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="trainingStartDate"
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingStartDate"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD
+            LABEL="Field.Label.EndDate"
+            USE_DEFAULT="false"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="trainingEndDate"
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingEndDate"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD LABEL="Field.Label.TrainingLocation">
+            
+            <CONNECT>
+                <SOURCE
+                    NAME="DISPLAY"
+                    PROPERTY="trainingLocation"
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingLocation"
+                />
+            </CONNECT>
+        </FIELD>        
+        
+    </CLUSTER>
+    
+    
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.RescheduleTraining" TYPE="SUBMIT">
+        </ACTION_CONTROL>
+    </ACTION_SET>
 </PAGE>

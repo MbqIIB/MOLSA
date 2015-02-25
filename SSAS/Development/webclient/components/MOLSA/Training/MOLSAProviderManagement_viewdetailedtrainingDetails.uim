@@ -17,6 +17,11 @@
     NAME="DISPLAY"
     OPERATION="readByTrainingID"
   />
+  <SERVER_INTERFACE
+    CLASS="MOLSATrainingService"
+    NAME="DISPLAY1"
+    OPERATION="serachAttachmentByTrainingID"
+  />
   <PAGE_PARAMETER NAME="trainingID"/>
    <CONNECT>
     <SOURCE
@@ -25,6 +30,17 @@
     />
     <TARGET
       NAME="DISPLAY"
+      PROPERTY="arg1$trainingID"
+    />
+  </CONNECT> 
+  
+    <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="trainingID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
       PROPERTY="arg1$trainingID"
     />
   </CONNECT> 
@@ -103,5 +119,67 @@
         </FIELD>   
         
     </CLUSTER>
+    <LIST>
+    <ACTION_SET TYPE="LIST_ROW_MENU">
+     <ACTION_CONTROL LABEL="ActionControl.Label.Download">
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="MOLSAProviderManagement_editTrainingDetails" WINDOW_OPTIONS="width=850,height=500"
+        >
+        </LINK>
+      </ACTION_CONTROL>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
+        <LINK
+          OPEN_MODAL="TRUE"
+          PAGE_ID="MOLSAProviderManagement_editTrainingDetails" WINDOW_OPTIONS="width=850,height=500"
+        >
+        </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+    <FIELD
+      LABEL="List.Title.Attachment.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="attachmentName"
+        />
+      </CONNECT>
+    </FIELD>
+<FIELD
+      LABEL="List.Title.Attachment.Desc"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="description"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="linkDtls$statusCode"
+        />
+      </CONNECT>
+    </FIELD>
+ <FIELD
+      LABEL="List.Title.Uploaded.Date"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY1"
+          PROPERTY="dateReceived"
+        />
+      </CONNECT>
+    </FIELD>
+ </LIST>
  
 </PAGE>
