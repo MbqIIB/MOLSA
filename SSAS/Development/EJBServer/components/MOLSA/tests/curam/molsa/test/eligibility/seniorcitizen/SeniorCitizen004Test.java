@@ -17,6 +17,7 @@ import curam.codetable.MARITALSTATUS;
 import curam.codetable.NATIONALITY;
 import curam.codetable.RELATIONSHIPTYPECODE;
 import curam.codetable.SCHOOLTYPE;
+import curam.codetable.VERIFICATIONSTATUS;
 import curam.codetable.impl.APPLICANTROLEEntry;
 import curam.codetable.impl.CASESTATUSEntry;
 import curam.core.facade.fact.IntegratedCaseFactory;
@@ -35,6 +36,7 @@ import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.fact.CachedCaseHeaderFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.intf.CachedCaseHeader;
+import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.infrastructure.assessment.impl.DeterminationInterval;
 import curam.core.sl.infrastructure.impl.CalenderConst;
 import curam.core.sl.infrastructure.struct.EIEvidenceKey;
@@ -62,8 +64,21 @@ import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
 import curam.util.transaction.TransactionInfo.TransactionType;
 import curam.util.type.Date;
+import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
+import curam.verification.facade.infrastructure.intf.VerificationApplication;
+import curam.verification.facade.infrastructure.struct.CreateVerificaitonItemProvidedDetails;
+import curam.verification.facade.infrastructure.struct.ListVerificationItemNameAndLevelDetails;
+import curam.verification.facade.infrastructure.struct.VDIEDLinkKey;
+import curam.verification.sl.infrastructure.fact.VerificationFactory;
+import curam.verification.sl.infrastructure.fact.VerificationItemProvidedFactory;
+import curam.verification.sl.infrastructure.intf.Verification;
+import curam.verification.sl.infrastructure.intf.VerificationItemProvided;
+import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetails;
+import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetailsList;
+import curam.verification.sl.infrastructure.struct.OutstandingIndicator;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
+import curam.molsa.test.base.ParticipantTestDetails;
 import curam.molsa.test.framework.TestHelper;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
@@ -96,7 +111,7 @@ public class SeniorCitizen004Test extends CERScenarioTestBase {
 	   *           Generic Exception Signature.
 	   * 
 	   * @throws InformationalException
-	   *           Generic Exception Signature. 
+	   *           Generic Exception Signature.
 	   */
 
 	
@@ -124,6 +139,10 @@ public class SeniorCitizen004Test extends CERScenarioTestBase {
 		// TODO Auto-generated method stub
 		createIntakeApplicant(application.getID(), MOHAMMED_UNIQUE_NAME,
 				APPLICANTROLEEntry.PRIMARY_APPLICANT);
+		createIntakeApplicant(application.getID(), FATHIMA_UNIQUE_NAME,
+				APPLICANTROLEEntry.NON_PRIMARY_APPLICANT);
+		createIntakeApplicant(application.getID(), FIRDOZ_UNIQUE_NAME,
+				APPLICANTROLEEntry.NON_PRIMARY_APPLICANT);
 		
 		
 	}
@@ -143,8 +162,6 @@ public class SeniorCitizen004Test extends CERScenarioTestBase {
 	protected void addEvidence(CaseKey caseKey) throws AppException,
 			InformationalException {
 		// TODO Auto-generated method stub
-		
-		 
 		long participantid = getParticipantRoleID(MOHAMMED_UNIQUE_NAME).participantRoleID;
 		long caseParticipantRoleID = getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID;
 		
@@ -218,12 +235,7 @@ public class SeniorCitizen004Test extends CERScenarioTestBase {
 		createHouseholdRelationshipEvidence(caseKey,
 				wife2participantid,wife2caseParticipantRoleID,
 				wife1caseParticipantRoleID,getDate(1,1,2000),
-				RELATIONSHIPTYPECODE.SIBLING);
-		
-		
-		
-		
-		
+				RELATIONSHIPTYPECODE.SISTERWIFE);
 		
 	
 		
@@ -277,7 +289,7 @@ public class SeniorCitizen004Test extends CERScenarioTestBase {
       //member1
         PersonRegistrationDetails registrationIDDetails2 = new  PersonRegistrationDetails();
         registrationIDDetails2.currentMaritalStatus = MARITALSTATUS.MARRIED;
-        registrationIDDetails2.dateOfBirth = getDate(1, 1,1950);
+        registrationIDDetails2.dateOfBirth = getDate(1, 1,1954);
         registrationIDDetails2.addressData = ADDRESS_DATA;
         registrationIDDetails2.nationality = NATIONALITY.QATARI;
         registrationIDDetails2.firstForename = FATHIMA_UNIQUE_NAME;
@@ -318,8 +330,12 @@ public class SeniorCitizen004Test extends CERScenarioTestBase {
 		List<Long> mandatoryMembers = new ArrayList<Long>();
 		List<Long> mandatoryMembers1 = new ArrayList<Long>();
 		
+		
 		mandatoryMembers
 				.add(getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID);
+		mandatoryMembers
+		.add(getCaseParticipantRoleID(FIRDOZ_UNIQUE_NAME).caseParticipantRoleID);
+		
 		
 		
 		Calendar calendar = Date.getCurrentDate().getCalendar();
@@ -336,11 +352,10 @@ public class SeniorCitizen004Test extends CERScenarioTestBase {
 		HouseholdUnit householdUnit = new HouseholdUnit(mandatoryMembers,  new ArrayList<Long>(),
 				(long) 45009, new Timeline<Boolean>(eligibilityIntervals));
 		householdUnitList.add(householdUnit);
-		//unit2
+		
+	//unit2
 		mandatoryMembers1
 		.add(getCaseParticipantRoleID(FATHIMA_UNIQUE_NAME).caseParticipantRoleID);
-
-
 Calendar calendar1 = Date.getCurrentDate().getCalendar();
 calendar1.add(Calendar.MONTH, 13);
 calendar1.set(Calendar.DATE, 1);
@@ -349,15 +364,13 @@ eligibilityIntervals1.add(new Interval<Boolean>(null, false));
 
 eligibilityIntervals1.add(new Interval<Boolean>(Date.getCurrentDate(),
 		true));
-eligibilityIntervals1.add(new Interval<Boolean>(new Date(calendar),
+eligibilityIntervals1.add(new Interval<Boolean>(new Date(calendar1),
 		false));
 
 HouseholdUnit householdUnit1 = new HouseholdUnit(mandatoryMembers1,  new ArrayList<Long>(),
 		(long) 45009, new Timeline<Boolean>(eligibilityIntervals1));
 householdUnitList.add(householdUnit1);
-		
-		
-	
+
 		return householdUnitList;
 	}
 	/**
@@ -384,26 +397,31 @@ householdUnitList.add(householdUnit1);
 	    final String citizenship = CITIZENSHIPCODE.QATARI;
 	    final String residency = RESIDENCY.YES;
 	    Date currentDate = Date.getCurrentDate();
-	    int incomeamount=1500;
-		int incomeamount1=8500;
 
 	    long participantid = getParticipantRoleID(MOHAMMED_UNIQUE_NAME).participantRoleID;
 	    long casePartcipantRoleID = getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID;
+
 	    long wife1participantid = getParticipantRoleID(FATHIMA_UNIQUE_NAME).participantRoleID;
 		long wife1caseParticipantRoleID = getCaseParticipantRoleID(FATHIMA_UNIQUE_NAME).caseParticipantRoleID;
 		
 		long wife2participantid = getParticipantRoleID(FIRDOZ_UNIQUE_NAME).participantRoleID;
 		long wife2caseParticipantRoleID = getCaseParticipantRoleID(FIRDOZ_UNIQUE_NAME).caseParticipantRoleID;
-
+		
+		
 	    addVerifications(caseKey);
+	    
 	    createHouseholdMemberEvidence(caseKey, participantid, casePartcipantRoleID, currentDate, CITIZENSHIPCODE.QATARI, RESIDENCY.YES);
-	    createIncomeEvidence(caseKey,wife2participantid,
-				wife2caseParticipantRoleID,getDate(1, 1, 2013),
-				INCOMETYPECODE.OtherHouseholdPaidEmployment,FREQUENCYCODE.MONTHLY,incomeamount);
-		createIncomeEvidence(caseKey,wife1participantid,
-				wife1caseParticipantRoleID,getDate(1, 1, 2013),
-				INCOMETYPECODE.INHERITANCE,FREQUENCYCODE.MONTHLY,incomeamount1);
 
+	    createIncomeEvidence(caseKey,wife1participantid,
+	    		wife1caseParticipantRoleID,getDate(1, 1, 2013),
+				INCOMETYPECODE.INHERITANCE,FREQUENCYCODE.MONTHLY,8500);
+		
+	    createIncomeEvidence(caseKey,wife2participantid,
+	    		wife2caseParticipantRoleID,getDate(1, 1, 2013),
+				INCOMETYPECODE.OtherHouseholdPaidEmployment,FREQUENCYCODE.MONTHLY,1500);
+	    
+	    
+	    
 	    addVerifications(caseKey);
 
 	    CachedCaseHeader cachedCaseHeaderObj = CachedCaseHeaderFactory.newInstance();
@@ -430,6 +448,61 @@ householdUnitList.add(householdUnit1);
 			InformationalException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	protected void addPDCVerification(final SubmitForApprovalKey approvalKey)
+			throws AppException, InformationalException {
+
+		CreateVerificaitonItemProvidedDetails details = new CreateVerificaitonItemProvidedDetails();
+
+		final VerificationApplication verificationApplicationObj = VerificationApplicationFactory
+				.newInstance();
+
+		VerificationItemProvided verificationItemProvidedObj = VerificationItemProvidedFactory
+				.newInstance();
+		final Verification verificationObj = VerificationFactory.newInstance();
+		
+		final OutstandingIndicator outstandingIndicator = new OutstandingIndicator();
+
+	    outstandingIndicator.verificationStatus = VERIFICATIONSTATUS.NOTVERIFIED;
+
+	    final CaseKeyStruct caseKeyStruct = new CaseKeyStruct();
+
+	    caseKeyStruct.caseID = approvalKey.caseID;
+
+		for (int i = 0; i < participantTestDetailsList.size(); i++) {
+
+			ParticipantTestDetails participantTestDetails = (ParticipantTestDetails) participantTestDetailsList
+					.get(i);
+
+
+			final CaseEvidenceVerificationDetailsList participantList = verificationObj
+					.listCaseVerificationDetails(
+						      caseKeyStruct, outstandingIndicator);
+			for (final CaseEvidenceVerificationDetails verificationDetails : participantList.dtls) {
+				details = new CreateVerificaitonItemProvidedDetails();
+
+				details.dtls.itemDtls.caseID = approvalKey.caseID;
+				details.dtls.itemDtls.caseParticipantConcernRoleID = participantTestDetails.participantRoleID;
+
+				details.dtls.createDtls.dateReceived = Date.getCurrentDate();
+				details.dtls.createDtls.VDIEDLinkID = verificationDetails.vDIEDLinkID;
+
+				final VDIEDLinkKey vDIEDLinkKey = new VDIEDLinkKey();
+				vDIEDLinkKey.dtls.VDIEDLinkID = verificationDetails.vDIEDLinkID;
+
+				final ListVerificationItemNameAndLevelDetails listVerificationItemNameAndLevelDetails = verificationApplicationObj
+						.readAllActiveVerificationItemNameAndLevel(vDIEDLinkKey);
+
+				details.dtls.createDtls.verificationItemUtilizationID = listVerificationItemNameAndLevelDetails.listDtls.dtls
+						.get(0).code;
+				verificationItemProvidedObj
+						.createVerificationItemProvided(details.dtls);
+
+			}
+
+		}
+
 	}
 	
 	
