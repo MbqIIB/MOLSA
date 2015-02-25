@@ -8,8 +8,12 @@ import java.text.ParsePosition;
 
 
 
+
+import java.util.List;
+
 import org.apache.axis2.transport.http.HTTPConstants;
 
+import com.google.inject.Inject;
 import com.pmmsoapmessenger.MessengerStub;
 import com.pmmsoapmessenger.MessengerStub.SendSms;
 
@@ -61,9 +65,12 @@ import curam.molsa.moi.facade.struct.MOLSAConcernRoleTabbedList;
 import curam.molsa.moi.sl.fact.MOLSAMaintainMoiFactory;
 import curam.molsa.moi.sl.intf.MOLSAMaintainMoi;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
+import curam.participant.impl.ConcernRoleDAO;
+import curam.piwrapper.casemanager.impl.CaseParticipantRoleDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
+import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.Configuration;
 import curam.util.resources.StringUtil;
 import curam.util.type.Date;
@@ -75,6 +82,20 @@ import curam.util.type.StringList;
 @SuppressWarnings("restriction")
 public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 
+  
+  @Inject
+  private CaseParticipantRoleDAO caseParticipantRoleDAO;
+  
+  @Inject
+  private ConcernRoleDAO concernRoleDAO;
+  
+  /**
+   * Constructor.
+   */
+  public MOLSAMoi() {
+    super();
+    GuiceWrapper.getInjector().injectMembers(this);
+  }
 	/**
 	 * This method returns details from MOLSA MOI table by reading MOLSAMoiKey
 	 * parameter.
@@ -123,13 +144,17 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
     }
 	  StringList concernRoleIDList = StringUtil.delimitedText2StringList(arg1.concernRoleTabbedList, CuramConst.gkTabDelimiterChar);
       for (String concernRoleID : concernRoleIDList) {
-		// get the case details based on concernroleID and status
-		CaseHeader caseHeader = CaseHeaderFactory.newInstance();
-		ConcernRoleIDStatusCodeKey paramConcernRoleIDStatusCodeKey = new ConcernRoleIDStatusCodeKey();
-		paramConcernRoleIDStatusCodeKey.dtls.concernRoleID = Long.parseLong(concernRoleID);
-		paramConcernRoleIDStatusCodeKey.dtls.statusCode = CASESTATUS.OPEN;
-		CaseHeaderDtlsList caseDtlsList = caseHeader
-				.searchByConcernRoleID(paramConcernRoleIDStatusCodeKey);
+        
+
+     // get the case details based on concernroleID and status
+        List<curam.piwrapper.casemanager.impl.CaseParticipantRole>  caseParticipantRoleList = caseParticipantRoleDAO.listActiveByParticipant(concernRoleDAO.get(Long.parseLong(concernRoleID)));
+
+        // loop through the cases and iterate through integrated case and
+        // update the evidence
+        for (final curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : caseParticipantRoleList){
+         if( caseParticipantRole.getCase().getCaseType().getCode().equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)){
+           
+	
 		long integratedCaseID = 0;
 
 		MOLSAParticipantHelper participantHelper = new MOLSAParticipantHelper();
@@ -147,22 +172,12 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 
 		// loop through the cases and iterate through integrated case and
 		// update the evidence
-		for (CaseHeaderDtls caseDtls : caseDtlsList.dtlsList.dtls.items()) {
-			if (caseDtls.caseTypeCode
-					.equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)) {
-				integratedCaseID = caseDtls.caseID;
-				CaseParticipantRole caseParticipantRole = CaseParticipantRoleFactory
-						.newInstance();
-				CaseIDTypeCodeKey caseIDTypeCode = new CaseIDTypeCodeKey();
-				caseIDTypeCode.caseID = caseDtls.caseID;
-				caseIDTypeCode.typeCode = CASEPARTICIPANTROLETYPE.PRIMARY;
-				CaseParticipantRoleFullDetails1 caseParticipantRoleDetails = caseParticipantRole
-						.readByCaseIDAndTypeCode(caseIDTypeCode);
+		
+				integratedCaseID = caseParticipantRole.getCase().getID();
+			
 
 				CaseParticipantRoleKey paramCaseParticipantRoleKey = new CaseParticipantRoleKey();
-				paramCaseParticipantRoleKey.caseParticipantRoleID = caseParticipantRoleDetails.dtls.caseParticipantRoleID;
-				ParticipantRoleIDAndNameDetails idAndNameDetails = caseParticipantRole
-						.readParticipantRoleIDAndParticpantName(paramCaseParticipantRoleKey);
+				paramCaseParticipantRoleKey.caseParticipantRoleID = caseParticipantRole.getID();
 
 				ReadEvidenceDetails readBirthDeathDetails = new ReadEvidenceDetails();
 				ReadEvidenceDetails readGenderEvidence = new ReadEvidenceDetails();
@@ -171,17 +186,17 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 				// Read date of birth from birth and death evidence
 				readBirthDeathDetails = readCaseEvidenceDetails(
 						integratedCaseID, CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
-						caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-						idAndNameDetails.name);
+						caseParticipantRole.getID(),
+						caseParticipantRole.getConcernRole().getName());
 				// Read the gender details from gender evidence
 				readGenderEvidence = readCaseEvidenceDetails(integratedCaseID,
 						CASEEVIDENCEEntry.GENDER,
-						caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-						idAndNameDetails.name);
+						caseParticipantRole.getID(),
+            caseParticipantRole.getConcernRole().getName());
 				// Read the name details from names evidence
 				readNameEvidence = readNameEvidenceDetails(integratedCaseID,
 						CASEEVIDENCEEntry.NAME, Long.parseLong(concernRoleID),
-						idAndNameDetails.name);
+						 caseParticipantRole.getConcernRole().getName());
 
 				// Compare the person DOB details with MOI date of birth details
 				if (!(readBirthDeathDetails.dtls == null)) {

@@ -1,7 +1,9 @@
 package curam.molsa.moi.impl;
 
 import java.text.ParsePosition;
+import java.util.List;
 
+import com.google.inject.Inject;
 import com.ibm.icu.text.SimpleDateFormat;
 
 import curam.codetable.BATCHPROCESSNAME;
@@ -64,9 +66,12 @@ import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.molsa.moi.entity.struct.MOLSAMoiKey;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
+import curam.participant.impl.ConcernRoleDAO;
+import curam.piwrapper.casemanager.impl.CaseParticipantRoleDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
+import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
@@ -81,6 +86,19 @@ import curam.util.type.Date;
 public class MOLSAMoiBatchStream extends
 		curam.molsa.moi.base.MOLSAMoiBatchStream {
 
+  @Inject
+  private CaseParticipantRoleDAO caseParticipantRoleDAO;
+  
+  @Inject
+  private ConcernRoleDAO concernRoleDAO;
+  
+  /**
+   * Constructor.
+   */
+  public MOLSAMoiBatchStream() {
+    super();
+    GuiceWrapper.getInjector().injectMembers(this);
+  }
 	/**
 	 * This method takes BatchProcessStreamKey and parameter and calls
 	 * batchSreamHelper.
@@ -195,37 +213,24 @@ public class MOLSAMoiBatchStream extends
 					.items()) {
 				concernRoleID = personDetails.concernRoleID;
 			}
-
-			// get the case details based on concernroleID and status
-			CaseHeader caseHeader = CaseHeaderFactory.newInstance();
-			ConcernRoleIDStatusCodeKey paramConcernRoleIDStatusCodeKey = new ConcernRoleIDStatusCodeKey();
-			paramConcernRoleIDStatusCodeKey.dtls.concernRoleID = concernRoleID;
-			paramConcernRoleIDStatusCodeKey.dtls.statusCode = CASESTATUS.OPEN;
-			CaseHeaderDtlsList caseDtlsList = caseHeader
-					.searchByConcernRoleID(paramConcernRoleIDStatusCodeKey);
-			long integratedCaseID = 0;
-
+			
+		// get the case details based on concernroleID and status
+			List<curam.piwrapper.casemanager.impl.CaseParticipantRole>  caseParticipantRoleList = caseParticipantRoleDAO.listActiveByParticipant(concernRoleDAO.get(concernRoleID));
+			
 			boolean result = false;
-			String middleName = new String();
-
-			// loop through the cases and iterate through integrated case and
-			// update the evidence
-			for (CaseHeaderDtls caseDtls : caseDtlsList.dtlsList.dtls.items()) {
-				if (caseDtls.caseTypeCode
-						.equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)) {
-					integratedCaseID = caseDtls.caseID;
-					CaseParticipantRole caseParticipantRole = CaseParticipantRoleFactory
-							.newInstance();
-					CaseIDTypeCodeKey caseIDTypeCode = new CaseIDTypeCodeKey();
-					caseIDTypeCode.caseID = caseDtls.caseID;
-					caseIDTypeCode.typeCode = CASEPARTICIPANTROLETYPE.PRIMARY;
-					CaseParticipantRoleFullDetails1 caseParticipantRoleDetails = caseParticipantRole
-							.readByCaseIDAndTypeCode(caseIDTypeCode);
+      String middleName = new String();
+      
+      // loop through the cases and iterate through integrated case and
+      // update the evidence
+			for (final curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : caseParticipantRoleList){
+			 if( caseParticipantRole.getCase().getCaseType().getCode().equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)){
+	
+					long integratedCaseID = caseParticipantRole.getCase().getID();
+					
 
 					CaseParticipantRoleKey paramCaseParticipantRoleKey = new CaseParticipantRoleKey();
-					paramCaseParticipantRoleKey.caseParticipantRoleID = caseParticipantRoleDetails.dtls.caseParticipantRoleID;
-					ParticipantRoleIDAndNameDetails idAndNameDetails = caseParticipantRole
-							.readParticipantRoleIDAndParticpantName(paramCaseParticipantRoleKey);
+					paramCaseParticipantRoleKey.caseParticipantRoleID = caseParticipantRole.getID();
+					
 
 					ReadPersonKey paramReadPersonKey = new ReadPersonKey();
 					paramReadPersonKey.maintainConcernRoleKey.concernRoleID = concernRoleID;
@@ -261,14 +266,14 @@ public class MOLSAMoiBatchStream extends
 					readEvidenceDetails = readCaseEvidenceDetails(
 							integratedCaseID,
 							CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
-							caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-							idAndNameDetails.name);
+							caseParticipantRole.getID(),
+							caseParticipantRole.getConcernRole().getName());
 					// To read gender details from gender evidence
 					readEvidenceDetails2 = readCaseEvidenceDetails(
 							integratedCaseID,
 							CASEEVIDENCEEntry.GENDER,
-							caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-							idAndNameDetails.name);
+							caseParticipantRole.getID(),
+							caseParticipantRole.getConcernRole().getName());
 
 					// Compare the person dob details with moi dob details
 					if (!(readEvidenceDetails.dtls == null)) {
@@ -343,7 +348,7 @@ public class MOLSAMoiBatchStream extends
 						// If there is any mismatch of data in the moi and
 						// evidences
 						if (result == true) {
-							String name = idAndNameDetails.name;
+							String name = caseParticipantRole.getConcernRole().getName();
 
 							Notification notificationObj = NotificationFactory
 									.newInstance();
@@ -351,14 +356,14 @@ public class MOLSAMoiBatchStream extends
 
 							StandardManualTaskDtls struct = new StandardManualTaskDtls();
 
-							notificationStruct.concerningDtls.caseID = caseDtls.caseID;
-							notificationStruct.concerningDtls.participantRoleID = caseParticipantRoleDetails.dtls.participantRoleID;
-							notificationStruct.concerningDtls.caseParticipantRoleID = caseParticipantRoleDetails.dtls.caseParticipantRoleID;
-							notificationStruct.concerningDtls.participantType = caseParticipantRoleDetails.dtls.participantRoleType;
+							notificationStruct.concerningDtls.caseID = caseParticipantRole.getCase().getID();
+							notificationStruct.concerningDtls.participantRoleID = caseParticipantRole.getConcernRole().getID();
+							notificationStruct.concerningDtls.caseParticipantRoleID = caseParticipantRole.getID();
+							notificationStruct.concerningDtls.participantType = caseParticipantRole.getConcernRole().getConcernRoleType().toString();
 
 							AppException message1 = new AppException(
 									MOLSANOTIFICATION.MOI_UPDATED);
-							message1.arg(caseDtls.caseReference);
+							message1.arg(caseParticipantRole.getCase().getCaseReference());
 							message1.arg(name);
 
 							notificationStruct.taskDtls.subject = message1
