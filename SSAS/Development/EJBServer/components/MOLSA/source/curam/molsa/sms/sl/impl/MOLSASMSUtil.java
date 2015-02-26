@@ -575,7 +575,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
           dtls.caluclatedDateFromAge = fromDate;
           
           Calendar toCalender = currentDate.getCalendar();
-          toCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.toAge)));
+          toCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.toAge) + 1));
           Date toDate = new Date(toCalender.getTimeInMillis());
           dtls.caluclatedDateToAge = toDate;
           
