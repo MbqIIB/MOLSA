@@ -601,7 +601,7 @@ public class MOLSAInformationProviderBatchStream extends
 		if (providerDate.compareTo(evidenceDate) > 0) {
 			AppException message1 = new AppException(
 					MOLSANOTIFICATION.INCOME_UPDATED);
-        
+			message1.arg(caseParticipantRole.getCase().getCaseReference());  
 			message1.arg(informationProviderTmpDtls.amount);
 
 			if ((dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.COMMERCIAL) && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.COMMERCALRECORDS))
