@@ -6,12 +6,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.Inject;
+
 import curam.codetable.BATCHPROCESSNAME;
 import curam.codetable.CASEEVIDENCE;
 import curam.codetable.CASEPARTICIPANTROLETYPE;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASETYPECODE;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
+import curam.codetable.INCOMETYPECODE;
 import curam.codetable.impl.CASEEVIDENCEEntry;
 import curam.core.facade.fact.CaseHeaderFactory;
 import curam.core.facade.fact.PersonFactory;
@@ -53,6 +56,7 @@ import curam.core.struct.BatchProcessingSkippedRecordList;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.PersonSearchDetails;
 import curam.dynamicevidence.impl.DynamicEvidenceDataDetails;
+import curam.dynamicevidence.sl.impl.CpDetailsAdaptor;
 import curam.dynamicevidence.sl.impl.EvidenceGenericSLFactory;
 import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.GenericSLDataDetails;
@@ -61,13 +65,17 @@ import curam.dynamicevidence.type.impl.DynamicEvidenceTypeConverter;
 import curam.message.MOLSANOTIFICATION;
 import curam.molsa.codetable.RESPONSETYPE;
 import curam.molsa.constants.impl.MOLSAConstants;
+import curam.molsa.constants.impl.MOLSADatastoreConst;
 import curam.molsa.ip.entity.fact.MOLSAInformationProviderTmpFactory;
 import curam.molsa.ip.entity.intf.MOLSAInformationProviderTmp;
 import curam.molsa.ip.entity.struct.MOLSAInformationProviderTmpDtls;
 import curam.molsa.ip.entity.struct.MOLSAInformationProviderTmpKey;
+import curam.participant.impl.ConcernRoleDAO;
+import curam.piwrapper.casemanager.impl.CaseParticipantRoleDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
+import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
@@ -82,6 +90,21 @@ import curam.util.type.DateTime;
 public class MOLSAInformationProviderBatchStream extends
 		curam.molsa.ip.batch.base.MOLSAInformationProviderBatchStream {
 
+  
+
+  @Inject
+  private CaseParticipantRoleDAO caseParticipantRoleDAO;
+  
+  @Inject
+  private ConcernRoleDAO concernRoleDAO;
+  
+  /**
+   * Constructor.
+   */
+  public MOLSAInformationProviderBatchStream() {
+    super();
+    GuiceWrapper.getInjector().injectMembers(this);
+  }
 	/**
 	 * This method would call the stream helper class and takes Batch process
 	 * stream key as input parameter.
@@ -174,35 +197,19 @@ public class MOLSAInformationProviderBatchStream extends
 					.items()) {
 				concernRoleID = personDetails.concernRoleID;
 			}
-
-			// get the case details based on concernroleID and status
-			CaseHeader caseHeader = CaseHeaderFactory.newInstance();
-			ConcernRoleIDStatusCodeKey paramConcernRoleIDStatusCodeKey = new ConcernRoleIDStatusCodeKey();
-			paramConcernRoleIDStatusCodeKey.dtls.concernRoleID = concernRoleID;
-			paramConcernRoleIDStatusCodeKey.dtls.statusCode = CASESTATUS.OPEN;
-			CaseHeaderDtlsList caseDtlsList = caseHeader
-					.searchByConcernRoleID(paramConcernRoleIDStatusCodeKey);
-			long integratedCaseID = 0;
 			ReadEvidenceDetails readEvidenceDetails = new ReadEvidenceDetails();
-
-			// loop through the cases and iterate through integrated case and
-			// update the evidence
-			for (CaseHeaderDtls caseDtls : caseDtlsList.dtlsList.dtls.items()) {
-				if (caseDtls.caseTypeCode
-						.equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)) {
-					integratedCaseID = caseDtls.caseID;
-					CaseParticipantRole caseParticipantRole = CaseParticipantRoleFactory
-							.newInstance();
-					CaseIDTypeCodeKey caseIDTypeCode = new CaseIDTypeCodeKey();
-					caseIDTypeCode.caseID = caseDtls.caseID;
-					caseIDTypeCode.typeCode = CASEPARTICIPANTROLETYPE.PRIMARY;
-					CaseParticipantRoleFullDetails1 caseParticipantRoleDetails = caseParticipantRole
-							.readByCaseIDAndTypeCode(caseIDTypeCode);
-
-					CaseParticipantRoleKey paramCaseParticipantRoleKey = new CaseParticipantRoleKey();
-					paramCaseParticipantRoleKey.caseParticipantRoleID = caseParticipantRoleDetails.dtls.caseParticipantRoleID;
-					ParticipantRoleIDAndNameDetails idAndNameDetails = caseParticipantRole
-							.readParticipantRoleIDAndParticpantName(paramCaseParticipantRoleKey);
+		  // get the case details based on concernroleID and status
+      List<curam.piwrapper.casemanager.impl.CaseParticipantRole>  caseParticipantRoleList = caseParticipantRoleDAO.listActiveByParticipant(concernRoleDAO.get(concernRoleID));
+      
+      boolean result = false;
+      String middleName = new String();
+      
+      // loop through the cases and iterate through integrated case and
+      // update the evidence
+      for (final curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : caseParticipantRoleList){
+       if( caseParticipantRole.getCase().getCaseType().getCode().equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)){
+  
+		
 
 					// Read the evidence and update the evidence based on the
 					// response type
@@ -211,19 +218,19 @@ public class MOLSAInformationProviderBatchStream extends
 							|| informationProviderTmpDtls.type
 									.equalsIgnoreCase(RESPONSETYPE.DIVORSE)) {
 						readEvidenceDetails = readCaseEvidenceDetails(
-								integratedCaseID,
+						    caseParticipantRole.getCase().getID(),
 								CASEEVIDENCEEntry.MARITALSTATUS,
-								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-								idAndNameDetails.name);
+								caseParticipantRole.getID(),
+								caseParticipantRole.getConcernRole().getName());
 						if (readEvidenceDetails.dtls != null) {
-							boolean result = modifyMaritalStatusEvidence(
-									readEvidenceDetails, integratedCaseID,
+							result = modifyMaritalStatusEvidence(
+									readEvidenceDetails,  caseParticipantRole.getCase().getID(),
 									informationProviderTmpDtls);
 							// Code to send task if evidence is modified
 							if (result == true) {
-								sendTaskToCaseOwner(caseDtls,
+								sendTaskToCaseOwner(caseParticipantRole.getCase().getID(),caseParticipantRole.getCase().getCaseReference(),
 										CASEEVIDENCEEntry.MARITALSTATUS,
-										idAndNameDetails.name);
+										caseParticipantRole.getConcernRole().getName());
 								molsaInformationProviderTmp
 										.remove(informationProviderTmpKey);
 							}
@@ -234,19 +241,19 @@ public class MOLSAInformationProviderBatchStream extends
 							|| informationProviderTmpDtls.type
 									.equalsIgnoreCase(RESPONSETYPE.DEATH)) {
 						readEvidenceDetails = readCaseEvidenceDetails(
-								integratedCaseID,
+						    caseParticipantRole.getCase().getID(),
 								CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
-								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-								idAndNameDetails.name);
+								caseParticipantRole.getID(),
+								caseParticipantRole.getConcernRole().getName());
 						if (readEvidenceDetails.dtls != null) {
 							boolean result3 = modifyBirthDeathDetailsEvidence(
-									readEvidenceDetails, integratedCaseID,
+									readEvidenceDetails, caseParticipantRole.getCase().getID(),
 									informationProviderTmpDtls);
 							if (result3 == true) {
 								// Code to send task if evidence is modified
-								sendTaskToCaseOwner(caseDtls,
+								sendTaskToCaseOwner(caseParticipantRole.getCase().getID(),caseParticipantRole.getCase().getCaseReference(),
 										CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
-										idAndNameDetails.name);
+										caseParticipantRole.getConcernRole().getName());
 								molsaInformationProviderTmp
 										.remove(informationProviderTmpKey);
 							}
@@ -255,19 +262,19 @@ public class MOLSAInformationProviderBatchStream extends
 					} else if (informationProviderTmpDtls.type
 							.equalsIgnoreCase(RESPONSETYPE.SCHOOL)) {
 						readEvidenceDetails = readCaseEvidenceDetails(
-								integratedCaseID,
+						    caseParticipantRole.getCase().getID(),
 								CASEEVIDENCEEntry.MOLSAEDUCATION,
-								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-								idAndNameDetails.name);
+								caseParticipantRole.getID(),
+								caseParticipantRole.getConcernRole().getName());
 						if (readEvidenceDetails.dtls != null) {
 							boolean result1 = modifyEducationEvidence(
-									readEvidenceDetails, integratedCaseID,
+									readEvidenceDetails, caseParticipantRole.getCase().getID(),
 									informationProviderTmpDtls);
 							if (result1 == true) {
 								// Code to send task if evidence is modified
-								sendTaskToCaseOwner(caseDtls,
+								sendTaskToCaseOwner(caseParticipantRole.getCase().getID(),caseParticipantRole.getCase().getCaseReference(),
 										CASEEVIDENCEEntry.MOLSAEDUCATION,
-										idAndNameDetails.name);
+										caseParticipantRole.getConcernRole().getName());
 								molsaInformationProviderTmp
 										.remove(informationProviderTmpKey);
 							}
@@ -286,23 +293,28 @@ public class MOLSAInformationProviderBatchStream extends
 							|| informationProviderTmpDtls.type
 									.equalsIgnoreCase(RESPONSETYPE.RETIREMENT)) {
 						readEvidenceDetails = readCaseEvidenceDetails(
-								integratedCaseID,
+						    caseParticipantRole.getCase().getID(),
 								CASEEVIDENCEEntry.INCOME,
-								caseParticipantRoleDetails.dtls.caseParticipantRoleID,
-								idAndNameDetails.name);
-						if (readEvidenceDetails.dtls != null) {
-							boolean result2 = modifyIncomeEvidence(
-									readEvidenceDetails, integratedCaseID,
+								caseParticipantRole.getID(),
+								caseParticipantRole.getConcernRole().getName());
+						ReadEvidenceDetails readHHEvidenceDetails = new ReadEvidenceDetails();
+						readHHEvidenceDetails = readCaseEvidenceDetails(
+                caseParticipantRole.getCase().getID(),
+                CASEEVIDENCEEntry.HEADOFHOUSE,
+                caseParticipantRole.getID(),
+                caseParticipantRole.getConcernRole().getName());
+							boolean result2 = modifyIncomeEvidence(readHHEvidenceDetails,
+									readEvidenceDetails, caseParticipantRole,
 									informationProviderTmpDtls);
 							// Code to send task if evidence is modified
 							if (result2 == true) {
-								sendTaskToCaseOwner(caseDtls,
+								sendTaskToCaseOwner(caseParticipantRole.getCase().getID(),caseParticipantRole.getCase().getCaseReference(),
 										CASEEVIDENCEEntry.INCOME,
-										idAndNameDetails.name);
+									  caseParticipantRole.getConcernRole().getName());
 								molsaInformationProviderTmp
 										.remove(informationProviderTmpKey);
 							}
-						}
+						
 					}
 
 				}
@@ -541,8 +553,8 @@ public class MOLSAInformationProviderBatchStream extends
 	 *             General Exception
 	 * @return boolean
 	 */
-	private boolean modifyIncomeEvidence(
-			ReadEvidenceDetails readEvidenceDetails, long caseID,
+	private boolean modifyIncomeEvidence(ReadEvidenceDetails readHHEvidenceDetails,
+			ReadEvidenceDetails readEvidenceDetails, final curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole,
 			MOLSAInformationProviderTmpDtls informationProviderTmpDtls)
 			throws AppException, InformationalException, ParseException {
 
@@ -577,7 +589,8 @@ public class MOLSAInformationProviderBatchStream extends
 				.parse(dateCompare);
 		String providerDate = new SimpleDateFormat(MOLSAConstants.kdateIPbatch)
 				.format(ipDate);
-
+		
+		if (readEvidenceDetails.dtls != null) {
 		String trDate = dynamicEvidenceDataDetails
 				.getAttribute(MOLSAConstants.startDate).getValue().toString();
 		java.util.Date tradeDate = new SimpleDateFormat(
@@ -588,9 +601,16 @@ public class MOLSAInformationProviderBatchStream extends
 		if (providerDate.compareTo(evidenceDate) > 0) {
 			AppException message1 = new AppException(
 					MOLSANOTIFICATION.INCOME_UPDATED);
-
+        
 			message1.arg(informationProviderTmpDtls.amount);
 
+			if ((dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.COMMERCIAL) && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.COMMERCALRECORDS))
+			    || (dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.REAL_ESTATE) && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.REALESTATE))
+			    || ((dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.FatherORHusbandPaidEmployment) || dynamicEvidenceDataDetails.getAttribute("incomeType").getValue().equals(INCOMETYPECODE.OtherHouseholdPaidEmployment)) && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.EMPLOYMENT))
+			    || ((dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.FatherORHusbandPaidEmployment) || dynamicEvidenceDataDetails.getAttribute("incomeType").getValue().equals(INCOMETYPECODE.OtherHouseholdPaidEmployment))  && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.PRIVATESECTOREMPLOYMENT))
+			    || ((dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.FatherORHusbandPaidEmployment) || dynamicEvidenceDataDetails.getAttribute("incomeType").getValue().equals(INCOMETYPECODE.OtherHouseholdPaidEmployment)) && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.GOVERNMENTEMPLOYMENT))
+			    || ((dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.FatherORHusbandPaidEmployment) || dynamicEvidenceDataDetails.getAttribute("incomeType").getValue().equals(INCOMETYPECODE.OtherHouseholdPaidEmployment))  && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.RETIREMENT)))
+			{		
 			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
 					.setValue(dateStringInOriginalFormat);
 			dynamicEvidenceDetails
@@ -598,6 +618,7 @@ public class MOLSAInformationProviderBatchStream extends
 			dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
 			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
 
+			}
 			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
 					.toString();
 
@@ -616,14 +637,51 @@ public class MOLSAInformationProviderBatchStream extends
 			dynamicEvidenceDataDetails
 					.getAttribute(MOLSAConstants.amount)
 					.setValue(String.valueOf(informationProviderTmpDtls.amount));
+		if(informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.COMMERCALRECORDS))	{
+			dynamicEvidenceDataDetails	
+			 .getAttribute(MOLSAConstants.kIncomeType)
+      .setValue(String.valueOf(INCOMETYPECODE.COMMERCIAL));
+		}
+		if(informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.REALESTATE)) {
+      dynamicEvidenceDataDetails  
+       .getAttribute(MOLSAConstants.kIncomeType)
+      .setValue(String.valueOf(INCOMETYPECODE.REAL_ESTATE));
+    }
+		if(informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.RETIREMENT) 
+		  ||  informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.EMPLOYMENT) 
+		  ||  informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.PRIVATESECTOREMPLOYMENT)
+		  ||  informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.GOVERNMENTEMPLOYMENT)) {
+		  if (readHHEvidenceDetails.dtls != null) {
+      dynamicEvidenceDataDetails  
+       .getAttribute(MOLSAConstants.kIncomeType)
+      .setValue(String.valueOf(INCOMETYPECODE.FatherORHusbandPaidEmployment));
+		  }
+		  else{
+		    dynamicEvidenceDataDetails  
+	       .getAttribute(MOLSAConstants.kIncomeType)
+	      .setValue(String.valueOf(INCOMETYPECODE.OtherHouseholdPaidEmployment));
+		  }
+    }
+		
+
 			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
 					.setValue(MOLSAConstants.kZeroDate);
 			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
 					.setValue(message1.getLocalizedMessage());
-			dynamicEvidenceDetails.getCaseIdKey().caseID = caseID;
-
+			dynamicEvidenceDetails.getCaseIdKey().caseID = caseParticipantRole.getCase().getID();
+		  dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+		  dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
+		  dynamicEvidenceDetails.getDescriptor().receivedDate = Date.getCurrentDate();
+		  CpDetailsAdaptor cpDetails = new CpDetailsAdaptor();
+	    cpDetails.setCaseParticipantRoleID(caseParticipantRole.getID());
+	    cpDetails.setParticipantRoleID(caseParticipantRole.getConcernRole().getID());
+	    dynamicEvidenceDetails.addRelCp(MOLSADatastoreConst.kParticipant, cpDetails);
 			evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
 			return true;
+			}
+			else {
+			  return false;
+			}
 		} else {
 			return false;
 		}
@@ -821,13 +879,13 @@ public class MOLSAInformationProviderBatchStream extends
 	 * @throws InformationalException
 	 *             General Exception
 	 */
-	public void sendTaskToCaseOwner(CaseHeaderDtls caseDtls,
+	public void sendTaskToCaseOwner(long caseID, String caseReference,
 			final CASEEVIDENCEEntry caseEvidence, String argName)
 			throws AppException, InformationalException {
 
 		// Code to send task if evidence is modified
 		final CaseIDDetails caseKey = new CaseIDDetails();
-		caseKey.caseID = caseDtls.caseID;
+		caseKey.caseID = caseID;
 		final CaseHeader caseHeader = CaseHeaderFactory.newInstance();
 		final CaseOwnerAndTypeDetails ownerID = caseHeader
 				.readOwnerAndType(caseKey);
@@ -840,7 +898,7 @@ public class MOLSAInformationProviderBatchStream extends
 		// Assign the case id and assigned to values to the task created to the
 		// case owner
 		final TaskCreateDetails taskCreateDetail = new TaskCreateDetails();
-		taskCreateDetail.taskDetails.caseID = caseDtls.caseID;
+		taskCreateDetail.taskDetails.caseID = caseID;
 		taskCreateDetail.taskDetails.assignedTo = orgObjectLink
 				.read(orgObjectLinkKey).userName;
 		taskCreateDetail.taskDetails.assigneeType = curam.codetable.ASSIGNEETYPE.USER;
@@ -860,7 +918,7 @@ public class MOLSAInformationProviderBatchStream extends
 		} else if (caseEvidence.equals(CASEEVIDENCEEntry.INCOME)) {
 			message1 = new AppException(MOLSANOTIFICATION.INCOME_UPDATED);
 		}
-		message1.arg(caseDtls.caseReference);
+		message1.arg(caseReference);
 		message1.arg(name);
 
 		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
