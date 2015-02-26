@@ -241,17 +241,6 @@
                                             <intervalvalue>
                                                 <reference attribute="hasHouseholdPassedIncomeTestTimeline"/>
                                             </intervalvalue>
-                                            <not>
-                                                <intervalvalue>
-                                                    <reference attribute="hasEarnedIncomeTimeline">
-                                                        <reference attribute="memberCPRCalculator">
-                                                            <intervalvalue>
-                                                                <reference attribute="maidAssistanceHouseholdMember"/>
-                                                            </intervalvalue>
-                                                        </reference>
-                                                    </reference>
-                                                </intervalvalue> 
-                                            </not>
                                         </members>
                                     </fixedlist>
                                 </all> 
@@ -423,39 +412,19 @@
             </type>
             <derivation>
                 <timelineoperation>
-                    <choose>
-                        <type>
-                            <javaclass name="Number"/>
-                        </type>
-                        <when>
-                            <condition>
-                                <not>
-                                    <equals>
-                                        <null/>
-                                        <intervalvalue>
-                                            <reference attribute="maidAssistanceHouseholdMember"/>
-                                        </intervalvalue>
-                                    </equals>
-                                </not>
-                            </condition>
-                            <value>
-                                <intervalvalue>
-                                    <reference attribute="totalIncomeAmounntTimeline">
-                                        <reference attribute="memberCPRCalculator">
-                                            <intervalvalue>
-                                                <reference attribute="maidAssistanceHouseholdMember"/>
-                                            </intervalvalue>
-                                        </reference>
-                                    </reference>
-                                </intervalvalue>
-                            </value>
-                        </when>
-                        <otherwise>
-                            <value>
-                                <Number value="0"/>
-                            </value>
-                        </otherwise>
-                    </choose>
+                    <Number value="0"/>
+                </timelineoperation>
+            </derivation>
+        </Attribute>
+        <Attribute name="totalExpenseAmountTimeline">
+            <type>
+                <javaclass name="curam.creole.value.Timeline">
+                    <javaclass name="Number"/>
+                </javaclass>
+            </type>
+            <derivation>
+                <timelineoperation>
+                    <Number value="0"/>
                 </timelineoperation>
             </derivation>
         </Attribute>
@@ -467,9 +436,7 @@
             </type>
             <derivation>
                 <timelineoperation>
-                    <intervalvalue>
-                        <reference attribute="unearnedIncomeAmount"/>
-                    </intervalvalue>
+                    <Number value="0"/>
                 </timelineoperation>
                 
             </derivation>
@@ -482,33 +449,7 @@
             </type>
             <derivation>
                 <timelineoperation>
-                    <choose>
-                        <type>
-                            <javaclass name="Boolean"/>
-                        </type>
-                        <when>
-                            <condition>
-                                <intervalvalue>
-                                    <reference attribute="isCategoricallyEligible"/>
-                                </intervalvalue>
-                            </condition>
-                            <value>
-                                <true/>
-                            </value>
-                        </when>
-                        <otherwise>
-                            <value>
-                                <compare comparison="&lt;">
-                                    <intervalvalue>
-                                        <reference attribute="totalCountableIncomeTimeline"/>
-                                    </intervalvalue>
-                                    <intervalvalue>
-                                    <reference attribute="primaryBeneficiaryAmount"/>
-                                    </intervalvalue>
-                                </compare>
-                            </value>
-                        </otherwise>
-                    </choose>
+                    <true/>
                 </timelineoperation>
             </derivation>
         </Attribute>
@@ -521,41 +462,7 @@
 				</javaclass>
 			</type>
 			<derivation>
-				<timelineoperation>
-					<choose>
-						<type>
-							<javaclass name="Number" />
-						</type>
-						<when>
-							<condition>
-								<compare comparison="&lt;">
-									<intervalvalue>
-										<reference attribute="totalCountableIncomeTimeline" />
-									</intervalvalue>
-									<intervalvalue>
-										<reference attribute="primaryBeneficiaryAmount" />
-									</intervalvalue>
-
-								</compare>
-							</condition>
-							<value>
-								<arithmetic operation="-">
-									<intervalvalue>
-										<reference attribute="primaryBeneficiaryAmount" />
-									</intervalvalue>
-									<intervalvalue>
-										<reference attribute="totalCountableIncomeTimeline" />
-									</intervalvalue>
-								</arithmetic>
-							</value>
-						</when>
-						<otherwise>
-							<value>
-								<Number value="0" />
-							</value>
-						</otherwise>
-					</choose>
-				</timelineoperation>
+			    <reference attribute="primaryBeneficiaryAmount"/>
 			</derivation>
 		</Attribute>
         
@@ -724,6 +631,7 @@
             </derivation>
         </Attribute>
     </Class>
+    
     <Class extends="SocialAssistanceSimulatedDetermination" extendsRuleSet="SocialAssistanceRuleSet"
         name="MaidAssistanceSimulatedDetermination"
         xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
@@ -1526,15 +1434,15 @@
                         <listitemexpression>
                             <choose>
                                 <type>
-                                        <ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
+                                    <ruleclass name="SAHouseholdUnitCalculator" ruleset="SocialAssistanceRuleSet"/>
                                 </type>
                                 <when>
                                     <condition>
                                         <intervalvalue>
-                                        	<reference attribute="isMaidAssistanceTimeline">
+                                            <reference attribute="isMaidAssistanceTimeline">
                                                 <create ruleclass="MaidAssistanceCPRCalculator">
                                                     <reference attribute="caseParticipantRoleRecord">
-                                                       <current/>
+                                                        <current/>
                                                     </reference>
                                                 </create>
                                             </reference>
@@ -1550,7 +1458,12 @@
                                                             <ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
                                                         </listof>
                                                         <members>
-                                                            <current/>
+                                                            <create ruleclass="MaidAssistanceHouseholdUnitMember">
+                                                                <reference attribute="caseID"/>
+                                                                <reference attribute="caseParticipantRoleRecord">
+                                                                    <current/>
+                                                                </reference>
+                                                            </create>
                                                         </members>
                                                     </fixedlist>
                                                 </timelineoperation>
@@ -1570,4 +1483,19 @@
             </derivation>
         </Attribute>
     </Class>   
+ <Class name="MaidAssistanceHouseholdUnitMember" extends="SAHouseholdUnitMember"
+        extendsRuleSet="SocialAssistanceRuleSet">
+        <Attribute name="filterTypeTimeline">
+            <type>
+                <javaclass name="curam.creole.value.Timeline">
+                    <javaclass name="String" />
+                </javaclass>
+            </type>
+            <derivation>
+                <timelineoperation>
+                    <String value="EligibleMember" />
+                </timelineoperation>
+            </derivation>
+        </Attribute>
+    </Class>
 </RuleSet>
