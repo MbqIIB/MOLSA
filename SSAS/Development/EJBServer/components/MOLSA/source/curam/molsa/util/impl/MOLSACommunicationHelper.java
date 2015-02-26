@@ -29,8 +29,9 @@ public class MOLSACommunicationHelper {
 		curam.molsa.communication.entity.intf.MOLSAConcernRoleCommunication molsaCommObj=MOLSAConcernRoleCommunicationFactory.newInstance();
 		NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
 		MOLSAConcernRoleCommunicationDtls molsaCommDtls=molsaCommObj.read(notFoundIndicator, molsaproFormaDocumentDataKey);
-		if(molsaCommDtls.programNames==null){
-			molsaCommDtls.programNames="";
+		
+		if(!notFoundIndicator.isNotFound()){
+			molsaCommDtls.programNames="Test";
 		}
 		return molsaCommDtls;
 	}

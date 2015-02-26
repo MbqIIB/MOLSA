@@ -139,11 +139,11 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
 
 		// print the populated document with new struct MOLSAProFormaDocumentData
-		//proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
+		proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
 		
 		//Currently calling the OOTB code.Will be replaced with customized struct MOLSAProFormaDocumentData
 		
-		proFormaReturnDocDetails = concernRoleDocumentGenerationObjOOTB.generateAndPreviewXMLDocument(details,proFormaDocumentData);
+		//proFormaReturnDocDetails = concernRoleDocumentGenerationObjOOTB.generateAndPreviewXMLDocument(details,proFormaDocumentData);
 
 		return proFormaReturnDocDetails;
 
