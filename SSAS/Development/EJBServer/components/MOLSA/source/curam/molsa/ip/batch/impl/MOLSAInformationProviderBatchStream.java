@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.google.inject.Inject;
 
+import curam.codetable.ASSIGNEETYPE;
 import curam.codetable.BATCHPROCESSNAME;
 import curam.codetable.CASEEVIDENCE;
 import curam.codetable.CASEPARTICIPANTROLETYPE;
@@ -15,6 +16,8 @@ import curam.codetable.CASESTATUS;
 import curam.codetable.CASETYPECODE;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
 import curam.codetable.INCOMETYPECODE;
+import curam.codetable.TARGETITEMTYPE;
+import curam.codetable.TASKTYPE;
 import curam.codetable.impl.CASEEVIDENCEEntry;
 import curam.core.facade.fact.CaseHeaderFactory;
 import curam.core.facade.fact.PersonFactory;
@@ -56,6 +59,7 @@ import curam.core.struct.BatchProcessingSkippedRecordList;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.PersonSearchDetails;
 import curam.dynamicevidence.impl.DynamicEvidenceDataDetails;
+import curam.dynamicevidence.impl.DynamicEvidenceDataDetailsFactory;
 import curam.dynamicevidence.sl.impl.CpDetailsAdaptor;
 import curam.dynamicevidence.sl.impl.EvidenceGenericSLFactory;
 import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
@@ -208,9 +212,8 @@ public class MOLSAInformationProviderBatchStream extends
       // update the evidence
       for (final curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : caseParticipantRoleList){
        if( caseParticipantRole.getCase().getCaseType().getCode().equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)){
-  
+         if(caseParticipantRole.getType().getCode().equalsIgnoreCase(CASEPARTICIPANTROLETYPE.MEMBER) || caseParticipantRole.getType().getCode().equalsIgnoreCase(CASEPARTICIPANTROLETYPE.PRIMARY)){
 		
-
 					// Read the evidence and update the evidence based on the
 					// response type
 					if (informationProviderTmpDtls.type
@@ -314,10 +317,9 @@ public class MOLSAInformationProviderBatchStream extends
 								molsaInformationProviderTmp
 										.remove(informationProviderTmpKey);
 							}
-						
 					}
-
 				}
+       }
 			}
 		} catch (Exception e) {
 			batchProcessingSkippedRecord.recordID = batchProcessingID.recordID;
@@ -563,7 +565,7 @@ public class MOLSAInformationProviderBatchStream extends
 
 		final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
 				.instance(evidenceTypeKey, Date.getCurrentDate());
-		final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = readEvidenceDetails.dtls;
+		DynamicEvidenceDataDetails dynamicEvidenceDataDetails = readEvidenceDetails.dtls;
 		final GenericSLDataDetails dynamicEvidenceDetails = new GenericSLDataDetails();
 
 		String dateStringInNewFormat = informationProviderTmpDtls.receivedDate
@@ -599,10 +601,7 @@ public class MOLSAInformationProviderBatchStream extends
 				.format(tradeDate);
 		// Check the evidence date with the information provider date.
 		if (providerDate.compareTo(evidenceDate) > 0) {
-			AppException message1 = new AppException(
-					MOLSANOTIFICATION.INCOME_UPDATED);
-			message1.arg(caseParticipantRole.getCase().getCaseReference());  
-			message1.arg(informationProviderTmpDtls.amount);
+			
 
 			if ((dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.COMMERCIAL) && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.COMMERCALRECORDS))
 			    || (dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kIncomeType).getValue().equals(INCOMETYPECODE.REAL_ESTATE) && informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.REALESTATE))
@@ -619,6 +618,15 @@ public class MOLSAInformationProviderBatchStream extends
 			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
 
 			}
+		}
+	}
+		if(dynamicEvidenceDataDetails ==null){
+		  dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory.newInstance(CASEEVIDENCE.INCOME, Date.getCurrentDate());
+		}
+		AppException message1 = new AppException(
+        MOLSANOTIFICATION.INCOME_UPDATED);
+    message1.arg(caseParticipantRole.getCase().getCaseReference());  
+    message1.arg(informationProviderTmpDtls.amount);
 			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
 					.toString();
 
@@ -678,13 +686,7 @@ public class MOLSAInformationProviderBatchStream extends
 	    dynamicEvidenceDetails.addRelCp(MOLSADatastoreConst.kParticipant, cpDetails);
 			evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
 			return true;
-			}
-			else {
-			  return false;
-			}
-		} else {
-			return false;
-		}
+			
 	}
 
 	/**
@@ -899,9 +901,8 @@ public class MOLSAInformationProviderBatchStream extends
 		// case owner
 		final TaskCreateDetails taskCreateDetail = new TaskCreateDetails();
 		taskCreateDetail.taskDetails.caseID = caseID;
-		taskCreateDetail.taskDetails.assignedTo = orgObjectLink
-				.read(orgObjectLinkKey).userName;
-		taskCreateDetail.taskDetails.assigneeType = curam.codetable.ASSIGNEETYPE.USER;
+		taskCreateDetail.taskDetails.assignedTo = String.valueOf(45010);
+		taskCreateDetail.taskDetails.assigneeType = TARGETITEMTYPE.WORKQUEUE;
 		String name = argName;
 		AppException message1 = null;
 		// To send notification if evidence is updated.
