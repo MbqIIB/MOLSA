@@ -165,7 +165,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   
   public void sendSMS(MOLSAConcernRoleListAndMessageTextDetails key) throws AppException, InformationalException {
 
-    boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
+    boolean isSMSEnabled = Configuration.getBooleanProperty(EnvVars.MOLSA_SMS_ENABLED);
     if(!isSMSEnabled) {
       return;
     }
@@ -1136,7 +1136,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   
 public void sendSMSDPMode(MOLSAConcernRoleListAndMessageTextDetails key)
 		throws AppException, InformationalException {
-  boolean isSMSEnabled = Boolean.getBoolean(Configuration.getProperty(EnvVars.MOLSA_SMS_ENABLED));
+  boolean isSMSEnabled = Configuration.getBooleanProperty(EnvVars.MOLSA_SMS_ENABLED);
   if(!isSMSEnabled) {
     return;
   }
