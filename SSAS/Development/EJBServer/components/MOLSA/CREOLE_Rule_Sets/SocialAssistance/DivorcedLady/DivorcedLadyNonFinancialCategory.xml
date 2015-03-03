@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="../../../../../../../../../../../Curam/catalog/RuleSet.xsd"
- extends="SANonFinancialCategory"
- extendsRuleSet="SocialAssistanceDisplayRuleSet" name="DivorcedLadyNonFinancialCategory">
+ xsi:noNamespaceSchemaLocation="../../../../../../../../../Curam/catalog/RuleSet.xsd"
+ extends="SANonFinancialCategory" extendsRuleSet="SocialAssistanceDisplayRuleSet"
+ name="DivorcedLadyNonFinancialCategory">
 
   <Attribute name="productCase">
     <type>
@@ -36,22 +36,19 @@
     </type>
     <derivation>
       <timelineoperation>
-        <dynamiclist>
-          <list>
-            <intervalvalue>
-              <reference attribute="mandatoryEligibleMembersTimeline">
-                <reference attribute="eligibilityUnit">
-                  <reference attribute="productCase"/>
-                </reference>
-              </reference>
-            </intervalvalue>
-          </list>
-          <listitemexpression>
-            <reference attribute="caseParticipantRoleRecord">
-              <current/>
+        <fixedlist>
+          <listof>
+            <ruleclass
+              name="CaseParticipantRole"
+              ruleset="CaseEntitiesRuleSet"
+            />
+          </listof>
+          <members>
+            <reference attribute="primaryClientCPRRecord">
+              <reference attribute="productCase"/>
             </reference>
-          </listitemexpression>
-        </dynamiclist>
+          </members>
+        </fixedlist>
       </timelineoperation>
     </derivation>
   </Attribute>
