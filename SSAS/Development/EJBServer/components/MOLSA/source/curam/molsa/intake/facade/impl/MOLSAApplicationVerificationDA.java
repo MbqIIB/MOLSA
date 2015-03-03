@@ -1,6 +1,7 @@
 package curam.molsa.intake.facade.impl;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import curam.application.impl.Application;
@@ -13,6 +14,7 @@ import curam.molsa.verification.facade.fact.MOLSAVerificationApplicationDAFactor
 import curam.molsa.verification.facade.intf.MOLSAVerificationApplicationDA;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.persistence.GuiceWrapper;
 import curam.verification.facade.infrastructure.struct.CreateVerificationAttachmentDetails;
 import curam.verification.facade.infrastructure.struct.ModifyVerificationAttachmentDetails;
 import curam.verification.facade.infrastructure.struct.NewUserProvidedVerificationItemDetails;
@@ -24,7 +26,13 @@ public class MOLSAApplicationVerificationDA extends curam.molsa.intake.facade.ba
   private ApplicationDAO applicationDAO;
   
   @Inject
-  private Provider cmsMetadataProvider;
+  private Provider<CMSMetadataInterface> cmsMetadataProvider;
+  
+  public MOLSAApplicationVerificationDA()
+  {
+    GuiceWrapper.getInjector().injectMembers(this);
+  }
+  
 
   @Override
   public VerificationAttachmentLinkKey createVerificationAttachment(CreateApplicationVerificationAttachmentDetails details) throws AppException, InformationalException {
