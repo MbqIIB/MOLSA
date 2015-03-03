@@ -9,13 +9,11 @@ import com.pmmsoapmessenger.MessengerStub;
 import com.pmmsoapmessenger.MessengerStub.Authenticate;
 import com.pmmsoapmessenger.MessengerStub.AuthenticateResponse;
 import com.pmmsoapmessenger.MessengerStub.GetSmsStatus;
-import com.pmmsoapmessenger.MessengerStub.GetSmsStatusResponse;
 import com.pmmsoapmessenger.MessengerStub.MessageType;
 import com.pmmsoapmessenger.MessengerStub.SendSms;
 import com.pmmsoapmessenger.MessengerStub.SendSmsResponse;
 import com.pmmsoapmessenger.MessengerStub.SoapUser;
 
-import curam.citizen.socialrecord.impl.SocialRecordCase;
 import curam.citizenworkspace.codetable.impl.IntakeClientTypeEntry;
 import curam.citizenworkspace.entity.fact.CWExternalPartyLinkFactory;
 import curam.citizenworkspace.entity.intf.CWExternalPartyLink;
@@ -36,10 +34,8 @@ import curam.core.impl.EnvVars;
 import curam.core.intf.AlternateName;
 import curam.core.sl.entity.fact.ExternalUserFactory;
 import curam.core.sl.entity.intf.ExternalUser;
-import curam.core.sl.entity.struct.ExtUserPasswordDetails;
 import curam.core.sl.entity.struct.ExternalUserDtls;
 import curam.core.sl.entity.struct.ExternalUserKey;
-import curam.core.sl.entity.struct.ModifyExtUserPWDDetails;
 import curam.core.sl.struct.UserPasswordDetails;
 import curam.core.struct.AlternateNameReadMultiStatusStruct;
 import curam.core.struct.AlternateNameStruct;
@@ -49,7 +45,6 @@ import curam.message.MOLSANOTIFICATION;
 import curam.message.MOLSASMSSERVICE;
 import curam.molsa.sms.sl.impl.MOLSASMSConstants;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
-import curam.participant.impl.ConcernRoleDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.AppRuntimeException;
 import curam.util.exception.DatabaseException;
@@ -71,80 +66,92 @@ public class MOLSACitizenPortalHelper {
 	 * Constructor for the class.
 	 */
 	public MOLSACitizenPortalHelper() {
-
 		GuiceWrapper.getInjector().injectMembers(this);
 	}
 
 	/**
-	 * This method creates new citizen portal account for the concernRoleID.
+	 * This method creates new citizen portal account. It takes the applicants
+	 * concernRoleID as parameter and creates account if it doesn't exist and
+	 * sends the password as SMS to the registered mobile number.
 	 * 
 	 * @param concernRoleID
 	 *            long
+	 * @return void
 	 * @throws AppException
 	 *             General Exception
 	 * @throws InformationalException
 	 *             General Exception
 	 */
+	@SuppressWarnings("static-access")
 	public void createNewAccount(long concernRoleID) throws AppException,
 			InformationalException {
 
 		curam.molsa.sms.sl.impl.MOLSASMSUtil smsUtilObj = new curam.molsa.sms.sl.impl.MOLSASMSUtil();
 		String phoneNumber = new String();
-
 		if (concernRoleID != 0L) {
+			// read the registered preferred mobile phone number
 			phoneNumber = smsUtilObj.getPersonPreferredPhoneNumber(String
 					.valueOf(concernRoleID));
 			if (!(phoneNumber.isEmpty())) {
 				AlternateNameStruct nameDtls = getAlternateNameDetails(concernRoleID);
 				MOLSAParticipantHelper participantHelper = new MOLSAParticipantHelper();
+				// get QID from concernRoleID
 				String qid = participantHelper.returnConcernRoleAlternateID(
 						concernRoleID, CONCERNROLEALTERNATEID.INSURANCENUMBER);
 				ExternalUser externalUser = ExternalUserFactory.newInstance();
-
 				NotFoundIndicator notFoundIndicatorObj = new NotFoundIndicator();
 				ExternalUserKey externalUserSearch = new ExternalUserKey();
 				externalUserSearch.userName = qid;
-				ExternalUserDtls externalUserDetails = externalUser.read(
-						notFoundIndicatorObj, externalUserSearch);
+				externalUser.read(notFoundIndicatorObj, externalUserSearch);
+
+				// Check if the user is already registered
 				if (notFoundIndicatorObj.isNotFound()) {
 					ExternalUserDtls userDetails = getExternalUserDetails(
 							nameDtls, concernRoleID);
 					String password = userDetails.password;
 					userDetails.password = getEncryptedPasswordValue(password);
+					// set user name as applicants QID
 					userDetails.userName = qid;
+					// populate external user table
 					externalUser.insert(userDetails);
 
+					// populate intake client table with the user details
 					IntakeClient intakeClient = IntakeClientFactory
 							.newInstance();
 					IntakeClientDtls clientDtls = getIntakeClientDetails(userDetails);
-
 					intakeClient.insert(clientDtls);
 
+					// populate external party link table
 					CWExternalPartyLink externalPartyLink = CWExternalPartyLinkFactory
 							.newInstance();
-
 					CWExternalPartyLinkDtls linkDtls = getExternalPartyLinkDetails(
 							concernRoleID, clientDtls);
-
 					externalPartyLink.insert(linkDtls);
 
-					System.out.println(password);
+					// call send SMS functionality
 					sendSMS(password, phoneNumber);
+
+					// TODO Remove this sysout statement
+					System.out.println(password);
 				} else {
+					// the user is already registered
 					throw new AppException(
 							MOLSANOTIFICATION.UNIVERSALACCESS_ACCOUNT_EXISTS);
 				}
 			} else {
+				// There is no registered phone number for the applicant
 				throw new AppException(MOLSANOTIFICATION.PHONE_NUMBER_EMPTY);
 			}
 		}
 	}
 
 	/**
-	 * This method is used to reset password.
+	 * This method is used to reset password of an existing user account by
+	 * authenticating existing password of the user.
 	 * 
 	 * @param passwordDtls
 	 *            UserPasswordDetails
+	 * @return void
 	 * @throws AppException
 	 *             General Exception
 	 * @throws InformationalException
@@ -152,42 +159,51 @@ public class MOLSACitizenPortalHelper {
 	 */
 	public void resetPassword(UserPasswordDetails passwordDtls)
 			throws AppException {
+		// get encrypted value of current password
 		String existingPassword = getEncryptedPasswordValue(passwordDtls.currentPassword);
 		ExternalUser externalUser = ExternalUserFactory.newInstance();
 		ExternalUserKey externalUserKey = new ExternalUserKey();
-		String newPassword = new String();
 		externalUserKey.userName = passwordDtls.userName;
 		try {
+			// Read the existing user details using the user name
 			ExternalUserDtls externalUserDtls = externalUser
 					.read(externalUserKey);
+			// Check if the existing password is correct
 			if (existingPassword.equals(externalUserDtls.password)) {
+				// Check if entered new password and confirm password matches
 				if (passwordDtls.confirmPassword
 						.equals(passwordDtls.newPassword)) {
+					String newPassword = new String();
+					// Encrypt the new password
 					newPassword = getEncryptedPasswordValue(passwordDtls.confirmPassword);
-					System.out.println(newPassword);
 					externalUserDtls.password = newPassword;
 					externalUserDtls.passwordChanged = Date.getCurrentDate();
+					// Modify the record in external user table
 					externalUser.modify(externalUserKey, externalUserDtls);
-				} else {
-					System.out
-							.println("Confirm password doesnot match new password");
-				}
 
+					// TODO remove this sysout statement
+					System.out.println(newPassword);
+				} else {
+					// New password and confirm password doesnot match
+					throw new AppException(
+							MOLSANOTIFICATION.PASSWORD_NOT_MATCHING);
+				}
 			} else {
-				System.out.println("current password invalid");
+				// Entered password authentication failed
+				throw new AppException(MOLSANOTIFICATION.WRONG_PASSWORD);
 			}
 		} catch (InformationalException e) {
-
 			e.printStackTrace();
 		}
 
 	}
 
 	/**
-	 * This method gets the name details related to the concernRoleID.
+	 * This method reads the name details for the concernRoleID.
 	 * 
 	 * @param concernRoleID
-	 * @return
+	 *            long
+	 * @return AlternateNameStruct
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
@@ -199,17 +215,18 @@ public class MOLSACitizenPortalHelper {
 		readMultiKey.nameStatus = RECORDSTATUSEntry.NORMAL.getCode();
 		AlternateNameStructList dtlsList = alternateName
 				.searchActiveNameByConcernRole(readMultiKey);
-
 		return ((AlternateNameStruct) dtlsList.dtls.get(0));
 	}
 
 	/**
-	 * This method populates the External user details struct values required to
-	 * create a external user.
+	 * This method populates the values required for the external user table for
+	 * an account.
 	 * 
 	 * @param roleDtls
+	 *            AlternateNameStruct
 	 * @param concernRoleID
-	 * @return
+	 *            long
+	 * @return ExternalUserDtls
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
@@ -232,15 +249,15 @@ public class MOLSACitizenPortalHelper {
 		dtls.title = null;
 		dtls.type = EXTERNALUSERTYPEEntry.PUBLIC.getCode();
 		dtls.versionNo = 1;
-
 		return dtls;
 	}
 
 	/**
-	 * This method is used to encrypt a string value.
+	 * This method is used to encrypt a string value to set as password.
 	 * 
 	 * @param password
-	 * @return
+	 *            String
+	 * @return String
 	 * @throws AppException
 	 */
 	private String getEncryptedPasswordValue(String password)
@@ -257,10 +274,12 @@ public class MOLSACitizenPortalHelper {
 	}
 
 	/**
-	 * This method is used to get the Intake client details.
+	 * This method is used to populate the intake client table details taking
+	 * external user details strut as parameter
 	 * 
 	 * @param userDtls
-	 * @return
+	 *            ExternalUserDtls
+	 * @return IntakeClientDtls
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
@@ -270,16 +289,17 @@ public class MOLSACitizenPortalHelper {
 		dtls.type = IntakeClientTypeEntry.LINKED.getCode();
 		dtls.userName = userDtls.userName;
 		dtls.versionNo = 1;
-
 		return dtls;
 	}
 
 	/**
-	 * This method is used to get external party link details.
+	 * This method is used populate CWExternalPartyLink table details.
 	 * 
 	 * @param concernRoleID
+	 *            long
 	 * @param clientDtls
-	 * @return
+	 *            IntakeClientDtls
+	 * @return CWExternalPartyLinkDtls
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
@@ -293,7 +313,6 @@ public class MOLSACitizenPortalHelper {
 		dtls.externalSystemID = "CORE_CURAM";
 		dtls.recordStatus = RECORDSTATUSEntry.NORMAL.getCode();
 		dtls.versionNo = 1;
-
 		return dtls;
 	}
 
@@ -337,8 +356,6 @@ public class MOLSACitizenPortalHelper {
 						smsStatus.setTransactionID(sendResult
 								.getSendSmsResult().getTransactionID());
 						smsStatus.setDetailed(true);
-						GetSmsStatusResponse statusresponse = messenger
-								.getSmsStatus(smsStatus);
 					}
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
@@ -395,7 +412,6 @@ public class MOLSACitizenPortalHelper {
 		SoapUser soapUser = getUserDetails();
 		Authenticate authenticate = new Authenticate();
 		authenticate.setUser(soapUser);
-		String phNumber = "";
 		MessengerStub messenger = new MessengerStub();
 		messenger._getServiceClient().getOptions()
 				.setProperty(HTTPConstants.CHUNKED, false);
