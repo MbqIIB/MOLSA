@@ -1,7 +1,6 @@
 package curam.molsa.intake.facade.impl;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import curam.application.impl.Application;
@@ -21,6 +20,9 @@ import curam.verification.facade.infrastructure.struct.NewUserProvidedVerificati
 import curam.verification.facade.infrastructure.struct.UserProvidedVerificationItemKey;
 import curam.verification.facade.infrastructure.struct.VerificationAttachmentLinkKey;
 
+/**
+ * Overridden for ArabDox Integration
+ */
 public class MOLSAApplicationVerificationDA extends curam.molsa.intake.facade.base.MOLSAApplicationVerificationDA{
   @Inject
   private ApplicationDAO applicationDAO;
@@ -33,7 +35,9 @@ public class MOLSAApplicationVerificationDA extends curam.molsa.intake.facade.ba
     GuiceWrapper.getInjector().injectMembers(this);
   }
   
-
+  /**
+   * Overridden for ArabDox Integration
+   */
   @Override
   public VerificationAttachmentLinkKey createVerificationAttachment(CreateApplicationVerificationAttachmentDetails details) throws AppException, InformationalException {
     Application application = (Application)applicationDAO.get(Long.valueOf(details.applicationID));
@@ -45,6 +49,9 @@ public class MOLSAApplicationVerificationDA extends curam.molsa.intake.facade.ba
     return verificationApplicationObj.createVerificationAttachment(standardDetails);
   }
 
+  /**
+   * Overridden for ArabDox Integration
+   */
   @Override
   public void modifyVerificationAttachment(ModifyApplicationVerificationAttachmentDetails details) throws AppException, InformationalException {
     Application application = (Application)applicationDAO.get(Long.valueOf(details.applicationID));
@@ -57,6 +64,9 @@ public class MOLSAApplicationVerificationDA extends curam.molsa.intake.facade.ba
     verificationApplicationObj.modifyVerificationAttachment(standardDetails);
   }
 
+  /**
+   * Overridden for ArabDox Integration
+   */
   @Override
   public UserProvidedVerificationItemKey newUserProvidedVerificationItem(NewUserProvidedApplicationVerificationItemDetails details) throws AppException, InformationalException {
     Application application = (Application)applicationDAO.get(Long.valueOf(details.applicationID));
