@@ -35,10 +35,9 @@
   </ac:banner-menu>
 
   <ac:banner-menu type="person" title="person.title" page-id="CitizenWorkspace_userHomeResolver">      
-    
-    <ac:menu-item id="p1" title="menu.resetpassword.title" text="menu.resetpassword.text" page-id="PagePlayerWrapper">
-      <ac:param name="page" value="ResetPasswordExistingPassword" description=""/>
-    </ac:menu-item>
+    <ac:menu-item id="p1" title="menu.resetpassword.title" text="menu.resetpassword.text" page-id="MOLSAResetPassword">
+  </ac:menu-item>
+   
     
     <ac:menu-item id="logout" title="menu.logout.title" text="menu.logout.text" page-id="LogoutWrapper"/>
   </ac:banner-menu>
