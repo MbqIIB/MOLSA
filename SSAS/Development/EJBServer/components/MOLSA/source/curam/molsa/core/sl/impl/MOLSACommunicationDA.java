@@ -160,8 +160,8 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 
 		if ((previewProFormaKey.localeIdentifier == null)
 				|| (previewProFormaKey.localeIdentifier.length() == 0)) {
-	//		concernRoleDocumentDetails.localeIdentifier = TransactionInfo.getProgramLocale();
-		  concernRoleDocumentDetails.localeIdentifier = "en";
+		  concernRoleDocumentDetails.localeIdentifier = TransactionInfo.getProgramLocale();
+//		  concernRoleDocumentDetails.localeIdentifier = "en";
 		} else {
 			concernRoleDocumentDetails.localeIdentifier = previewProFormaKey.localeIdentifier;
 		}

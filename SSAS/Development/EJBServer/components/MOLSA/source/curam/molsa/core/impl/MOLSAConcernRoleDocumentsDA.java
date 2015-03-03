@@ -50,7 +50,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 
 		// pro forma document data to be populated
 		ProFormaDocumentData proFormaDocumentData = new ProFormaDocumentData();
-		
+
 
 		// Return type
 		ProFormaReturnDocDetails proFormaReturnDocDetails = new ProFormaReturnDocDetails();    
@@ -138,12 +138,19 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		MOLSAConcernRoleCommunicationDtls concernRoleCommunicationDtls = MOLSACommunicationHelper.readAdditionalCommParams(concernRoleCommunicationKey);
 		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
 
-		// print the populated document with new struct MOLSAProFormaDocumentData
-		proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
-		
+		if((details.documentID==45001)||(details.documentID==45002)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
+				(details.documentID==45006)){
+			// print the populated document with new struct MOLSAProFormaDocumentData
+			proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
+		}else{
+			//proFormaReturnDocDetails = concernRoleDocumentGenerationObjOOTB.generateAndPreviewXMLDocument(details,proFormaDocumentData);
+		}
+
+
+
 		//Currently calling the OOTB code.Will be replaced with customized struct MOLSAProFormaDocumentData
-		
-		//proFormaReturnDocDetails = concernRoleDocumentGenerationObjOOTB.generateAndPreviewXMLDocument(details,proFormaDocumentData);
+
+
 
 		return proFormaReturnDocDetails;
 
