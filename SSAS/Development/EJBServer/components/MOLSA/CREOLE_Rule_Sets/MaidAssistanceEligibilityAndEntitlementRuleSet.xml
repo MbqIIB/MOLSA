@@ -9,8 +9,8 @@
 	you entered into with Curam Software. -->
 <!-- MaidAssistance Rule set. -->
 <RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../../../../../../Curam/catalog/RuleSet.xsd"
-    name="MaidAssistanceEligibilityAndEntitlementRuleSet">
+ xsi:noNamespaceSchemaLocation="file:/D:/Curam/catalog/RuleSet.xsd"
+ name="MaidAssistanceEligibilityAndEntitlementRuleSet">
 	<Class name="MaidAssistanceCPRCalculator">
  		<Initialization>
 			<Attribute name="caseParticipantRoleRecord">
@@ -289,17 +289,6 @@
                                             <intervalvalue>
                                                 <reference attribute="hasHouseholdPassedIncomeTestTimeline"/>
                                             </intervalvalue>
-                                            <not>
-                                                <intervalvalue>
-                                                    <reference attribute="hasEarnedIncomeTimeline">
-                                                        <reference attribute="memberCPRCalculator">
-                                                            <intervalvalue>
-                                                                <reference attribute="maidAssistanceHouseholdMember"/>
-                                                            </intervalvalue>
-                                                        </reference>
-                                                    </reference>
-                                                </intervalvalue> 
-                                            </not>
                                         </members>
                                     </fixedlist>
                                 </all> 
@@ -603,41 +592,7 @@
 				</javaclass>
 			</type>
 			<derivation>
-				<timelineoperation>
-					<choose>
-						<type>
-							<javaclass name="Number" />
-						</type>
-						<when>
-							<condition>
-								<compare comparison="&lt;">
-									<intervalvalue>
-										<reference attribute="totalCountableIncomeTimeline" />
-									</intervalvalue>
-									<intervalvalue>
-										<reference attribute="primaryBeneficiaryAmount" />
-									</intervalvalue>
-
-								</compare>
-							</condition>
-							<value>
-								<arithmetic operation="-">
-									<intervalvalue>
-										<reference attribute="primaryBeneficiaryAmount" />
-									</intervalvalue>
-									<intervalvalue>
-										<reference attribute="totalCountableIncomeTimeline" />
-									</intervalvalue>
-								</arithmetic>
-							</value>
-						</when>
-						<otherwise>
-							<value>
-								<Number value="0" />
-							</value>
-						</otherwise>
-					</choose>
-				</timelineoperation>
+			    <reference attribute="primaryBeneficiaryAmount" />
 			</derivation>
 		</Attribute>
         
@@ -895,14 +850,14 @@
 							ruleset="ProgramRecommendationDisplayRuleSet"/>
 					</listof>
 					<members>
-					    <reference attribute="maidAssistanceSummaryCategory"/>
+					    <reference attribute="maSummaryCategory"/>
 					    <reference attribute="saNonFinancialCategory"/>
 					    <reference attribute="saHhIncomeCategory"/>
 					</members>
 				</fixedlist>
 			</derivation>
 		</Attribute>
-        <Attribute name="maidAssistanceSummaryCategory">
+        <Attribute name="maSummaryCategory">
             <type>
                 <ruleclass name="MaidAssistanceSummaryCategory" ruleset="MaidAssistanceDisplayRuleSet"/>
             </type>
@@ -915,7 +870,7 @@
                         <reference attribute="simulatedProductDeliveryCase"/>
                     </specify>
                     <specify attribute="displayCategoryID">
-                        <Number value="4504"/>
+                        <Number value="4513"/>
                     </specify>
                 </create>
             </derivation>
@@ -1121,7 +1076,7 @@
                 <ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
             </type>
             <derivation>
-                <create ruleclass="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet">
+                <create ruleclass="MaidAssistanceHouseholdUnitMember">
                     <reference attribute="parentIntegratedCaseID"/>
                     <reference attribute="primaryClientCPRRecord"/>
                 </create>
@@ -1592,6 +1547,12 @@
                                                             <ruleclass name="SAHouseholdUnitMember" ruleset="SocialAssistanceRuleSet"/>
                                                         </listof>
                                                         <members>
+                                                            <create ruleclass="MaidAssistanceHouseholdUnitMember">
+                                                                <reference attribute="caseID"/>
+                                                                <reference attribute="caseParticipantRoleRecord">
+                                                                    <current/>
+                                                                </reference>
+                                                            </create>
                                                             <current/>
                                                         </members>
                                                     </fixedlist>
@@ -1612,4 +1573,19 @@
             </derivation>
         </Attribute>
     </Class>   
+    <Class name="MaidAssistanceHouseholdUnitMember" extends="SAHouseholdUnitMember"
+        extendsRuleSet="SocialAssistanceRuleSet">
+        <Attribute name="filterTypeTimeline">
+            <type>
+                <javaclass name="curam.creole.value.Timeline">
+                    <javaclass name="String" />
+                </javaclass>
+            </type>
+            <derivation>
+                <timelineoperation>
+                    <String value="EligibleMember" />
+                </timelineoperation>
+            </derivation>
+        </Attribute>
+    </Class>
 </RuleSet>
