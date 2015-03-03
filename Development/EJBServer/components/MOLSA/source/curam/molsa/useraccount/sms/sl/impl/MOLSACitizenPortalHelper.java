@@ -39,6 +39,7 @@ import curam.core.sl.entity.intf.ExternalUser;
 import curam.core.sl.entity.struct.ExtUserPasswordDetails;
 import curam.core.sl.entity.struct.ExternalUserDtls;
 import curam.core.sl.entity.struct.ExternalUserKey;
+import curam.core.sl.entity.struct.ModifyExtUserPWDDetails;
 import curam.core.sl.struct.UserPasswordDetails;
 import curam.core.struct.AlternateNameReadMultiStatusStruct;
 import curam.core.struct.AlternateNameStruct;
@@ -164,10 +165,9 @@ public class MOLSACitizenPortalHelper {
 						.equals(passwordDtls.newPassword)) {
 					newPassword = getEncryptedPasswordValue(passwordDtls.confirmPassword);
 					System.out.println(newPassword);
-					ExtUserPasswordDetails newPasswordDtls = new ExtUserPasswordDetails();
-					newPasswordDtls.password = newPassword;
-					externalUser.modifyPassword(externalUserKey,
-							newPasswordDtls);
+					externalUserDtls.password = newPassword;
+					externalUserDtls.passwordChanged = Date.getCurrentDate();
+					externalUser.modify(externalUserKey, externalUserDtls);
 				} else {
 					System.out
 							.println("Confirm password doesnot match new password");
