@@ -78,7 +78,7 @@
   <xsl:template match="DATA">
     <!--Explicitly select the STRUCT to avoid processing anything
  else.-->
-    <xsl:apply-templates select="STRUCT[SNAME='ProFormaDocumentData']" />
+    <xsl:apply-templates select="STRUCT[SNAME='MOLSAProFormaDocumentData']"/>
   </xsl:template>
   <xsl:template match="STRUCT">
     <fo:root>
@@ -101,42 +101,6 @@
           <fo:block xsl:use-attribute-sets="Normal_3" white-space="pre">السلام عليكم و رحمة الله و بركاته,      و بعد  </fo:block>
           <fo:block xsl:use-attribute-sets="Normal_3">١- اسم طالب المساعدة....................................................المقيم بمدينة...............................................ه </fo:block>
           <fo:block xsl:use-attribute-sets="Normal_3">١- اسم المنطقة................رقم المنزل .....................الشارع...............................................ه </fo:block>
-          
-		  
-		  <fo:table>
-     <fo:table-column column-width="20%"/>
-     <fo:table-column column-width="80%"/>
-     <fo:table-body>
-       <fo:table-row>
-         <fo:table-cell>
-           <fo:block margin="12pt" font-weight="bold" font-size="8pt">
-		     Serif 8pt:
-           </fo:block>
-         </fo:table-cell>
-         <fo:table-cell>
-           <fo:block margin="12pt" font-size="8pt">
-		     The quick brown fox jumps over the lazy dog!
-           </fo:block>
-         </fo:table-cell>
-       </fo:table-row>
-       <fo:table-row>
-         <fo:table-cell>
-           <fo:block margin="12pt" font-weight="bold" font-size="8pt">
-		     Serif 36pt:
-           </fo:block>
-         </fo:table-cell>
-         <fo:table-cell>
-           <fo:block margin="12pt" font-size="36pt">
-		     The quick brown fox jumps over the lazy dog!
-           </fo:block>
-         </fo:table-cell>
-       </fo:table-row>
-     </fo:table-body>
-   </fo:table>
-		  
-		  
-		  
-		  
         <fo:block xsl:use-attribute-sets="Normal_5"> بطلب للحصول على مساعدة بدل خادم و سبب طلب المساعدة الإعاقة </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> يرجى التكرم بإحالته إلى اللجنة الطبية، وموافاتنا عن مدى حاجته لمن يقوم برعايته وتشخيص الحالة ليتسنى لنا إتخذ الإجراءت اللازمة بناءً على ردكم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>

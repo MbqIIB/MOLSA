@@ -76,7 +76,7 @@
   <xsl:template match="DATA">
     <!--Explicitly select the STRUCT to avoid processing anything
  else.-->
-    <xsl:apply-templates select="STRUCT[SNAME='ProFormaDocumentData']" />
+    <xsl:apply-templates select="STRUCT[SNAME='MOLSAProFormaDocumentData']" />
   </xsl:template>
   <xsl:template match="STRUCT">
     <fo:root>
@@ -90,15 +90,15 @@
 	    <!-- START NON-TRANSLATABLE -->
         <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
         
-        <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="FIELD[FNAME='currentDate']" />  :التاريخ </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="FIELD[FNAME='caseID']" />  :الرقم </fo:block>
+        <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='caseID']" />  :الرقم </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">السيد/ المدير التنفيذي لوزارة الصحة العامة   المحترم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">وزارة الصحة العامة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_3">إستناداً لمادة (٥) من قرار مجلس الوزراء رقم (٤٦) لسنة ٢٠١٤م بشأن تحديد قيمة المعاش المستحق لفئات المنصوص عليها في القانون رقم (٣٨) لسنة ١٩٩٥م بشأن الضمان الاجتماعي وقواعد منحه </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='concernRoleName']" />  تقدم(ت) إلينا </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="FIELD[FNAME='alternateID']" /> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  تقدم(ت) إلينا </fo:block>
+          <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> /> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
         <fo:block xsl:use-attribute-sets="Normal_5"> بطلب للحصول على مساعدة بدل خادم و سبب طلب المساعدة الشيخوخة </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> يرجى التكرم بإحالته إلى اللجنة الطبية، وموافاتنا عن مدى حاجته لمن يقوم برعايته وتشخيص الحالة ليتسنى لنا إتخذ الإجراءت اللازمة بناءً على ردكم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>

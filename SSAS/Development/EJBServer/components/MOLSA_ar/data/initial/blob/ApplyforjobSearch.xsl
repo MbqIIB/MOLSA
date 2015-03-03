@@ -71,7 +71,7 @@
   <xsl:template match="DATA">
     <!--Explicitly select the STRUCT to avoid processing anything
  else.-->
-    <xsl:apply-templates select="STRUCT[SNAME='ProFormaDocumentData']" />
+    <xsl:apply-templates select="STRUCT[SNAME='MOLSAProFormaDocumentData']" />
   </xsl:template>
   <xsl:template match="STRUCT">
     <fo:root>
@@ -89,8 +89,8 @@
 	<fo:block xsl:use-attribute-sets="Normal_1">مدير إدارة القوى العاملة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='concernRoleName']" /> نحيل لادارتكم الموقرة الشخص</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="FIELD[FNAME='alternateID']" /> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> نحيل لادارتكم الموقرة الشخص</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
         <fo:block xsl:use-attribute-sets="Normal_5"> مقدم طلب في نظام الضمان الاجتماعي للبحث له أو لها عن فرصة عمل مناسبة وذلك حسب القوانين والاجراءت المتبعة لديكم </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7">غانم مبارك الكواري</fo:block>
