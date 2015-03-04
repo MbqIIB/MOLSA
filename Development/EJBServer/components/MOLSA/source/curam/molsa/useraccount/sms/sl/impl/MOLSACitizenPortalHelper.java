@@ -266,7 +266,14 @@ public class MOLSACitizenPortalHelper {
 
 					// TODO remove this sysout statement
 					System.out.println(newPassword);
+				} else {
+					// There is no universal access account for the user
+					throw new AppException(
+							MOLSANOTIFICATION.UNIVERSALACCESS_ACCOUNT_DOESNOTEXIST);
 				}
+			} else {
+				// There is no registered phone number for the applicant
+				throw new AppException(MOLSANOTIFICATION.PHONE_NUMBER_EMPTY);
 			}
 		}
 	}
