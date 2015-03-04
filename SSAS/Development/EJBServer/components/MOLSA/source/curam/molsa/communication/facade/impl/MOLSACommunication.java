@@ -1,8 +1,13 @@
 package curam.molsa.communication.facade.impl;
 
 import curam.core.fact.BankBranchFactory;
+import curam.core.fact.UsersFactory;
 import curam.core.intf.BankBranch;
+import curam.core.intf.Users;
 import curam.core.struct.BankBranchDtlsList;
+import curam.core.struct.UserLocationDetails;
+import curam.core.struct.UserRoleAccountStatusKey;
+import curam.core.struct.UserRoleLocationDetailsList;
 
 
 import curam.molsa.bankbranch.entity.fact.MOLSABankBranchDAFactory;
@@ -47,5 +52,19 @@ public class MOLSACommunication extends curam.molsa.communication.facade.base.MO
     MOLSAConcernRoleCommunicationDtls dtls = readObj.read(key);
     return dtls;
   }
+
+@Override
+public UserRoleLocationDetailsList readAllMolsaManagers() throws AppException,
+		InformationalException {
+	// TODO Auto-generated method stub
+	 // TODO Auto-generated method stub
+    Users userObj = UsersFactory.newInstance();
+    UserRoleAccountStatusKey key = new UserRoleAccountStatusKey();
+    key.accountEnabled = true;
+    key.roleName = "MOLSAMANAGERROLE";
+    UserRoleLocationDetailsList usersList = new UserRoleLocationDetailsList();
+    usersList = userObj.searchUsersByRoleAndAccountStatus(key);
+    return usersList;
+}
 
 }
