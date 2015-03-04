@@ -60,13 +60,24 @@
   </map-code-table>
   <map-entity source="Application">
     <map-entity source="Person">
+      <condition expression=" Application.isCOC == true and Person.isPrimaryParticipant == false">
       <target-entity id="pdcGender" name="PDCGender">
         <map-attribute from="gender" to="gender"/>
       </target-entity>
       <target-entity id="pdcBirthAndDeath" name="PDCBirthAndDeath">
         <map-attribute from="dateOfBirth" to="dateOfBirth"/>
       </target-entity>
-
+</condition>
+      
+      <condition expression="Application.isCOC == false">
+        <target-entity id="pdcGender1" name="PDCGender">
+          <map-attribute from="gender" to="gender"/>
+        </target-entity>
+        <target-entity id="pdcBirthAndDeath1" name="PDCBirthAndDeath">
+          <map-attribute from="dateOfBirth" to="dateOfBirth"/>
+        </target-entity>
+      </condition>
+      
       <condition expression=" Application.isCOC == true and Person.isPrimaryParticipant == false">
         <target-entity id="householdMember" name="HouseholdMember">
           <map-attribute from="householdMemberStartDate" to="startDate"/>
