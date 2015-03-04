@@ -18,6 +18,7 @@ import curam.codetable.CASETYPECODE;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.impl.PROGRAMSTATUSEntry;
 import curam.core.sl.struct.TaskCreateDetails;
+import curam.core.sl.tab.impl.TabLoaderConst;
 import curam.core.struct.CaseHeaderKey;
 import curam.creole.value.Timeline;
 import curam.creoleprogramrecommendation.codetable.impl.SIMULATEDDETERMINATIONSTATEEntry;
@@ -43,6 +44,8 @@ import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.IntegratedCase;
 import curam.piwrapper.caseheader.impl.IntegratedCaseDAO;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
+import curam.piwrapper.user.impl.User;
+import curam.piwrapper.user.impl.UserDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
@@ -72,6 +75,9 @@ public class MOLSAAuthorizationEventListener extends AuthorizationEvent {
 	@Inject
 	private CREOLEProgramRecommendationDAO creoleProgramRecommendationDAO;
 
+	@Inject
+	private UserDAO userDAO;
+
 	public MOLSAAuthorizationEventListener() {
 		GuiceWrapper.getInjector().injectMembers(this);
 	}
@@ -83,30 +89,55 @@ public class MOLSAAuthorizationEventListener extends AuthorizationEvent {
 
 		final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
 		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
-		taskCreateDetails.caseID = simulatedDeterminationAuthorization.getDelivery().getID();
-
-		final LocalisableString subject = new LocalisableString(
-				MOLSANOTIFICATION.INF_READY_FOR_FINAUDITOR_REVIEW);
+		taskCreateDetails.caseID = simulatedDeterminationAuthorization
+				.getDelivery().getID();
 		IntegratedCase integratedCase = integratedCaseDAO
 				.get(taskCreateDetails.caseID);
-		subject.arg(integratedCase.getCaseReference());
 
-		String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
-				productDeliveryDAO.get(taskCreateDetails.caseID)
-						.getProductType().getCode(),
-				TransactionInfo.getProgramLocale());
-		subject.arg(productName);
-		subject.arg(integratedCase.getConcernRole().getName());
+		LocalisableString subject = null;
+		final User user = userDAO.get(TransactionInfo.getProgramUser());
+		if (user.getRole().equals(MOLSAConstants.kMolsaCaseWorkerRole)) {
+			subject = new LocalisableString(
+					MOLSANOTIFICATION.INF_READY_FOR_APPROVAL_REVIEW);
+			subject.arg(integratedCase.getCaseReference());
 
-		taskCreateDetails.subject = subject.getMessage(TransactionInfo
-				.getProgramLocale());
+			String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+					productDeliveryDAO.get(taskCreateDetails.caseID)
+							.getProductType().getCode(),
+					TransactionInfo.getProgramLocale());
+			subject.arg(productName);
+			subject.arg(integratedCase.getConcernRole().getName());
 
-		
-		taskCreateDetails.subject = subject.getMessage(TransactionInfo
-				.getProgramLocale());
-		enactmentStructs.add(taskCreateDetails);
-		EnactmentService.startProcessInV3CompatibilityMode(
-				MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
+			taskCreateDetails.subject = subject.getMessage(TransactionInfo
+					.getProgramLocale());
+
+			enactmentStructs.add(taskCreateDetails);
+			EnactmentService.startProcessInV3CompatibilityMode(
+					MOLSAConstants.kMOLSAProductDeliveryAuthorizationTask,
+					enactmentStructs);
+
+		} else {
+
+			subject = new LocalisableString(
+					MOLSANOTIFICATION.INF_READY_FOR_FINAUDITOR_REVIEW);
+			subject.arg(integratedCase.getCaseReference());
+
+			String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+					productDeliveryDAO.get(taskCreateDetails.caseID)
+							.getProductType().getCode(),
+					TransactionInfo.getProgramLocale());
+			subject.arg(productName);
+			subject.arg(integratedCase.getConcernRole().getName());
+
+			taskCreateDetails.subject = subject.getMessage(TransactionInfo
+					.getProgramLocale());
+
+			enactmentStructs.add(taskCreateDetails);
+			EnactmentService.startProcessInV3CompatibilityMode(
+					MOLSAConstants.kMOLSAProductDeliveryOpenTask,
+					enactmentStructs);
+
+		}
 
 		boolean isEligibleForApprove = true;
 
