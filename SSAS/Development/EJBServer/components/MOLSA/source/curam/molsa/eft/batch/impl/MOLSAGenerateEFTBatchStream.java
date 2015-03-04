@@ -8,6 +8,7 @@ import java.util.List;
 import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.BATCHPROCESSNAME;
 import curam.codetable.CASESTATUS;
+import curam.codetable.CASETYPECODE;
 import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.FINCOMPONENTSTATUS;
 import curam.codetable.FINCOMPONENTTYPE;
@@ -284,6 +285,148 @@ public class MOLSAGenerateEFTBatchStream extends
 		}
 		return financialComponentDtlsList;
 	}
+	
+	
+	/**
+	 * Return the Open and Suspended Case Details to the output struct.
+	 * 
+	 * @return List<MOLSAGenerateEFTDetail>
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General ExceptionList
+	 */
+	private List<MOLSAGenerateEFTDetail> getOpenAndSubmittedCaseDetails()
+			throws AppException, InformationalException {
+		List<MOLSAGenerateEFTDetail> generateEFTDetailList = new ArrayList<MOLSAGenerateEFTDetail>();
+		MOLSAGenerateEFTDetail generateEFTDetail;
+
+		// Suspended Cases Amount
+		CaseHeader caseHeaderObj = CaseHeaderFactory.newInstance();
+		CaseHeaderByStatusKey caseHeaderByStatusKey = new CaseHeaderByStatusKey();
+		caseHeaderByStatusKey.statusCode = CASESTATUS.OPEN;
+		CaseHeaderDtlsList caseHeaderDtlsOpenList = caseHeaderObj
+				.searchByStatusCode(caseHeaderByStatusKey);
+		caseHeaderByStatusKey.statusCode = CASESTATUS.COMPLETED;
+		CaseHeaderDtlsList caseHeaderDtlsSubmittedList = caseHeaderObj
+		.searchByStatusCode(caseHeaderByStatusKey);
+		CaseHeaderDtlsList caseHeaderDtlsList = new CaseHeaderDtlsList();
+		caseHeaderDtlsList.dtls.addAll(caseHeaderDtlsOpenList.dtls);
+		caseHeaderDtlsList.dtls.addAll(caseHeaderDtlsSubmittedList.dtls);
+		caseHeaderDtlsList = filterProductDelivery(caseHeaderDtlsList);
+		CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
+		CurrentCaseStatusKey currentCaseStatusKey;
+		
+		CaseNominee caseNomineeObj = CaseNomineeFactory.newInstance();
+		CaseNomineeKey caseNomineeKey = new CaseNomineeKey();
+		CaseNomineeDtls caseNomineeDtls;
+
+		double totalSuspendedAmount = 0;
+		FinancialComponent financialComponentObj = FinancialComponentFactory
+				.newInstance();
+		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
+		Date currentDate = Date.getCurrentDate();
+		FrequencyPattern frequencyPattern = new FrequencyPattern();
+		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsList.dtls.items()) {
+			currentCaseStatusKey = new CurrentCaseStatusKey();
+			currentCaseStatusKey.caseID = caseHeaderDtls.caseID;
+			
+
+			fcstatusCodeCaseID = new FCstatusCodeCaseID();
+			fcstatusCodeCaseID.caseID = caseHeaderDtls.caseID;
+			fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.LIVE;
+			FinancialComponentDtlsList financialComponentDtlsList = financialComponentObj
+					.searchByStatusCaseID(fcstatusCodeCaseID);
+			FinancialComponentDtls financialComponentDtls = returnLastFinancialComponentForOpenAndSubmittedCase(financialComponentDtlsList);
+			if (financialComponentDtls != null) {
+				generateEFTDetail = new MOLSAGenerateEFTDetail();
+				generateEFTDetail.isSuspended = true;
+				generateEFTDetail.deptCode = Configuration
+						.getProperty(EnvVars.EFT_DEPT_CODE);
+				generateEFTDetail.staffNumber = MOLSAParticipantHelper
+						.returnConcernRoleAlternateID(
+								financialComponentDtls.concernRoleID,
+								CONCERNROLEALTERNATEID.INSURANCENUMBER);
+				caseNomineeKey.caseNomineeID = financialComponentDtls.caseNomineeID;
+				caseNomineeDtls = caseNomineeObj.read(caseNomineeKey);
+				long concernRoleID = MOLSAParticipantHelper
+						.returnConcernRoleIDFromCaseParticipantRoleID(caseNomineeDtls.caseParticipantRoleID);
+
+				generateEFTDetail.fullname_ar = MOLSAParticipantHelper
+						.returnConcernRoleName(concernRoleID);
+				generateEFTDetail.fullname_en = MOLSAParticipantHelper
+						.returnAlternateName(concernRoleID,
+								ALTERNATENAMETYPE.ENGLISH);
+
+				generateEFTDetail.currencyCode = Configuration
+						.getProperty(EnvVars.ENV_BASECURRENCY);
+
+				frequencyPattern = new FrequencyPattern(
+						financialComponentDtls.frequency);
+				Date[] dates = frequencyPattern.getAllOccurrences(
+						financialComponentDtls.dueDate, currentDate);
+				double amount = 0.00;
+				int numberOfMonths = dates.length+1;
+				amount = financialComponentDtls.amount.getValue()
+				* numberOfMonths;
+
+				generateEFTDetail.amount = new Money(amount);
+				generateEFTDetailList.add(generateEFTDetail);
+
+			}
+
+		}
+		return generateEFTDetailList;
+	}
+	
+	private CaseHeaderDtlsList filterProductDelivery(CaseHeaderDtlsList caseHeaderDtlsList){
+		CaseHeaderDtlsList pdcCaseHeaderDtlsList = new CaseHeaderDtlsList();
+		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsList.dtls.items()) {
+			if(caseHeaderDtls.caseTypeCode.equals(CASETYPECODE.PRODUCTDELIVERY)) {
+				pdcCaseHeaderDtlsList.dtls.addRef(caseHeaderDtls);
+			}
+		}
+		return pdcCaseHeaderDtlsList;
+	}
+			
+	/**
+	 * Return the latest Closed Financial Component.
+	 * 
+	 * @param financialComponentDtlsList
+	 *            FinancialComponentDtlsList
+	 * @return FinancialComponentDtls
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General ExceptionList
+	 */
+	private FinancialComponentDtls returnLastFinancialComponentForOpenAndSubmittedCase(
+			FinancialComponentDtlsList financialComponentDtlsList)
+			throws AppException, InformationalException {
+		FinancialComponentDtls outFinancialComponentDtls = null;
+		filterFinancialComponent(financialComponentDtlsList);
+
+		// Sort with respect to Next Processing Date Date
+		Collections.sort(financialComponentDtlsList.dtls,
+				new Comparator<FinancialComponentDtls>() {
+					public int compare(FinancialComponentDtls o1,
+							FinancialComponentDtls o2) {
+						return o2.dueDate.compareTo(o1.dueDate);
+					}
+				});
+
+		for (FinancialComponentDtls financialComponentDtls : financialComponentDtlsList.dtls
+				.items()) {
+			if ( financialComponentDtls.nextProcessingDate.before(Date
+							.getCurrentDate()) || financialComponentDtls.nextProcessingDate
+							.equals(Date.getCurrentDate())) {
+				outFinancialComponentDtls = financialComponentDtls;
+				break;
+			}
+		}
+		return outFinancialComponentDtls;
+	}
+	
 
 	/**
 	 * Return the suspended Case Details to the output struct.
@@ -305,9 +448,10 @@ public class MOLSAGenerateEFTBatchStream extends
 		caseHeaderByStatusKey.statusCode = CASESTATUS.SUSPENDED;
 		CaseHeaderDtlsList caseHeaderDtlsList = caseHeaderObj
 				.searchByStatusCode(caseHeaderByStatusKey);
+		caseHeaderDtlsList = filterProductDelivery(caseHeaderDtlsList);
 		CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
 		CurrentCaseStatusKey currentCaseStatusKey;
-		CaseStatusDtls caseStatusDtls;
+		
 		CaseNominee caseNomineeObj = CaseNomineeFactory.newInstance();
 		CaseNomineeKey caseNomineeKey = new CaseNomineeKey();
 		CaseNomineeDtls caseNomineeDtls;
@@ -321,8 +465,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsList.dtls.items()) {
 			currentCaseStatusKey = new CurrentCaseStatusKey();
 			currentCaseStatusKey.caseID = caseHeaderDtls.caseID;
-			caseStatusDtls = caseStatusObj
-					.readCurrentStatusByCaseID1(currentCaseStatusKey);
+			
 
 			fcstatusCodeCaseID = new FCstatusCodeCaseID();
 			fcstatusCodeCaseID.caseID = caseHeaderDtls.caseID;
@@ -357,8 +500,11 @@ public class MOLSAGenerateEFTBatchStream extends
 						financialComponentDtls.frequency);
 				Date[] dates = frequencyPattern.getAllOccurrences(
 						financialComponentDtls.dueDate, currentDate);
-				double amount = financialComponentDtls.amount.getValue()
-						* dates.length;
+				double amount = 0.00;
+				int numberOfMonths = dates.length+1;
+				amount = financialComponentDtls.amount.getValue()
+				* numberOfMonths;
+				
 
 				generateEFTDetail.amount = new Money(amount);
 				generateEFTDetailList.add(generateEFTDetail);
@@ -520,6 +666,13 @@ public class MOLSAGenerateEFTBatchStream extends
 				.getMonthYearDetail(Date.getCurrentDate());
 		List<MOLSAGenerateEFTDetail> generateEFTDetailListForSuspended = getSupendedCaseDetails();
 		for (MOLSAGenerateEFTDetail molsaGenerateEFTDetail : generateEFTDetailListForSuspended) {
+		  if(molsaGenerateEFTDetail.amount.getValue()>0) {
+  			totalAmount += molsaGenerateEFTDetail.amount.getValue();
+  			generateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
+		  }
+		}
+		List<MOLSAGenerateEFTDetail> generateEFTDetailListForOpenAndSubmitted = getOpenAndSubmittedCaseDetails();
+		for (MOLSAGenerateEFTDetail molsaGenerateEFTDetail : generateEFTDetailListForOpenAndSubmitted) {
 		  if(molsaGenerateEFTDetail.amount.getValue()>0) {
   			totalAmount += molsaGenerateEFTDetail.amount.getValue();
   			generateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
