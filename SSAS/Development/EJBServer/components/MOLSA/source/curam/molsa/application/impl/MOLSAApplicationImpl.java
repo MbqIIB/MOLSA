@@ -6,7 +6,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathException;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -56,7 +65,6 @@ import curam.core.struct.PersonKey;
 import curam.core.struct.PhoneRMDtls;
 import curam.core.struct.ReadMultiByConcernRoleIDPhoneResult;
 import curam.core.struct.ReadmultiByConcernRoleIDAltIDResult;
-import curam.datastore.impl.AttributeType;
 import curam.datastore.impl.Datastore;
 import curam.datastore.impl.DatastoreFactory;
 import curam.datastore.impl.Entity;
@@ -822,11 +830,51 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 		final EntityXMLNVFormatter formatter = new EntityXMLNVFormatter(
 				Locale.ENGLISH, TransactionInfo.getServerTimeZone());
 		final Document doc = formatter.getDocument(root);
+		deleteDummyAttributes(doc);
 		final String xmlString = docFormatter.serializeDoc(doc);
 		return xmlString;
 
 	}
 
+	/*
+	 * TODO This has been added temporarily to remove the unwanted fields from
+	 * the generated PDF. Deleting the attributes added to the schema to fix the
+	 * OOTB errors. This must be deleted after the OOTB fix.
+	 */
+	public void deleteDummyAttributes(Document doc){
+		
+		String[] attributeNames = new String[]{"ssn", "hispanicOrLatino", 
+				"blackOrAfricanAmerican", "nativeAlaskanOrAmericanIndian", 
+				"asian", "nativeHawaiianOrPacificIslander", "whiteOrCaucasian"};
+		
+		XPathFactory xpathFactory = XPathFactory.newInstance();
+		XPath xpath = xpathFactory.newXPath();
+
+		try {
+			XPathExpression xpathExpression = xpath.compile("//entity[@name=\"Person\"]/attributes/attribute");
+
+			//get the person entity from the document
+			NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc,XPathConstants.NODESET);
+			
+			for(int i=0; i< attributeNodes.getLength(); i++){
+				
+				Element attributeElement = (Element)attributeNodes.item(i);
+				for(String attribute : attributeNames){
+					
+					if(attributeElement.getAttribute("name").equalsIgnoreCase(attribute)){
+						//remove the attribute
+						attributeElement.getParentNode().removeChild(attributeElement);
+						break;
+					}
+				}			
+			}
+
+		} catch (XPathExpressionException e) {
+			// Ignore the exception should not break the existing flow.
+		}
+		
+	}
+	
 	/**
 	 * Creates an IntakeProgram record in the data store for each program passed
 	 * in. The programs should be passed in as a comma separated string.
