@@ -28,6 +28,10 @@ import curam.codetable.impl.EXTERNALUSERTYPEEntry;
 import curam.codetable.impl.LOCALEEntry;
 import curam.codetable.impl.RECORDSTATUSEntry;
 import curam.codetable.impl.SENSITIVITYEntry;
+import curam.core.facade.fact.PersonFactory;
+import curam.core.facade.intf.Person;
+import curam.core.facade.struct.PersonSearchDetailsResult;
+import curam.core.facade.struct.PersonSearchKey1;
 import curam.core.fact.AlternateNameFactory;
 import curam.core.impl.CuramConst;
 import curam.core.impl.EnvVars;
@@ -40,6 +44,7 @@ import curam.core.sl.struct.UserPasswordDetails;
 import curam.core.struct.AlternateNameReadMultiStatusStruct;
 import curam.core.struct.AlternateNameStruct;
 import curam.core.struct.AlternateNameStructList;
+import curam.core.struct.PersonSearchDetails;
 import curam.message.BPOADMINUSER;
 import curam.message.MOLSANOTIFICATION;
 import curam.message.MOLSASMSSERVICE;
@@ -50,9 +55,11 @@ import curam.util.exception.AppRuntimeException;
 import curam.util.exception.DatabaseException;
 import curam.util.exception.InformationalElement;
 import curam.util.exception.InformationalException;
+import curam.util.exception.InformationalManager;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.Configuration;
 import curam.util.security.EncryptionAdmin;
+import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.NotFoundIndicator;
 
@@ -196,6 +203,72 @@ public class MOLSACitizenPortalHelper {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * This method is used to reset password of an existing user account when
+	 * the user forgets the password
+	 * 
+	 * @param passwordDtls
+	 *            UserPasswordDetails
+	 * @return void
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General Exception
+	 */
+	public void forgotPassword(long userID) throws AppException,
+			InformationalException {
+		curam.molsa.sms.sl.impl.MOLSASMSUtil smsUtilObj = new curam.molsa.sms.sl.impl.MOLSASMSUtil();
+		ExternalUser externalUser = ExternalUserFactory.newInstance();
+		ExternalUserKey externalUserKey = new ExternalUserKey();
+		externalUserKey.userName = String.valueOf(userID);
+		NotFoundIndicator notFoundIndicatorObj = new NotFoundIndicator();
+		ExternalUserDtls externalUserDtls = externalUser.read(
+				notFoundIndicatorObj, externalUserKey);
+		String newPassword = new String();
+		String encryptedPassword = new String();
+		Person personObj = PersonFactory.newInstance();
+		PersonSearchKey1 paramPersonSearchKey1 = new PersonSearchKey1();
+		paramPersonSearchKey1.personSearchKey.referenceNumber = String
+				.valueOf(userID);
+		InformationalManager informationalManager = new InformationalManager();
+		TransactionInfo.setInformationalManager();
+		PersonSearchDetailsResult personDetailsList = personObj
+				.searchPerson(paramPersonSearchKey1);
+
+		// Get the concern role id from personDetailsList
+		long concernRoleID = 0L;
+		for (PersonSearchDetails personDetails : personDetailsList.personSearchResult.dtlsList
+				.items()) {
+			concernRoleID = personDetails.concernRoleID;
+		}
+
+		String phoneNumber = new String();
+		if (concernRoleID != 0L) {
+			// read the registered preferred mobile phone number
+			phoneNumber = smsUtilObj.getPersonPreferredPhoneNumber(String
+					.valueOf(concernRoleID));
+			if (!(phoneNumber.isEmpty())) {
+				// Check if the user is already registered
+				if (!(notFoundIndicatorObj.isNotFound())) {
+					newPassword = cwPasswordGenerator
+							.generatePasswordForCitizen();
+					// Encrypt the new password
+					encryptedPassword = getEncryptedPasswordValue(newPassword);
+					externalUserDtls.password = encryptedPassword;
+					externalUserDtls.passwordChanged = Date.getCurrentDate();
+					// Modify the record in external user table
+					externalUser.modify(externalUserKey, externalUserDtls);
+
+					// call send SMS functionality
+					sendSMS(newPassword, phoneNumber);
+
+					// TODO remove this sysout statement
+					System.out.println(newPassword);
+				}
+			}
+		}
 	}
 
 	/**
