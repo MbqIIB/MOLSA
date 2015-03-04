@@ -17,86 +17,60 @@
 <!-- Description -->
 <!-- =========== -->
 <!-- This page allows a user to create a new concern role attachment.       -->
-<PAGE
-  PAGE_ID="MOLSA_addCommunicationDetails"
-  WINDOW_OPTIONS="width=590"
+<PAGE PAGE_ID="MOLSA_addCommunicationDetails" WINDOW_OPTIONS="width=590"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
->
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
 
 
   <PAGE_TITLE>
     <CONNECT>
-      <SOURCE
-        NAME="TEXT"
-        PROPERTY="PageTitle.StaticText1"
-      />
+      <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
     </CONNECT>
   </PAGE_TITLE>
 
   <PAGE_PARAMETER NAME="communicationID"/>
-  <SERVER_INTERFACE
-    CLASS="MOLSACommunication"
-    NAME="DISPLAY"
-    OPERATION="readAllBankBranch"
-  />
-   <SERVER_INTERFACE
-    CLASS="MOLSACommunication"
-    NAME="DISPLAY1"
-    OPERATION="readCommunicationDetails"
-  />
-  <SERVER_INTERFACE
-    CLASS="MOLSACommunication"
-    NAME="ACTION"
-    OPERATION="saveCommunicationDetails"
-    PHASE="ACTION"
-  />
+  <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="DISPLAY" OPERATION="readAllBankBranch"/>
+  <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="DISPLAY1" OPERATION="readCommunicationDetails"/>
+  <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="DISPLAY2" OPERATION="readAllMolsaManagers"/>
+  <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="ACTION" OPERATION="saveCommunicationDetails"
+    PHASE="ACTION"/>
 
- <CONNECT>
-          <SOURCE
-            NAME="PAGE"
-            PROPERTY="communicationID"
-          />
-          <TARGET
-            NAME="DISPLAY1"
-            PROPERTY="arg1$communicationID"
-          />
-        </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="communicationID"/>
+    <TARGET NAME="DISPLAY1" PROPERTY="arg1$communicationID"/>
+  </CONNECT>
+  <CONNECT>
+    <SOURCE NAME="PAGE" PROPERTY="communicationID"/>
+    <TARGET NAME="ACTION" PROPERTY="arg1$communicationID"/>
+  </CONNECT>
 
   <CLUSTER LABEL_WIDTH="18">
-    <FIELD
-      LABEL="Field.Label.Bank.name"
-    >
-        <CONNECT>   
-            <INITIAL NAME="DISPLAY" PROPERTY="name"
-                HIDDEN_PROPERTY="bankBranchID"/>
-                </CONNECT>
-            <CONNECT>
-                <TARGET
-                    NAME="ACTION"
-                    PROPERTY="bankBranchID"
-                />
-            </CONNECT>
+    <FIELD LABEL="Field.Label.Bank.name">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY" PROPERTY="name"
+          HIDDEN_PROPERTY="bankBranchID"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="bankBranchID"
+        />
+      </CONNECT>
     </FIELD>
-    
-     <FIELD
-      LABEL="Field.Manager.Name"
-    >
-     <CONNECT>
-               <INITIAL NAME="DISPLAY" PROPERTY="name"
-                HIDDEN_PROPERTY="bankBranchID"/>
-                </CONNECT>
-            <CONNECT>
-                <TARGET
-                    NAME="ACTION"
-                    PROPERTY="bankBranchID"
-                />
-       </CONNECT>
-       
+     <FIELD LABEL="Field.Manager.Name">
+      <CONNECT>
+        <INITIAL NAME="DISPLAY2" PROPERTY="userFullName"
+          HIDDEN_PROPERTY="userFullName"/>
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="molsaManager"
+        />
+      </CONNECT>
     </FIELD>
   </CLUSTER>
-   <ACTION_SET>
-   <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT">
-        </ACTION_CONTROL>
-    </ACTION_SET>
+<ACTION_SET>
+    <ACTION_CONTROL LABEL="ActionControl.Label.Save" TYPE="SUBMIT"> </ACTION_CONTROL>
+  </ACTION_SET>
 </PAGE>
