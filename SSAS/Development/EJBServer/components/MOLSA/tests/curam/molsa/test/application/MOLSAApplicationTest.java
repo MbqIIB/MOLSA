@@ -113,11 +113,14 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 		try {
 			MOLSATestMockDataStore molsaTestMockDataStore = new MOLSATestMockDataStore(
 					MOLSADatastoreConst.kDataStoreSchemaName);
+
 			molsaTestMockDataStore
 					.initialize(MOLSADatastoreConst.kDataStoreSchemaName);
 
 			final Datastore datastore = new MOLSADatastoreEntityUtilityImpl()
 					.openDatastore(MOLSADatastoreConst.kDataStoreSchemaName);
+			final ConcernRoleIDKey concernRoleKey = new ConcernRoleIDKey();
+			final long datastoreID = DatastoreHelper.createRootEntity(datastore);
 			final Entity rootDatastoreEntity = molsaTestMockDataStore
 					.createMockDataStore(datastore);
 			testMOLSAApplicationImpl.testCreateAndStoreApplicationPDF();
