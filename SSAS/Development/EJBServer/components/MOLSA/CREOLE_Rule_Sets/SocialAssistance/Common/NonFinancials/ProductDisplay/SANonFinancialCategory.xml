@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="../../../../../../../../../../../Curam/catalog/RuleSet.xsd"
+ xsi:noNamespaceSchemaLocation="../../../../../../../build/svr/creole.gen/schema/RuleSet.xsd"
  extends="DefaultProgramRecommendationDisplayCase"
  extendsRuleSet="DefaultProgramRecommendationDisplayRuleSet" name="SANonFinancialCategory">
 
@@ -16,7 +16,7 @@
       <specified/>
     </derivation>
   </Attribute>
-  
+   
   <!--
     The eligibility rule object for the case.
     At program recommendation level, this attribute will be specified.
@@ -311,21 +311,59 @@
             </intervalvalue>
           </list>
           <listitemexpression>
-            <intervalvalue>
-              <reference attribute="passFailMessageTimeline">
-                <create
-                  ruleclass="DisplayRulesMessage"
-                  ruleset="SocialAssistanceRuleSet"
-                >
-                  <reference attribute="hasPassedNonFinancialTestTimeline">
-                    <current/>
-                  </reference>
-                </create>
-              </reference>
-            </intervalvalue>
+            <choose>
+              <type>
+               
+                <javaclass name="curam.creole.value.Message"/>
+               
+              </type>
+              <when>
+                <condition>
+                  <reference attribute="considerCitizen"/>
+                </condition>
+                <value>
+                  <intervalvalue>
+                    <reference attribute="passFailMessageTimeline">
+                      <create
+                        ruleclass="DisplayRulesMessage"
+                        ruleset="SocialAssistanceRuleSet"
+                        >
+                        <reference attribute="hasPassedCitizenshipTimeline">
+                          <current/>
+                        </reference>
+                      </create>
+                    </reference>
+                  </intervalvalue>
+                </value>
+              </when>
+              <otherwise>
+                <value>
+                  <intervalvalue>
+                    <reference attribute="passFailMessageTimeline">
+                      <create
+                        ruleclass="DisplayRulesMessage"
+                        ruleset="SocialAssistanceRuleSet"
+                        >
+                        <reference attribute="hasPassedNonFinancialTestTimeline">
+                          <current/>
+                        </reference>
+                      </create>
+                    </reference>
+                  </intervalvalue>   
+                </value>
+              </otherwise>
+            </choose> 
           </listitemexpression>
         </dynamiclist>
       </timelineoperation>
+    </derivation>
+  </Attribute>
+  <Attribute name="considerCitizen">
+    <type>
+      <javaclass name="Boolean"/>
+    </type>
+    <derivation>
+      <false/>
     </derivation>
   </Attribute>
 </Class>
