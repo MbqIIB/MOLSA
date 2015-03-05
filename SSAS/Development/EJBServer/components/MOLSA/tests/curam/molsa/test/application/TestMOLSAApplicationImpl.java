@@ -29,7 +29,7 @@ public class TestMOLSAApplicationImpl extends MOLSAApplicationImpl {
 			InformationalException {
 		super.createAndStoreApplicationPDF();
 	}
-
+	
 	public void testCreateDatastorePersonEntity(Datastore dataStore,
 			Entity rootEntity, ConcernRoleIDKey concernRoleKey)
 			throws AppException, InformationalException {

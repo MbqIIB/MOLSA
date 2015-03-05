@@ -2,75 +2,83 @@ package curam.molsa.test.application;
 
 import com.google.inject.Inject;
 
-import curam.application.impl.ApplicationImpl;
+import curam.application.facade.fact.ApplicationFactory;
+import curam.codetable.CONCERNROLEADDRESSTYPE;
+import curam.codetable.GENDER;
+import curam.codetable.PHONETYPE;
+import curam.codetable.RECORDSTATUS;
+import curam.core.facade.fact.OrganizationFactory;
+import curam.core.facade.intf.Organization;
+import curam.core.facade.struct.ActionIDProperty;
+import curam.core.facade.struct.PersonSearchDetailsResult;
+import curam.core.facade.struct.PersonSearchKey1;
+import curam.core.facade.struct.RegisterPersonState;
+import curam.core.facade.struct.UserForPositionDetails;
+import curam.core.fact.UsersFactory;
+import curam.core.intf.Users;
+import curam.core.sl.entity.fact.OrgUnitParentLinkFactory;
+import curam.core.sl.entity.intf.OrgUnitParentLink;
+import curam.core.sl.entity.struct.OrgUnitParentLinkDtls;
 import curam.core.sl.struct.ConcernRoleIDKey;
-import curam.core.struct.AddressFieldDetails;
-import curam.core.struct.OtherAddressData;
-import curam.core.struct.PersonRegistrationDetails;
+import curam.core.sl.struct.PositionHolderLinkDetails;
+import curam.core.sl.struct.WizardStateID;
+import curam.core.struct.PersonSearchDetails;
+import curam.core.struct.UsersDtls;
+import curam.core.struct.UsersKey;
 import curam.datastore.impl.Datastore;
 import curam.datastore.impl.Entity;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
+import curam.molsa.core.facade.fact.MOLSAParticipantRegistrationDAFactory;
+import curam.molsa.core.facade.fact.MOLSAPersonDAFactory;
+import curam.molsa.core.facade.intf.MOLSAParticipantRegistrationDA;
+import curam.molsa.core.facade.intf.MOLSAPersonDA;
+import curam.molsa.core.facade.struct.MOLSAPersonRegistrationDetails;
 import curam.molsa.test.customfunctions.MOLSADatastoreEntityUtilityImpl;
 import curam.molsa.test.customfunctions.MOLSAMockDataStore;
-import curam.molsa.test.customfunctions.MOLSATestDatastore;
 import curam.molsa.test.customfunctions.MOLSATestMockDataStore;
+import curam.molsa.test.framework.TestHelper;
 import curam.participant.impl.ConcernRoleDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.persistence.GuiceWrapper;
+import curam.util.type.Date;
+import curam.wizardpersistence.impl.WizardPersistentState;
 import curam.workspaceservices.util.impl.DatastoreHelper;
 
 public class MOLSAApplicationTest extends MOLSAMockDataStore {
+	public static final String KFIRSTNAME = "FirstName";
+	public static final String KSURNAME = "SurName";
+	public static final String KFULLNAME = KFIRSTNAME + " " + KSURNAME;
+	public static final String KPHONENUMBER = "33344444";
+	public static final String KQID = "12345678911";
+	public static final String KADDRESSDATA = "1\n0\nUS\nQA\n0\n0\nCITY=MM17005\nZIP=\nADD2=MS17003\n"
+			+ "ADD1=MZ17083\nADD4=\nADD5=\nUNITNO=\nCOUNTRY=QA\nPOBOXNO=\n";
+
+	public static final Date KDATEOFBIRTH = Date.getCurrentDate().addDays(
+			-365 * 17);
+	public static final Date KCURRENTDATE = Date.getCurrentDate();
+	public static final long KORGSTRUCTID = 45000;
+	public static final long KPOSITIONID = 45001;
+	public static final long KORGUNITID = 45013;
+	public static final long KDEFPRINTERID = 1;
+	public static final String KUSERNAME = "molsacaseworker";
+	@Inject
+	private TestHelper testHelper;
 
 	@Inject
 	private ConcernRoleDAO concernRoleDAO;
 
 	public MOLSAApplicationTest(String arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-	public void testCreateAndStoreApplicationPDF() {
-		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
-
-		try {
-			MOLSATestMockDataStore molsaTestMockDataStore = new MOLSATestMockDataStore(
-					MOLSADatastoreConst.kDataStoreSchemaName);
-			molsaTestMockDataStore
-					.initialize(MOLSADatastoreConst.kDataStoreSchemaName);
-
-			final Datastore datastore = new MOLSADatastoreEntityUtilityImpl()
-					.openDatastore(MOLSADatastoreConst.kDataStoreSchemaName);
-			final Entity rootDatastoreEntity = molsaTestMockDataStore
-			.createMockDataStore(datastore);
-			testMOLSAApplicationImpl.setRootEntityID(rootDatastoreEntity.getUniqueID());
-			testMOLSAApplicationImpl.testCreateAndStoreApplicationPDF();
-		} catch (AppException e) {
-			// TODO Auto-generated catch block
-			fail();
-		} catch (InformationalException e) {
-			// TODO Auto-generated catch block
-			fail();
-		}
-	}
-	
-	
-	public void testGetProgramApplication() {
-		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
-		try {
-			testMOLSAApplicationImpl.testGetProgramApplication(null);
-		} catch (AppException e) {
-			// TODO Auto-generated catch block
-			fail();
-		} catch (InformationalException e) {
-			// TODO Auto-generated catch block
-			fail();
-		}
+		GuiceWrapper.getInjector().injectMembers(this);
 	}
 
 	public void testCreateMOLSADatastorePersonEntity() throws Exception {
+
 		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
+		PersonSearchDetails personDetails = null;
 		try {
-			PersonRegistrationDetails personRegistrationDetails = getPersonRegistrationDetails();
+			personDetails = getPersonRegistrationDetails();
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,10 +99,48 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 		final long datastoreID = DatastoreHelper.createRootEntity(datastore);
 		final Entity rootDatastoreEntity = molsaTestMockDataStore
 				.createMockDataStore(datastore);
-		concernRoleKey.concernRoleID = Long.valueOf("256");
+		concernRoleKey.concernRoleID = Long
+				.valueOf(personDetails.concernRoleID);
 		testMOLSAApplicationImpl.testCreateDatastorePersonEntity(datastore,
 				rootDatastoreEntity, concernRoleKey);
 
+	}
+
+	public void testCreateAndStoreApplicationPDF() {
+		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
+		ApplicationFactory.newInstance();
+
+		try {
+			MOLSATestMockDataStore molsaTestMockDataStore = new MOLSATestMockDataStore(
+					MOLSADatastoreConst.kDataStoreSchemaName);
+			molsaTestMockDataStore
+					.initialize(MOLSADatastoreConst.kDataStoreSchemaName);
+
+			final Datastore datastore = new MOLSADatastoreEntityUtilityImpl()
+					.openDatastore(MOLSADatastoreConst.kDataStoreSchemaName);
+			final Entity rootDatastoreEntity = molsaTestMockDataStore
+					.createMockDataStore(datastore);
+			testMOLSAApplicationImpl.testCreateAndStoreApplicationPDF();
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail();
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+	}
+
+	public void testGetProgramApplication() {
+		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
+		try {
+			testMOLSAApplicationImpl.testGetProgramApplication(null);
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail();
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
 	}
 
 	/**
@@ -108,60 +154,47 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 	 * 
 	 * @return Returns registration details for default registration
 	 */
-	public PersonRegistrationDetails getPersonRegistrationDetails()
+	public PersonSearchDetails getPersonRegistrationDetails()
 			throws AppException, InformationalException {
-
-		java.util.Calendar cal = new java.util.GregorianCalendar(1970,
-				java.util.Calendar.FEBRUARY, 1, 0, 0, 0);
-		curam.util.type.Date birthday = new curam.util.type.Date(cal);
-
-		PersonRegistrationDetails personRegistrationDetails = new PersonRegistrationDetails();
-
-		personRegistrationDetails.firstForename = "Test";
-		personRegistrationDetails.surname = "Person";
-		personRegistrationDetails.sex = curam.codetable.GENDER.DEFAULTCODE;
-		personRegistrationDetails.dateOfBirth = birthday;
-		personRegistrationDetails.registrationDate = curam.util.type.Date
-				.getCurrentDate();
-		personRegistrationDetails.currentMaritalStatus = curam.codetable.MARITALSTATUS.MARRIED;
-		personRegistrationDetails.nationality = curam.codetable.NATIONALITY.DEFAULTCODE;
-		personRegistrationDetails.birthCountry = curam.codetable.COUNTRY.US;
-
-		// parseFieldsToData always make US address type - it is irrelevant what
-		// is defined here.
-		personRegistrationDetails.addressType = curam.codetable.ADDRESSLAYOUTTYPE.US;
-
-		AddressFieldDetails addressFieldDetails = new AddressFieldDetails();
-		curam.core.intf.AddressData addressDataObj = curam.core.fact.AddressDataFactory
+		testHelper.simulateLogin("molsamanager");
+		MOLSAParticipantRegistrationDA participantRegistrationObj = MOLSAParticipantRegistrationDAFactory
 				.newInstance();
 
-		addressFieldDetails.addressLayoutType = curam.codetable.ADDRESSLAYOUTTYPE.US;
+		MOLSAPersonRegistrationDetails personRegistrationDetails = new MOLSAPersonRegistrationDetails();
+		personRegistrationDetails.dtls.firstForename = KFIRSTNAME;
+		personRegistrationDetails.dtls.surname = KSURNAME;
+		personRegistrationDetails.dtls.sex = GENDER.MALE;
+		personRegistrationDetails.dtls.dateOfBirth = KDATEOFBIRTH;
+		personRegistrationDetails.dtls.phoneType = PHONETYPE.MOBILE;
+		personRegistrationDetails.dtls.phoneNumber = KPHONENUMBER;
+		personRegistrationDetails.dtls.registrationDate = KCURRENTDATE;
+		personRegistrationDetails.dtls.addressType = CONCERNROLEADDRESSTYPE.PRIVATE;
+		personRegistrationDetails.dtls.addressData = KADDRESSDATA;
+		personRegistrationDetails.qid = KQID;
+		RegisterPersonState registerPersonState = new RegisterPersonState();
+		registerPersonState.registrationDtls = personRegistrationDetails.dtls;
 
-		// BEGIN, CR00272990 , KRK
-		addressFieldDetails.addressLine1 = "Apartment";
-		addressFieldDetails.addressLine2 = "Street1";
-		addressFieldDetails.addressLine3 = "Street2";
-		addressFieldDetails.city = "New city";
-		addressFieldDetails.stateCode = "UT";
-		// BEGIN, CR00380472, MV
-		addressFieldDetails.zipCode = "11111";
-		// END, CR00380472
-		addressFieldDetails.countryCode = curam.codetable.COUNTRY.US;
-		// END, CR00272990
-		OtherAddressData otherAddressData = null;
+		WizardStateID wizardStateID = new WizardStateID();
+		WizardPersistentState wizardPersistentState = new WizardPersistentState();
+		wizardStateID.wizardStateID = wizardPersistentState
+				.create(registerPersonState);
 
-		otherAddressData = addressDataObj
-				.parseFieldsToData(addressFieldDetails);
+		ActionIDProperty actionIDProperty = new ActionIDProperty();
+		actionIDProperty.actionIDProperty = "Save";
+		participantRegistrationObj.setRegisterPersonForPDCDetails(
+				personRegistrationDetails, wizardStateID, actionIDProperty);
 
-		personRegistrationDetails.addressData = otherAddressData.addressData;
+		MOLSAPersonDA personObj = MOLSAPersonDAFactory.newInstance();
+		PersonSearchKey1 personSearchKey1 = new PersonSearchKey1();
+		personSearchKey1.personSearchKey.referenceNumber = KPHONENUMBER;
+		PersonSearchDetailsResult personSearchDetailsResult = personObj
+				.searchPerson(personSearchKey1);
+		assertEquals(1,
+				personSearchDetailsResult.personSearchResult.dtlsList.size());
+		PersonSearchDetails personSearchDetails = personSearchDetailsResult.personSearchResult.dtlsList
+				.item(0);
 
-		// BEGIN, CR00141773, CW
-		personRegistrationDetails.paymentFrequency = "100100100";
-		personRegistrationDetails.methodOfPmtCode = curam.codetable.METHODOFDELIVERY.EFT;
-		personRegistrationDetails.currencyType = curam.codetable.CURRENCY.DEFAULTCODE;
-		// END, CR00141773
-
-		return personRegistrationDetails;
+		return personSearchDetails;
 	}
 
 }
