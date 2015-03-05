@@ -525,130 +525,137 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
    */
   
   protected SQLStatement formatSQL(curam.molsa.sms.facade.struct.MOLSAParticipantFilterCriteriaDetails dtls) throws AppException, InformationalException {
-    SQLStatement sqlStatement = new SQLStatement();
-    StringBuffer selectStrBuf = new StringBuffer();
-    StringBuffer intoStrBuf = new StringBuffer();
-    StringBuffer fromStrBuf = new StringBuffer();
-    StringBuffer whereStrBuf = new StringBuffer();
+	    SQLStatement sqlStatement = new SQLStatement();
+	    StringBuffer selectStrBuf = new StringBuffer();
+	    StringBuffer intoStrBuf = new StringBuffer();
+	    StringBuffer fromStrBuf = new StringBuffer();
+	    StringBuffer whereStrBuf = new StringBuffer();
+	    	
+	    selectStrBuf.append("SELECT Distinct caseheader.caseID, concernrole.primaryalternateid,caseparticipantrole.participantRoleID,concernrole.concernRoleName, ");
+	    selectStrBuf.append("concernrole.primaryAddressID, person.dateofBirth ");
+	    
 
-    selectStrBuf.append("SELECT Distinct concernrole.primaryalternateid,caseheader.concernroleID,concernrole.concernRoleName, ");
-    selectStrBuf.append("concernrole.primaryAddressID, person.dateofBirth ");
+	    intoStrBuf.append("INTO :caseID ");
+	    intoStrBuf.append(":qid ");
+	    intoStrBuf.append(":concernroleID ");
+	    intoStrBuf.append(":participantName ");
+	    intoStrBuf.append(":addressString ");
+	    intoStrBuf.append(":dateOfBirth ");
 
-    intoStrBuf.append("INTO :qid ");
-    intoStrBuf.append(":concernroleID ");
-    intoStrBuf.append(":participantName ");
-    intoStrBuf.append(":addressString ");
-    intoStrBuf.append(":dateOfBirth ");
+	    fromStrBuf.append("FROM caseheader, concernrole, person, productdelivery ");
+	    fromStrBuf.append("INNER JOIN caseparticipantrole ON caseparticipantrole.caseID=caseheader.caseID  ");
+	    
+	    whereStrBuf.append("WHERE ");
 
-    fromStrBuf.append("FROM concernrole, person, caseheader, caseparticipantrole, productdelivery ");
+	    if (dtls.caseType.length() > CuramConst.gkZero) {
+	    	whereStrBuf.append(getCaseTypeCodesClause(dtls.caseType));
+	    	whereStrBuf.append(" AND ");
+	    	whereStrBuf.append("caseheader.caseTypeCode='CT2' AND ");
+	    	whereStrBuf.append("caseparticipantrole.recordStatus='RST1' AND ");
+	    	whereStrBuf.append("caseparticipantrole.typeCode in ('PRI', 'MEM') AND ");
+	    	whereStrBuf.append("caseheader.caseID=productdelivery.caseID AND ");
+	    }else{
+	    	whereStrBuf.append("caseheader.caseTypeCode='CT5' AND ");
+	    	whereStrBuf.append("caseparticipantrole.recordStatus='RST1' AND ");
+	    	whereStrBuf.append("caseparticipantrole.typeCode in ('PRI', 'MEM') AND ");
+	    }
 
-    whereStrBuf.append("WHERE ");
+	    if (dtls.caseStatus.length() > CuramConst.gkZero) {
+	      whereStrBuf.append("caseHeader.statuscode = :caseStatus AND ");
+	    }
+	    
+	    //Throw the validation if user either select one of the Age from or Age to field.
+	    if((dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
+	    		!dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty)) ||
+	    		(!dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
+	    	    		dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty))){
+	    	 curam.core.sl.infrastructure.impl.ValidationManagerFactory
+	         .getManager()
+	         .throwWithLookup(
+	             new AppException(
+	                 MOLSASMSSERVICE.SMS_AGE_FROM_AND_TO_MUST_BE_ENTERED),
+	             curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
+	             0);
+	    	 
+	    }else if((!dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
+	    		!dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty))){
+	    	  Date currentDate = TransactionInfo.getSystemDate();
+	          Calendar fromCalender = currentDate.getCalendar();
+	          fromCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.fromAge)));
+	          Date fromDate = new Date(fromCalender.getTimeInMillis());
+	          dtls.caluclatedDateFromAge = fromDate;
+	          
+	          Calendar toCalender = currentDate.getCalendar();
+	          toCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.toAge)));
+	          Date toDate = new Date(toCalender.getTimeInMillis());
+	          dtls.caluclatedDateToAge = toDate;
+	          
+	          whereStrBuf.append("person.dateofbirth <= :caluclatedDateFromAge AND ");
+	          whereStrBuf.append("person.dateofbirth >= :caluclatedDateToAge AND ");
+	    	
+	    }
+	    if (dtls.gender.length() > CuramConst.gkZero) {
+	      whereStrBuf.append("person.gender = :gender AND ");
+	    }
 
-    if (dtls.caseType.length() > CuramConst.gkZero) {
-    	whereStrBuf.append(getCaseTypeCodesClause(dtls.caseType));
-    	whereStrBuf.append(" AND ");
-    }
+	    if (dtls.muncipality.length() > CuramConst.gkZero) {
+	      fromStrBuf.append(", addresselement, address, concernroleaddress ");
+	      whereStrBuf.append("addresselement.elementvalue = :muncipality AND ");
+	      whereStrBuf.append("addresselement.addressID = address.addressID AND ");
+	      whereStrBuf.append("address.addressID = concernroleaddress.addressID AND ");
+	    }
 
-    if (dtls.caseStatus.length() > CuramConst.gkZero) {
-      whereStrBuf.append("caseHeader.statuscode = :caseStatus AND ");
-    }
-    
-    //Throw the validation if user either select one of the Age from or Age to field.
-    if((dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
-    		!dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty)) ||
-    		(!dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
-    	    		dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty))){
-    	 curam.core.sl.infrastructure.impl.ValidationManagerFactory
-         .getManager()
-         .throwWithLookup(
-             new AppException(
-                 MOLSASMSSERVICE.SMS_AGE_FROM_AND_TO_MUST_BE_ENTERED),
-             curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetOne,
-             0);
-    	 
-    }else if((!dtls.fromAge.equalsIgnoreCase(CuramConst.gkEmpty) &&
-    		!dtls.toAge.equalsIgnoreCase(CuramConst.gkEmpty))){
-    	  Date currentDate = TransactionInfo.getSystemDate();
-          Calendar fromCalender = currentDate.getCalendar();
-          fromCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.fromAge)));
-          Date fromDate = new Date(fromCalender.getTimeInMillis());
-          dtls.caluclatedDateFromAge = fromDate;
-          
-          Calendar toCalender = currentDate.getCalendar();
-          toCalender.add(Calendar.YEAR, -(Integer.parseInt(dtls.toAge) + 1));
-          Date toDate = new Date(toCalender.getTimeInMillis());
-          dtls.caluclatedDateToAge = toDate;
-          
-          whereStrBuf.append("person.dateofbirth <= :caluclatedDateFromAge AND ");
-          whereStrBuf.append("person.dateofbirth >= :caluclatedDateToAge AND ");
-    	
-    }
-    if (dtls.gender.length() > CuramConst.gkZero) {
-      whereStrBuf.append("person.gender = :gender AND ");
-    }
+	    if (dtls.educationLevel.length() > CuramConst.gkZero) {
+	      fromStrBuf.append(", evidencetypedef evddef, dynamicevidencedataattribute, dynamicevidencedata ");		
+	      whereStrBuf.append("evddef.evidencetypecode='DET0000517' AND ");
+	      whereStrBuf.append("dynamicevidencedataattribute.value= :educationLevel AND ");
+	      whereStrBuf.append("evddef.evidencetypecode=evddes.evidencetype AND ");
+	      whereStrBuf.append("evddes.participantid=concernrole.concernroleID AND ");
+	      whereStrBuf.append("evddes.statuscode in ('EDS1','EDS2','EDS3','EDS2001','EDS2007') AND ");
+	    }
 
-    if (dtls.muncipality.length() > CuramConst.gkZero) {
-      fromStrBuf.append(", addresselement, address, concernroleaddress ");
-      whereStrBuf.append("addresselement.elementvalue = :muncipality AND ");
-      whereStrBuf.append("addresselement.addressID = address.addressID AND ");
-      whereStrBuf.append("address.addressID = concernroleaddress.addressID AND ");
-    }
+	    if (dtls.isIncludeHouseHoldMembers) {
+	      fromStrBuf.append(", evidencetypedef edef, evidencedescriptor edesc ");
+	      whereStrBuf.append("edef.evidencetypecode='DET0000256' AND ");
+	      whereStrBuf.append("edef.evidencetypecode=edesc.evidencetype AND ");
+	      whereStrBuf.append("edesc.participantid=concernrole.concernroleID AND ");
+	      whereStrBuf.append("edesc.statuscode in ('EDS1','EDS2','EDS3','EDS2001','EDS2007') AND ");
+	    } 
 
-    if (dtls.educationLevel.length() > CuramConst.gkZero) {
-      fromStrBuf.append(", evidencetypedef evddef, evidencedescriptor evddes, dynamicevidencedataattribute, dynamicevidencedata ");
-      whereStrBuf.append("evddef.evidencetypecode='DET0000517' AND ");
-      whereStrBuf.append("dynamicevidencedataattribute.value= :educationLevel AND ");
-      whereStrBuf.append("evddef.evidencetypecode=evddes.evidencetype AND ");
-      whereStrBuf.append("evddes.participantid=concernrole.concernroleID AND ");
-      whereStrBuf.append("evddes.statuscode in ('EDS1','EDS2','EDS3','EDS2001','EDS2007') AND ");
-    }
+	    if (dtls.hasIncome) {
+	      fromStrBuf.append(", evidencetypedef, evidencedescriptor ");
+	      whereStrBuf.append("evidencetypedef.evidencetypecode='DET0000514' AND ");
+	      whereStrBuf.append("evidencetypedef.evidencetypecode=evidencedescriptor.evidencetype AND ");
+	      whereStrBuf.append("evidencedescriptor.participantid=concernrole.concernroleID AND ");
+	      whereStrBuf.append("evidencedescriptor.statuscode in ('EDS1','EDS2','EDS3','EDS2001','EDS2007') AND ");
+	    }
 
-    if (dtls.isIncludeHouseHoldMembers) {
-      fromStrBuf.append(", evidencetypedef edef, evidencedescriptor edesc ");
-      whereStrBuf.append("edef.evidencetypecode='DET0000256' AND ");
-      whereStrBuf.append("edef.evidencetypecode=edesc.evidencetype AND ");
-      whereStrBuf.append("edesc.participantid=concernrole.concernroleID AND ");
-      whereStrBuf.append("edesc.statuscode in ('EDS1','EDS2','EDS3','EDS2001','EDS2007') AND ");
-    } else {
-      whereStrBuf.append("caseHeader.concernroleID=concernrole.concernroleID AND ");
-    }
+	    if (!(dtls.incomeFromDate.isZero())) {
+	      fromStrBuf.append(", instructionlineitem ");
+	      whereStrBuf.append("instructionlineitem.coverperiodfrom >= :incomeFromDate AND ");
+	      whereStrBuf.append("instructionlineitem.concernroleid=concernrole.concernroleid AND ");
+	      whereStrBuf.append("instructionlineitem.statuscode in ('ALL', 'REC', 'PRO', 'REV', 'TRF') AND ");
+	      whereStrBuf.append("instructionlineitem.creditdebittype in ('CDT') AND ");
 
-    if (dtls.hasIncome) {
-      fromStrBuf.append(", evidencetypedef, evidencedescriptor ");
-      whereStrBuf.append("evidencetypedef.evidencetypecode='DET0000514' AND ");
-      whereStrBuf.append("evidencetypedef.evidencetypecode=evidencedescriptor.evidencetype AND ");
-      whereStrBuf.append("evidencedescriptor.participantid=concernrole.concernroleID AND ");
-      whereStrBuf.append("evidencedescriptor.statuscode in ('EDS1','EDS2','EDS3','EDS2001','EDS2007') AND ");
-    }
+	    }
 
-    if (!(dtls.incomeFromDate.isZero())) {
-      fromStrBuf.append(", instructionlineitem ");
-      whereStrBuf.append("instructionlineitem.coverperiodfrom >= :incomeFromDate AND ");
-      whereStrBuf.append("instructionlineitem.concernroleid=concernrole.concernroleid AND ");
-      whereStrBuf.append("instructionlineitem.statuscode in ('ALL', 'REC', 'PRO', 'REV', 'TRF') AND ");
-      whereStrBuf.append("instructionlineitem.creditdebittype in ('CDT') AND ");
+	    if (!(dtls.incomeToDate.isZero())) {
+	      fromStrBuf.append(", instructionlineitem ilitem ");
+	      whereStrBuf.append("ilitem.coverperiodfrom <= :incomeToDate AND ");
+	      whereStrBuf.append("ilitem.concernroleid=concernrole.concernroleid AND ");
+	      whereStrBuf.append("ilitem.statuscode in ('ALL', 'REC', 'PRO', 'REV', 'TRF') AND ");
+	      whereStrBuf.append("ilitem.creditdebittype in ('CDT') AND ");
+	    }
 
-    }
+	    whereStrBuf.append("person.concernroleID=concernrole.concernroleID AND ");
+	    whereStrBuf.append("caseparticipantrole.participantRoleID=concernrole.concernroleID");
+	    
+	   
+	  
+	    sqlStatement.sqlStatement = selectStrBuf.toString() + intoStrBuf.toString() + fromStrBuf.toString() + whereStrBuf.toString();
+	    return sqlStatement;
 
-    if (!(dtls.incomeToDate.isZero())) {
-      fromStrBuf.append(", instructionlineitem ilitem ");
-      whereStrBuf.append("ilitem.coverperiodfrom <= :incomeToDate AND ");
-      whereStrBuf.append("ilitem.concernroleid=concernrole.concernroleid AND ");
-      whereStrBuf.append("ilitem.statuscode in ('ALL', 'REC', 'PRO', 'REV', 'TRF') AND ");
-      whereStrBuf.append("ilitem.creditdebittype in ('CDT') AND ");
-    }
-
-    whereStrBuf.append("person.concernroleID=concernrole.concernroleID AND ");
-    whereStrBuf.append("productdelivery.caseid=caseheader.caseid AND ");
-    whereStrBuf.append("caseheader.casetypecode='CT2' ");
-    
-   
-  
-    sqlStatement.sqlStatement = selectStrBuf.toString() + intoStrBuf.toString() + fromStrBuf.toString() + whereStrBuf.toString();
-    return sqlStatement;
-
-  }
-
+	  }
   /**
    * Lists the additional benefits received by the participant.
    * 
