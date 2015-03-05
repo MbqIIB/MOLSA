@@ -92,7 +92,7 @@ public class MOLSAAuthorizationEventListener extends AuthorizationEvent {
 		taskCreateDetails.caseID = simulatedDeterminationAuthorization
 				.getDelivery().getID();
 		IntegratedCase integratedCase = integratedCaseDAO
-				.get(taskCreateDetails.caseID);
+				.get(taskCreateDetails.caseID);	
 
 		LocalisableString subject = null;
 		final User user = userDAO.get(TransactionInfo.getProgramUser());

@@ -27,6 +27,7 @@ import curam.core.struct.InformationalMsgDtls;
 import curam.core.struct.ProductDeliveryApprovalKey1;
 import curam.events.MOLSAAPPROVALTASK;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
+import curam.message.MOLSANOTIFICATION;
 import curam.message.MOLSAPROGRAMRECOMMENDATIONCHECKELIGIBILITY;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
@@ -41,6 +42,8 @@ import curam.molsa.sms.sl.struct.MOLSAMessageText;
 import curam.molsa.sms.sl.struct.MOLSAMessageTextKey;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
+import curam.piwrapper.caseheader.impl.IntegratedCase;
+import curam.piwrapper.caseheader.impl.IntegratedCaseDAO;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
 import curam.util.events.impl.EventService;
 import curam.util.events.struct.Event;
@@ -67,6 +70,9 @@ public abstract class MOLSAProductDelivery extends
 	
 	@Inject
 	private CaseHeaderDAO caseHeaderDAO;
+	
+	@Inject
+	private IntegratedCaseDAO integratedCaseDAO;
 
 	@Inject
 	private Map<PRODUCTTYPEEntry, MOLSAMilestoneDeliveryCreator> milestoneDeliveryCreator;
@@ -318,5 +324,38 @@ public abstract class MOLSAProductDelivery extends
 	
 	public void approveCOCPDC(SubmitForApprovalKey submitForApprovalKey)
 	throws AppException, InformationalException {
+		final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+		taskCreateDetails.caseID = submitForApprovalKey.caseID;
+		IntegratedCase integratedCase = integratedCaseDAO
+				.get(taskCreateDetails.caseID);
+
+		LocalisableString subject = null;
+
+		subject = new LocalisableString(
+				MOLSANOTIFICATION.INF_READY_FOR_FINAUDITOR_REVIEW);
+		subject.arg(integratedCase.getCaseReference());
+
+		String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+				productDeliveryDAO.get(taskCreateDetails.caseID)
+						.getProductType().getCode(),
+				TransactionInfo.getProgramLocale());
+		subject.arg(productName);
+		subject.arg(integratedCase.getConcernRole().getName());
+
+		taskCreateDetails.subject = subject.getMessage(TransactionInfo
+				.getProgramLocale());
+
+		enactmentStructs.add(taskCreateDetails);
+		EnactmentService.startProcessInV3CompatibilityMode(
+				MOLSAConstants.kMOLSAProductDeliveryOpenTask,
+				enactmentStructs);
+
+        Event eventKey = new Event();
+        eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventClass;
+        eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventType;
+        eventKey.primaryEventData = submitForApprovalKey.caseID;
+        EventService.raiseEvent(eventKey);
+
 	}
 }
