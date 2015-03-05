@@ -1,11 +1,12 @@
 package curam.molsa.core.facade.impl;
 
 import java.util.Calendar;
-
 import java.util.Map;
+
 import com.google.inject.Inject;
 
 import curam.codetable.CASECLOSEREASON;
+import curam.codetable.PRODUCTTYPE;
 import curam.codetable.impl.CASECLOSEREASONEntry;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
 import curam.codetable.impl.PRODUCTTYPEEntry;
@@ -14,17 +15,22 @@ import curam.core.facade.intf.ProductDelivery;
 import curam.core.facade.struct.CloseCaseDetails;
 import curam.core.facade.struct.CreateCertificationDetails;
 import curam.core.facade.struct.InformationMsgDtlsList;
+import curam.core.facade.struct.RejectCaseKey_fo1;
 import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.impl.CuramConst;
 import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
 import curam.core.sl.intf.MilestoneDelivery;
 import curam.core.sl.struct.MilestoneDeliveryDtls;
+import curam.core.sl.struct.TaskCreateDetails;
 import curam.core.struct.InformationalMsgDtls;
 import curam.core.struct.ProductDeliveryApprovalKey1;
+import curam.events.MOLSAAPPROVALTASK;
+import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.MOLSAPROGRAMRECOMMENDATIONCHECKELIGIBILITY;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
+import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.core.sl.fact.MOLSAMaintainProductDeliveryFactory;
 import curam.molsa.core.sl.impl.MOLSAMilestoneDeliveryCreator;
 import curam.molsa.core.sl.intf.MOLSAMaintainProductDelivery;
@@ -36,12 +42,17 @@ import curam.molsa.sms.sl.struct.MOLSAMessageTextKey;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
+import curam.util.events.impl.EventService;
+import curam.util.events.struct.Event;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalElement;
 import curam.util.exception.InformationalException;
+import curam.util.exception.LocalisableString;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.transaction.TransactionInfo;
+import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.workflow.impl.EnactmentService;
 import curam.verification.sl.infrastructure.fact.VerificationFactory;
 
 /**
@@ -260,5 +271,52 @@ public abstract class MOLSAProductDelivery extends
 	    	  molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
 	    	  
 	}
+	public void rejectPDCApproval(RejectCaseKey_fo1 key) throws AppException,
+	InformationalException {    
+	
+		final curam.core.intf.ProductDeliveryApproval productDeliveryApprovalObj = curam.core.fact.ProductDeliveryApprovalFactory.newInstance();
+	    final curam.core.struct.ProductDeliveryApprovalKey1 productDeliveryApprovalKey = new curam.core.struct.ProductDeliveryApprovalKey1();
+	
+	    // Set key to reject product delivery
+	    productDeliveryApprovalKey.assign(key);
+	
+	    // Call ProductDeliveryApproval BPO to reject the case
+	    productDeliveryApprovalObj.reject1(productDeliveryApprovalKey);
+	    
+	    final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+        TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+        taskCreateDetails.caseID = key.caseID;
 
+        final LocalisableString subject = new LocalisableString(
+                     BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
+        curam.piwrapper.caseheader.impl.CaseHeader caseHeader = caseHeaderDAO
+                     .get(key.caseID);
+
+        subject.arg(caseHeader.getCaseReference());
+
+        String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+                     productDeliveryDAO.get(key.caseID)
+                                   .getProductType().getCode(),
+                     TransactionInfo.getProgramLocale());
+        subject.arg(productName);
+        subject.arg(caseHeader.getConcernRole().getName());
+
+        taskCreateDetails.subject = subject.getMessage(TransactionInfo
+                     .getProgramLocale());
+
+        enactmentStructs.add(taskCreateDetails);
+        EnactmentService.startProcessInV3CompatibilityMode(
+                     MOLSAConstants.kMOLSAProductDeliveryRejectTask,
+                     enactmentStructs);
+        Event eventKey = new Event();
+        eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventClass;
+        eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventType;
+        eventKey.primaryEventData = key.caseID;
+        EventService.raiseEvent(eventKey);
+
+	}
+	
+	public void approveCOCPDC(SubmitForApprovalKey submitForApprovalKey)
+	throws AppException, InformationalException {
+	}
 }
