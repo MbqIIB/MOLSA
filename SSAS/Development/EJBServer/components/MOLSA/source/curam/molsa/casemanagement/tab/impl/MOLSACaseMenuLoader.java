@@ -174,7 +174,7 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 			} else if (user.getRole().equals(MOLSAConstants.kMolsaManagerRole)) {
 
 				returnState.setVisible(true, TabLoaderConst.kSubmit);
-				returnState.setEnabled(false, TabLoaderConst.kSubmit);
+				returnState.setEnabled(true, TabLoaderConst.kSubmit);
 				
 				returnState.setEnabled(true, TabLoaderConst.kEdit);
 
