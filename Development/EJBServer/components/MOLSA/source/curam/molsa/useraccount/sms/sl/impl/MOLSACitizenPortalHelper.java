@@ -63,7 +63,6 @@ import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.NotFoundIndicator;
 
-@SuppressWarnings("restriction")
 public class MOLSACitizenPortalHelper {
 
 	@Inject
@@ -89,7 +88,7 @@ public class MOLSACitizenPortalHelper {
 	 * @throws InformationalException
 	 *             General Exception
 	 */
-	@SuppressWarnings("static-access")
+
 	public void createNewAccount(long concernRoleID) throws AppException,
 			InformationalException {
 
@@ -144,9 +143,6 @@ public class MOLSACitizenPortalHelper {
 
 					// call send SMS functionality
 					sendSMS(message, phoneNumber);
-
-					// TODO Remove this sysout statement
-					System.out.println(password);
 				} else {
 					// the user is already registered
 					throw new AppException(
@@ -194,9 +190,6 @@ public class MOLSACitizenPortalHelper {
 					externalUserDtls.passwordChanged = Date.getCurrentDate();
 					// Modify the record in external user table
 					externalUser.modify(externalUserKey, externalUserDtls);
-
-					// TODO remove this sysout statement
-					System.out.println(newPassword);
 				} else {
 					// New password and confirm password doesnot match
 					throw new AppException(
@@ -257,6 +250,7 @@ public class MOLSACitizenPortalHelper {
 			phoneNumber = smsUtilObj.getPersonPreferredPhoneNumber(String
 					.valueOf(concernRoleID));
 			if (!(phoneNumber.isEmpty())) {
+				AlternateNameStruct nameDtls = getAlternateNameDetails(concernRoleID);
 				// Check if the user is already registered
 				if (!(notFoundIndicatorObj.isNotFound())) {
 					newPassword = cwPasswordGenerator
@@ -268,11 +262,15 @@ public class MOLSACitizenPortalHelper {
 					// Modify the record in external user table
 					externalUser.modify(externalUserKey, externalUserDtls);
 
-					// call send SMS functionality
-					sendSMS(newPassword, phoneNumber);
+					String message = new String();
+					AppException msg = new AppException(
+							MOLSANOTIFICATION.USER_ACCOUNT_PASSWORD);
+					msg.arg(nameDtls.fullName);
+					msg.arg(newPassword);
+					message = msg.getLocalizedMessage();
 
-					// TODO remove this sysout statement
-					System.out.println(newPassword);
+					// call send SMS functionality
+					sendSMS(message, phoneNumber);
 				} else {
 					// There is no universal access account for the user
 					throw new AppException(
