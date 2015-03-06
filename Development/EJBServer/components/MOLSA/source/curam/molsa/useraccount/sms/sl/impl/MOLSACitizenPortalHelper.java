@@ -135,8 +135,15 @@ public class MOLSACitizenPortalHelper {
 							concernRoleID, clientDtls);
 					externalPartyLink.insert(linkDtls);
 
+					String message = new String();
+					AppException msg = new AppException(
+							MOLSANOTIFICATION.USER_ACCOUNT_PASSWORD);
+					msg.arg(nameDtls.fullName);
+					msg.arg(password);
+					message = msg.getLocalizedMessage();
+
 					// call send SMS functionality
-					sendSMS(password, phoneNumber);
+					sendSMS(message, phoneNumber);
 
 					// TODO Remove this sysout statement
 					System.out.println(password);
