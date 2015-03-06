@@ -20,6 +20,10 @@
     </ac:menu-item>  --> 
 
     <ac:menu-item id="screening1" title="menu.screening.title1" text="menu.screening.text1" icon="menu.screening.icon"  page-id="MOLSADisplayDocuments">
+    
+    
+   </ac:menu-item>
+   <ac:menu-item id="mobile" title="menu.mobapplication.title1" text="menu.mobapplication.text1" icon="menu.screening.icon"  page-id="MOLSAPasswordMaintainancePage">
    </ac:menu-item>
   
   </ac:banner-menu>
@@ -35,10 +39,9 @@
   </ac:banner-menu>
 
   <ac:banner-menu type="person" title="person.title" page-id="CitizenWorkspace_userHomeResolver">      
-    <ac:menu-item id="p1" title="menu.resetpassword.title" text="menu.resetpassword.text" page-id="MOLSAResetPassword"/>
-     <ac:menu-item id="p2" title="menu.forgotpassword.title" text="menu.forgotpassword.text" page-id="MOLSAForgotPassword"/>
+   
       <ac:menu-item id="logout" title="menu.logout.title" text="menu.logout.text" page-id="LogoutWrapper"/>
- 
+  <ac:menu-item id="p3" title="menu.passwordmaintainance.title" text="menu.passwordmaintainance.text" page-id="MOLSAPasswordMaintainancePage"/>
    
   </ac:banner-menu>
   
