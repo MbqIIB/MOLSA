@@ -10,6 +10,7 @@ import curam.codetable.FREQUENCYCODE;
 import curam.codetable.GENDER;
 import curam.codetable.INCOMETYPECODE;
 import curam.codetable.MARITALSTATUS;
+import curam.codetable.PHONETYPE;
 import curam.codetable.RELATIONSHIPTYPECODE;
 import curam.core.sl.infrastructure.entity.struct.CaseIDAndEvidenceTypeKey;
 import curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorInsertDtls;
@@ -25,6 +26,7 @@ import curam.core.sl.infrastructure.struct.EvidenceVerificationDisplayDetailsLis
 import curam.core.sl.struct.EvidenceCaseKey;
 import curam.core.sl.struct.EvidenceTypeKey;
 import curam.core.struct.CaseKey;
+import curam.core.struct.ConcernRoleKey;
 import curam.creole.value.CodeTableItem;
 import curam.dynamicevidence.definition.impl.EvidenceTypeDef;
 import curam.dynamicevidence.definition.impl.EvidenceTypeDefDAO;
@@ -46,6 +48,7 @@ import curam.molsa.codetable.MOLSABENEFITTYPE;
 import curam.molsa.codetable.RESIDENCY;
 import curam.molsa.verification.sl.fact.MOLSAVerificationApplicationDAFactory;
 import curam.molsa.verification.sl.intf.MOLSAVerificationApplicationDA;
+import curam.pdc.fact.PDCUtilFactory;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.persistence.GuiceWrapper;
@@ -990,5 +993,65 @@ public abstract class MolsaRuleTestData extends AbstractMolsaTestBase {
 		evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
 
 	}
+	
+	public void createPhoneNumberEvidence(final CaseKey caseKey,
+            final long concernRoleID, final long caseParticipantRoleID,final Date receivedDate,final String phnCountryCode,final String phoneNum,final String phoneType,final Boolean preferredInd)throws AppException,InformationalException {
+     
+     final EvidenceTypeKey eType = new EvidenceTypeKey();
+
+     eType.evidenceType = "PDC0000256";
+
+     final EvidenceTypeDef evidenceType = etDefDAO
+                  .readActiveEvidenceTypeDefByTypeCode(eType.evidenceType);
+
+     final EvidenceTypeVersionDef evTypeVersion = etVerDefDAO
+                  .getActiveEvidenceTypeVersionAtDate(evidenceType,
+                                Date.getCurrentDate());
+
+     final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory
+                  .newInstance(evTypeVersion);
+
+     final DynamicEvidenceDataAttributeDetails participant = dynamicEvidenceDataDetails
+                  .getAttribute("participant");
+     DynamicEvidenceTypeConverter.setAttribute(participant,
+                  caseParticipantRoleID);
+     final DynamicEvidenceDataAttributeDetails phoneCountryCode = dynamicEvidenceDataDetails
+                  .getAttribute("phoneCountryCode");
+     DynamicEvidenceTypeConverter.setAttribute(phoneCountryCode, phnCountryCode);
+     final DynamicEvidenceDataAttributeDetails phoneNumber = dynamicEvidenceDataDetails
+                  .getAttribute("phoneNumber");
+     DynamicEvidenceTypeConverter.setAttribute(phoneNumber, phoneNum);          
+     final DynamicEvidenceDataAttributeDetails frmDate = dynamicEvidenceDataDetails
+                  .getAttribute("fromDate");
+     DynamicEvidenceTypeConverter.setAttribute(frmDate, receivedDate);
+     final DynamicEvidenceDataAttributeDetails frequencyType = dynamicEvidenceDataDetails
+                  .getAttribute("phoneType");
+     DynamicEvidenceTypeConverter.setAttribute(frequencyType,
+                  new CodeTableItem(PHONETYPE.TABLENAME, phoneType));
+     final DynamicEvidenceDataAttributeDetails PreferredInd = dynamicEvidenceDataDetails
+                  .getAttribute("preferredInd");
+     DynamicEvidenceTypeConverter.setAttribute(PreferredInd,preferredInd);
+     
+     final EvidenceDescriptorInsertDtls evidenceDescriptorInsertDtls = new EvidenceDescriptorInsertDtls();
+
+     evidenceDescriptorInsertDtls.participantID = concernRoleID;
+     evidenceDescriptorInsertDtls.evidenceType = eType.evidenceType;
+     evidenceDescriptorInsertDtls.receivedDate = receivedDate;
+     ConcernRoleKey concernRoleKey=new ConcernRoleKey();
+     concernRoleKey.concernRoleID=concernRoleID;
+     long caseID = PDCUtilFactory.newInstance().getPDCCaseIDCaseParticipantRoleID(concernRoleKey).caseID;
+     evidenceDescriptorInsertDtls.caseID = caseID;
+
+     final EIEvidenceInsertDtls eiEvidenceInsertDtls = new EIEvidenceInsertDtls();
+
+     eiEvidenceInsertDtls.descriptor.assign(evidenceDescriptorInsertDtls);
+     eiEvidenceInsertDtls.descriptor.participantID = evidenceDescriptorInsertDtls.participantID;
+     eiEvidenceInsertDtls.descriptor.changeReason = EVIDENCECHANGEREASON.REPORTEDBYCLIENT;
+     eiEvidenceInsertDtls.evidenceObject = dynamicEvidenceDataDetails;
+
+     evidenceControllerObj.insertEvidence(eiEvidenceInsertDtls);
+}
+
+
 	
 }
