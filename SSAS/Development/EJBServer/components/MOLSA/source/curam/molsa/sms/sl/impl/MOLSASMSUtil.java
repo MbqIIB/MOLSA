@@ -542,7 +542,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 	    intoStrBuf.append(":addressString ");
 	    intoStrBuf.append(":dateOfBirth ");
 
-	    fromStrBuf.append("FROM caseheader, concernrole, person, productdelivery ");
+	    fromStrBuf.append("FROM concernrole, person, productdelivery, caseheader ");
 	    fromStrBuf.append("INNER JOIN caseparticipantrole ON caseparticipantrole.caseID=caseheader.caseID  ");
 	    
 	    whereStrBuf.append("WHERE ");
@@ -606,7 +606,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
 	    }
 
 	    if (dtls.educationLevel.length() > CuramConst.gkZero) {
-	      fromStrBuf.append(", evidencetypedef evddef, dynamicevidencedataattribute, dynamicevidencedata ");		
+	      fromStrBuf.append(", evidencedescriptor evddes, evidencetypedef evddef, dynamicevidencedataattribute, dynamicevidencedata ");		
 	      whereStrBuf.append("evddef.evidencetypecode='DET0000517' AND ");
 	      whereStrBuf.append("dynamicevidencedataattribute.value= :educationLevel AND ");
 	      whereStrBuf.append("evddef.evidencetypecode=evddes.evidencetype AND ");
