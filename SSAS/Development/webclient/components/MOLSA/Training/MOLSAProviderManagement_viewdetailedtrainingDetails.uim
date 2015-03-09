@@ -121,19 +121,33 @@
     </CLUSTER>
     <LIST>
     <ACTION_SET TYPE="LIST_ROW_MENU">
-     <ACTION_CONTROL LABEL="ActionControl.Label.Download">
-        <LINK
-          OPEN_MODAL="TRUE"
-          PAGE_ID="MOLSAProviderManagement_editTrainingDetails" WINDOW_OPTIONS="width=850,height=500"
-        >
-        </LINK>
+     <ACTION_CONTROL LABEL="ActionControl.Label.Download" TYPE="FILE_DOWNLOAD">
+      <LINK>
+     <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$dtls$attDtls$attachmentID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="attachmentID"
+          />
+      </CONNECT>
+          </LINK>
       </ACTION_CONTROL>
-      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel">
-        <LINK
-          OPEN_MODAL="TRUE"
-          PAGE_ID="MOLSAProviderManagement_editTrainingDetails" WINDOW_OPTIONS="width=850,height=500"
-        >
-        </LINK>
+      <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"  TYPE="ACTION">
+      <LINK PAGE_ID="MOLSAProviderManagement_confirmCancelAttachment" OPEN_MODAL="true" WINDOW_OPTIONS="width=600,height=500">
+         <CONNECT>
+          <SOURCE
+            NAME="DISPLAY1"
+            PROPERTY="result$dtls$linkDtls$attachmentLinkID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+          />
+      </CONNECT>
+      </LINK>
       </ACTION_CONTROL>
     </ACTION_SET>
     <FIELD

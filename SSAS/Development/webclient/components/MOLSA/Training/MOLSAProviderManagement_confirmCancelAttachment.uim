@@ -1,0 +1,43 @@
+<PAGE
+    PAGE_ID="MOLSAProviderManagement_confirmCancelAttachment"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE
+                NAME="TEXT"
+                PROPERTY="PageTitle.Cancel.Attachment"
+            />
+        </CONNECT>
+    </PAGE_TITLE> 
+    
+    <PAGE_PARAMETER NAME="attachmentLinkID"/>
+    
+    
+    
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSATrainingService"
+        NAME="ACTION"
+        OPERATION="cancelTrainingAttachment"
+        PHASE="ACTION"
+    />   
+    <CONNECT>
+        <SOURCE
+            NAME="PAGE"
+            PROPERTY="attachmentLinkID"
+        />
+        <TARGET
+            NAME="ACTION"
+            PROPERTY="key$attachmentLinkID"
+        />
+    </CONNECT>    
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Submit" TYPE="SUBMIT">
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel" TYPE="ACTION">
+        </ACTION_CONTROL>
+    </ACTION_SET>
+</PAGE>
