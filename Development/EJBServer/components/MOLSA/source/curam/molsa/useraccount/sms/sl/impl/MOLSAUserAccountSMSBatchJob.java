@@ -1,14 +1,24 @@
 package curam.molsa.useraccount.sms.sl.impl;
 
+import java.util.Calendar;
 import java.util.StringTokenizer;
+
+import org.apache.axis.types.Year;
+
+import com.ibm.icu.impl.duration.Period;
 
 import curam.codetable.BATCHPROCESSNAME;
 import curam.codetable.CASEPARTICIPANTROLETYPE;
+import curam.core.facade.fact.PersonFactory;
+import curam.core.facade.intf.Person;
+import curam.core.facade.struct.ConcernRoleIDKey;
+import curam.core.facade.struct.PersonDetails;
 import curam.core.impl.BatchStreamHelper;
 import curam.core.impl.CuramConst;
 import curam.core.impl.EnvVars;
 import curam.core.impl.SecurityImplementationFactory;
 import curam.core.sl.fact.CaseParticipantRoleFactory;
+import curam.core.sl.infrastructure.impl.CalenderConst;
 import curam.core.sl.intf.CaseParticipantRole;
 import curam.core.sl.struct.CaseIDTypeCodeKey;
 import curam.core.sl.struct.CaseParticipantRoleFullDetails1;
@@ -19,12 +29,16 @@ import curam.core.struct.BatchProcessingIDList;
 import curam.core.struct.ChunkMainParameters;
 import curam.core.struct.ProductDeliveryDtls;
 import curam.core.struct.ProductDeliveryDtlsList;
+import curam.creole.ruleclass.MOLSAScreeningRuleSet.impl.Person_Factory;
+import curam.creole.ruleclass.MOLSAScreeningRulesUtilityCalculator.impl.AgeCalculator;
+import curam.creole.ruleclass.MOLSAScreeningRulesUtilityCalculator.impl.AgeCalculator_Factory;
 import curam.molsa.useraccount.sms.sl.fact.MOLSAUserAccountSMSBatchStreamFactory;
 import curam.molsa.useraccount.sms.sl.intf.MOLSAUserAccountSMSBatchStream;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.resources.Configuration;
 import curam.util.resources.ProgramLocale;
+import curam.util.type.Date;
 
 @SuppressWarnings("restriction")
 public class MOLSAUserAccountSMSBatchJob extends
@@ -46,7 +60,7 @@ public class MOLSAUserAccountSMSBatchJob extends
 				.getProperty(EnvVars.ENV_MOLSASMS_CHUNK_SIZE);
 
 		if (chunkSize == null) {
-			this.kChunkSize = 500;
+			this.kChunkSize = EnvVars.ENV_MOLSASMS_CHUNK_SIZE_DEFAULT;
 
 		} else {
 			this.kChunkSize = Integer.parseInt(chunkSize);
@@ -60,7 +74,7 @@ public class MOLSAUserAccountSMSBatchJob extends
 				.getProperty(EnvVars.ENV_MOLSASMS_CHUNK_KEY_WAIT_INTERVAL);
 
 		if (chunkKeyReadWait == null) {
-			this.kChunkKeyReadWait = 1000;
+			this.kChunkKeyReadWait = EnvVars.ENV_MOLSASMS_CHUNK_KEY_WAIT_INTERVAL_DEFAULT;
 
 		} else {
 			this.kChunkKeyReadWait = Integer.parseInt(chunkKeyReadWait);
@@ -71,7 +85,7 @@ public class MOLSAUserAccountSMSBatchJob extends
 				.getProperty(EnvVars.ENV_MOLSASMS_UNPROCESSED_CHUNK_WAIT_INTERVAL);
 
 		if (unProcessedChunkReadWait == null) {
-			this.kUnProcessedChunkReadWait = 1000;
+			this.kUnProcessedChunkReadWait = EnvVars.ENV_MOLSASMS_UNPROCESSED_CHUNK_WAIT_INTERVAL_DEFAULT;
 
 		} else {
 			this.kUnProcessedChunkReadWait = Integer
@@ -175,7 +189,7 @@ public class MOLSAUserAccountSMSBatchJob extends
 		SecurityImplementationFactory.register();
 		batchStreamHelper.setStartTime();
 		String instanceID = BATCHPROCESSNAME.MOLSA_UASMS;
-
+		int age = 0;
 		curam.core.intf.ProductDelivery productDeliveryObj = curam.core.fact.ProductDeliveryFactory
 				.newInstance();
 		ProductDeliveryDtlsList productDeliveryDtlsList = productDeliveryObj
@@ -186,20 +200,27 @@ public class MOLSAUserAccountSMSBatchJob extends
 		CaseIDTypeCodeKey caseIDTypeCodeKeyParam = new CaseIDTypeCodeKey();
 
 		BatchProcessingIDList batchProcessingIDList = new BatchProcessingIDList();
-
+		Person personObj = PersonFactory.newInstance();
+		ConcernRoleIDKey paramConcernRoleIDKey = new ConcernRoleIDKey();
 		for (ProductDeliveryDtls productDeliveryList : productDeliveryDtlsList.dtls
 				.items()) {
 			caseIDTypeCodeKeyParam.caseID = productDeliveryList.caseID;
-			caseIDTypeCodeKeyParam.typeCode = CASEPARTICIPANTROLETYPE.NOMINEE;
+			caseIDTypeCodeKeyParam.typeCode = CASEPARTICIPANTROLETYPE.PRIMARY;
 			caseDetailsStruct = null;
 			caseDetailsStruct = caseParticipantRoleObj
 					.readByCaseIDAndTypeCode(caseIDTypeCodeKeyParam);
 			BatchProcessingID batchProcessingID = new BatchProcessingID();
-			if (caseDetailsStruct.dtls.participantRoleID != 0L) {
-				batchProcessingID.recordID = caseDetailsStruct.dtls.participantRoleID;
-				batchProcessingIDList.dtls.add(batchProcessingID);
-			}
 
+			if (caseDetailsStruct.dtls.participantRoleID != 0L) {
+				paramConcernRoleIDKey.concernRoleID = caseDetailsStruct.dtls.participantRoleID;
+				PersonDetails personDtls = personObj
+						.readPersonDetails(paramConcernRoleIDKey);
+				age = getAge(personDtls.dtls.dateOfBirth);
+				if (age >= 18) {
+					batchProcessingID.recordID = caseDetailsStruct.dtls.participantRoleID;
+					batchProcessingIDList.dtls.add(batchProcessingID);
+				}
+			}
 		}
 
 		// set the chuncking parameters
@@ -259,4 +280,34 @@ public class MOLSAUserAccountSMSBatchJob extends
 
 	}
 
+	/**
+	 * This method calculates date between current date and dateOfBirth
+	 * 
+	 * @param dateOfBirth
+	 *            Date
+	 * @return int
+	 */
+
+	public int getAge(Date dateOfBirth) {
+
+		Calendar today = Calendar.getInstance();
+		Calendar birthDate = Calendar.getInstance();
+
+		int age = 0;
+
+		age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+
+		if ((birthDate.get(Calendar.DAY_OF_YEAR)
+				- today.get(Calendar.DAY_OF_YEAR) > 3)
+				|| (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
+			age--;
+
+		} else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH))
+				&& (birthDate.get(Calendar.DAY_OF_MONTH) > today
+						.get(Calendar.DAY_OF_MONTH))) {
+			age--;
+		}
+
+		return age;
+	}
 }

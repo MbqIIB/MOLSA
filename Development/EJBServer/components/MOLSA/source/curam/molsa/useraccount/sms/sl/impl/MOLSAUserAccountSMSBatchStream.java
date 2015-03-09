@@ -20,6 +20,8 @@ import curam.util.transaction.TransactionInfo;
 public class MOLSAUserAccountSMSBatchStream extends
 		curam.molsa.useraccount.sms.sl.base.MOLSAUserAccountSMSBatchStream {
 
+	static final MOLSAUserAccountSMSChunkResult chunkResult = new MOLSAUserAccountSMSChunkResult();
+
 	/**
 	 * This method checks calls the runStream method to initiate streaming of
 	 * the batch process.
@@ -62,7 +64,6 @@ public class MOLSAUserAccountSMSBatchStream extends
 	public String getChunkResult(int skippedCasesCount) throws AppException,
 			InformationalException {
 		StringBuffer result = new StringBuffer();
-		MOLSAUserAccountSMSChunkResult chunkResult = new MOLSAUserAccountSMSChunkResult();
 		chunkResult.recordsSkippedCount += skippedCasesCount;
 		result.append(chunkResult.recordsSkippedCount);
 		chunkResult.recordsSkippedCount = 0;
@@ -93,8 +94,9 @@ public class MOLSAUserAccountSMSBatchStream extends
 		} catch (Exception e) {
 			batchProcessingSkippedRecord.recordID = batchProcessingID.recordID;
 			batchProcessingSkippedRecord.errorMessage = e.getMessage();
+			return batchProcessingSkippedRecord;
 		}
-		return batchProcessingSkippedRecord;
+		return null;
 	}
 
 	/**
