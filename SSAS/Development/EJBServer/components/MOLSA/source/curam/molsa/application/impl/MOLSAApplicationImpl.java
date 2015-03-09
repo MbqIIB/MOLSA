@@ -739,8 +739,8 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 		final String locale = ProgramLocale.getDefaultServerLocale();
 		final String xmlString = getReportXMLFromDatastore();
 
-		final TEMPLATEIDCODEEntry templateID = applicationConfiguration
-				.getPDFTemplateID(getApplicationType());
+		final TEMPLATEIDCODEEntry templateID = applicationConfiguration.getPDFTemplateID(getApplicationType());
+		//final TEMPLATEIDCODEEntry templateID = 45007
 
 		final ByteArrayOutputStream outputStream = pdfGeneratorProvider.get()
 				.generatePDF(xmlString, templateID);
