@@ -29,6 +29,7 @@ import curam.core.struct.BatchProcessingIDList;
 import curam.core.struct.ChunkMainParameters;
 import curam.core.struct.ProductDeliveryDtls;
 import curam.core.struct.ProductDeliveryDtlsList;
+import curam.creole.execution.session.Session;
 import curam.creole.ruleclass.MOLSAScreeningRuleSet.impl.Person_Factory;
 import curam.creole.ruleclass.MOLSAScreeningRulesUtilityCalculator.impl.AgeCalculator;
 import curam.creole.ruleclass.MOLSAScreeningRulesUtilityCalculator.impl.AgeCalculator_Factory;
@@ -280,34 +281,14 @@ public class MOLSAUserAccountSMSBatchJob extends
 
 	}
 
-	/**
-	 * This method calculates date between current date and dateOfBirth
-	 * 
-	 * @param dateOfBirth
-	 *            Date
-	 * @return int
-	 */
-
-	public int getAge(Date dateOfBirth) {
-
-		Calendar today = Calendar.getInstance();
-		Calendar birthDate = Calendar.getInstance();
-
-		int age = 0;
-
-		age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
-
-		if ((birthDate.get(Calendar.DAY_OF_YEAR)
-				- today.get(Calendar.DAY_OF_YEAR) > 3)
-				|| (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
-			age--;
-
-		} else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH))
-				&& (birthDate.get(Calendar.DAY_OF_MONTH) > today
-						.get(Calendar.DAY_OF_MONTH))) {
-			age--;
+	public int getAge(Date dob) {
+		int diff = 0;
+		if (null != dob) {
+			Calendar today = Calendar.getInstance();
+			Calendar birthDate = Calendar.getInstance();
+			birthDate.setTime(dob.getCalendar().getTime());
+			diff = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
 		}
-
-		return age;
+		return diff;
 	}
 }
