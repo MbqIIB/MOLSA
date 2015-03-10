@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to reject an Application.    -->
+<PAGE
+  PAGE_ID="MOLSAApplication_reject"
+  WINDOW_OPTIONS="width=500"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+<PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  <SERVER_INTERFACE
+    CLASS="MOLSAApplication"
+    NAME="ACTION"
+    OPERATION="rejectApplication"
+    PHASE="ACTION"
+  />
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="YesButton"
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="NoButton"
+      LABEL="ActionControl.Label.No"
+    />
+  </ACTION_SET>
+  <PAGE_PARAMETER NAME="applicationID"/>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="applicationID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="applicationID"
+    />
+  </CONNECT>
+  <CLUSTER
+    SHOW_LABELS="false"
+    STYLE="outer-cluster-borderless"
+  >
+
+    <FIELD LABEL="Field.Label.RejectCaseText">
+      <CONNECT>
+        <SOURCE
+          NAME="TEXT"
+          PROPERTY="Field.StaticText.RejectCase"
+        />
+      </CONNECT>
+    </FIELD>
+  </CLUSTER>
+
+</PAGE>
