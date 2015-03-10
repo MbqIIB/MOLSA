@@ -3,12 +3,16 @@
  */
 package curam.molsa.test.application;
 
+import java.util.List;
+
+import curam.codetable.impl.APPLICATIONTYPEEntry;
 import curam.codetable.impl.PROGRAMSTATUSEntry;
 import curam.codetable.impl.PROGRAMTYPEEntry;
 import curam.core.sl.struct.ConcernRoleIDKey;
 import curam.datastore.impl.Datastore;
 import curam.datastore.impl.Entity;
 import curam.molsa.application.impl.MOLSAApplicationImpl;
+import curam.participant.impl.ConcernRole;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 
@@ -53,4 +57,12 @@ public class TestMOLSAApplicationImpl extends MOLSAApplicationImpl {
 			InformationalException {
 		super.getProgramApplication(programType, programStatus);
 	}
+	
+	public void testStart(APPLICATIONTYPEEntry applicationType,
+			List<PROGRAMTYPEEntry> programs, ConcernRole concernRole)
+			throws InformationalException, AppException{
+		super.start(applicationType, programs, concernRole);
+		
+	}
+	
 }

@@ -1,30 +1,28 @@
 package curam.molsa.test.application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.inject.Inject;
 
 import curam.application.facade.fact.ApplicationFactory;
 import curam.codetable.CONCERNROLEADDRESSTYPE;
 import curam.codetable.GENDER;
 import curam.codetable.PHONETYPE;
-import curam.codetable.RECORDSTATUS;
-import curam.core.facade.fact.OrganizationFactory;
-import curam.core.facade.intf.Organization;
+import curam.codetable.impl.APPLICATIONTYPEEntry;
+import curam.codetable.impl.COMMUNICATIONMETHODEntry;
+import curam.codetable.impl.LANGUAGEEntry;
+import curam.codetable.impl.PHONETYPEEntry;
+import curam.codetable.impl.PROGRAMTYPEEntry;
+import curam.core.facade.fact.ConcernRoleFactory;
+import curam.core.facade.impl.ConcernRole;
 import curam.core.facade.struct.ActionIDProperty;
 import curam.core.facade.struct.PersonSearchDetailsResult;
 import curam.core.facade.struct.PersonSearchKey1;
 import curam.core.facade.struct.RegisterPersonState;
-import curam.core.facade.struct.UserForPositionDetails;
-import curam.core.fact.UsersFactory;
-import curam.core.intf.Users;
-import curam.core.sl.entity.fact.OrgUnitParentLinkFactory;
-import curam.core.sl.entity.intf.OrgUnitParentLink;
-import curam.core.sl.entity.struct.OrgUnitParentLinkDtls;
 import curam.core.sl.struct.ConcernRoleIDKey;
-import curam.core.sl.struct.PositionHolderLinkDetails;
 import curam.core.sl.struct.WizardStateID;
 import curam.core.struct.PersonSearchDetails;
-import curam.core.struct.UsersDtls;
-import curam.core.struct.UsersKey;
 import curam.datastore.impl.Datastore;
 import curam.datastore.impl.Entity;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
@@ -51,8 +49,11 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 	public static final String KFULLNAME = KFIRSTNAME + " " + KSURNAME;
 	public static final String KPHONENUMBER = "33344444";
 	public static final String KQID = "12345678911";
-	public static final String KADDRESSDATA = "1\n0\nUS\nQA\n0\n0\nCITY=MM17005\nZIP=\nADD2=MS17003\n"
-			+ "ADD1=MZ17083\nADD4=\nADD5=\nUNITNO=\nCOUNTRY=QA\nPOBOXNO=\n";
+	public static final String KADDRESSDATA = "1\n0\nUS\nQA\n0\n0\nCITY=MM17005\nZIP=23456 \nADD2=MS17003\n"
+			+ "ADD1=MZ17083\nADD4=MBT17000 \nADD5=MBT17000\nUNITNO=322332 \nCOUNTRY=QA\nPOBOXNO=89328\n";
+
+	public static final String KMAILINGADDRESSDATA = "1\n0\nUS\nQA\n0\n0\nCITY=MM17004\nZIP=23436 \nADD2=MS17001\n"
+			+ "ADD1=MZ17084\nADD4=MBT17001 \nADD5=MBT17000\nUNITNO=32332 \nCOUNTRY=QA\nPOBOXNO=89328\n";
 
 	public static final Date KDATEOFBIRTH = Date.getCurrentDate().addDays(
 			-365 * 17);
@@ -62,6 +63,7 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 	public static final long KORGUNITID = 45013;
 	public static final long KDEFPRINTERID = 1;
 	public static final String KUSERNAME = "molsacaseworker";
+	private static final String KEMAILADDRESS = "xsyb@molsa.gov.in";
 	@Inject
 	private TestHelper testHelper;
 
@@ -120,7 +122,8 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 			final Datastore datastore = new MOLSADatastoreEntityUtilityImpl()
 					.openDatastore(MOLSADatastoreConst.kDataStoreSchemaName);
 			final ConcernRoleIDKey concernRoleKey = new ConcernRoleIDKey();
-			final long datastoreID = DatastoreHelper.createRootEntity(datastore);
+			final long datastoreID = DatastoreHelper
+					.createRootEntity(datastore);
 			final Entity rootDatastoreEntity = molsaTestMockDataStore
 					.createMockDataStore(datastore);
 			testMOLSAApplicationImpl.testCreateAndStoreApplicationPDF();
@@ -137,6 +140,29 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
 		try {
 			testMOLSAApplicationImpl.testGetProgramApplication(null);
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail();
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+	}
+
+	public void testStart() {
+		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
+		List<PROGRAMTYPEEntry> programs = new ArrayList<PROGRAMTYPEEntry>();
+		PersonSearchDetails personDetails = null;
+		programs.add(PROGRAMTYPEEntry.WIDOW);
+		programs.add(PROGRAMTYPEEntry.ANONYMOUSPARENTS);
+		programs.add(PROGRAMTYPEEntry.FAMILYOFMISSING);
+		programs.add(PROGRAMTYPEEntry.FAMILYOFPRISONER);
+		
+	try {
+			personDetails = getPersonRegistrationDetails();
+			testMOLSAApplicationImpl.testStart(
+					APPLICATIONTYPEEntry.SOCIALASSISTANCE, programs,
+					null);
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			fail();
@@ -170,6 +196,15 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 		personRegistrationDetails.dtls.dateOfBirth = KDATEOFBIRTH;
 		personRegistrationDetails.dtls.phoneType = PHONETYPE.MOBILE;
 		personRegistrationDetails.dtls.phoneNumber = KPHONENUMBER;
+		// personRegistrationDetails.dtls.contactEmailAddress=KEMAILADDRESS;
+		// personRegistrationDetails.dtls.contactEmailType=EMAILTYPEEntry.PERSONAL.getCode();
+		personRegistrationDetails.dtls.mailingAddressData = KMAILINGADDRESSDATA;
+		personRegistrationDetails.dtls.preferredLanguage = LANGUAGEEntry.ENGLISH
+				.getCode();
+		personRegistrationDetails.dtls.prefCommMethod = COMMUNICATIONMETHODEntry.EMAIL
+				.getCode();
+		personRegistrationDetails.dtls.phoneType = PHONETYPEEntry.MOBILE
+				.getCode();
 		personRegistrationDetails.dtls.registrationDate = KCURRENTDATE;
 		personRegistrationDetails.dtls.addressType = CONCERNROLEADDRESSTYPE.PRIVATE;
 		personRegistrationDetails.dtls.addressData = KADDRESSDATA;
