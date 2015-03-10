@@ -1,24 +1,58 @@
 package curam.molsa.application.facade.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.inject.Inject;
+
 import curam.application.facade.fact.ApplicationFactory;
 import curam.application.facade.struct.ApplicationID;
 import curam.application.facade.struct.SubmitApplicationDetails;
+import curam.application.impl.Application;
+import curam.application.impl.ApplicationConfiguration;
+import curam.application.impl.ApplicationDAO;
+import curam.application.workflow.struct.ApplicationWorkflowDetails;
+import curam.codetable.PRODUCTTYPE;
+import curam.core.sl.struct.TaskCreateDetails;
 import curam.datastore.impl.Datastore;
 import curam.datastore.impl.DatastoreFactory;
 import curam.datastore.impl.Entity;
 import curam.datastore.impl.NoSuchSchemaException;
+import curam.events.MOLSAAPPROVALTASK;
+import curam.events.MOLSAApplicationNotification;
 import curam.ieg.facade.fact.IEGRuntimeFactory;
 import curam.ieg.facade.intf.IEGRuntime;
 import curam.ieg.facade.struct.IEGRootEntityID;
 import curam.ieg.facade.struct.IEGScriptExecutionID;
 import curam.ieg.impl.IEGScriptExecutionFactory;
+import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
+import curam.message.MOLSANOTIFICATION;
+import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
+import curam.util.events.impl.EventService;
+import curam.util.events.struct.Event;
 import curam.util.exception.AppException;
 import curam.util.exception.AppRuntimeException;
 import curam.util.exception.InformationalException;
+import curam.util.exception.LocalisableString;
+import curam.util.persistence.GuiceWrapper;
+import curam.util.transaction.TransactionInfo;
+import curam.util.type.CodeTable;
+import curam.util.type.DeepCloneable;
+import curam.util.workflow.impl.EnactmentService;
 
 public class MOLSAApplication extends
-curam.molsa.application.facade.base.MOLSAApplication {
+		curam.molsa.application.facade.base.MOLSAApplication {
+
+	@Inject
+	protected ApplicationDAO applicationDAO;
+
+	@Inject
+	private ApplicationConfiguration applicationConfiguration;
+
+	public MOLSAApplication() {
+		GuiceWrapper.getInjector().injectMembers(this);
+	}
 
 	@Override
 	public ApplicationID submitApplication(SubmitApplicationDetails appDetails)
@@ -35,8 +69,8 @@ curam.molsa.application.facade.base.MOLSAApplication {
 		final Entity application = datastore.readEntity(rootEntityID.entityID);
 		if (Boolean.parseBoolean(application
 				.getAttribute(MOLSADatastoreConst.KIsCOC))) {
-			return ApplicationFactory.newInstance()
-					.submitApplicationForCase1(appDetails);
+			return ApplicationFactory.newInstance().submitApplicationForCase1(
+					appDetails);
 		}
 		return ApplicationFactory.newInstance().submitApplication1(appDetails);
 
@@ -63,6 +97,40 @@ curam.molsa.application.facade.base.MOLSAApplication {
 		}
 		return datastore;
 
+	}
+
+	@Override
+	public void rejectApplication(ApplicationID applicationID)
+			throws AppException, InformationalException {
+		final List<DeepCloneable> enactmentStructs = new ArrayList<DeepCloneable>();
+		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+
+		Application application = applicationDAO
+				.get(applicationID.applicationID);
+
+		final LocalisableString subject = new LocalisableString(
+				MOLSANOTIFICATION.INF_REJECT_OF_APPLICATION_REVIEW);
+
+		subject.arg(application.getReference());
+		subject.arg(application.getPrimaryIntakeApplicant().getConcernRole()
+				.getName());
+
+		taskCreateDetails.subject = subject.getMessage(TransactionInfo
+				.getProgramLocale());
+
+		ApplicationWorkflowDetails workflowDetails = applicationConfiguration
+				.getReadyForDeterminationWorkflowDetails(application);
+
+		enactmentStructs.add(taskCreateDetails);
+		enactmentStructs.add(workflowDetails);
+		EnactmentService.startProcessInV3CompatibilityMode(
+				MOLSAConstants.kMOLSAProductDeliveryRejectTask,
+				enactmentStructs);
+		Event eventKey = new Event();
+		eventKey.eventKey.eventClass = MOLSAApplicationNotification.APPLICATION_REJECTED.eventClass;
+		eventKey.eventKey.eventType = MOLSAApplicationNotification.APPLICATION_REJECTED.eventType;
+		eventKey.primaryEventData = applicationID.applicationID;
+		EventService.raiseEvent(eventKey);
 	}
 
 }
