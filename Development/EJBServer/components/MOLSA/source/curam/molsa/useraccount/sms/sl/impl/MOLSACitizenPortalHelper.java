@@ -168,41 +168,33 @@ public class MOLSACitizenPortalHelper {
 	 *             General Exception
 	 */
 	public void resetPassword(UserPasswordDetails passwordDtls)
-			throws AppException {
+			throws AppException, InformationalException {
 		// get encrypted value of current password
 		String existingPassword = getEncryptedPasswordValue(passwordDtls.currentPassword);
 		ExternalUser externalUser = ExternalUserFactory.newInstance();
 		ExternalUserKey externalUserKey = new ExternalUserKey();
 		externalUserKey.userName = passwordDtls.userName;
-		try {
-			// Read the existing user details using the user name
-			ExternalUserDtls externalUserDtls = externalUser
-					.read(externalUserKey);
-			// Check if the existing password is correct
-			if (existingPassword.equals(externalUserDtls.password)) {
-				// Check if entered new password and confirm password matches
-				if (passwordDtls.confirmPassword
-						.equals(passwordDtls.newPassword)) {
-					String newPassword = new String();
-					// Encrypt the new password
-					newPassword = getEncryptedPasswordValue(passwordDtls.confirmPassword);
-					externalUserDtls.password = newPassword;
-					externalUserDtls.passwordChanged = Date.getCurrentDate();
-					// Modify the record in external user table
-					externalUser.modify(externalUserKey, externalUserDtls);
-				} else {
-					// New password and confirm password doesnot match
-					throw new AppException(
-							MOLSANOTIFICATION.PASSWORD_NOT_MATCHING);
-				}
+		// Read the existing user details using the user name
+		ExternalUserDtls externalUserDtls = externalUser.read(externalUserKey);
+		// Check if the existing password is correct
+		if (existingPassword.equals(externalUserDtls.password)) {
+			// Check if entered new password and confirm password matches
+			if (passwordDtls.confirmPassword.equals(passwordDtls.newPassword)) {
+				String newPassword = new String();
+				// Encrypt the new password
+				newPassword = getEncryptedPasswordValue(passwordDtls.confirmPassword);
+				externalUserDtls.password = newPassword;
+				externalUserDtls.passwordChanged = Date.getCurrentDate();
+				// Modify the record in external user table
+				externalUser.modify(externalUserKey, externalUserDtls);
 			} else {
-				// Entered password authentication failed
-				throw new AppException(MOLSANOTIFICATION.WRONG_PASSWORD);
+				// New password and confirm password doesnot match
+				throw new AppException(MOLSANOTIFICATION.PASSWORD_NOT_MATCHING);
 			}
-		} catch (InformationalException e) {
-			e.printStackTrace();
+		} else {
+			// Entered password authentication failed
+			throw new AppException(MOLSANOTIFICATION.WRONG_PASSWORD);
 		}
-
 	}
 
 	/**
