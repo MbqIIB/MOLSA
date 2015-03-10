@@ -506,9 +506,26 @@ public abstract class AbstractMolsaTestBase extends CuramServerTest {
 	 *            Contains caseID.
 	 * 
 	 */
+	
+		
 	protected abstract void addEvidence(CaseKey caseKey) throws AppException,
 			InformationalException;
+	
+	protected void testSendSMS(CaseKey caseKey) throws AppException,
+	InformationalException{
+		
+	}
 
+	protected void testValidation(CaseKey caseKey) throws AppException,
+	InformationalException{
+		
+	}
+	
+	protected void testlistParticipantByCriteria(CaseKey caseKey) throws AppException,
+	InformationalException{
+		
+	}
+	
 	// ___________________________________________________________________________
 	/**
 	 * Add the TAM date evidence for the additional product delivery scenario.

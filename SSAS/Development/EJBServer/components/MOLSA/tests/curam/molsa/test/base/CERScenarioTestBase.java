@@ -30,6 +30,7 @@ import curam.application.impl.IntakeApplicant;
 import curam.application.impl.IntakeApplicantDAO;
 import curam.application.impl.IntakeApplicantStatus;
 import curam.application.impl.IntakeApplicantStatusDAO;
+import curam.codetable.COMMUNICATIONSTATUS;
 import curam.codetable.impl.APPLICANTROLEEntry;
 import curam.codetable.impl.APPLICANTSTATUSEntry;
 import curam.codetable.impl.APPLICATIONMETHODEntry;
@@ -43,11 +44,14 @@ import curam.core.facade.intf.IntegratedCase;
 import curam.core.facade.intf.ProductDelivery;
 import curam.core.facade.struct.ActivateCaseKey_fo;
 import curam.core.facade.struct.CertificationCaseIDKey;
+import curam.core.facade.struct.CheckEligibilityCaseDeterminationDetails;
 import curam.core.facade.struct.ListICProductDeliveryCertDetailsAndVersionNo;
 import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.fact.CachedCaseHeaderFactory;
 import curam.core.impl.CuramConst;
+import curam.core.impl.EnvVars;
 import curam.core.intf.CachedCaseHeader;
+import curam.core.intf.Product;
 import curam.core.sl.fact.CaseUserRoleFactory;
 import curam.core.sl.infrastructure.assessment.codetable.CASEDETERMINATIONINTERVALRESULT;
 import curam.core.sl.infrastructure.assessment.impl.CREOLECaseDeterminationAccessorDAO;
@@ -80,9 +84,20 @@ import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendatio
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProduct;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProductDAO;
 import curam.creoleprogramrecommendation.struct.CREOLEProgramRecommendationKey;
+import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.core.facade.fact.MOLSAProductDeliveryFactory;
 import curam.molsa.core.facade.intf.MOLSAProductDelivery;
+import curam.molsa.sms.entity.struct.MOLSASMSLogDtls;
+import curam.molsa.sms.entity.struct.MOLSASMSLogDtlsList;
+import curam.molsa.sms.entity.struct.MOLSASMSLogKeyStruct3;
+import curam.molsa.sms.facade.fact.MOLSAMessageServiceFactory;
+import curam.molsa.sms.facade.intf.MOLSAMessageService;
+import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
+import curam.molsa.sms.sl.intf.MOLSASMSUtil;
+import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.molsa.test.framework.TestHelper;
+import curam.molsa.test.smsservice.MessageServiceTest;
+import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
@@ -92,6 +107,7 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
 import curam.util.persistence.GuiceWrapper;
+import curam.util.resources.Configuration;
 import curam.util.resources.StringUtil;
 import curam.util.transaction.TransactionInfo;
 import curam.util.transaction.TransactionInfo.TransactionType;
@@ -153,6 +169,9 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 	private CaseParticipantRoleDAO caseParticipantRoleDAO;
 	@Inject
 	private TestHelper testHelper;
+	
+	@Inject
+	private ProductDAO productDAO;
 
 	/**
 	 * Constructor for the scenario test.
@@ -358,6 +377,14 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 					activateCaseKey_fo.caseID = productDeliveryKey.caseID;
 
 					productDeliveryObj.activate(activateCaseKey_fo);
+					//sms testing
+					Long id=productDeliveryKey.caseID;		
+					if(productDeliveryDAO.get(id).getProductType().getCode().equals(curam.codetable.PRODUCTTYPE.SENIORCITIZEN))
+					{
+						testSendSMS(caseKey);
+						testlistParticipantByCriteria(caseKey);
+						testValidation(caseKey);
+					}
 					TransactionInfo.enactStubbedDeferredProcessCalls();
 					TransactionInfo.setTransactionType(TransactionType.kOnline);
 

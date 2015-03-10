@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.compass.core.converter.basic.StringConverter;
+
 import com.google.inject.Inject;
+import com.ibm.icu.impl.Assert;
+import com.pmmsoapmessenger.MessengerStub.Authenticate;
+import com.pmmsoapmessenger.MessengerStub.SoapUser;
 
 import curam.application.impl.Application;
+import curam.citizenaccount.facade.struct.ConcernRoleKey;
 import curam.codetable.ADDRESSLAYOUTTYPE;
 import curam.codetable.CITIZENSHIPCODE;
 import curam.codetable.COUNTRY;
@@ -20,11 +26,23 @@ import curam.codetable.SCHOOLTYPE;
 import curam.codetable.VERIFICATIONSTATUS;
 import curam.codetable.impl.APPLICANTROLEEntry;
 import curam.codetable.impl.CASESTATUSEntry;
+import curam.codetable.impl.GENDEREntry;
+import curam.codetable.impl.PRODUCTTYPEEntry;
+import curam.codetable.impl.CASETYPECODEEntry;
+import curam.codetable.impl.COMMUNICATIONSTATUSEntry;
+import curam.codetable.impl.GENDEREntry;
+import curam.codetable.impl.PRODUCTTYPEEntry;
+import curam.core.facade.fact.UniqueIDFactory;
+import curam.core.facade.intf.UniqueID;
+import curam.core.facade.struct.CommunicationFilterKey;
 import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.fact.CachedCaseHeaderFactory;
+import curam.core.impl.CuramConst;
+import curam.core.impl.EnvVars;
 import curam.core.intf.CachedCaseHeader;
 import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.infrastructure.assessment.impl.DeterminationInterval;
+import curam.core.struct.Amount;
 import curam.core.struct.CaseHeaderReadmultiDetails1;
 import curam.core.struct.CaseHeaderReadmultiDetails1List;
 import curam.core.struct.CaseHeaderReadmultiKey1;
@@ -32,17 +50,54 @@ import curam.core.struct.CaseKey;
 import curam.core.struct.PersonRegistrationDetails;
 import curam.creole.value.Interval;
 import curam.creole.value.Timeline;
+import curam.dynamicevidence.type.impl.MoneyConverter;
+import curam.message.GENERALSEARCH;
+import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.EDUCATION;
 import curam.molsa.codetable.EDUCATIONLEVEL;
 import curam.molsa.codetable.EXPENSE;
+import curam.molsa.codetable.MOLSABENEFITTYPE;
+import curam.molsa.codetable.MOLSAMUNICIPALITY;
+import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
+import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.codetable.RESIDENCY;
+import curam.molsa.codetable.impl.EDUCATIONLEVELEntry;
+import curam.molsa.codetable.impl.MOLSAMUNICIPALITYEntry;
+import curam.molsa.sms.entity.struct.MOLSASMSErrorCodeDtls;
+import curam.molsa.sms.entity.struct.MOLSASMSLogDtls;
+import curam.molsa.sms.entity.struct.MOLSASMSLogDtlsList;
+import curam.molsa.sms.entity.struct.MOLSASMSLogKeyStruct1;
+import curam.molsa.sms.entity.struct.MOLSASMSLogKeyStruct3;
+import curam.molsa.sms.facade.fact.MOLSAMessageServiceFactory;
+import curam.molsa.sms.facade.intf.MOLSAMessageService;
+import curam.molsa.sms.facade.struct.MOLSAAdditionalBenefitDetails;
+import curam.molsa.sms.facade.struct.MOLSAAdditionalBenefitDetailsList;
+import curam.molsa.sms.facade.struct.MOLSACommunicationDetailList;
+import curam.molsa.sms.facade.struct.MOLSAConcernRoleListAndMessageText;
+import curam.molsa.sms.facade.struct.MOLSAFailedSMSDetails;
+import curam.molsa.sms.facade.struct.MOLSAInitialCaseSearchCriteria;
+import curam.molsa.sms.facade.struct.MOLSAParticipantDetails;
+import curam.molsa.sms.facade.struct.MOLSAParticipantFilterCriteriaDetails;
+import curam.molsa.sms.sl.fact.MOLSASMSLogFactory;
+import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
+import curam.molsa.sms.sl.intf.MOLSASMSLog;
+import curam.molsa.sms.sl.intf.MOLSASMSUtil;
+import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
+import curam.molsa.sms.sl.struct.MOLSAFailedSMSDetailsList;
+import curam.molsa.sms.facade.struct.MOLSAMessageText;
+import curam.molsa.sms.facade.struct.MOLSAMessageTextKey;
+import curam.molsa.sms.facade.struct.MOLSAParticipantDetailsList;
+import curam.molsa.sms.facade.struct.MOLSASMSLogKey;
 import curam.molsa.test.base.CERScenarioTestBase;
 import curam.molsa.test.base.HouseholdUnit;
 import curam.molsa.test.base.ParticipantTestDetails;
 import curam.molsa.test.framework.TestHelper;
+import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.util.exception.AppException;
+import curam.util.exception.AppRuntimeException;
 import curam.util.exception.InformationalException;
+import curam.util.resources.Configuration;
 import curam.util.type.Date;
 import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
 import curam.verification.facade.infrastructure.intf.VerificationApplication;
@@ -67,6 +122,9 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 	
 	@Inject
 	private CaseHeaderDAO caseHeaderDAO;
+	
+	
+	curam.molsa.sms.facade.intf.MOLSAMessageService molsasmsObj = MOLSAMessageServiceFactory.newInstance();
 	
 	/**
 	   * Default constructor for the class.
@@ -525,5 +583,261 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 
 	}
 	
+	protected void testSendSMS(CaseKey caseKey) throws AppException, InformationalException {
+		
+		MOLSAConcernRoleListAndMessageText details = new MOLSAConcernRoleListAndMessageText();
+		long id = 0;
+		CaseHeader caseHeader = caseHeaderDAO.get(caseKey.caseID);
+		curam.molsa.sms.entity.intf.MOLSASMSLog molsasmsLog = curam.molsa.sms.entity.fact.MOLSASMSLogFactory.newInstance();
+		details.caseID = caseKey.caseID;
+		details.smsMessageText = "Message Send";
+		details.smsMessageType = MOLSASMSMESSAGETEMPLATE.CONTACTMOLSA;
+		
+		details.concernRoleTabbedList = String.valueOf(caseHeader.getConcernRole().getID());
+		
+		molsasmsObj.sendSMS(details);
+		
+		
+		curam.molsa.sms.facade.struct.MOLSAFailedSMSDetailsList molsaFailedSMSDetailsList = molsasmsObj.listAllFailedMessages();
+		for(MOLSAFailedSMSDetails molsaFailedSMSDetails:molsaFailedSMSDetailsList.dtls)
+		{
+			if(molsaFailedSMSDetails.message.equals("Message Send"))
+			{
+				assertEquals(molsaFailedSMSDetails.message,details.smsMessageText);
+				id=molsaFailedSMSDetails.smsMessageID;
+			}
+		}
+		
+		
+		CommunicationFilterKey communicationFilterkey=new CommunicationFilterKey();
+		communicationFilterkey.caseID=caseKey.caseID;
+		communicationFilterkey.concernRoleID=caseHeader.getConcernRole().getID();
+		communicationFilterkey.concernRoleName=caseHeader.getConcernRole().getName();
+		MOLSACommunicationDetailList molsaCommunicationDetailList = molsasmsObj.listFilteredCommunication(communicationFilterkey);
+		
+		assertEquals(2, molsaCommunicationDetailList.dtls.size());
+		
+		MOLSASMSLogKey key=new MOLSASMSLogKey();
+		key.smsLogIDTabbedList=String.valueOf(id);
+		
+		curam.molsa.sms.entity.struct.MOLSASMSLogKey key1=new curam.molsa.sms.entity.struct.MOLSASMSLogKey();
+		key1.messageID=id;
+		MOLSASMSLogDtls molsaSMSLogDtls = molsasmsLog.read(key1);
+		MOLSASMSLogDtls details1=new MOLSASMSLogDtls();
+		details1.assign(molsaSMSLogDtls);
+		details1.messsageText="Message Resend";
+		details1.versionNo=molsaSMSLogDtls.versionNo;
+		molsasmsLog.modify(key1, details1);
+		
+		molsasmsObj.resendSMS(key);		
+		
+		MOLSASMSLogDtls molsaSMSLogDtls1 = molsasmsLog.read(key1);
+		
+		assertEquals(molsaSMSLogDtls1.messsageText,details1.messsageText);
+		
+		MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
+		molsaMessageTextKey.category = MOLSASMSMessageType.FOLLOWUP;
+		molsaMessageTextKey.template = MOLSASMSMESSAGETEMPLATE.SUSPENDEDCASE;
+		MOLSAMessageText actualmessageText = molsasmsObj.getSMSMessageText(molsaMessageTextKey);
+		
+		MOLSAMessageText expectedmessageText = new MOLSAMessageText();
+		expectedmessageText.smsMessageText="Social assistance has been suspended for this month For inquiries, please consult the nearest branch of the Social Security Administration";
+		
+		assertEquals(expectedmessageText.smsMessageText,actualmessageText.smsMessageText);
+		
+		MOLSAInitialCaseSearchCriteria molsaInitialCaseSearchCriteria = molsasmsObj.getSMSInitialSearchCriteria();
+		
+		assertEquals(13, molsaInitialCaseSearchCriteria.caseTypeList.dtlsList.size());	
+
+		molsasmsObj.exportParticipantsToExcel(details);
+	}
+	
+	
+	protected void testlistParticipantByCriteria(CaseKey caseKey) throws AppException, InformationalException{
+		
+		CaseHeader caseHeader = caseHeaderDAO.get(caseKey.caseID);
+		long id = 0;
+		MOLSAConcernRoleListAndMessageText messageTextDetails = new MOLSAConcernRoleListAndMessageText();
+		curam.molsa.sms.entity.intf.MOLSASMSLog molsasmsLog = curam.molsa.sms.entity.fact.MOLSASMSLogFactory.newInstance();
+		messageTextDetails.concernRoleTabbedList = String.valueOf(caseHeader.listActiveCaseMembers().get(0).getID()).concat(" \t ").concat(String.valueOf(caseHeader.listActiveCaseMembers().get(1).getID()));
+		messageTextDetails.smsMessageText = "Deffered Message Send";
+		messageTextDetails.caseID = caseKey.caseID;
+		messageTextDetails.smsMessageType=MOLSASMSMESSAGETEMPLATE.CONTACTMOLSA;
+		
+		molsasmsObj.sendSMS(messageTextDetails);
+		
+		curam.molsa.sms.facade.struct.MOLSAFailedSMSDetailsList molsaFailedSMSDetailsList1 = molsasmsObj.listAllFailedMessages();
+		
+		ArrayList<String> ar = new ArrayList<String>();
+		for(MOLSAFailedSMSDetails molsaFailedSMSDetails:molsaFailedSMSDetailsList1.dtls)
+		{
+				id=molsaFailedSMSDetails.smsMessageID;
+				String idList=String.valueOf(id);
+				ar.add(idList);
+		}
+		assertEquals(2, ar.size());
+		
+		MOLSASMSLogKey logKey=new MOLSASMSLogKey();
+		logKey.smsLogIDTabbedList=ar.get(0).concat(" \t ").concat(ar.get(1));
+		
+		for(String msgID:ar)
+		{
+			curam.molsa.sms.entity.struct.MOLSASMSLogKey key1=new curam.molsa.sms.entity.struct.MOLSASMSLogKey();
+			key1.messageID=Long.parseLong(msgID);
+			MOLSASMSLogDtls molsaSMSLogDtls = molsasmsLog.read(key1);
+			MOLSASMSLogDtls details1=new MOLSASMSLogDtls();
+			details1.assign(molsaSMSLogDtls);
+			details1.messsageText="Deffered Message Resend";
+			details1.versionNo=molsaSMSLogDtls.versionNo;
+			molsasmsLog.modify(key1, details1);
+			molsasmsObj.resendSMS(logKey);
+			MOLSASMSLogDtls molsaSMSLogDtls1 = molsasmsLog.read(key1);			
+			assertEquals(molsaSMSLogDtls1.messsageText,details1.messsageText);
+		}
+		
+		long participantid =getParticipantRoleID(MOHAMMED_UNIQUE_NAME).participantRoleID;
+		long caseParticipantRoleID = getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID;
+		createAdditionalBenefitEvidence(caseKey, participantid, caseParticipantRoleID, getDate(1, 1, 2014), 100, MOLSABENEFITTYPE.EID);	
+		createEducationEvidence(caseKey, participantid,caseParticipantRoleID, getDate(1, 1, 2014),EDUCATION.ENROLLED,
+				EDUCATIONLEVEL.SECONDARY);
+		int incomeamount=10;
+		MOLSAParticipantDetails actualDtls=new MOLSAParticipantDetails();
+			actualDtls.addressString=caseHeader.getConcernRole().getPrimaryAddress().toString();
+			actualDtls.caseID=caseKey.caseID;
+			actualDtls.concernroleID=caseHeader.getConcernRole().getID();
+			//actualDtls.dateOfBirth=caseHeader.getConcernRole().;
+			actualDtls.participantName=caseHeader.getConcernRole().getName();
+			actualDtls.participantName=actualDtls.participantName.concat(" - ").concat(caseHeader.getConcernRole().getPrimaryAlternateID());
+			actualDtls.qid=caseHeader.getConcernRole().getPrimaryAlternateID();
+		
+	
+		createIncomeEvidence(caseKey,participantid, caseParticipantRoleID,getDate(1, 1, 2013),
+					FREQUENCYCODE.MONTHLY,INCOMETYPECODE.OtherHouseholdPaidEmployment,incomeamount);
+		MOLSAParticipantFilterCriteriaDetails key = new MOLSAParticipantFilterCriteriaDetails();
+		key.caseType=PRODUCTTYPEEntry.SENIORCITIZEN.getCode();
+		key.fromAge="1";
+		key.gender=GENDEREntry.MALE.getCode();
+		key.hasIncome=Boolean.TRUE;
+		key.isIncludeHouseHoldMembers=Boolean.TRUE;	
+		key.concernRoleTabbedList= String.valueOf(caseHeader.getConcernRole().getID());
+		key.toAge="100";
+		key.muncipality="MM17005";
+		key.educationLevel=EDUCATIONLEVELEntry.SECONDARY.getCode();
+		Date fromDate=Date.getDate("20000101");
+		
+		MOLSAParticipantDetailsList expectedMolsaParticipantDetailsList = molsasmsObj.listParticipantByCriteria(key);
+		
+		MOLSAParticipantDetails expectedDtls=expectedMolsaParticipantDetailsList.dtls.get(0);
+		
+		assertEquals(expectedDtls.concernroleID,actualDtls.concernroleID);
+		assertEquals(expectedDtls.participantName,actualDtls.participantName);
+		assertEquals(expectedDtls.qid,actualDtls.qid);
+		
+		String expectedName=caseHeader.getConcernRole().getName();
+		
+		ConcernRoleKey key1 =new ConcernRoleKey();
+		key1.concernRoleID=caseHeader.getConcernRole().getID();
+		MOLSAAdditionalBenefitDetailsList actualMOLSAAdditionalBenefitDetailsList = molsasmsObj.listParticipantAdditionalBenefits(key1);
+		MOLSAAdditionalBenefitDetails actualMOLSAAdditionalBenefitDetails = actualMOLSAAdditionalBenefitDetailsList.dtls.get(0);
+		
+		assertEquals(expectedName,actualMOLSAAdditionalBenefitDetails.participantName);	
+		
+		MOLSAParticipantFilterCriteriaDetails detailsKey = new MOLSAParticipantFilterCriteriaDetails();
+		detailsKey.caseType=PRODUCTTYPEEntry.SENIORCITIZEN.getCode().concat("\t").concat(PRODUCTTYPEEntry.DESERTEDWIFE.getCode()).concat("\t").concat(PRODUCTTYPEEntry.FAMILYINNEED.getCode());
+		detailsKey.fromAge="1";
+		detailsKey.gender=GENDEREntry.MALE.getCode();
+		detailsKey.hasIncome=Boolean.FALSE;
+		detailsKey.isIncludeHouseHoldMembers=Boolean.TRUE;	
+		detailsKey.concernRoleTabbedList= String.valueOf(caseHeader.getConcernRole().getID());
+		detailsKey.toAge="100";
+		detailsKey.muncipality="MM17005";
+		detailsKey.educationLevel=EDUCATIONLEVELEntry.SECONDARY.getCode();
+		Date fromDate1=Date.getDate("20000101");
+		
+		MOLSAParticipantDetailsList expectedMolsaParticipantDetailsList1 = molsasmsObj.listParticipantByCriteria(detailsKey);
+		MOLSAParticipantDetails expectedDtls1=expectedMolsaParticipantDetailsList1.dtls.get(1);
+		
+		assertEquals(expectedDtls1.concernroleID,actualDtls.concernroleID);
+		
+		
+	}
+
+	
+	protected void testValidation(CaseKey caseKey) throws AppException, InformationalException {
+
+		//validate auhentication
+	    Configuration.setProperty(EnvVars.SMS_LOGIN_USERNAME,"molsa");
+	    Configuration.setProperty(EnvVars.SMS_LOGIN_PASSWORD,"qatar");
+	    MOLSAConcernRoleListAndMessageText details = new MOLSAConcernRoleListAndMessageText();
+		details.caseID = caseKey.caseID;
+		details.smsMessageText = "Message Send";
+		details.smsMessageType = MOLSASMSMESSAGETEMPLATE.CONTACTMOLSA;
+
+		CaseHeader caseHeader = caseHeaderDAO.get(caseKey.caseID);		
+		details.concernRoleTabbedList = String.valueOf(caseHeader.listActiveCaseMembers().get(0).getID()).concat(" , ").concat(String.valueOf(caseHeader.listActiveCaseMembers().get(1).getID()));
+		try{
+		    molsasmsObj.sendSMS(details);
+		    //junit.framework.Assert.fail("Authentication failed");
+			}catch(AppException appException){
+				final AppException exception=new AppException(MOLSASMSSERVICE.ERR_AUTH_FAILED); 
+				assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
+			}
+		
+		//validating sending sms without passing concernroleid
+	    MOLSAConcernRoleListAndMessageText details1 = new MOLSAConcernRoleListAndMessageText();
+		details1.caseID = caseKey.caseID;
+		details1.smsMessageText = "Message Send";
+		details1.smsMessageType = "";
+		details1.concernRoleTabbedList="";
+		try{
+		    molsasmsObj.sendSMS(details1);
+		    //junit.framework.Assert.fail("null ConcernRoleID");
+			}catch(AppException appException){
+				final AppException exception=new AppException(MOLSASMSSERVICE.NO_CONCERNROLE_SELECTED); 
+				assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
+			}
+
+		
+		//validating sending sms without passing message type
+		MOLSAConcernRoleListAndMessageText textDetails = new MOLSAConcernRoleListAndMessageText();
+		textDetails.caseID = caseKey.caseID;
+		textDetails.smsMessageText = "Message Send";
+		CaseHeader caseHeader1 = caseHeaderDAO.get(caseKey.caseID);		
+		textDetails.concernRoleTabbedList = String.valueOf(caseHeader1.getConcernRole().getID());
+		try{
+		    molsasmsObj.sendSMS(textDetails);
+		    //junit.framework.Assert.fail("null sms message type");
+			}catch(AppException appException){
+				final AppException exception=new AppException(MOLSASMSSERVICE.SMS_CATEGOEY_AND_TEMPLATE_MUST_BE_ENTERED); 
+				assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
+			}
+
+		
+		MOLSAParticipantFilterCriteriaDetails detailsKey1 = new MOLSAParticipantFilterCriteriaDetails();
+		try{
+			molsasmsObj.listParticipantByCriteria(detailsKey1);
+		}catch(AppException appException){
+			final AppException exception=new AppException(GENERALSEARCH.ERR_FV_SEARCH_CRITERIA_MISSING); 
+			assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
+		}
+		
+		MOLSAParticipantFilterCriteriaDetails detailsKey = new MOLSAParticipantFilterCriteriaDetails();
+		detailsKey.caseType=PRODUCTTYPEEntry.SENIORCITIZEN.getCode().concat("\t").concat(PRODUCTTYPEEntry.DESERTEDWIFE.getCode()).concat("\t").concat(PRODUCTTYPEEntry.FAMILYINNEED.getCode());
+		detailsKey.fromAge="1";
+		detailsKey.gender=GENDEREntry.MALE.getCode();
+		detailsKey.hasIncome=Boolean.FALSE;
+		detailsKey.isIncludeHouseHoldMembers=Boolean.TRUE;	
+		detailsKey.concernRoleTabbedList= String.valueOf(caseHeader.getConcernRole().getID());
+		//detailsKey.toAge="100";
+		detailsKey.muncipality="MM17005";
+		detailsKey.educationLevel=EDUCATIONLEVELEntry.SECONDARY.getCode();
+		Date fromDate1=Date.getDate("20000101");
+		try{
+			MOLSAParticipantDetailsList expectedMolsaParticipantDetailsList1 = molsasmsObj.listParticipantByCriteria(detailsKey);
+		}catch(AppException appException){
+			final AppException exception=new AppException(MOLSASMSSERVICE.SMS_AGE_FROM_AND_TO_MUST_BE_ENTERED); 
+			assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
+		}
+	}
 
 }
