@@ -561,7 +561,7 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 					.getSimpleName() + "_" + "TestCase");
 
 			sessionDoc.write(sessionDocDir);
-			testHelper.rollbackTransaction();
+			getTestHelper().rollbackTransaction();
 			super.tearDownCuramServerTest();
 		}
 
@@ -622,6 +622,7 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 
 	protected abstract List<HouseholdUnit> getExpectedHouseholdUnits()
 			throws AppException, InformationalException;
+	
 
 	protected List<HouseholdUnit> getActualHouseholdUnits(
 			final SimulatedDeterminationDetailsList simList,
@@ -712,6 +713,14 @@ public abstract class CERScenarioTestBase extends MolsaRuleTestData {
 			e.printStackTrace();
 		}
 		return caseparticipantRoleIDs;
+	}
+
+	public void setTestHelper(TestHelper testHelper) {
+		this.testHelper = testHelper;
+	}
+
+	public TestHelper getTestHelper() {
+		return testHelper;
 	}
 
 }
