@@ -124,7 +124,7 @@ public class MOLSAApplication extends
 		enactmentStructs.add(taskCreateDetails);
 		enactmentStructs.add(workflowDetails);
 		EnactmentService.startProcessInV3CompatibilityMode(
-				MOLSAConstants.kMOLSAProductDeliveryRejectTask,
+				MOLSAConstants.kMOLSAApplicationRejectTask,
 				enactmentStructs);
 		Event eventKey = new Event();
 		eventKey.eventKey.eventClass = MOLSAApplicationNotification.APPLICATION_REJECTED.eventClass;
