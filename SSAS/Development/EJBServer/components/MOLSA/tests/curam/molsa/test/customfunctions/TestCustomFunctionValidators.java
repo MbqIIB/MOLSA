@@ -15,7 +15,12 @@ import curam.rules.functions.CustomFunctionIsValidDateRange;
 import curam.rules.functions.CustomFunctionIsValidEmail;
 import curam.rules.functions.CustomFunctionIsValidName;
 import curam.rules.functions.CustomFunctionIsValidNumber;
+import curam.rules.functions.CustomFunctionIsValidPhoneNumber;
 import curam.rules.functions.CustomFunctionIsValidString;
+import curam.rules.functions.CustomFunctionPersonInfo;
+import curam.rules.functions.CustomFunctionPopulateHouseholdInfo;
+import curam.rules.functions.CustomFunctionUpdateAbsentPersonInfo;
+import curam.rules.functions.CustomFunctionUpdateEntities;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.rules.RulesParameters;
@@ -616,6 +621,37 @@ public class TestCustomFunctionValidators extends MOLSAMockDataStore {
 		}
 
 	}
+	
+	@SuppressWarnings("restriction")
+	public void testCustomFunctionIsValidDateRange2() {
+
+		CustomFunctionIsValidDateRange customFunctionIsValidDate = new CustomFunctionIsValidDateRange();
+		RulesParameters rulesParameters = new RulesParameters();
+		final List<Adaptor> dtls = new ArrayList<Adaptor>();
+
+		final Adaptor date = AdaptorFactory.getDateAdaptor(KDATEVALIDRANGE);
+
+		dtls.add(date);
+
+		try {
+
+			customFunctionIsValidDate.setParameters(dtls);
+			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+			final IEG2Context ieg2Context = new IEG2Context();
+			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+			assertFalse(((BooleanAdaptor) customFunctionIsValidDate
+					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail(e.getMessage());
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+
+	}
 	/**
 	 * Compares start and end dates.
 	 */
@@ -967,5 +1003,184 @@ public class TestCustomFunctionValidators extends MOLSAMockDataStore {
 		}
 
 	}
+	
+	
+	/**
+	 * Checks valid phone number.
+	 */
 
+	@SuppressWarnings("restriction")
+	public void testIsValidPhoneNumber() {
+		CustomFunctionIsValidPhoneNumber customFunctionIsValidPhoneNumber = new CustomFunctionIsValidPhoneNumber();
+		RulesParameters rulesParameters = new RulesParameters();
+		final List<Adaptor> dtls = new ArrayList<Adaptor>();
+		final Adaptor email = AdaptorFactory.getStringAdaptor("88889999");
+		dtls.add(email);
+		try {
+			customFunctionIsValidPhoneNumber.setParameters(dtls);
+			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+			final IEG2Context ieg2Context = new IEG2Context();
+			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+			assertTrue(((BooleanAdaptor) customFunctionIsValidPhoneNumber
+					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail(e.getMessage());
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+
+	}
+	
+	/**
+	 * Checks valid phone number.
+	 */
+
+	@SuppressWarnings("restriction")
+	public void testIsInValidPhoneNumber() {
+		CustomFunctionIsValidPhoneNumber customFunctionIsValidPhoneNumber = new CustomFunctionIsValidPhoneNumber();
+		RulesParameters rulesParameters = new RulesParameters();
+		final List<Adaptor> dtls = new ArrayList<Adaptor>();
+		final Adaptor email = AdaptorFactory.getStringAdaptor("8888999");
+		dtls.add(email);
+		try {
+			customFunctionIsValidPhoneNumber.setParameters(dtls);
+			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+			final IEG2Context ieg2Context = new IEG2Context();
+			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+			assertFalse(((BooleanAdaptor) customFunctionIsValidPhoneNumber
+					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail(e.getMessage());
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+
+	}
+	
+	/**
+	 * Checks update of Person Info.
+	 */
+
+	@SuppressWarnings("restriction")
+	public void testCustomFunctionPersonInfo() {
+		CustomFunctionPersonInfo customFunctionPersonInfo = new CustomFunctionPersonInfo();
+		RulesParameters rulesParameters = new RulesParameters();
+		try {
+			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+			final IEG2Context ieg2Context = new IEG2Context();
+			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+			assertTrue(((BooleanAdaptor) customFunctionPersonInfo
+					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail(e.getMessage());
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+
+	}
+	
+	
+	
+	/**
+	 * Checks update of Person Info.
+	 */
+
+	@SuppressWarnings("restriction")
+	public void testCustomFunctionUpdatePersonInfo() {
+		CustomFunctionUpdateAbsentPersonInfo customFunctionUpdatePersonInfo = new CustomFunctionUpdateAbsentPersonInfo();
+		RulesParameters rulesParameters = new RulesParameters();
+		final List<Adaptor> dtls = new ArrayList<Adaptor>();
+		final Adaptor qid = AdaptorFactory.getStringAdaptor("12345678901");
+		dtls.add(qid);
+		try {
+			customFunctionUpdatePersonInfo.setParameters(dtls);
+			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+			final IEG2Context ieg2Context = new IEG2Context();
+			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+			assertTrue(((BooleanAdaptor) customFunctionUpdatePersonInfo
+					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail(e.getMessage());
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+
+	}
+	
+	/**
+	 * Checks update of Person Info.
+	 */
+
+	@SuppressWarnings("restriction")
+	public void testCustomFunctionPopulateHouseholdInfo() {
+		CustomFunctionPopulateHouseholdInfo customFunctionPopulateHouseholdInfo = new CustomFunctionPopulateHouseholdInfo();
+		RulesParameters rulesParameters = new RulesParameters();
+		final List<Adaptor> dtls = new ArrayList<Adaptor>();
+		final Adaptor qid = AdaptorFactory.getStringAdaptor("12345678901");
+		dtls.add(qid);
+		try {
+			customFunctionPopulateHouseholdInfo.setParameters(dtls);
+			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+			final IEG2Context ieg2Context = new IEG2Context();
+			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+			assertTrue(((BooleanAdaptor) customFunctionPopulateHouseholdInfo
+					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail(e.getMessage());
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+
+	}
+
+	
+	/**
+	 * Checks update of Person Info.
+	 */
+
+	@SuppressWarnings("restriction")
+	public void testCustomFunctionUpdateEntities() {
+		CustomFunctionUpdateEntities customFunctionUpdateEntities = new CustomFunctionUpdateEntities();
+		RulesParameters rulesParameters = new RulesParameters();
+		final List<Adaptor> dtls = new ArrayList<Adaptor>();
+		final Adaptor qid = AdaptorFactory.getStringAdaptor("12345678901");
+		dtls.add(qid);
+		try {
+			customFunctionUpdateEntities.setParameters(dtls);
+			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
+			final IEG2Context ieg2Context = new IEG2Context();
+			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
+
+			assertTrue(((BooleanAdaptor) customFunctionUpdateEntities
+					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			fail(e.getMessage());
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
+
+	}
 }
