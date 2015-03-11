@@ -615,7 +615,7 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 		communicationFilterkey.concernRoleName=caseHeader.getConcernRole().getName();
 		MOLSACommunicationDetailList molsaCommunicationDetailList = molsasmsObj.listFilteredCommunication(communicationFilterkey);
 		
-		assertEquals(2, molsaCommunicationDetailList.dtls.size());
+		assertEquals(2, molsaCommunicationDetailList.dtls.size());	
 		
 		MOLSASMSLogKey key=new MOLSASMSLogKey();
 		key.smsLogIDTabbedList=String.valueOf(id);
@@ -664,6 +664,7 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 		messageTextDetails.caseID = caseKey.caseID;
 		messageTextDetails.smsMessageType=MOLSASMSMESSAGETEMPLATE.CONTACTMOLSA;
 		
+
 		molsasmsObj.sendSMS(messageTextDetails);
 		
 		curam.molsa.sms.facade.struct.MOLSAFailedSMSDetailsList molsaFailedSMSDetailsList1 = molsasmsObj.listAllFailedMessages();
@@ -694,13 +695,14 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 			MOLSASMSLogDtls molsaSMSLogDtls1 = molsasmsLog.read(key1);			
 			assertEquals(molsaSMSLogDtls1.messsageText,details1.messsageText);
 		}
-		
+		int incomeamount=10;
 		long participantid =getParticipantRoleID(MOHAMMED_UNIQUE_NAME).participantRoleID;
 		long caseParticipantRoleID = getCaseParticipantRoleID(MOHAMMED_UNIQUE_NAME).caseParticipantRoleID;
 		createAdditionalBenefitEvidence(caseKey, participantid, caseParticipantRoleID, getDate(1, 1, 2014), 100, MOLSABENEFITTYPE.EID);	
 		createEducationEvidence(caseKey, participantid,caseParticipantRoleID, getDate(1, 1, 2014),EDUCATION.ENROLLED,
 				EDUCATIONLEVEL.SECONDARY);
-		int incomeamount=10;
+		createIncomeEvidence(caseKey,participantid, caseParticipantRoleID,getDate(1, 1, 2013),
+					FREQUENCYCODE.MONTHLY,INCOMETYPECODE.OtherHouseholdPaidEmployment,incomeamount);
 		MOLSAParticipantDetails actualDtls=new MOLSAParticipantDetails();
 			actualDtls.addressString=caseHeader.getConcernRole().getPrimaryAddress().toString();
 			actualDtls.caseID=caseKey.caseID;
@@ -710,9 +712,6 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 			actualDtls.participantName=actualDtls.participantName.concat(" - ").concat(caseHeader.getConcernRole().getPrimaryAlternateID());
 			actualDtls.qid=caseHeader.getConcernRole().getPrimaryAlternateID();
 		
-	
-		createIncomeEvidence(caseKey,participantid, caseParticipantRoleID,getDate(1, 1, 2013),
-					FREQUENCYCODE.MONTHLY,INCOMETYPECODE.OtherHouseholdPaidEmployment,incomeamount);
 		MOLSAParticipantFilterCriteriaDetails key = new MOLSAParticipantFilterCriteriaDetails();
 		key.caseType=PRODUCTTYPEEntry.SENIORCITIZEN.getCode();
 		key.fromAge="1";
@@ -775,13 +774,11 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 
 		CaseHeader caseHeader = caseHeaderDAO.get(caseKey.caseID);		
 		details.concernRoleTabbedList = String.valueOf(caseHeader.listActiveCaseMembers().get(0).getID()).concat(" , ").concat(String.valueOf(caseHeader.listActiveCaseMembers().get(1).getID()));
-		try{
 		    molsasmsObj.sendSMS(details);
-		    //junit.framework.Assert.fail("Authentication failed");
-			}catch(AppException appException){
+			/*catch(AppException appException){
 				final AppException exception=new AppException(MOLSASMSSERVICE.ERR_AUTH_FAILED); 
 				assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
-			}
+			}*/
 		
 		//validating sending sms without passing concernroleid
 	    MOLSAConcernRoleListAndMessageText details1 = new MOLSAConcernRoleListAndMessageText();
@@ -833,9 +830,18 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 		detailsKey.educationLevel=EDUCATIONLEVELEntry.SECONDARY.getCode();
 		Date fromDate1=Date.getDate("20000101");
 		try{
-			MOLSAParticipantDetailsList expectedMolsaParticipantDetailsList1 = molsasmsObj.listParticipantByCriteria(detailsKey);
+			molsasmsObj.listParticipantByCriteria(detailsKey);
 		}catch(AppException appException){
 			final AppException exception=new AppException(MOLSASMSSERVICE.SMS_AGE_FROM_AND_TO_MUST_BE_ENTERED); 
+			assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
+		}
+		
+		MOLSASMSLogKey logKey=new MOLSASMSLogKey();
+		logKey.smsLogIDTabbedList="";
+		try{
+			molsasmsObj.resendSMS(logKey);
+		}catch(AppException appException){
+			final AppException exception=new AppException(MOLSASMSSERVICE.NO_CONCERNROLE_SELECTED); 
 			assertEquals(exception.getCatEntry().getMessageText(), appException.getCatEntry().getMessageText());
 		}
 	}
