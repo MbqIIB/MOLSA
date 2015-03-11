@@ -1425,6 +1425,49 @@
                 <XmlMessage>MaidAssistance Product</XmlMessage>
             </derivation>
         </Attribute>
+        <Attribute name="socialAssistanceBenefitObjectiveType">
+            <type>
+                <ruleclass name="SocialAssistanceObjectiveType" ruleset="SocialAssistanceRuleSet"/>
+            </type>
+            <derivation>
+                <create ruleclass="SocialAssistanceObjectiveType" ruleset="SocialAssistanceRuleSet">
+                    <specify attribute="objectiveTypeID">
+                        <String value="BenefitAmount"/>
+                    </specify>
+                    <specify attribute="comments">
+                        <XmlMessage>BenefitAmount</XmlMessage>
+                    </specify>
+                    <specify attribute="name">
+                        <Code table="RulesComponentType">
+                            <String value="PC17000"/>
+                        </Code>
+                    </specify>
+                    <specify attribute="financialComponentType">
+                        <Code table="RulesComponentFCType">
+                            <String value="CT1"/>
+                        </Code>
+                    </specify>
+                    <specify attribute="rateTarget">
+                        <Code table="RulesComponentTarget">
+                            <String value="RC1"/>
+                        </Code>
+                    </specify>
+                    <specify attribute="isDeductionAllowable">
+                        <false/>
+                    </specify>
+                    <specify attribute="tagTypes">
+                        <fixedlist>
+                            <listof>
+                                <ruleclass name="SocialAssistanceTagType" ruleset="SocialAssistanceRuleSet"/>
+                            </listof>
+                            <members>
+                                <reference attribute="socialAssistanceBenefitTagType"/>
+                            </members>
+                        </fixedlist>
+                    </specify>
+                </create>
+            </derivation>
+        </Attribute>
     </Class>
     <Class name="MaidAssistanceProgramCalculator"
         xsi:noNamespaceSchemaLocation="http://www.curamsoftware.com/CreoleRulesSchema.xsd">
