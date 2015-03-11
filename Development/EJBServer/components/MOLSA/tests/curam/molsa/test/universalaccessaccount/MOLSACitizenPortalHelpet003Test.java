@@ -58,8 +58,8 @@ public class MOLSACitizenPortalHelpet003Test extends CERScenarioTestBase {
 
 	@Inject
 	private CWPasswordGenerationStrategy cwPasswordGenerator;
-
-	private static final long userID = 12345678901L;
+		
+	private static final long userID = 12345678911L;
 
 	public MOLSACitizenPortalHelpet003Test(String arg0) {
 		super(arg0);
@@ -77,7 +77,7 @@ public class MOLSACitizenPortalHelpet003Test extends CERScenarioTestBase {
 
 		Person personObj = PersonFactory.newInstance();
 		PersonSearchKey1 paramPersonSearchKey1 = new PersonSearchKey1();
-		long userID = 12345678914l;
+		//long userID = 12345678914l;
 		paramPersonSearchKey1.personSearchKey.referenceNumber = String
 				.valueOf(userID);
 		InformationalManager informationalManager = new InformationalManager();
@@ -98,8 +98,20 @@ public class MOLSACitizenPortalHelpet003Test extends CERScenarioTestBase {
 			// doNothing as account already exists.
 		}
 
+		ExternalUser externalUser = ExternalUserFactory.newInstance();
+		ExternalUserDtls userDetails = getExternalUserDetails();
+		String oldPassword = userDetails.password;
+		userDetails.password = getEncryptedPasswordValue(oldPassword);
+
 		try {
 			citizenPortalHelperObj.forgotPassword(userID);
+			ExternalUser externalUser1 = ExternalUserFactory.newInstance();
+			ExternalUserDtls userDetails1 = getExternalUserDetails();
+			String newPassword = userDetails1.password;
+			userDetails1.password = getEncryptedPasswordValue(newPassword);
+			// Check to see if the old and new passwords are different after
+			// forgot password is actioned.
+			assertNotSame(oldPassword, newPassword);
 		} catch (Exception e) {
 			fail("Forgot password operation failed!!!");
 		}
@@ -227,4 +239,23 @@ public class MOLSACitizenPortalHelpet003Test extends CERScenarioTestBase {
 		return encryptedEnteredPassword;
 	}
 
+	private ExternalUserDtls getExternalUserDetails() throws AppException,
+			InformationalException {
+		ExternalUserDtls dtls = new ExternalUserDtls();
+		dtls.accountEnabled = true;
+		dtls.applicationCode = APPLICATION_CODEEntry.CITIZEN_WORKSPACE
+				.getCode();
+		dtls.creationDate = Date.getCurrentDate();
+		dtls.defaultLocale = LOCALEEntry.DEFAULT().getCode();
+		dtls.firstname = "Mohamad";
+		dtls.password = cwPasswordGenerator.generatePasswordForCitizen();
+		dtls.roleName = "LINKEDCITIZENROLE";
+		dtls.sensitivity = SENSITIVITYEntry.MINIMUM.getCode();
+		dtls.statusCode = RECORDSTATUSEntry.NORMAL.getCode();
+		dtls.surname = "Khan";
+		dtls.title = null;
+		dtls.type = EXTERNALUSERTYPEEntry.PUBLIC.getCode();
+		dtls.versionNo = 1;
+		return dtls;
+	}
 }
