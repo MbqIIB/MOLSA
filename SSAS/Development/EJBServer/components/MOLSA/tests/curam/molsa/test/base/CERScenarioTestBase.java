@@ -1,6 +1,7 @@
 package curam.molsa.test.base;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -96,7 +97,6 @@ import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.molsa.test.framework.TestHelper;
-import curam.molsa.test.smsservice.MessageServiceTest;
 import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
