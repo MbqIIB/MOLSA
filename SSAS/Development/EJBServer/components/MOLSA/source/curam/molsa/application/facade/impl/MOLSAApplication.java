@@ -107,6 +107,7 @@ public class MOLSAApplication extends
 
 		Application application = applicationDAO
 				.get(applicationID.applicationID);
+		application.resetToSubmitted();
 		taskCreateDetails.caseID = application.getCase().getID();
 		final LocalisableString subject = new LocalisableString(
 				MOLSANOTIFICATION.INF_REJECT_OF_APPLICATION_REVIEW);
