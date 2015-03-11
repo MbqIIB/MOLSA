@@ -22,6 +22,8 @@ import curam.util.exception.InformationalException;
  */
 public class TestMOLSAApplicationImpl extends MOLSAApplicationImpl {
 
+	private static final long datastoreID = 0;
+
 	/**
 	 * 
 	 */

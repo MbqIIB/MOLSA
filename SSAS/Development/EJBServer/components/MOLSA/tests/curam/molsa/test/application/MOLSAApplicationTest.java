@@ -14,8 +14,6 @@ import curam.codetable.impl.COMMUNICATIONMETHODEntry;
 import curam.codetable.impl.LANGUAGEEntry;
 import curam.codetable.impl.PHONETYPEEntry;
 import curam.codetable.impl.PROGRAMTYPEEntry;
-import curam.core.facade.fact.ConcernRoleFactory;
-import curam.core.facade.impl.ConcernRole;
 import curam.core.facade.struct.ActionIDProperty;
 import curam.core.facade.struct.PersonSearchDetailsResult;
 import curam.core.facade.struct.PersonSearchKey1;
@@ -70,15 +68,12 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 	@Inject
 	private ConcernRoleDAO concernRoleDAO;
 
-	public MOLSAApplicationTest(String arg0) {
-		super(arg0);
-		GuiceWrapper.getInjector().injectMembers(this);
-	}
+	private PersonSearchDetails personDetails;
 
-	public void testCreateMOLSADatastorePersonEntity() throws Exception {
-
-		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
-		PersonSearchDetails personDetails = null;
+	@Override
+	protected void setUpCuramServerTest() {
+		// TODO Auto-generated method stub
+		super.setUpCuramServerTest();
 		try {
 			personDetails = getPersonRegistrationDetails();
 		} catch (AppException e) {
@@ -88,7 +83,18 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		;
+	}
 
+	public MOLSAApplicationTest(String arg0) {
+		super(arg0);
+		GuiceWrapper.getInjector().injectMembers(this);
+
+	}
+
+	public void testCreateMOLSADatastorePersonEntity() throws Exception {
+
+		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
 		MOLSATestMockDataStore molsaTestMockDataStore = new MOLSATestMockDataStore(
 				MOLSADatastoreConst.kDataStoreSchemaName);
 
@@ -115,7 +121,6 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 		try {
 			MOLSATestMockDataStore molsaTestMockDataStore = new MOLSATestMockDataStore(
 					MOLSADatastoreConst.kDataStoreSchemaName);
-
 			molsaTestMockDataStore
 					.initialize(MOLSADatastoreConst.kDataStoreSchemaName);
 
@@ -152,17 +157,19 @@ public class MOLSAApplicationTest extends MOLSAMockDataStore {
 	public void testStart() {
 		TestMOLSAApplicationImpl testMOLSAApplicationImpl = new TestMOLSAApplicationImpl();
 		List<PROGRAMTYPEEntry> programs = new ArrayList<PROGRAMTYPEEntry>();
-		PersonSearchDetails personDetails = null;
 		programs.add(PROGRAMTYPEEntry.WIDOW);
 		programs.add(PROGRAMTYPEEntry.ANONYMOUSPARENTS);
 		programs.add(PROGRAMTYPEEntry.FAMILYOFMISSING);
 		programs.add(PROGRAMTYPEEntry.FAMILYOFPRISONER);
-		
-	try {
-			personDetails = getPersonRegistrationDetails();
+
+		try {
+			final ConcernRoleIDKey concernRoleKey = new ConcernRoleIDKey();
+			concernRoleKey.concernRoleID = personDetails.concernRoleID;
+			final curam.participant.impl.ConcernRole concernRole = concernRoleDAO
+					.get(concernRoleKey.concernRoleID);
 			testMOLSAApplicationImpl.testStart(
 					APPLICATIONTYPEEntry.SOCIALASSISTANCE, programs,
-					null);
+					concernRole);
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			fail();
