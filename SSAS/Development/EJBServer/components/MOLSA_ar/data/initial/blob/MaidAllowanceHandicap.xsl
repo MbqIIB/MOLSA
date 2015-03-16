@@ -7,15 +7,13 @@
     <xsl:attribute name="font-size">12.0pt</xsl:attribute>
     <xsl:attribute name="line-height">5mm</xsl:attribute>
     <xsl:attribute name="text-align">right</xsl:attribute>
-    <xsl:attribute name="font-weight">bold</xsl:attribute>
     <xsl:attribute name="text-indent">50mm</xsl:attribute>
   </xsl:attribute-set>
  <xsl:attribute-set name="Normal_2" foa:class="block">
     <xsl:attribute name="font-size">12.0pt</xsl:attribute>
-    <xsl:attribute name="font-weight">bold</xsl:attribute>
     <xsl:attribute name="line-height">6mm</xsl:attribute>
     <xsl:attribute name="space-before.optimum">10mm</xsl:attribute>
-    <xsl:attribute name="text-align">center</xsl:attribute>
+    <xsl:attribute name="text-align">right</xsl:attribute>
     <xsl:attribute name="margin-right">20mm</xsl:attribute>
    </xsl:attribute-set>
  <xsl:attribute-set name="Normal_3" foa:class="block">
@@ -78,7 +76,7 @@
   <xsl:template match="DATA">
     <!--Explicitly select the STRUCT to avoid processing anything
  else.-->
-    <xsl:apply-templates select="STRUCT[SNAME='MOLSAProFormaDocumentData']"/>
+    <xsl:apply-templates select="STRUCT[SNAME='MOLSAProFormaDocumentData']" />
   </xsl:template>
   <xsl:template match="STRUCT">
     <fo:root>
@@ -92,16 +90,16 @@
 	    <!-- START NON-TRANSLATABLE -->
         <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
         
-        <fo:block xsl:use-attribute-sets="Normal_8">..................... :سجل طلب تحت الرقم </fo:block>
-        <fo:block xsl:use-attribute-sets="Normal_8">..................... :التاريخ </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">إدارة الشؤون الاجتماعية </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">الضمان الإجتماعي</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_2">طلب مساعدة إجتماعية </fo:block>
-          <fo:block xsl:use-attribute-sets="Normal_1" white-space="pre">السيد مدير إدارة الشؤون الإجتماعية     حفظه الله</fo:block>
-          <fo:block xsl:use-attribute-sets="Normal_3" white-space="pre">السلام عليكم و رحمة الله و بركاته,      و بعد  </fo:block>
-          <fo:block xsl:use-attribute-sets="Normal_3">١- اسم طالب المساعدة....................................................المقيم بمدينة...............................................ه </fo:block>
-          <fo:block xsl:use-attribute-sets="Normal_3">١- اسم المنطقة................رقم المنزل .....................الشارع...............................................ه </fo:block>
-        <fo:block xsl:use-attribute-sets="Normal_5"> بطلب للحصول على مساعدة بدل خادم و سبب طلب المساعدة الإعاقة </fo:block>
+        <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='caseID']" />  :الرقم </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1">السيد/ المدير التنفيذي لوزارة الصحة العامة   المحترم</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1">وزارة الصحة العامة</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3">إستناداً لمادة (٥) من قرار مجلس الوزراء رقم (٤٦) لسنة ٢٠١٤م بشأن تحديد قيمة المعاش المستحق لفئات المنصوص عليها في القانون رقم (٣٨) لسنة ١٩٩٥م بشأن الضمان الاجتماعي وقواعد منحه </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  تقدم(ت) إلينا </fo:block>
+          <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> /> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
+        <fo:block xsl:use-attribute-sets="Normal_5"> بطلب لصول على مساعدة بدل خادم و سبب طلب المساعدة الشيخوخة </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> يرجى التكرم بإحالته إلى اللجنة الطبية، وموافاتنا عن مدى حاجته لمن يقوم برعايته وتشخيص الحالة ليتسنى لنا إتخذ الإجراءت اللازمة بناءً على ردكم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7">غانم مبارك الكواري</fo:block>
