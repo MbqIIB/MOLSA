@@ -382,27 +382,6 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
   }
 
   /**
-   *  Validates the person phone number. 
-   * 
-   * @param recipientPhone
-   *            Contains a key details.
-
-   * @throws InformationalException
-   *             Generic Exception Signature.
-   */
-  
-  public void validateMobile(String recipientPhone) throws InformationalException {
-
-    if (recipientPhone.trim().length() != 10) {
-      final AppException appException = new AppException(MOLSASMSSERVICE.ERR_AUTH_FAILED);
-      curam.core.sl.infrastructure.impl.ValidationManagerFactory.getManager().addInfoMgrExceptionWithLookup(appException, CuramConst.gkEmpty,
-          InformationalElement.InformationalType.kError, curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree, 0);
-      return;
-    }
-
-  }
-
-  /**
    *  Authenticates the user.
    * 
    * @param user

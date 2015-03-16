@@ -3,7 +3,7 @@ package curam.molsa.sms.sl.impl;
 /**
  * This class assigns values to the MOLSA constants.
  *
- */
+*/
 public abstract class MOLSASMSConstants {
 	
 	public static final String kOriginator="MOLSA";
