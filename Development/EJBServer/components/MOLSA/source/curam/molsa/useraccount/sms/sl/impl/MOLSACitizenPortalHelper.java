@@ -423,7 +423,7 @@ public class MOLSACitizenPortalHelper {
 						sendSms.setFlash(false);
 						sendSms.setOriginator(MOLSASMSConstants.kOriginator);
 						sendSms.setPrivate(false);
-						sendSms.setMessageType(MessageType.ArabicWithArabicNumbers);
+						sendSms.setMessageType(MessageType.ArabicWithLatinNumbers);
 						sendSms.setSmsText(password);
 						sendSms.setRecipientPhone(phoneNumber);
 						SendSmsResponse sendResult = new SendSmsResponse();
