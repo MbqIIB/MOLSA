@@ -78,9 +78,7 @@ import curam.molsa.sms.facade.struct.MOLSAFailedSMSDetails;
 import curam.molsa.sms.facade.struct.MOLSAInitialCaseSearchCriteria;
 import curam.molsa.sms.facade.struct.MOLSAParticipantDetails;
 import curam.molsa.sms.facade.struct.MOLSAParticipantFilterCriteriaDetails;
-import curam.molsa.sms.sl.fact.MOLSASMSLogFactory;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
-import curam.molsa.sms.sl.intf.MOLSASMSLog;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.molsa.sms.sl.struct.MOLSAFailedSMSDetailsList;
@@ -615,7 +613,13 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 		communicationFilterkey.concernRoleName=caseHeader.getConcernRole().getName();
 		MOLSACommunicationDetailList molsaCommunicationDetailList = molsasmsObj.listFilteredCommunication(communicationFilterkey);
 		
-		assertEquals(2, molsaCommunicationDetailList.dtls.size());	
+		CommunicationFilterKey communicationFilterkey1=new CommunicationFilterKey();
+		communicationFilterkey1.caseID=caseKey.caseID;
+		communicationFilterkey1.concernRoleName=caseHeader.getConcernRole().getName();
+		MOLSACommunicationDetailList molsaCommunicationDetailList1=molsasmsObj.listFilteredCommunication(communicationFilterkey1);
+		
+		assertEquals(2, molsaCommunicationDetailList.dtls.size());
+		assertEquals(0, molsaCommunicationDetailList1.dtls.size());	
 		
 		MOLSASMSLogKey key=new MOLSASMSLogKey();
 		key.smsLogIDTabbedList=String.valueOf(id);
@@ -655,6 +659,7 @@ public class SeniorCitizen001Test extends CERScenarioTestBase {
 	
 	protected void testlistParticipantByCriteria(CaseKey caseKey) throws AppException, InformationalException{
 		
+	
 		CaseHeader caseHeader = caseHeaderDAO.get(caseKey.caseID);
 		long id = 0;
 		MOLSAConcernRoleListAndMessageText messageTextDetails = new MOLSAConcernRoleListAndMessageText();
