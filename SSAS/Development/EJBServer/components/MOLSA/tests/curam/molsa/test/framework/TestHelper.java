@@ -111,8 +111,9 @@ public class TestHelper {
    * @throws RemoteException
    */
   public void rollbackTransaction() {
-
+    localTransaction = TransactionInfo.getInfo();
     if (localTransaction != null) {
+      localTransaction.clearUserType();
       localTransaction.rollback();
       localTransaction.closeConnection();
       TransactionInfo.restoreTransactionInfo();
