@@ -41,7 +41,6 @@
   <ac:banner-menu type="person" title="person.title" page-id="CitizenWorkspace_userHomeResolver">      
    
       <ac:menu-item id="logout" title="menu.logout.title" text="menu.logout.text" page-id="LogoutWrapper"/>
-  <ac:menu-item id="p3" title="menu.passwordmaintainance.title" text="menu.passwordmaintainance.text" page-id="MOLSAPasswordMaintainancePage"/>
    
   </ac:banner-menu>
   
