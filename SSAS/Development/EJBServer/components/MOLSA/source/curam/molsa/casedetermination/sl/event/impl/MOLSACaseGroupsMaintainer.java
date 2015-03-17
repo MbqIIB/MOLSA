@@ -249,44 +249,7 @@ final class MOLSACaseGroupsMaintainer {
 		final PRODUCTNAMEEntry productName = productDelivery.getProduct()
 				.getName();
 
-		CASEGROUPTYPEEntry caseGroupType = CASEGROUPTYPEEntry.BENEFITGROUP;
-
-		if (productName.equals(PRODUCTNAMEEntry.ANONYMOUSPARENTS)) {
-			caseGroupType = CASEGROUPTYPEEntry.ANONYMOUSPARENTS;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.ORPHAN)) {
-			caseGroupType = CASEGROUPTYPEEntry.ORPHAN;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.WIDOW)) {
-			caseGroupType = CASEGROUPTYPEEntry.WIDOW;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.DESERTEDWIFE)) {
-			caseGroupType = CASEGROUPTYPEEntry.DESERTEDWIFE;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.DIVORCEDLADY)) {
-			caseGroupType = CASEGROUPTYPEEntry.DIVORCEDLADY;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.HANDICAP)) {
-			caseGroupType = CASEGROUPTYPEEntry.HANDICAP;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.FAMILYINNEED)) {
-			caseGroupType = CASEGROUPTYPEEntry.FAMILYINNEED;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.FAMILYOFMISSING)) {
-			caseGroupType = CASEGROUPTYPEEntry.FAMILYOFMISSING;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.FAMILYOFPRISONER)) {
-			caseGroupType = CASEGROUPTYPEEntry.FAMILYOFPRISONER;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.INCAPABLEOFWORKING)) {
-			caseGroupType = CASEGROUPTYPEEntry.INCAPABLEOFWORKING;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.SENIORCITIZEN)) {
-			caseGroupType = CASEGROUPTYPEEntry.SENIORCITIZEN;
-		}
-		if (productName.equals(PRODUCTNAMEEntry.MAIDALLOWANCE)) {
-			caseGroupType = CASEGROUPTYPEEntry.MAIDALLOWANCE;
-		}
+		CASEGROUPTYPEEntry caseGroupType = CASEGROUPTYPEEntry.MEMBER;
 		return caseGroupType;
 	}
 }
