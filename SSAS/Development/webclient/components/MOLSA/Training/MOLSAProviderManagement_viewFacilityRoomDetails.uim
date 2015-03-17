@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2009, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to create a new concern role attachment.       -->
+<PAGE
+  PAGE_ID="MOLSAProviderManagement_viewFacilityRoomDetails"
+  WINDOW_OPTIONS="width=590"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+<PAGE_PARAMETER NAME="providerServiceCenterID"/>
+	
+ 
+   <SERVER_INTERFACE
+    CLASS="MOLSATrainingService"
+    NAME="DISPLAY"
+    OPERATION="readProviderFacilityByLocation" 
+  />
+  
+<CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerServiceCenterID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerLocationID"
+    />
+</CONNECT> 
+  
+  
+  <!--BEGIN CR00081716, PN-->
+  
+   <LIST>
+	<ACTION_SET TYPE="LIST_ROW_MENU">
+      <ACTION_CONTROL LABEL="ActionControl.Label.Edit">
+       <LINK PAGE_ID="MOLSAProviderManagement_editProviderFacility" OPEN_MODAL="true" WINDOW_OPTIONS="width=600,height=500">
+         <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="facilityID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="facilityID"
+          />
+      </CONNECT>
+       <CONNECT>
+          <SOURCE
+            NAME="DISPLAY"
+            PROPERTY="providerConcernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+      </CONNECT>
+      <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="providerServiceCenterID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="providerServiceCenterID"
+          />
+      </CONNECT>
+      </LINK>
+      </ACTION_CONTROL>
+    </ACTION_SET>
+     <FIELD
+      LABEL="List.Title.Room.Name"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="roomName"
+        />
+      </CONNECT>
+    </FIELD>
+ <FIELD
+      LABEL="List.Title.Computers"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="computerCount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Projectors"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="projectorCount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.Seats"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="seatCount"
+        />
+      </CONNECT>
+    </FIELD>
+    <FIELD
+      LABEL="List.Title.WhiteBoards"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="whiteBoardCount"
+        />
+      </CONNECT>
+    </FIELD>
+     <FIELD
+      LABEL="List.Title.Status"
+      WIDTH="20"
+    >
+      <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="facilityStatus"
+        />
+      </CONNECT>
+    </FIELD>
+   
+  </LIST>   
+</PAGE>

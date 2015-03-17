@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2009, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to create a new concern role attachment.       -->
+<PAGE
+  PAGE_ID="MOLSAProviderManagement_editProviderFacility"
+  WINDOW_OPTIONS="width=590"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+
+  <PAGE_PARAMETER NAME="facilityID"/>
+  <PAGE_PARAMETER NAME="providerServiceCenterID"/>
+  <PAGE_PARAMETER NAME="concernRoleID"/>
+  	
+  	
+	
+	
+  <SERVER_INTERFACE
+    CLASS="ProviderServiceCenter"
+    NAME="DISPLAY1"
+    OPERATION="listServiceCenters"
+    
+  />
+<SERVER_INTERFACE
+    CLASS="MOLSATrainingService"
+    NAME="DISPLAY"
+    OPERATION="readProviderFacility"
+    PHASE="DISPLAY"
+  />
+  <SERVER_INTERFACE
+    CLASS="MOLSATrainingService"
+    NAME="ACTION"
+    OPERATION="modifyProviderFacility"
+    PHASE="ACTION"
+  />
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="facilityID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="facilityID"
+    />
+  </CONNECT> 
+   <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="facilityID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="key$facilityID"
+    />
+  </CONNECT>
+   <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY1"
+      PROPERTY="providerKey$providerConcernRoleID"
+    />
+  </CONNECT>
+   <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerConcernRoleID"
+    />
+  </CONNECT>
+  <CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="providerServiceCenterID"
+    />
+    <TARGET
+      NAME="ACTION"
+      PROPERTY="providerserviceCenterID"
+    />
+  </CONNECT>
+
+ 
+  
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+
+
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+
+
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>
+
+
+
+  <!--BEGIN CR00081716, PN-->
+  <CLUSTER
+    LABEL_WIDTH="50"
+    NUM_COLS="2"
+  >
+    <!--END CR00081716-->
+
+    <FIELD
+      LABEL="Field.Label.ServiceCenter.Name"
+      USE_BLANK="true"
+    >
+    <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="result$providerserviceCenterID"
+        />
+      </CONNECT>
+       <CONNECT>
+            <INITIAL NAME="DISPLAY1" PROPERTY="name"
+                HIDDEN_PROPERTY="providerServiceCenterID"/>
+                </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="providerserviceCenterID"
+                />
+        </CONNECT>
+    </FIELD>
+    <FIELD LABEL="Field.Label.Room">
+    <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="roomName"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="roomName"
+        />
+      </CONNECT>
+    </FIELD>
+     <FIELD
+      
+      LABEL="Field.Label.Seat"
+    >
+    <CONNECT>
+        <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="seatCount"
+        />
+      </CONNECT>
+    
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="seatCount"
+        />
+      </CONNECT>
+    </FIELD>
+     <FIELD
+      
+      LABEL="Field.Label.Projector"
+    >
+      <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="projectorCount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="projectorCount"
+        />
+      </CONNECT>
+    </FIELD>
+     <FIELD
+     
+      LABEL="Field.Label.WhiteBoard"
+    >
+      <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="whiteBoardCount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="whiteBoardCount"
+        />
+      </CONNECT>
+    </FIELD>
+     <FIELD
+      
+      LABEL="Field.Label.Computer"
+    >
+      <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="computerCount"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="computerCount"
+        />
+      </CONNECT>
+    </FIELD>
+     <FIELD
+      
+      LABEL="Field.Label.Status"
+    >
+      <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="facilityStatus"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="facilityStatus"
+        />
+      </CONNECT>
+    </FIELD>
+    
+  </CLUSTER>
+</PAGE>

@@ -1,0 +1,47 @@
+<!-- Copyright 2009-2012 Curam Software Ltd.                                 -->
+<!-- All rights reserved.                                                    -->
+<!-- This software is the confidential and proprietary information of Curam  -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose     -->
+<!-- such Confidential Information and shall use it only in accordance with  -->
+<!-- the terms of the license agreement you entered into with Curam          -->
+<!-- Software.                                                               -->
+<!-- Description 	                            						     -->
+<!-- =========== 							                                 -->
+<!-- This page allows user to view the details of a roster and a list of     -->
+<!-- associated roster line items.						                     -->
+<PAGE HIDE_CONDITIONAL_LINKS="false" PAGE_ID="MOLSAProviderManagement_viewCertificateStatus"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd">
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText"/>
+        </CONNECT>
+    </PAGE_TITLE>
+    <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
+    <PAGE_PARAMETER NAME="concernRoleID"/>
+    <PAGE_PARAMETER NAME="concernRoleID2"/>
+
+    <SERVER_INTERFACE CLASS="MOLSATrainingService" NAME="ACTION"
+        OPERATION="insertCertificateIssuedStatus" PHASE="ACTION"/>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="providerRosterLineItemID"/>
+        <TARGET NAME="ACTION" PROPERTY="providerID"/>
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+        <TARGET NAME="ACTION" PROPERTY="concernRoleID"/>
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="concernRoleID2"/>
+        <TARGET NAME="ACTION" PROPERTY="serviceOfferingID"/>
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="providerRosterLineItemID"/>
+        <TARGET NAME="ACTION" PROPERTY="certificationID"/>
+    </CONNECT>
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Submit" TYPE="SUBMIT"> </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"> </ACTION_CONTROL>
+    </ACTION_SET>
+
+</PAGE>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+ 
+  Copyright IBM Corporation 2012. All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or disclosure 
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+<!-- Copyright (c) 2008-2009, 2010 Curam Software Ltd.                      -->
+<!-- All rights reserved.                                                   -->
+<!-- This software is the confidential and proprietary information of Curam -->
+<!-- Software, Ltd. ("Confidential Information"). You shall not disclose    -->
+<!-- such Confidential Information and shall use it only in accordance with -->
+<!-- the terms of the license agreement you entered into with Curam         -->
+<!-- Software.                                                              -->
+<!-- Description -->
+<!-- =========== -->
+<!-- This page allows a user to create a new concern role attachment.       -->
+<PAGE
+  PAGE_ID="MOLSAProviderManagement_listProviderFacilities"
+  WINDOW_OPTIONS="width=590"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+
+  <PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+
+	<PAGE_PARAMETER NAME="concernRoleID"/>
+	
+ <SERVER_INTERFACE
+    CLASS="ProviderServiceCenter"
+    NAME="DISPLAY"
+    OPERATION="listServiceCenters" 
+  />
+   <SERVER_INTERFACE
+    CLASS="MOLSATrainingService"
+    NAME="DISPLAY1"
+    OPERATION="readProviderFacilityByLocation" 
+  />
+  
+<CONNECT>
+    <SOURCE
+      NAME="PAGE"
+      PROPERTY="concernRoleID"
+    />
+    <TARGET
+      NAME="DISPLAY"
+      PROPERTY="providerKey$providerConcernRoleID"
+    />
+</CONNECT> 
+  
+  
+  <!--BEGIN CR00081716, PN-->
+   <ACTION_SET
+    ALIGNMENT="RIGHT"
+    BOTTOM="false"
+  >
+    <!-- END, CR00199327 -->
+    <ACTION_CONTROL LABEL="ActionControl.Label.Add.Facility">
+      <!-- BEGIN, CR00235795, PS -->
+      <LINK PAGE_ID="MOLSAProviderManagement_addProviderFacility" OPEN_MODAL="true" WINDOW_OPTIONS="width=800,height=500">
+         <CONNECT>
+          <SOURCE
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="concernRoleID"
+          />
+      </CONNECT>
+      </LINK>
+    </ACTION_CONTROL>
+  </ACTION_SET>
+  
+  
+ <LIST>
+ <FIELD
+      LABEL="List.Title.Location"
+    >
+      <CONNECT>
+         <SOURCE NAME="DISPLAY" PROPERTY="name"/>
+      </CONNECT>
+  </FIELD>
+   <DETAILS_ROW>
+      <INLINE_PAGE PAGE_ID="MOLSAProviderManagement_viewFacilityRoomDetails">
+      <CONNECT>
+            <SOURCE
+              NAME="DISPLAY"
+              PROPERTY="providerServiceCenterID"
+            />
+            <TARGET
+              NAME="PAGE"
+              PROPERTY="providerServiceCenterID"
+            />
+          </CONNECT>
+        
+      </INLINE_PAGE>
+    </DETAILS_ROW>  
+  </LIST>   
+</PAGE>
