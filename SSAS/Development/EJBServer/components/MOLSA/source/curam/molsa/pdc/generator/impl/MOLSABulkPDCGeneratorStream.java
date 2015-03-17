@@ -122,7 +122,7 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
 
   @Override
   public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID) throws AppException, InformationalException {
-    Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
+    //Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
    
     try {
 
@@ -339,8 +339,8 @@ public class MOLSABulkPDCGeneratorStream extends curam.molsa.pdc.generator.base.
           alternateIDRMDtls.alternateID);
       
       */
-      Trace.kTopLevelLogger.info("********  Processing caseID Successful ==> " +  
-          batchProcessingID.recordID);
+      //Trace.kTopLevelLogger.info("********  Processing caseID Successful ==> " +  
+          //batchProcessingID.recordID);
       
     } catch (AppException appException) {
       Trace.kTopLevelLogger.info("********  Processing caseID Failed ==> " + batchProcessingID.recordID);
