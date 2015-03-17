@@ -15,6 +15,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.inject.Inject;
@@ -831,6 +832,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 				Locale.ENGLISH, TransactionInfo.getServerTimeZone());
 		final Document doc = formatter.getDocument(root);
 		deleteDummyAttributes(doc);
+		addOtherAttributes(doc);
 		final String xmlString = docFormatter.serializeDoc(doc);
 		return xmlString;
 
@@ -843,37 +845,145 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 	 */
 	public void deleteDummyAttributes(Document doc){
 		
-		String[] attributeNames = new String[]{"ssn", "hispanicOrLatino", 
-				"blackOrAfricanAmerican", "nativeAlaskanOrAmericanIndian", 
-				"asian", "nativeHawaiianOrPacificIslander", "whiteOrCaucasian"};
-		
-		XPathFactory xpathFactory = XPathFactory.newInstance();
-		XPath xpath = xpathFactory.newXPath();
-
-		try {
-			XPathExpression xpathExpression = xpath.compile("//entity[@name=\"Person\"]/attributes/attribute");
-
-			//get the person entity from the document
-			NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc,XPathConstants.NODESET);
-			
-			for(int i=0; i< attributeNodes.getLength(); i++){
-				
-				Element attributeElement = (Element)attributeNodes.item(i);
-				for(String attribute : attributeNames){
-					
-					if(attributeElement.getAttribute("name").equalsIgnoreCase(attribute)){
-						//remove the attribute
-						attributeElement.getParentNode().removeChild(attributeElement);
-						break;
-					}
-				}			
-			}
-
-		} catch (XPathExpressionException e) {
-			// Ignore the exception should not break the existing flow.
-		}
+	  deletePersonAttributes(doc);
+	  deleteMailingAddressAttributes(doc);
+	  deleteIntakeApplicationTypeAttributes(doc);
+	  deleteIntakeApplicationAttributes(doc);
+	  deleteIntakeProgramAttributes(doc);
+	  
 		
 	}
+
+  public void addOtherAttributes(Document doc) {
+    addNewAttributes(doc);
+
+  }
+
+  private void deletePersonAttributes(Document doc) {
+    String[] attributeNames = new String[] { "ssn", "hispanicOrLatino", 
+        "blackOrAfricanAmerican", "nativeAlaskanOrAmericanIndian", 
+        "asian", "nativeHawaiianOrPacificIslander",
+        "whiteOrCaucasian", "isPrimaryParticipant", "middleInitial",
+        "aliasFirstName", "aliasMiddleName", "aliasLastName" };
+
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
+
+    try {
+      XPathExpression xpathExpression = xpath.compile("//entity[@name=\"Person\"]/attributes/attribute");
+
+      // get the person entity from the document
+      NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc, XPathConstants.NODESET);
+
+      for (int i = 0; i < attributeNodes.getLength(); i++) {
+
+        Element attributeElement = (Element) attributeNodes.item(i);
+        for (String attribute : attributeNames) {
+
+          if (attributeElement.getAttribute("name").equalsIgnoreCase(attribute)) {
+            // remove the attribute
+            attributeElement.getParentNode().removeChild(attributeElement);
+            break;
+          }
+        }
+      }
+
+    } catch (XPathExpressionException e) {
+      // Ignore the exception should not break the existing flow.
+    }
+  }
+
+  private void deleteMailingAddressAttributes(Document doc) {
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
+    try {
+      XPathExpression xpathExpression = xpath.compile("//entity[@name=\"MailingAddress\"]/attributes/attribute");
+      // get the person entity from the document
+      NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc, XPathConstants.NODESET);
+      for (int i = 0; i < attributeNodes.getLength(); i++) {
+        Element attributeElement = (Element) attributeNodes.item(i);
+        attributeElement.getParentNode().removeChild(attributeElement);
+      }
+    } catch (XPathExpressionException e) {
+      // Ignore the exception should not break the existing flow.
+    }
+  }
+
+  private void deleteIntakeApplicationTypeAttributes(Document doc) {
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
+    try {
+      XPathExpression xpathExpression = xpath.compile("//entity[@name=\"IntakeApplicationType\"]/attributes/attribute");
+      // get the person entity from the document
+      NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc, XPathConstants.NODESET);
+      for (int i = 0; i < attributeNodes.getLength(); i++) {
+        Element attributeElement = (Element) attributeNodes.item(i);
+        attributeElement.getParentNode().removeChild(attributeElement);
+      }
+    } catch (XPathExpressionException e) {
+      // Ignore the exception should not break the existing flow.
+    }
+  }
+
+  private void deleteIntakeApplicationAttributes(Document doc) {
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
+    try {
+      XPathExpression xpathExpression = xpath.compile("//entity[@name=\"IntakeApplication\"]/attributes/attribute");
+      // get the person entity from the document
+      NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc, XPathConstants.NODESET);
+      for (int i = 0; i < attributeNodes.getLength(); i++) {
+        Element attributeElement = (Element) attributeNodes.item(i);
+        attributeElement.getParentNode().removeChild(attributeElement);
+      }
+    } catch (XPathExpressionException e) {
+      // Ignore the exception should not break the existing flow.
+    }
+  }
+
+  private void deleteIntakeProgramAttributes(Document doc) {
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
+    try {
+      XPathExpression xpathExpression = xpath.compile("//entity[@name=\"IntakeProgram\"]/attributes/attribute");
+      // get the person entity from the document
+      NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc, XPathConstants.NODESET);
+      for (int i = 0; i < attributeNodes.getLength(); i++) {
+        Element attributeElement = (Element) attributeNodes.item(i);
+        attributeElement.getParentNode().removeChild(attributeElement);
+      }
+    } catch (XPathExpressionException e) {
+      // Ignore the exception should not break the existing flow.
+    }
+  }
+
+  private void addNewAttributes(Document doc) {
+
+    /** Commented for Jiyda
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
+
+    Node entities = doc.getElementsByTagName("entities").item(0);
+    Element entity = doc.createElement("entity");
+    entity.setAttribute("description", "Other Details");
+    entity.setAttribute("hidden", "false");
+    entity.setAttribute("key", "otherID");
+    entity.setAttribute("name", "otherDetails");
+    entities.appendChild(entity);
+    Element attributes = doc.createElement("attributes");
+    entity.appendChild(attributes);
+    Element attribute = doc.createElement("attribute");
+    attribute.setAttribute("description", "Number of Children");
+    attribute.setAttribute("hidden", "false");
+    attribute.setAttribute("value", "0");
+    attribute.setAttribute("name", "noOfChildren");
+    attributes.appendChild(attribute);
+    */
+  }
+	 
+	 
+	 
+	
 	
 	/**
 	 * Creates an IntakeProgram record in the data store for each program passed
