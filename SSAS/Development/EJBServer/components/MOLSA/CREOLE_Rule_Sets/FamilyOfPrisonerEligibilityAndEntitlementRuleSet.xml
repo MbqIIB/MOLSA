@@ -1874,18 +1874,57 @@
 												<javaclass name="Boolean"/>
 											</listof>
 											<members>
-												<not>
-													<intervalvalue>
-														<reference attribute="hasParentRelationShipRecord">
-															<create ruleclass="MemberCPRCalculator"
-																ruleset="SocialAssistanceRuleSet">
-																<reference attribute="caseParticipantRoleRecord">
-																	<current alias="outer"/>
-																</reference>
-															</create>
-														</reference>
-													</intervalvalue>
-												</not>
+												<any>
+													<fixedlist>
+														<listof>
+															<javaclass name="Boolean"/>
+														</listof>
+														<members>
+															<any>
+																<dynamiclist>
+																	<list alias="inner">
+																		<intervalvalue>
+																			<reference attribute="motherCPRRecords">
+																				<create ruleclass="MemberCPRCalculator"
+																					ruleset="SocialAssistanceRuleSet">
+																					<reference attribute="caseParticipantRoleRecord">
+																						<current alias="outer"/>
+																					</reference>
+																				</create>
+																			</reference>
+																		</intervalvalue>
+																	</list>
+																	<listitemexpression>
+																		<not>
+																			<intervalvalue>
+																				<reference attribute="isEligibleWifeTimeline">
+																					<create ruleclass="FamilyOfPrisonerCPRCalculator">
+																						<reference attribute="caseParticipantRoleRecord">
+																							<current alias="outer"/>
+																						</reference>
+																					</create>
+																				</reference>
+																			</intervalvalue>
+																		</not>
+																	</listitemexpression>
+																</dynamiclist>
+															</any>
+															<not>
+																<intervalvalue>
+																	<reference attribute="hasParentRelationShipRecord">
+																		<create ruleclass="MemberCPRCalculator"
+																			ruleset="SocialAssistanceRuleSet">
+																			<reference attribute="caseParticipantRoleRecord">
+																				<current alias="outer"/>
+																			</reference>
+																		</create>
+																	</reference>
+																</intervalvalue>
+															</not>
+														</members>
+													</fixedlist>
+												</any>
+												
 												<not>
 													<intervalvalue>
 														<reference attribute="isWifeTimeline">
