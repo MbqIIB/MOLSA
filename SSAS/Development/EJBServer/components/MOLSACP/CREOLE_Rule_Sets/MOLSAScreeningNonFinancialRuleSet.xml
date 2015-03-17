@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RuleSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../../../../Dictionary-V1/RuleSet.xsd"
+  name="MOLSAScreeningNonFinancialRuleSet">
+  <Class name="NonFinancialCalculator">
+    <Attribute name="description">
+      <type>
+        <javaclass name="curam.creole.value.Message"/>
+      </type>
+      <derivation>
+        <XmlMessage>
+          <replace>
+            <reference attribute="firstName">
+              <reference attribute="person"/>
+            </reference>
+          </replace>
+        </XmlMessage>
+      </derivation>
+    </Attribute>
+    <Attribute name="person">
+      <type>
+        <ruleclass name="Person" ruleset="MOLSAScreeningRuleSet"/>
+      </type>
+      <derivation>
+        <specified/>
+      </derivation>
+    </Attribute>
+    <Attribute name="isCitizen">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="citizenshipStatus">
+            <reference attribute="person"/>
+          </reference>
+          <Code table="CitizenshipCode">
+            <String value="CC17000"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="isResident">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <equals>
+          <reference attribute="residencyStatus">
+            <reference attribute="person"/>
+          </reference>
+          <Code table="MOLSAResidency">
+            <String value="RD17000"/>
+          </Code>
+        </equals>
+      </derivation>
+    </Attribute>
+    <Attribute name="passesNonFinancials">
+      <type>
+        <javaclass name="Boolean"/>
+      </type>
+      <derivation>
+        <all>
+          <fixedlist>
+            <listof>
+              <javaclass name="Boolean"/>
+            </listof>
+            <members>
+              <reference attribute="isCitizen"/>
+              <reference attribute="isResident"/>
+            </members>
+          </fixedlist>
+        </all>
+      </derivation>
+    </Attribute>
+  </Class>
+</RuleSet>
