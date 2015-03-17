@@ -17,16 +17,13 @@ import curam.core.facade.struct.ListICAdminCaseRoleKey;
 import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.MaintainCaseFactory;
-import curam.core.fact.ProductDeliveryFactory;
 import curam.core.impl.BatchStreamHelper;
 import curam.core.intf.CaseHeader;
-import curam.core.intf.ProductDelivery;
 import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.infrastructure.assessment.struct.CREOLEBulkCaseChunkReassessmentResult;
 import curam.core.sl.struct.CaseIDKey;
 import curam.core.sl.struct.CaseUserRoleDetails;
 import curam.core.sl.struct.ParticipantKeyStruct;
-import curam.core.struct.AlternateIDRMDtls;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
@@ -35,14 +32,10 @@ import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderKey;
 import curam.core.struct.CaseKey;
 import curam.core.struct.CaseReferenceProductNameConcernRoleName;
-import curam.core.struct.ProductDeliveryDtls;
-import curam.core.struct.ProductDeliveryKey;
 import curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendationCalculator;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProductDAO;
 import curam.molsa.core.facade.fact.MOLSAProductDeliveryFactory;
 import curam.molsa.core.facade.intf.MOLSAProductDelivery;
-import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
-import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.piwrapper.caseheader.impl.IntegratedCaseDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
@@ -129,7 +122,7 @@ public class MOLSABulkPDCApproveStream extends curam.molsa.pdc.generator.base.MO
   }
 
   @Override
-  public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID, MOLSAMoiDtls MOLSAMoiDtls) throws AppException, InformationalException {
+  public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID) throws AppException, InformationalException {
     Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
     TransactionInfo.setCustomUserID("SYSTEM");
     try {

@@ -4,7 +4,6 @@ import curam.core.impl.BatchStream;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
 import curam.core.struct.BatchProcessingSkippedRecordList;
-import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 
@@ -40,7 +39,7 @@ public class MOLSABulkPDCGeneratorStreamWrapper implements BatchStream {
    */
   @Override
   public BatchProcessingSkippedRecord processRecord(BatchProcessingID paramBatchProcessingID, Object paramObject) throws AppException, InformationalException {
-    return this.molsaBulkPDCGeneratorStream.processRecord(paramBatchProcessingID, (MOLSAMoiDtls) paramObject);
+    return this.molsaBulkPDCGeneratorStream.processRecord(paramBatchProcessingID);
   }
 
   /**

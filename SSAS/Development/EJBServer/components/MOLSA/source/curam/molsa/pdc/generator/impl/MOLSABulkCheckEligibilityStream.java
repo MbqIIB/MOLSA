@@ -9,98 +9,37 @@ import java.util.Iterator;
 import com.google.inject.Inject;
 
 import curam.codetable.BATCHPROCESSNAME;
-import curam.codetable.CASESTATUS;
-import curam.codetable.PRODUCTTYPE;
-import curam.codetable.RECORDSTATUS;
-import curam.core.facade.fact.CaseFactory;
-import curam.core.facade.fact.IntegratedCaseFactory;
-import curam.core.facade.intf.Case;
-import curam.core.facade.struct.CreateCaseSupervisorDetails;
-import curam.core.facade.struct.ListICAdminCaseRoleDetails;
-import curam.core.facade.struct.ListICAdminCaseRoleKey;
-import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.MaintainCaseFactory;
-import curam.core.fact.ProductDeliveryFactory;
-import curam.core.fact.ProductFactory;
 import curam.core.impl.BatchStreamHelper;
 import curam.core.intf.CaseHeader;
-import curam.core.intf.Product;
-import curam.core.intf.ProductDelivery;
-
-import curam.core.sl.entity.fact.PositionHolderLinkFactory;
-import curam.core.sl.entity.intf.PositionHolderLink;
 import curam.core.sl.infrastructure.assessment.struct.CREOLEBulkCaseChunkReassessmentResult;
-
-import curam.core.sl.struct.CancelPositionHolderLinkKey;
 import curam.core.sl.struct.CaseIDKey;
-import curam.core.sl.struct.CaseUserRoleDetails;
-import curam.core.sl.struct.ParticipantKeyStruct;
-import curam.core.sl.entity.struct.CaseKeyStruct;
-import curam.core.sl.entity.struct.PositionHolderLinkDetails;
-import curam.core.sl.entity.struct.PositionHolderLinkDtls;
-import curam.core.struct.AlternateIDRMDtls;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
 import curam.core.struct.BatchProcessingSkippedRecordList;
-import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderKey;
-import curam.core.struct.CaseHeaderReadmultiDetails1;
-import curam.core.struct.CaseHeaderReadmultiDetails1List;
-import curam.core.struct.CaseHeaderReadmultiKey1;
-import curam.core.struct.CaseKey;
 import curam.core.struct.CaseReferenceProductNameConcernRoleName;
-import curam.core.struct.ProductDeliveryDtls;
-import curam.core.struct.ProductDeliveryKey;
-import curam.core.struct.ProductDtls;
-import curam.core.struct.ProductKey;
 import curam.creoleprogramrecommendation.facade.fact.CREOLEProgramRecommendationFactory;
 import curam.creoleprogramrecommendation.facade.intf.CREOLEProgramRecommendation;
-import curam.creoleprogramrecommendation.facade.struct.CREOLEProgramRecommendationDetails;
 import curam.creoleprogramrecommendation.facade.struct.CREOLEProgramRecommendationDetailsList1;
 import curam.creoleprogramrecommendation.facade.struct.ProgramRecommendationDetails;
-import curam.creoleprogramrecommendation.facade.struct.SimulatedDeterminationKey;
 import curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendationCalculator;
 import curam.creoleprogramrecommendation.impl.RequestedProduct;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProduct;
 import curam.creoleprogramrecommendation.product.impl.CREOLEProgramRecommendationProductDAO;
 import curam.creoleprogramrecommendation.product.impl.RecommendationPeriodUtils;
-import curam.creoleprogramrecommendation.struct.CREOLEProgramRecommendationKey;
-import curam.molsa.core.facade.fact.MOLSAProductDeliveryFactory;
-import curam.molsa.core.facade.intf.MOLSAProductDelivery;
-import curam.molsa.creoleprogramrecommendation.facade.fact.MOLSACREOLEProgramRecommendationFactory;
-import curam.molsa.creoleprogramrecommendation.facade.intf.MOLSACREOLEProgramRecommendation;
-import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetails;
-import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetailsList;
-import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
-import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.piwrapper.caseheader.impl.IntegratedCase;
 import curam.piwrapper.caseheader.impl.IntegratedCaseDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
-import curam.util.exception.RecordNotFoundException;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.StringUtil;
 import curam.util.resources.Trace;
-import curam.util.transaction.TransactionInfo;
-import curam.util.type.CodeTable;
 import curam.util.type.Date;
 import curam.util.type.DateRange;
-import curam.util.type.NotFoundIndicator;
 import curam.util.type.StringList;
-import curam.verification.facade.infrastructure.fact.VerificationApplicationFactory;
-import curam.verification.facade.infrastructure.intf.VerificationApplication;
-import curam.verification.facade.infrastructure.struct.CaseEvidenceVerificationDisplayDetails;
-import curam.verification.facade.infrastructure.struct.CaseEvidenceVerificationDisplayDetailsList;
-import curam.verification.sl.infrastructure.entity.fact.VDIEDLinkFactory;
-import curam.verification.sl.infrastructure.entity.fact.VerificationFactory;
-import curam.verification.sl.infrastructure.entity.intf.VDIEDLink;
-import curam.verification.sl.infrastructure.entity.intf.Verification;
-import curam.verification.sl.infrastructure.entity.struct.VDIEDLinkKey;
-import curam.verification.sl.infrastructure.entity.struct.VerificationKey;
-import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetails;
-import curam.verification.sl.infrastructure.struct.CaseEvidenceVerificationDetailsList;
 
 /**
  * 
@@ -168,7 +107,7 @@ public class MOLSABulkCheckEligibilityStream extends curam.molsa.pdc.generator.b
   }
 
   @Override
-  public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID, MOLSAMoiDtls MOLSAMoiDtls) throws AppException, InformationalException {
+  public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID) throws AppException, InformationalException {
     
    
     Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
