@@ -66,7 +66,7 @@ import curam.util.type.NotFoundIndicator;
 public class MOLSACitizenPortalHelper {
 
 	@Inject
-	private CWPasswordGenerationStrategy cwPasswordGenerator;
+	private MOLSACWPasswordGenerator cwPasswordGenerator;
 
 	/**
 	 * Constructor for the class.

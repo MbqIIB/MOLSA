@@ -16,6 +16,7 @@ public class Module extends AbstractModule {
   protected void configure() {
     configureIntakeApplicationPrePopulation();
     configureIntakeApplicationSubmission();
+    configurePasswordGenerator();
   }
 
   /**
@@ -37,6 +38,14 @@ public class Module extends AbstractModule {
     applicationEventBinder.addBinding().to(
         MOLSAIntakeApplicationListener.class);
 
+  }
+  
+  /**
+   * Configures user account password generator.
+   */
+  private void configurePasswordGenerator(){
+  	 bind(curam.citizenworkspace.security.impl.CWPasswordGenerationStrategy.class).to(
+  			 curam.molsa.useraccount.sms.sl.impl.MOLSACWPasswordGenerator.class);
   }
 
 }
