@@ -62,6 +62,8 @@ import curam.core.struct.DataBasedSecurityResult;
 import curam.core.struct.ICCaseAndStatusKey;
 import curam.core.struct.ProductDeliveryForCaseDetails;
 import curam.core.struct.ProductDeliveryForCaseDetailsList;
+import curam.core.struct.ProviderLocationKey;
+import curam.core.struct.ProvisionLocationKey;
 import curam.cpm.facade.struct.ServiceDeliveryVersionKey;
 import curam.cpm.sl.entity.fact.ProviderFactory;
 import curam.cpm.sl.entity.intf.Provider;
@@ -78,11 +80,19 @@ import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.molsa.training.entity.base.MOLSATraining;
+import curam.molsa.training.entity.fact.MOLSAProviderFacilityFactory;
 import curam.molsa.training.entity.fact.MOLSASerDelTraininingMappingFactory;
 import curam.molsa.training.entity.fact.MOLSATrainingAtttachmentLinkFactory;
+import curam.molsa.training.entity.fact.MOLSATrainingCertificateFactory;
 import curam.molsa.training.entity.fact.MOLSATrainingFactory;
+import curam.molsa.training.entity.intf.MOLSAProviderFacility;
 import curam.molsa.training.entity.intf.MOLSASerDelTraininingMapping;
 import curam.molsa.training.entity.intf.MOLSATrainingAtttachmentLink;
+import curam.molsa.training.entity.intf.MOLSATrainingCertificate;
+import curam.molsa.training.entity.struct.MOLSAProviderFacilityDtls;
+import curam.molsa.training.entity.struct.MOLSAProviderFacilityDtlsStruct1List;
+import curam.molsa.training.entity.struct.MOLSAProviderFacilityKey;
+import curam.molsa.training.entity.struct.MOLSAProviderFacilityKeyStruct1;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtls;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtlsStruct1;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtlsStruct1List;
@@ -92,6 +102,8 @@ import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkDtls;
 import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkDtlsStruct1;
 import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkDtlsStruct1List;
 import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkKey;
+import curam.molsa.training.entity.struct.MOLSATrainingCertificateDtls;
+import curam.molsa.training.entity.struct.MOLSATrainingCertificateKey;
 import curam.molsa.training.entity.struct.MOLSATrainingDtls;
 import curam.molsa.training.entity.struct.MOLSATrainingDtlsList;
 import curam.molsa.training.entity.struct.MOLSATrainingKey;
@@ -632,8 +644,72 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		return attachdtls;
 	}
 
+	@Override
+	public void insertCertificateIssuedStatus(
+			MOLSATrainingCertificateDtls certificatedtls) throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
+		//	MOLSATrainingCertificateKey key = new MOLSATrainingCertificateKey();
+		//	key.certificationID=certificatedtls.certificationID;
+		//	MOLSATrainingCertificateDtls readDetails = new MOLSATrainingCertificateDtls();	
+		MOLSATrainingCertificate certObj= MOLSATrainingCertificateFactory.newInstance();
+		//read whether data exists before inserting based on key
+		//	readDetails=certObj.read(key);		
+		certObj.insert(certificatedtls);		
+	}
 
+	@Override
+	public MOLSATrainingDtls readCertificateIssuedStatus(
+			MOLSATrainingCertificateKey key) throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
+		
+		MOLSATrainingCertificateDtls molsatrainingDtls = new MOLSATrainingCertificateDtls();
+		molsatrainingDtls = MOLSATrainingCertificateFactory.newInstance().read(key);
+		return null;
+	}
 
+	@Override
+	public void insertProviderFacilities(MOLSAProviderFacilityDtls facilityDtls)
+			throws AppException, InformationalException {
+		// TODO Auto-generated method stub
+		MOLSAProviderFacility providerObj=MOLSAProviderFacilityFactory.newInstance();
+		providerObj.insert(facilityDtls);
+		
+	}
 
+	@Override
+	public MOLSAProviderFacilityDtls readProviderFacility(
+			MOLSAProviderFacilityKey key) throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
+		MOLSAProviderFacility providerObj=MOLSAProviderFacilityFactory.newInstance();
+		MOLSAProviderFacilityDtls molsaproviderFacilityDtls= new MOLSAProviderFacilityDtls();
+		molsaproviderFacilityDtls=providerObj.read(key);
+		return molsaproviderFacilityDtls;
+	}
+
+	@Override
+	public void modifyProviderFacility(MOLSAProviderFacilityDtls facilityDtls)
+			throws AppException, InformationalException {
+		// TODO Auto-generated method stub
+		MOLSAProviderFacilityKey key= new MOLSAProviderFacilityKey();
+		key.facilityID=facilityDtls.facilityID;
+		MOLSAProviderFacility providerObj=MOLSAProviderFacilityFactory.newInstance();
+		providerObj.modify(key, facilityDtls);
+		
+	}
+
+	@Override
+	public MOLSAProviderFacilityDtlsStruct1List readProviderFacilityByLocation(
+			ProviderLocationKey locationID) throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
+		MOLSAProviderFacility providerObj=MOLSAProviderFacilityFactory.newInstance();
+		MOLSAProviderFacilityKeyStruct1 key = new MOLSAProviderFacilityKeyStruct1();
+		key.providerserviceCenterID=locationID.providerLocationID;
+		MOLSAProviderFacilityDtlsStruct1List listFacilities=providerObj.readByLocationID(key);
+		return listFacilities;
+	}
 
 }
