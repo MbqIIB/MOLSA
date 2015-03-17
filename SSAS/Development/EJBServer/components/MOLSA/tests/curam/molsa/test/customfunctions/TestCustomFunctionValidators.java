@@ -11,7 +11,6 @@ import curam.rules.functions.CustomFunctionIsExistingPerson;
 import curam.rules.functions.CustomFunctionIsPersonDetailsAvailable;
 import curam.rules.functions.CustomFunctionIsValidApplicationDate;
 import curam.rules.functions.CustomFunctionIsValidDate;
-import curam.rules.functions.CustomFunctionIsValidDateRange;
 import curam.rules.functions.CustomFunctionIsValidEmail;
 import curam.rules.functions.CustomFunctionIsValidName;
 import curam.rules.functions.CustomFunctionIsValidNumber;
@@ -623,35 +622,7 @@ public class TestCustomFunctionValidators extends MOLSAMockDataStore {
 	}
 	
 	@SuppressWarnings("restriction")
-	public void testCustomFunctionIsValidDateRange2() {
-
-		CustomFunctionIsValidDateRange customFunctionIsValidDate = new CustomFunctionIsValidDateRange();
-		RulesParameters rulesParameters = new RulesParameters();
-		final List<Adaptor> dtls = new ArrayList<Adaptor>();
-
-		final Adaptor date = AdaptorFactory.getDateAdaptor(KDATEVALIDRANGE);
-
-		dtls.add(date);
-
-		try {
-
-			customFunctionIsValidDate.setParameters(dtls);
-			final Entity rootDatastoreEntity = getMOLSAMockDataStore();
-			final IEG2Context ieg2Context = new IEG2Context();
-			ieg2Context.setRootEntityID(rootDatastoreEntity.getUniqueID());
-
-			assertFalse(((BooleanAdaptor) customFunctionIsValidDate
-					.getAdaptorValue(ieg2Context)).getValue(rulesParameters));
-
-		} catch (AppException e) {
-			// TODO Auto-generated catch block
-			fail(e.getMessage());
-		} catch (InformationalException e) {
-			// TODO Auto-generated catch block
-			fail();
-		}
-
-	}
+	public void testCustomFunctionIsValidDateRange2() {}
 	/**
 	 * Compares start and end dates.
 	 */
