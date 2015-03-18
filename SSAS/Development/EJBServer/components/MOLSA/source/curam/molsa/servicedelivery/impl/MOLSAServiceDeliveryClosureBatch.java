@@ -121,12 +121,21 @@ public class MOLSAServiceDeliveryClosureBatch extends curam.molsa.servicedeliver
     curam.molsa.servicedelivery.intf.MOLSAServiceDeliveryClosureStream mmServiceDeliveryClosureStreamer = MOLSAServiceDeliveryClosureStreamFactory.newInstance();
     MOLSAServiceDeliveryClosureStreamWrapper molsaServiceDeliveryClosureStreamWrapper = new MOLSAServiceDeliveryClosureStreamWrapper(mmServiceDeliveryClosureStreamer);
 
-    List<curam.servicedelivery.impl.ServiceDelivery> serviceDeliveriesToComplete = serviceDeliveryDAO.searchByStatus(
+    List<curam.servicedelivery.impl.ServiceDelivery> serviceDeliveriesInProgress = serviceDeliveryDAO.searchByStatus(
         SERVICEDELIVERYSTATUSEntry.INPROGRESS);
+    
+    List<curam.servicedelivery.impl.ServiceDelivery> serviceDeliveriesOpen = serviceDeliveryDAO.searchByStatus(
+        SERVICEDELIVERYSTATUSEntry.OPEN);
     BatchProcessingIDList batchProcessingIDList = new BatchProcessingIDList();
     BatchProcessingID batchProcessingID;
 
-    for (curam.servicedelivery.impl.ServiceDelivery serviceDelivery : serviceDeliveriesToComplete) {
+    for (curam.servicedelivery.impl.ServiceDelivery serviceDelivery : serviceDeliveriesInProgress) {
+
+      batchProcessingID = new BatchProcessingID();
+      batchProcessingID.recordID = serviceDelivery.getID();
+      batchProcessingIDList.dtls.add(batchProcessingID);
+    }
+    for (curam.servicedelivery.impl.ServiceDelivery serviceDelivery : serviceDeliveriesOpen) {
 
       batchProcessingID = new BatchProcessingID();
       batchProcessingID.recordID = serviceDelivery.getID();

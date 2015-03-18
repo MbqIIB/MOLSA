@@ -6,17 +6,25 @@ import java.io.StringWriter;
 import com.google.inject.Inject;
 
 import curam.codetable.BATCHPROCESSNAME;
+import curam.codetable.SERVICEDELIVERYSTATUS;
 import curam.core.impl.BatchStreamHelper;
 import curam.core.sl.infrastructure.assessment.struct.CREOLEBulkCaseChunkReassessmentResult;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
 import curam.core.struct.BatchProcessingSkippedRecordList;
+import curam.cpm.facade.struct.ServiceDeliveryCompleteDetails;
+import curam.cpm.facade.struct.ServiceDeliveryVersionKey;
+import curam.cpm.facade.struct.VersionNoKey;
+import curam.cpm.facade.struct.ViewServiceDeliveryDetails;
+import curam.cpm.sl.struct.ServiceDeliveryKey;
+import curam.piwrapper.outcomeplan.codetable.ACTIVITYOUTCOMEACHIEVED;
 import curam.servicedelivery.impl.ServiceDeliveryDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.Trace;
+import curam.util.type.Date;
 
 /**
  * 
@@ -84,16 +92,42 @@ public class MOLSAServiceDeliveryClosureStream extends curam.molsa.servicedelive
   public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID) throws AppException, InformationalException {
     
    
-    Trace.kTopLevelLogger.info("STARTING Processing caseID ==> " + batchProcessingID.recordID);
+    curam.cpm.facade.intf.ServiceDelivery ServiceDeliveryObj =  curam.cpm.facade.fact.ServiceDeliveryFactory.newInstance();
+    ServiceDeliveryKey serviceDeliveryKey = new ServiceDeliveryKey();
+    serviceDeliveryKey.serviceDeliveryID = batchProcessingID.recordID;
+    ViewServiceDeliveryDetails viewServiceDeliveryDetails = ServiceDeliveryObj.viewServiceDelivery(serviceDeliveryKey);
+    
    
     try {
 
-      curam.servicedelivery.impl.ServiceDelivery serviceDelivery = serviceDeliveryDAO.get(batchProcessingID.recordID);
-      //Jospeh Give the Logic
-      serviceDelivery.complete(serviceDelivery.getVersionNo());
+
+      ServiceDeliveryCompleteDetails serviceDeliveryCompleteDetails = new ServiceDeliveryCompleteDetails();
+      serviceDeliveryCompleteDetails.key= serviceDeliveryKey;
+      serviceDeliveryCompleteDetails.outcome=ACTIVITYOUTCOMEACHIEVED.SUCCESSFUL;
+      serviceDeliveryCompleteDetails.versionNoKey.versionNo=viewServiceDeliveryDetails.serviceDeliveryDtls.versionNo;
+      VersionNoKey versionNoKey = new VersionNoKey();
+      versionNoKey.versionNo=viewServiceDeliveryDetails.serviceDeliveryDtls.versionNo;
+      
+      ServiceDeliveryVersionKey serviceDeliveryVersionKey = new ServiceDeliveryVersionKey();
+      serviceDeliveryVersionKey.key=serviceDeliveryKey;
+      serviceDeliveryVersionKey.versionNoKey=versionNoKey;
+      if(!viewServiceDeliveryDetails.serviceDeliveryDtls.coverPeriodEndDate.equals(Date.kZeroDate) 
+          && viewServiceDeliveryDetails.serviceDeliveryDtls.coverPeriodEndDate.before(Date.getCurrentDate()) ) {
+      
+        if(viewServiceDeliveryDetails.serviceDeliveryDtls.status.equals(SERVICEDELIVERYSTATUS.OPEN)) {
+          ServiceDeliveryObj.cancelServiceDelivery(serviceDeliveryVersionKey);
+        }
+        
+        if(viewServiceDeliveryDetails.serviceDeliveryDtls.status.equals(SERVICEDELIVERYSTATUS.INPROGRESS)) {
+          ServiceDeliveryObj.complete(serviceDeliveryCompleteDetails);
+          creoleBulkCaseChunkReassessmentResult.casesProcessedCount += 1;
+        }
+        
+      }
+      
       
     } catch (AppException appException) {
-      Trace.kTopLevelLogger.info("********  Processing caseID Failed ==> " + batchProcessingID.recordID);
+      Trace.kTopLevelLogger.info("********  Service Delivery Failed ==> " + batchProcessingID.recordID);
  
      
       BatchProcessingSkippedRecord batchProcessingSkippedRecord = new BatchProcessingSkippedRecord();
@@ -107,7 +141,7 @@ public class MOLSAServiceDeliveryClosureStream extends curam.molsa.servicedelive
       return batchProcessingSkippedRecord;
     }
     
-    creoleBulkCaseChunkReassessmentResult.casesProcessedCount += 1;
+    
     
 
     return null;
