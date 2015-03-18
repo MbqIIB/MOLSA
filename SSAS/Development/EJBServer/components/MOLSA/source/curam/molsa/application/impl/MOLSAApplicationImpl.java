@@ -833,7 +833,8 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 		final Locale locale = new Locale(TransactionInfo.getProgramLocale());
 
 		final EntityXMLNVFormatter formatter = new EntityXMLNVFormatter(
-				Locale.ENGLISH, TransactionInfo.getServerTimeZone());
+				new Locale(ProgramLocale.getDefaultServerLocale()), 
+				TransactionInfo.getServerTimeZone());
 		final Document doc = formatter.getDocument(root);
 		deleteDummyAttributes(doc);
 		addOtherAttributes(doc);
