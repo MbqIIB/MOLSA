@@ -1,0 +1,334 @@
+<PAGE
+    PAGE_ID="MOLSA_searchParticipantForTrainingSMS"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSAMessageService"
+        NAME="DISPLAY"
+        OPERATION="getSMSInitialSearchCriteria"
+    />
+
+        
+    <SERVER_INTERFACE
+        CLASS="MOLSAMessageService"
+        NAME="ACTION"
+        OPERATION="listParticipantByCriteria"
+        PHASE="ACTION"
+    />
+    
+    <CLUSTER
+        LABEL_WIDTH="25"
+        NUM_COLS="2"
+        TITLE="Cluster.Title.SearchCriteria"
+        >
+
+        <FIELD
+            CONTROL="CHECKBOXED_LIST"
+            HEIGHT="4"
+            LABEL="Field.Label.CaseType"
+            USE_BLANK="true"
+            WIDTH="75"
+            >
+            <CONNECT>
+	                <INITIAL
+                    HIDDEN_PROPERTY="categoryType"
+                    NAME="DISPLAY"
+                    PROPERTY="typeDescription"
+                />
+            </CONNECT>
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$caseType"
+                />
+            </CONNECT>
+        </FIELD>    
+        <CONTAINER 
+            LABEL="Container.Label.FromAge"
+            WIDTH="75">
+        <FIELD ALIGNMENT="RIGHT"
+            USE_BLANK="true"
+            WIDTH="10"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$fromAge"
+                />
+            </CONNECT>
+        </FIELD>
+            <FIELD ALIGNMENT="CENTER">
+                <CONNECT>
+                    <SOURCE
+                        NAME="TEXT"
+                        PROPERTY="Container.Separator"
+                    />
+                </CONNECT>
+            </FIELD>
+            <FIELD
+                ALIGNMENT="LEFT"
+                USE_BLANK="true"
+                WIDTH="10"
+                >
+                <CONNECT>
+                    <TARGET
+                        NAME="ACTION"
+                        PROPERTY="key$toAge"
+                    />
+                </CONNECT>
+            </FIELD>
+        </CONTAINER>
+                <FIELD
+            LABEL="Field.Label.Muncipality"
+            USE_BLANK="true"
+			USE_DEFAULT="false"
+            WIDTH="75"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$muncipality"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.HouseHoldMemberCheckBox"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$isIncludeHouseHoldMembers"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.IncomeFromDate"
+            USE_DEFAULT="false"
+            WIDTH="75"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$incomeFromDate"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.CaseStatus"
+            USE_DEFAULT="false"
+            USE_BLANK="true"
+            WIDTH="75"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$caseStatus"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        
+        <FIELD
+            LABEL="Field.Label.Gender"
+            USE_DEFAULT="false"
+            USE_BLANK="true"
+            WIDTH="75"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$gender"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.EducationLevel"
+            USE_BLANK="true"
+            USE_DEFAULT="false"
+            WIDTH="75"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$educationLevel"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.hasIncome"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$hasIncome"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.IncomeToDate"
+            USE_DEFAULT="false"
+            WIDTH="75"
+            >
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="key$incomeToDate"
+                />
+            </CONNECT>
+        </FIELD>
+        
+     </CLUSTER>        
+    
+    
+    <CLUSTER>
+    <ACTION_SET
+        ALIGNMENT="CENTER"
+        BOTTOM="false"
+        >
+        <ACTION_CONTROL
+            DEFAULT="true"
+            IMAGE="SearchButton"
+            LABEL="ActionControl.Label.Search"
+            TYPE="SUBMIT"
+            >
+            <LINK PAGE_ID="THIS"/>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL
+            IMAGE="ResetButton"
+            LABEL="ActionControl.Label.Reset"
+            >
+            <LINK PAGE_ID="MOLSA_searchParticipantForSMS"/>
+        </ACTION_CONTROL>
+    </ACTION_SET>
+    </CLUSTER>
+ 
+    <LIST TITLE="List.Title.SearchResult">
+         
+        <CONTAINER
+            ALIGNMENT="CENTER"
+            WIDTH="5"
+            >
+            <WIDGET
+                LABEL="Field.Label.PersonName"
+                TYPE="MULTISELECT"
+                >
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_SOURCE">
+                    <CONNECT>
+                        <SOURCE
+                            NAME="ACTION"
+                            PROPERTY="result$dtls$concernroleID"
+                        />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+                <WIDGET_PARAMETER NAME="MULTI_SELECT_TARGET">
+                    <CONNECT>
+                        <TARGET
+                            NAME="ACTION"
+                            PROPERTY="concernRoleTabbedList"
+                        />
+                    </CONNECT>
+                </WIDGET_PARAMETER>
+            </WIDGET>
+        </CONTAINER>
+    
+        <FIELD
+            LABEL="Field.Label.PersonName"
+            WIDTH="25"
+            >
+            <CONNECT>
+            <SOURCE
+            NAME="ACTION"
+            PROPERTY="result$dtls$participantName"
+            />
+            </CONNECT>
+            <LINK PAGE_ID="Participant_resolveConcernRoleTypeHome">
+                <CONNECT>
+                    <SOURCE
+                        NAME="ACTION"
+                        PROPERTY="result$dtls$concernroleID"
+                    />
+                    <TARGET
+                        NAME="PAGE"
+                        PROPERTY="concernRoleID"
+                    />
+                </CONNECT>
+            </LINK>
+         </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.Address"
+            WIDTH="50"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="ACTION"
+                    PROPERTY="result$dtls$addressString"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <FIELD
+            LABEL="Field.Label.DateofBirth"
+            WIDTH="25"
+            >
+            <CONNECT>
+                <SOURCE
+                    NAME="ACTION"
+                    PROPERTY="result$dtls$dateOfBirth"
+                />
+            </CONNECT>
+        </FIELD>
+        
+        <DETAILS_ROW>
+            <INLINE_PAGE PAGE_ID="MOLSA_listParticipantAdditionalBenefitDetails">
+                <CONNECT>
+                    <SOURCE
+                        NAME="ACTION"
+                        PROPERTY="result$dtls$concernroleID"
+                    />
+                    <TARGET
+                        NAME="PAGE"
+                        PROPERTY="concernRoleID"
+                    />
+                </CONNECT>
+            </INLINE_PAGE>
+        </DETAILS_ROW>
+        
+    </LIST>
+    
+    <ACTION_SET>
+    
+    <ACTION_CONTROL LABEL="ActionControl.Label.TrainingDetails" TYPE="SUBMIT"> 
+            <LINK
+                OPEN_MODAL="true"
+                PAGE_ID="MOLSAProviderManagement_createTrainingSMS"
+                >
+                <CONNECT>
+                    <SOURCE NAME="ACTION" PROPERTY="concernRoleTabbedList"/>
+                    <TARGET NAME="PAGE" PROPERTY="concernRoleTabbedList"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.ExportToExcel" TYPE="SUBMIT">
+            <LINK
+                OPEN_MODAL="true"
+                PAGE_ID="MOLSA_exportParticipantsToExcel"
+                >
+                <CONNECT>
+                    <SOURCE NAME="ACTION" PROPERTY="concernRoleTabbedList"/>
+                    <TARGET NAME="PAGE" PROPERTY="concernRoleTabbedList"/>
+                </CONNECT>
+            </LINK>
+        </ACTION_CONTROL>
+    </ACTION_SET>
+    
+</PAGE>
