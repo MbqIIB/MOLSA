@@ -426,18 +426,35 @@ public static List<RuleObject> getHouseholdUnitMembers(Session session, Timeline
 
 	public static Timeline<Boolean> getCaseCertifications(Session session, Number caseID) throws AppException, InformationalException {
 	    
+		
 		final List<Interval<Boolean>> intervals = new ArrayList<Interval<Boolean>>();
+        HashMap<Date, Boolean> intervalMap = new HashMap<Date, Boolean>();
+        PDCertDiaryCaseIDAndStatusCodeRMKey paramPDCertDiaryCaseIDAndStatusCodeRMKey = new PDCertDiaryCaseIDAndStatusCodeRMKey();
+        paramPDCertDiaryCaseIDAndStatusCodeRMKey.caseID = caseID.longValue();
+        paramPDCertDiaryCaseIDAndStatusCodeRMKey.statusCode = RECORDSTATUS.NORMAL;
+        ProductDeliveryCertDiaryDtlsList productDeliveryCertDiaryDtlsList = ProductDeliveryCertDiaryFactory
+                     .newInstance().searchActiveByCaseID(
+                                   paramPDCertDiaryCaseIDAndStatusCodeRMKey);
+        intervals.add(new Interval<Boolean>(null, false));
+        for (ProductDeliveryCertDiaryDtls details : productDeliveryCertDiaryDtlsList.dtls) {
+               Date fromDate = details.periodFromDate;
+               Date toDate = details.periodToDate.addDays(1);
+               if (!intervalMap.containsKey(fromDate)
+                            || !intervalMap.get(fromDate)) {
+                     intervalMap.put(fromDate, true);
+               }
+               if (!intervalMap.containsKey(toDate)) {
+                     intervalMap.put(toDate, false);
+               }
+        }
+        for (Iterator<Date> iterator = intervalMap.keySet().iterator(); iterator
+                     .hasNext();) {
+               Date keyValue = iterator.next();
+               intervals.add(new Interval<Boolean>(keyValue, intervalMap
+                            .get(keyValue)));
 
-		PDCertDiaryCaseIDAndStatusCodeRMKey paramPDCertDiaryCaseIDAndStatusCodeRMKey = new PDCertDiaryCaseIDAndStatusCodeRMKey();
-		paramPDCertDiaryCaseIDAndStatusCodeRMKey.caseID = caseID.longValue();
-		paramPDCertDiaryCaseIDAndStatusCodeRMKey.statusCode = RECORDSTATUS.NORMAL;
-		ProductDeliveryCertDiaryDtlsList productDeliveryCertDiaryDtlsList = ProductDeliveryCertDiaryFactory.newInstance().searchActiveByCaseID(paramPDCertDiaryCaseIDAndStatusCodeRMKey);
-		intervals.add(new Interval<Boolean>(null, false));
-		for(ProductDeliveryCertDiaryDtls details : productDeliveryCertDiaryDtlsList.dtls){
-			intervals.add(new Interval<Boolean>(details.periodFromDate, true));
-			intervals.add(new Interval<Boolean>(details.periodToDate.addDays(1), false));
-		}
-		Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
-		return timeline;
-	}
+        }
+        Timeline<Boolean> timeline = new Timeline<Boolean>(intervals);
+        return timeline;
+ }
 }
