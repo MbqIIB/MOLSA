@@ -85,6 +85,7 @@ import curam.impl.IntakeConst;
 import curam.intakecase.impl.IntakeScriptConst;
 import curam.message.application.GENAPPLICATION;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
+import curam.molsa.util.impl.MOLSADateUtil;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.participant.impl.ConcernRole;
 import curam.participant.impl.ConcernRoleDAO;
@@ -206,7 +207,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 			final Datastore dataStore, final Entity rootEntity,
 			final ConcernRoleIDKey concernRoleKey) throws AppException,
 			InformationalException {
-
+		
 		final EntityType personEntityType = dataStore
 				.getEntityType(IEGConstants.kPersonEntityName);
 		final EntityType intakeApplicatonType = dataStore
@@ -227,6 +228,8 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 		// Entity personAddressEntity
 		final Entity personAddressEntity = dataStore
 				.newEntity(personAddressEntityType);
+		//Update application start of month
+		rootEntity.setTypedAttribute(MOLSADatastoreConst.kApplicationMonthStartDate, MOLSADateUtil.shiftToStartOfMonth(Date.getCurrentDate()));
 		AddressMapList addressMapList;
 		AddressMapList mailingAddressMapList;
 		long primaryAlternateNameID = 0;
