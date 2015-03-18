@@ -742,6 +742,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 
 		final TEMPLATEIDCODEEntry templateID = applicationConfiguration.getPDFTemplateID(getApplicationType());
 		//final TEMPLATEIDCODEEntry templateID = 45007
+		
 
 		final ByteArrayOutputStream outputStream = pdfGeneratorProvider.get()
 				.generatePDF(xmlString, templateID);
@@ -846,6 +847,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 	public void deleteDummyAttributes(Document doc){
 		
 	  deletePersonAttributes(doc);
+	  deleteApplicationAttributes(doc);
 	  deleteMailingAddressAttributes(doc);
 	  deleteIntakeApplicationTypeAttributes(doc);
 	  deleteIntakeApplicationAttributes(doc);
@@ -864,7 +866,14 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
         "blackOrAfricanAmerican", "nativeAlaskanOrAmericanIndian", 
         "asian", "nativeHawaiianOrPacificIslander",
         "whiteOrCaucasian", "isPrimaryParticipant", "middleInitial",
-        "aliasFirstName", "aliasMiddleName", "aliasLastName" };
+        "aliasFirstName", "aliasMiddleName", "aliasLastName",
+        "personID","middleInitial","dateOfBirth","maritalStatusCaptured",
+        "maritalStatus","citizenshipStatus","residencyStatus","isMemberEnrolledInSchool",
+        "hasAnonymousParents","requiresMaidAssistance","isPhysicallyChallenged",
+        "isUnfitToWork","householdMemberStartDate","isMailingAddressSame",
+        "isResidingWithPrimaryParticipant","isChild","calculatedAge",
+        "isSeniorCitizen","hasIncome","hasHomeRental","applicationDate",
+        "applicationMethod","educationLevel","email" };
 
     XPathFactory xpathFactory = XPathFactory.newInstance();
     XPath xpath = xpathFactory.newXPath();
@@ -893,6 +902,25 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
     }
   }
 
+  
+  private void deleteApplicationAttributes(Document doc) {
+	  XPathFactory xpathFactory = XPathFactory.newInstance();
+	    XPath xpath = xpathFactory.newXPath();
+	    try {
+	      XPathExpression xpathExpression = xpath.compile("//entity[@name=\"Application\"]/attributes/attribute");
+	      // get the Application entity from the document
+	      NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc, XPathConstants.NODESET);
+	      for (int i = 0; i < attributeNodes.getLength(); i++) {
+	        Element attributeElement = (Element) attributeNodes.item(i);
+	        attributeElement.getParentNode().removeChild(attributeElement);
+	      }
+	    } catch (XPathExpressionException e) {
+	      // Ignore the exception should not break the existing flow.
+	    }
+	  }
+
+	  
+  
   private void deleteMailingAddressAttributes(Document doc) {
     XPathFactory xpathFactory = XPathFactory.newInstance();
     XPath xpath = xpathFactory.newXPath();
@@ -959,7 +987,8 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 
   private void addNewAttributes(Document doc) {
 
-    /** Commented for Jiyda
+	  /*
+   
     XPathFactory xpathFactory = XPathFactory.newInstance();
     XPath xpath = xpathFactory.newXPath();
 
@@ -979,6 +1008,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
     attribute.setAttribute("name", "noOfChildren");
     attributes.appendChild(attribute);
     */
+    
   }
 	 
 	 
