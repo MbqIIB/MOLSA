@@ -15,6 +15,8 @@ import curam.codetable.CASEPARTICIPANTROLETYPE;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASETYPECODE;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
+import curam.codetable.FREQUENCYCODE;
+import curam.codetable.GENDER;
 import curam.codetable.INCOMETYPECODE;
 import curam.codetable.TARGETITEMTYPE;
 import curam.codetable.TASKTYPE;
@@ -306,7 +308,13 @@ public class MOLSAInformationProviderBatchStream extends
                 CASEEVIDENCEEntry.HEADOFHOUSE,
                 caseParticipantRole.getID(),
                 caseParticipantRole.getConcernRole().getName());
-							boolean result2 = modifyIncomeEvidence(readHHEvidenceDetails,
+					  ReadEvidenceDetails readGenderEvidenceDetails = new ReadEvidenceDetails();
+					  readGenderEvidenceDetails = readCaseEvidenceDetails(
+                caseParticipantRole.getCase().getID(),
+                CASEEVIDENCEEntry.GENDER,
+                caseParticipantRole.getID(),
+                caseParticipantRole.getConcernRole().getName());
+							boolean result2 = modifyIncomeEvidence(readGenderEvidenceDetails,readHHEvidenceDetails,
 									readEvidenceDetails, caseParticipantRole,
 									informationProviderTmpDtls);
 							// Code to send task if evidence is modified
@@ -555,7 +563,7 @@ public class MOLSAInformationProviderBatchStream extends
 	 *             General Exception
 	 * @return boolean
 	 */
-	private boolean modifyIncomeEvidence(ReadEvidenceDetails readHHEvidenceDetails,
+	private boolean modifyIncomeEvidence(ReadEvidenceDetails readGenderEvidenceDetails,ReadEvidenceDetails readHHEvidenceDetails,
 			ReadEvidenceDetails readEvidenceDetails, final curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole,
 			MOLSAInformationProviderTmpDtls informationProviderTmpDtls)
 			throws AppException, InformationalException, ParseException {
@@ -659,7 +667,7 @@ public class MOLSAInformationProviderBatchStream extends
 		  ||  informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.EMPLOYMENT) 
 		  ||  informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.PRIVATESECTOREMPLOYMENT)
 		  ||  informationProviderTmpDtls.type.equalsIgnoreCase(RESPONSETYPE.GOVERNMENTEMPLOYMENT)) {
-		  if (readHHEvidenceDetails.dtls != null) {
+		  if (readHHEvidenceDetails.dtls != null && readGenderEvidenceDetails.dtls.getAttribute(MOLSAConstants.gender).getValue().equalsIgnoreCase(String.valueOf(GENDER.MALE))) {
       dynamicEvidenceDataDetails  
        .getAttribute(MOLSAConstants.kIncomeType)
       .setValue(String.valueOf(INCOMETYPECODE.FatherORHusbandPaidEmployment));
@@ -671,7 +679,8 @@ public class MOLSAInformationProviderBatchStream extends
 		  }
     }
 		
-
+	  dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.kfrequency)
+    .setValue(String.valueOf(FREQUENCYCODE.MONTHLY));
 			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.endDate)
 					.setValue(MOLSAConstants.kZeroDate);
 			dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
@@ -848,7 +857,7 @@ public class MOLSAInformationProviderBatchStream extends
 			// evidence
 			if (null != dynamicEvidenceDataDetails) {
 				final Long caseparticipantRoleID;
-				if (caseEvidence.equals(CASEEVIDENCEEntry.BIRTHDEATHDETAILS)) {
+				if (caseEvidence.equals(CASEEVIDENCEEntry.BIRTHDEATHDETAILS) || caseEvidence.equals(CASEEVIDENCEEntry.GENDER)) {
 					caseparticipantRoleID = (Long) DynamicEvidenceTypeConverter
 							.convert(dynamicEvidenceDataDetails
 									.getAttribute(MOLSAConstants.person));

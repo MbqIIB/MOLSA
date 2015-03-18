@@ -153,5 +153,6 @@ public abstract class MOLSAConstants {
 
 	public static final String kMOLSAApplicationRejectTask = "MOLSAApplicationRejectTask";
 	public static final String kIncomeType = "incomeType";
+	public static final String kfrequency= "frequency";
 
 }
