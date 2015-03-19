@@ -856,7 +856,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 	  deleteIntakeApplicationTypeAttributes(doc);
 	  deleteIntakeApplicationAttributes(doc);
 	  deleteIntakeProgramAttributes(doc);
-	  
+	  deleteRelationshipAttributes(doc);
 		
 	}
 
@@ -864,6 +864,36 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
     addNewAttributes(doc);
 
   }
+  
+  private void deleteRelationshipAttributes(Document doc) {
+	    String[] attributeNames = new String[] { "startDate"};
+
+	    XPathFactory xpathFactory = XPathFactory.newInstance();
+	    XPath xpath = xpathFactory.newXPath();
+
+	    try {
+	      XPathExpression xpathExpression = xpath.compile("//entity[@name=\"Relationship\"]/attributes/attribute");
+
+	      // get the person entity from the document
+	      NodeList attributeNodes = (NodeList) xpathExpression.evaluate(doc, XPathConstants.NODESET);
+
+	      for (int i = 0; i < attributeNodes.getLength(); i++) {
+
+	        Element attributeElement = (Element) attributeNodes.item(i);
+	        for (String attribute : attributeNames) {
+
+	          if (attributeElement.getAttribute("name").equalsIgnoreCase(attribute)) {
+	            // remove the attribute
+	            attributeElement.getParentNode().removeChild(attributeElement);
+	            break;
+	          }
+	        }
+	      }
+
+	    } catch (XPathExpressionException e) {
+	      // Ignore the exception should not break the existing flow.
+	    }
+	  }
 
   private void deletePersonAttributes(Document doc) {
     String[] attributeNames = new String[] { "ssn", "hispanicOrLatino", 
@@ -871,13 +901,13 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
         "asian", "nativeHawaiianOrPacificIslander",
         "whiteOrCaucasian", "isPrimaryParticipant", "middleInitial",
         "aliasFirstName", "aliasMiddleName", "aliasLastName",
-        "personID","middleInitial","dateOfBirth","maritalStatusCaptured",
+        "middleInitial","dateOfBirth","maritalStatusCaptured",
         "maritalStatus","citizenshipStatus","residencyStatus","isMemberEnrolledInSchool",
         "hasAnonymousParents","requiresMaidAssistance","isPhysicallyChallenged",
         "isUnfitToWork","householdMemberStartDate","isMailingAddressSame",
         "isResidingWithPrimaryParticipant","isChild","calculatedAge",
         "isSeniorCitizen","hasIncome","hasHomeRental","applicationDate",
-        "applicationMethod","educationLevel","email" };
+        "applicationMethod","email" };
 
     XPathFactory xpathFactory = XPathFactory.newInstance();
     XPath xpath = xpathFactory.newXPath();
