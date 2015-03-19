@@ -21,6 +21,8 @@
 
     <ac:menu-item id="screening1" title="menu.screening.title1" text="menu.screening.text1" icon="menu.screening.icon"  page-id="MOLSADisplayDocuments">
    </ac:menu-item>
+   <ac:menu-item id="mobile" title="menu.mobapplication.title1" text="menu.mobapplication.text1" icon="menu.screening.icon"  page-id="MOLSAPasswordMaintainance">
+   </ac:menu-item>
   
   </ac:banner-menu>
   

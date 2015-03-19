@@ -1,9 +1,12 @@
 package curam.molsa.eft.batch.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.BATCHPROCESSNAME;
@@ -599,7 +602,40 @@ public class MOLSAGenerateEFTBatchStream extends
 			// Pointing to the message template.
 			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.SALARYINFORMATION;
 			molsasmsUtilObj.sendSMSDPMode(concernRoleListAndMessageTextDetails);
+			invokeNotification(paymentInstrumentDtls.pmtInstrumentID, "paymentNotification");
 		}
+	}
+
+	/**
+	 * Method to invoke Mobility Payment Notification.
+	 * 
+	 * @param paymentId
+	 *          - PaymentInstrument Id
+	 * @param apiName
+	 *          - method name to invoke
+	 * @return
+	 */
+	private <T> T invokeNotification(long paymentId, String apiName) {
+		T handler = null;
+		try {
+
+			String handlerClass = Configuration
+					.getProperty("dm.notification.service.PaymentNotificationHandlerClass");
+			if (handlerClass == null) {
+				// assign default implementation.
+				return null;
+			}
+			Class<?> eventClass = Class.forName(handlerClass);
+			final T resultObjecct = (T) eventClass.newInstance();
+			handler = resultObjecct;
+			resultObjecct.getClass().getMethod(apiName, new Class[] { long.class })
+					.invoke(resultObjecct, new Object[] { paymentId });
+		} catch (InvocationTargetException e) {
+			Logger.getLogger(this.getClass()).error(e.getMessage());
+		} catch (Throwable e) {
+			Logger.getLogger(this.getClass()).error(e.getMessage());
+		}
+		return handler;
 	}
 
 	/**
