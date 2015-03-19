@@ -18,6 +18,7 @@ import curam.citizenworkspace.codetable.impl.IntakeClientTypeEntry;
 import curam.citizenworkspace.entity.fact.CWExternalPartyLinkFactory;
 import curam.citizenworkspace.entity.intf.CWExternalPartyLink;
 import curam.citizenworkspace.entity.struct.CWExternalPartyLinkDtls;
+import curam.citizenworkspace.impl.CPValidationHelper;
 import curam.citizenworkspace.security.fact.IntakeClientFactory;
 import curam.citizenworkspace.security.impl.CWPasswordGenerationStrategy;
 import curam.citizenworkspace.security.intf.IntakeClient;
@@ -57,6 +58,7 @@ import curam.util.exception.InformationalElement;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
 import curam.util.persistence.GuiceWrapper;
+import curam.util.persistence.ValidationHelper;
 import curam.util.resources.Configuration;
 import curam.util.security.EncryptionAdmin;
 import curam.util.transaction.TransactionInfo;
@@ -180,6 +182,9 @@ public class MOLSACitizenPortalHelper {
 		if (existingPassword.equals(externalUserDtls.password)) {
 			// Check if entered new password and confirm password matches
 			if (passwordDtls.confirmPassword.equals(passwordDtls.newPassword)) {
+				
+				validatePassword(passwordDtls.newPassword);
+				
 				String newPassword = new String();
 				// Encrypt the new password
 				newPassword = getEncryptedPasswordValue(passwordDtls.confirmPassword);
@@ -504,5 +509,68 @@ public class MOLSACitizenPortalHelper {
 		}
 		return false;
 	}
+	
+	 private void validatePassword(String password) throws InformationalException
+	  {
+	    Integer passwordLength = Configuration.getIntProperty(EnvVars.ENV_CW_PASSWORD_MIN_LENGTH);
+
+
+	    if ((password != null) && (password.trim().length() < passwordLength.intValue()))
+	    {
+	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_TOO_SHORT);
+
+
+	      ae.arg(passwordLength);
+	      ValidationHelper.addValidationError(ae);
+	    }
+
+	    if (password == null) {
+	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_TOO_SHORT);
+
+
+	      ae.arg(passwordLength);
+	      ValidationHelper.addValidationError(ae);
+	    }
+
+	    Integer maxPasswordLength = Configuration.getIntProperty(EnvVars.ENV_CW_PASSWORD_MAX_LENGTH);
+
+
+	    if ((password != null) && (password.trim().length() > maxPasswordLength.intValue()))
+	    {
+	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_TOO_LONG);
+
+
+	      ae.arg(maxPasswordLength);
+	      ValidationHelper.addValidationError(ae);
+	    }
+
+	    validateMinSpecialChars(password);
+	    ValidationHelper.failIfErrorsExist();
+	  }
+
+	  private void validateMinSpecialChars(String password) {
+	    if ((password == null) || (password.trim().length() <= 0))
+	      return;
+	    Integer passwordMinSpecialChars = Configuration.getIntProperty(EnvVars.ENV_CW_PASSWORD_MIN_SPECIAL_CHARS);
+
+
+	    char[] passwordChars = password.trim().toCharArray();
+	    int specialCharCounter = 0;
+
+	    for (int i = 0; i < passwordChars.length; ++i) {
+	      if (!(Character.isLetter(passwordChars[i]))) {
+	        ++specialCharCounter;
+	      }
+	    }
+
+	    if (specialCharCounter < passwordMinSpecialChars.intValue()) {
+	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_MIN_SPECIAL_CHARS);
+
+
+	      ae.arg(passwordMinSpecialChars);
+	      ValidationHelper.addValidationError(ae);
+	    }
+	  }
+
 
 }
