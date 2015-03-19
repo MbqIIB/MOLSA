@@ -15,6 +15,7 @@ import curam.core.facade.intf.ProductDelivery;
 import curam.core.facade.struct.CloseCaseDetails;
 import curam.core.facade.struct.CreateCertificationDetails;
 import curam.core.facade.struct.InformationMsgDtlsList;
+import curam.core.facade.struct.ReactivationDetails;
 import curam.core.facade.struct.RejectCaseKey_fo1;
 import curam.core.facade.struct.SubmitForApprovalKey;
 import curam.core.impl.CuramConst;
@@ -25,6 +26,7 @@ import curam.core.sl.struct.MilestoneDeliveryDtls;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.core.struct.InformationalMsgDtls;
 import curam.core.struct.ProductDeliveryApprovalKey1;
+import curam.core.struct.ReactivationDtls;
 import curam.events.MOLSAAPPROVALTASK;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.MOLSANOTIFICATION;
@@ -358,4 +360,27 @@ public abstract class MOLSAProductDelivery extends
         EventService.raiseEvent(eventKey);
 
 	}
+
+	@Override
+	public void reactivate(ReactivationDetails details) throws AppException,
+			InformationalException {
+		 // MaintainCaseClosure manipulation variables
+	    final curam.core.intf.MaintainCaseClosure maintainCaseClosureObj = curam.core.fact.MaintainCaseClosureFactory.newInstance();
+	    final ReactivationDtls reactivationDtls = new ReactivationDtls();
+
+	    // Assign reactivation details
+	    reactivationDtls.assign(details);
+
+	    // Call MaintainCaseClosure BPO to reactivate the case
+	    maintainCaseClosureObj.reactivateCase(reactivationDtls);
+	    
+	    Event eventKey = new Event();
+        eventKey.eventKey.eventClass = curam.events.MOLSAProductDelivery.REACTIVATE.eventClass;
+        eventKey.eventKey.eventType = curam.events.MOLSAProductDelivery.REACTIVATE.eventType;
+        eventKey.primaryEventData = details.caseID;
+        EventService.raiseEvent(eventKey);
+	}
+	
+	
+	
 }
