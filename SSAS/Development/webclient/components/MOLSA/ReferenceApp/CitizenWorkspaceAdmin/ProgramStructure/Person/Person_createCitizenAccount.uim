@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PAGE PAGE_ID="Person_createCitizenAccount"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd" WINDOW_OPTIONS="width=550">
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE NAME="TEXT" PROPERTY="PageTitle.StaticText1"/>
+        </CONNECT>
+    </PAGE_TITLE>
+    
+   <PAGE_PARAMETER NAME="concernRoleID"/>
+  <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
+        <TARGET NAME="ACTION" PROPERTY="key$concernRoleID"/>
+    </CONNECT>
+  
+  <SERVER_INTERFACE
+    CLASS="MOLSACitizenAccount"
+    NAME="ACTION"
+    OPERATION="createAccount"
+    PHASE="ACTION"
+  />
+  <CLUSTER SHOW_LABELS="false" STYLE="outer-cluster-borderless">
+       <FIELD>
+            <CONNECT>
+                    <SOURCE NAME="TEXT" PROPERTY="Field.StaticText.InformationMessage"/>
+            </CONNECT>
+       </FIELD>
+  </CLUSTER>
+  
+ 
+  
+  <ACTION_SET
+    ALIGNMENT="CENTER"
+    TOP="false"
+  >
+    <ACTION_CONTROL
+      IMAGE="YesButton"
+      LABEL="ActionControl.Label.Yes"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="NoButton"
+      LABEL="ActionControl.Label.No"
+    />
+  </ACTION_SET>
+ 
+</PAGE>
