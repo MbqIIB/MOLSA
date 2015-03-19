@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="../../../../../../../../../Curam/catalog/RuleSet.xsd"
- extends="SAHouseholdIncomeCategory"
- extendsRuleSet="SocialAssistanceDisplayRuleSet" name="SeniorCitizenHouseholdIncomeCategory">
+ xsi:noNamespaceSchemaLocation="file:/D:/Curam/catalog/RuleSet.xsd"
+ extends="SAHouseholdIncomeCategory" extendsRuleSet="SocialAssistanceDisplayRuleSet"
+ name="SeniorCitizenHouseholdIncomeCategory">
   <!-- 
     The eligibility rule object for the case.    
     At program recommendation level, this attribute will be specified. 
-    
-    
   -->
   <Attribute name="productCase">
     <type>
@@ -77,6 +75,75 @@
     </derivation>
   </Attribute>
 
+<Attribute name="isSingleMemberAndNotSatisfyingAgeLimit">
+  <type>
+    <javaclass name="curam.creole.value.Timeline">
+      <javaclass name="Boolean"/>
+    </javaclass>
+  </type>
+  <derivation>
+    <timelineoperation>
+      <choose>
+        <type>
+          <javaclass name="Boolean"/>
+        </type>
+        <when>
+          <condition>
+            <all>
+              <fixedlist>
+                <listof>
+                  <javaclass name="Boolean"/>
+                </listof>
+                <members>
+                  <equals>
+                    <property name="size">
+                      <object>
+                        <intervalvalue>
+                          <reference attribute="eligibilityUnitMembers"/>
+                        </intervalvalue>
+                      </object>
+                    </property>
+                    <Number value="1"/>
+                  </equals>
+                  <any>
+                    <dynamiclist>
+                      <list>
+                        <intervalvalue>
+                          <reference attribute="eligibilityUnitMembers"/>
+                        </intervalvalue>
+                      </list>
+                      <listitemexpression>
+                        <not>
+                          <intervalvalue>
+                            <reference attribute="isAgeAboveSixtyTimeline">
+                              <create ruleclass="SeniorCitizenCPRCalculator"
+                                ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+                                <current/>
+                              </create>
+                            </reference>
+                          </intervalvalue>
+                        </not>
+                      </listitemexpression>
+                    </dynamiclist>
+                  </any>
+                  
+                </members>
+              </fixedlist>
+            </all>
+          </condition>
+          <value>
+            <true/>
+          </value>
+        </when>
+        <otherwise>
+          <value>
+            <false/>
+          </value>
+        </otherwise>
+      </choose>
+    </timelineoperation>
+  </derivation>
+</Attribute>
   
   <Attribute name="totalGrossBenefitAmount">
     <Annotations>
@@ -89,11 +156,30 @@
     </type>
     <derivation>
       <timelineoperation>
-        <sum>
-          <intervalvalue>
-            <reference attribute="amountList"/>
-          </intervalvalue>
-        </sum>
+        <choose>
+          <type>
+            <javaclass name="Number"/>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="isSingleMemberAndNotSatisfyingAgeLimit"/>
+              </intervalvalue>
+            </condition>
+            <value>
+              <Number value="0"/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <sum>
+                <intervalvalue>
+                  <reference attribute="amountList"/>
+                </intervalvalue>
+              </sum>
+            </value>
+          </otherwise>
+        </choose>
       </timelineoperation>
     </derivation>
   </Attribute>
@@ -109,17 +195,36 @@
     </type>
     <derivation>
       <timelineoperation>
-        <intervalvalue>
-          <reference attribute="unearnedIncomeAmount">
-            <intervalvalue>
-              <reference attribute="seniorCitizenEligibilityUnitCalculator">
-                <reference attribute="seniorCitizenProgramCalculator">
-                  <reference attribute="productCase"/>
+        <choose>
+          <type>
+            <javaclass name="Number"/>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="isSingleMemberAndNotSatisfyingAgeLimit"/>
+              </intervalvalue>
+            </condition>
+            <value>
+              <Number value="0"/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <intervalvalue>
+                <reference attribute="unearnedIncomeAmount">
+                  <intervalvalue>
+                    <reference attribute="seniorCitizenEligibilityUnitCalculator">
+                      <reference attribute="seniorCitizenProgramCalculator">
+                        <reference attribute="productCase"/>
+                      </reference>
+                    </reference>
+                  </intervalvalue>
                 </reference>
-              </reference>
-            </intervalvalue>
-          </reference>
-        </intervalvalue>
+              </intervalvalue>
+            </value>
+          </otherwise>
+        </choose>
       </timelineoperation>
     </derivation>
   </Attribute>
@@ -135,17 +240,36 @@
     </type>
     <derivation>
       <timelineoperation>
-        <intervalvalue>
-          <reference attribute="totalExpenseAmountTimeline">
-            <intervalvalue>
-              <reference attribute="seniorCitizenEligibilityUnitCalculator">
-                <reference attribute="seniorCitizenProgramCalculator">
-                  <reference attribute="productCase"/>
+        <choose>
+          <type>
+            <javaclass name="Number"/>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="isSingleMemberAndNotSatisfyingAgeLimit"/>
+              </intervalvalue>
+            </condition>
+            <value>
+              <Number value="0"/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <intervalvalue>
+                <reference attribute="totalExpenseAmountTimeline">
+                  <intervalvalue>
+                    <reference attribute="seniorCitizenEligibilityUnitCalculator">
+                      <reference attribute="seniorCitizenProgramCalculator">
+                        <reference attribute="productCase"/>
+                      </reference>
+                    </reference>
+                  </intervalvalue>
                 </reference>
-              </reference>
-            </intervalvalue>
-          </reference>
-        </intervalvalue>
+              </intervalvalue>
+            </value>
+          </otherwise>
+        </choose>
       </timelineoperation>
     </derivation>
   </Attribute>
@@ -160,17 +284,36 @@
     </type>
     <derivation>
       <timelineoperation>
-        <intervalvalue>
-          <reference attribute="totalCountableIncomeTimeline">
-            <intervalvalue>
-              <reference attribute="seniorCitizenEligibilityUnitCalculator">
-                <reference attribute="seniorCitizenProgramCalculator">
-                  <reference attribute="productCase"/>
+        <choose>
+          <type>
+            <javaclass name="Number"/>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="isSingleMemberAndNotSatisfyingAgeLimit"/>
+              </intervalvalue>
+            </condition>
+            <value>
+              <Number value="0"/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <intervalvalue>
+                <reference attribute="totalCountableIncomeTimeline">
+                  <intervalvalue>
+                    <reference attribute="seniorCitizenEligibilityUnitCalculator">
+                      <reference attribute="seniorCitizenProgramCalculator">
+                        <reference attribute="productCase"/>
+                      </reference>
+                    </reference>
+                  </intervalvalue>
                 </reference>
-              </reference>
-            </intervalvalue>
-          </reference>
-        </intervalvalue>
+              </intervalvalue>
+            </value>
+          </otherwise>
+        </choose>
       </timelineoperation>
     </derivation>
   </Attribute>
@@ -186,17 +329,36 @@
     </type>
     <derivation>
       <timelineoperation>
-        <intervalvalue>
-          <reference attribute="monthlyAmountTimeline">
-            <intervalvalue>
-              <reference attribute="seniorCitizenEligibilityUnitCalculator">
-                <reference attribute="seniorCitizenProgramCalculator">
-                  <reference attribute="productCase"/>
+        <choose>
+          <type>
+            <javaclass name="Number"/>
+          </type>
+          <when>
+            <condition>
+              <intervalvalue>
+                <reference attribute="isSingleMemberAndNotSatisfyingAgeLimit"/>
+              </intervalvalue>
+            </condition>
+            <value>
+              <Number value="0"/>
+            </value>
+          </when>
+          <otherwise>
+            <value>
+              <intervalvalue>
+                <reference attribute="monthlyAmountTimeline">
+                  <intervalvalue>
+                    <reference attribute="seniorCitizenEligibilityUnitCalculator">
+                      <reference attribute="seniorCitizenProgramCalculator">
+                        <reference attribute="productCase"/>
+                      </reference>
+                    </reference>
+                  </intervalvalue>
                 </reference>
-              </reference>
-            </intervalvalue>
-          </reference>
-        </intervalvalue>
+              </intervalvalue>
+            </value>
+          </otherwise>
+        </choose>
       </timelineoperation>
     </derivation>
   </Attribute>
@@ -212,27 +374,55 @@
       </javaclass>
     </type>
     <derivation>
-      <timelineoperation>
-        <filter>
-          <list>
-            <intervalvalue>
-              <reference attribute="amountList">
-                <create ruleclass="AmountCalculator"  ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
-                  <reference attribute="eligibilityUnitMembers" />
-                </create>
-              </reference>
-            </intervalvalue>
-          </list>
-          <listitemexpression>
-            <not>
-              <equals>
-                <null/>
-                <current/>
-              </equals>
-            </not>
-          </listitemexpression>
-        </filter>
-      </timelineoperation>
+        <timelineoperation>
+          <choose>
+            <type>
+              <javaclass name="List">
+                <javaclass name="Number"/>
+              </javaclass>
+            </type>
+            <when>
+              <condition>
+                <intervalvalue>
+                  <reference attribute="isSingleMemberAndNotSatisfyingAgeLimit"/>
+                </intervalvalue>
+              </condition>
+              <value>
+                <fixedlist>
+                  <listof>
+                    <javaclass name="Number"/>
+                  </listof>
+                  <members>
+                    <Number value="0"/>
+                  </members>
+                </fixedlist>
+              </value>
+            </when>
+            <otherwise>
+              <value>
+                <filter>
+                  <list>
+                    <intervalvalue>
+                      <reference attribute="amountList">
+                        <create ruleclass="AmountCalculator"  ruleset="SeniorCitizenEligibilityAndEntitlementRuleSet">
+                          <reference attribute="eligibilityUnitMembers" />
+                        </create>
+                      </reference>
+                    </intervalvalue>
+                  </list>
+                  <listitemexpression>
+                    <not>
+                      <equals>
+                        <null/>
+                        <current/>
+                      </equals>
+                    </not>
+                  </listitemexpression>
+                </filter>
+              </value>
+            </otherwise>
+          </choose>
+        </timelineoperation>
     </derivation>
   </Attribute>
 
