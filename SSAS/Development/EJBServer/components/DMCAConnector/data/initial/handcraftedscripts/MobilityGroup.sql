@@ -1,0 +1,9 @@
+
+-- script  to setup security access information for the mobility access
+-- this script must be run AFTER the following tables have been loaded
+-- - FUNCTIONIDENTIFIER
+-- - SECURITYFIDSID
+-- - SECURITYIDENTIFIER
+
+INSERT INTO SECURITYGROUP (GROUPNAME, DESCRIPTION, VERSIONNO) VALUES ('DMMOBILITYCLIENTSELFSERVICEGROUP', 'Diona Mobility Group For Self Service', 1);
+INSERT INTO SECURITYGROUPSID(GROUPNAME, SIDNAME) SELECT 'DMMOBILITYCLIENTSELFSERVICEGROUP', sidname FROM SECURITYIDENTIFIER WHERE sidname LIKE 'CitizenSelfServiceWS.%';

@@ -1,0 +1,287 @@
+<!-- 
+ * Copyright 2013-2015 Diona.
+ * All rights reserved.
+ * 
+ * This software is the confidential and proprietary information of Diona
+ * ("Confidential Information"). You shall not disclose such Confidential Information
+ * and shall use it only in accordance with the terms of the license agreement you
+ * entered into with Diona.
+ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"	attributeFormDefault="qualified" elementFormDefault="qualified"	xmlns:tns="http://struct.clientselfservice.diona.com/xsd" targetNamespace="http://struct.clientselfservice.diona.com/xsd">
+	<xs:annotation>
+		<xs:documentation>Schema definition for the Client Self Service</xs:documentation>
+	</xs:annotation>
+	
+	<!-- Start of Dashboard Interface -->
+	<xs:element name="DashBoardDetails">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>Interface definition for the dashboard screen</xs:documentation></xs:annotation>
+			<xs:sequence>
+			<xs:element minOccurs="0" name="pmntdtls" type="tns:DashBoardPaymentDetails">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="casedtls" type="tns:DashBoardCaseDetails">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="servicedtls" type="tns:DashBoardServicesDetails">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>			
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="DashBoardPaymentDetails">
+		<xs:annotation><xs:documentation>Dashboard Payment Details</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="amount" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="paymentDate" type="xs:date">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="totalCount" type="xs:int">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="currencySymbol" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="DashBoardCaseDetails">
+		<xs:annotation><xs:documentation>Dashboard Case Details</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="totalCount" type="xs:int">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="programName" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="DashBoardServicesDetails">
+		<xs:annotation><xs:documentation>Dashboard Services Details</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="totalCount" type="xs:int">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="serviceName" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- End of Dashboard Interface -->
+	
+	<!-- Start of Payment Interface -->
+	<xs:element name="PaymentList">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>List of Received payment details</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="dtls" nillable="true" type="tns:PaymentDetails">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="PaymentDetails">
+		<xs:annotation><xs:documentation>Details of Payments</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="primaryKey" type="xs:long">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="programName" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="paymentDate" type="xs:date">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="currencySymbol" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="amount" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- End of Payment Interface -->
+
+	<!-- Start of Case Interface -->
+	<xs:element name="CaseList">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>List of Citizen Case details</xs:documentation></xs:annotation>
+				<xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="dtls" nillable="true" type="tns:CaseDetails">
+						<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+					</xs:element>
+				</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="CaseDetails">
+		<xs:annotation><xs:documentation>Citizen Case Details</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="primaryKey" type="xs:long">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="programName" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="caseStatusCode" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="contactCaseWorkerName" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="contactAgencyEmailAddress" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="contactAgencyPhoneNumber" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="contactAgencyMobileNumber" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="caseMembers" maxOccurs="unbounded" type="tns:CaseMember">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CaseMember">
+		<xs:annotation><xs:documentation>Case Member Details</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="name" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- End of Case Interface -->
+	
+	<!-- Start of Service Interface -->
+	<xs:element name="ServiceList">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>List of Citizen Service Availed details</xs:documentation></xs:annotation>
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded" name="dtls" nillable="true" type="tns:ServiceDetails">
+						<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+					</xs:element>
+				</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ServiceDetails">
+		<xs:annotation><xs:documentation>Citizen Services Availed Details</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="primaryKey" type="xs:long">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="name" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="providerID" type="xs:long">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="providerName" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="totalUnits" type="xs:long">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="availedUnits" type="xs:long">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="nextSession" type="xs:date">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="frequencyAndDuration" type="xs:string">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="providerLatitude" type="xs:double">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="providerLongitude" type="xs:double">
+				<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="ProviderDetails">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>Provider Details</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:element minOccurs="0" name="requiredDocuments" type="xs:string">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="feesInformation" type="xs:string">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="generalInformation" type="xs:string">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="providerAddress" type="xs:string">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="providerEmailAddress" type="xs:string">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="providerPhoneNumber" type="xs:string">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="providerMobileNumber" type="xs:string">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="providerLatitude" type="xs:double">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="providerLongitude" type="xs:double">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="ProviderKey">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>Provider Details</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:element minOccurs="0" name="providerID" type="xs:long">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+				<xs:element minOccurs="0" name="serviceOfferingID" type="xs:long">
+					<xs:annotation><xs:documentation></xs:documentation></xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- End of Service Interface -->
+
+	<!-- Start of Notification Interface -->
+	<xs:complexType name="ClientDetails">
+		<xs:annotation><xs:documentation>Client Details</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="primaryKey" type="xs:long" />
+			<xs:element minOccurs="0" name="firstName" type="xs:string" />
+			<xs:element minOccurs="0" name="lastName" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	<!--  Client Details List -->
+	<xs:element name="ClientDetailsList">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>List of Client Details</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" minOccurs="0" name="dtls" nillable="true"  type="tns:ClientDetails" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- RecertificationDetails Key  -->	
+	<xs:element name="RecertificationDetailsKey">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>Recertification Details Key</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:element minOccurs="0" name="noOfDayskey" type="xs:long" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- End of Notification Interface -->
+</xs:schema>

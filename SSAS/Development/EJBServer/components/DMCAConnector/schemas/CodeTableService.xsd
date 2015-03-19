@@ -1,0 +1,62 @@
+<!-- 
+ * Copyright 2013-2014 Diona.
+ * All rights reserved.
+ * 
+ * This software is the confidential and proprietary information of Diona
+ * ("Confidential Information"). You shall not disclose such Confidential Information
+ * and shall use it only in accordance with the terms of the license agreement you
+ * entered into with Diona.
+ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://struct.codetableservice.sembatchsync.dimas.com.curam/xsd" xmlns:tns="http://struct.codetableservice.sembatchsync.dimas.com.curam/xsd" attributeFormDefault="qualified"> 
+    <xs:element name="CodeTableServiceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="CodeTableRequest" minOccurs="1" maxOccurs="1">
+                   <xs:simpleType>
+                       <xs:restriction base="xs:string">
+                           <xs:enumeration value="All"/>
+                           <xs:enumeration value="Single"/>
+                       </xs:restriction>
+                   </xs:simpleType>
+                </xs:element>
+                <xs:element name="CodeTableName" minOccurs="0" type="xs:string"/>
+            </xs:sequence> 
+        </xs:complexType>
+    </xs:element>
+      
+    <xs:complexType name="CodeTableServiceResponse">
+        <xs:annotation>
+            <xs:documentation>
+                List of retrieved codetable values.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="CodeTableDetailsList" type="tns:CodeTableDetailsList" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="CodeTableDetailsList">
+        <xs:annotation>
+            <xs:documentation>List of codetables</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="tableName" type="xs:string"/>
+            <xs:element name="details" type="tns:CodeTableDetails"  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="CodeTableDetails">
+        <xs:annotation>
+            <xs:documentation>Table Details</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="code" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="annotation" type="xs:string"/>
+            <xs:element name="isEnabled" type="xs:boolean"/>
+            <xs:element name="sortOrder" type="xs:int"/>
+            <xs:element name="localeIdentifier" type="xs:string"/>
+            <xs:element name="parentCode" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

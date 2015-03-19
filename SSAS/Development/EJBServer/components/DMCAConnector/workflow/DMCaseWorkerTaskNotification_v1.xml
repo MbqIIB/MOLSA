@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow-process id="1126999418470912" process-version="1" language-version="1.0" released="true" category="PC1" createdBy="admin" creationDate="20140320T185429">
+  <name>DMCaseWorkerTaskNotification</name>
+  <process-display-name>
+    <localized-text>
+      <locale language="en">DMCASEWORKERTASKNOTIFICATION</locale>
+    </localized-text>
+  </process-display-name>
+  <enactment-mappings>
+    <mapping>
+      <source-attribute struct-name="curam.core.struct.ConcernRoleKey" name="concernRoleID" />
+      <target-attribute wdo-name="ConcernRoleKey" name="concernRoleID" />
+    </mapping>
+  </enactment-mappings>
+  <wdos>
+    <wdo is-list-wdo="false" initialize-attributes="false">
+      <wdo-name>ConcernRoleKey</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">ConcernRoleKey</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>concernRoleID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">concernRoleID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>true</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+    <wdo is-list-wdo="false" initialize-attributes="false">
+      <wdo-name>TaskDetails</wdo-name>
+      <display-name>
+        <localized-text>
+          <locale language="en">Task Details</locale>
+        </localized-text>
+      </display-name>
+      <attributes>
+        <attribute>
+          <attribute-name>concernRoleID</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">ConcernRoleID</locale>
+            </localized-text>
+          </display-name>
+          <type>INT64</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+        <attribute>
+          <attribute-name>concernRoleName</attribute-name>
+          <display-name>
+            <localized-text>
+              <locale language="en">ConcernRoleName</locale>
+            </localized-text>
+          </display-name>
+          <type>STRING</type>
+          <required-at-enactment>false</required-at-enactment>
+          <process-output>false</process-output>
+        </attribute>
+      </attributes>
+    </wdo>
+  </wdos>
+  <activities>
+    <start-process-activity id="1">
+      <name>
+        <localized-text>
+          <locale language="en">Start Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The start process activity</locale>
+        </localized-text>
+      </description>
+      <split type="none">
+        <transition-id idref="1" />
+      </split>
+    </start-process-activity>
+    <end-process-activity id="2">
+      <name>
+        <localized-text>
+          <locale language="en">End Process Activity</locale>
+        </localized-text>
+      </name>
+      <description>
+        <localized-text>
+          <locale language="en">The end process activity</locale>
+        </localized-text>
+      </description>
+      <join type="none" />
+    </end-process-activity>
+    <automatic-activity id="3">
+      <name>
+        <localized-text>
+          <locale language="en">Initiate Task to Case Worker</locale>
+        </localized-text>
+      </name>
+      <notification delivery-mechanism="DM1">
+        <subject>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="en">Client Proof Document Verification</locale>
+              </localized-text>
+            </message-text>
+          </message>
+        </subject>
+        <body>
+          <message>
+            <message-text>
+              <localized-text>
+                <locale language="en">Please verify the proof document uploaded by %1s via mobile.</locale>
+              </localized-text>
+            </message-text>
+            <message-parameters>
+              <wdo-attribute wdo-name="TaskDetails" name="concernRoleName" />
+            </message-parameters>
+          </message>
+        </body>
+        <allocation-strategy type="target" identifier="DMEligibilityCaseWorker" />
+        <actions>
+          <action page-id="Person_listAttachment" principal-action="false" open-modal="false">
+            <message>
+              <message-text>
+                <localized-text>
+                  <locale language="en">Person Home</locale>
+                </localized-text>
+              </message-text>
+            </message>
+            <link-parameter name="concernRoleID">
+              <wdo-attribute wdo-name="TaskDetails" name="concernRoleID" />
+            </link-parameter>
+          </action>
+        </actions>
+      </notification>
+      <join type="none" />
+      <split type="none">
+        <transition-id idref="2" />
+      </split>
+      <bpo-mapping interface-name="curam.diona.mobility.citizenselfservice.intf.CitizenSelfService" method-name="readTaskDetails">
+        <formal-parameters>
+          <formal-parameter index="0">
+            <struct type="curam.diona.mobility.citizenselfservice.struct.TaskKey">
+              <field name="concernRoleID">
+                <base-type type="INT64">
+                  <wdo-attribute wdo-name="ConcernRoleKey" name="concernRoleID" />
+                </base-type>
+              </field>
+            </struct>
+          </formal-parameter>
+        </formal-parameters>
+        <return>
+          <struct>
+            <field name="concernRoleName">
+              <base-type>
+                <wdo-attribute wdo-name="TaskDetails" name="concernRoleName" />
+              </base-type>
+            </field>
+            <field name="concernRoleID">
+              <base-type>
+                <wdo-attribute wdo-name="TaskDetails" name="concernRoleID" />
+              </base-type>
+            </field>
+           </struct>
+        </return>
+      </bpo-mapping>
+    </automatic-activity>
+  </activities>
+  <transitions>
+    <transition id="1" from-activity-idref="1" to-activity-idref="3" />
+    <transition id="2" from-activity-idref="3" to-activity-idref="2" />
+  </transitions>
+</workflow-process>
+
