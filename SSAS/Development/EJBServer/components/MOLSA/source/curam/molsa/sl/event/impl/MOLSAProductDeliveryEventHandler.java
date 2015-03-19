@@ -104,7 +104,7 @@ public class MOLSAProductDeliveryEventHandler implements EventHandler,
 				.equals(paramEvent.eventKey.eventType)
 				|| PRODUCTDELIVERY.UNSUSPEND.eventType
 						.equals(paramEvent.eventKey.eventType)
-				|| MOLSAProductDelivery.REACTIVATE
+				|| MOLSAProductDelivery.REACTIVATE.eventType
 						.equals(paramEvent.eventKey.eventType)) {
 			return true;
 		}
