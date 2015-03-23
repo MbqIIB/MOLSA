@@ -101,155 +101,171 @@ public class MOLSAIntakeApplicationListener extends AbstractApplicationEvents {
 
   @Override
   public void startMappingApplication(Application intakeApplication) {
+	  
+
+	    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.preSubmitting()");
+	    // Get the data store root entity id
+	    final long rootEntityID = intakeApplication.getRootEntityID();
+
+	    updateAddressStructureForMappings(rootEntityID);
+
+	    final Entity[] personEntities = MOLSADatastoreUtility.getEntities(rootEntityID, MOLSADatastoreConst.kPerson);
+
+	    final Map<String, String> completedAddresses = new HashMap<String, String>();
+	    final Map<String, String> completedMailAddresses = new HashMap<String, String>();
+
+	    for (final Entity personEntity : personEntities) {
+
+	      final Entity[] personAddress = MOLSADatastoreUtility.getEntities(personEntity.getUniqueID(), MOLSADatastoreConst.kAddress);
+
+	      final Entity[] mailingAddress = MOLSADatastoreUtility.getEntities(personEntity.getUniqueID(), MOLSADatastoreConst.kMailingAddress);
+
+	      for (final Entity addressEntity : personAddress) {
+
+	        final String addressID = addressEntity.getAttribute(MOLSADatastoreConst.kAddressID);
+	        final AddressDtls addressDtls = new AddressDtls();
+	        if (completedAddresses.get(addressID) == null) {
+	          try {
+	            addressDtls.addressID = Long.valueOf(addressID);
+	            addressDtls.addressData = getAddressData(addressEntity);
+	            addressDtls.countryCode = COUNTRYEntry.QATAR.getCode();
+	            addressDtls.addressData = addressDtls.addressData.replace("addressID", String.valueOf(addressDtls.addressID));
+
+	            TransactionInfo.getInformationalManager().acceptWarning(MOLSADatastoreConst.gkEmpty, new AppException(BPOADDRESS.INF_ADDRESS_GEOCODE_NOT_FOUND));
+	            AddressFactory.newInstance().insert(addressDtls);
+
+	            // Update address ID on Address Entity
+	            addressEntity.setAttribute(MOLSADatastoreConst.kAddressID, String.valueOf(addressDtls.addressID));
+
+	          } catch (final AppException e) {
+	            Trace.kTopLevelLogger.error("Error Occurred in Address mapping" + e, e.getCause());
+	          } catch (final InformationalException e) {
+	            Trace.kTopLevelLogger.error("Error Occurred in Mailing Address mapping" + e, e.getCause());
+	          } catch (final NoClassDefFoundError e) {
+	            // skip error if there is no GEO location API present
+	            final boolean enabled = Configuration.getBooleanProperty(EnvVars.ENV_GEOCODE_ENABLED);
+
+	            if (enabled && StringUtils.isEmpty(addressDtls.geoCode)) {
+	              if (Trace.atLeast(Trace.kTraceVerbose)) {
+	                Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener: " + "No API found for " + e.getMessage());
+	              }
+	            } else {
+	              throw e;
+	            }
+	          }
+
+	          addressEntity.update();
+
+	        }
+	      }
+
+	      for (final Entity mailAddressEntity : mailingAddress) {
+	        final String mailAddressID = mailAddressEntity.getAttribute(MOLSADatastoreConst.kMailingAddressID);
+	        final AddressDtls addressDtls = new AddressDtls();
+	        if (completedMailAddresses.get(mailAddressID) == null) {
+	          try {
+	            addressDtls.addressID = Long.valueOf(mailAddressID);
+	            addressDtls.addressData = getMailingAddressData(mailAddressEntity);
+	            addressDtls.countryCode = COUNTRYEntry.QATAR.getCode();
+	            TransactionInfo.getInformationalManager().acceptWarning(MOLSADatastoreConst.gkEmpty, new AppException(BPOADDRESS.INF_ADDRESS_GEOCODE_NOT_FOUND));
+	            AddressFactory.newInstance().insert(addressDtls);
+
+	            // Update address ID on Address Entity
+	            mailAddressEntity.setAttribute(MOLSADatastoreConst.kMailingAddressID, String.valueOf(addressDtls.addressID));
+	            // Map Mailing Address
+
+	          } catch (final AppException e) {
+	            Trace.kTopLevelLogger.error("Error Occurred in Mailing Address mapping" + e, e.getCause());
+	          } catch (final InformationalException e) {
+	            Trace.kTopLevelLogger.error("Error Occurred in Mailing Address mapping" + e, e.getCause());
+	          } catch (final NoClassDefFoundError e) {
+	            // skip error if there is no GEO location API present
+	            final boolean enabled = Configuration.getBooleanProperty(EnvVars.ENV_GEOCODE_ENABLED);
+
+	            if (enabled && StringUtils.isEmpty(addressDtls.geoCode)) {
+	              if (Trace.atLeast(Trace.kTraceVerbose)) {
+	                Trace.kTopLevelLogger.info("AddressDataIntakeApplicationListener: " + "No API found for " + e.getMessage());
+	              }
+	            } else {
+	              throw e;
+	            }
+	          }
+
+	          mailAddressEntity.update();
+
+	        }
+
+	      }
+	    }
+
+	  
   }
 
   @Override
-  public void finishMappingApplication(Application application) {
+  public void finishMappingApplication(Application intakeApplication)  {
+
+	    try {
+	        final Datastore datastore = DatastoreHelper.openDatastore(intakeApplication.getSchemaName());
+
+	        final Entity rootEntity = datastore.readEntity(intakeApplication.getRootEntityID());
+
+	        final Entity[] personEntites = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kPerson));
+
+	        final Entity[] absentFatherEntities = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kAbsentFather));
+
+	        if (null != absentFatherEntities && absentFatherEntities.length > 0) {
+	          registerRepresentative(personEntites, absentFatherEntities[0], intakeApplication);
+	        }
+	      //SMS Integration
+	        long concernRoleID = 0;
+	        List<curam.piwrapper.casemanager.impl.CaseParticipantRole> allCaseParticipants = intakeApplication.getCase().listActiveCaseParticipantRoles();
+	        for (Entity relatedPerson : personEntites) {
+	            for (curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : allCaseParticipants) {
+	          	if (relatedPerson.getAttribute(MOLSADatastoreConst.kIsPrimaryParticipant).equals(MOLSADatastoreConst.kTrue))
+	               concernRoleID=caseParticipantRole.getConcernRole().getID(); 
+	            }
+	          }
+	     
+	        MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
+	        String applicationID=intakeApplication.getReference();
+	        AppException msg =new AppException(MOLSASMSSERVICE.APPLICATIONSUBMITTED);
+	        msg.arg(applicationID);
+	        String message=msg.getLocalizedMessage();
+	        
+
+	        MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
+	            new MOLSAConcernRoleListAndMessageTextDetails();
+	        //Construct the input details
+	        concernRoleListAndMessageTextDetails.dtls.smsMessageText=message;
+	        concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(concernRoleID);
+	        //Need to point to the right template
+	        concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.APPLICATIONSUBMITTED;
+	        molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+	    } catch (final NoSuchAttributeException e) {
+	      try {
+			throw new AppException(WORKSPACESERVICESDATAMAPPING.ERR_READING_FROM_DATASTORE, e);
+		} catch (AppException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    } catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	  
 
   }
 
   @Override
   public void preSubmitting(Application intakeApplication) throws InformationalException, AppException {
-    Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener.preSubmitting()");
-    // Get the data store root entity id
-    final long rootEntityID = intakeApplication.getRootEntityID();
-
-    updateAddressStructureForMappings(rootEntityID);
-
-    final Entity[] personEntities = MOLSADatastoreUtility.getEntities(rootEntityID, MOLSADatastoreConst.kPerson);
-
-    final Map<String, String> completedAddresses = new HashMap<String, String>();
-    final Map<String, String> completedMailAddresses = new HashMap<String, String>();
-
-    for (final Entity personEntity : personEntities) {
-
-      final Entity[] personAddress = MOLSADatastoreUtility.getEntities(personEntity.getUniqueID(), MOLSADatastoreConst.kAddress);
-
-      final Entity[] mailingAddress = MOLSADatastoreUtility.getEntities(personEntity.getUniqueID(), MOLSADatastoreConst.kMailingAddress);
-
-      for (final Entity addressEntity : personAddress) {
-
-        final String addressID = addressEntity.getAttribute(MOLSADatastoreConst.kAddressID);
-        final AddressDtls addressDtls = new AddressDtls();
-        if (completedAddresses.get(addressID) == null) {
-          try {
-            addressDtls.addressID = Long.valueOf(addressID);
-            addressDtls.addressData = getAddressData(addressEntity);
-            addressDtls.countryCode = COUNTRYEntry.QATAR.getCode();
-            addressDtls.addressData = addressDtls.addressData.replace("addressID", String.valueOf(addressDtls.addressID));
-
-            TransactionInfo.getInformationalManager().acceptWarning(MOLSADatastoreConst.gkEmpty, new AppException(BPOADDRESS.INF_ADDRESS_GEOCODE_NOT_FOUND));
-            AddressFactory.newInstance().insert(addressDtls);
-
-            // Update address ID on Address Entity
-            addressEntity.setAttribute(MOLSADatastoreConst.kAddressID, String.valueOf(addressDtls.addressID));
-
-          } catch (final AppException e) {
-            Trace.kTopLevelLogger.error("Error Occurred in Address mapping" + e, e.getCause());
-          } catch (final InformationalException e) {
-            Trace.kTopLevelLogger.error("Error Occurred in Mailing Address mapping" + e, e.getCause());
-          } catch (final NoClassDefFoundError e) {
-            // skip error if there is no GEO location API present
-            final boolean enabled = Configuration.getBooleanProperty(EnvVars.ENV_GEOCODE_ENABLED);
-
-            if (enabled && StringUtils.isEmpty(addressDtls.geoCode)) {
-              if (Trace.atLeast(Trace.kTraceVerbose)) {
-                Trace.kTopLevelLogger.info("MOLSAIntakeApplicationListener: " + "No API found for " + e.getMessage());
-              }
-            } else {
-              throw e;
-            }
-          }
-
-          addressEntity.update();
-
-        }
-      }
-
-      for (final Entity mailAddressEntity : mailingAddress) {
-        final String mailAddressID = mailAddressEntity.getAttribute(MOLSADatastoreConst.kMailingAddressID);
-        final AddressDtls addressDtls = new AddressDtls();
-        if (completedMailAddresses.get(mailAddressID) == null) {
-          try {
-            addressDtls.addressID = Long.valueOf(mailAddressID);
-            addressDtls.addressData = getMailingAddressData(mailAddressEntity);
-            addressDtls.countryCode = COUNTRYEntry.QATAR.getCode();
-            TransactionInfo.getInformationalManager().acceptWarning(MOLSADatastoreConst.gkEmpty, new AppException(BPOADDRESS.INF_ADDRESS_GEOCODE_NOT_FOUND));
-            AddressFactory.newInstance().insert(addressDtls);
-
-            // Update address ID on Address Entity
-            mailAddressEntity.setAttribute(MOLSADatastoreConst.kMailingAddressID, String.valueOf(addressDtls.addressID));
-            // Map Mailing Address
-
-          } catch (final AppException e) {
-            Trace.kTopLevelLogger.error("Error Occurred in Mailing Address mapping" + e, e.getCause());
-          } catch (final InformationalException e) {
-            Trace.kTopLevelLogger.error("Error Occurred in Mailing Address mapping" + e, e.getCause());
-          } catch (final NoClassDefFoundError e) {
-            // skip error if there is no GEO location API present
-            final boolean enabled = Configuration.getBooleanProperty(EnvVars.ENV_GEOCODE_ENABLED);
-
-            if (enabled && StringUtils.isEmpty(addressDtls.geoCode)) {
-              if (Trace.atLeast(Trace.kTraceVerbose)) {
-                Trace.kTopLevelLogger.info("AddressDataIntakeApplicationListener: " + "No API found for " + e.getMessage());
-              }
-            } else {
-              throw e;
-            }
-          }
-
-          mailAddressEntity.update();
-
-        }
-
-      }
-    }
-
   }
 
   @Override
   public void postSubmitting(Application intakeApplication) throws InformationalException, AppException {
-    try {
-        final Datastore datastore = DatastoreHelper.openDatastore(intakeApplication.getSchemaName());
-
-        final Entity rootEntity = datastore.readEntity(intakeApplication.getRootEntityID());
-
-        final Entity[] personEntites = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kPerson));
-
-        final Entity[] absentFatherEntities = rootEntity.getChildEntities(datastore.getEntityType(MOLSADatastoreConst.kAbsentFather));
-
-        if (null != absentFatherEntities && absentFatherEntities.length > 0) {
-          registerRepresentative(personEntites, absentFatherEntities[0], intakeApplication);
-        }
-      //SMS Integration
-        long concernRoleID = 0;
-        List<curam.piwrapper.casemanager.impl.CaseParticipantRole> allCaseParticipants = intakeApplication.getCase().listActiveCaseParticipantRoles();
-        for (Entity relatedPerson : personEntites) {
-            for (curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : allCaseParticipants) {
-          	if (relatedPerson.getAttribute(MOLSADatastoreConst.kIsPrimaryParticipant).equals(MOLSADatastoreConst.kTrue))
-               concernRoleID=caseParticipantRole.getConcernRole().getID(); 
-            }
-          }
-     
-        MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-        String applicationID=intakeApplication.getReference();
-        AppException msg =new AppException(MOLSASMSSERVICE.APPLICATIONSUBMITTED);
-        msg.arg(applicationID);
-        String message=msg.getLocalizedMessage();
-        
-
-        MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
-            new MOLSAConcernRoleListAndMessageTextDetails();
-        //Construct the input details
-        concernRoleListAndMessageTextDetails.dtls.smsMessageText=message;
-        concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(concernRoleID);
-        //Need to point to the right template
-        concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.APPLICATIONSUBMITTED;
-        molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
-    } catch (final NoSuchAttributeException e) {
-      throw new AppException(WORKSPACESERVICESDATAMAPPING.ERR_READING_FROM_DATASTORE, e);
-    }
-
   }
 
   @Override
