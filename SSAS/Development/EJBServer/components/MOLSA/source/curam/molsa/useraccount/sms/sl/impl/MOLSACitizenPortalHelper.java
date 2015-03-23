@@ -18,9 +18,7 @@ import curam.citizenworkspace.codetable.impl.IntakeClientTypeEntry;
 import curam.citizenworkspace.entity.fact.CWExternalPartyLinkFactory;
 import curam.citizenworkspace.entity.intf.CWExternalPartyLink;
 import curam.citizenworkspace.entity.struct.CWExternalPartyLinkDtls;
-import curam.citizenworkspace.impl.CPValidationHelper;
 import curam.citizenworkspace.security.fact.IntakeClientFactory;
-import curam.citizenworkspace.security.impl.CWPasswordGenerationStrategy;
 import curam.citizenworkspace.security.intf.IntakeClient;
 import curam.citizenworkspace.security.struct.IntakeClientDtls;
 import curam.codetable.CONCERNROLEALTERNATEID;
@@ -177,28 +175,39 @@ public class MOLSACitizenPortalHelper {
 		ExternalUserKey externalUserKey = new ExternalUserKey();
 		externalUserKey.userName = passwordDtls.userName;
 		// Read the existing user details using the user name
-		ExternalUserDtls externalUserDtls = externalUser.read(externalUserKey);
-		// Check if the existing password is correct
-		if (existingPassword.equals(externalUserDtls.password)) {
-			// Check if entered new password and confirm password matches
-			if (passwordDtls.confirmPassword.equals(passwordDtls.newPassword)) {
-				
-				validatePassword(passwordDtls.newPassword);
-				
-				String newPassword = new String();
-				// Encrypt the new password
-				newPassword = getEncryptedPasswordValue(passwordDtls.confirmPassword);
-				externalUserDtls.password = newPassword;
-				externalUserDtls.passwordChanged = Date.getCurrentDate();
-				// Modify the record in external user table
-				externalUser.modify(externalUserKey, externalUserDtls);
+		NotFoundIndicator notFoundIndicatorObj = new NotFoundIndicator();
+		ExternalUserDtls externalUserDtls = externalUser.read(
+				notFoundIndicatorObj, externalUserKey);
+		// Check if the user account exists
+		if (!(notFoundIndicatorObj.isNotFound())) {
+			// Check if the existing password is correct
+			if (existingPassword.equals(externalUserDtls.password)) {
+				// Check if entered new password and confirm password matches
+				if (passwordDtls.confirmPassword
+						.equals(passwordDtls.newPassword)) {
+
+					validatePassword(passwordDtls.newPassword);
+
+					String newPassword = new String();
+					// Encrypt the new password
+					newPassword = getEncryptedPasswordValue(passwordDtls.confirmPassword);
+					externalUserDtls.password = newPassword;
+					externalUserDtls.passwordChanged = Date.getCurrentDate();
+					// Modify the record in external user table
+					externalUser.modify(externalUserKey, externalUserDtls);
+				} else {
+					// New password and confirm password does not match
+					throw new AppException(
+							MOLSANOTIFICATION.PASSWORD_NOT_MATCHING);
+				}
 			} else {
-				// New password and confirm password doesnot match
-				throw new AppException(MOLSANOTIFICATION.PASSWORD_NOT_MATCHING);
+				// Entered password authentication failed
+				throw new AppException(MOLSANOTIFICATION.WRONG_PASSWORD);
 			}
 		} else {
-			// Entered password authentication failed
-			throw new AppException(MOLSANOTIFICATION.WRONG_PASSWORD);
+			// User account does not exist
+			throw new AppException(
+					MOLSANOTIFICATION.UNIVERSALACCESS_ACCOUNT_DOESNOTEXIST);
 		}
 	}
 
@@ -509,68 +518,67 @@ public class MOLSACitizenPortalHelper {
 		}
 		return false;
 	}
-	
-	 private void validatePassword(String password) throws InformationalException
-	  {
-	    Integer passwordLength = Configuration.getIntProperty(EnvVars.ENV_CW_PASSWORD_MIN_LENGTH);
 
+	private void validatePassword(String password)
+			throws InformationalException {
+		Integer passwordLength = Configuration
+				.getIntProperty(EnvVars.ENV_CW_PASSWORD_MIN_LENGTH);
 
-	    if ((password != null) && (password.trim().length() < passwordLength.intValue()))
-	    {
-	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_TOO_SHORT);
+		if ((password != null)
+				&& (password.trim().length() < passwordLength.intValue())) {
+			AppException ae = new AppException(
+					MOLSANOTIFICATION.ERR_PASSWORD_TOO_SHORT);
 
+			ae.arg(passwordLength);
+			ValidationHelper.addValidationError(ae);
+		}
 
-	      ae.arg(passwordLength);
-	      ValidationHelper.addValidationError(ae);
-	    }
+		if (password == null) {
+			AppException ae = new AppException(
+					MOLSANOTIFICATION.ERR_PASSWORD_TOO_SHORT);
 
-	    if (password == null) {
-	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_TOO_SHORT);
+			ae.arg(passwordLength);
+			ValidationHelper.addValidationError(ae);
+		}
 
+		Integer maxPasswordLength = Configuration
+				.getIntProperty(EnvVars.ENV_CW_PASSWORD_MAX_LENGTH);
 
-	      ae.arg(passwordLength);
-	      ValidationHelper.addValidationError(ae);
-	    }
+		if ((password != null)
+				&& (password.trim().length() > maxPasswordLength.intValue())) {
+			AppException ae = new AppException(
+					MOLSANOTIFICATION.ERR_PASSWORD_TOO_LONG);
 
-	    Integer maxPasswordLength = Configuration.getIntProperty(EnvVars.ENV_CW_PASSWORD_MAX_LENGTH);
+			ae.arg(maxPasswordLength);
+			ValidationHelper.addValidationError(ae);
+		}
 
+		validateMinSpecialChars(password);
+		ValidationHelper.failIfErrorsExist();
+	}
 
-	    if ((password != null) && (password.trim().length() > maxPasswordLength.intValue()))
-	    {
-	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_TOO_LONG);
+	private void validateMinSpecialChars(String password) {
+		if ((password == null) || (password.trim().length() <= 0))
+			return;
+		Integer passwordMinSpecialChars = Configuration
+				.getIntProperty(EnvVars.ENV_CW_PASSWORD_MIN_SPECIAL_CHARS);
 
+		char[] passwordChars = password.trim().toCharArray();
+		int specialCharCounter = 0;
 
-	      ae.arg(maxPasswordLength);
-	      ValidationHelper.addValidationError(ae);
-	    }
+		for (int i = 0; i < passwordChars.length; ++i) {
+			if (!(Character.isLetter(passwordChars[i]))) {
+				++specialCharCounter;
+			}
+		}
 
-	    validateMinSpecialChars(password);
-	    ValidationHelper.failIfErrorsExist();
-	  }
+		if (specialCharCounter < passwordMinSpecialChars.intValue()) {
+			AppException ae = new AppException(
+					MOLSANOTIFICATION.ERR_PASSWORD_MIN_SPECIAL_CHARS);
 
-	  private void validateMinSpecialChars(String password) {
-	    if ((password == null) || (password.trim().length() <= 0))
-	      return;
-	    Integer passwordMinSpecialChars = Configuration.getIntProperty(EnvVars.ENV_CW_PASSWORD_MIN_SPECIAL_CHARS);
-
-
-	    char[] passwordChars = password.trim().toCharArray();
-	    int specialCharCounter = 0;
-
-	    for (int i = 0; i < passwordChars.length; ++i) {
-	      if (!(Character.isLetter(passwordChars[i]))) {
-	        ++specialCharCounter;
-	      }
-	    }
-
-	    if (specialCharCounter < passwordMinSpecialChars.intValue()) {
-	      AppException ae = new AppException(MOLSANOTIFICATION.ERR_PASSWORD_MIN_SPECIAL_CHARS);
-
-
-	      ae.arg(passwordMinSpecialChars);
-	      ValidationHelper.addValidationError(ae);
-	    }
-	  }
-
+			ae.arg(passwordMinSpecialChars);
+			ValidationHelper.addValidationError(ae);
+		}
+	}
 
 }
