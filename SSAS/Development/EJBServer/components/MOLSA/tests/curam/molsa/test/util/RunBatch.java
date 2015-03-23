@@ -6,8 +6,7 @@ public class RunBatch {
 	
 	public static void main(String[] args){
 		
-		String[] arguments = new String[]{};
-		BatchLauncher.main(arguments);
+		BatchLauncher.main(args);
 	}
 
 }
