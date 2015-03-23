@@ -173,7 +173,6 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		System.out.println("Case:"+trainingDetails.trainingID);
 		curam.molsa.training.entity.intf.MOLSATraining trainingObj=MOLSATrainingFactory.newInstance();
 		MOLSATrainingKey key =  new MOLSATrainingKey();
-
 		trainingObj.insert(trainingDetails);
 		key.trainingID=trainingDetails.trainingID;
 		return key;

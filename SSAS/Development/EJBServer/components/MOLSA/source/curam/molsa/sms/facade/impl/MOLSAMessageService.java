@@ -28,6 +28,7 @@ import curam.core.sl.struct.CommunicationKey;
 import curam.core.struct.CaseCategoryTypeDetails;
 import curam.core.struct.WMInstanceDataDtls;
 import curam.message.MOLSASMSSERVICE;
+import curam.molsa.message.MOLSABPOTRAINING;
 import curam.molsa.sms.entity.fact.MOLSASMSLogFactory;
 import curam.molsa.sms.entity.fact.MOLSASMSWMInstanceFactory;
 import curam.molsa.sms.entity.intf.MOLSASMSLog;
@@ -188,6 +189,11 @@ public abstract class MOLSAMessageService extends
 	public MOLSAParticipantDetailsList listParticipantByCriteria(
 			MOLSAParticipantFilterCriteriaDetails key) throws AppException,
 			InformationalException {
+		if (key.actionIDProperty.equals("TRAINING_SUBMIT")){
+			if(key.concernRoleTabbedList.length()==0){
+				throw new AppException(MOLSABPOTRAINING.ERR_EMPTY_CONCERNROLE);
+			}
+		}
 		MOLSAParticipantDetailsList molsaParticipantDetailsList = new MOLSAParticipantDetailsList();
 
 		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
