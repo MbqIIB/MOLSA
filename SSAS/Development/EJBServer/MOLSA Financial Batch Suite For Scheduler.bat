@@ -9,4 +9,5 @@ call build runbatch -Dbatch.program=curam.core.intf.DetermineProductDeliveryElig
 call build runbatch -Dbatch.program=curam.core.intf.GenerateInstructionLineItems.processAllFinancialComponentsDue   -Dbatch.username=SYSTEM -Djava.maxmemory=1500m -Djava.extra.jvmargs="-XX:MaxPermSize=512M"
 call build runbatch -Dbatch.program=curam.core.intf.GenerateInstruments.processInstructionLineItemsDue   -Dbatch.username=SYSTEM -Djava.maxmemory=1500m -Djava.extra.jvmargs="-XX:MaxPermSize=512M"
 call build runbatch -Dbatch.program=curam.molsa.eft.batch.intf.MOLSAGenerateEFTBatch.process -Dbatch.username=SYSTEM -Djava.maxmemory=1500m -Djava.extra.jvmargs="-XX:MaxPermSize=512M"
+REM The below batch is used to run to help the Cognos Reporting.
 call build runbatch -Dbatch.program=curam.molsa.cognos.reporting.intf.MOLSACognosReportHelperBatch.process -Dbatch.username=SYSTEM -Djava.maxmemory=1500m -Djava.extra.jvmargs="-XX:MaxPermSize=512M"
