@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.inject.Inject;
 
 import curam.codetable.CASECLOSEREASON;
+import curam.codetable.CASESTATUS;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.impl.CASECLOSEREASONEntry;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
@@ -15,15 +16,28 @@ import curam.core.facade.intf.ProductDelivery;
 import curam.core.facade.struct.CloseCaseDetails;
 import curam.core.facade.struct.CreateCertificationDetails;
 import curam.core.facade.struct.InformationMsgDtlsList;
+import curam.core.facade.struct.MaintainCertificationDetails;
 import curam.core.facade.struct.ReactivationDetails;
 import curam.core.facade.struct.RejectCaseKey_fo1;
 import curam.core.facade.struct.SubmitForApprovalKey;
+import curam.core.fact.CaseHeaderFactory;
+import curam.core.fact.CaseStatusFactory;
+import curam.core.fact.SystemUserFactory;
+import curam.core.fact.UniqueIDFactory;
 import curam.core.impl.CuramConst;
+import curam.core.intf.CaseStatus;
+import curam.core.intf.SystemUser;
+import curam.core.intf.UniqueID;
 import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
 import curam.core.sl.intf.MilestoneDelivery;
 import curam.core.sl.struct.MilestoneDeliveryDtls;
 import curam.core.sl.struct.TaskCreateDetails;
+import curam.core.struct.CaseHeaderDtls;
+import curam.core.struct.CaseHeaderKey;
+import curam.core.struct.CaseStatusDtls;
+import curam.core.struct.CaseStatusKey;
+import curam.core.struct.CurrentCaseStatusKey;
 import curam.core.struct.InformationalMsgDtls;
 import curam.core.struct.ProductDeliveryApprovalKey1;
 import curam.core.struct.ReactivationDtls;
@@ -69,10 +83,10 @@ public abstract class MOLSAProductDelivery extends
 
 	@Inject
 	protected ProductDeliveryDAO productDeliveryDAO;
-	
+
 	@Inject
 	private CaseHeaderDAO caseHeaderDAO;
-	
+
 	@Inject
 	private IntegratedCaseDAO integratedCaseDAO;
 
@@ -252,80 +266,82 @@ public abstract class MOLSAProductDelivery extends
 							0);
 			TransactionInfo.getInformationalManager().failOperation();
 		}
-		
+
 		productDeliveryFactoryObj.approve(key);
 	}
 
 	@Override
 	public void close(CloseCaseDetails details) throws AppException,
 			InformationalException {
-		ProductDelivery PDObj= ProductDeliveryFactory.newInstance();
+		ProductDelivery PDObj = ProductDeliveryFactory.newInstance();
 		CaseHeader caseHeader = caseHeaderDAO.get(details.caseID);
 		PDObj.close(details);
-		//SMS Integration 
-	      MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-	      MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
-	      molsaMessageTextKey.dtls.category=MOLSASMSMessageType.NOTIFICATION;
-	      molsaMessageTextKey.dtls.template=MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
-	      MOLSAMessageText messageText = molsasmsUtilObj.getSMSMessageText(molsaMessageTextKey );
-	      MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails=
-	          new MOLSAConcernRoleListAndMessageTextDetails();
-	      //Construct the input details
-	      concernRoleListAndMessageTextDetails.dtls.smsMessageText=messageText.dtls.smsMessageText;
-	      concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList=String.valueOf(caseHeader.getConcernRole().getID());
-	      //Need to point to the right template
-	      concernRoleListAndMessageTextDetails.dtls.smsMessageType=MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
-	      if(details.reasonCode.equals(CASECLOSEREASON.MANAGERREJECTION))
-	    	  molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
-	    	  
+		// SMS Integration
+		MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+		MOLSAMessageTextKey molsaMessageTextKey = new MOLSAMessageTextKey();
+		molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
+		molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
+		MOLSAMessageText messageText = molsasmsUtilObj
+				.getSMSMessageText(molsaMessageTextKey);
+		MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+		// Construct the input details
+		concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+		concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
+				.valueOf(caseHeader.getConcernRole().getID());
+		// Need to point to the right template
+		concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
+		if (details.reasonCode.equals(CASECLOSEREASON.MANAGERREJECTION))
+			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+
 	}
+
 	public void rejectPDCApproval(RejectCaseKey_fo1 key) throws AppException,
-	InformationalException {    
-	
-		final curam.core.intf.ProductDeliveryApproval productDeliveryApprovalObj = curam.core.fact.ProductDeliveryApprovalFactory.newInstance();
-	    final curam.core.struct.ProductDeliveryApprovalKey1 productDeliveryApprovalKey = new curam.core.struct.ProductDeliveryApprovalKey1();
-	
-	    // Set key to reject product delivery
-	    productDeliveryApprovalKey.assign(key);
-	
-	    // Call ProductDeliveryApproval BPO to reject the case
-	    productDeliveryApprovalObj.reject1(productDeliveryApprovalKey);
-	    
-	    final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
-        TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
-        taskCreateDetails.caseID = key.caseID;
+			InformationalException {
 
-        final LocalisableString subject = new LocalisableString(
-                     BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
-        curam.piwrapper.caseheader.impl.CaseHeader caseHeader = caseHeaderDAO
-                     .get(key.caseID);
+		final curam.core.intf.ProductDeliveryApproval productDeliveryApprovalObj = curam.core.fact.ProductDeliveryApprovalFactory
+				.newInstance();
+		final curam.core.struct.ProductDeliveryApprovalKey1 productDeliveryApprovalKey = new curam.core.struct.ProductDeliveryApprovalKey1();
 
-        subject.arg(caseHeader.getCaseReference());
+		// Set key to reject product delivery
+		productDeliveryApprovalKey.assign(key);
 
-        String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
-                     productDeliveryDAO.get(key.caseID)
-                                   .getProductType().getCode(),
-                     TransactionInfo.getProgramLocale());
-        subject.arg(productName);
-        subject.arg(caseHeader.getConcernRole().getName());
+		// Call ProductDeliveryApproval BPO to reject the case
+		productDeliveryApprovalObj.reject1(productDeliveryApprovalKey);
 
-        taskCreateDetails.subject = subject.getMessage(TransactionInfo
-                     .getProgramLocale());
+		final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+		taskCreateDetails.caseID = key.caseID;
 
-        enactmentStructs.add(taskCreateDetails);
-        EnactmentService.startProcessInV3CompatibilityMode(
-                     MOLSAConstants.kMOLSAProductDeliveryRejectTask,
-                     enactmentStructs);
-        Event eventKey = new Event();
-        eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventClass;
-        eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventType;
-        eventKey.primaryEventData = key.caseID;
-        EventService.raiseEvent(eventKey);
+		final LocalisableString subject = new LocalisableString(
+				BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
+		curam.piwrapper.caseheader.impl.CaseHeader caseHeader = caseHeaderDAO
+				.get(key.caseID);
+
+		subject.arg(caseHeader.getCaseReference());
+
+		String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+				productDeliveryDAO.get(key.caseID).getProductType().getCode(),
+				TransactionInfo.getProgramLocale());
+		subject.arg(productName);
+		subject.arg(caseHeader.getConcernRole().getName());
+
+		taskCreateDetails.subject = subject.getMessage(TransactionInfo
+				.getProgramLocale());
+
+		enactmentStructs.add(taskCreateDetails);
+		EnactmentService.startProcessInV3CompatibilityMode(
+				MOLSAConstants.kMOLSAProductDeliveryRejectTask,
+				enactmentStructs);
+		Event eventKey = new Event();
+		eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventClass;
+		eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALREJECTED.eventType;
+		eventKey.primaryEventData = key.caseID;
+		EventService.raiseEvent(eventKey);
 
 	}
-	
+
 	public void approveCOCPDC(SubmitForApprovalKey submitForApprovalKey)
-	throws AppException, InformationalException {
+			throws AppException, InformationalException {
 		final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
 		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
 		taskCreateDetails.caseID = submitForApprovalKey.caseID;
@@ -350,37 +366,109 @@ public abstract class MOLSAProductDelivery extends
 
 		enactmentStructs.add(taskCreateDetails);
 		EnactmentService.startProcessInV3CompatibilityMode(
-				MOLSAConstants.kMOLSAProductDeliveryOpenTask,
-				enactmentStructs);
+				MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
 
-        Event eventKey = new Event();
-        eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventClass;
-        eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventType;
-        eventKey.primaryEventData = submitForApprovalKey.caseID;
-        EventService.raiseEvent(eventKey);
+		Event eventKey = new Event();
+		eventKey.eventKey.eventClass = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventClass;
+		eventKey.eventKey.eventType = MOLSAAPPROVALTASK.PDCAPPROVALAPPROVED.eventType;
+		eventKey.primaryEventData = submitForApprovalKey.caseID;
+		EventService.raiseEvent(eventKey);
 
 	}
 
 	@Override
 	public void reactivate(ReactivationDetails details) throws AppException,
 			InformationalException {
-		 // MaintainCaseClosure manipulation variables
-	    final curam.core.intf.MaintainCaseClosure maintainCaseClosureObj = curam.core.fact.MaintainCaseClosureFactory.newInstance();
-	    final ReactivationDtls reactivationDtls = new ReactivationDtls();
+		// MaintainCaseClosure manipulation variables
+		final curam.core.intf.MaintainCaseClosure maintainCaseClosureObj = curam.core.fact.MaintainCaseClosureFactory
+				.newInstance();
+		final ReactivationDtls reactivationDtls = new ReactivationDtls();
 
-	    // Assign reactivation details
-	    reactivationDtls.assign(details);
+		// Assign reactivation details
+		reactivationDtls.assign(details);
 
-	    // Call MaintainCaseClosure BPO to reactivate the case
-	    maintainCaseClosureObj.reactivateCase(reactivationDtls);
-	    
-	    Event eventKey = new Event();
-        eventKey.eventKey.eventClass = curam.events.MOLSAProductDelivery.REACTIVATE.eventClass;
-        eventKey.eventKey.eventType = curam.events.MOLSAProductDelivery.REACTIVATE.eventType;
-        eventKey.primaryEventData = details.caseID;
-        EventService.raiseEvent(eventKey);
+		// Call MaintainCaseClosure BPO to reactivate the case
+		maintainCaseClosureObj.reactivateCase(reactivationDtls);
+
+		Event eventKey = new Event();
+		eventKey.eventKey.eventClass = curam.events.MOLSAProductDelivery.REACTIVATE.eventClass;
+		eventKey.eventKey.eventType = curam.events.MOLSAProductDelivery.REACTIVATE.eventType;
+		eventKey.primaryEventData = details.caseID;
+		EventService.raiseEvent(eventKey);
 	}
-	
-	
-	
+
+	@Override
+	public InformationMsgDtlsList modifyCertification(
+			MaintainCertificationDetails details) throws AppException,
+			InformationalException {
+		// Return object
+		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
+
+		// MaintainCertification manipulation variables
+		final curam.core.intf.MaintainCertification maintainCertificationObj = curam.core.fact.MaintainCertificationFactory
+				.newInstance();
+		final curam.core.struct.MaintainCertificationDetails maintainCertificationDetails = new curam.core.struct.MaintainCertificationDetails();
+
+		// Assign certification details
+		maintainCertificationDetails.assign(details);
+
+		// Call MaintainCertification BPO to modify the certification
+		maintainCertificationObj
+				.modifyCertification(maintainCertificationDetails);
+		curam.core.intf.CaseHeader caseHeaderObj = CaseHeaderFactory
+				.newInstance();
+		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+		caseHeaderKey.caseID = details.caseID;
+
+		CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
+
+		if (CASESTATUS.ACTIVE.equals(caseHeaderDtls.statusCode)) {
+			CurrentCaseStatusKey currentCaseStatusKey = new CurrentCaseStatusKey();
+
+			CaseStatusDtls mdfCaseStatusDtls = new CaseStatusDtls();
+			CaseStatusDtls insCaseStatusDtls = new CaseStatusDtls();
+			CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
+			CaseStatusKey mdfCaseStatusKey = new CaseStatusKey();
+			UniqueID uniqueIDObj = UniqueIDFactory.newInstance();
+
+			caseHeaderDtls.statusCode = CASESTATUS.OPEN;
+			caseHeaderObj.modify(caseHeaderKey, caseHeaderDtls);
+			currentCaseStatusKey.caseID = details.caseID;
+			currentCaseStatusKey.nullDate = Date.kZeroDate;
+			CaseStatusDtls caseStatusDtls = caseStatusObj
+					.readCurrentStatusByCaseID1(currentCaseStatusKey);
+			mdfCaseStatusDtls.assign(caseStatusDtls);
+			mdfCaseStatusDtls.endDate = TransactionInfo.getSystemDate();
+			mdfCaseStatusDtls.endDateTime = TransactionInfo.getSystemDateTime();
+			mdfCaseStatusKey.caseStatusID = caseStatusDtls.caseStatusID;
+			caseStatusObj.modify(mdfCaseStatusKey, mdfCaseStatusDtls);
+			insCaseStatusDtls.caseID = details.caseID;
+			insCaseStatusDtls.statusCode = CASESTATUS.OPEN;
+			insCaseStatusDtls.startDate = TransactionInfo.getSystemDate();
+			insCaseStatusDtls.endDate = Date.kZeroDate;
+			insCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
+			SystemUser systemUserObj = SystemUserFactory.newInstance();
+			insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
+			insCaseStatusDtls.comments = "";
+			caseStatusObj.insert(insCaseStatusDtls);
+		}
+		final curam.util.exception.InformationalManager informationalManager = curam.util.transaction.TransactionInfo
+				.getInformationalManager();
+
+		final String[] warnings = informationalManager
+				.obtainInformationalAsString();
+
+		for (int i = 0; i < warnings.length; i++) {
+
+			final InformationalMsgDtls informationalMsgDtls = new InformationalMsgDtls();
+
+			informationalMsgDtls.informationMsgTxt = warnings[i];
+			informationMsgDtlsList.informationalMsgDtlsList.dtls
+					.addRef(informationalMsgDtls);
+
+		}
+
+		return informationMsgDtlsList;
+	}
+
 }
