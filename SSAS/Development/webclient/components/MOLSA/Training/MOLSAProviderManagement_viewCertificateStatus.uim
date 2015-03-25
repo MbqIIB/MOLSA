@@ -16,27 +16,29 @@
         </CONNECT>
     </PAGE_TITLE>
     <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
-    <PAGE_PARAMETER NAME="concernRoleID"/>
-    <PAGE_PARAMETER NAME="concernRoleID2"/>
+    <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
+    <PAGE_PARAMETER NAME="serviceOfferingID"/>
+    <PAGE_PARAMETER NAME="providerConcernRoleID"/>
+    
 
     <SERVER_INTERFACE CLASS="MOLSATrainingService" NAME="ACTION"
         OPERATION="insertCertificateIssuedStatus" PHASE="ACTION"/>
     <CONNECT>
         <SOURCE NAME="PAGE" PROPERTY="providerRosterLineItemID"/>
-        <TARGET NAME="ACTION" PROPERTY="providerID"/>
-    </CONNECT>
-    <CONNECT>
-        <SOURCE NAME="PAGE" PROPERTY="concernRoleID"/>
-        <TARGET NAME="ACTION" PROPERTY="concernRoleID"/>
-    </CONNECT>
-    <CONNECT>
-        <SOURCE NAME="PAGE" PROPERTY="concernRoleID2"/>
-        <TARGET NAME="ACTION" PROPERTY="serviceOfferingID"/>
-    </CONNECT>
-    <CONNECT>
-        <SOURCE NAME="PAGE" PROPERTY="providerRosterLineItemID"/>
-        <TARGET NAME="ACTION" PROPERTY="certificationID"/>
-    </CONNECT>
+        <TARGET NAME="ACTION" PROPERTY="serviceAuthorizationID"/>
+    </CONNECT>   
+    <CLUSTER  LABEL_WIDTH="50">
+     <FIELD     
+      LABEL="Field.Label.CertificateIssued"
+    >
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="certificateIssuedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+     </CLUSTER>
     <ACTION_SET>
         <ACTION_CONTROL LABEL="ActionControl.Label.Submit" TYPE="SUBMIT"> </ACTION_CONTROL>
         <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"> </ACTION_CONTROL>
