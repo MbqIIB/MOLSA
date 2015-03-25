@@ -21,7 +21,7 @@ public class MOLSACognosReportHelperBatch extends curam.molsa.cognos.reporting.b
    */
   @Override
   public void process() throws AppException, InformationalException {
-    String sql = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_ MOLSAPAYMENTDETAILS" ; 
+    String sql = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS" ; 
     try {
       PreparedStatement stmt = TransactionInfo.getInfo().getInfoConnection().prepareStatement(sql);
       stmt.executeQuery();
