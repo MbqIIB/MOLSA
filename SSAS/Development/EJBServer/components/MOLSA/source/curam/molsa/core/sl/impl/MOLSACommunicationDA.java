@@ -898,8 +898,9 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		//param:Program Name
 
 		molsaCommDtls.programNames=MOLSACommunicationHelper.getProgramName();
+		molsaCommDtls.caseReferenceID=MOLSACommunicationHelper.getCaseReferenceID(commKey.caseID);
 
-		//Calling method to add additional parameters to the new entity dtls struct as per the requirement	
+		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
 
 		return concernRoleCommKeyOut;

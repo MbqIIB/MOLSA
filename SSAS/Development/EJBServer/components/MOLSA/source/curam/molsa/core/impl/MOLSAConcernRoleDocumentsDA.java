@@ -6,8 +6,11 @@ import curam.molsa.core.struct.MOLSAProFormaDocumentData;
 import curam.molsa.util.impl.MOLSACommunicationHelper;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASEUNSUSPENDREASON;
+import curam.core.fact.BankBranchFactory;
+import curam.core.intf.BankBranch;
 import curam.core.sl.struct.ProFormaReturnDocDetails;
 import curam.core.struct.AddressKey;
+import curam.core.struct.BankBranchKey;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderKey;
 import curam.core.struct.CaseReferenceProductNameConcernRoleName;
@@ -145,6 +148,15 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		//Reading program Names, Bank Name ,Manager Name already saved in the  new table
 		
 		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
+		
+		if((concernRoleCommunicationDtls.bankBranchID)!=0){
+			BankBranch bankBranch= BankBranchFactory.newInstance();
+			BankBranchKey bankKey= new BankBranchKey();
+			bankKey.bankBranchID=concernRoleCommunicationDtls.bankBranchID;
+			molsaproFormaDocumentData.bankName=bankBranch.read(bankKey).name;
+			}
+		molsaproFormaDocumentData.molsaManagerName=concernRoleCommunicationDtls.molsaManager;
+		molsaproFormaDocumentData.caseReferenceID=concernRoleCommunicationDtls.caseReferenceID;
 		
 		
 		if((details.documentID==45001)||(details.documentID==45002)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
