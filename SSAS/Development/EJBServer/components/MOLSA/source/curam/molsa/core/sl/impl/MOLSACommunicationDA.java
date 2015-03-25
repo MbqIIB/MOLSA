@@ -21,6 +21,7 @@ import curam.core.facade.struct.FileNameAndDataDtls;
 import curam.core.fact.AddressFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.ConcernRoleAddressFactory;
+import curam.core.fact.ConcernRoleCommunicationFactory;
 import curam.core.fact.ConcernRoleDocumentsFactory;
 import curam.core.fact.ConcernRoleFactory;
 import curam.core.fact.MaintainConcernRoleAddressFactory;
@@ -34,11 +35,13 @@ import curam.core.intf.Address;
 import curam.core.intf.CaseHeader;
 import curam.core.intf.ConcernRole;
 import curam.core.intf.ConcernRoleAddress;
+import curam.core.intf.ConcernRoleCommunication;
 import curam.core.intf.ConcernRoleDocuments;
 import curam.core.intf.MaintainConcernRoleAddress;
 import curam.core.intf.MaintainXSLTemplate;
 import curam.core.intf.ProspectPerson;
 import curam.core.intf.SystemUser;
+import curam.core.sl.entity.struct.CaseIDParticipantRoleKey;
 import curam.core.sl.fact.ClientInteractionFactory;
 import curam.core.sl.fact.ClientMergeFactory;
 import curam.core.sl.impl.CaseTransactionLogIntf;
@@ -51,9 +54,12 @@ import curam.core.sl.struct.ParticipantSecurityCheckKey;
 import curam.core.sl.struct.PreviewProFormaKey;
 import curam.core.sl.struct.ProFormaCommDetails;
 import curam.core.sl.struct.ProFormaCommDetails1;
+import curam.core.sl.struct.ProFormaCommKey;
 import curam.core.sl.struct.ProFormaReturnDocDetails;
 import curam.core.sl.struct.ValidatePrimaryCaseParticipantDetails;
 import curam.core.struct.AddressDetails;
+import curam.core.struct.AddressDtls;
+import curam.core.struct.AddressKey;
 import curam.core.struct.CaseHeaderKey;
 import curam.core.struct.CaseIDConcernRoleID;
 import curam.core.struct.CaseKey;
@@ -64,6 +70,7 @@ import curam.core.struct.CommunicationDetails;
 import curam.core.struct.ConcernRoleAddressKey;
 import curam.core.struct.ConcernRoleCommKeyOut;
 import curam.core.struct.ConcernRoleCommunicationDtls;
+import curam.core.struct.ConcernRoleCommunicationKey;
 import curam.core.struct.ConcernRoleDocumentDetails;
 import curam.core.struct.ConcernRoleDocumentKey;
 import curam.core.struct.ConcernRoleDtls;
@@ -82,6 +89,7 @@ import curam.core.struct.SecurityResult;
 import curam.core.struct.SystemUserDtls;
 import curam.core.struct.XSLTemplateIn;
 import curam.core.struct.XSLTemplateReadDetails;
+import curam.message.BPOADDRESS;
 import curam.message.BPOCASEEVENTS;
 import curam.message.BPOCOMMUNICATION;
 import curam.message.GENERAL;
@@ -160,8 +168,8 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 
 		if ((previewProFormaKey.localeIdentifier == null)
 				|| (previewProFormaKey.localeIdentifier.length() == 0)) {
-		  concernRoleDocumentDetails.localeIdentifier = TransactionInfo.getProgramLocale();
-//		  concernRoleDocumentDetails.localeIdentifier = "en";
+			concernRoleDocumentDetails.localeIdentifier = TransactionInfo.getProgramLocale();
+			//		  concernRoleDocumentDetails.localeIdentifier = "en";
 		} else {
 			concernRoleDocumentDetails.localeIdentifier = previewProFormaKey.localeIdentifier;
 		}
@@ -886,9 +894,9 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		//Getting extra parameters from the specified table
 		MOLSAConcernRoleCommunicationDtls molsaCommDtls=new MOLSAConcernRoleCommunicationDtls();
 		molsaCommDtls.communicationID=commDetails.communicationID;
-		
+
 		//param:Program Name
-		
+
 		molsaCommDtls.programNames=MOLSACommunicationHelper.getProgramName();
 
 		//Calling method to add additional parameters to the new entity dtls struct as per the requirement	
@@ -936,4 +944,98 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		}
 		// END, CR00100436
 	}
+
+
+	public ProFormaCommDetails1 readProForma1(
+			final ProFormaCommKey proFormaCommKey) throws AppException,
+			InformationalException {
+
+		final ProFormaCommDetails1 proFormaCommDetails = new ProFormaCommDetails1();
+
+		final ConcernRoleCommunication concernRoleCommunicationObj = ConcernRoleCommunicationFactory.newInstance();
+		ConcernRoleCommunicationDtls concernRoleCommunicationDtls;
+		final ConcernRoleCommunicationKey concernRoleCommunicationKey = new ConcernRoleCommunicationKey();
+
+		concernRoleCommunicationKey.communicationID = proFormaCommKey.communicationID;
+
+		concernRoleCommunicationDtls = concernRoleCommunicationObj.read(
+				concernRoleCommunicationKey);
+
+		// BEGIN, CR00227859, PM
+		performSecurityChecksForRead(concernRoleCommunicationDtls);
+		// END, CR00227859
+
+		final ProFormaCommDetails commDetails = new ProFormaCommDetails();
+
+		commDetails.assign(concernRoleCommunicationDtls);
+
+		proFormaCommDetails.assign(commDetails);
+
+		final ConcernRole concernRoleObj = ConcernRoleFactory.newInstance();
+
+		final ConcernRoleKey concernRoleKey = new ConcernRoleKey();
+
+		concernRoleKey.concernRoleID = concernRoleCommunicationDtls.correspondentConcernRoleID;
+
+		proFormaCommDetails.correspondentConcernRoleType = concernRoleObj.readConcernRoleType(concernRoleKey).concernRoleType;
+
+		if (concernRoleCommunicationDtls.caseID != 0) {
+
+			final CaseIDParticipantRoleKey caseIDParticipantRoleKey = new CaseIDParticipantRoleKey();
+
+			final curam.core.sl.entity.intf.CaseParticipantRole caseParticipantRoleObj = curam.core.sl.entity.fact.CaseParticipantRoleFactory.newInstance();
+
+			caseIDParticipantRoleKey.caseID = concernRoleCommunicationDtls.caseID;
+			caseIDParticipantRoleKey.participantRoleID = concernRoleCommunicationDtls.correspondentConcernRoleID;
+
+			proFormaCommDetails.caseParticipantRoleID = caseParticipantRoleObj.readCaseParticipantRoleID(caseIDParticipantRoleKey).caseParticipantRoleID;
+		}
+
+		// If an address record for concern role exists, read its details.
+		if (concernRoleCommunicationDtls.addressID != 0) {
+
+			final Address addressObj = AddressFactory.newInstance();
+			final AddressKey addressKey = new AddressKey();
+			AddressDtls addressDtls;
+			final OtherAddressData otherAddressData = new OtherAddressData();
+
+			addressKey.addressID = concernRoleCommunicationDtls.addressID;
+			addressDtls = addressObj.read(addressKey);
+
+			final OtherAddressData addressDataStr = new OtherAddressData();
+
+			addressDataStr.addressData = addressDtls.addressData;
+
+			// BEGIN, CR00219204, SW
+			addressObj.getLongFormat(addressDataStr);
+
+			// BEGIN, CR00340652, KRK
+			if (addressDataStr.addressData.contains(
+					BPOADDRESS.TEXT_ADDRESS_UNAVAILABLE.getMessageText(
+							TransactionInfo.getProgramLocale()))) {
+				// END, CR00340652
+
+				proFormaCommDetails.formattedAddressData = BPOADDRESS.TEXT_ADDRESS_UNAVAILABLE.getMessageText(
+						TransactionInfo.getProgramLocale());
+				proFormaCommDetails.addressLine1 = BPOADDRESS.TEXT_ADDRESS_UNAVAILABLE.getMessageText(
+						TransactionInfo.getProgramLocale());
+
+			} else {
+
+				proFormaCommDetails.formattedAddressData = addressDataStr.addressData;
+
+				// BEGIN, CR00219204, SW
+				otherAddressData.addressData = addressDtls.addressData;
+				// END, CR00219204
+
+				// BEGIN, CR00296699, ZV
+				proFormaCommDetails.addressLine1 = addressObj.getShortFormat(otherAddressData).addressData;
+				// END CR00296699
+
+			}
+			// END, CR00219204
+		}
+		return proFormaCommDetails;
+	}
+
 }

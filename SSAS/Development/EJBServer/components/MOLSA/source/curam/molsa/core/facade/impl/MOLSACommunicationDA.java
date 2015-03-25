@@ -1,5 +1,6 @@
 package curam.molsa.core.facade.impl;
 
+import curam.codetable.CASETYPECODE;
 import curam.codetable.COMMUNICATIONFORMAT;
 import curam.core.facade.fact.ParticipantFactory;
 import curam.core.facade.struct.CreateProFormaCommDetails1;
@@ -12,11 +13,17 @@ import curam.core.intf.CommAttachmentLink;
 import curam.core.intf.ConcernRoleCommunication;
 import curam.core.sl.struct.CommunicationIDKey;
 import curam.core.sl.struct.PreviewProFormaKey;
+import curam.core.sl.struct.ProFormaCommKey;
 import curam.core.sl.struct.ProFormaReturnDocDetails;
+import curam.core.struct.CaseKey;
+import curam.core.struct.CaseTypeCode;
 import curam.core.struct.CommunicationAttachmentLinkReadmultiKey;
 import curam.core.struct.ConcernRoleCommunicationDtls;
 import curam.core.struct.ConcernRoleCommunicationKey;
 import curam.molsa.core.sl.fact.MOLSACommunicationDAFactory;
+import curam.serviceplans.facade.struct.ServicePlanSecurityKey;
+import curam.serviceplans.sl.impl.ServicePlanSecurity;
+import curam.serviceplans.sl.impl.ServicePlanSecurityImplementationFactory;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 
@@ -89,6 +96,64 @@ import curam.util.exception.InformationalException;
 			}
 			return fileNameAndDataDtls;
 		}
+		
+		
+		  public ProFormaReturnDocDetails previewProForma(
+				    final PreviewProFormaKey previewProFormaKey)
+				    throws AppException, InformationalException {
+
+				//    final curam.core.sl.intf.Communication communicationObj = curam.core.sl.fact.CommunicationFactory.newInstance();
+			  
+			  curam.molsa.core.sl.intf.MOLSACommunicationDA communicationObj= MOLSACommunicationDAFactory.newInstance();
+
+				    ProFormaReturnDocDetails proFormaReturnDocDetails = new ProFormaReturnDocDetails();
+				    // BEGIN, CR00164728, JMA
+				    final ProFormaCommKey proFormaCommKey = new ProFormaCommKey();
+
+				    final curam.core.intf.CaseHeader caseHeaderObj = curam.core.fact.CaseHeaderFactory.newInstance();
+				    final CaseKey caseKey = new CaseKey();
+
+				    proFormaCommKey.communicationID = previewProFormaKey.communicationID;
+
+				    // BEGIN, CR00236672, NS
+				    final curam.core.sl.struct.ProFormaCommDetails1 proFormaCommDetails = communicationObj.readProForma1(
+				      proFormaCommKey);
+
+				    // END, CR00236672
+
+				    caseKey.caseID = proFormaCommDetails.caseID;
+				    previewProFormaKey.localeIdentifier = proFormaCommDetails.localeIdentifier;
+				    // END, CR00164728,
+				    if (caseKey.caseID != 0) {
+				      // read case type code
+				      final CaseTypeCode caseTypeCode = caseHeaderObj.readCaseTypeCode(caseKey);
+
+				      // if case type is service plan, check service plan security
+				      if (caseTypeCode.caseTypeCode.equals(CASETYPECODE.SERVICEPLAN)) {
+
+				        // ServicePlanDelivery facade
+				        final curam.serviceplans.facade.intf.ServicePlanDelivery servicePlanDeliveryObj = curam.serviceplans.facade.fact.ServicePlanDeliveryFactory.newInstance();
+				        final ServicePlanSecurityKey servicePlanSecurityKey = new ServicePlanSecurityKey();
+
+				        // register the service plan security implementation
+				        ServicePlanSecurityImplementationFactory.register();
+
+				        // set the key
+				        servicePlanSecurityKey.caseID = caseKey.caseID;
+				        servicePlanSecurityKey.securityCheckType = ServicePlanSecurity.kMaintainSecurityCheck;
+
+				        // check security
+				        servicePlanDeliveryObj.checkSecurity(servicePlanSecurityKey);
+				      }
+
+				    }
+
+				    // Call service layer method to print a pro forma communication
+				    proFormaReturnDocDetails = communicationObj.previewProForma(
+				      previewProFormaKey);
+
+				    return proFormaReturnDocDetails;
+				  }
 	}
 
 

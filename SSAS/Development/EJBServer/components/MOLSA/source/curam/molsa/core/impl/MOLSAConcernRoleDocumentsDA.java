@@ -131,26 +131,30 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 			proFormaDocumentData = populateCaseDetails(key, details,proFormaDocumentData);
 		}
 
+		//Using the Customized struct for MOLSA.
 		MOLSAProFormaDocumentData molsaproFormaDocumentData =new MOLSAProFormaDocumentData();
+		//Assigning the OOTB struct to the new struct
 		molsaproFormaDocumentData.dtls=proFormaDocumentData;
+		
 		MOLSAConcernRoleCommunicationKey concernRoleCommunicationKey = new MOLSAConcernRoleCommunicationKey();
+		
+		//Getting the additional parameters added other than the OOTB parameters by reading the new table
+		
 		concernRoleCommunicationKey.communicationID = details.communicationID;
 		MOLSAConcernRoleCommunicationDtls concernRoleCommunicationDtls = MOLSACommunicationHelper.readAdditionalCommParams(concernRoleCommunicationKey);
+		//Reading program Names, Bank Name ,Manager Name already saved in the  new table
+		
 		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
-
+		
+		
 		if((details.documentID==45001)||(details.documentID==45002)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
 				(details.documentID==45006)){
-			// print the populated document with new struct MOLSAProFormaDocumentData
+			//call generateAndPreviewXMLDocument method with new struct for the new documents with below ids
 			proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
 		}else{
-			//proFormaReturnDocDetails = concernRoleDocumentGenerationObjOOTB.generateAndPreviewXMLDocument(details,proFormaDocumentData);
+			//else call with OOTB struct
+			proFormaReturnDocDetails = concernRoleDocumentGenerationObjOOTB.generateAndPreviewXMLDocument(details,proFormaDocumentData);
 		}
-
-
-
-		//Currently calling the OOTB code.Will be replaced with customized struct MOLSAProFormaDocumentData
-
-
 
 		return proFormaReturnDocDetails;
 

@@ -9,6 +9,8 @@ import java.util.Map;
 import com.google.inject.Inject;
 
 import curam.attachmentlink.struct.AttachmentLinkKey;
+import curam.attendance.impl.ProviderRosterLineItem;
+import curam.attendance.impl.ProviderRosterLineItemDAO;
 import curam.codetable.CASESTATUS;
 import curam.codetable.LOCATIONACCESSTYPE;
 import curam.codetable.PRODUCTCATEGORY;
@@ -64,6 +66,7 @@ import curam.core.struct.ProductDeliveryForCaseDetails;
 import curam.core.struct.ProductDeliveryForCaseDetailsList;
 import curam.core.struct.ProviderLocationKey;
 import curam.core.struct.ProvisionLocationKey;
+import curam.cpm.facade.fact.ServiceDeliveryFactory;
 import curam.cpm.facade.struct.ServiceDeliveryVersionKey;
 import curam.cpm.sl.entity.fact.ProviderFactory;
 import curam.cpm.sl.entity.intf.Provider;
@@ -71,6 +74,8 @@ import curam.cpm.sl.entity.struct.ProviderDtls;
 import curam.cpm.sl.entity.struct.ProviderDtlsList;
 import curam.cpm.sl.entity.struct.ProviderKey;
 import curam.cpm.sl.entity.struct.ServiceOfferingKey;
+import curam.cpm.sl.struct.ServiceDeliveryDtls;
+import curam.cpm.sl.struct.ServiceDeliveryKey;
 import curam.federalallowablecomponent.impl.FederalAllowableComponent;
 import curam.federalallowablecomponent.impl.FederalAllowableComponentDAO;
 import curam.message.GENERALCONCERN;
@@ -96,14 +101,18 @@ import curam.molsa.training.entity.struct.MOLSAProviderFacilityKeyStruct1;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtls;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtlsStruct1;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtlsStruct1List;
+import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingDtlsStruct2;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingKey;
 import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingKeyStruct1;
+import curam.molsa.training.entity.struct.MOLSASerDelTraininingMappingKeyStruct2;
 import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkDtls;
 import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkDtlsStruct1;
 import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkDtlsStruct1List;
 import curam.molsa.training.entity.struct.MOLSATrainingAtttachmentLinkKey;
 import curam.molsa.training.entity.struct.MOLSATrainingCertificateDtls;
+import curam.molsa.training.entity.struct.MOLSATrainingCertificateDtlsStruct1;
 import curam.molsa.training.entity.struct.MOLSATrainingCertificateKey;
+import curam.molsa.training.entity.struct.MOLSATrainingCertificateKeyStruct1;
 import curam.molsa.training.entity.struct.MOLSATrainingDtls;
 import curam.molsa.training.entity.struct.MOLSATrainingDtlsList;
 import curam.molsa.training.entity.struct.MOLSATrainingKey;
@@ -118,6 +127,7 @@ import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.piwrapper.casemanager.impl.CaseParticipantRole;
 import curam.piwrapper.casemanager.impl.CaseParticipantRoleDAO;
 import curam.provider.impl.ProviderDAO;
+import curam.serviceauthorization.impl.ServiceAuthorizationDAO;
 import curam.servicedelivery.impl.ServiceDelivery;
 import curam.servicedelivery.impl.ServiceDeliveryDAO;
 import curam.serviceoffering.impl.SODELIVERYTYPEEntry;
@@ -132,6 +142,7 @@ import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.DateTime;
 import curam.util.type.Money;
+import curam.util.type.NotFoundIndicator;
 import curam.util.type.StringHelper;
 import curam.util.type.StringList;
 
@@ -148,6 +159,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 	protected ServiceDeliveryDAO serviceDeliveryDAO;
 
 	@Inject
+	protected ServiceAuthorizationDAO serviceAuthorizationDAO;
+
+	@Inject
 	protected ServiceOfferingDAO serviceOfferingDAO;
 
 	@Inject
@@ -156,6 +170,10 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 	protected FederalAllowableComponentDAO federalAllowableComponentDAO;
 	@Inject
 	protected ProviderDAO providerDAO;
+
+	@Inject
+	protected ProviderRosterLineItemDAO providerRosterLineItemDAO;
+
 	@Inject
 	private com.google.inject.Provider<CMSMetadataInterface> cmsMetadataProvider;
 
@@ -197,6 +215,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			InformationalException {
 
 		//Handle the scenarios for the new inserts along with the old ones
+		//SOID+ProviderID+trainingStratDate+TrainingEndDate
 
 		// skip inserting the not started and in progress + SOID and display information message to case worker with skipped list "An active service already exists for the below  recepients for this training.
 
@@ -564,7 +583,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		//Iterate through each link from the list of linkitems
 
 		for(MOLSATrainingAtttachmentLinkDtlsStruct1 dtls: linkDtlsList.dtls.items()) {
-			
+
 			MOLSATrainingAttachmentDetails attchDetails= new MOLSATrainingAttachmentDetails();
 
 			//Assigning the retrieved attachment details into the MOLSATrainingAttachmentDetails struct
@@ -586,7 +605,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 			//Adding the MOLSATrainingAttachmentDetails struct to the List
 			attDetailsList.dtls.add(attchDetails);
-			
+
 		}
 		return attDetailsList;
 	}
@@ -647,14 +666,56 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 	public void insertCertificateIssuedStatus(
 			MOLSATrainingCertificateDtls certificatedtls) throws AppException,
 			InformationalException {
-		// TODO Auto-generated method stub
-		//	MOLSATrainingCertificateKey key = new MOLSATrainingCertificateKey();
-		//	key.certificationID=certificatedtls.certificationID;
-		//	MOLSATrainingCertificateDtls readDetails = new MOLSATrainingCertificateDtls();	
+
+		//Check whether the Certificate already exist for the ProviderRoster line item .If exists update else insert
+
+		//Get Service Authorization ID using ProviderRosterLineItemID ID
 		MOLSATrainingCertificate certObj= MOLSATrainingCertificateFactory.newInstance();
-		//read whether data exists before inserting based on key
-		//	readDetails=certObj.read(key);		
-		certObj.insert(certificatedtls);		
+		ProviderRosterLineItem providerRosterLineItem=providerRosterLineItemDAO.get(certificatedtls.serviceAuthorizationID);		
+		certificatedtls.serviceAuthorizationID=providerRosterLineItem.getServiceAuthorization().getID();
+		//Reading using above serviceAuthorizationID from Certificate table to check whether this value already exists
+		MOLSATrainingCertificateKeyStruct1 keySAuthorize = new MOLSATrainingCertificateKeyStruct1();
+		keySAuthorize.serviceAuthorizationID=certificatedtls.serviceAuthorizationID;
+		MOLSATrainingCertificateDtlsStruct1 certdtls = new MOLSATrainingCertificateDtlsStruct1();	
+		final NotFoundIndicator notFoundInd = new curam.util.type.NotFoundIndicator();
+		certdtls=certObj.readByAuthorzID(notFoundInd, keySAuthorize);
+		if(!(notFoundInd.isNotFound())){
+
+			MOLSATrainingCertificateKey certKey = new MOLSATrainingCertificateKey();
+			MOLSATrainingCertificateDtls dtls= new MOLSATrainingCertificateDtls();
+			certKey.certificationID=certdtls.certificationID;
+			dtls=certObj.read(certKey);
+			dtls.certificateIssuedStatus=certificatedtls.certificateIssuedStatus;
+			certObj.modify(certKey,dtls);	
+
+		}else{
+
+			//Get TrainingID from ServiceDelivery Table based on Service Authorization ID
+
+
+			curam.servicedelivery.impl.ServiceDelivery serviceDelivery=serviceDeliveryDAO.readByServiceAuthorization(serviceAuthorizationDAO.get(certificatedtls.serviceAuthorizationID));
+			ServiceDeliveryKey sdkey = new ServiceDeliveryKey();	
+			MOLSASerDelTraininingMapping serDelMap=MOLSASerDelTraininingMappingFactory.newInstance();
+			MOLSASerDelTraininingMappingKeyStruct2 key= new MOLSASerDelTraininingMappingKeyStruct2();
+			key.serviceDeliveryID=serviceDelivery.getID();
+			MOLSASerDelTraininingMappingDtlsStruct2 sermapDtls=new MOLSASerDelTraininingMappingDtlsStruct2();		
+			sermapDtls=serDelMap.readByServiceDeliveryID(key);
+
+			//GetServiceOfferingID
+
+			ServiceOffering serviceOffering= serviceDelivery.getServiceOffering();
+
+			certificatedtls.trainingID=sermapDtls.trainingID;
+			certificatedtls.concernRoleID=sermapDtls.concernRoleID;
+			certificatedtls.serviceOfferingID=serviceOffering.getID();
+
+			// TODO Auto-generated method stub
+
+
+			//read whether data exists before inserting based on key
+			//	readDetails=certObj.read(key);		
+			certObj.insert(certificatedtls);	
+		}
 	}
 
 	@Override
@@ -662,7 +723,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			MOLSATrainingCertificateKey key) throws AppException,
 			InformationalException {
 		// TODO Auto-generated method stub
-		
+
 		MOLSATrainingCertificateDtls molsatrainingDtls = new MOLSATrainingCertificateDtls();
 		molsatrainingDtls = MOLSATrainingCertificateFactory.newInstance().read(key);
 		return null;
@@ -670,11 +731,11 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 	@Override
 	public void insertProviderFacilities(MOLSAProviderFacilityDtls facilityDtls)
-			throws AppException, InformationalException {
+	throws AppException, InformationalException {
 		// TODO Auto-generated method stub
 		MOLSAProviderFacility providerObj=MOLSAProviderFacilityFactory.newInstance();
 		providerObj.insert(facilityDtls);
-		
+
 	}
 
 	@Override
@@ -690,13 +751,13 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 	@Override
 	public void modifyProviderFacility(MOLSAProviderFacilityDtls facilityDtls)
-			throws AppException, InformationalException {
+	throws AppException, InformationalException {
 		// TODO Auto-generated method stub
 		MOLSAProviderFacilityKey key= new MOLSAProviderFacilityKey();
 		key.facilityID=facilityDtls.facilityID;
 		MOLSAProviderFacility providerObj=MOLSAProviderFacilityFactory.newInstance();
 		providerObj.modify(key, facilityDtls);
-		
+
 	}
 
 	@Override
