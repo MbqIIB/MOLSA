@@ -206,7 +206,7 @@
           PROPERTY="proFormaInd"
         />
       </CONDITION>
-      <LINK OPEN_MODAL="true"
+      <LINK OPEN_MODAL="true" WINDOW_OPTIONS="width=400,height=450"
         PAGE_ID="MOLSA_addCommunicationDetails"
         SAVE_LINK="true">
         
