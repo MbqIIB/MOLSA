@@ -103,61 +103,22 @@ public class MOLSAIncapableOfWorkingRegisterPDKey implements
 			InformationalException {
 
 		RegisterProductDeliveryKey registerProductDeliveryKey = new RegisterProductDeliveryKey();
+
 		List<Member> members = simulatedDetermination.getMembers();
-
-		CaseParticipantRole caseParticipantRole = null;
-
-		CaseHeader caseheader = caseHeaderDAO.get(simulatedDetermination
-				.getIntegratedCase().getID());
-
-		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
-		evidenceTypeKey.evidenceType = CASEEVIDENCE.HEADOFHOUSE;
-
-		final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
-				.instance(evidenceTypeKey, Date.getCurrentDate());
-
-		CaseKey caseKey = new CaseKey();
-		caseKey.caseID = caseheader.getID();
-		CaseIDEvidenceTypeStatusesKey statusesKey = new CaseIDEvidenceTypeStatusesKey();
-		statusesKey.caseID = caseheader.getID();
-		statusesKey.evidenceType = CASEEVIDENCE.HEADOFHOUSE;
-		statusesKey.statusCode1 = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
-		statusesKey.statusCode2 = EVIDENCEDESCRIPTORSTATUS.INEDIT;
-		EvidenceDescriptorKeyList keyList = evidenceDescriptorObj
-				.searchActiveInEditByCaseIDAndType(statusesKey);
-
-		EvidenceCaseKey evidenceCaseKey = null;
-		long caseParticipantRoleID = 0;
-
-		for (final EvidenceDescriptorKey descriptorKey : keyList.dtls) {
-
-			evidenceCaseKey = new EvidenceCaseKey();
-			evidenceCaseKey.evidenceKey.evType = evidenceTypeKey.evidenceType;
-			evidenceCaseKey.caseIDKey.caseID = caseKey.caseID;
-			evidenceCaseKey.evidenceKey.evidenceID = evidenceDescriptorObj
-					.read(descriptorKey).relatedID;
-			final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
-					.readEvidence(evidenceCaseKey);
-			final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = evidenceDetails.dtls;
-
-			final String startdatestr = dynamicEvidenceDataDetails
-					.getAttribute(kstartDate).getValue();
-			final String enddatestr = dynamicEvidenceDataDetails.getAttribute(
-					kendDate).getValue();
-
-			//DateRange dateRange = new DateRange(Date.fromISO8601(startdatestr),
-				//Date.fromISO8601(enddatestr));
-		//Boolean isPresent = dateRange.contains(Date.getCurrentDate());
-			//if (isPresent) {
-				caseParticipantRoleID = Long
-						.parseLong(dynamicEvidenceDataDetails.getAttribute(
-								kparticipant).getValue());
-			//	break;
-			//}
+		long elderCPRID = 0l;
+		int elderage = 0;
+		int age = 0;
+		for (Member member : members) {
+			age = getAge(member.caseParticipantRoleID());
+			if (age > elderage) {
+				elderage = age;
+				elderCPRID = member.caseParticipantRoleID();
+			}
 		}
 
+
 		registerProductDeliveryKey.clientID = caseParticipantRoleDAO
-				.get(caseParticipantRoleID).getConcernRole().getID();
+				.get(elderCPRID).getConcernRole().getID();
 
 		registerProductDeliveryKey.productID = simulatedDetermination
 				.productID();

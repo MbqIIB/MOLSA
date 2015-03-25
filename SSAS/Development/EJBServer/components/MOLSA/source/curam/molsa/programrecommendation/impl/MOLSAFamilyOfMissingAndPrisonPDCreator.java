@@ -67,9 +67,6 @@ public class MOLSAFamilyOfMissingAndPrisonPDCreator implements DeliveryCreator {
 		ProductDelivery productDelivery = createSocialAssistanceProductDelivery(
 				registerProductDeliveryKey, registerProductDeliveryDetails);
 
-		if (!(outstandingVerificationsExist(productDelivery))) {
-			submitForApproval(productDelivery);
-		}
 
 		return productDelivery;
 	}

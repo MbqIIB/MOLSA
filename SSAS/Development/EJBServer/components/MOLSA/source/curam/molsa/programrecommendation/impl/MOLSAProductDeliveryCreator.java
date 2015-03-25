@@ -147,9 +147,6 @@ public class MOLSAProductDeliveryCreator implements DeliveryCreator {
 				registerProductDeliveryDetails.caseID,
 				registerProductDeliveryKey.clientID, simulatedDetermination
 						.getIntegratedCase().getID());
-		if (!(outstandingVerificationsExist(productDelivery))) {
-			submitForApproval(productDelivery);
-		}
 
 		return productDelivery;
 	}
