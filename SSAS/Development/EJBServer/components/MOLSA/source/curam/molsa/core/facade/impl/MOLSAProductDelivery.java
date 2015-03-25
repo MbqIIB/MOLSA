@@ -125,6 +125,44 @@ public abstract class MOLSAProductDelivery extends
 	public InformationMsgDtlsList createCertification(
 			CreateCertificationDetails details) throws AppException,
 			InformationalException {
+		
+		curam.core.intf.CaseHeader caseHeaderObj = CaseHeaderFactory
+				.newInstance();
+		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+		caseHeaderKey.caseID = details.caseID;
+
+		CaseHeaderDtls caseHeaderDtls = caseHeaderObj.read(caseHeaderKey);
+
+		if (CASESTATUS.ACTIVE.equals(caseHeaderDtls.statusCode)) {
+			CurrentCaseStatusKey currentCaseStatusKey = new CurrentCaseStatusKey();
+
+			CaseStatusDtls mdfCaseStatusDtls = new CaseStatusDtls();
+			CaseStatusDtls insCaseStatusDtls = new CaseStatusDtls();
+			CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
+			CaseStatusKey mdfCaseStatusKey = new CaseStatusKey();
+			UniqueID uniqueIDObj = UniqueIDFactory.newInstance();
+
+			caseHeaderDtls.statusCode = CASESTATUS.OPEN;
+			caseHeaderObj.modify(caseHeaderKey, caseHeaderDtls);
+			currentCaseStatusKey.caseID = details.caseID;
+			currentCaseStatusKey.nullDate = Date.kZeroDate;
+			CaseStatusDtls caseStatusDtls = caseStatusObj
+					.readCurrentStatusByCaseID1(currentCaseStatusKey);
+			mdfCaseStatusDtls.assign(caseStatusDtls);
+			mdfCaseStatusDtls.endDate = TransactionInfo.getSystemDate();
+			mdfCaseStatusDtls.endDateTime = TransactionInfo.getSystemDateTime();
+			mdfCaseStatusKey.caseStatusID = caseStatusDtls.caseStatusID;
+			caseStatusObj.modify(mdfCaseStatusKey, mdfCaseStatusDtls);
+			insCaseStatusDtls.caseID = details.caseID;
+			insCaseStatusDtls.statusCode = CASESTATUS.OPEN;
+			insCaseStatusDtls.startDate = TransactionInfo.getSystemDate();
+			insCaseStatusDtls.endDate = Date.kZeroDate;
+			insCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
+			SystemUser systemUserObj = SystemUserFactory.newInstance();
+			insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
+			insCaseStatusDtls.comments = "";
+			caseStatusObj.insert(insCaseStatusDtls);
+		}
 		// create return object.
 		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
 
@@ -151,6 +189,7 @@ public abstract class MOLSAProductDelivery extends
 		createCertificationEndPriorMilestone(details.periodToDate,
 				details.caseID);
 
+		
 		final curam.util.exception.InformationalManager informationalManager = curam.util.transaction.TransactionInfo
 				.getInformationalManager();
 
@@ -401,20 +440,7 @@ public abstract class MOLSAProductDelivery extends
 	public InformationMsgDtlsList modifyCertification(
 			MaintainCertificationDetails details) throws AppException,
 			InformationalException {
-		// Return object
-		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
-
-		// MaintainCertification manipulation variables
-		final curam.core.intf.MaintainCertification maintainCertificationObj = curam.core.fact.MaintainCertificationFactory
-				.newInstance();
-		final curam.core.struct.MaintainCertificationDetails maintainCertificationDetails = new curam.core.struct.MaintainCertificationDetails();
-
-		// Assign certification details
-		maintainCertificationDetails.assign(details);
-
-		// Call MaintainCertification BPO to modify the certification
-		maintainCertificationObj
-				.modifyCertification(maintainCertificationDetails);
+		
 		curam.core.intf.CaseHeader caseHeaderObj = CaseHeaderFactory
 				.newInstance();
 		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
@@ -452,6 +478,21 @@ public abstract class MOLSAProductDelivery extends
 			insCaseStatusDtls.comments = "";
 			caseStatusObj.insert(insCaseStatusDtls);
 		}
+		// Return object
+		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
+
+		// MaintainCertification manipulation variables
+		final curam.core.intf.MaintainCertification maintainCertificationObj = curam.core.fact.MaintainCertificationFactory
+				.newInstance();
+		final curam.core.struct.MaintainCertificationDetails maintainCertificationDetails = new curam.core.struct.MaintainCertificationDetails();
+
+		// Assign certification details
+		maintainCertificationDetails.assign(details);
+
+		// Call MaintainCertification BPO to modify the certification
+		maintainCertificationObj
+				.modifyCertification(maintainCertificationDetails);
+		
 		final curam.util.exception.InformationalManager informationalManager = curam.util.transaction.TransactionInfo
 				.getInformationalManager();
 
