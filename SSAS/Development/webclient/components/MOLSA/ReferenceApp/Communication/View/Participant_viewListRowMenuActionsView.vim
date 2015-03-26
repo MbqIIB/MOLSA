@@ -197,7 +197,7 @@
       </LINK>
     </ACTION_CONTROL>
      <ACTION_CONTROL
-      LABEL="ActionControl.Label.Add.BankAccount"
+      LABEL="ActionControl.Label.Add.Communication"
     >
    
       <CONDITION>
