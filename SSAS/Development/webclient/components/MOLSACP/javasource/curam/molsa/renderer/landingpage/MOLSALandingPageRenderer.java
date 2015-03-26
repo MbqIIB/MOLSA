@@ -75,7 +75,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     Element landingPageContainer = fragment.getOwnerDocument().createElement("div");
 
     landingPageContainer.setAttribute("id", "lp-container");
-    landingPageContainer.setAttribute("class", "lp-container");
+    landingPageContainer.setAttribute("class", "lp-container molsa-landingPage");
     attachWaiAriaAttr(landingPageContainer, "Main Container");
 
     fragment.appendChild(landingPageContainer);
@@ -220,7 +220,8 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     ContainerBuilder descBuilder = ComponentBuilderFactory.createClusterBuilder();
 
     descBuilder.setStyle(context.getStyle("rich-text"));
-    String titlePart1 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line1", context);
+    //String titlePart1 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line1", context);
+    String titlePart1="";
 
     String filteredTitlePart1 = filterACF(titlePart1);
     if (!BidiUtils.isBidi())
@@ -249,8 +250,9 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     descBuilder2.setStyle(context.getStyle("rich-text"));
 
-    String titlePart2 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line2", context);
-
+    //String titlePart2 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line2", context);
+    String titlePart2 = "";
+    
     String filteredTitlePart2 = filterACF(titlePart2);
     if (!BidiUtils.isBidi())
       descBuilder2.setDescription(filteredTitlePart2);
@@ -272,8 +274,8 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     headerLine3.setAttribute("class", "lp-welcome-line3");
     headerLine3.setAttribute("id", "lp-welcome-line3");
 
-    String titlePart3 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line3", context);
-
+    //String titlePart3 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line3", context);
+    String titlePart3 = "";
     ContainerBuilder descBuilder3 = ComponentBuilderFactory.createClusterBuilder();
 
     descBuilder3.setStyle(context.getStyle("rich-text"));
