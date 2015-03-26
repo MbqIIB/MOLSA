@@ -1,8 +1,6 @@
 package curam.molsa.renderer.landingpage;
 
-import citizenaccount.renderer.RendererUtil;
-import citizenworkspace.util.SecurityUtils;
-import citizenworkspace.util.XmlTools;
+import curam.molsa.renderer.util.XmlTools;
 import curam.ieg.player.PlayerUtils;
 import curam.omega3.util.CDEJResources;
 import curam.util.client.BidiUtils;
@@ -24,6 +22,15 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import com.ibm.trl.acf.api.ActiveContentProcessor;
+import com.ibm.trl.acf.api.ActiveContentProcessorException;
+import com.ibm.trl.acf.api.ActiveContentProcessorFactory;
+import com.ibm.trl.acf.api.ContentTypeNotSupportedException;
+import com.ibm.trl.acf.lookup.ActiveContentProcessorFactoryHome;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MOLSALandingPageRenderer extends AbstractViewRenderer
 {
@@ -69,7 +76,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     landingPageContainer.setAttribute("id", "lp-container");
     landingPageContainer.setAttribute("class", "lp-container");
-    RendererUtil.attachWaiAriaAttr(landingPageContainer, "Main Container");
+    attachWaiAriaAttr(landingPageContainer, "Main Container");
 
     fragment.appendChild(landingPageContainer);
 
@@ -77,7 +84,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     landingPageBannerWrapper.setAttribute("id", "lp-banner-wrapper");
     landingPageBannerWrapper.setAttribute("class", "lp-banner-wrapper");
-    RendererUtil.attachWaiAriaAttr(landingPageBannerWrapper, "Banner Wrapper");
+    attachWaiAriaAttr(landingPageBannerWrapper, "Banner Wrapper");
 
     landingPageContainer.appendChild(landingPageBannerWrapper);
 
@@ -85,7 +92,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     landingPageBanner.setAttribute("id", "lp-banner");
     landingPageBanner.setAttribute("class", "lp-banner");
-    RendererUtil.attachWaiAriaAttr(landingPageBanner, "Banner");
+    attachWaiAriaAttr(landingPageBanner, "Banner");
 
     landingPageBannerWrapper.appendChild(landingPageBanner);
 
@@ -95,7 +102,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     actionsContainer.setAttribute("id", "lp-actions-container");
     actionsContainer.setAttribute("class", "lp-actions-container");
-    RendererUtil.attachWaiAriaAttr(actionsContainer, "Action Container");
+    attachWaiAriaAttr(actionsContainer, "Action Container");
 
     landingPageContainer.appendChild(actionsContainer);
 
@@ -103,7 +110,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     HTMLUtils.appendComment(loginPanel, "comment");
 
-    RendererUtil.attachWaiAriaAttr(loginPanel, "Login Panel");
+    attachWaiAriaAttr(loginPanel, "Login Panel");
 
     if (renderLoginPanel)
     {
@@ -117,7 +124,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     Element actionLinksContainer = fragment.getOwnerDocument().createElement("div");
 
     actionLinksContainer.setAttribute("id", "lp-action-links-container");
-    RendererUtil.attachWaiAriaAttr(actionLinksContainer, "Action Link Container");
+    attachWaiAriaAttr(actionLinksContainer, "Action Link Container");
 
     if (renderLoginPanel)
       actionLinksContainer.setAttribute("class", "lp-action-links-container");
@@ -128,7 +135,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     Element govSectionContainer = fragment.getOwnerDocument().createElement("div");
 
     govSectionContainer.setAttribute("id", "gov-section-container");
-    RendererUtil.attachWaiAriaAttr(govSectionContainer, "Section Container");
+    attachWaiAriaAttr(govSectionContainer, "Section Container");
 
     if (renderLoginPanel)
       govSectionContainer.setAttribute("class", "section-container");
@@ -144,7 +151,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     {
       Element commSectionContainer = fragment.getOwnerDocument().createElement("div");
 
-      RendererUtil.attachWaiAriaAttr(commSectionContainer, "Section Container");
+      attachWaiAriaAttr(commSectionContainer, "Section Container");
 
       commSectionContainer.setAttribute("id", "community-section-container");
       if (renderLoginPanel)
@@ -158,13 +165,29 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
       actionLinksContainer.appendChild(commSectionContainer);
     }
 
+    Element commSectionContainer = fragment.getOwnerDocument().createElement("div");
+
+    attachWaiAriaAttr(commSectionContainer, "Section Container");
+
+    commSectionContainer.setAttribute("id", "community-section-container");
+    if (renderLoginPanel)
+      commSectionContainer.setAttribute("class", "section-container");
+    else {
+      commSectionContainer.setAttribute("class", "section-container-no-login");
+    }
+
+    renderDocumentsInfo(commSectionContainer, context, contract);
+
+    actionLinksContainer.appendChild(commSectionContainer);
+    
     if (renderLoginPanel) {
       actionsContainer.appendChild(loginPanel);
     }
 
     actionsContainer.appendChild(actionLinksContainer);
   }
-
+ 
+  
   private void renderBannerText(Field field, Element landingPageBanner, RendererContext context, RendererContract contract, boolean displayHCSelector)
     throws ClientException, DataAccessException, PlugInException
   {
@@ -173,7 +196,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
       Element contrastModePanel = landingPageBanner.getOwnerDocument().createElement("div");
 
       HTMLUtils.appendComment(contrastModePanel, "Contrast Mode Selector");
-      RendererUtil.attachWaiAriaAttr(contrastModePanel, "Contrast Mode Selector");
+      attachWaiAriaAttr(contrastModePanel, "Contrast Mode Selector");
 
       contrastModePanel.setAttribute("dojoType", "cwtk.widget.FragmentPane");
       contrastModePanel.setAttribute("uim", "CitizenWorkspace_contrastSelectorFragment");
@@ -199,7 +222,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     descBuilder.setStyle(context.getStyle("rich-text"));
     String titlePart1 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line1", context);
 
-    String filteredTitlePart1 = SecurityUtils.filterACF(titlePart1);
+    String filteredTitlePart1 = filterACF(titlePart1);
     if (!BidiUtils.isBidi())
       descBuilder.setDescription(filteredTitlePart1);
     else {
@@ -228,7 +251,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     String titlePart2 = PlayerUtils.getProperty("LandingPage", "Welcome.Message.Line2", context);
 
-    String filteredTitlePart2 = SecurityUtils.filterACF(titlePart2);
+    String filteredTitlePart2 = filterACF(titlePart2);
     if (!BidiUtils.isBidi())
       descBuilder2.setDescription(filteredTitlePart2);
     else {
@@ -255,7 +278,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     descBuilder3.setStyle(context.getStyle("rich-text"));
 
-    String filteredTitlePart3 = SecurityUtils.filterACF(titlePart3);
+    String filteredTitlePart3 = filterACF(titlePart3);
     if (!BidiUtils.isBidi())
       descBuilder3.setDescription(filteredTitlePart3);
     else {
@@ -271,12 +294,107 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     landingPageBanner.appendChild(headerLine3);
   }
 
+  
+	private void renderDocumentsInfo(Element commSectionContainer,
+			RendererContext context, RendererContract contract)
+			throws PlugInException, ClientException, DataAccessException {
+		Element header = commSectionContainer.getOwnerDocument().createElement(
+				"h2");
+
+		attachWaiAriaAttr(header, "Header");
+		header.setAttribute("class", "lp-h2");
+
+		String title = PlayerUtils.getProperty("LandingPage", "Document.title",
+				context);
+
+		if (!BidiUtils.isBidi())
+			header.setTextContent(title);
+		else {
+			header.setTextContent(BidiUtils.addEmbedingUCC(title));
+		}
+		commSectionContainer.appendChild(header);
+
+		ContainerBuilder descBuilder = ComponentBuilderFactory
+				.createClusterBuilder();
+
+		descBuilder.setStyle(context.getStyle("rich-text"));
+
+		String description = PlayerUtils.getProperty("LandingPage",
+				"Document.Description", context);
+
+		String filteredDescription = filterACF(description);
+		if (!BidiUtils.isBidi())
+			descBuilder.setDescription(filteredDescription);
+		else {
+			descBuilder.setDescription(BidiUtils
+					.addEmbedingUCC(filteredDescription));
+		}
+		descBuilder.setParameter("wrap-content", "true");
+		Container descRichText = (Container) descBuilder.getComponent();
+		DocumentFragment descFragment = commSectionContainer.getOwnerDocument()
+				.createDocumentFragment();
+
+		context.render(descRichText, descFragment, contract);
+
+		commSectionContainer.appendChild(descFragment);
+
+		Element buttonDiv = commSectionContainer.getOwnerDocument()
+				.createElement("div");
+
+		attachWaiAriaAttr(buttonDiv, "Button Section");
+		commSectionContainer.appendChild(buttonDiv);
+
+		String buttonText = PlayerUtils.getProperty("LandingPage",
+				"Document.Button.Text", context);
+
+		String buttonAltText = PlayerUtils.getProperty("LandingPage",
+				"Document.Button.Alt.Text", context);
+
+		String htmlDirection = PlayerUtils
+				.getHtmlPresentationDirection(getLocale());
+
+		boolean isRTL = "rtl".equals(htmlDirection);
+
+		Element triageButtonWrapper = commSectionContainer.getOwnerDocument()
+				.createElement("div");
+
+		attachWaiAriaAttr(commSectionContainer, "Document Button");
+		triageButtonWrapper.setAttribute(
+				"style",
+				new StringBuilder().append("float: ")
+						.append(isRTL ? "right" : "left").toString());
+
+		Element triageButton = commSectionContainer.getOwnerDocument()
+				.createElement("span");
+
+		attachWaiAriaAttr(triageButton, "Document Button");
+		HTMLUtils.appendComment(triageButton, "comment");
+
+		triageButton.setAttribute("data-dojo-type", "dijit/form/Button");
+		triageButton.setAttribute("label", buttonText);
+		triageButton.setAttribute("title", buttonAltText);
+		triageButton.setAttribute("onClick",
+				"displayContent({pageID:'MOLSADisplayDocuments'})");
+
+		triageButton.setAttribute("class", "idxSpecialButton");
+
+		if (BidiUtils.isBidi()) {
+			BidiUtils.setTextDirForElement(triageButton);
+		}
+		triageButtonWrapper.appendChild(triageButton);
+
+		buttonDiv.appendChild(triageButtonWrapper);
+	}
+  
+  
+  
+  
   private void renderCommunityServicesInfo(Element commSectionContainer, RendererContext context, RendererContract contract)
     throws PlugInException, ClientException, DataAccessException
   {
     Element header = commSectionContainer.getOwnerDocument().createElement("h2");
 
-    RendererUtil.attachWaiAriaAttr(header, "Header");
+    attachWaiAriaAttr(header, "Header");
     header.setAttribute("class", "lp-h2");
 
     String title = PlayerUtils.getProperty("LandingPage", "Services.Title", context);
@@ -294,7 +412,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     String description = PlayerUtils.getProperty("LandingPage", "Services.Description", context);
 
-    String filteredDescription = SecurityUtils.filterACF(description);
+    String filteredDescription = filterACF(description);
     if (!BidiUtils.isBidi())
       descBuilder.setDescription(filteredDescription);
     else {
@@ -310,7 +428,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     Element buttonDiv = commSectionContainer.getOwnerDocument().createElement("div");
 
-    RendererUtil.attachWaiAriaAttr(buttonDiv, "Button Section");
+    attachWaiAriaAttr(buttonDiv, "Button Section");
     commSectionContainer.appendChild(buttonDiv);
 
     String buttonText = PlayerUtils.getProperty("LandingPage", "Triage.Button.Text", context);
@@ -323,12 +441,12 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     Element triageButtonWrapper = commSectionContainer.getOwnerDocument().createElement("div");
 
-    RendererUtil.attachWaiAriaAttr(commSectionContainer, "Triage Button");
+    attachWaiAriaAttr(commSectionContainer, "Triage Button");
     triageButtonWrapper.setAttribute("style", new StringBuilder().append("float: ").append(isRTL ? "right" : "left").toString());
 
     Element triageButton = commSectionContainer.getOwnerDocument().createElement("span");
 
-    RendererUtil.attachWaiAriaAttr(triageButton, "Triage Button");
+    attachWaiAriaAttr(triageButton, "Triage Button");
     HTMLUtils.appendComment(triageButton, "comment");
 
     triageButton.setAttribute("data-dojo-type", "dijit/form/Button");
@@ -351,7 +469,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
   {
     Element header = govSectionContainer.getOwnerDocument().createElement("h2");
 
-    RendererUtil.attachWaiAriaAttr(header, "Header");
+    attachWaiAriaAttr(header, "Header");
     header.setAttribute("class", "lp-h2");
 
     String title = PlayerUtils.getProperty("LandingPage", "Government.Benefits.Title", context);
@@ -368,7 +486,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     descBuilder.setStyle(context.getStyle("rich-text"));
     String description = PlayerUtils.getProperty("LandingPage", "Government.Benefits.Description", context);
 
-    String filteredDescription = SecurityUtils.filterACF(description);
+    String filteredDescription = filterACF(description);
     if (!BidiUtils.isBidi())
       descBuilder.setDescription(filteredDescription);
     else {
@@ -383,7 +501,7 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     Element buttonDiv = govSectionContainer.getOwnerDocument().createElement("div");
 
-    RendererUtil.attachWaiAriaAttr(buttonDiv, "Button Section");
+    attachWaiAriaAttr(buttonDiv, "Button Section");
     govSectionContainer.appendChild(buttonDiv);
 
     String screeningButtonText = PlayerUtils.getProperty("LandingPage", "Screening.Button.Text", context);
@@ -395,12 +513,12 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     String htmlDirection = PlayerUtils.getHtmlPresentationDirection(getLocale());
 
     boolean isRTL = "rtl".equals(htmlDirection);
-    RendererUtil.attachWaiAriaAttr(govSectionContainer, "Screening Buttons");
+    attachWaiAriaAttr(govSectionContainer, "Screening Buttons");
     screeningButtonWrapper.setAttribute("style", new StringBuilder().append("float: ").append(isRTL ? "right" : "left").toString());
 
     Element screeningButton = govSectionContainer.getOwnerDocument().createElement("span");
 
-    RendererUtil.attachWaiAriaAttr(screeningButton, "Screening Button");
+    attachWaiAriaAttr(screeningButton, "Screening Button");
     HTMLUtils.appendComment(screeningButton, "comment");
 
     screeningButton.setAttribute("data-dojo-type", "dijit/form/Button");
@@ -420,12 +538,12 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
 
     Element appplyButtonWrapper = govSectionContainer.getOwnerDocument().createElement("div");
 
-    RendererUtil.attachWaiAriaAttr(appplyButtonWrapper, "Apply Button Wrapper");
+    attachWaiAriaAttr(appplyButtonWrapper, "Apply Button Wrapper");
     appplyButtonWrapper.setAttribute("style", new StringBuilder().append("float: ").append(isRTL ? "right" : "left").toString());
 
     Element applyButton = govSectionContainer.getOwnerDocument().createElement("span");
 
-    RendererUtil.attachWaiAriaAttr(applyButton, "Apply Button");
+    attachWaiAriaAttr(applyButton, "Apply Button");
     HTMLUtils.appendComment(applyButton, "comment");
 
     applyButton.setAttribute("data-dojo-type", "dijit/form/Button");
@@ -455,9 +573,70 @@ public class MOLSALandingPageRenderer extends AbstractViewRenderer
     languagePickerDiv.setAttribute("uim", "CitizenWorkspace_langSelectFragment");
 
     languagePickerDiv.setAttribute("id", "langSelectPane");
-    RendererUtil.attachWaiAriaAttr(languagePickerDiv, "Language Picker");
+    attachWaiAriaAttr(languagePickerDiv, "Language Picker");
     HTMLUtils.appendNbsp(languagePickerDiv);
 
     fragment.appendChild(languagePickerDiv);
   }
+  
+	public static void attachWaiAriaAttr(Element element, String label)
+			throws ClientException, DataAccessException {
+		element.setAttribute("role", "region");
+		element.setAttribute("aria-label", label);
+	}
+	
+	  public static String filterACF(String unfilteredText)
+	  {
+	    if (null == unfilteredText) {
+	      return unfilteredText;
+	    }
+
+	    String filteredText = new String();
+	    try
+	    {
+	      ActiveContentProcessorFactory factory = ActiveContentProcessorFactoryHome.getActiveContentProcessorFactory();
+
+	      Properties properties = new Properties();
+
+	      properties.put(ActiveContentProcessorFactory.PROPERTY_USE_ANNOTATION, "true");
+
+	      ActiveContentProcessor processor = factory.getActiveContentProcessor("text/html", properties);
+
+	      String encoding = "UTF-8";
+
+	      filteredText = processor.process(unfilteredText, encoding);
+
+	      if (filteredText.trim().length() != unfilteredText.trim().length()) {
+	        String malicious = processor.validate(unfilteredText, encoding);
+
+	        if (malicious != null) {
+	          Logger.getAnonymousLogger().log(Level.SEVERE, "Malicious code filtered: \"" + malicious + "\" from string \"" + unfilteredText + "\"");
+	        }
+
+	      }
+
+	    }
+	    catch (ContentTypeNotSupportedException e)
+	    {
+	      Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
+	    }
+	    catch (ActiveContentProcessorException e) {
+	      Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
+	    }
+	    catch (ClassNotFoundException e) {
+	      Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
+	    }
+	    catch (InstantiationException e) {
+	      Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
+	    }
+	    catch (IllegalAccessException e) {
+	      Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
+	    }
+	    catch (IOException e) {
+	      Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
+	    }
+
+	    return filteredText;
+	  }
+	
 }
