@@ -86,32 +86,32 @@
 
 	
 	 <fo:block xsl:use-attribute-sets="Normal_9"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1"> السيد/ مدير ادارة الضمان الاجتماعي  المحترم</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_8">الموضوع : اقرار</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> بهذا اقر انا</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1"> 
+	السيد/ مدير ادارة الضمان الاجتماعي  المحترم
+	</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_2"> السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_8"> الموضوع : اقرار </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> بهذا اقر انا </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> حامل البطاقة الشخصية رقم  </fo:block>
         <fo:block xsl:use-attribute-sets="Normal_5">
 بأن كل المعلومات والبيانات التي أدليت بها عن حالتي الاجتماعية صحيحة ولم يحدث عليها أي تغيير وأتعهد بإخطار الإدارة بأي تغيير يحدث  وأتحمل كافة المسؤولية عن أي خطأ في البيانات والمعلومات التي اوليت بها 
 		</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_6">توقيع مستحق المعاش</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_6"> توقيع مستحق المعاش </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/></fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">.....................: التوقيع</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7"> .....................: التوقيع </fo:block>
 	
 	
-		<fo:block xsl:use-attribute-sets="Normal_8" border-top-style="solid">خاص بالإدارة</fo:block>
+		<fo:block xsl:use-attribute-sets="Normal_8" border-top-style="solid"> خاص بالإدارة </fo:block>
         <fo:block xsl:use-attribute-sets="Normal_5">
 		أشهد أنا الباحث الاجتماعي أدناه بأن المذكور أعلاه قد وقع على هذا الإقرار أمامي وبعد التثبت من شخصيته 
 		
 		</fo:block>
 		<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :صدر في </fo:block>
-		
-		
-		</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/></fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">.....................: التوقيع</fo:block>
+
+	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/> </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7">.....................: التوقيع </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" /> طلب رقم </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_5">ملاحظة : يرجى إرفاق صورة بطاقة المتعهد </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_5"> ملاحظة : يرجى إرفاق صورة بطاقة المتعهد </fo:block>
     
 	
 	
