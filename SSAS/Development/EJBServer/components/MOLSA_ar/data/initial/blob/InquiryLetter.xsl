@@ -50,6 +50,11 @@
      <xsl:attribute name="space-before">5mm</xsl:attribute>
      <xsl:attribute name="text-align">left</xsl:attribute>
   </xsl:attribute-set>
+  <xsl:attribute-set name="Normal_8" foa:class="block">
+     <xsl:attribute name="font-size">10.0pt</xsl:attribute>
+     <xsl:attribute name="line-height">5mm</xsl:attribute>
+     <xsl:attribute name="text-align">left</xsl:attribute>
+  </xsl:attribute-set>	
  
  
   <xsl:attribute-set name="Normal_9" foa:class="block">
@@ -84,31 +89,35 @@
         <!-- BEGIN, CR00352142, PB -->
 	    <!-- START NON-TRANSLATABLE -->
         <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
-       
-	<fo:block xsl:use-attribute-sets="Normal_1">السيدة ملاك عبد الله الهاجري    المحترمة</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">مدير إدارة القوى العاملة</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> نحيل لادارتكم الموقرة الشخص</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
-        <fo:block xsl:use-attribute-sets="Normal_5"> مقدم طلب في نظام الضمان الاجتماعي للبحث له أو لها عن فرصة عمل مناسبة وذلك حسب القوانين والاجراءت المتبعة لديكم </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">مدير ادارة الضمان الاجتماعي</fo:block>
+        
+    <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :تاريخ تقديم الطلب </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" />  :رقم الطلب </fo:block>
 	
 	
-	<fo:block xsl:use-attribute-sets="Normal_1" border-top-style="solid" >السيد/ مدير ادارة الضمان الاجتماعي  المحترم</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" />  تقدم(ت) الينا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
-        <fo:block xsl:use-attribute-sets="Normal_5">                                   
-		
-		من ادارتكم الموقرة للبحث له أو لها عن فرصة عمل, نفيدكم بأنه قد تم تسجيل طلبه و سنوافيكم لاحقا بما يستجد فيه
-		
-		</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">ملاك عبد الله الهاجري</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">مدير إدارة القوى العاملة</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم مقدم الطلب </fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  :رقم البطاقة</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='programNames']"/>  :نوع الحالة</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم صاحب الطلب</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  البطاقة </fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :تاريخ المراجعة</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_3">   للاستفسار عن سير المعاملة يرجى الاتصال على </fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/>  :الباحث</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_7">نسخة مقدم الطلب</fo:block>
+	
+	
+	
+	<fo:block xsl:use-attribute-sets="Normal_3" border-top-style="solid"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم مقدم الطلب </fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  :رقم البطاقة</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='programNames']"/>  :نوع الحالة</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم صاحب الطلب</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  البطاقة </fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :تاريخ المراجعة</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_3">   للاستفسار عن سير المعاملة يرجى الاتصال على </fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/>  :الباحث</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" /> :نسخة لملف الحالة رقم</fo:block>
+	
+	
+	
         </fo:flow>
         <!-- END, CR00352142 -->
       </fo:page-sequence>

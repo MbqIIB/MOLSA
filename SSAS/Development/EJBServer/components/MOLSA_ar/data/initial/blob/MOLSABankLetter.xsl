@@ -85,14 +85,14 @@
 	    <!-- START NON-TRANSLATABLE -->
         <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
        
-	<fo:block xsl:use-attribute-sets="Normal_1">السيـــد/ مدير مصرف قطر الاسلامي المحترم</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">مصرف قطر الاسلامي- الفرع الرئيسي</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1">السيـــد/ مدير البنك  المحترم</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1"><xsl:apply-templates select="FIELD[FNAME='bankName']"/></fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> يرجى التكرم بالموافقة على فتح حساب باسم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']" />قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">نجاة دهام العبدالله</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7">مدير ادارة الضمان الاجتماعي</fo:block>
         </fo:flow>
         <!-- END, CR00352142 -->

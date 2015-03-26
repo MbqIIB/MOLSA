@@ -91,7 +91,7 @@
         <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
         
         <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='caseID']"/>  :الرقم </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']"/>  :الرقم </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">السيد/ المدير التنفيذي لوزارة الصحة العامة   المحترم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">وزارة الصحة العامة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
@@ -102,7 +102,7 @@
         <fo:block xsl:use-attribute-sets="Normal_5"> بطلب للحصول على مساعدة بدل خادم و سبب طلب المساعدة العجز </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> يرجى التكرم بإحالته إلى اللجنة الطبية، وموافاتنا عن مدى حاجته لمن يقوم برعايته وتشخيص الحالة ليتسنى لنا إتخذ الإجراءت اللازمة بناءً على ردكم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">غانم مبارك الكواري</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7">مدير ادارة الضمان الاجتماعي</fo:block>
         </fo:flow>
         <!-- END, CR00352142 -->

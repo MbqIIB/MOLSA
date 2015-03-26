@@ -50,19 +50,17 @@
      <xsl:attribute name="space-before">5mm</xsl:attribute>
      <xsl:attribute name="text-align">left</xsl:attribute>
   </xsl:attribute-set>
- 
- 
-  <xsl:attribute-set name="Normal_9" foa:class="block">
-    <!-- START NON-TRANSLATABLE -->
-    <xsl:attribute name="font-size">12.0pt</xsl:attribute>
-    <!-- END NON-TRANSLATABLE -->
-    <!-- START NON-TRANSLATABLE -->
-    <xsl:attribute name="line-height">6mm</xsl:attribute>
-    <!-- END NON-TRANSLATABLE -->
-    <!-- START NON-TRANSLATABLE -->
-    <xsl:attribute name="space-before.optimum">8mm</xsl:attribute>
-    <!-- END NON-TRANSLATABLE -->
+  <xsl:attribute-set name="Normal_8" foa:class="block">
+     <xsl:attribute name="font-size">12.0pt</xsl:attribute>
+     <xsl:attribute name="line-height">5mm</xsl:attribute>
+     <xsl:attribute name="text-align">center</xsl:attribute>
   </xsl:attribute-set>
+ <xsl:attribute-set name="Normal_9" foa:class="block">
+     <xsl:attribute name="font-size">10.0pt</xsl:attribute>
+     <xsl:attribute name="line-height">5mm</xsl:attribute>
+     <xsl:attribute name="text-align">left</xsl:attribute>
+  </xsl:attribute-set>	
+ 
   <!-- END, CR00352142 -->
   <xsl:template match="DOCUMENT">
     <!--Explicitly select DATA to ensure META element is ignored.-->
@@ -85,30 +83,38 @@
 	    <!-- START NON-TRANSLATABLE -->
         <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
        
-	<fo:block xsl:use-attribute-sets="Normal_1">السيدة ملاك عبد الله الهاجري    المحترمة</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">مدير إدارة القوى العاملة</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
+
+	
+	 <fo:block xsl:use-attribute-sets="Normal_9"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1"  >السيد/ مدير ادارة الضمان الاجتماعي  المحترم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> نحيل لادارتكم الموقرة الشخص</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
-        <fo:block xsl:use-attribute-sets="Normal_5"> مقدم طلب في نظام الضمان الاجتماعي للبحث له أو لها عن فرصة عمل مناسبة وذلك حسب القوانين والاجراءت المتبعة لديكم </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">مدير ادارة الضمان الاجتماعي</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_8">الموضوع : اقرار</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> بهذا اقر انا</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>حامل البطاقة الشخصية رقم  </fo:block>
+        <fo:block xsl:use-attribute-sets="Normal_5">
+	عن أي خطأ في البيانات والمعلومات التي اوليت بها	بأن كل المعلومات والبيانات التي أدليت بها عن حالتي الاجتماعية صحيحة ولم يحدث عليها أي تغيير وأتعهد بإخطار الإدارة بأي تغيير يحدث  وأتحمل كافة المسؤولية 
+		</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_6">توقيع مستحق المعاش</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/></fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7">.....................: التوقيع</fo:block>
 	
 	
-	<fo:block xsl:use-attribute-sets="Normal_1" border-top-style="solid" >السيد/ مدير ادارة الضمان الاجتماعي  المحترم</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" />  تقدم(ت) الينا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/> قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
-        <fo:block xsl:use-attribute-sets="Normal_5">                                   
-		
-		من ادارتكم الموقرة للبحث له أو لها عن فرصة عمل, نفيدكم بأنه قد تم تسجيل طلبه و سنوافيكم لاحقا بما يستجد فيه
+		<fo:block xsl:use-attribute-sets="Normal_8" border-top-style="solid">خاص بالإدارة</fo:block>
+        <fo:block xsl:use-attribute-sets="Normal_5">
+		أشهد أنا الباحث الاجتماعي أدناه بأن المذكور أعلاه قد وقع على هذا الإقرار أمامي وبعد التثبت من شخصيته 
 		
 		</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">ملاك عبد الله الهاجري</fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7">مدير إدارة القوى العاملة</fo:block>
+		<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :صدر في </fo:block>
+		
+		
+		</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/></fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7">.....................: التوقيع</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" /> طلب رقم </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_5">ملاحظة : يرجى إرفاق صورة بطاقة المتعهد </fo:block>
+    
+	
+	
         </fo:flow>
         <!-- END, CR00352142 -->
       </fo:page-sequence>
