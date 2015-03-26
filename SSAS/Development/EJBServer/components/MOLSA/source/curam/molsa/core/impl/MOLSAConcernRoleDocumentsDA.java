@@ -160,7 +160,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		
 		
 		if((details.documentID==45001)||(details.documentID==45002)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
-				(details.documentID==45006)){
+				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)){
 			//call generateAndPreviewXMLDocument method with new struct for the new documents with below ids
 			proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
 		}else{

@@ -40,7 +40,7 @@ public class MOLSACommunicationHelper {
 	//This method is called while saving Proforma Document 
 	public static String getProgramName() throws AppException,
 	InformationalException {
-		return "Social Assistannce";
+		return "Social Assistance";
 	}
 
 	public static String getCaseReferenceID(long caseID) throws AppException,
