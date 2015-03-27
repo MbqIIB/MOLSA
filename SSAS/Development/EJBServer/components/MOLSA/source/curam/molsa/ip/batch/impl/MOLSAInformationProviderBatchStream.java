@@ -333,7 +333,7 @@ public class MOLSAInformationProviderBatchStream extends
 			batchProcessingSkippedRecord.recordID = batchProcessingID.recordID;
 			batchProcessingSkippedRecord.errorMessage = e.getMessage();
 		}
-		return batchProcessingSkippedRecord;
+		return null;
 	}
 
 	/**
