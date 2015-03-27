@@ -632,8 +632,7 @@ public class MOLSAInformationProviderBatchStream extends
 		  dynamicEvidenceDataDetails = DynamicEvidenceDataDetailsFactory.newInstance(CASEEVIDENCE.INCOME, Date.getCurrentDate());
 		}
 		AppException message1 = new AppException(
-        MOLSANOTIFICATION.INCOME_UPDATED);
-    message1.arg(caseParticipantRole.getCase().getCaseReference());  
+        MOLSANOTIFICATION.INCOME_COMMENTS );
     message1.arg(informationProviderTmpDtls.amount);
 			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
 					.toString();
