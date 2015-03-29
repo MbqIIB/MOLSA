@@ -1,5 +1,6 @@
 package curam.molsa.util.impl;
 
+import curam.codetable.PROGRAMTYPE;
 import curam.core.facade.fact.CaseHeaderFactory;
 import curam.core.fact.BankBranchFactory;
 import curam.core.impl.CaseHeader;
@@ -12,6 +13,8 @@ import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationDtls
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationKey;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.transaction.TransactionInfo;
+import curam.util.type.CodeTable;
 import curam.util.type.NotFoundIndicator;
 
 
@@ -31,16 +34,17 @@ public class MOLSACommunicationHelper {
 		curam.molsa.communication.entity.intf.MOLSAConcernRoleCommunication molsaCommObj=MOLSAConcernRoleCommunicationFactory.newInstance();
 		NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
 		MOLSAConcernRoleCommunicationDtls molsaCommDtls=molsaCommObj.read(notFoundIndicator, molsaproFormaDocumentDataKey);
-//		if(!notFoundIndicator.isNotFound()){
-//			molsaCommDtls.programNames="";
-//		}
+		//		if(!notFoundIndicator.isNotFound()){
+		//			molsaCommDtls.programNames="";
+		//		}
 		return molsaCommDtls;
 	}
 
 	//This method is called while saving Proforma Document 
 	public static String getProgramName() throws AppException,
 	InformationalException {
-		return "Social Assistance";
+		String programName =CodeTable.getOneItem(PROGRAMTYPE.TABLENAME, PROGRAMTYPE.SOCIALASSISTANCE, TransactionInfo.getProgramLocale());
+		return programName;
 	}
 
 	public static String getCaseReferenceID(long caseID) throws AppException,
