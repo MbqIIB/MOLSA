@@ -182,7 +182,7 @@ public class MOLSASeniorMDCreator implements MOLSAMilestoneDeliveryCreator {
 			if (PRODUCTTYPEEntry.FAMILYINNEED.equals(productDelivery
 					.getProductType())) {
 				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45006L;
-			} else if (PRODUCTTYPEEntry.DIVORCEDLADY.getCode().equals(
+			} else if (PRODUCTTYPEEntry.DIVORCEDLADY.equals(
 					productDelivery.getProductType())) {
 				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45007L;
 			} else {
