@@ -128,10 +128,18 @@ public class Module extends AbstractModule {
 		milestoneCreatorImplementations.addBinding(PRODUCTTYPEEntry.WIDOW).to(
 				MOLSASeniorMDCreator.class);
 		milestoneCreatorImplementations.addBinding(
+				PRODUCTTYPEEntry.DESERTEDWIFE).to(MOLSASeniorMDCreator.class);
+		milestoneCreatorImplementations.addBinding(
 				PRODUCTTYPEEntry.FAMILYOFPRISONER).to(
 				MOLSASeniorMDCreator.class);
 		milestoneCreatorImplementations.addBinding(
 				PRODUCTTYPEEntry.FAMILYINNEED).to(MOLSASeniorMDCreator.class);
+		milestoneCreatorImplementations.addBinding(
+				PRODUCTTYPEEntry.FAMILYOFMISSING).to(MOLSASeniorMDCreator.class);
+		milestoneCreatorImplementations.addBinding(
+				PRODUCTTYPEEntry.ORPHAN).to(MOLSASeniorMDCreator.class);
+		milestoneCreatorImplementations.addBinding(
+				PRODUCTTYPEEntry.INCAPABLEOFWORKING).to(MOLSASeniorMDCreator.class);
 		milestoneCreatorImplementations.addBinding(
 				PRODUCTTYPEEntry.ANONYMOUSPARENTS).to(
 				MOLSAAnonymousMDCreator.class);
