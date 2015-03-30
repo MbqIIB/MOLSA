@@ -89,7 +89,11 @@
 	<fo:block xsl:use-attribute-sets="Normal_1"><xsl:apply-templates select="FIELD[FNAME='bankName']"/></fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> يرجى التكرم بالموافقة على فتح حساب باسم</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> 
+	<fo:inline> يرجى التكرم بالموافقة على فتح حساب باسم </fo:inline>
+	
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> 
+	</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']" />قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
