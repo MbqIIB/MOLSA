@@ -901,8 +901,8 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		//param:Program Name
 
 		molsaCommDtls.programNames=MOLSACommunicationHelper.getProgramName();
-		if(MOLSACommunicationHelper.getCardExpiry(commDetails.concernRoleID)!=null){
-			molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.concernRoleID);
+		if(MOLSACommunicationHelper.getCardExpiry(commDetails.caseID)!=null){
+			molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
 		}	
 		molsaCommDtls.molsaLocationID=MOLSACommunicationHelper.molsaLocation();
 		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.concernRoleID);
