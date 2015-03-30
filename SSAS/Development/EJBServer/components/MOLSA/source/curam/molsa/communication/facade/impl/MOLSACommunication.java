@@ -16,6 +16,7 @@ import curam.molsa.communication.entity.fact.MOLSAConcernRoleCommunicationFactor
 import curam.molsa.communication.entity.intf.MOLSAConcernRoleCommunication;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationDtls;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationKey;
+import curam.molsa.message.MOLSABPOTRAINING;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 
@@ -38,9 +39,13 @@ public class MOLSACommunication extends curam.molsa.communication.facade.base.MO
     MOLSAConcernRoleCommunicationKey key= new MOLSAConcernRoleCommunicationKey();
     key.communicationID=arg1.communicationID; 
     MOLSAConcernRoleCommunicationDtls dtls = readObj.read(key);
+    if((dtls.bankBranchID==0) && (dtls.molsaManager.equals(""))){
     dtls.bankBranchID=arg1.bankBranchID;
     dtls.molsaManager=arg1.molsaManager;
-    commObj.modify(key, dtls);        
+    commObj.modify(key, dtls);  
+    }else{
+    	throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_DATA_ALREADY_EXIST);
+    }
   }
 
   @Override

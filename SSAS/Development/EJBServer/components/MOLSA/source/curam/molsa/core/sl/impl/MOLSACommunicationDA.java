@@ -24,6 +24,7 @@ import curam.core.fact.ConcernRoleAddressFactory;
 import curam.core.fact.ConcernRoleCommunicationFactory;
 import curam.core.fact.ConcernRoleDocumentsFactory;
 import curam.core.fact.ConcernRoleFactory;
+import curam.core.fact.LocationFactory;
 import curam.core.fact.MaintainConcernRoleAddressFactory;
 import curam.core.fact.MaintainXSLTemplateFactory;
 import curam.core.fact.ProspectPersonFactory;
@@ -37,6 +38,7 @@ import curam.core.intf.ConcernRole;
 import curam.core.intf.ConcernRoleAddress;
 import curam.core.intf.ConcernRoleCommunication;
 import curam.core.intf.ConcernRoleDocuments;
+import curam.core.intf.Location;
 import curam.core.intf.MaintainConcernRoleAddress;
 import curam.core.intf.MaintainXSLTemplate;
 import curam.core.intf.ProspectPerson;
@@ -78,6 +80,7 @@ import curam.core.struct.ConcernRoleKey;
 import curam.core.struct.ConcernRoleNameDetails;
 import curam.core.struct.CuramInd;
 import curam.core.struct.DataBasedSecurityResult;
+import curam.core.struct.LocationKey;
 import curam.core.struct.LoggedInUser;
 import curam.core.struct.MaintainAddressKey;
 import curam.core.struct.MaintainCommunicationKey;
@@ -898,6 +901,11 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		//param:Program Name
 
 		molsaCommDtls.programNames=MOLSACommunicationHelper.getProgramName();
+		if(MOLSACommunicationHelper.getCardExpiry(commDetails.concernRoleID)!=null){
+			molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.concernRoleID);
+		}	
+		molsaCommDtls.molsaLocationID=MOLSACommunicationHelper.molsaLocation();
+		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.concernRoleID);
 		molsaCommDtls.caseReferenceID=MOLSACommunicationHelper.getCaseReferenceID(commKey.caseID);
 
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	

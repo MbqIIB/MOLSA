@@ -7,7 +7,9 @@ import curam.molsa.util.impl.MOLSACommunicationHelper;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASEUNSUSPENDREASON;
 import curam.core.fact.BankBranchFactory;
+import curam.core.fact.LocationFactory;
 import curam.core.intf.BankBranch;
+import curam.core.intf.Location;
 import curam.core.sl.struct.ProFormaReturnDocDetails;
 import curam.core.struct.AddressKey;
 import curam.core.struct.BankBranchKey;
@@ -25,6 +27,10 @@ import curam.core.struct.ConcernRoleKey;
 import curam.core.struct.ConcernRoleNameAndAlternateID;
 import curam.core.struct.CurrentCaseStatusKey;
 import curam.core.struct.GetCaseClosureSupplierKey;
+import curam.core.struct.LocationDtls;
+import curam.core.struct.LocationKey;
+import curam.core.struct.LocationKeyRef;
+import curam.core.struct.LocationNameStructRef;
 import curam.core.struct.OtherAddressData;
 import curam.core.struct.ProFormaDocumentData;
 import curam.core.struct.ReadCaseClosureKey;
@@ -138,29 +144,42 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		MOLSAProFormaDocumentData molsaproFormaDocumentData =new MOLSAProFormaDocumentData();
 		//Assigning the OOTB struct to the new struct
 		molsaproFormaDocumentData.dtls=proFormaDocumentData;
-		
+
 		MOLSAConcernRoleCommunicationKey concernRoleCommunicationKey = new MOLSAConcernRoleCommunicationKey();
-		
+
 		//Getting the additional parameters added other than the OOTB parameters by reading the new table
-		
+
 		concernRoleCommunicationKey.communicationID = details.communicationID;
 		MOLSAConcernRoleCommunicationDtls concernRoleCommunicationDtls = MOLSACommunicationHelper.readAdditionalCommParams(concernRoleCommunicationKey);
 		//Reading program Names, Bank Name ,Manager Name already saved in the  new table
-		
+
 		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
-		
+		//Getting the bank name from BranchID
 		if((concernRoleCommunicationDtls.bankBranchID)!=0){
 			BankBranch bankBranch= BankBranchFactory.newInstance();
 			BankBranchKey bankKey= new BankBranchKey();
 			bankKey.bankBranchID=concernRoleCommunicationDtls.bankBranchID;
 			molsaproFormaDocumentData.bankName=bankBranch.read(bankKey).name;
-			}
+		}
 		molsaproFormaDocumentData.molsaManagerName=concernRoleCommunicationDtls.molsaManager;
 		molsaproFormaDocumentData.caseReferenceID=concernRoleCommunicationDtls.caseReferenceID;
+		molsaproFormaDocumentData.cardExpiryDate=concernRoleCommunicationDtls.cardExpiryDate;
+		molsaproFormaDocumentData.iban=concernRoleCommunicationDtls.IBAN;
 		
+		//Getting the location name from location id 
 		
+		if(concernRoleCommunicationDtls.molsaLocationID!=0){
+		Location locationObj= LocationFactory.newInstance();
+		LocationKey locationKey = new LocationKey();
+		locationKey.locationID=MOLSACommunicationHelper.molsaLocation();
+		LocationNameStructRef locDtls= new LocationNameStructRef();
+		locDtls=locationObj.readLocationName(locationKey);
+		molsaproFormaDocumentData.locationName=locDtls.name;	
+		}
+		
+		//New Xsl validation by document ID
 		if((details.documentID==45001)||(details.documentID==45002)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
-				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)){
+				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)||(details.documentID==45010)){
 			//call generateAndPreviewXMLDocument method with new struct for the new documents with below ids
 			proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
 		}else{
