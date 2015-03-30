@@ -30,7 +30,7 @@
         </fo:layout-master-set>
         
         <fo:page-sequence master-reference="A4">
-            <fo:flow flow-name="xsl-region-body"  font-family="WT Sans ME" >
+            <fo:flow flow-name="xsl-region-body"  font-family="Times New Roman" >
                 <fo:block>
                     
                     <fo:external-graphic src="./MOLSA_ar/data/initial/blob/images/molsa-beneficiary-logo.png"  content-height="scale-to-fit" height="15.96mm"  content-width="75.6mm" scaling="non-uniform"/>
@@ -99,7 +99,7 @@
                 
                 <fo:block    font-size="10pt"    text-align="right" break-after="page">
                     <xsl:apply-templates select="FIELD[FNAME='iban']" /> 
-					<fo:inline font-weight="bold">:</fo:inline>
+					
 					<fo:inline font-size="9pt" font-weight="bold">
 					رقم البنك   
 					</fo:inline> 
