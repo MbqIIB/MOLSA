@@ -1,8 +1,10 @@
 package curam.molsa.core.sl.impl;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Inject;
 
@@ -71,6 +73,20 @@ public class MOLSASeniorMDCreator implements MOLSAMilestoneDeliveryCreator {
 	protected CaseHeaderDAO caseHeaderDAO;
 
 	protected EvidenceDescriptor evidenceDescriptorObj;
+	private static Map<PRODUCTTYPEEntry, Long> seniorCitizenMSConfig = new HashMap<PRODUCTTYPEEntry, Long>();
+
+	static {
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.DESERTEDWIFE, 45026L);
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.DIVORCEDLADY, 45007L);
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.FAMILYINNEED, 45006L);
+
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.FAMILYOFMISSING, 45021L);
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.FAMILYOFPRISONER, 45003L);
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.INCAPABLEOFWORKING, 45024L);
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.ORPHAN, 45025L);
+		seniorCitizenMSConfig.put(PRODUCTTYPEEntry.WIDOW, 45008L);
+
+	}
 
 	/**
 	 * Constructor.
@@ -179,15 +195,8 @@ public class MOLSASeniorMDCreator implements MOLSAMilestoneDeliveryCreator {
 					.newInstance();
 			MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
 			milestoneDeliveryDtls.dtls.caseID = caseID;
-			if (PRODUCTTYPEEntry.FAMILYINNEED.equals(productDelivery
-					.getProductType())) {
-				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45006L;
-			} else if (PRODUCTTYPEEntry.DIVORCEDLADY.equals(
-					productDelivery.getProductType())) {
-				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45007L;
-			} else {
-				milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45003L;
-			}
+			milestoneDeliveryDtls.dtls.milestoneConfigurationID = seniorCitizenMSConfig
+					.get(productDeliveryDAO.get(caseID).getProductType());
 
 			milestoneDeliveryDtls.dtls.expectedEndDate = new Date(
 					currentYearCal);
