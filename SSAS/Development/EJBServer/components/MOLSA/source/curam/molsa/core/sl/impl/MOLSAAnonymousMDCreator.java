@@ -39,6 +39,8 @@ import curam.participant.impl.ConcernRole;
 import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
+import curam.piwrapper.caseheader.impl.ProductDelivery;
+import curam.piwrapper.caseheader.impl.ProductDeliveryDAO;
 import curam.piwrapper.casemanager.impl.CaseParticipantRole;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
@@ -65,6 +67,9 @@ public class MOLSAAnonymousMDCreator implements MOLSAMilestoneDeliveryCreator {
 	protected CaseHeaderDAO caseHeaderDAO;
 
 	protected EvidenceDescriptor evidenceDescriptorObj;
+
+	@Inject
+	protected ProductDeliveryDAO productDeliveryDAO;
 
 	/**
 	 * Constructor.
@@ -200,6 +205,40 @@ public class MOLSAAnonymousMDCreator implements MOLSAMilestoneDeliveryCreator {
 			milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
 			milestoneDeliveryObj.create(milestoneDeliveryDtls);
 
+		} else if (60 == age) {
+			ProductDelivery productDelivery = productDeliveryDAO.get(caseID);
+
+			final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
+					.newInstance();
+			MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
+			milestoneDeliveryDtls.dtls.caseID = caseID;
+			milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45023L;
+			milestoneDeliveryDtls.dtls.expectedEndDate = new Date(
+					currentYearCal);
+			milestoneDeliveryDtls.dtls.ownerUserName = TransactionInfo
+					.getProgramUser();
+			milestoneDeliveryDtls.dtls.createdBySystem = true;
+			milestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.INPROGRESS
+					.getCode();
+			CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+
+			caseHeaderKey.caseID = caseID;
+			CaseStartDate caseStartDate = CaseHeaderFactory.newInstance()
+					.readStartDate(caseHeaderKey);
+			MilestoneConfigurationKey milestoneConfigurationKey = new MilestoneConfigurationKey();
+
+			milestoneConfigurationKey.milestoneConfigurationID = milestoneDeliveryDtls.dtls.milestoneConfigurationID;
+			EarliestStartDay earliestStartDay = MilestoneConfigurationFactory
+					.newInstance().readEarliestStartDay(
+							milestoneConfigurationKey);
+			Date earliestStartDate = caseStartDate.startDate
+					.addDays(earliestStartDay.earliestStartDay);
+			if (certStartDate.after(earliestStartDate)) {
+				earliestStartDate = certStartDate;
+			}
+			milestoneDeliveryDtls.dtls.expectedStartDate = earliestStartDate;
+			milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
+			milestoneDeliveryObj.create(milestoneDeliveryDtls);
 		}
 
 	}
