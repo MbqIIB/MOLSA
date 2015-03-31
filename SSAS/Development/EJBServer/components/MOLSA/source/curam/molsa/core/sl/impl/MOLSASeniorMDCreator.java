@@ -39,7 +39,6 @@ import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
 import curam.molsa.util.impl.MOLSADateUtil;
 import curam.participant.impl.ConcernRole;
-import curam.piwrapper.caseconfiguration.impl.Product;
 import curam.piwrapper.caseconfiguration.impl.ProductDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
@@ -156,9 +155,21 @@ public class MOLSASeniorMDCreator implements MOLSAMilestoneDeliveryCreator {
 		caseIDStatusAndEvidenceTypeKey.caseID = icCaseHeader.getID();
 		caseIDStatusAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
 		caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
-		final RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
+		
+		RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
 				.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
 
+		if(null == relatedIDAndEvidenceTypeKeyList || relatedIDAndEvidenceTypeKeyList.dtls.isEmpty()){
+
+			caseIDStatusAndEvidenceTypeKey.caseID = icCaseHeader.getID();
+			caseIDStatusAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
+			caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.INEDIT;
+			
+			relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
+					.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
+
+		}
+		
 		EvidenceCaseKey evidenceCaseKey = null;
 		String dateOfBirth = null;
 
@@ -179,6 +190,7 @@ public class MOLSASeniorMDCreator implements MOLSAMilestoneDeliveryCreator {
 				break;
 			}
 		}
+		
 
 		Calendar currentYearCal = Date.fromISO8601(dateOfBirth).getCalendar();
 		currentYearCal.add(Calendar.YEAR, 60);
