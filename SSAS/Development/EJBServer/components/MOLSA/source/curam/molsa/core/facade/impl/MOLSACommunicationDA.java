@@ -11,6 +11,7 @@ import curam.core.fact.CommAttachmentLinkFactory;
 import curam.core.fact.ConcernRoleCommunicationFactory;
 import curam.core.intf.CommAttachmentLink;
 import curam.core.intf.ConcernRoleCommunication;
+import curam.core.sl.fact.CommunicationFactory;
 import curam.core.sl.struct.CommunicationIDKey;
 import curam.core.sl.struct.PreviewProFormaKey;
 import curam.core.sl.struct.ProFormaCommKey;
@@ -153,6 +154,17 @@ import curam.util.exception.InformationalException;
 				      previewProFormaKey);
 
 				    return proFormaReturnDocDetails;
+				  }
+
+		@Override
+		 public void createProFormaCommunication1(
+				    final CreateProFormaCommDetails1 createProFormaCommDetails)
+				    throws AppException, InformationalException {
+
+				//    final curam.core.sl.intf.Communication communicationObj = CommunicationFactory.newInstance();
+					final curam.molsa.core.sl.intf.MOLSACommunicationDA molsaCommunicationObj=MOLSACommunicationDAFactory.newInstance();
+					molsaCommunicationObj.createProFormaCommunication1(
+				      createProFormaCommDetails.dtls);
 				  }
 	}
 

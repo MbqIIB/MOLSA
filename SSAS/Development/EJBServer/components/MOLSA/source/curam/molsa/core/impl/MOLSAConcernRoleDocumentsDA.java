@@ -152,8 +152,9 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		concernRoleCommunicationKey.communicationID = details.communicationID;
 		MOLSAConcernRoleCommunicationDtls concernRoleCommunicationDtls = MOLSACommunicationHelper.readAdditionalCommParams(concernRoleCommunicationKey);
 		//Reading program Names, Bank Name ,Manager Name already saved in the  new table
-
+		if (concernRoleCommunicationDtls.programNames!=null){
 		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
+		}
 		//Getting the bank name from BranchID
 		if((concernRoleCommunicationDtls.bankBranchID)!=0){
 			BankBranch bankBranch= BankBranchFactory.newInstance();

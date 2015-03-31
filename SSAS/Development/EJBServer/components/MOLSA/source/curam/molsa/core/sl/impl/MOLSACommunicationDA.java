@@ -49,6 +49,7 @@ import curam.core.sl.fact.ClientMergeFactory;
 import curam.core.sl.impl.CaseTransactionLogIntf;
 import curam.core.sl.infrastructure.cmis.impl.CMISAccessInterface;
 import curam.core.sl.intf.ClientMerge;
+import curam.core.sl.struct.CaseParticipantRoleDetails;
 import curam.core.sl.struct.CheckCommExceptionKey;
 import curam.core.sl.struct.CheckSecurityCaseIDKey;
 import curam.core.sl.struct.ClientInteractionSupplementaryDetails;
@@ -905,7 +906,7 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 			molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
 		}	
 		molsaCommDtls.molsaLocationID=MOLSACommunicationHelper.molsaLocation();
-		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.concernRoleID);
+		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.correspondentConcernRoleID);
 		molsaCommDtls.caseReferenceID=MOLSACommunicationHelper.getCaseReferenceID(commKey.caseID);
 
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
@@ -1046,5 +1047,26 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		}
 		return proFormaCommDetails;
 	}
+	 public void createProFormaCommunication1(
+			    final ProFormaCommDetails1 proFormaCommDetails) throws AppException,
+			      InformationalException {
 
+			    createProFormaCommReturningID(proFormaCommDetails);
+			  }
+	 public ConcernRoleCommKeyOut createProFormaCommReturningID(
+			    ProFormaCommDetails1 proFormaCommDetails) throws AppException,
+			      InformationalException {
+			    final ConcernRoleCommKeyOut concernRoleCommKeyOut = createProFormaReturningID(
+			      proFormaCommDetails);
+			    final CaseParticipantRoleDetails caseParticipantRoleDetails = new CaseParticipantRoleDetails();
+
+			    caseParticipantRoleDetails.dtls.caseID = proFormaCommDetails.caseID;
+			    caseParticipantRoleDetails.dtls.fromDate = Date.getCurrentDate();
+			    caseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.CORRESPONDENT;
+			    caseParticipantRoleDetails.dtls.caseParticipantRoleID = proFormaCommDetails.caseParticipantRoleID;
+			    caseParticipantRoleDetails.dtls.participantRoleID = proFormaCommDetails.correspondentParticipantRoleID;
+
+			    addCaseParticipant(caseParticipantRoleDetails);
+			    return concernRoleCommKeyOut;
+			  }
 }
