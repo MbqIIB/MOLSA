@@ -6,13 +6,17 @@ import java.util.List;
 import com.google.inject.Inject;
 
 import curam.application.facade.fact.ApplicationFactory;
+import curam.application.facade.fact.MatchClientFactory;
 import curam.application.facade.struct.ApplicationID;
+import curam.application.facade.struct.ClientWizardDisplayDetails;
+import curam.application.facade.struct.RegisteredOrProspectPersonMergeDetails;
 import curam.application.facade.struct.SubmitApplicationDetails;
 import curam.application.impl.Application;
 import curam.application.impl.ApplicationConfiguration;
 import curam.application.impl.ApplicationDAO;
 import curam.application.workflow.struct.ApplicationWorkflowDetails;
 import curam.codetable.PRODUCTTYPE;
+import curam.core.impl.CuramConst;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.datastore.impl.Datastore;
 import curam.datastore.impl.DatastoreFactory;
@@ -26,13 +30,18 @@ import curam.ieg.facade.struct.IEGRootEntityID;
 import curam.ieg.facade.struct.IEGScriptExecutionID;
 import curam.ieg.impl.IEGScriptExecutionFactory;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
+import curam.message.GENERALSEARCH;
 import curam.message.MOLSANOTIFICATION;
+import curam.message.MOLSAPROGRAMRECOMMENDATIONCHECKELIGIBILITY;
+import curam.message.application.GENAPPLICATION;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.constants.impl.MOLSADatastoreConst;
+import curam.struct.ConcernRoleIDKey;
 import curam.util.events.impl.EventService;
 import curam.util.events.struct.Event;
 import curam.util.exception.AppException;
 import curam.util.exception.AppRuntimeException;
+import curam.util.exception.InformationalElement;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
 import curam.util.persistence.GuiceWrapper;
@@ -125,13 +134,56 @@ public class MOLSAApplication extends
 		enactmentStructs.add(taskCreateDetails);
 		enactmentStructs.add(workflowDetails);
 		EnactmentService.startProcessInV3CompatibilityMode(
-				MOLSAConstants.kMOLSAApplicationRejectTask,
-				enactmentStructs);
+				MOLSAConstants.kMOLSAApplicationRejectTask, enactmentStructs);
 		Event eventKey = new Event();
 		eventKey.eventKey.eventClass = MOLSAApplicationNotification.APPLICATION_REJECTED.eventClass;
 		eventKey.eventKey.eventType = MOLSAApplicationNotification.APPLICATION_REJECTED.eventType;
 		eventKey.primaryEventData = applicationID.applicationID;
 		EventService.raiseEvent(eventKey);
+	}
+
+	@Override
+	public RegisteredOrProspectPersonMergeDetails readParticipantDetailsForMerge(
+			ConcernRoleIDKey key) throws AppException, InformationalException {
+
+		if (key.concernRoleID == 0) {
+
+			final AppException appException = new AppException(
+					GENERALSEARCH.INF_SEARCH_NORECORDSFOUND);
+			curam.core.sl.infrastructure.impl.ValidationManagerFactory
+					.getManager()
+					.addInfoMgrExceptionWithLookup(
+							appException,
+							CuramConst.gkEmpty,
+							InformationalElement.InformationalType.kError,
+							curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
+							0);
+			TransactionInfo.getInformationalManager().failOperation();
+		}
+		return MatchClientFactory.newInstance().readParticipantDetailsForMerge(
+				key);
+
+		
+	}
+
+	public void validateSelectedParticipant(ConcernRoleIDKey key)
+			throws InformationalException {
+
+		if (key.concernRoleID == 0) {
+
+			final AppException appException = new AppException(
+					MOLSANOTIFICATION.ERR_NO_MEMBERS_SELECTED);
+			curam.core.sl.infrastructure.impl.ValidationManagerFactory
+					.getManager()
+					.addInfoMgrExceptionWithLookup(
+							appException,
+							CuramConst.gkEmpty,
+							InformationalElement.InformationalType.kError,
+							curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
+							0);
+			TransactionInfo.getInformationalManager().failOperation();
+		}
+
 	}
 
 }
