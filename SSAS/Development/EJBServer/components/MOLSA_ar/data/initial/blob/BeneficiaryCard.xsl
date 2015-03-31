@@ -33,7 +33,7 @@
             <fo:flow flow-name="xsl-region-body"  font-family="Times New Roman" >
                 <fo:block>
                     
-                    <fo:external-graphic src="./MOLSA_ar/data/initial/blob/images/molsa-beneficiary-logo.png"  content-height="scale-to-fit" height="15.96mm"  content-width="75.6mm" scaling="non-uniform"/>
+                    <fo:external-graphic src="images/molsa-beneficiary-logo.png"  content-height="scale-to-fit" height="15.96mm"  content-width="75.6mm" scaling="non-uniform"/>
                 </fo:block>
                 
                 <fo:block   font-size="14pt"  font-weight="bold" text-align="center" margin-bottom="2mm">
