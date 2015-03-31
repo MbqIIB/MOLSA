@@ -391,6 +391,31 @@
           </CONNECT>
         </LINK>
       </ACTION_CONTROL>
+       <ACTION_CONTROL
+        LABEL="ActionControl.Label.Add.Communication"
+      >
+        <CONDITION>
+          <IS_TRUE
+            NAME="ACTION"
+            PROPERTY="proFormaInd"
+          />
+        </CONDITION>
+        <LINK OPEN_MODAL="true" WINDOW_OPTIONS="width=400,height=450"
+        PAGE_ID="MOLSA_addCommunicationDetails"
+        SAVE_LINK="true">
+        
+        <CONNECT>
+          <SOURCE
+              NAME="ACTION"
+              PROPERTY="communicationID"
+            />
+          <TARGET
+            NAME="PAGE"
+            PROPERTY="communicationID"
+          />
+        </CONNECT>
+      </LINK>
+      </ACTION_CONTROL>
 
 
       <ACTION_CONTROL
