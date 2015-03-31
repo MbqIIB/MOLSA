@@ -139,11 +139,22 @@ public class MOLSAAnonymousMDCreator implements MOLSAMilestoneDeliveryCreator {
 		caseIDStatusAndEvidenceTypeKey.caseID = icCaseHeader.getID();
 		caseIDStatusAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
 		caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
-		final RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
+		RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
 				.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
 
 		EvidenceCaseKey evidenceCaseKey = null;
 		String dateOfBirth = null;
+
+		if(null == relatedIDAndEvidenceTypeKeyList || relatedIDAndEvidenceTypeKeyList.dtls.isEmpty()){
+
+			caseIDStatusAndEvidenceTypeKey.caseID = icCaseHeader.getID();
+			caseIDStatusAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
+			caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.INEDIT;
+			
+			relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
+					.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
+
+		}
 
 		for (RelatedIDAndEvidenceTypeKey relatedIDAndEvidenceTypeKey : relatedIDAndEvidenceTypeKeyList.dtls) {
 
