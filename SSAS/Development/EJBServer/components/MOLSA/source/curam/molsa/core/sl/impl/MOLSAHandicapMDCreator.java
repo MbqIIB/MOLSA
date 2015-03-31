@@ -139,8 +139,19 @@ public class MOLSAHandicapMDCreator implements MOLSAMilestoneDeliveryCreator {
 		caseIDStatusAndEvidenceTypeKey.caseID = icCaseHeader.getID();
 		caseIDStatusAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
 		caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
-		final RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
+		RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
 				.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
+
+		if(null == relatedIDAndEvidenceTypeKeyList || relatedIDAndEvidenceTypeKeyList.dtls.isEmpty()){
+
+			caseIDStatusAndEvidenceTypeKey.caseID = icCaseHeader.getID();
+			caseIDStatusAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
+			caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.INEDIT;
+			
+			relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
+					.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
+
+		}
 
 		EvidenceCaseKey evidenceCaseKey = null;
 		String dateOfBirth = null;
