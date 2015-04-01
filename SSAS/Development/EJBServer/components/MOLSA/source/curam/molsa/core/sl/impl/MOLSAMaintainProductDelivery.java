@@ -878,8 +878,9 @@ public abstract class MOLSAMaintainProductDelivery extends
 		}
 		milestoneDeliveryDtls.dtls.expectedStartDate = earliestStartDate;
 		milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
-
-		milestoneDeliveryObj.create(milestoneDeliveryDtls);
+		if(milestoneDeliveryDtls.dtls.expectedEndDate.after(milestoneDeliveryDtls.dtls.expectedStartDate)){
+			milestoneDeliveryObj.create(milestoneDeliveryDtls);
+		}
 	}
 
 }

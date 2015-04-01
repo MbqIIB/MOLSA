@@ -214,8 +214,9 @@ public class MOLSAAnonymousMDCreator implements MOLSAMilestoneDeliveryCreator {
 			}
 			milestoneDeliveryDtls.dtls.expectedStartDate = earliestStartDate;
 			milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
-			milestoneDeliveryObj.create(milestoneDeliveryDtls);
-
+			if(milestoneDeliveryDtls.dtls.expectedEndDate.after(milestoneDeliveryDtls.dtls.expectedStartDate)){
+				milestoneDeliveryObj.create(milestoneDeliveryDtls);
+			}
 		} else if (60 == age) {
 			ProductDelivery productDelivery = productDeliveryDAO.get(caseID);
 
@@ -249,7 +250,9 @@ public class MOLSAAnonymousMDCreator implements MOLSAMilestoneDeliveryCreator {
 			}
 			milestoneDeliveryDtls.dtls.expectedStartDate = earliestStartDate;
 			milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
-			milestoneDeliveryObj.create(milestoneDeliveryDtls);
+			if(milestoneDeliveryDtls.dtls.expectedEndDate.after(milestoneDeliveryDtls.dtls.expectedStartDate)){
+				milestoneDeliveryObj.create(milestoneDeliveryDtls);
+			}			
 		}
 
 	}

@@ -235,8 +235,9 @@ public class MOLSASeniorMDCreator implements MOLSAMilestoneDeliveryCreator {
 			}
 			milestoneDeliveryDtls.dtls.expectedStartDate = earliestStartDate;
 			milestoneDeliveryDtls.dtls.actualStartDate = earliestStartDate;
-			milestoneDeliveryObj.create(milestoneDeliveryDtls);
-
+			if(milestoneDeliveryDtls.dtls.expectedEndDate.after(milestoneDeliveryDtls.dtls.expectedStartDate)){
+				milestoneDeliveryObj.create(milestoneDeliveryDtls);
+			}
 		}
 
 	}
