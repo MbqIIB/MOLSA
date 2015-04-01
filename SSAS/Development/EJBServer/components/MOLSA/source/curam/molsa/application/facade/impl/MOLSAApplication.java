@@ -166,24 +166,5 @@ public class MOLSAApplication extends
 		
 	}
 
-	public void validateSelectedParticipant(ConcernRoleIDKey key)
-			throws InformationalException {
-
-		if (key.concernRoleID == 0) {
-
-			final AppException appException = new AppException(
-					MOLSANOTIFICATION.ERR_NO_MEMBERS_SELECTED);
-			curam.core.sl.infrastructure.impl.ValidationManagerFactory
-					.getManager()
-					.addInfoMgrExceptionWithLookup(
-							appException,
-							CuramConst.gkEmpty,
-							InformationalElement.InformationalType.kError,
-							curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
-							0);
-			TransactionInfo.getInformationalManager().failOperation();
-		}
-
-	}
 
 }
