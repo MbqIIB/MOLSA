@@ -3,6 +3,7 @@ package curam.molsa.core.impl;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationDtls;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationKey;
 import curam.molsa.core.struct.MOLSAProFormaDocumentData;
+import curam.molsa.message.MOLSABPOTRAINING;
 import curam.molsa.util.impl.MOLSACommunicationHelper;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASEUNSUSPENDREASON;
@@ -153,7 +154,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		MOLSAConcernRoleCommunicationDtls concernRoleCommunicationDtls = MOLSACommunicationHelper.readAdditionalCommParams(concernRoleCommunicationKey);
 		//Reading program Names, Bank Name ,Manager Name already saved in the  new table
 		if (concernRoleCommunicationDtls.programNames!=null){
-		molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
+			molsaproFormaDocumentData.programNames=concernRoleCommunicationDtls.programNames;
 		}
 		//Getting the bank name from BranchID
 		if((concernRoleCommunicationDtls.bankBranchID)!=0){
@@ -166,18 +167,29 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		molsaproFormaDocumentData.caseReferenceID=concernRoleCommunicationDtls.caseReferenceID;
 		molsaproFormaDocumentData.cardExpiryDate=concernRoleCommunicationDtls.cardExpiryDate;
 		molsaproFormaDocumentData.iban=concernRoleCommunicationDtls.IBAN;
-		
+
 		//Getting the location name from location id 
-		
+
 		if(concernRoleCommunicationDtls.molsaLocationID!=0){
-		Location locationObj= LocationFactory.newInstance();
-		LocationKey locationKey = new LocationKey();
-		locationKey.locationID=MOLSACommunicationHelper.molsaLocation();
-		LocationNameStructRef locDtls= new LocationNameStructRef();
-		locDtls=locationObj.readLocationName(locationKey);
-		molsaproFormaDocumentData.locationName=locDtls.name;	
+			Location locationObj= LocationFactory.newInstance();
+			LocationKey locationKey = new LocationKey();
+			locationKey.locationID=MOLSACommunicationHelper.molsaLocation();
+			LocationNameStructRef locDtls= new LocationNameStructRef();
+			locDtls=locationObj.readLocationName(locationKey);
+			molsaproFormaDocumentData.locationName=locDtls.name;	
 		}
-		
+		if(details.documentID==45002){
+			if(molsaproFormaDocumentData.molsaManagerName.equals("")||molsaproFormaDocumentData.bankName.equals("")){
+				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_MANAGER_BANKACCOUNT_EMPTY);
+			}
+		}
+		if((details.documentID==45001)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
+				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)){
+			if(molsaproFormaDocumentData.molsaManagerName.equals("")||molsaproFormaDocumentData.molsaManagerName==null){
+				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_MANAGER_EMPTY);
+			}
+		}
+
 		//New Xsl validation by document ID
 		if((details.documentID==45001)||(details.documentID==45002)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
 				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)||(details.documentID==45010)){

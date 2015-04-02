@@ -102,6 +102,7 @@ import curam.message.GENERALCOMMUNICATION;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationDtls;
 import curam.molsa.core.fact.MOLSAConcernRoleDocumentsDAFactory;
 import curam.molsa.core.intf.MOLSAConcernRoleDocumentsDA;
+import curam.molsa.message.MOLSABPOTRAINING;
 import curam.molsa.util.impl.MOLSACommunicationHelper;
 import curam.util.events.impl.EventService;
 import curam.util.events.struct.Event;
@@ -907,6 +908,12 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		}	
 		molsaCommDtls.molsaLocationID=MOLSACommunicationHelper.molsaLocation();
 		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.correspondentConcernRoleID);
+		molsaCommDtls.bankBranchID=MOLSACommunicationHelper.getBankID(commDetails.correspondentConcernRoleID);
+		if(commDetails.proFormaID==45010){
+			if(molsaCommDtls.IBAN.equals("")||molsaCommDtls.bankBranchID==0){
+				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_BANK_DETAILS_FOR_MOLSA_CARD_EMPTY);
+			}
+		}
 		molsaCommDtls.caseReferenceID=MOLSACommunicationHelper.getCaseReferenceID(commKey.caseID);
 
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	

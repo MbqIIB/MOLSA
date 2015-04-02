@@ -87,37 +87,20 @@ public class MOLSACommunicationHelper {
 		//	curam.core.facade.intf.CaseHeader caseHeaderObj= CaseHeaderFactory.newInstance();
 		//caseHeader
 
-		Date cardExpiry =Date.getCurrentDate();
+		
+		
 		MaintainCertification maintainCertificationObj = MaintainCertificationFactory
 		.newInstance();
 		MaintainCertificationCaseIDKey certificationCaseIDKey = new MaintainCertificationCaseIDKey();	
-		curam.core.intf.CaseHeader caseheaderObj= curam.core.fact.CaseHeaderFactory.newInstance();
-		CaseHeaderByConcernRoleIDKey key  = new CaseHeaderByConcernRoleIDKey();
-		ProductDelivery  productDeliveryObj = ProductDeliveryFactory.newInstance();
-		ProductDeliveryKey  productDeliveryKey = new ProductDeliveryKey();
-		CaseHeaderReadmultiKey1 caseHeaderReadmultiKey1= new CaseHeaderReadmultiKey1();
-		caseHeaderReadmultiKey1.integratedCaseID=caseID;
-		CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List=caseheaderObj.searchByIntegratedCaseID(caseHeaderReadmultiKey1);
-		for(CaseHeaderReadmultiDetails1  caseHeaderReadmultiDetails1 : caseHeaderReadmultiDetails1List.dtls.items()){
-			if(caseHeaderReadmultiDetails1.caseTypeCode.equals(CASETYPECODE.PRODUCTDELIVERY)) {
-				productDeliveryKey.caseID = caseHeaderReadmultiDetails1.caseID; 
-				ProductDeliveryTypeDetails productDeliveryTypeDetails = productDeliveryObj.readProductType(productDeliveryKey);
-				if(productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.DESERTEDWIFE)||productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.ANONYMOUSPARENTS)||
-						productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.ORPHAN)|| productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.HANDICAP)||
-						productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.FAMILYOFMISSING) || productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.FAMILYOFPRISONER)||
-						productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.FAMILYINNEED)||productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.INCAPABLEOFWORKING)||
-						productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.SENIORCITIZEN)||productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.WIDOW)||productDeliveryTypeDetails.productType.equals(PRODUCTTYPE.DIVORCEDLADY)){
-					certificationCaseIDKey.caseID = caseHeaderReadmultiDetails1.caseID; 
-					MaintainCertificationList certificationList = maintainCertificationObj
-					.getCertifications(certificationCaseIDKey);
-					for(MaintainCertificationDetails certDtls : certificationList.dtls.items()) {
-						if(certDtls.statusCode.equals(RECORDSTATUS.NORMAL)) {
-							return certDtls.periodToDate;
-						}
-					}
-				}
-			}		
-		}	
+		certificationCaseIDKey.caseID = caseID; 
+		MaintainCertificationList certificationList = maintainCertificationObj
+		.getCertifications(certificationCaseIDKey);
+		for(MaintainCertificationDetails certDtls : certificationList.dtls.items()) {
+			if(certDtls.statusCode.equals(RECORDSTATUS.NORMAL)) {
+				return certDtls.periodToDate;
+			}
+		}
+		
 		return null;
 
 	}
@@ -146,10 +129,33 @@ public class MOLSACommunicationHelper {
 			
 			if(bankAccountRMDtls.primaryInd){
 			iBAN=bankAccountRMDtls.ibanOpt;
+		//	bankAccountRMDtls.bankBranchName;
 			}
 		}
 
 		return iBAN;
+	}
+	public static long getBankID(long concernroleid) throws AppException,
+	InformationalException {
+		long bankBranchId = 0;
+		
+		  BankAccountReadMultiDtlsList bankAccRMList = new BankAccountReadMultiDtlsList();
+		    MaintainBankAccountKey maintainBankAccountKey = new MaintainBankAccountKey();
+		    maintainBankAccountKey.concernRoleID = concernroleid;
+		    MaintainConcernRoleBankAc maintainConcernRoleBankAcObj = MaintainConcernRoleBankAcFactory.newInstance();
+		    ReadMultiByConcernRoleIDBankAcResult readMultiByConcernRoleIDBankAcResult = 
+		    	maintainConcernRoleBankAcObj.readmultiByConcernRole(maintainBankAccountKey);
+		    
+		   
+		for(BankAccountRMDtls bankAccountRMDtls: readMultiByConcernRoleIDBankAcResult.details.dtls.items()){
+			
+			if(bankAccountRMDtls.primaryInd){
+			
+				bankBranchId=bankAccountRMDtls.bankBranchID;
+			}
+		}
+
+		return bankBranchId;
 	}
 
 }
