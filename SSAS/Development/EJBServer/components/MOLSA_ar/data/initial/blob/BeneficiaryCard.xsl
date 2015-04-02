@@ -32,10 +32,7 @@
         <fo:page-sequence master-reference="A4">
             <fo:flow flow-name="xsl-region-body"  font-family="Times New Roman" >
                 <fo:block>
-                    
-                    <fo:external-graphic src="Images/molsa-beneficiary-logo.png"  content-height="scale-to-fit" height="15.96mm"  content-width="75.6mm" scaling="non-uniform"/>
-					<fo:external-graphic src="./Images/molsa-beneficiary-logo.png"  content-height="scale-to-fit" height="15.96mm"  content-width="75.6mm" scaling="non-uniform"/>
-					<fo:external-graphic src="../Images/molsa-beneficiary-logo.png"  content-height="scale-to-fit" height="15.96mm"  content-width="75.6mm" scaling="non-uniform"/>
+					<fo:external-graphic src="MOLSA/molsa_beneficiary_logo.png"  content-height="scale-to-fit" height="15.96mm"  content-width="75.6mm" scaling="non-uniform"/>
                 </fo:block>
                 
                 <fo:block   font-size="14pt"  font-weight="bold" text-align="center" margin-bottom="2mm">
@@ -144,7 +141,7 @@
                                 <fo:table-cell border-width="1pt" border-color="white" border-style="solid" font-weight="bold">
                                     <fo:block>
                                         
-                                        <fo:external-graphic src="./images/signature.png"  content-height="scale-to-fit" height="10.96mm" />
+                                        <fo:external-graphic src="MOLSA/signature.png"  content-height="scale-to-fit" height="10.96mm" />
                                     </fo:block> 
                                 </fo:table-cell>
                                 

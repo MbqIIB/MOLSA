@@ -88,32 +88,67 @@
       <fo:page-sequence master-reference="only">
         <!-- BEGIN, CR00352142, PB -->
 	    <!-- START NON-TRANSLATABLE -->
-        <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
+        <fo:flow flow-name="xsl-region-body" font-family="Times New Roman">
         
     <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :تاريخ تقديم الطلب </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" />  :رقم الطلب </fo:block>
 	
 	
-	<fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم مقدم الطلب </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3"> 
+	<fo:inline> :اسم مقدم الطلب </fo:inline>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>   
+	</fo:block>
     <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  :رقم البطاقة</fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='programNames']"/>  :نوع الحالة</fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم صاحب الطلب</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_3"> 
+	<fo:inline> :نوع الحالة </fo:inline>
+	<xsl:apply-templates select="FIELD[FNAME='programNames']"/> 
+	</fo:block>
+	
+    <fo:block xsl:use-attribute-sets="Normal_5"> 
+	<fo:inline> :اسم صاحب الطلب </fo:inline>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> 
+	</fo:block>
+	
     <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  البطاقة </fo:block>
     <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :تاريخ المراجعة</fo:block>
     <fo:block xsl:use-attribute-sets="Normal_3">   للاستفسار عن سير المعاملة يرجى الاتصال على </fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/>  :الباحث</fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_5"> 
+	<fo:inline> :الباحث</fo:inline>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/>
+	</fo:block>
+	
     <fo:block xsl:use-attribute-sets="Normal_7">نسخة مقدم الطلب</fo:block>
 	
 	
 	
-	<fo:block xsl:use-attribute-sets="Normal_3" border-top-style="solid"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم مقدم الطلب </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_3" border-top-style="solid"> 
+	<fo:inline> :اسم صاحب الطلب </fo:inline>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> 
+	</fo:block>
+	
     <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  :رقم البطاقة</fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="FIELD[FNAME='programNames']"/>  :نوع الحالة</fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  :اسم صاحب الطلب</fo:block>
+	
+     <fo:block xsl:use-attribute-sets="Normal_3"> 
+	<fo:inline> :نوع الحالة </fo:inline>
+	<xsl:apply-templates select="FIELD[FNAME='programNames']"/> 
+	</fo:block>
+	
+	
+    <fo:block xsl:use-attribute-sets="Normal_5"> 
+	<fo:inline> :اسم صاحب الطلب </fo:inline>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> 
+	</fo:block>
+	
     <fo:block xsl:use-attribute-sets="Normal_3"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>  البطاقة </fo:block>
+	
     <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :تاريخ المراجعة</fo:block>
+	
     <fo:block xsl:use-attribute-sets="Normal_3">   للاستفسار عن سير المعاملة يرجى الاتصال على </fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/>  :الباحث</fo:block>
+	
+    <fo:block xsl:use-attribute-sets="Normal_5">
+	<fo:inline> :الباحث</fo:inline>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/>
+	</fo:block>
     <fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" /> :نسخة لملف الحالة رقم</fo:block>
 	
 	

@@ -92,7 +92,7 @@
 	<fo:block xsl:use-attribute-sets="Normal_3"> 
 	<fo:inline> يرجى التكرم بالموافقة على فتح حساب باسم </fo:inline>
 	
-	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']" /> 
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> 
 	</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']" />قطري(ة) بموجب البطاقة الشخصية رقم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_6">شاكرين حسن تعاونكم معنا</fo:block>

@@ -81,7 +81,7 @@
       <fo:page-sequence master-reference="only">
         <!-- BEGIN, CR00352142, PB -->
 	    <!-- START NON-TRANSLATABLE -->
-        <fo:flow flow-name="xsl-region-body" font-family="WT Sans ME">
+        <fo:flow flow-name="xsl-region-body" font-family="Times New Roman">
        
 
 	
@@ -112,7 +112,9 @@
 		</fo:block>
 		<fo:block xsl:use-attribute-sets="Normal_5"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :صدر في </fo:block>
 
-	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/> </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_7">
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='userFullName']"/> 
+	</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7">.....................: التوقيع </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_3">
 	<fo:inline>	:طلب رقم </fo:inline>
