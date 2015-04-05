@@ -908,8 +908,9 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		}	
 		molsaCommDtls.molsaLocationID=MOLSACommunicationHelper.molsaLocation();
 		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.correspondentConcernRoleID);
-		molsaCommDtls.bankBranchID=MOLSACommunicationHelper.getBankID(commDetails.correspondentConcernRoleID);
+		
 		if(commDetails.proFormaID==45010){
+		  molsaCommDtls.bankBranchID=MOLSACommunicationHelper.getBankID(commDetails.correspondentConcernRoleID);
 			if(molsaCommDtls.IBAN.equals("")||molsaCommDtls.bankBranchID==0){
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_BANK_DETAILS_FOR_MOLSA_CARD_EMPTY);
 			}
