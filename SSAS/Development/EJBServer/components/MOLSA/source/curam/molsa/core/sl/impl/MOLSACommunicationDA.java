@@ -898,14 +898,20 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		concernRoleCommKeyOut.communicationID = commDetails.communicationID;
 		//Getting extra parameters from the specified table
 		MOLSAConcernRoleCommunicationDtls molsaCommDtls=new MOLSAConcernRoleCommunicationDtls();
+		if(commDetails.caseID!=0){
+			if(MOLSACommunicationHelper.getCardExpiry(commDetails.caseID)!=null){
+				molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
+			}	
+			molsaCommDtls.caseReferenceID=MOLSACommunicationHelper.getCaseReferenceID(commKey.caseID);
+		}
+		
+		
 		molsaCommDtls.communicationID=commDetails.communicationID;
 
 		//param:Program Name
 
 		molsaCommDtls.programNames=MOLSACommunicationHelper.getProgramName();
-		if(MOLSACommunicationHelper.getCardExpiry(commDetails.caseID)!=null){
-			molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
-		}	
+		
 		molsaCommDtls.molsaLocationID=MOLSACommunicationHelper.molsaLocation();
 		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.correspondentConcernRoleID);
 		
@@ -915,7 +921,7 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_BANK_DETAILS_FOR_MOLSA_CARD_EMPTY);
 			}
 		}
-		molsaCommDtls.caseReferenceID=MOLSACommunicationHelper.getCaseReferenceID(commKey.caseID);
+		
 
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
