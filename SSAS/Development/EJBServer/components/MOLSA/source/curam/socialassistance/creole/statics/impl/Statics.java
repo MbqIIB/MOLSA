@@ -20,6 +20,7 @@ import curam.codetable.RECORDSTATUS;
 import curam.codetable.impl.RECORDSTATUSEntry;
 import curam.core.fact.ProductDeliveryCertDiaryFactory;
 import curam.core.impl.CuramConst;
+import curam.core.impl.EnvVars;
 import curam.core.struct.PDCertDiaryCaseIDAndStatusCodeRMKey;
 import curam.core.struct.PersonRegistrationDetails;
 import curam.core.struct.ProductDeliveryCertDiaryDtls;
@@ -37,6 +38,7 @@ import curam.creole.value.XmlMessage;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.resources.Configuration;
 import curam.util.resources.StringUtil;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
@@ -90,6 +92,16 @@ public final class Statics {
 
 	public static Timeline<Number> yearlyAnniversaryTimeline(Session session,
 			Date startDate) {
+		
+		if(startDate.getCalendar().get(Calendar.DATE) >=Integer.parseInt(Configuration.getProperty(EnvVars.ENV_MOLSA_FINANCIAL_PAYMENT_DAY))){
+			startDate = shiftToStartOfNextMonth(startDate);
+		}
+		else{
+			Calendar startDateCalendar  = startDate.getCalendar();
+			startDateCalendar.set(Calendar.DATE, 1);
+			startDate = new Date(startDateCalendar);
+		}
+		
 		int intNumberOfAnniversaries = 110;
 		final List<Interval<Number>> resultIntervals = new ArrayList<Interval<Number>>();
 
@@ -129,7 +141,6 @@ public final class Statics {
 				if (interval.value().doubleValue() == 17
 						|| interval.value().doubleValue() == 18
 						|| interval.value().doubleValue() == 60) {
-					intervalStartDate = shiftToStartOfNextMonth(intervalStartDate);
 					sortedStartDates.add(intervalStartDate);
 				} else {
 					sortedStartDates.add(intervalStartDate);
