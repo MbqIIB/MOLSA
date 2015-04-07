@@ -899,29 +899,34 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		//Getting extra parameters from the specified table
 		MOLSAConcernRoleCommunicationDtls molsaCommDtls=new MOLSAConcernRoleCommunicationDtls();
 		if(commDetails.caseID!=0){
-			if(MOLSACommunicationHelper.getCardExpiry(commDetails.caseID)!=null){
-				molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
-			}	
+
 			molsaCommDtls.caseReferenceID=MOLSACommunicationHelper.getCaseReferenceID(commKey.caseID);
 		}
-		
-		
+
+
 		molsaCommDtls.communicationID=commDetails.communicationID;
 
 		//param:Program Name
 
 		molsaCommDtls.programNames=MOLSACommunicationHelper.getProgramName();
-		
+
 		molsaCommDtls.molsaLocationID=MOLSACommunicationHelper.molsaLocation();
 		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.correspondentConcernRoleID);
-		
+
 		if(commDetails.proFormaID==45010){
-		  molsaCommDtls.bankBranchID=MOLSACommunicationHelper.getBankID(commDetails.correspondentConcernRoleID);
+
+			if(MOLSACommunicationHelper.getCardExpiry(commDetails.caseID)!=null){
+				molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
+			}	
+			if(molsaCommDtls.cardExpiryDate.equals(Date.kZeroDate)){
+				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_CARDEXPIRY_FOR_MOLSA_CARD_EMPTY);	
+			}
+			molsaCommDtls.bankBranchID=MOLSACommunicationHelper.getBankID(commDetails.correspondentConcernRoleID);
 			if(molsaCommDtls.IBAN.equals("")||molsaCommDtls.bankBranchID==0){
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_BANK_DETAILS_FOR_MOLSA_CARD_EMPTY);
 			}
 		}
-		
+
 
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
@@ -1061,26 +1066,26 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		}
 		return proFormaCommDetails;
 	}
-	 public void createProFormaCommunication1(
-			    final ProFormaCommDetails1 proFormaCommDetails) throws AppException,
-			      InformationalException {
+	public void createProFormaCommunication1(
+			final ProFormaCommDetails1 proFormaCommDetails) throws AppException,
+			InformationalException {
 
-			    createProFormaCommReturningID(proFormaCommDetails);
-			  }
-	 public ConcernRoleCommKeyOut createProFormaCommReturningID(
-			    ProFormaCommDetails1 proFormaCommDetails) throws AppException,
-			      InformationalException {
-			    final ConcernRoleCommKeyOut concernRoleCommKeyOut = createProFormaReturningID(
-			      proFormaCommDetails);
-			    final CaseParticipantRoleDetails caseParticipantRoleDetails = new CaseParticipantRoleDetails();
+		createProFormaCommReturningID(proFormaCommDetails);
+	}
+	public ConcernRoleCommKeyOut createProFormaCommReturningID(
+			ProFormaCommDetails1 proFormaCommDetails) throws AppException,
+			InformationalException {
+		final ConcernRoleCommKeyOut concernRoleCommKeyOut = createProFormaReturningID(
+				proFormaCommDetails);
+		final CaseParticipantRoleDetails caseParticipantRoleDetails = new CaseParticipantRoleDetails();
 
-			    caseParticipantRoleDetails.dtls.caseID = proFormaCommDetails.caseID;
-			    caseParticipantRoleDetails.dtls.fromDate = Date.getCurrentDate();
-			    caseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.CORRESPONDENT;
-			    caseParticipantRoleDetails.dtls.caseParticipantRoleID = proFormaCommDetails.caseParticipantRoleID;
-			    caseParticipantRoleDetails.dtls.participantRoleID = proFormaCommDetails.correspondentParticipantRoleID;
+		caseParticipantRoleDetails.dtls.caseID = proFormaCommDetails.caseID;
+		caseParticipantRoleDetails.dtls.fromDate = Date.getCurrentDate();
+		caseParticipantRoleDetails.dtls.typeCode = CASEPARTICIPANTROLETYPE.CORRESPONDENT;
+		caseParticipantRoleDetails.dtls.caseParticipantRoleID = proFormaCommDetails.caseParticipantRoleID;
+		caseParticipantRoleDetails.dtls.participantRoleID = proFormaCommDetails.correspondentParticipantRoleID;
 
-			    addCaseParticipant(caseParticipantRoleDetails);
-			    return concernRoleCommKeyOut;
-			  }
+		addCaseParticipant(caseParticipantRoleDetails);
+		return concernRoleCommKeyOut;
+	}
 }
