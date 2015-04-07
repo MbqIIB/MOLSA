@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
 import javax.activation.DataHandler;
+import javax.activation.MimetypesFileTypeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.tempuri.ArabdoxRemoteServiceStub;
@@ -116,6 +117,18 @@ public class MOLSAArabdoxUtil {
     return instance;
   }
 
+	private boolean isAttachment(String attachmentName) {
+		boolean isAttachment = false;
+		String mimeType = new MimetypesFileTypeMap()
+				.getContentType(attachmentName);
+		String type = mimeType.split("/")[0];
+		if (type.equals("image")) {
+			isAttachment = false;
+		} else {
+			isAttachment = true;
+		}
+		return isAttachment;
+	}
   /**
    * Method will verify whether a folder exists in the container and if
    * exists will return the container ID.
@@ -395,15 +408,24 @@ public class MOLSAArabdoxUtil {
     DeleteDocumentFileResponse deleteDocumentFileResponse = arabdoxHelper.deleteDocumentFile(arabdoxRemoteServiceStub, loginResponse,
         (int) molsaArabDoxAttachDtls.arabDoxDocumentID, (int) molsaArabDoxAttachDtls.arabDoxFileID, fileType);
 
+    boolean isAttachment = isAttachment(attachmentName);
     DocumentFileAddResponse documentFileAddResponse = 
       arabdoxHelper.addDocumentFilesEx(arabdoxRemoteServiceStub, loginResponse, molsaArabDoxAttachDtls.arabDoxDocumentID,
-        attachmentContent, fileName, true);
+        attachmentContent, fileName, isAttachment);
     
+    FileType newFileType;
+    if (isAttachment) {
+    	newFileType = FileType.Attachment;
+    	molsaArabDoxAttachDtls.isAttachment=true;
+      } else {
+    	  newFileType = FileType.Image;
+    	  molsaArabDoxAttachDtls.isAttachment=false;
+      }
     MOLSAArabdoxUtil arabdoxUtilObj = MOLSAArabdoxUtil.newInstance();
     DocumentFile documentFile = 
       arabdoxUtilObj.getDocumentFile(arabdoxRemoteServiceStub, arabdoxHelper, loginResponse, 
           (int) molsaArabDoxAttachDtls.arabDoxDocumentID,
-        FileType.Attachment, fileName);
+          newFileType, fileName);
 
     molsaArabDoxAttachDtls.arabDoxFileID = documentFile.getSerial();
     arabDoxAttachObj.modify(molsaArabDoxAttachKey, molsaArabDoxAttachDtls);
@@ -465,13 +487,22 @@ public class MOLSAArabdoxUtil {
       documentID= arabDoxCaseLinkDtls.arabDoxVerDocID;
     }
 
+    boolean isAttachment = isAttachment(attachmentName);
+    FileType newFileType;
+    if (isAttachment) {
+    	newFileType = FileType.Attachment;
+      } else {
+    	  newFileType = FileType.Image;
+      }
+        
     try {
       DocumentFileAddResponse documentFileAddResponse = 
         arabdoxHelper.addDocumentFilesEx(arabdoxRemoteServiceStub, loginResponse, documentID,
-          attachmentContent, fileName, true);
+          attachmentContent, fileName, isAttachment);
 
+      
       documentFile = getDocumentFile(arabdoxRemoteServiceStub, arabdoxHelper, 
-          loginResponse, (int) documentID, FileType.Attachment, fileName);
+          loginResponse, (int) documentID, newFileType, fileName);
     } catch (AppException appException) {
       TransactionInfo.getInfo().rollback();
       TransactionInfo.getInfo().begin();
@@ -496,9 +527,11 @@ public class MOLSAArabdoxUtil {
     arabDoxAttachDtls.arabDoxFolderID = arabDoxCaseLinkDtls.arabDoxFolderID;
     arabDoxAttachDtls.arabDoxDocumentID = documentID;
 
-    // Always be Attachment.
+    
     if (documentFile.getFileType().getValue().equals(FileType._Attachment)) {
       arabDoxAttachDtls.isAttachment = true;
+    } else {
+    	arabDoxAttachDtls.isAttachment = false;
     }
     arabDoxAttachDtls.caseID = caseID;
     arabDoxAttachObj.insert(arabDoxAttachDtls);
