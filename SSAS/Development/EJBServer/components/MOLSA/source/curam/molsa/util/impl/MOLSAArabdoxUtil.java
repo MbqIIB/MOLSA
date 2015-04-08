@@ -82,6 +82,7 @@ import curam.util.type.NotFoundIndicator;
  */
 public class MOLSAArabdoxUtil {
 
+  private String kImage = "image";
   private int baseFolderID = Integer.parseInt(Configuration.getProperty(EnvVars.ARABDOX_BASE_FOLDERID));
   private String baseFolderName = Configuration.getProperty(EnvVars.ARABDOX_BASE_FOLDERNAME);
   private String processFolderName = Configuration.getProperty(EnvVars.ARABDOX_PROCESS_FOLDERNAME);
@@ -122,7 +123,7 @@ public class MOLSAArabdoxUtil {
 		String mimeType = new MimetypesFileTypeMap()
 				.getContentType(attachmentName);
 		String type = mimeType.split("/")[0];
-		if (type.equals("image")) {
+		if (type.equalsIgnoreCase(kImage)) {
 			isAttachment = false;
 		} else {
 			isAttachment = true;
