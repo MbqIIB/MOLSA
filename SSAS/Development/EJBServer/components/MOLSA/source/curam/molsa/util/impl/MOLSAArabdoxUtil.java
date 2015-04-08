@@ -384,7 +384,7 @@ public class MOLSAArabdoxUtil {
 
     
     String fileName = attachmentID + attachmentName;
-  //AttachmentID contains 20 Chars
+    //AttachmentID contains 20 Chars
     if(fileName.length() > kfileNameLength) {
 	    AppException appException = new AppException(MOLSABPOARABDOX.ERR_FILENAMELENGTH_EXCEEDS);
 	    throw appException;
