@@ -83,6 +83,7 @@ import curam.util.type.NotFoundIndicator;
 public class MOLSAArabdoxUtil {
 
   private String kImage = "image";
+  private int kfileNameLength = 50;
   private int baseFolderID = Integer.parseInt(Configuration.getProperty(EnvVars.ARABDOX_BASE_FOLDERID));
   private String baseFolderName = Configuration.getProperty(EnvVars.ARABDOX_BASE_FOLDERNAME);
   private String processFolderName = Configuration.getProperty(EnvVars.ARABDOX_PROCESS_FOLDERNAME);
@@ -383,7 +384,12 @@ public class MOLSAArabdoxUtil {
 
     
     String fileName = attachmentID + attachmentName;
-
+  //AttachmentID contains 20 Chars
+    if(fileName.length() > kfileNameLength) {
+	    AppException appException = new AppException(MOLSABPOARABDOX.ERR_FILENAMELENGTH_EXCEEDS);
+	    throw appException;
+    }
+    
     MOLSAArabDoxAttach arabDoxAttachObj = MOLSAArabDoxAttachFactory.newInstance();
     MOLSAArabDoxAttachKey molsaArabDoxAttachKey = new MOLSAArabDoxAttachKey();
     molsaArabDoxAttachKey.attachmentID = attachmentID;
@@ -406,9 +412,15 @@ public class MOLSAArabdoxUtil {
     } else {
       fileType = FileType.Image;
     }
-    DeleteDocumentFileResponse deleteDocumentFileResponse = arabdoxHelper.deleteDocumentFile(arabdoxRemoteServiceStub, loginResponse,
-        (int) molsaArabDoxAttachDtls.arabDoxDocumentID, (int) molsaArabDoxAttachDtls.arabDoxFileID, fileType);
+    
+    try {
+    	DeleteDocumentFileResponse deleteDocumentFileResponse = arabdoxHelper.deleteDocumentFile(arabdoxRemoteServiceStub, loginResponse,
+    			(int) molsaArabDoxAttachDtls.arabDoxDocumentID, (int) molsaArabDoxAttachDtls.arabDoxFileID, fileType);
 
+    } catch (AppException appException) {
+        //Do Nothing, Even through there is no record to delete
+    }
+    
     boolean isAttachment = isAttachment(attachmentName);
     DocumentFileAddResponse documentFileAddResponse = 
       arabdoxHelper.addDocumentFilesEx(arabdoxRemoteServiceStub, loginResponse, molsaArabDoxAttachDtls.arabDoxDocumentID,
@@ -471,6 +483,11 @@ public class MOLSAArabdoxUtil {
 
     String folderName = caseReference.caseReference;
     String fileName = attachmentID + attachmentName;
+    //AttachmentID contains 20 Chars
+    if(fileName.length() > kfileNameLength) {
+	    AppException appException = new AppException(MOLSABPOARABDOX.ERR_FILENAMELENGTH_EXCEEDS);
+	    throw appException;
+    }
 
     MOLSAArabdoxSessionHelper arabdoxSessionHelper = MOLSAArabdoxSessionHelper.newInstance();
     MOLSAArabdoxHelper arabdoxHelper = MOLSAArabdoxHelper.newInstance();

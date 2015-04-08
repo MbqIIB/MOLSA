@@ -318,13 +318,13 @@ public class MOLSAArabdoxHelper {
     try {
       deleteDocumentFileResponse = arabdoxRemoteServiceStub.deleteDocumentFile(deleteDocumentFile);
     } catch (RemoteException remoteExcep) {
-      arabdoxSessionHelper.logoutFromArabdox(arabdoxRemoteServiceStub, loginResponse);
+      //arabdoxSessionHelper.logoutFromArabdox(arabdoxRemoteServiceStub, loginResponse);
       throwRemoteException(remoteExcep, "deleteDocumentFile");
     }
 
     ErrorCode errorCode = deleteDocumentFileResponse.getDeleteDocumentFileResult().getErrorCode();
     if (!errorCode.getValue().isEmpty() && !errorCode.getValue().equals(ErrorCode._None)) {
-      arabdoxSessionHelper.logoutFromArabdox(arabdoxRemoteServiceStub, loginResponse);
+      //arabdoxSessionHelper.logoutFromArabdox(arabdoxRemoteServiceStub, loginResponse);
       throwErrorCode(errorCode, "deleteDocumentFile");
     }
     return deleteDocumentFileResponse;
