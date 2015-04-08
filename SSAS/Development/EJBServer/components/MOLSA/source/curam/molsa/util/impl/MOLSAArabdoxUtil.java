@@ -382,7 +382,10 @@ public class MOLSAArabdoxUtil {
     attachmentDtls.attachmentContents = Blob.kEmptyBlob;
     attachmentObj.modify(attachmentKey, attachmentDtls);
 
-    
+    if(attachmentContent.length()==0){
+    	AppException appException = new AppException(MOLSABPOARABDOX.ERR_NO_FILE_SELECTED);
+	    throw appException;
+    }
     String fileName = attachmentID + attachmentName;
     //AttachmentID contains 20 Chars
     if(fileName.length() > kfileNameLength) {
@@ -482,6 +485,12 @@ public class MOLSAArabdoxUtil {
     CaseReference caseReference = caseHeaderObj.readCaseReferenceByCaseID(caseSearchKey);
 
     String folderName = caseReference.caseReference;
+    
+    if(attachmentContent.length()==0){
+    	AppException appException = new AppException(MOLSABPOARABDOX.ERR_NO_FILE_SELECTED);
+	    throw appException;
+    }
+    
     String fileName = attachmentID + attachmentName;
     //AttachmentID contains 20 Chars
     if(fileName.length() > kfileNameLength) {
