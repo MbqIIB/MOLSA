@@ -367,7 +367,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		for(String concernRoleID :concernRoleIDStringArr) {
 			concernRoleIDList.add(Long.valueOf(concernRoleID));
 		}
-
+		ArrayList<Long> concernRoleIDList1 = new ArrayList<Long>();
+		
+		concernRoleIDList1 = concernRoleIDList;
 		for(long concernRoleIDListValue:concernRoleIDList){
 
 			List<curam.piwrapper.casemanager.impl.CaseParticipantRole> recipients = new ArrayList();
@@ -433,7 +435,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 					
 				}catch(AppException e){
 					AppException app = new AppException(MOLSABPOTRAINING.ERR_SERVICE_DELIVERY_CREATION);
-					concernRoleIDList.remove(Long.valueOf(concernRoleIDListValue));
+					concernRoleIDList1.remove(Long.valueOf(concernRoleIDListValue));
 					AlternateIDRMDtls alternateIDRMDtls=MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(concernRoleIDListValue);
 					app.arg(alternateIDRMDtls.alternateID);
 					app.arg(e.getMessage(TransactionInfo.getProgramLocale()));
@@ -475,7 +477,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		
 		//Removing the Alternate ID's which are skipped before sending SMS
 		String concernRoleListAfterSkipping="";
-		for (long concernroleid :concernRoleIDList){
+		for (long concernroleid :concernRoleIDList1){
 			concernRoleListAfterSkipping=concernRoleListAfterSkipping+concernroleid+CuramConst.gkTabDelimiter;
 		}
 		key.dtls.concernRoleTabbedList=concernRoleListAfterSkipping;
