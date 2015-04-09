@@ -2,6 +2,7 @@ package curam.molsa.training.facade.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,15 @@ import curam.codetable.PRODUCTCATEGORY;
 import curam.codetable.RECORDSTATUS;
 import curam.codetable.impl.CASEPARTICIPANTROLETYPEEntry;
 import curam.codetable.impl.SENSITIVITYEntry;
+import curam.core.facade.fact.PersonFactory;
 import curam.core.facade.intf.Attachment;
+import curam.core.facade.intf.Person;
 import curam.core.facade.intf.ProductDelivery;
 import curam.core.facade.struct.ConcernRoleAttachmentDetails;
+import curam.core.facade.struct.ConcernRoleIDKey;
+import curam.core.facade.struct.PersonDetails;
+import curam.core.facade.struct.PersonSearchDetailsResult;
+import curam.core.facade.struct.PersonSearchKey1;
 import curam.core.fact.CaseGroupsFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.ConcernRoleAttachmentLinkFactory;
@@ -32,6 +39,7 @@ import curam.core.impl.DataBasedSecurity;
 import curam.core.impl.SecurityImplementationFactory;
 import curam.core.intf.CaseGroups;
 import curam.core.intf.ConcernRoleAttachmentLink;
+import curam.core.intf.DatabasePersonSearch;
 import curam.core.intf.MaintainAttachmentAssistant;
 import curam.core.sl.fact.AttachmentFactory;
 import curam.core.sl.fact.CaseUserRoleFactory;
@@ -62,11 +70,19 @@ import curam.core.struct.ConcernRoleKey;
 import curam.core.struct.ConcernRoleNameAndAlternateID;
 import curam.core.struct.DataBasedSecurityResult;
 import curam.core.struct.ICCaseAndStatusKey;
+import curam.core.struct.PersonDtls;
+import curam.core.struct.PersonKey;
+import curam.core.struct.PersonSearchDetails;
+import curam.core.struct.PersonSearchResult1;
 import curam.core.struct.ProductDeliveryForCaseDetails;
 import curam.core.struct.ProductDeliveryForCaseDetailsList;
 import curam.core.struct.ProviderLocationKey;
 import curam.core.struct.ProvisionLocationKey;
+import curam.cpm.facade.fact.ProviderOfferingFactory;
 import curam.cpm.facade.fact.ServiceDeliveryFactory;
+import curam.cpm.facade.intf.ProviderOffering;
+import curam.cpm.facade.struct.ProviderOfferingSummaryDetails;
+import curam.cpm.facade.struct.ProviderOfferingSummaryDetailsList;
 import curam.cpm.facade.struct.ServiceDeliveryVersionKey;
 import curam.cpm.sl.entity.fact.ProviderFactory;
 import curam.cpm.sl.entity.intf.Provider;
@@ -79,8 +95,14 @@ import curam.cpm.sl.struct.ServiceDeliveryKey;
 import curam.federalallowablecomponent.impl.FederalAllowableComponent;
 import curam.federalallowablecomponent.impl.FederalAllowableComponentDAO;
 import curam.message.GENERALCONCERN;
+import curam.molsa.core.fact.MOLSAPersonSearchRouterDAFactory;
+import curam.molsa.core.intf.MOLSAPersonSearchRouterDA;
+import curam.molsa.message.MOLSABPOTRAINING;
 import curam.molsa.sms.entity.struct.MOLSASMSWMInstanceDtls;
 import curam.molsa.sms.entity.struct.MOLSASMSWMInstanceKey;
+import curam.molsa.sms.facade.struct.MOLSAParticipantDetails;
+import curam.molsa.sms.facade.struct.MOLSAParticipantDetailsList;
+import curam.molsa.sms.facade.struct.MOLSAParticipantFilterCriteriaDetails;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
@@ -236,6 +258,62 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		trainingDtls.trainingTopic=trainingDetails.trainingTopic;
 		trainingDtls.trainingType=trainingDetails.trainingType;
 		trainingDtls.trainingLocation=trainingDetails.trainingLocation;
+
+		//Get Provider Name from Provider ID
+		curam.provider.impl.Provider providerObj=providerDAO.get(trainingDetails.providerID);
+		trainingDtls.providerName=providerObj.getName();
+
+		//Validation for Training Name and Provider Associations
+		if(trainingDtls.serviceOfferingID!=0 && trainingDetails.providerID!=0 ){
+
+			ProviderOffering providerOffering = ProviderOfferingFactory.newInstance();
+			ProviderKey providerKey = new ProviderKey();
+			providerKey.providerConcernRoleID=trainingDetails.providerID;
+			ProviderOfferingSummaryDetailsList detailList= new ProviderOfferingSummaryDetailsList();
+			detailList=providerOffering.listApprovedServiceOfferingsByProvider(providerKey);
+			boolean check=false;
+			for(ProviderOfferingSummaryDetails providerOfferingSummaryDetail : detailList.providerOfferingSummaryDetails ){
+				if (providerOfferingSummaryDetail.serviceOfferingID==trainingDetails.serviceOfferingID){
+					check= true;
+					break;
+				}
+			}
+			if(!check){
+
+				throw new AppException(MOLSABPOTRAINING.ERR_TRAINING_PROVIDER_SERVICE_NOT_MATCHING);
+			}
+
+		}
+		//Check how to keep this properly
+
+		long soID=trainingDetails.serviceOfferingID;
+		ServiceOffering serviceOffering = (ServiceOffering)this.serviceOfferingDAO.get(Long.valueOf(soID));
+
+		//Validation for Start Date with Current Date
+		if(!(trainingDtls.trainingStartDate.equals(Date.getCurrentDate()))){
+			if(!(trainingDtls.trainingStartDate.after(Date.getCurrentDate()))){
+				throw new AppException(MOLSABPOTRAINING.ERR_WRONG_TRAINING_START_DATE);
+			}
+		}
+		//Validation for Start Date with Registered Start Date
+		if(trainingDtls.trainingStartDate.before(serviceOffering.getDateRange().start())){
+			throw new AppException(MOLSABPOTRAINING.ERR_WRONG_TRAINING_START_DATE_AND_REGISTERD_DATE);
+		}
+		//Validation for End Date with Current Date
+		if(trainingDtls.trainingEndDate.before(Date.getCurrentDate())){
+			throw new AppException(MOLSABPOTRAINING.ERR_WRONG_TRAINING_END_DATE);
+		}
+		//Validation for End Date with Registered End Date
+		if(trainingDtls.trainingEndDate.after(serviceOffering.getDateRange().end())){
+			if(!(serviceOffering.getDateRange().end().equals(Date.kZeroDate))){
+				throw new AppException(MOLSABPOTRAINING.ERR_WRONG_TRAINING_END_DATE_AND_REGISTERED_DATE);
+			}
+		}
+		//Validation for End Date with entered Start Date
+		if(trainingDtls.trainingEndDate.before(trainingDtls.trainingStartDate)){
+			throw new AppException(MOLSABPOTRAINING.ERR_WRONG_TRAINING_END_DATE_AND_THE_ENTERED_START_DATE);
+		}
+
 		trainingKey=insertMOLSATraining(trainingDtls);
 
 
@@ -254,77 +332,81 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 			//Getting  the integrated case id from the concernroleid
 
-			long integratedCaseID=getCaseIDFromConcernRole(concernRoleIDListValue);
-			CaseHeader caseHeader = caseHeaderDAO.get(integratedCaseID);
-			List<CaseParticipantRole> primaryList = 
-				caseParticipantRoleDAO.listActiveByCaseAndType(caseHeader, CASEPARTICIPANTROLETYPEEntry.PRIMARY);
-			List<CaseParticipantRole> memberList = 
-				caseParticipantRoleDAO.listActiveByCaseAndType(caseHeader, CASEPARTICIPANTROLETYPEEntry.MEMBER);
-			for(CaseParticipantRole caseParticipantRole :primaryList) {
-				if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())) {
-
-					recipients.add(caseParticipantRole);
+			ArrayList<Long> integratedCaseIDList =getCaseIDFromConcernRole(concernRoleIDListValue);
+			
+			for(Long integratedCaseID : integratedCaseIDList){
+				
+			
+				CaseHeader caseHeader = caseHeaderDAO.get(integratedCaseID);
+				List<CaseParticipantRole> primaryList = 
+					caseParticipantRoleDAO.listActiveByCaseAndType(caseHeader, CASEPARTICIPANTROLETYPEEntry.PRIMARY);
+				List<CaseParticipantRole> memberList = 
+					caseParticipantRoleDAO.listActiveByCaseAndType(caseHeader, CASEPARTICIPANTROLETYPEEntry.MEMBER);
+				for(CaseParticipantRole caseParticipantRole :primaryList) {
+					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())) {
+	
+						recipients.add(caseParticipantRole);
+					}
 				}
-			}
-			for(CaseParticipantRole caseParticipantRole :memberList) {
-				if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())) {
-					recipients.add(caseParticipantRole);
+				for(CaseParticipantRole caseParticipantRole :memberList) {
+					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())) {
+						recipients.add(caseParticipantRole);
+					}
 				}
+	
+				//Getting the service offering id from the MOLSATrainingSMS Page
+	
+	
+				ServiceDeliveryConfigurationAccessor serviceDeliveryConfiguration = serviceOffering.getServiceDeliveryConfiguration();
+				ServiceDelivery serviceDelivery = this.serviceDeliveryDAO.newInstance(SODELIVERYTYPEEntry.SERVICEDELIVERY);
+	
+				Money money=new Money(0);
+				serviceDelivery.setAuthorizedRate(money);
+				serviceDelivery.setDuration(0,0);
+				SENSITIVITYEntry sensitivity = SENSITIVITYEntry.get("1");
+				serviceDelivery.setSensitivity(sensitivity);
+				serviceDelivery.setUnitsAuthorized(1);
+				serviceDelivery.setServiceOffering(serviceOffering);	
+				serviceDelivery.setCoverPeriodStartDate(trainingDetails.trainingStartDate);
+				serviceDelivery.setCoverPeriodEndDate(trainingDetails.trainingEndDate);
+				serviceDelivery.setCaseHeader(caseHeader);
+				String ownerUserName=TransactionInfo.getProgramUser();
+				System.out.println("ownerUserName:"+ownerUserName);
+				serviceDelivery.setOwner(ownerUserName);
+				serviceDelivery.setReason("Training For The Benefit Of Beneficiary");
+				CaseUserRole caseUserRoleObj = CaseUserRoleFactory.newInstance();
+				CaseHeaderKey relatedCaseKey = new CaseHeaderKey();
+				//Same case id we got above
+				relatedCaseKey.caseID = integratedCaseID;
+				System.out.println("relatedCaseKey.caseID :"+relatedCaseKey.caseID );
+				UserNameAndFullName supervisor = caseUserRoleObj.readSupervisor(relatedCaseKey);
+				if (!StringHelper.isEmpty(supervisor.userName)) {
+					serviceDelivery.setSupervisor(supervisor.userName);
+				}
+	
+				serviceDelivery.insert(recipients);
+			
+				//-------------------------Adding Provider to The Beneficiary Service---------------------------------------------
+	
+	
+				//Get the provider ID and pass it to the OOTB function
+	
+				ProviderKey proKey=new ProviderKey();
+				proKey.providerConcernRoleID=trainingDetails.providerID;
+				ServiceDeliveryVersionKey serviceKey=new ServiceDeliveryVersionKey();			
+				serviceKey.key.serviceDeliveryID = serviceDelivery.getID();
+				addProvider(proKey,serviceKey);
+	
+				//Inserting ServiceDelivery ID ,Training ID and concernRoleID to the new Mapping Table
+	
+				MOLSASerDelTraininingMappingDtls detailsObj= new MOLSASerDelTraininingMappingDtls();
+				detailsObj.serviceDeliveryID=serviceDelivery.getID();
+				detailsObj.trainingID=trainingKey.trainingID;		
+				detailsObj.concernRoleID=concernRoleIDListValue;   
+				MOLSASerDelTraininingMapping mappingObj=MOLSASerDelTraininingMappingFactory.newInstance();
+				mappingObj.insert(detailsObj);
+			
 			}
-
-			//Getting the service offering id from the MOLSATrainingSMS Page
-
-			long soID=trainingDetails.serviceOfferingID;
-			ServiceOffering serviceOffering = (ServiceOffering)this.serviceOfferingDAO.get(Long.valueOf(soID));
-			ServiceDeliveryConfigurationAccessor serviceDeliveryConfiguration = serviceOffering.getServiceDeliveryConfiguration();
-			ServiceDelivery serviceDelivery = this.serviceDeliveryDAO.newInstance(SODELIVERYTYPEEntry.SERVICEDELIVERY);
-
-			Money money=new Money(0);
-			serviceDelivery.setAuthorizedRate(money);
-			serviceDelivery.setDuration(0,0);
-			SENSITIVITYEntry sensitivity = SENSITIVITYEntry.get("1");
-			serviceDelivery.setSensitivity(sensitivity);
-			serviceDelivery.setUnitsAuthorized(1);
-			serviceDelivery.setServiceOffering(serviceOffering);	
-			serviceDelivery.setCoverPeriodStartDate(trainingDetails.trainingStartDate);
-			serviceDelivery.setCoverPeriodEndDate(trainingDetails.trainingEndDate);
-			serviceDelivery.setCaseHeader(caseHeader);
-			String ownerUserName=TransactionInfo.getProgramUser();
-			System.out.println("ownerUserName:"+ownerUserName);
-			serviceDelivery.setOwner(ownerUserName);
-			serviceDelivery.setReason("Training For The Benefit Of Beneficiary");
-			CaseUserRole caseUserRoleObj = CaseUserRoleFactory.newInstance();
-			CaseHeaderKey relatedCaseKey = new CaseHeaderKey();
-			//Same case id we got above
-			relatedCaseKey.caseID = integratedCaseID;
-			System.out.println("relatedCaseKey.caseID :"+relatedCaseKey.caseID );
-			UserNameAndFullName supervisor = caseUserRoleObj.readSupervisor(relatedCaseKey);
-			if (!StringHelper.isEmpty(supervisor.userName)) {
-				serviceDelivery.setSupervisor(supervisor.userName);
-			}
-
-			serviceDelivery.insert(recipients);
-
-			//-------------------------Adding Provider to The Beneficiary Service---------------------------------------------
-
-
-			//Get the provider ID and pass it to the OOTB function
-
-			ProviderKey proKey=new ProviderKey();
-			proKey.providerConcernRoleID=trainingDetails.providerID;
-			ServiceDeliveryVersionKey serviceKey=new ServiceDeliveryVersionKey();			
-			serviceKey.key.serviceDeliveryID = serviceDelivery.getID();
-			addProvider(proKey,serviceKey);
-
-			//Inserting ServiceDelivery ID ,Training ID and concernRoleID to the new Mapping Table
-
-			MOLSASerDelTraininingMappingDtls detailsObj= new MOLSASerDelTraininingMappingDtls();
-			detailsObj.serviceDeliveryID=serviceDelivery.getID();
-			detailsObj.trainingID=trainingKey.trainingID;		
-			detailsObj.concernRoleID=concernRoleIDListValue;   
-			MOLSASerDelTraininingMapping mappingObj=MOLSASerDelTraininingMappingFactory.newInstance();
-			mappingObj.insert(detailsObj);
-
 
 		}
 		//-------------------------Sending SMS To the Beneficiaries---------------------------------------------
@@ -356,8 +438,8 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 				serviceDelivery.getVersionNo());
 	}
 
-	public long getCaseIDFromConcernRole(long concernRoleID) throws AppException, InformationalException{
-
+	public ArrayList<Long> getCaseIDFromConcernRole(long concernRoleID) throws AppException, InformationalException{
+		ArrayList<Long> icCaseIDs = new ArrayList<Long>();
 		long caseid=0L;  
 		System.out.println("concernRoleIDListValue:"+concernRoleID);
 		curam.core.intf.CaseHeader caseObj=CaseHeaderFactory.newInstance();
@@ -376,14 +458,14 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			for(CaseHeaderReadmultiDetails1 caseHeaderReadmultidtls :  CaseHeaderFactory.newInstance().searchByIntegratedCaseID(caseHeaderReadmultiKey1).dtls){
 				if(caseHeaderReadmultidtls.caseTypeCode.equals("CT2")){
 					if(isPartofIntegratedCase(concernRoleID, caseHeaderReadmultidtls.caseID)){
-						return caseHeader.caseID;
+						icCaseIDs.add(caseHeader.caseID);
 					}
 				}
 			}
 
 		}
 
-		return caseid;
+		return icCaseIDs;
 
 	}
 
@@ -770,6 +852,70 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		key.providerserviceCenterID=locationID.providerLocationID;
 		MOLSAProviderFacilityDtlsStruct1List listFacilities=providerObj.readByLocationID(key);
 		return listFacilities;
+	}
+
+	@Override
+	public MOLSAParticipantDetailsList listParticipantByCriteria(
+			MOLSAParticipantFilterCriteriaDetails key) throws AppException,
+			InformationalException {
+		// TODO Auto-generated method stub
+		if (key.actionIDProperty.equals("TRAINING_SUBMIT")){
+			if(key.concernRoleTabbedList.length()==0){
+				throw new AppException(MOLSABPOTRAINING.ERR_EMPTY_CONCERNROLE);
+			}
+		}
+		MOLSAParticipantDetailsList molsaParticipantDetailsList = new MOLSAParticipantDetailsList();
+		if(key.qidList.length()!=0){
+
+			StringList concernRoleIDStringArr = StringUtil.delimitedText2StringListWithTrim(key.qidList, CuramConst.gkCommaDelimiterChar);
+			//System.out.println(concernRoleIDStringArr);
+			MOLSAParticipantDetails details= new MOLSAParticipantDetails();
+
+			HashSet set= new HashSet();
+			for(String alternateID : concernRoleIDStringArr.items()){
+				if(!(alternateID.equals(""))&& alternateID!=null){
+
+					MOLSAPersonSearchRouterDA personSearchRouterObj = MOLSAPersonSearchRouterDAFactory.newInstance();
+					//PersonSearchDetailsResult personSearchResult = new PersonSearchDetailsResult();
+					PersonSearchKey1 personSearchKey1= new PersonSearchKey1();
+					personSearchKey1.personSearchKey.referenceNumber=alternateID;
+					//personSearchResult.personSearchResult = personSearchRouterObj.search1(personSearchKey1.personSearchKey);
+					DatabasePersonSearch personSearchObj = curam.core.fact.DatabasePersonSearchFactory.newInstance();
+					PersonSearchResult1 personSearchResult = personSearchObj.search1(personSearchKey1.personSearchKey);
+
+					if(personSearchResult.dtlsList.size()>0) {
+						details= new MOLSAParticipantDetails();
+						PersonSearchDetails personDetails = personSearchResult.dtlsList.item(0);					
+						details.concernroleID=personDetails.concernRoleID;
+						details.dateOfBirth=personDetails.dateOfBirth;
+						details.addressString=personDetails.formattedAddress;
+						details.participantName=personDetails.concernRoleName + "-"+ alternateID;
+
+
+						if(!(set.contains(details.concernroleID))){
+							set.add(details.concernroleID);	
+							molsaParticipantDetailsList.dtls.add(details);
+						}
+					}
+
+				}
+			}
+
+		}	
+
+		else	
+
+		{
+
+			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
+			curam.molsa.sms.sl.struct.MOLSAParticipantFilterCriteriaDetails filterCriteriaDetails = new curam.molsa.sms.sl.struct.MOLSAParticipantFilterCriteriaDetails();
+			filterCriteriaDetails.dtls = key;
+			curam.molsa.sms.sl.struct.MOLSAParticipantDetailsList detailsList = molsasmsUtilObj
+			.listParticipantByCriteria(filterCriteriaDetails);
+			molsaParticipantDetailsList.dtls.addAll(detailsList.dtls.dtls);
+		}
+
+		return molsaParticipantDetailsList;
 	}
 
 }
