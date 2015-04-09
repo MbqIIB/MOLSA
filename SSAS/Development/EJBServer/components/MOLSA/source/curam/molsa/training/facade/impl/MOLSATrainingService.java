@@ -13,6 +13,7 @@ import curam.attachmentlink.struct.AttachmentLinkKey;
 import curam.attendance.impl.ProviderRosterLineItem;
 import curam.attendance.impl.ProviderRosterLineItemDAO;
 import curam.codetable.CASESTATUS;
+import curam.codetable.CASETYPECODE;
 import curam.codetable.LOCATIONACCESSTYPE;
 import curam.codetable.PRODUCTCATEGORY;
 import curam.codetable.RECORDSTATUS;
@@ -31,6 +32,7 @@ import curam.core.fact.CaseGroupsFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.ConcernRoleAttachmentLinkFactory;
 import curam.core.fact.ConcernRoleFactory;
+import curam.core.fact.InstructionLineItemFactory;
 import curam.core.fact.MaintainAttachmentAssistantFactory;
 import curam.core.fact.ProductDeliveryFactory;
 import curam.core.fact.UniqueIDFactory;
@@ -40,6 +42,7 @@ import curam.core.impl.SecurityImplementationFactory;
 import curam.core.intf.CaseGroups;
 import curam.core.intf.ConcernRoleAttachmentLink;
 import curam.core.intf.DatabasePersonSearch;
+import curam.core.intf.InstructionLineItem;
 import curam.core.intf.MaintainAttachmentAssistant;
 import curam.core.sl.fact.AttachmentFactory;
 import curam.core.sl.fact.CaseUserRoleFactory;
@@ -61,6 +64,7 @@ import curam.core.struct.CaseHeaderByConcernRoleIDKey;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderKey;
 import curam.core.struct.CaseHeaderReadmultiDetails1;
+import curam.core.struct.CaseHeaderReadmultiDetails1List;
 import curam.core.struct.CaseHeaderReadmultiKey1;
 import curam.core.struct.CaseID;
 import curam.core.struct.CaseIDList;
@@ -70,6 +74,8 @@ import curam.core.struct.ConcernRoleKey;
 import curam.core.struct.ConcernRoleNameAndAlternateID;
 import curam.core.struct.DataBasedSecurityResult;
 import curam.core.struct.ICCaseAndStatusKey;
+import curam.core.struct.ILICaseID;
+import curam.core.struct.ILITabDetailList;
 import curam.core.struct.InformationalMsgDtls;
 import curam.core.struct.InformationalMsgDtlsList;
 import curam.core.struct.PersonDtls;
@@ -159,12 +165,15 @@ import curam.serviceoffering.impl.ServiceDeliveryConfigurationAccessor;
 import curam.serviceoffering.impl.ServiceOffering;
 import curam.serviceoffering.impl.ServiceOfferingDAO;
 import curam.util.exception.AppException;
+import curam.util.exception.InformationalElement;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
 import curam.util.persistence.GuiceWrapper;
+import curam.util.resources.GeneralConstants;
 import curam.util.resources.StringUtil;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
+import curam.util.type.DateRange;
 import curam.util.type.DateTime;
 import curam.util.type.Money;
 import curam.util.type.NotFoundIndicator;
@@ -426,6 +435,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 		InformationalManager informationalManager = TransactionInfo.getInformationalManager();
 		InformationalMsgDtlsList informationalMsgDtlsList = new InformationalMsgDtlsList();
+		//informationalManager.addInformationalMsg(infoMessage,
+       // GeneralConstants.kEmpty,
+       // InformationalElement.InformationalType.kWarning);
     String[] infos = informationalManager.obtainInformationalAsString();
     infos = informationalManager.obtainInformationalAsString();
     for (String message : infos) {
@@ -458,26 +470,38 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		ArrayList<Long> icCaseIDs = new ArrayList<Long>();
 		long caseid=0L;  
 		System.out.println("concernRoleIDListValue:"+concernRoleID);
+		
 		curam.core.intf.CaseHeader caseObj=CaseHeaderFactory.newInstance();
 		CaseStatusConcernRoleIDICType caseStatusConcernRoleIDICType = new CaseStatusConcernRoleIDICType();
 		caseStatusConcernRoleIDICType.concernRoleID = concernRoleID;
 		caseStatusConcernRoleIDICType.integratedCaseType = PRODUCTCATEGORY.SOCIAL_ASSITANCE;
 		caseStatusConcernRoleIDICType.statusCode = CASESTATUS.OPEN;
 		CaseIDList caseheaderDtlsList=caseObj.searchICByStatusParticipantIDICType(caseStatusConcernRoleIDICType);
+		
+		CaseHeaderReadmultiKey1 caseHeaderReadmultiKey1 = new CaseHeaderReadmultiKey1();
+		
+		CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List;
+		InstructionLineItem instructionLineItemObj = InstructionLineItemFactory.newInstance();
+		ILICaseID iliCaseID = new ILICaseID();
+		ILITabDetailList iliTabDetailList;
+		
 		for(CaseID caseHeader : caseheaderDtlsList.dtls){
-			ICCaseAndStatusKey icCaseAndStatusKey = new ICCaseAndStatusKey();
-			icCaseAndStatusKey.integratedCaseID = caseHeader.caseID;
-			icCaseAndStatusKey.statusCode =  CASESTATUS.ACTIVE;
-			CaseHeaderReadmultiKey1 caseHeaderReadmultiKey1 = new CaseHeaderReadmultiKey1();
-			caseHeaderReadmultiKey1.integratedCaseID = caseHeader.caseID;
+		  caseHeaderReadmultiKey1.integratedCaseID = caseHeader.caseID;		  
+		  caseHeaderReadmultiDetails1List = caseObj.searchByIntegratedCaseID(caseHeaderReadmultiKey1);
 
-			for(CaseHeaderReadmultiDetails1 caseHeaderReadmultidtls :  CaseHeaderFactory.newInstance().searchByIntegratedCaseID(caseHeaderReadmultiKey1).dtls){
-				if(caseHeaderReadmultidtls.caseTypeCode.equals("CT2")){
-					if(isPartofIntegratedCase(concernRoleID, caseHeaderReadmultidtls.caseID)){
+			for(CaseHeaderReadmultiDetails1 caseHeaderReadmultidtls : caseHeaderReadmultiDetails1List.dtls){
+				if(caseHeaderReadmultidtls.caseTypeCode.equals(CASETYPECODE.PRODUCTDELIVERY)){
+				  iliCaseID.caseID = caseHeaderReadmultidtls.caseID;
+				  iliTabDetailList = instructionLineItemObj.searchByCaseID(iliCaseID);
+					if(isPartofIntegratedCase(concernRoleID, caseHeaderReadmultidtls.caseID) 
+					    && !icCaseIDs.contains(caseHeader.caseID)
+					    && iliTabDetailList.dtls.size() > 0){
 						icCaseIDs.add(caseHeader.caseID);
 					}
 				}
 			}
+			
+			
 
 		}
 
@@ -734,10 +758,10 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		CaseGroupsReadmultiKey key = new CaseGroupsReadmultiKey();
 		key.caseID = caseID;
 		CaseGroupsDtlsList  dtlsList =  CaseGroupsFactory.newInstance().searchByCase(key);
-
+		
 		for(CaseGroupsDtls caseGroup : dtlsList.dtls){
-
-			if(caseGroup.concernRoleID == concernRoleID){
+		  DateRange dateRange = new DateRange(caseGroup.startDate,caseGroup.endDate );
+			if(caseGroup.concernRoleID == concernRoleID && dateRange.contains(Date.getCurrentDate())){
 				isPartOfPd = true;
 				break;
 			}
