@@ -27,6 +27,7 @@ import curam.core.facade.struct.ConcernRoleAttachmentDetails;
 import curam.core.facade.struct.ConcernRoleIDKey;
 import curam.core.facade.struct.PersonDetails;
 import curam.core.facade.struct.PersonSearchDetailsResult;
+import curam.core.facade.struct.PersonSearchKey;
 import curam.core.facade.struct.PersonSearchKey1;
 import curam.core.fact.CaseGroupsFactory;
 import curam.core.fact.CaseHeaderFactory;
@@ -52,6 +53,7 @@ import curam.core.sl.intf.CaseUserRole;
 import curam.core.sl.struct.CaseHeaderDtlsList;
 import curam.core.sl.struct.ParticipantSecurityCheckKey;
 import curam.core.sl.struct.UserNameAndFullName;
+import curam.core.struct.AlternateIDRMDtls;
 import curam.core.struct.AttachmentDtls;
 import curam.core.struct.AttachmentKey;
 import curam.core.struct.AttachmentNameStruct;
@@ -150,6 +152,7 @@ import curam.molsa.training.entity.struct.MOLSATrainingKeyStruct1;
 import curam.molsa.training.facade.struct.MOLSAAttachmentDetailsList;
 import curam.molsa.training.facade.struct.MOLSATrainingAttachmentDetails;
 import curam.molsa.training.struct.MOLSATrainingDetails;
+import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.participant.impl.ConcernRole;
 import curam.participant.impl.ConcernRoleDAO;
 import curam.piwrapper.caseheader.impl.CaseHeader;
@@ -248,8 +251,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			MOLSATrainingDetails trainingDetails) throws AppException,
 			InformationalException {
 
-		//Handle the scenarios for the new inserts along with the old ones
-		//SOID+ProviderID+trainingStratDate+TrainingEndDate
+
+		InformationalManager informationalManager = TransactionInfo.getInformationalManager();
+		InformationalMsgDtlsList informationalMsgDtlsList = new InformationalMsgDtlsList();
 
 		// skip inserting the not started and in progress + SOID and display information message to case worker with skipped list "An active service already exists for the below  recepients for this training.
 
@@ -258,7 +262,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		//-------------------------Inserting into MOLSATrainingDetails-----------------------------------------------------------------------------------------------------
 
 		MOLSATrainingKey trainingKey= new MOLSATrainingKey();
+
 		MOLSATrainingDtls trainingDtls= new MOLSATrainingDtls();
+
 		trainingDtls.providerName=trainingDetails.providerName;
 		trainingDtls.serviceOfferingID=trainingDetails.serviceOfferingID;
 		trainingDtls.tableOfContents=trainingDetails.tableOfContents;
@@ -270,6 +276,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		trainingDtls.trainingTopic=trainingDetails.trainingTopic;
 		trainingDtls.trainingType=trainingDetails.trainingType;
 		trainingDtls.trainingLocation=trainingDetails.trainingLocation;
+		trainingDtls.providerID=trainingDetails.providerID;
 
 		//Get Provider Name from Provider ID
 		curam.provider.impl.Provider providerObj=providerDAO.get(trainingDetails.providerID);
@@ -300,6 +307,9 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 		long soID=trainingDetails.serviceOfferingID;
 		ServiceOffering serviceOffering = (ServiceOffering)this.serviceOfferingDAO.get(Long.valueOf(soID));
+		trainingDetails.serviceOfferingName=serviceOffering.getName();
+		
+		
 
 		//Validation for Start Date with Current Date
 		if(!(trainingDtls.trainingStartDate.equals(Date.getCurrentDate()))){
@@ -325,8 +335,29 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		if(trainingDtls.trainingEndDate.before(trainingDtls.trainingStartDate)){
 			throw new AppException(MOLSABPOTRAINING.ERR_WRONG_TRAINING_END_DATE_AND_THE_ENTERED_START_DATE);
 		}
+		//Insert new training only if it doesn't exist
 
-		trainingKey=insertMOLSATraining(trainingDtls);
+		String enteredTrainingDetails=(trainingDetails.serviceOfferingID+ Long.toString(trainingDetails.providerID)+trainingDetails.trainingStartDate+trainingDetails.trainingEndDate).trim();
+		ServiceOfferingKey serviceOfferingKey = new ServiceOfferingKey();
+		serviceOfferingKey.serviceOfferingID=trainingDetails.serviceOfferingID;
+		MOLSATrainingDtlsList molsaTrainingDtlsList=searchByServiceOfferingID(serviceOfferingKey);
+		boolean trainingExists=false;
+		for(MOLSATrainingDtls molsaTrainingDtls : molsaTrainingDtlsList.dtls ){
+
+			//Uniquely identifying existing training by SOID+ProviderID+trainingStratDate+TrainingEndDate
+
+			String uniqueTrainingExisting=(molsaTrainingDtls.serviceOfferingID+ Long.toString(molsaTrainingDtls.providerID)+molsaTrainingDtls.trainingStartDate+molsaTrainingDtls.trainingEndDate).trim();
+			if(enteredTrainingDetails.equals(uniqueTrainingExisting)){
+				trainingExists=true;
+				trainingKey.trainingID=molsaTrainingDtls.trainingID;
+				break;
+			}
+
+		}
+		if(!trainingExists){
+			trainingKey=insertMOLSATraining(trainingDtls);	
+		}
+
 
 
 		//-------------------------Adding Service Details to each Integrated Case of Beneficiaries ---------------------------------------------
@@ -336,7 +367,6 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		for(String concernRoleID :concernRoleIDStringArr) {
 			concernRoleIDList.add(Long.valueOf(concernRoleID));
 		}
-		System.out.println("Tabbed ConcernRoleIds:"+trainingDetails.concernRoleList);
 
 		for(long concernRoleIDListValue:concernRoleIDList){
 
@@ -345,79 +375,95 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			//Getting  the integrated case id from the concernroleid
 
 			ArrayList<Long> integratedCaseIDList =getCaseIDFromConcernRole(concernRoleIDListValue);
-			
+
 			for(Long integratedCaseID : integratedCaseIDList){
-				
-			
+
+
 				CaseHeader caseHeader = caseHeaderDAO.get(integratedCaseID);
 				List<CaseParticipantRole> primaryList = 
 					caseParticipantRoleDAO.listActiveByCaseAndType(caseHeader, CASEPARTICIPANTROLETYPEEntry.PRIMARY);
 				List<CaseParticipantRole> memberList = 
 					caseParticipantRoleDAO.listActiveByCaseAndType(caseHeader, CASEPARTICIPANTROLETYPEEntry.MEMBER);
+
+
 				for(CaseParticipantRole caseParticipantRole :primaryList) {
-					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())) {
-	
+					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())
+							&& caseParticipantRole.getConcernRole().getID() == concernRoleIDListValue ) {
 						recipients.add(caseParticipantRole);
 					}
 				}
+
 				for(CaseParticipantRole caseParticipantRole :memberList) {
-					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())) {
+					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())
+							&& caseParticipantRole.getConcernRole().getID() == concernRoleIDListValue ) {
 						recipients.add(caseParticipantRole);
 					}
 				}
-	
+
 				//Getting the service offering id from the MOLSATrainingSMS Page
-	
-	
+
+
 				ServiceDeliveryConfigurationAccessor serviceDeliveryConfiguration = serviceOffering.getServiceDeliveryConfiguration();
 				ServiceDelivery serviceDelivery = this.serviceDeliveryDAO.newInstance(SODELIVERYTYPEEntry.SERVICEDELIVERY);
-	
-				Money money=new Money(0);
-				serviceDelivery.setAuthorizedRate(money);
-				serviceDelivery.setDuration(0,0);
-				SENSITIVITYEntry sensitivity = SENSITIVITYEntry.get("1");
-				serviceDelivery.setSensitivity(sensitivity);
-				serviceDelivery.setUnitsAuthorized(1);
+
+				//Money money=new Money(CuramConst.gkZero);
+				//serviceDelivery.setAuthorizedRate(money);
+				//serviceDelivery.setDuration(CuramConst.gkZero,CuramConst.gkZero);
+				serviceDelivery.setSensitivity(SENSITIVITYEntry.MINIMUM);
+				//serviceDelivery.setUnitsAuthorized(CuramConst.gkOne);
 				serviceDelivery.setServiceOffering(serviceOffering);	
 				serviceDelivery.setCoverPeriodStartDate(trainingDetails.trainingStartDate);
 				serviceDelivery.setCoverPeriodEndDate(trainingDetails.trainingEndDate);
 				serviceDelivery.setCaseHeader(caseHeader);
 				String ownerUserName=TransactionInfo.getProgramUser();
-				System.out.println("ownerUserName:"+ownerUserName);
 				serviceDelivery.setOwner(ownerUserName);
-				serviceDelivery.setReason("Training For The Benefit Of Beneficiary");
+				serviceDelivery.setReason("For The Benefit Of Beneficiary");
 				CaseUserRole caseUserRoleObj = CaseUserRoleFactory.newInstance();
 				CaseHeaderKey relatedCaseKey = new CaseHeaderKey();
 				//Same case id we got above
 				relatedCaseKey.caseID = integratedCaseID;
-				System.out.println("relatedCaseKey.caseID :"+relatedCaseKey.caseID );
 				UserNameAndFullName supervisor = caseUserRoleObj.readSupervisor(relatedCaseKey);
 				if (!StringHelper.isEmpty(supervisor.userName)) {
 					serviceDelivery.setSupervisor(supervisor.userName);
 				}
-	
-				serviceDelivery.insert(recipients);
-			
+
+				try{
+					
+					serviceDelivery.insert(recipients);
+					
+				}catch(AppException e){
+					AppException app = new AppException(MOLSABPOTRAINING.ERR_SERVICE_DELIVERY_CREATION);
+					concernRoleIDList.remove(Long.valueOf(concernRoleIDListValue));
+					AlternateIDRMDtls alternateIDRMDtls=MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(concernRoleIDListValue);
+					app.arg(alternateIDRMDtls.alternateID);
+					app.arg(e.getMessage(TransactionInfo.getProgramLocale()));
+					informationalManager.addInformationalMsg(app,
+							 GeneralConstants.kEmpty,
+							 InformationalElement.InformationalType.kWarning);
+					continue;
+				}
+
+
 				//-------------------------Adding Provider to The Beneficiary Service---------------------------------------------
-	
-	
+
+
 				//Get the provider ID and pass it to the OOTB function
-	
+
 				ProviderKey proKey=new ProviderKey();
 				proKey.providerConcernRoleID=trainingDetails.providerID;
 				ServiceDeliveryVersionKey serviceKey=new ServiceDeliveryVersionKey();			
 				serviceKey.key.serviceDeliveryID = serviceDelivery.getID();
 				addProvider(proKey,serviceKey);
-	
+
 				//Inserting ServiceDelivery ID ,Training ID and concernRoleID to the new Mapping Table
-	
+
 				MOLSASerDelTraininingMappingDtls detailsObj= new MOLSASerDelTraininingMappingDtls();
 				detailsObj.serviceDeliveryID=serviceDelivery.getID();
 				detailsObj.trainingID=trainingKey.trainingID;		
 				detailsObj.concernRoleID=concernRoleIDListValue;   
 				MOLSASerDelTraininingMapping mappingObj=MOLSASerDelTraininingMappingFactory.newInstance();
 				mappingObj.insert(detailsObj);
-			
+
 			}
 
 		}
@@ -426,31 +472,43 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 		MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
 		MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-		key.dtls.concernRoleTabbedList=trainingDetails.concernRoleList;
-		key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+"Training Name:"+trainingDetails.serviceOfferingID +" "+ "Start Date:"+trainingDetails.trainingStartDate
-		+" "+"End Date:"+trainingDetails.trainingEndDate+" "+"Training Location:"+trainingDetails.trainingLocation;
+		
+		//Removing the Alternate ID's which are skipped before sending SMS
+		String concernRoleListAfterSkipping="";
+		for (long concernroleid :concernRoleIDList){
+			concernRoleListAfterSkipping=concernRoleListAfterSkipping+concernroleid+CuramConst.gkTabDelimiter;
+		}
+		key.dtls.concernRoleTabbedList=concernRoleListAfterSkipping;
+		
+		//key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+"Training Name:"+trainingDetails.serviceOfferingID +" "+ "Start Date:"+trainingDetails.trainingStartDate
+		//+" "+"End Date:"+trainingDetails.trainingEndDate+" "+"Training Location:"+trainingDetails.trainingLocation;
+		
+		key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+MOLSABPOTRAINING.TRAINING_NAME+trainingDetails.serviceOfferingName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+trainingDetails.trainingStartDate
+		+" "+MOLSABPOTRAINING.TRAINING_END_DATE+trainingDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+trainingDetails.trainingLocation;
 		key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
+		
 		//	key.dtls.caseID=instanceDtls.caseID;
-		//molsasmsUtilObj.sendSMSDPMode(key);
+		molsasmsUtilObj.sendSMSDPMode(key);
 
-		InformationalManager informationalManager = TransactionInfo.getInformationalManager();
-		InformationalMsgDtlsList informationalMsgDtlsList = new InformationalMsgDtlsList();
-		//informationalManager.addInformationalMsg(infoMessage,
-       // GeneralConstants.kEmpty,
-       // InformationalElement.InformationalType.kWarning);
-    String[] infos = informationalManager.obtainInformationalAsString();
-    infos = informationalManager.obtainInformationalAsString();
-    for (String message : infos) {
 
-      final InformationalMsgDtls informationalMsgDtls = new InformationalMsgDtls();
+		//-------------------------Information message to the case worker--------------------------------------------
 
-      informationalMsgDtls.informationMsgTxt = message;
 
-      informationalMsgDtlsList.dtls.addRef(
-        informationalMsgDtls);
-    }
+	
+		//
+		String[] infos = informationalManager.obtainInformationalAsString();
+		infos = informationalManager.obtainInformationalAsString();
+		for (String message : infos) {
 
-    return informationalMsgDtlsList;
+			final InformationalMsgDtls informationalMsgDtls = new InformationalMsgDtls();
+
+			informationalMsgDtls.informationMsgTxt = message;
+
+			informationalMsgDtlsList.dtls.addRef(
+					informationalMsgDtls);
+		}
+
+		return informationalMsgDtlsList;
 	}
 
 
@@ -470,38 +528,38 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		ArrayList<Long> icCaseIDs = new ArrayList<Long>();
 		long caseid=0L;  
 		System.out.println("concernRoleIDListValue:"+concernRoleID);
-		
+
 		curam.core.intf.CaseHeader caseObj=CaseHeaderFactory.newInstance();
 		CaseStatusConcernRoleIDICType caseStatusConcernRoleIDICType = new CaseStatusConcernRoleIDICType();
 		caseStatusConcernRoleIDICType.concernRoleID = concernRoleID;
 		caseStatusConcernRoleIDICType.integratedCaseType = PRODUCTCATEGORY.SOCIAL_ASSITANCE;
 		caseStatusConcernRoleIDICType.statusCode = CASESTATUS.OPEN;
 		CaseIDList caseheaderDtlsList=caseObj.searchICByStatusParticipantIDICType(caseStatusConcernRoleIDICType);
-		
+
 		CaseHeaderReadmultiKey1 caseHeaderReadmultiKey1 = new CaseHeaderReadmultiKey1();
-		
+
 		CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List;
 		InstructionLineItem instructionLineItemObj = InstructionLineItemFactory.newInstance();
 		ILICaseID iliCaseID = new ILICaseID();
 		ILITabDetailList iliTabDetailList;
-		
+
 		for(CaseID caseHeader : caseheaderDtlsList.dtls){
-		  caseHeaderReadmultiKey1.integratedCaseID = caseHeader.caseID;		  
-		  caseHeaderReadmultiDetails1List = caseObj.searchByIntegratedCaseID(caseHeaderReadmultiKey1);
+			caseHeaderReadmultiKey1.integratedCaseID = caseHeader.caseID;		  
+			caseHeaderReadmultiDetails1List = caseObj.searchByIntegratedCaseID(caseHeaderReadmultiKey1);
 
 			for(CaseHeaderReadmultiDetails1 caseHeaderReadmultidtls : caseHeaderReadmultiDetails1List.dtls){
 				if(caseHeaderReadmultidtls.caseTypeCode.equals(CASETYPECODE.PRODUCTDELIVERY)){
-				  iliCaseID.caseID = caseHeaderReadmultidtls.caseID;
-				  iliTabDetailList = instructionLineItemObj.searchByCaseID(iliCaseID);
+					iliCaseID.caseID = caseHeaderReadmultidtls.caseID;
+					iliTabDetailList = instructionLineItemObj.searchByCaseID(iliCaseID);
 					if(isPartofIntegratedCase(concernRoleID, caseHeaderReadmultidtls.caseID) 
-					    && !icCaseIDs.contains(caseHeader.caseID)
-					    && iliTabDetailList.dtls.size() > 0){
+							&& !icCaseIDs.contains(caseHeader.caseID)
+							&& iliTabDetailList.dtls.size() > 0){
 						icCaseIDs.add(caseHeader.caseID);
 					}
 				}
 			}
-			
-			
+
+
 
 		}
 
@@ -758,16 +816,15 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		CaseGroupsReadmultiKey key = new CaseGroupsReadmultiKey();
 		key.caseID = caseID;
 		CaseGroupsDtlsList  dtlsList =  CaseGroupsFactory.newInstance().searchByCase(key);
-		
+
 		for(CaseGroupsDtls caseGroup : dtlsList.dtls){
-		  DateRange dateRange = new DateRange(caseGroup.startDate,caseGroup.endDate );
+			DateRange dateRange = new DateRange(caseGroup.startDate,caseGroup.endDate );
 			if(caseGroup.concernRoleID == concernRoleID && dateRange.contains(Date.getCurrentDate())){
 				isPartOfPd = true;
 				break;
 			}
 
 		}
-
 		return isPartOfPd;
 	}
 
@@ -930,8 +987,6 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 						details.dateOfBirth=personDetails.dateOfBirth;
 						details.addressString=personDetails.formattedAddress;
 						details.participantName=personDetails.concernRoleName + "-"+ alternateID;
-
-
 						if(!(set.contains(details.concernroleID))){
 							set.add(details.concernroleID);	
 							molsaParticipantDetailsList.dtls.add(details);
