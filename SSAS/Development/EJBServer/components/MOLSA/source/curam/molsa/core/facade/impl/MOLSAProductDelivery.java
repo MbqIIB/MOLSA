@@ -162,6 +162,34 @@ public abstract class MOLSAProductDelivery extends
 			insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
 			insCaseStatusDtls.comments = "";
 			caseStatusObj.insert(insCaseStatusDtls);
+			
+			//Invoke the workflow which generates the task to financial auditor.
+			final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+			TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+			taskCreateDetails.caseID = details.caseID;
+			IntegratedCase integratedCase = integratedCaseDAO
+					.get(taskCreateDetails.caseID);
+
+			LocalisableString subject = null;
+
+			subject = new LocalisableString(
+					MOLSANOTIFICATION.INF_READY_FOR_FINAUDITOR_REVIEW);
+			subject.arg(integratedCase.getCaseReference());
+
+			String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+					productDeliveryDAO.get(taskCreateDetails.caseID)
+							.getProductType().getCode(),
+					TransactionInfo.getProgramLocale());
+			subject.arg(productName);
+			subject.arg(integratedCase.getConcernRole().getName());
+
+			taskCreateDetails.subject = subject.getMessage(TransactionInfo
+					.getProgramLocale());
+
+			enactmentStructs.add(taskCreateDetails);
+			EnactmentService.startProcessInV3CompatibilityMode(
+					MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
+			
 		}
 		// create return object.
 		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
@@ -477,6 +505,35 @@ public abstract class MOLSAProductDelivery extends
 			insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
 			insCaseStatusDtls.comments = "";
 			caseStatusObj.insert(insCaseStatusDtls);
+			
+			//Invoke the workflow which generates the task to financial auditor.
+			final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+			TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+			taskCreateDetails.caseID = details.caseID;
+			IntegratedCase integratedCase = integratedCaseDAO
+					.get(taskCreateDetails.caseID);
+
+			LocalisableString subject = null;
+
+			subject = new LocalisableString(
+					MOLSANOTIFICATION.INF_READY_FOR_FINAUDITOR_REVIEW);
+			subject.arg(integratedCase.getCaseReference());
+
+			String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
+					productDeliveryDAO.get(taskCreateDetails.caseID)
+							.getProductType().getCode(),
+					TransactionInfo.getProgramLocale());
+			subject.arg(productName);
+			subject.arg(integratedCase.getConcernRole().getName());
+
+			taskCreateDetails.subject = subject.getMessage(TransactionInfo
+					.getProgramLocale());
+
+			enactmentStructs.add(taskCreateDetails);
+			EnactmentService.startProcessInV3CompatibilityMode(
+					MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
+			
+			
 		}
 		// Return object
 		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
