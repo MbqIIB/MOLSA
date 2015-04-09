@@ -70,6 +70,8 @@ import curam.core.struct.ConcernRoleKey;
 import curam.core.struct.ConcernRoleNameAndAlternateID;
 import curam.core.struct.DataBasedSecurityResult;
 import curam.core.struct.ICCaseAndStatusKey;
+import curam.core.struct.InformationalMsgDtls;
+import curam.core.struct.InformationalMsgDtlsList;
 import curam.core.struct.PersonDtls;
 import curam.core.struct.PersonKey;
 import curam.core.struct.PersonSearchDetails;
@@ -158,6 +160,7 @@ import curam.serviceoffering.impl.ServiceOffering;
 import curam.serviceoffering.impl.ServiceOfferingDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.exception.InformationalManager;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.StringUtil;
 import curam.util.transaction.TransactionInfo;
@@ -232,7 +235,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 
 	@Override
-	public void createBeneficiaryService(
+	public InformationalMsgDtlsList createBeneficiaryService(
 			MOLSATrainingDetails trainingDetails) throws AppException,
 			InformationalException {
 
@@ -421,8 +424,21 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		//	key.dtls.caseID=instanceDtls.caseID;
 		//molsasmsUtilObj.sendSMSDPMode(key);
 
+		InformationalManager informationalManager = TransactionInfo.getInformationalManager();
+		InformationalMsgDtlsList informationalMsgDtlsList = new InformationalMsgDtlsList();
+    String[] infos = informationalManager.obtainInformationalAsString();
+    infos = informationalManager.obtainInformationalAsString();
+    for (String message : infos) {
 
+      final InformationalMsgDtls informationalMsgDtls = new InformationalMsgDtls();
 
+      informationalMsgDtls.informationMsgTxt = message;
+
+      informationalMsgDtlsList.dtls.addRef(
+        informationalMsgDtls);
+    }
+
+    return informationalMsgDtlsList;
 	}
 
 
