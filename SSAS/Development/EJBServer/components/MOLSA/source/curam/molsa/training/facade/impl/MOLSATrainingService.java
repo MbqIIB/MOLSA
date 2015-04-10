@@ -254,6 +254,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 
 		InformationalManager informationalManager = TransactionInfo.getInformationalManager();
 		InformationalMsgDtlsList informationalMsgDtlsList = new InformationalMsgDtlsList();
+		AppException app = new AppException(MOLSABPOTRAINING.ERR_SERVICE_DELIVERY_CREATION);
 
 		// skip inserting the not started and in progress + SOID and display information message to case worker with skipped list "An active service already exists for the below  recepients for this training.
 
@@ -308,8 +309,8 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		long soID=trainingDetails.serviceOfferingID;
 		ServiceOffering serviceOffering = (ServiceOffering)this.serviceOfferingDAO.get(Long.valueOf(soID));
 		trainingDetails.serviceOfferingName=serviceOffering.getName();
-		
-		
+
+
 
 		//Validation for Start Date with Current Date
 		if(!(trainingDtls.trainingStartDate.equals(Date.getCurrentDate()))){
@@ -368,8 +369,11 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			concernRoleIDList.add(Long.valueOf(concernRoleID));
 		}
 		ArrayList<Long> concernRoleIDList1 = new ArrayList<Long>();
-		
-		concernRoleIDList1 = concernRoleIDList;
+
+		concernRoleIDList1.addAll(concernRoleIDList) ;
+
+
+
 		for(long concernRoleIDListValue:concernRoleIDList){
 
 			List<curam.piwrapper.casemanager.impl.CaseParticipantRole> recipients = new ArrayList();
@@ -377,7 +381,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			//Getting  the integrated case id from the concernroleid
 
 			ArrayList<Long> integratedCaseIDList =getCaseIDFromConcernRole(concernRoleIDListValue);
-
+			boolean checkForIntegratedCase= false;
 			for(Long integratedCaseID : integratedCaseIDList){
 
 
@@ -391,6 +395,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 				for(CaseParticipantRole caseParticipantRole :primaryList) {
 					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())
 							&& caseParticipantRole.getConcernRole().getID() == concernRoleIDListValue ) {
+						checkForIntegratedCase=true;
 						recipients.add(caseParticipantRole);
 					}
 				}
@@ -398,6 +403,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 				for(CaseParticipantRole caseParticipantRole :memberList) {
 					if(concernRoleIDList.contains(caseParticipantRole.getConcernRole().getID())
 							&& caseParticipantRole.getConcernRole().getID() == concernRoleIDListValue ) {
+						checkForIntegratedCase=true;
 						recipients.add(caseParticipantRole);
 					}
 				}
@@ -430,18 +436,18 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 				}
 
 				try{
-					
+
 					serviceDelivery.insert(recipients);
-					
+
 				}catch(AppException e){
-					AppException app = new AppException(MOLSABPOTRAINING.ERR_SERVICE_DELIVERY_CREATION);
+					 
 					concernRoleIDList1.remove(Long.valueOf(concernRoleIDListValue));
 					AlternateIDRMDtls alternateIDRMDtls=MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(concernRoleIDListValue);
 					app.arg(alternateIDRMDtls.alternateID);
 					app.arg(e.getMessage(TransactionInfo.getProgramLocale()));
 					informationalManager.addInformationalMsg(app,
-							 GeneralConstants.kEmpty,
-							 InformationalElement.InformationalType.kWarning);
+							GeneralConstants.kEmpty,
+							InformationalElement.InformationalType.kWarning);
 					continue;
 				}
 
@@ -465,38 +471,57 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 				detailsObj.concernRoleID=concernRoleIDListValue;   
 				MOLSASerDelTraininingMapping mappingObj=MOLSASerDelTraininingMappingFactory.newInstance();
 				mappingObj.insert(detailsObj);
+				
+				
 
 			}
+			if(checkForIntegratedCase==false){
+				
+				concernRoleIDList1.remove(Long.valueOf(concernRoleIDListValue));
+				AlternateIDRMDtls alternateIDRMDtls=MOLSAParticipantHelper.returnPreferredConcernRoleAlternateID(concernRoleIDListValue);
+				app.arg(alternateIDRMDtls.alternateID);
+				//app.arg(MOLSABPOTRAINING.ERR_COMMUNICATION_DATA_ALREADY_EXIST);
+				informationalManager.addInformationalMsg(app,
+						GeneralConstants.kEmpty,
+						InformationalElement.InformationalType.kWarning);
+			}
+			checkForIntegratedCase=false;
 
 		}
 		//-------------------------Sending SMS To the Beneficiaries---------------------------------------------
 
 
-		MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
-		MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-		
-		//Removing the Alternate ID's which are skipped before sending SMS
-		String concernRoleListAfterSkipping="";
-		for (long concernroleid :concernRoleIDList1){
-			concernRoleListAfterSkipping=concernRoleListAfterSkipping+concernroleid+CuramConst.gkTabDelimiter;
-		}
-		key.dtls.concernRoleTabbedList=concernRoleListAfterSkipping;
-		
-		//key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+"Training Name:"+trainingDetails.serviceOfferingID +" "+ "Start Date:"+trainingDetails.trainingStartDate
-		//+" "+"End Date:"+trainingDetails.trainingEndDate+" "+"Training Location:"+trainingDetails.trainingLocation;
-		
-		key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+MOLSABPOTRAINING.TRAINING_NAME+trainingDetails.serviceOfferingName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+trainingDetails.trainingStartDate
-		+" "+MOLSABPOTRAINING.TRAINING_END_DATE+trainingDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+trainingDetails.trainingLocation;
-		key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
-		
-		//	key.dtls.caseID=instanceDtls.caseID;
-		molsasmsUtilObj.sendSMSDPMode(key);
+		if(concernRoleIDList1.size()>0){
+			MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
+			MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
 
+			//Removing the Alternate ID's which are skipped before sending SMS
+			String concernRoleListAfterSkipping="";
+			for (long concernroleid :concernRoleIDList1){
+				concernRoleListAfterSkipping=concernRoleListAfterSkipping+concernroleid+CuramConst.gkTabDelimiter;
+			}
+			key.dtls.concernRoleTabbedList=concernRoleListAfterSkipping;
+
+			//key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+"Training Name:"+trainingDetails.serviceOfferingID +" "+ "Start Date:"+trainingDetails.trainingStartDate
+			//+" "+"End Date:"+trainingDetails.trainingEndDate+" "+"Training Location:"+trainingDetails.trainingLocation;
+
+			key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+MOLSABPOTRAINING.TRAINING_NAME+trainingDetails.serviceOfferingName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+trainingDetails.trainingStartDate
+			+" "+MOLSABPOTRAINING.TRAINING_END_DATE+trainingDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+trainingDetails.trainingLocation;
+			key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
+
+			//	key.dtls.caseID=instanceDtls.caseID;
+			molsasmsUtilObj.sendSMSDPMode(key);
+		}else if(!trainingExists){
+			curam.molsa.training.entity.intf.MOLSATraining trainingObj=MOLSATrainingFactory.newInstance();
+			MOLSATrainingKey key =  new MOLSATrainingKey();
+			key.trainingID=trainingKey.trainingID;
+			trainingObj.remove(key);
+		}
 
 		//-------------------------Information message to the case worker--------------------------------------------
 
 
-	
+
 		//
 		String[] infos = informationalManager.obtainInformationalAsString();
 		infos = informationalManager.obtainInformationalAsString();
