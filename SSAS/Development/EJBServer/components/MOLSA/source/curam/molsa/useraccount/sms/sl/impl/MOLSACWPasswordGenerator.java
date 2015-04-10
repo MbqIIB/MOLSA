@@ -18,7 +18,7 @@ public class MOLSACWPasswordGenerator extends CWPasswordGenerationStrategy {
 		this.chars = new String(
 				"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1324567890")
 				.toCharArray();
-		this.specialChars = new String("!$%^&*()#@").toCharArray();
+		this.specialChars = new String("!$^*()@").toCharArray();
 
 		setCharacters();
 
