@@ -23,18 +23,47 @@
 
     <SERVER_INTERFACE CLASS="MOLSATrainingService" NAME="ACTION"
         OPERATION="insertCertificateIssuedStatus" PHASE="ACTION"/>
+    <SERVER_INTERFACE CLASS="MOLSATrainingService" NAME="DISPLAY"
+        OPERATION="readCertificateStatus"/>
     <CONNECT>
         <SOURCE NAME="PAGE" PROPERTY="providerRosterLineItemID"/>
         <TARGET NAME="ACTION" PROPERTY="serviceAuthorizationID"/>
-    </CONNECT>   
+    </CONNECT>
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="serviceAuthorizationID"/>
+        <TARGET NAME="DISPLAY" PROPERTY="key$serviceAuthorizationID"/>
+    </CONNECT>     
     <CLUSTER  LABEL_WIDTH="50">
      <FIELD     
       LABEL="Field.Label.CertificateIssued"
     >
+      
+      <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificateIssuedStatus"
+        />
+      </CONNECT>
       <CONNECT>
         <TARGET
           NAME="ACTION"
           PROPERTY="certificateIssuedStatus"
+        />
+      </CONNECT>
+    </FIELD>
+     <FIELD     
+      LABEL="Field.Label.Issuedby"
+    >
+    <CONNECT>
+     <SOURCE
+          NAME="DISPLAY"
+          PROPERTY="certificateIssuedBy"
+        />
+      </CONNECT>
+      <CONNECT>
+        <TARGET
+          NAME="ACTION"
+          PROPERTY="certificatedtls$certificateIssuedBy"
         />
       </CONNECT>
     </FIELD>
