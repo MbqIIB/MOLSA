@@ -802,12 +802,17 @@ public abstract class MOLSAMaintainProductDelivery extends
   			MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory.newInstance();
   			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
   
-  			Long caseID1 = productDeliveryDAO.get(key.caseID).getParentCase()
-  					.getID();
-  			List<Application> applications = applicationDAO
-  					.searchByCaseID(caseID1);
-  			Application application = applications.get(0);
-  			String applicationID = application.getReference();
+  			/** As per the discussion , for migrated case, there is no
+  			 *  Application. It make sense to put the PDC reference Number here.
+  			 */
+  			//Long caseID1 = productDeliveryDAO.get(key.caseID).getParentCase()
+  					//.getID();
+  			//List<Application> applications = applicationDAO
+  			//		.searchByCaseID(caseID1);
+  			 
+  			//Application application = applications.get(0);
+  			//String applicationID = application.getReference();
+  			String applicationID = productDeliveryDAO.get(key.caseID).getCaseReference();
   			AppException msg = new AppException(
   					MOLSASMSSERVICE.APPLICATIONAPPROVED);
   			msg.arg(applicationID);
@@ -822,6 +827,7 @@ public abstract class MOLSAMaintainProductDelivery extends
   			// Need to point to the right template
   			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONAPPROVED;
   			molsasmsUtilObj.sendSMS(concernRoleListAndMessageTextDetails);
+  			
 	    }
 
 		}
