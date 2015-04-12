@@ -92,10 +92,10 @@ public class MOLSAServiceDeliveryClosureStream extends curam.molsa.servicedelive
   public BatchProcessingSkippedRecord processRecord(BatchProcessingID batchProcessingID) throws AppException, InformationalException {
     
    
-    curam.cpm.facade.intf.ServiceDelivery ServiceDeliveryObj =  curam.cpm.facade.fact.ServiceDeliveryFactory.newInstance();
+    curam.cpm.facade.intf.ServiceDelivery serviceDeliveryObj =  curam.cpm.facade.fact.ServiceDeliveryFactory.newInstance();
     ServiceDeliveryKey serviceDeliveryKey = new ServiceDeliveryKey();
     serviceDeliveryKey.serviceDeliveryID = batchProcessingID.recordID;
-    ViewServiceDeliveryDetails viewServiceDeliveryDetails = ServiceDeliveryObj.viewServiceDelivery(serviceDeliveryKey);
+    ViewServiceDeliveryDetails viewServiceDeliveryDetails = serviceDeliveryObj.viewServiceDelivery(serviceDeliveryKey);
     
    
     try {
@@ -114,12 +114,12 @@ public class MOLSAServiceDeliveryClosureStream extends curam.molsa.servicedelive
       if(!viewServiceDeliveryDetails.serviceDeliveryDtls.coverPeriodEndDate.equals(Date.kZeroDate) 
           && viewServiceDeliveryDetails.serviceDeliveryDtls.coverPeriodEndDate.before(Date.getCurrentDate()) ) {
       
-        if(viewServiceDeliveryDetails.serviceDeliveryDtls.status.equals(SERVICEDELIVERYSTATUS.OPEN)) {
-          ServiceDeliveryObj.cancelServiceDelivery(serviceDeliveryVersionKey);
-        }
+    //    if(viewServiceDeliveryDetails.serviceDeliveryDtls.status.equals(SERVICEDELIVERYSTATUS.OPEN)) {
+         // serviceDeliveryObj.cancelServiceDelivery(serviceDeliveryVersionKey);
+      //  }
         
         if(viewServiceDeliveryDetails.serviceDeliveryDtls.status.equals(SERVICEDELIVERYSTATUS.INPROGRESS)) {
-          ServiceDeliveryObj.complete(serviceDeliveryCompleteDetails);
+          serviceDeliveryObj.complete(serviceDeliveryCompleteDetails);
           creoleBulkCaseChunkReassessmentResult.casesProcessedCount += 1;
         }
         
