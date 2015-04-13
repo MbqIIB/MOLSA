@@ -10,6 +10,7 @@ import curam.core.struct.FinancialComponentDtls;
 import curam.core.struct.FinancialComponentDtlsList;
 import curam.dynamicevidence.util.impl.DateUtil;
 import curam.evidence.sl.struct.MonthYearDetails;
+import curam.molsa.codetable.MOLSABICCODE;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetail;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetailList;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTMsWordDetail;
@@ -20,6 +21,8 @@ import curam.molsa.util.impl.MOLSAGenerateEFTHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.resources.Configuration;
+import curam.util.transaction.TransactionInfo;
+import curam.util.type.CodeTable;
 import curam.util.type.Date;
 import curam.util.type.Money;
 
@@ -138,8 +141,12 @@ public class MOLSAGenerateEFTHelperTest extends CuramServerTest {
     BankAccountDtls bankAccountDtls = 
       MOLSAFinancialHelper.returnBankAccountDetails(Long.parseLong(compBankAccountID));
     BankBranchDtls bankBranchDtls  = MOLSAFinancialHelper.returnBankBranchDetails(bankAccountDtls.bankBranchID);
-    BankDtls bankDtls  = MOLSAFinancialHelper.returnBankDetails(bankBranchDtls.bankID);    
-    generateEFTMsWordDetail.compAccount=bankAccountDtls.bic;
+    BankDtls bankDtls  = MOLSAFinancialHelper.returnBankDetails(bankBranchDtls.bankID);   
+    
+    generateEFTMsWordDetail.compAccount=bankAccountDtls.iban;
+    	
+    	//CodeTable.getOneItem(MOLSABICCODE.TABLENAME, 
+			//bankAccountDtls.bic, TransactionInfo.getProgramLocale());
     generateEFTMsWordDetail.socialAffairMinisterName = 
       Configuration.getProperty("curam.molsa.financial.eft.nameOfAssistanceMinisterForSocialAffair");
     generateEFTMsWordDetail.securityDirectorName = 
