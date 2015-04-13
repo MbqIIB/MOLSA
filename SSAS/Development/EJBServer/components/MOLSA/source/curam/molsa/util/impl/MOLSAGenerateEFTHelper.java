@@ -477,13 +477,16 @@ public class MOLSAGenerateEFTHelper {
    */  
   private XWPFDocument populateMsWord(MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail) {
     XWPFDocument doc = new XWPFDocument();
+    
     XWPFParagraph p1 = doc.createParagraph();
+  
     p1.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r1 = p1.createRun();
     r1.setTextPosition(20);    
     LocalisableString addLine1 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_TO_ADDRESS_LINE1); 
     r1.setTextPosition(20);
     r1.setText(addLine1.getMessage());
+    
     
     XWPFParagraph p2 = doc.createParagraph();
     p2.setAlignment(ParagraphAlignment.LEFT);
@@ -520,7 +523,7 @@ public class MOLSAGenerateEFTHelper {
     p5.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r5 = p5.createRun();
     r5.setTextPosition(20);
-    r5.setText(generateEFTMsWordDetail.socialAffairMinisterName+"  "+generateEFTMsWordDetail.securityDirectorName);
+    r5.setText(generateEFTMsWordDetail.socialAffairMinisterName+" / "+generateEFTMsWordDetail.securityDirectorName);
     
     
     XWPFParagraph p6 = doc.createParagraph();
