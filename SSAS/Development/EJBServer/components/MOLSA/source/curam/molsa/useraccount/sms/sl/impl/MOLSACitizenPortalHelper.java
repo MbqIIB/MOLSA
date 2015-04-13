@@ -274,6 +274,7 @@ public class MOLSACitizenPortalHelper {
 							MOLSANOTIFICATION.USER_ACCOUNT_PASSWORD);
 					msg.arg(nameDtls.fullName);
 					msg.arg(newPassword);
+					msg.arg(Configuration.getProperty(EnvVars.MOLSA_URL));
 					message = msg.getLocalizedMessage();
 
 					// call send SMS functionality
