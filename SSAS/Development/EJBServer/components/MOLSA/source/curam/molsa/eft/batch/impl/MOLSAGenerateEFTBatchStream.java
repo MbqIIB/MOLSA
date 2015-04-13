@@ -212,7 +212,8 @@ public class MOLSAGenerateEFTBatchStream extends
 				.returnBankBranchDetails(bankAccountDtls.bankBranchID);
 		BankDtls bankDtls = MOLSAFinancialHelper
 				.returnBankDetails(bankBranchDtls.bankID);
-		generateEFTMsWordDetail.compAccount = bankAccountDtls.bic;
+		generateEFTMsWordDetail.compAccount = CodeTable.getOneItem(MOLSABICCODE.TABLENAME, 
+				bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 		generateEFTMsWordDetail.socialAffairMinisterName = Configuration
 				.getProperty(EnvVars.EFT_NAME_OF_ASST_MINISTER_SOCIAL_AFFAIR);
 		generateEFTMsWordDetail.securityDirectorName = Configuration
