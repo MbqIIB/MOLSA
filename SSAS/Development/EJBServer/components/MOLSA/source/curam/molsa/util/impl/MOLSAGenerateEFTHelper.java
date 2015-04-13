@@ -22,6 +22,7 @@ import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STOnOff;
 
 import curam.core.impl.CuramConst;
 import curam.core.impl.EnvVars;
@@ -470,6 +471,22 @@ public class MOLSAGenerateEFTHelper {
     XWPFDocument document = populateMsWord(generateEFTMsWordDetail);
     createMsWord(document, mswordName);
   }
+  
+  private static void setOrientation(XWPFParagraph par, TextOrientation orientation) {
+      if ( par.getCTP().getPPr()==null ) {
+          par.getCTP().addNewPPr();
+      }
+      if ( par.getCTP().getPPr().getBidi()==null ) {
+         par.getCTP().getPPr().addNewBidi();
+      }
+      par.getCTP().getPPr().getBidi().setVal(orientation==TextOrientation.RTL?STOnOff.ON:STOnOff.OFF);
+   }
+  
+  public enum TextOrientation {
+      LTR,
+      RTL
+   }
+  
   /**
    * Creates the Work book for creating the MsWord Document.
    * @param generateEFTMsWordDetail MOLSAGenerateEFTMsWordDetail
@@ -479,7 +496,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFDocument doc = new XWPFDocument();
     
     XWPFParagraph p1 = doc.createParagraph();
-  
+    setOrientation(p1 , TextOrientation.RTL);
     p1.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r1 = p1.createRun();
     r1.setTextPosition(20);    
@@ -489,6 +506,7 @@ public class MOLSAGenerateEFTHelper {
     
     
     XWPFParagraph p2 = doc.createParagraph();
+    setOrientation(p2 , TextOrientation.RTL);
     p2.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r2 = p2.createRun();
     r2.setTextPosition(20);    
@@ -498,6 +516,7 @@ public class MOLSAGenerateEFTHelper {
     r2.addBreak();
     
     XWPFParagraph p3 = doc.createParagraph();
+    setOrientation(p3 , TextOrientation.RTL);
     p3.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r3 = p3.createRun();
     r3.setTextPosition(20);    
@@ -508,6 +527,7 @@ public class MOLSAGenerateEFTHelper {
     
     
     XWPFParagraph p4 = doc.createParagraph();
+    setOrientation(p4 , TextOrientation.RTL);
     p4.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r4 = p4.createRun();
     r4.setTextPosition(20);    
@@ -520,6 +540,7 @@ public class MOLSAGenerateEFTHelper {
     r4.addBreak();
     
     XWPFParagraph p5 = doc.createParagraph();
+    setOrientation(p5 , TextOrientation.RTL);
     p5.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r5 = p5.createRun();
     r5.setTextPosition(20);
@@ -527,6 +548,7 @@ public class MOLSAGenerateEFTHelper {
     
     
     XWPFParagraph p6 = doc.createParagraph();
+    setOrientation(p6 , TextOrientation.RTL);
     p6.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r6 = p6.createRun();
     r6.setTextPosition(20);    
