@@ -247,7 +247,7 @@ public class MOLSAGenerateEFTHelper {
         eachSuspendedRow.add(generateEFTDetail1.bankSwift);
         eachSuspendedRow.add(generateEFTDetail1.accountNumber);
         eachSuspendedRow.add(generateEFTDetail1.currencyCode);
-        eachSuspendedRow.add(generateEFTDetail1.amount+"");
+        eachSuspendedRow.add(generateEFTDetail1.amount.toString());
         if(generateEFTParam.inEnglishLocale) {
           eachSuspendedRow.add(generateEFTDetail1.fullname_en);
         } else {
@@ -260,7 +260,7 @@ public class MOLSAGenerateEFTHelper {
         eachRow.add(generateEFTDetail1.bankSwift);
         eachRow.add(generateEFTDetail1.accountNumber);
         eachRow.add(generateEFTDetail1.currencyCode);
-        eachRow.add(generateEFTDetail1.amount+"");
+        eachRow.add(generateEFTDetail1.amount.toString());
         if(generateEFTParam.inEnglishLocale) {
           eachRow.add(generateEFTDetail1.fullname_en);
         } else {
