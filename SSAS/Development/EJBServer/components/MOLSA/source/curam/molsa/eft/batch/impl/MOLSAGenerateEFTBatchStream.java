@@ -183,8 +183,9 @@ public class MOLSAGenerateEFTBatchStream extends
 		MOLSAGenerateEFTDetailList bankGenerateEFTDetailList = generateExelForBank(
 				paymentInstrumentDtlsList, generateEFTParam);
 		double totalAmount = bankGenerateEFTDetailList.totalAmount.getValue();
+		Money totalMoney = bankGenerateEFTDetailList.totalAmount;
 		generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
-		generateMsWord(totalAmount);
+		generateMsWord(totalMoney);
 		updatePaymentInstrumentStatus(paymentInstrumentDtlsList);
 
 		return batchProcessingSkippedRecord;
@@ -200,7 +201,7 @@ public class MOLSAGenerateEFTBatchStream extends
 	 * @throws InformationalException
 	 *             General ExceptionList
 	 */
-	private void generateMsWord(double totalAmount) throws AppException,
+	private void generateMsWord(Money totalAmount) throws AppException,
 			InformationalException {
 
 		MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail = new MOLSAGenerateEFTMsWordDetail();
@@ -720,7 +721,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		LocalisableString remarks = new LocalisableString(
 				MOLSABPOGENERATEEFT.REMARKS_CONTENT);
 		remarks.arg(monthYearDetails.monthCode + "/" + monthYearDetails.year);
-		remarks.arg(totalAmount);
+		remarks.arg(new Money(totalAmount)+"");
 		generateEFTDetailList.remarks = remarks.getMessage();
 
 		MOLSAGenerateEFTHelper.newInstance().generateExel(
@@ -788,7 +789,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		LocalisableString remarks = new LocalisableString(
 				MOLSABPOGENERATEEFT.REMARKS_CONTENT);
 		remarks.arg(monthYearDetails.monthCode + "/" + monthYearDetails.year);
-		remarks.arg(totalAmount);
+		remarks.arg(new Money(totalAmount));
 		generateEFTDetailList.remarks = remarks.getMessage();
 		generateEFTDetailList.totalAmount = new Money(totalAmount);
 

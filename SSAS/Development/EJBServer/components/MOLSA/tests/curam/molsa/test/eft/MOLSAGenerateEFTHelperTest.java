@@ -61,7 +61,7 @@ public class MOLSAGenerateEFTHelperTest extends CuramServerTest {
     generateEFTDetailList.bankCode="QNB";
     generateEFTDetailList.compAccount="QA01 QNBA 0000 0000 1234 1234 1234 1";
     generateEFTDetailList.dueDate=Date.fromISO8601("20141030");
-    generateEFTDetailList.remarks="Salary for the Month July 2014";
+    generateEFTDetailList.remarks="Salary for the Month July 2014"+new Money(120000000);
     generateEFTDetailList.fileDesc="Sal";
     
     MOLSAGenerateEFTDetail generateEFTDetail = new MOLSAGenerateEFTDetail();
@@ -157,7 +157,8 @@ public class MOLSAGenerateEFTHelperTest extends CuramServerTest {
     Date dueDate = DateUtil.getISODate(monthYearDetails.year+monthYearDetails.monthCode+dayOfMonth);
     generateEFTMsWordDetail.dueDate=dueDate.toString();
     generateEFTMsWordDetail.forMonth=monthYearDetails.monthCode+"/"+monthYearDetails.year;
-    generateEFTMsWordDetail.transferAmount="12000"+" "+Configuration.getProperty("curam.financial.basecurrency");
+    Money mon = new Money(120000000);
+    generateEFTMsWordDetail.transferAmount=mon.getValue()+" "+Configuration.getProperty("curam.financial.basecurrency");
     
      
     boolean isExelGeneratedSuccessfully = false;
