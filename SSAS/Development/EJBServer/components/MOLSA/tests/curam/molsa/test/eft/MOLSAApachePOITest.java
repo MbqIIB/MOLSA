@@ -13,7 +13,10 @@ import org.apache.poi.xwpf.usermodel.VerticalAlign;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STOnOff;
 
+import curam.core.impl.CuramConst;
+import curam.core.impl.EnvVars;
 import curam.evidence.sl.struct.MonthYearDetails;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetail;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetailList;
@@ -21,6 +24,7 @@ import curam.molsa.eft.batch.struct.MOLSAGenerateEFTParam;
 import curam.molsa.message.MOLSABPOGENERATEEFT;
 import curam.molsa.test.framework.CuramServerTest;
 import curam.molsa.util.impl.MOLSAGenerateEFTHelper;
+import curam.molsa.util.impl.MOLSAGenerateEFTHelper.TextOrientation;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
@@ -360,14 +364,25 @@ public class MOLSAApachePOITest extends CuramServerTest {
     r5.setTextPosition(20);
     r5.setText("Name Name");
     
-    
     XWPFParagraph p6 = doc.createParagraph();
+    setOrientation(p6 , TextOrientation.RTL);
     p6.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r6 = p6.createRun();
-    r6.setTextPosition(20);    
-    LocalisableString signature = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_SIGNATURE_TEXT);    
-    r6.setText(signature.getMessage());
+    r6.setTextPosition(20);
+    r6.setText("");
     r6.addBreak();
+    
+    XWPFParagraph p7 = doc.createParagraph();
+    setOrientation(p7 , TextOrientation.RTL);
+    p7.setAlignment(ParagraphAlignment.LEFT);
+    XWPFRun r7 = p7.createRun();
+    r7.setTextPosition(20);    
+    //LocalisableString signature = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_SIGNATURE_TEXT); 
+    String signature1 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_ONE);
+    String signature2 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_TWO);
+    r7.setText(signature1+CuramConst.gkTabDelimiter+" / "+CuramConst.gkTabDelimiter+signature2);
+    //r6.setText(signature.getMessage());
+    r7.addBreak();
   
     // This would imply that this break shall be treated as a simple line break, and break the line after that word:
 
@@ -383,4 +398,19 @@ public class MOLSAApachePOITest extends CuramServerTest {
     }
   }
  
+  
+  private static void setOrientation(XWPFParagraph par, TextOrientation orientation) {
+      if ( par.getCTP().getPPr()==null ) {
+          par.getCTP().addNewPPr();
+      }
+      if ( par.getCTP().getPPr().getBidi()==null ) {
+         par.getCTP().getPPr().addNewBidi();
+      }
+      par.getCTP().getPPr().getBidi().setVal(orientation==TextOrientation.RTL?STOnOff.ON:STOnOff.OFF);
+   }
+  
+  public enum TextOrientation {
+      LTR,
+      RTL
+   }
 }
