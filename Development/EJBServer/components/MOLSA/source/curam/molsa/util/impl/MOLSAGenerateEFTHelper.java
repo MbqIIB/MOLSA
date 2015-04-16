@@ -270,6 +270,17 @@ public class MOLSAGenerateEFTHelper {
       }  
     }
 
+    // Add the Last Row
+    eachRow = new ArrayList<String>();
+    eachRow.add(Configuration.getProperty(EnvVars.EFT_END_OF_FILE));
+    eachRow.add("");
+    eachRow.add("");
+    eachRow.add("");
+    eachRow.add("");
+    eachRow.add(generateEFTDetailList.totalAmount+"");
+    eachRow.add("");
+    rowList.add(eachRow);
+    
     // Blank workbook
     XSSFWorkbook workbook = new XSSFWorkbook();
 
@@ -544,17 +555,26 @@ public class MOLSAGenerateEFTHelper {
     p5.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r5 = p5.createRun();
     r5.setTextPosition(20);
-    r5.setText(generateEFTMsWordDetail.socialAffairMinisterName+" / "+generateEFTMsWordDetail.securityDirectorName);
-    
+    r5.setText(generateEFTMsWordDetail.socialAffairMinisterName+CuramConst.gkTabDelimiter+" / "+CuramConst.gkTabDelimiter+generateEFTMsWordDetail.securityDirectorName);
     
     XWPFParagraph p6 = doc.createParagraph();
     setOrientation(p6 , TextOrientation.RTL);
     p6.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r6 = p6.createRun();
-    r6.setTextPosition(20);    
-    LocalisableString signature = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_SIGNATURE_TEXT);    
-    r6.setText(signature.getMessage());
+    r6.setTextPosition(20);
+    r6.setText("");
     r6.addBreak();
+    
+    XWPFParagraph p7 = doc.createParagraph();
+    setOrientation(p7 , TextOrientation.RTL);
+    p7.setAlignment(ParagraphAlignment.LEFT);
+    XWPFRun r7 = p7.createRun();
+    r7.setTextPosition(20);    
+    // LocalisableString signature = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_SIGNATURE_TEXT);   
+    String signature1 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_ONE);
+    String signature2 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_TWO);
+    r7.setText(signature1+CuramConst.gkTabDelimiter+" / "+CuramConst.gkTabDelimiter+signature2);
+    r7.addBreak();
     
     return doc;
   }

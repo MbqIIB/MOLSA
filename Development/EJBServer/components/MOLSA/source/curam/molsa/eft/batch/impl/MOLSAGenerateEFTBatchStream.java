@@ -222,7 +222,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				.getProperty(EnvVars.EFT_NAME_OF_SOCIAL_SECURITY_DIRECTOR);
 
 		String dayOfMonth = Configuration
-				.getProperty(EnvVars.ENV_MOLSA_FINANCIAL_PAYMENT_DAY);
+				.getProperty(EnvVars.EFT_FINANCIAL_DAY);
 		MonthYearDetails monthYearDetails = MOLSAGenerateEFTHelper
 				.getMonthYearDetail(Date.getCurrentDate());
 		Date dueDate = DateUtil.getISODate(monthYearDetails.year
@@ -664,7 +664,8 @@ public class MOLSAGenerateEFTBatchStream extends
 		BankDtls bankDtls = MOLSAFinancialHelper
 				.returnBankDetails(bankBranchDtls.bankID);
 		generateEFTDetailList.bankCode = bankDtls.name;
-		generateEFTDetailList.compAccount = CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
+		generateEFTDetailList.compAccount = bankAccountDtls.iban;
+			//CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 
 		generateEFTDetailList.compCode = Configuration
 				.getProperty(EnvVars.EFT_COMP_CODE);
@@ -672,7 +673,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				.getProperty(EnvVars.EFT_SAL_CODE);
 
 		String dayOfMonth = Configuration
-				.getProperty(EnvVars.ENV_MOLSA_FINANCIAL_PAYMENT_DAY);
+				.getProperty(EnvVars.EFT_FINANCIAL_DAY);
 
 		MonthYearDetails monthYearDetails = MOLSAGenerateEFTHelper
 				.getMonthYearDetail(Date.getCurrentDate());
