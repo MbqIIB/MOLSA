@@ -663,7 +663,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				.returnBankBranchDetails(bankAccountDtls.bankBranchID);
 		BankDtls bankDtls = MOLSAFinancialHelper
 				.returnBankDetails(bankBranchDtls.bankID);
-		generateEFTDetailList.bankCode = bankDtls.name;
+		generateEFTDetailList.bankCode = Configuration.getProperty(EnvVars.EFT_BANK_CODE);
 		generateEFTDetailList.compAccount = bankAccountDtls.iban;
 			//CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 
