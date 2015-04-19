@@ -1,6 +1,7 @@
 package curam.molsa.eft.batch.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -223,11 +224,13 @@ public class MOLSAGenerateEFTBatchStream extends
 				.getMonthYearDetail(Date.getCurrentDate());
 		Date dueDate = DateUtil.getISODate(monthYearDetails.year
 				+ monthYearDetails.monthCode + dayOfMonth);
-		generateEFTMsWordDetail.dueDate = dueDate.toString();
-		generateEFTMsWordDetail.forMonth = monthYearDetails.monthCode + "/"
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Configuration
+				.getProperty(EnvVars.EFT_DATE_FORMAT));
+		generateEFTMsWordDetail.dueDate = dateFormat.format(dueDate.getCalendar().getTime());
+		
+		generateEFTMsWordDetail.forMonth = monthYearDetails.monthCode + "-"
 				+ monthYearDetails.year;
-		generateEFTMsWordDetail.transferAmount = totalAmount + " / "
-				+ Configuration.getProperty(EnvVars.ENV_BASECURRENCY);
+		generateEFTMsWordDetail.transferAmount = totalAmount + " /- ";
 
 		MOLSAGenerateEFTHelper.newInstance().generateMsWord(
 				generateEFTMsWordDetail,
@@ -672,6 +675,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				.getMonthYearDetail(Date.getCurrentDate());
 		Date dueDate = DateUtil.getISODate(monthYearDetails.year
 				+ monthYearDetails.monthCode + dayOfMonth);
+				
 		generateEFTDetailList.dueDate = dueDate;
 		return monthYearDetails;
 	}
@@ -783,7 +787,7 @@ public class MOLSAGenerateEFTBatchStream extends
 
 		LocalisableString remarks = new LocalisableString(
 				MOLSABPOGENERATEEFT.REMARKS_CONTENT);
-		remarks.arg(monthYearDetails.monthCode + "/" + monthYearDetails.year);
+		remarks.arg(monthYearDetails.monthCode + "-" + monthYearDetails.year);
 		remarks.arg(new Money(totalAmount));
 		generateEFTDetailList.remarks = remarks.getMessage();
 		generateEFTDetailList.totalAmount = new Money(totalAmount);
