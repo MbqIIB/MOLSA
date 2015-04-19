@@ -142,8 +142,12 @@ public class MOLSACitizenPortalHelper {
 					msg.arg(Configuration.getProperty(EnvVars.MOLSA_URL));
 					message = msg.getLocalizedMessage();
 
-					// call send SMS functionality
-					sendSMS(message, phoneNumber);
+				//Do not send the SMS, if it is not enabled.
+		      boolean isSMSEnabled = Configuration.getBooleanProperty(EnvVars.MOLSA_SMS_ENABLED);
+		      if(isSMSEnabled) {
+  					// call send SMS functionality
+  					sendSMS(message, phoneNumber);
+		      }
 				} else {
 					// the user is already registered
 					throw new AppException(
