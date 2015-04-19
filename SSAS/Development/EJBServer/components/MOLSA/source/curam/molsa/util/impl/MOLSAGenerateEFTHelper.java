@@ -573,12 +573,26 @@ public class MOLSAGenerateEFTHelper {
     r5.setText(content.getMessage());
     r5.addBreak();
     
+    
     XWPFParagraph p6 = doc.createParagraph();
     setOrientation(p6 , TextOrientation.RTL);
     p6.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r6 = p6.createRun();
-    r6.setTextPosition(20);
-    r6.setText(generateEFTMsWordDetail.socialAffairMinisterName
+    r6.setTextPosition(20);    
+    LocalisableString saluteEnd = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_SALUTATION_END);   
+    r6.setText(CuramConst.gkTabDelimiter
+    		+CuramConst.gkTabDelimiter
+    		+CuramConst.gkTabDelimiter
+    		+CuramConst.gkTabDelimiter
+    		+ saluteEnd.getMessage());
+    r6.addBreak();
+    
+    XWPFParagraph p7 = doc.createParagraph();
+    setOrientation(p7, TextOrientation.RTL);
+    p7.setAlignment(ParagraphAlignment.LEFT);
+    XWPFRun r7 = p7.createRun();
+    r7.setTextPosition(20);
+    r7.setText(generateEFTMsWordDetail.socialAffairMinisterName
     		+CuramConst.gkTabDelimiter
     		+CuramConst.gkTabDelimiter
     		+CuramConst.gkTabDelimiter
@@ -588,25 +602,25 @@ public class MOLSAGenerateEFTHelper {
     		+CuramConst.gkTabDelimiter
     		+CuramConst.gkTabDelimiter
     		+generateEFTMsWordDetail.securityDirectorName);
-    r6.addBreak();
-    
-    XWPFParagraph p7 = doc.createParagraph();
-    setOrientation(p7 , TextOrientation.RTL);
-    p7.setAlignment(ParagraphAlignment.LEFT);
-    XWPFRun r7 = p7.createRun();
-    r7.setTextPosition(20);
-    r7.setText("");
     r7.addBreak();
     
     XWPFParagraph p8 = doc.createParagraph();
     setOrientation(p8 , TextOrientation.RTL);
     p8.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r8 = p8.createRun();
-    r8.setTextPosition(20);    
+    r8.setTextPosition(20);
+    r8.setText("");
+    r8.addBreak();
+    
+    XWPFParagraph p9 = doc.createParagraph();
+    setOrientation(p9 , TextOrientation.RTL);
+    p9.setAlignment(ParagraphAlignment.LEFT);
+    XWPFRun r9 = p9.createRun();
+    r9.setTextPosition(20);    
     
     String signature1 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_ONE);
     String signature2 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_TWO);
-    r8.setText(signature1
+    r9.setText(signature1
     		+CuramConst.gkTabDelimiter
     		+CuramConst.gkTabDelimiter
     		+CuramConst.gkTabDelimiter
@@ -616,7 +630,7 @@ public class MOLSAGenerateEFTHelper {
     		+CuramConst.gkTabDelimiter
     		+CuramConst.gkTabDelimiter
     		+signature2);
-    r8.addBreak();
+    r9.addBreak();
     
     return doc;
   }
