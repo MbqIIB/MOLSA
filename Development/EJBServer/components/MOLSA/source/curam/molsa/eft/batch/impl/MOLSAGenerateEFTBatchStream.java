@@ -207,19 +207,15 @@ public class MOLSAGenerateEFTBatchStream extends
 		MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail = new MOLSAGenerateEFTMsWordDetail();
 		String compBankAccountID = Configuration
 				.getProperty(EnvVars.EFT_BANKACCOUNTID);
-		BankAccountDtls bankAccountDtls = MOLSAFinancialHelper
-				.returnBankAccountDetails(Long.parseLong(compBankAccountID));
-		BankBranchDtls bankBranchDtls = MOLSAFinancialHelper
-				.returnBankBranchDetails(bankAccountDtls.bankBranchID);
-		BankDtls bankDtls = MOLSAFinancialHelper
-				.returnBankDetails(bankBranchDtls.bankID);
-		generateEFTMsWordDetail.compAccount = bankAccountDtls.iban;
+				
+		generateEFTMsWordDetail.compAccount = Configuration
+    .getProperty(EnvVars.EFT_COMPANY_ACCOUNT_NUMBER);
 			//CodeTable.getOneItem(MOLSABICCODE.TABLENAME, 
 				//bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 		generateEFTMsWordDetail.socialAffairMinisterName = Configuration
-				.getProperty(EnvVars.EFT_NAME_OF_ASST_MINISTER_SOCIAL_AFFAIR);
+				.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_NAME_ONE);
 		generateEFTMsWordDetail.securityDirectorName = Configuration
-				.getProperty(EnvVars.EFT_NAME_OF_SOCIAL_SECURITY_DIRECTOR);
+				.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_NAME_TWO);
 
 		String dayOfMonth = Configuration
 				.getProperty(EnvVars.EFT_FINANCIAL_DAY);
@@ -365,7 +361,7 @@ public class MOLSAGenerateEFTBatchStream extends
 								ALTERNATENAMETYPE.ENGLISH);
 
 				generateEFTDetail.currencyCode = Configuration
-						.getProperty(EnvVars.ENV_BASECURRENCY);
+						.getProperty(EnvVars.EFT_CURRENCY_CODE);
 
 				frequencyPattern = new FrequencyPattern(
 						financialComponentDtls.frequency);
@@ -500,7 +496,7 @@ public class MOLSAGenerateEFTBatchStream extends
 								ALTERNATENAMETYPE.ENGLISH);
 
 				generateEFTDetail.currencyCode = Configuration
-						.getProperty(EnvVars.ENV_BASECURRENCY);
+						.getProperty(EnvVars.EFT_CURRENCY_CODE);
 
 				frequencyPattern = new FrequencyPattern(
 						financialComponentDtls.frequency);
@@ -657,14 +653,11 @@ public class MOLSAGenerateEFTBatchStream extends
 			throws AppException, InformationalException {
 		String compBankAccountID = Configuration
 				.getProperty(EnvVars.EFT_BANKACCOUNTID);
-		BankAccountDtls bankAccountDtls = MOLSAFinancialHelper
-				.returnBankAccountDetails(Long.parseLong(compBankAccountID));
-		BankBranchDtls bankBranchDtls = MOLSAFinancialHelper
-				.returnBankBranchDetails(bankAccountDtls.bankBranchID);
-		BankDtls bankDtls = MOLSAFinancialHelper
-				.returnBankDetails(bankBranchDtls.bankID);
+
 		generateEFTDetailList.bankCode = Configuration.getProperty(EnvVars.EFT_BANK_CODE);
-		generateEFTDetailList.compAccount = bankAccountDtls.iban;
+		generateEFTDetailList.compAccount = Configuration
+    .getProperty(EnvVars.EFT_COMPANY_ACCOUNT_NUMBER);
+		
 			//CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 
 		generateEFTDetailList.compCode = Configuration
@@ -775,10 +768,11 @@ public class MOLSAGenerateEFTBatchStream extends
 
 			bankAccountDtls = MOLSAFinancialHelper
 					.returnBankAccountDetails(paymentInstrumentDtls.bankAccountID);
-			generateEFTDetail.accountNumber = bankAccountDtls.iban;
+			generateEFTDetail.accountNumber = Configuration
+	    .getProperty(EnvVars.EFT_COMPANY_ACCOUNT_NUMBER);
 			generateEFTDetail.bankSwift = CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 			generateEFTDetail.currencyCode = Configuration
-					.getProperty(EnvVars.ENV_BASECURRENCY);
+					.getProperty(EnvVars.EFT_CURRENCY_CODE);
 			generateEFTDetail.amount = paymentInstrumentDtls.amount;
 			if(paymentInstrumentDtls.amount.getValue()> 0) {
   			totalAmount += generateEFTDetail.amount.getValue();
