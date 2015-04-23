@@ -16,34 +16,42 @@
         </CONNECT>
     </PAGE_TITLE>
     <PAGE_PARAMETER NAME="providerRosterLineItemID"/>
-    <PAGE_PARAMETER NAME="serviceAuthorizationID"/>
     <PAGE_PARAMETER NAME="serviceOfferingID"/>
     <PAGE_PARAMETER NAME="providerConcernRoleID"/>
     
+<!-- passing providerRosterLineItemID for serviceAuthorizationID -->
 
     <SERVER_INTERFACE CLASS="MOLSATrainingService" NAME="ACTION"
         OPERATION="insertCertificateIssuedStatus" PHASE="ACTION"/>
     <SERVER_INTERFACE CLASS="MOLSATrainingService" NAME="DISPLAY"
         OPERATION="readCertificateStatus"/>
+    
+    <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="providerConcernRoleID"/>
+        <TARGET NAME="ACTION" PROPERTY="certificatedtls$providerID"/>
+    </CONNECT>
     <CONNECT>
         <SOURCE NAME="PAGE" PROPERTY="providerRosterLineItemID"/>
         <TARGET NAME="ACTION" PROPERTY="serviceAuthorizationID"/>
     </CONNECT>
-    <CONNECT>
-        <SOURCE NAME="PAGE" PROPERTY="serviceAuthorizationID"/>
+     <CONNECT>
+        <SOURCE NAME="PAGE" PROPERTY="providerRosterLineItemID"/>
         <TARGET NAME="DISPLAY" PROPERTY="key$serviceAuthorizationID"/>
-    </CONNECT>     
+    </CONNECT>   
+     
     <CLUSTER  LABEL_WIDTH="50">
      <FIELD     
       LABEL="Field.Label.CertificateIssued"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
     >
-      
       <CONNECT>
      <SOURCE
           NAME="DISPLAY"
           PROPERTY="certificateIssuedStatus"
         />
-      </CONNECT>
+      </CONNECT> 
+     
       <CONNECT>
         <TARGET
           NAME="ACTION"
@@ -53,9 +61,11 @@
     </FIELD>
      <FIELD     
       LABEL="Field.Label.Issuedby"
+      USE_BLANK="true"
+      USE_DEFAULT="false"
     >
     <CONNECT>
-     <SOURCE
+   <SOURCE
           NAME="DISPLAY"
           PROPERTY="certificateIssuedBy"
         />

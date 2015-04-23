@@ -19,9 +19,9 @@
     
    <SERVER_INTERFACE
         CLASS="MOLSATrainingService"
-        NAME="DISPLAY"
+        NAME="ACTION"
         OPERATION="reminderSMS"
-        PHASE="DISPLAY"
+        PHASE="ACTION"
     />   
 <CONNECT>
     <SOURCE
@@ -29,10 +29,48 @@
       PROPERTY="trainingID"
     />
     <TARGET
-      NAME="DISPLAY"
+      NAME="ACTION"
       PROPERTY="trainingID$trainingID"
     />
   </CONNECT>  
-  
+   <ACTION_SET
+        ALIGNMENT="CENTER"
+        TOP="false"
+        >
+        <ACTION_CONTROL
+            IMAGE="YesButton"
+            LABEL="ActionControl.Label.Yes"
+            TYPE="SUBMIT"
+        />
+        <ACTION_CONTROL
+            IMAGE="NoButton"
+            LABEL="ActionControl.Label.No"
+        />
+    </ACTION_SET>
+     <INFORMATIONAL>
+	    <CONNECT>
+	      <SOURCE
+	        NAME="ACTION"
+	        PROPERTY="informationMsgTxt"
+	      />
+	    </CONNECT>
+  </INFORMATIONAL>
+    <CLUSTER
+        SHOW_LABELS="false"
+        STYLE="outer-cluster-borderless"
+        >
+         <FIELD CONTROL="SKIP"/>
+         
+         <FIELD CONTROL="SKIP"/>
+          
+        <FIELD>
+            <CONNECT>
+                <SOURCE
+                    NAME="TEXT"
+                    PROPERTY="Field.StaticText.ConfirmMessage"
+                />
+            </CONNECT>
+        </FIELD>
+    </CLUSTER>
     
 </PAGE>
