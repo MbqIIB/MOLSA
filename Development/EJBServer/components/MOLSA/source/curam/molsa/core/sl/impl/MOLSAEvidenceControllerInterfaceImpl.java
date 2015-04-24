@@ -1,11 +1,17 @@
 package curam.molsa.core.sl.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.inject.Inject;
 
 import curam.codetable.CASESTATUS;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.impl.CASEEVIDENCEEntry;
 import curam.codetable.impl.CASESTATUSEntry;
+import curam.codetable.impl.PRODUCTTYPEEntry;
 import curam.core.fact.CachedCaseHeaderFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.CaseStatusFactory;
@@ -60,6 +66,24 @@ public class MOLSAEvidenceControllerInterfaceImpl implements
 
 	@Inject
 	private CaseHeaderDAO caseHeaderDAO;
+	private static List<PRODUCTTYPEEntry> productTypeList = new ArrayList<PRODUCTTYPEEntry>();
+
+	static {
+		productTypeList.add(PRODUCTTYPEEntry.DESERTEDWIFE);
+		productTypeList.add(PRODUCTTYPEEntry.DIVORCEDLADY);
+		productTypeList.add(PRODUCTTYPEEntry.FAMILYINNEED);
+		productTypeList.add(PRODUCTTYPEEntry.FAMILYOFMISSING);
+		productTypeList.add(PRODUCTTYPEEntry.FAMILYOFPRISONER);
+		productTypeList.add(PRODUCTTYPEEntry.INCAPABLEOFWORKING);
+		productTypeList.add(PRODUCTTYPEEntry.ORPHAN);
+		productTypeList.add(PRODUCTTYPEEntry.WIDOW);
+		productTypeList.add(PRODUCTTYPEEntry.ANONYMOUSPARENTS);
+		productTypeList.add(PRODUCTTYPEEntry.HANDICAP);
+		productTypeList.add(PRODUCTTYPEEntry.MAIDALLOWANCE);
+		productTypeList.add(PRODUCTTYPEEntry.MOLSADETERMINEPRODUCT);
+		productTypeList.add(PRODUCTTYPEEntry.SENIORCITIZEN);
+
+	}
 
 	public MOLSAEvidenceControllerInterfaceImpl() {
 		GuiceWrapper.getInjector().injectMembers(this);
@@ -103,106 +127,118 @@ public class MOLSAEvidenceControllerInterfaceImpl implements
 		}
 		for (CaseHeaderReadmultiDetails1 caseHeaderReadmultiDetails1 : caseHeaderReadmultiDetails1List.dtls) {
 
-			if (CASESTATUSEntry.ACTIVE.getCode().equals(
-					caseHeaderReadmultiDetails1.statusCode)
-					&& !additionalBenefitEvidenceType) {
+			if (productTypeList.contains(productDeliveryDAO.get(
+					caseHeaderReadmultiDetails1.caseID).getProductType())) {
 
-				CachedCaseHeader cachedCaseHeaderObj = CachedCaseHeaderFactory
-						.newInstance();
-				CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
-				CaseHeaderKey paramCaseHeaderKey = new CaseHeaderKey();
-				CaseHeaderDtls paramCaseHeaderDtls = new CaseHeaderDtls();
-				CaseStatusKey paramCaseStatusKey = new CaseStatusKey();
-				CaseStatusDtls paramCaseStatusDtls = new CaseStatusDtls();
-				UniqueID uniqueIDObj = UniqueIDFactory.newInstance();
-				SystemUser systemUserObj = SystemUserFactory.newInstance();
-				CurrentCaseStatusKey currentCaseStatusKey = new CurrentCaseStatusKey();
+				if (CASESTATUSEntry.ACTIVE.getCode().equals(
+						caseHeaderReadmultiDetails1.statusCode)
+						&& !additionalBenefitEvidenceType) {
 
-				// First change the status of the case to Suspended from Active.
-				paramCaseHeaderKey.caseID = caseHeaderReadmultiDetails1.caseID;
-				paramCaseHeaderDtls = cachedCaseHeaderObj
-						.read(paramCaseHeaderKey);
-				paramCaseHeaderDtls.statusCode = CASESTATUSEntry.SUSPENDED
-						.getCode();
-				cachedCaseHeaderObj.modify(paramCaseHeaderKey,
-						paramCaseHeaderDtls);
+					CachedCaseHeader cachedCaseHeaderObj = CachedCaseHeaderFactory
+							.newInstance();
+					CaseStatus caseStatusObj = CaseStatusFactory.newInstance();
+					CaseHeaderKey paramCaseHeaderKey = new CaseHeaderKey();
+					CaseHeaderDtls paramCaseHeaderDtls = new CaseHeaderDtls();
+					CaseStatusKey paramCaseStatusKey = new CaseStatusKey();
+					CaseStatusDtls paramCaseStatusDtls = new CaseStatusDtls();
+					UniqueID uniqueIDObj = UniqueIDFactory.newInstance();
+					SystemUser systemUserObj = SystemUserFactory.newInstance();
+					CurrentCaseStatusKey currentCaseStatusKey = new CurrentCaseStatusKey();
 
-				currentCaseStatusKey.caseID = caseHeaderReadmultiDetails1.caseID;
-				currentCaseStatusKey.nullDate = Date.kZeroDate;
-				CaseStatusDtls caseStatusDtls = caseStatusObj
-						.readCurrentStatusByCaseID1(currentCaseStatusKey);
-				paramCaseStatusKey.caseStatusID = caseStatusDtls.caseStatusID;
-				caseStatusDtls.statusCode = CASESTATUSEntry.SUSPENDED.getCode();
-				caseStatusDtls.endDate = TransactionInfo.getSystemDate();
-				caseStatusDtls.endDateTime = TransactionInfo
-						.getSystemDateTime();
-				caseStatusObj.modify(paramCaseStatusKey, caseStatusDtls);
+					// First change the status of the case to Suspended from
+					// Active.
+					paramCaseHeaderKey.caseID = caseHeaderReadmultiDetails1.caseID;
+					paramCaseHeaderDtls = cachedCaseHeaderObj
+							.read(paramCaseHeaderKey);
+					paramCaseHeaderDtls.statusCode = CASESTATUSEntry.SUSPENDED
+							.getCode();
+					cachedCaseHeaderObj.modify(paramCaseHeaderKey,
+							paramCaseHeaderDtls);
 
-				paramCaseStatusDtls.comments = CuramConst.gkEmpty;
-				paramCaseStatusDtls.caseID = caseHeaderReadmultiDetails1.caseID;
-				paramCaseStatusDtls.statusCode = CASESTATUS.SUSPENDED;
-				paramCaseStatusDtls.startDate = TransactionInfo.getSystemDate();
-				paramCaseStatusDtls.endDate = Date.kZeroDate;
-				paramCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
-				paramCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
-				caseStatusObj.insert(paramCaseStatusDtls);
+					currentCaseStatusKey.caseID = caseHeaderReadmultiDetails1.caseID;
+					currentCaseStatusKey.nullDate = Date.kZeroDate;
+					CaseStatusDtls caseStatusDtls = caseStatusObj
+							.readCurrentStatusByCaseID1(currentCaseStatusKey);
+					paramCaseStatusKey.caseStatusID = caseStatusDtls.caseStatusID;
+					caseStatusDtls.statusCode = CASESTATUSEntry.SUSPENDED
+							.getCode();
+					caseStatusDtls.endDate = TransactionInfo.getSystemDate();
+					caseStatusDtls.endDateTime = TransactionInfo
+							.getSystemDateTime();
+					caseStatusObj.modify(paramCaseStatusKey, caseStatusDtls);
 
-				// Change the status of the case from suspended to open.
-				paramCaseHeaderDtls.statusCode = CASESTATUSEntry.OPEN.getCode();
-				cachedCaseHeaderObj.modify(paramCaseHeaderKey,
-						paramCaseHeaderDtls);
+					paramCaseStatusDtls.comments = CuramConst.gkEmpty;
+					paramCaseStatusDtls.caseID = caseHeaderReadmultiDetails1.caseID;
+					paramCaseStatusDtls.statusCode = CASESTATUS.SUSPENDED;
+					paramCaseStatusDtls.startDate = TransactionInfo
+							.getSystemDate();
+					paramCaseStatusDtls.endDate = Date.kZeroDate;
+					paramCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
+					paramCaseStatusDtls.userName = systemUserObj
+							.getUserDetails().userName;
+					caseStatusObj.insert(paramCaseStatusDtls);
 
-				currentCaseStatusKey.caseID = caseHeaderReadmultiDetails1.caseID;
-				currentCaseStatusKey.nullDate = Date.kZeroDate;
+					// Change the status of the case from suspended to open.
+					paramCaseHeaderDtls.statusCode = CASESTATUSEntry.OPEN
+							.getCode();
+					cachedCaseHeaderObj.modify(paramCaseHeaderKey,
+							paramCaseHeaderDtls);
 
-				CaseStatusDtls caseStatusDtls1 = caseStatusObj
-						.readCurrentStatusByCaseID1(currentCaseStatusKey);
-				paramCaseStatusKey.caseStatusID = caseStatusDtls1.caseStatusID;
-				caseStatusDtls1.statusCode = CASESTATUSEntry.OPEN.getCode();
-				caseStatusDtls1.endDate = TransactionInfo.getSystemDate();
-				caseStatusDtls1.endDateTime = TransactionInfo
-						.getSystemDateTime();
-				caseStatusObj.modify(paramCaseStatusKey, caseStatusDtls1);
+					currentCaseStatusKey.caseID = caseHeaderReadmultiDetails1.caseID;
+					currentCaseStatusKey.nullDate = Date.kZeroDate;
 
-				paramCaseStatusDtls.comments = CuramConst.gkEmpty;
-				paramCaseStatusDtls.caseID = caseHeaderReadmultiDetails1.caseID;
-				paramCaseStatusDtls.statusCode = CASESTATUSEntry.OPEN.getCode();
-				paramCaseStatusDtls.startDate = TransactionInfo.getSystemDate();
-				paramCaseStatusDtls.endDate = Date.kZeroDate;
-				paramCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
-				paramCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
-				caseStatusObj.insert(paramCaseStatusDtls);
-				
-				final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
-				TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
-				taskCreateDetails.caseID = caseHeaderReadmultiDetails1.caseID;
+					CaseStatusDtls caseStatusDtls1 = caseStatusObj
+							.readCurrentStatusByCaseID1(currentCaseStatusKey);
+					paramCaseStatusKey.caseStatusID = caseStatusDtls1.caseStatusID;
+					caseStatusDtls1.statusCode = CASESTATUSEntry.OPEN.getCode();
+					caseStatusDtls1.endDate = TransactionInfo.getSystemDate();
+					caseStatusDtls1.endDateTime = TransactionInfo
+							.getSystemDateTime();
+					caseStatusObj.modify(paramCaseStatusKey, caseStatusDtls1);
 
-				final LocalisableString subject = new LocalisableString(
-						BPOROUTEPRODUCTDELIVERYAPPROVAL.INF_CASE_SUBMITTED_TICKET);
+					paramCaseStatusDtls.comments = CuramConst.gkEmpty;
+					paramCaseStatusDtls.caseID = caseHeaderReadmultiDetails1.caseID;
+					paramCaseStatusDtls.statusCode = CASESTATUSEntry.OPEN
+							.getCode();
+					paramCaseStatusDtls.startDate = TransactionInfo
+							.getSystemDate();
+					paramCaseStatusDtls.endDate = Date.kZeroDate;
+					paramCaseStatusDtls.caseStatusID = uniqueIDObj.getNextID();
+					paramCaseStatusDtls.userName = systemUserObj
+							.getUserDetails().userName;
+					caseStatusObj.insert(paramCaseStatusDtls);
 
-				curam.piwrapper.caseheader.impl.CaseHeader caseHeader = caseHeaderDAO
-						.get(caseHeaderReadmultiDetails1.caseID);
+					final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
+					TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+					taskCreateDetails.caseID = caseHeaderReadmultiDetails1.caseID;
 
-				subject.arg(caseHeader.getCaseReference());
+					final LocalisableString subject = new LocalisableString(
+							BPOROUTEPRODUCTDELIVERYAPPROVAL.INF_CASE_SUBMITTED_TICKET);
 
-				String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
-						productDeliveryDAO.get(taskCreateDetails.caseID)
-								.getProductType().getCode(),
-						TransactionInfo.getProgramLocale());
-				subject.arg(productName);
-				subject.arg(caseHeader.getConcernRole().getName());
+					curam.piwrapper.caseheader.impl.CaseHeader caseHeader = caseHeaderDAO
+							.get(caseHeaderReadmultiDetails1.caseID);
 
-				taskCreateDetails.subject = subject.getMessage(TransactionInfo
-						.getProgramLocale());
+					subject.arg(caseHeader.getCaseReference());
 
-				enactmentStructs.add(taskCreateDetails);
-				EnactmentService.startProcessInV3CompatibilityMode(
-						MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
+					String productName = CodeTable.getOneItem(
+							PRODUCTTYPE.TABLENAME,
+							productDeliveryDAO.get(taskCreateDetails.caseID)
+									.getProductType().getCode(),
+							TransactionInfo.getProgramLocale());
+					subject.arg(productName);
+					subject.arg(caseHeader.getConcernRole().getName());
 
+					taskCreateDetails.subject = subject
+							.getMessage(TransactionInfo.getProgramLocale());
+
+					enactmentStructs.add(taskCreateDetails);
+					EnactmentService.startProcessInV3CompatibilityMode(
+							MOLSAConstants.kMOLSAProductDeliveryOpenTask,
+							enactmentStructs);
+
+				}
 			}
 		}
-
-		
 
 	}
 }
