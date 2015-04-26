@@ -216,8 +216,8 @@ public class MOLSAGenerateEFTBatchStream extends
 		MOLSAGenerateEFTDetailList bankGenerateEFTDetailList = generateExelForBank(
 				paymentInstrumentDtlsList, generateEFTParam);
 		double totalAmount = bankGenerateEFTDetailList.totalAmount.getValue();
-		Money totalMoney = new Money(72666471.00);
-		//Money totalMoney = bankGenerateEFTDetailList.totalAmount;
+		
+		Money totalMoney = bankGenerateEFTDetailList.totalAmount;
 		generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
 		generateMsWord(totalMoney);
 		generateMsWordForMinistry(totalMoney);
