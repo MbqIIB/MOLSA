@@ -83,6 +83,7 @@ import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.Configuration;
+import curam.util.resources.Trace;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.DateTime;
@@ -332,6 +333,8 @@ public class MOLSAInformationProviderBatchStream extends
 		} catch (Exception e) {
 			batchProcessingSkippedRecord.recordID = batchProcessingID.recordID;
 			batchProcessingSkippedRecord.errorMessage = e.getMessage();
+			Trace.kTopLevelLogger.info("********  Processing  Failed ==> " + batchProcessingID.recordID );
+			e.printStackTrace();
 		}
 		return null;
 	}
