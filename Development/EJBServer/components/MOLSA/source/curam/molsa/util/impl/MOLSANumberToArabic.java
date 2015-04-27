@@ -17,11 +17,14 @@ public class MOLSANumberToArabic {
 	static LocalisableString thousand = new LocalisableString(MOLSABPONUMBERTOARABIC.THOUSAND); 
 	static LocalisableString thousands = new LocalisableString(MOLSABPONUMBERTOARABIC.THOUSANDS); 
 	static LocalisableString zero = new LocalisableString(MOLSABPONUMBERTOARABIC.ZERO); 
+	static LocalisableString arabicSuffix = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICSUFFIX); 
 	private static String arabicPrefixText = only.getMessage();
-	private static String arabicSuffixText = "لا غير.";
+	private static String arabicSuffixText = arabicSuffix.getMessage();
 	
 	private static long _intergerValue;
 	private static int _decimalValue;
+	
+	static LocalisableString and = new LocalisableString(MOLSABPONUMBERTOARABIC.AND); 
 	
 	/**
 	 * 
@@ -50,51 +53,153 @@ public class MOLSANumberToArabic {
 	     "Vigintinonillion", "10^93", "10^96", "Duotrigintillion", "Trestrigintillion"
 	};
 	
+	static LocalisableString ARABICONES_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_1); 
+	static LocalisableString ARABICONES_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_2); 
+	static LocalisableString ARABICONES_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_3); 
+	static LocalisableString ARABICONES_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_4); 
+	static LocalisableString ARABICONES_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_5); 
+	static LocalisableString ARABICONES_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_6); 
+	static LocalisableString ARABICONES_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_7); 
+	static LocalisableString ARABICONES_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_8); 
+	static LocalisableString ARABICONES_9 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_9); 
+	static LocalisableString ARABICONES_10 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_10); 
+	static LocalisableString ARABICONES_11 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_11); 
+	static LocalisableString ARABICONES_12 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_12); 
+	static LocalisableString ARABICONES_13 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_13); 
+	static LocalisableString ARABICONES_14 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_14); 
+	static LocalisableString ARABICONES_15 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_15); 
+	static LocalisableString ARABICONES_16 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_16); 
+	static LocalisableString ARABICONES_17 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_17); 
+	static LocalisableString ARABICONES_18 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_18); 
+	static LocalisableString ARABICONES_19 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICONES_19); 
+	
+	
+	
 	private static String[] arabicOnes =
         new String[] {
-         "", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة",
-         "عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر", "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"
+         "", ARABICONES_1.getMessage(),ARABICONES_2.getMessage(),ARABICONES_3.getMessage(),ARABICONES_4.getMessage(),ARABICONES_5.getMessage(),ARABICONES_6.getMessage(),ARABICONES_7.getMessage(), ARABICONES_8.getMessage(),ARABICONES_9.getMessage(),
+         ARABICONES_10.getMessage(),ARABICONES_11.getMessage(), ARABICONES_12.getMessage(), ARABICONES_13.getMessage(),ARABICONES_14.getMessage(), ARABICONES_15.getMessage(), ARABICONES_16.getMessage(), ARABICONES_17.getMessage(), ARABICONES_18.getMessage(), ARABICONES_19.getMessage()
      };
 
+	static LocalisableString ARABICFEMININEONES_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_1); 
+	static LocalisableString ARABICFEMININEONES_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_2); 
+	static LocalisableString ARABICFEMININEONES_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_3); 
+	static LocalisableString ARABICFEMININEONES_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_4); 
+	static LocalisableString ARABICFEMININEONES_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_5); 
+	static LocalisableString ARABICFEMININEONES_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_6); 
+	static LocalisableString ARABICFEMININEONES_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_7); 
+	static LocalisableString ARABICFEMININEONES_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_8); 
+	static LocalisableString ARABICFEMININEONES_9 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_9); 
+	static LocalisableString ARABICFEMININEONES_10 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_10); 
+	static LocalisableString ARABICFEMININEONES_11 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_11); 
+	static LocalisableString ARABICFEMININEONES_12 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_12); 
+	static LocalisableString ARABICFEMININEONES_13 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_13); 
+	static LocalisableString ARABICFEMININEONES_14 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_14); 
+	static LocalisableString ARABICFEMININEONES_15 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_15); 
+	static LocalisableString ARABICFEMININEONES_16 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_16); 
+	static LocalisableString ARABICFEMININEONES_17 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_17); 
+	static LocalisableString ARABICFEMININEONES_18 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_18); 
+	static LocalisableString ARABICFEMININEONES_19 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICFEMININEONES_19); 
+	
      private static String[] arabicFeminineOnes =
         new String[] {
-         "", "إحدى", "اثنتان", "ثلاث", "أربع", "خمس", "ست", "سبع", "ثمان", "تسع",
-         "عشر", "إحدى عشرة", "اثنتا عشرة", "ثلاث عشرة", "أربع عشرة", "خمس عشرة", "ست عشرة", "سبع عشرة", "ثماني عشرة", "تسع عشرة"
+         "", ARABICFEMININEONES_1.getMessage(), ARABICFEMININEONES_2.getMessage(), ARABICFEMININEONES_3.getMessage(), ARABICFEMININEONES_4.getMessage(), ARABICFEMININEONES_5.getMessage(),ARABICFEMININEONES_6.getMessage(), ARABICFEMININEONES_7.getMessage(), ARABICFEMININEONES_8.getMessage(), ARABICFEMININEONES_9.getMessage(),
+         ARABICFEMININEONES_10.getMessage(), ARABICFEMININEONES_11.getMessage(), ARABICFEMININEONES_12.getMessage(), ARABICFEMININEONES_13.getMessage(), ARABICFEMININEONES_14.getMessage(), ARABICFEMININEONES_15.getMessage(), ARABICFEMININEONES_16.getMessage(), ARABICFEMININEONES_17.getMessage(), ARABICFEMININEONES_18.getMessage(), ARABICFEMININEONES_19.getMessage()
      };
+
+     static LocalisableString ARABICTENS_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_1); 
+     static LocalisableString ARABICTENS_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_2); 
+     static LocalisableString ARABICTENS_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_3); 
+     static LocalisableString ARABICTENS_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_4); 
+     static LocalisableString ARABICTENS_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_5); 
+     static LocalisableString ARABICTENS_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_6); 
+     static LocalisableString ARABICTENS_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_7); 
+     static LocalisableString ARABICTENS_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTENS_8); 
 
      private static String[] arabicTens =
          new String[] {
-         "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"
+    	 ARABICTENS_1.getMessage(), ARABICTENS_2.getMessage(), ARABICTENS_3.getMessage(), ARABICTENS_4.getMessage(), ARABICTENS_5.getMessage(),ARABICTENS_6.getMessage(), ARABICTENS_7.getMessage(), ARABICTENS_8.getMessage()
      };
 
+     static LocalisableString ARABICHUNDRES_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_1); 
+     static LocalisableString ARABICHUNDRES_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_2); 
+     static LocalisableString ARABICHUNDRES_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_3); 
+     static LocalisableString ARABICHUNDRES_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_4); 
+     static LocalisableString ARABICHUNDRES_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_5); 
+     static LocalisableString ARABICHUNDRES_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_6); 
+     static LocalisableString ARABICHUNDRES_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_7); 
+     static LocalisableString ARABICHUNDRES_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_8); 
+     static LocalisableString ARABICHUNDRES_9 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICHUNDRES_9); 
+     
      private static String[] arabicHundreds =
          new String[] {
-         "", "مائة", "مئتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة","تسعمائة"
+         "",ARABICHUNDRES_1.getMessage(), ARABICHUNDRES_2.getMessage(),ARABICHUNDRES_3.getMessage(), ARABICHUNDRES_4.getMessage(), ARABICHUNDRES_5.getMessage(), ARABICHUNDRES_6.getMessage(), ARABICHUNDRES_7.getMessage(), ARABICHUNDRES_8.getMessage(),ARABICHUNDRES_9.getMessage()
      };
 
+     static LocalisableString ARABICAPPENDEDTWOS_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_1); 
+     static LocalisableString ARABICAPPENDEDTWOS_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_2); 
+     static LocalisableString ARABICAPPENDEDTWOS_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_3); 
+     static LocalisableString ARABICAPPENDEDTWOS_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_4); 
+     static LocalisableString ARABICAPPENDEDTWOS_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_5); 
+     static LocalisableString ARABICAPPENDEDTWOS_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_6); 
+     static LocalisableString ARABICAPPENDEDTWOS_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_7); 
+     static LocalisableString ARABICAPPENDEDTWOS_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDTWOS_8); 
      private static String[] arabicAppendedTwos =
          new String[] {
-         "مئتا", alpha.getMessage(), "مليونا", "مليارا", "تريليونا", "كوادريليونا", "كوينتليونا", "سكستيليونا"
+    	 ARABICAPPENDEDTWOS_1.getMessage(), ARABICAPPENDEDTWOS_2.getMessage(), ARABICAPPENDEDTWOS_3.getMessage(), ARABICAPPENDEDTWOS_4.getMessage(), ARABICAPPENDEDTWOS_5.getMessage(), ARABICAPPENDEDTWOS_6.getMessage(), ARABICAPPENDEDTWOS_7.getMessage(), ARABICAPPENDEDTWOS_8.getMessage()
      };
 
+     static LocalisableString ARABICTWOS_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_1); 
+     static LocalisableString ARABICTWOS_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_2); 
+     static LocalisableString ARABICTWOS_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_3); 
+     static LocalisableString ARABICTWOS_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_4); 
+     static LocalisableString ARABICTWOS_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_5); 
+     static LocalisableString ARABICTWOS_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_6); 
+     static LocalisableString ARABICTWOS_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_7); 
+     static LocalisableString ARABICTWOS_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICTWOS_8); 
      private static String[] arabicTwos =
          new String[] {
-         "مئتان", twoThousand.getMessage(), "مليونان", "ملياران", "تريليونان", "كوادريليونان", "كوينتليونان", "سكستيليونان"
+    	 ARABICTWOS_1.getMessage(), ARABICTWOS_2.getMessage(), ARABICTWOS_3.getMessage(), ARABICTWOS_4.getMessage(), ARABICTWOS_5.getMessage(), ARABICTWOS_6.getMessage(), ARABICTWOS_7.getMessage(), ARABICTWOS_8.getMessage()
      };
 
+     static LocalisableString ARABICGROUP_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_1); 
+     static LocalisableString ARABICGROUP_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_2); 
+     static LocalisableString ARABICGROUP_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_3); 
+     static LocalisableString ARABICGROUP_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_4); 
+     static LocalisableString ARABICGROUP_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_5); 
+     static LocalisableString ARABICGROUP_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_6); 
+     static LocalisableString ARABICGROUP_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_7); 
+     static LocalisableString ARABICGROUP_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICGROUP_8); 
      private static String[] arabicGroup =
          new String[] {
-         "مائة", thousand.getMessage(), "مليون", "مليار", "تريليون", "كوادريليون", "كوينتليون", "سكستيليون"
+    	 ARABICGROUP_1.getMessage(),  ARABICGROUP_2.getMessage(), ARABICGROUP_3.getMessage(),  ARABICGROUP_4.getMessage(),  ARABICGROUP_5.getMessage(),  ARABICGROUP_6.getMessage(),  ARABICGROUP_7.getMessage(),  ARABICGROUP_8.getMessage()
      };
 
+
+     static LocalisableString ARABICAPPENDEDGROUP_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDGROUP_1);
+     static LocalisableString ARABICAPPENDEDGROUP_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDGROUP_2);
+     static LocalisableString ARABICAPPENDEDGROUP_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDGROUP_3);
+     static LocalisableString ARABICAPPENDEDGROUP_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDGROUP_4);
+     static LocalisableString ARABICAPPENDEDGROUP_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDGROUP_5);
+     static LocalisableString ARABICAPPENDEDGROUP_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDGROUP_6);
+     static LocalisableString ARABICAPPENDEDGROUP_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICAPPENDEDGROUP_7);
+  
      private static String[] arabicAppendedGroup =
          new String[] {
-         "", alpha_Group.getMessage(), "مليوناً", "ملياراً", "تريليوناً", "كوادريليوناً", "كوينتليوناً", "سكستيليوناً"
+         "", ARABICAPPENDEDGROUP_1.getMessage(), ARABICAPPENDEDGROUP_2.getMessage(), ARABICAPPENDEDGROUP_3.getMessage(), ARABICAPPENDEDGROUP_4.getMessage(), ARABICAPPENDEDGROUP_5.getMessage(), ARABICAPPENDEDGROUP_6.getMessage(),ARABICAPPENDEDGROUP_7.getMessage()
      };
+
+     static LocalisableString ARABICPLURALGROUP_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICPLURALGROUP_1);
+     static LocalisableString ARABICPLURALGROUP_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICPLURALGROUP_2);
+     static LocalisableString ARABICPLURALGROUP_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICPLURALGROUP_3);
+     static LocalisableString ARABICPLURALGROUP_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICPLURALGROUP_4);
+     static LocalisableString ARABICPLURALGROUP_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICPLURALGROUP_5);
+     static LocalisableString ARABICPLURALGROUP_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICPLURALGROUP_6);
+     static LocalisableString ARABICPLURALGROUP_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.ARABICPLURALGROUP_7);
 
      private static String[] arabicPluralGroups =
          new String[] {
-         "", thousands.getMessage(), "ملايين", "مليارات", "تريليونات", "كوادريليونات", "كوينتليونات", "سكستيليونات"
+         "", ARABICPLURALGROUP_1.getMessage(), ARABICPLURALGROUP_2.getMessage(), ARABICPLURALGROUP_3.getMessage(), ARABICPLURALGROUP_4.getMessage(), ARABICPLURALGROUP_5.getMessage(),ARABICPLURALGROUP_6.getMessage(),ARABICPLURALGROUP_7.getMessage()
      };
 	
     public MOLSANumberToArabic() {	
@@ -290,7 +395,7 @@ public class MOLSANumberToArabic {
                 }
                 else { // General case
                     if (retVal != "")
-                        retVal += " و ";
+                        retVal += " "+and.getMessage()+" ";
 
                     if (tens == 1 && groupLevel > 0 && hundreds == 0)
                         retVal += " ";
@@ -307,14 +412,14 @@ public class MOLSANumberToArabic {
 
                 if (ones > 0) {
                     if (retVal != "")
-                        retVal += " و ";
+                        retVal += " "+and.getMessage()+" ";
 
                     // Get Feminine status for this digit
                     retVal += getDigitFeminineStatus(ones, groupLevel);
                 }
 
                 if (retVal != "")
-                    retVal += " و ";
+                    retVal += " "+and.getMessage()+" ";
 
                 // Get Tens text
                 retVal += arabicTens[tens];
@@ -362,7 +467,7 @@ public class MOLSANumberToArabic {
                 if (group > 0)
                 {
                     if (retVal != "")
-                        retVal = String.format("%s %s", "و", retVal);
+                        retVal = String.format("%s %s", and.getMessage(), retVal);
 
                     if (numberToProcess != 2)
                     {
@@ -416,7 +521,7 @@ public class MOLSANumberToArabic {
                             if (remaining100 >= 11 && remaining100 <= 99)
                                 formattedNumber += currencyInfo.arabic1199CurrencyName;
         }
-        formattedNumber += (_decimalValue != 0) ? " و " : "";
+        formattedNumber += (_decimalValue != 0) ? " "+and.getMessage()+" " : "";
         formattedNumber += (_decimalValue != 0) ? decimalString : "";
         if (_decimalValue != 0)
         { // here we add currency part name depending on _intergerValue : 1 ,2 , 3--->10 , 11--->99
@@ -602,6 +707,14 @@ public class MOLSANumberToArabic {
 			this.isCurrencyPartNameFeminine = isCurrencyPartNameFeminine;
 		}
 		
+		LocalisableString CURRENCYNAME_1 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_1); 
+		LocalisableString CURRENCYNAME_2 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_2); 
+		LocalisableString CURRENCYNAME_3 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_3); 
+		LocalisableString CURRENCYNAME_4 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_4); 
+		LocalisableString CURRENCYNAME_5 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_5); 
+		LocalisableString CURRENCYNAME_6 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_6); 
+		LocalisableString CURRENCYNAME_7 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_7); 
+		LocalisableString CURRENCYNAME_8 = new LocalisableString(MOLSABPONUMBERTOARABIC.CURRENCYNAME_8); 
 		public CurrencyInfo(Currency currency) {
 			switch (currency) {
 				
@@ -612,14 +725,14 @@ public class MOLSANumberToArabic {
 					englishPluralCurrencyName = "Qatar Riyals";
 					englishCurrencyPartName = "Dirham";
 					englishPluralCurrencyPartName = " Dirhams";
-					arabic1CurrencyName = "ريال قطري";
-					arabic2CurrencyName = "ريالان قطريان";
-					arabic310CurrencyName = "ريالات قطريه";
-					arabic1199CurrencyName = "ريالاً قطرياً";
-					arabic1CurrencyPartName = "درهم";
-					arabic2CurrencyPartName = "درهمان";
-					arabic310CurrencyPartName = "دراهم";
-					arabic1199CurrencyPartName = "درهم"; 
+					arabic1CurrencyName = CURRENCYNAME_1.getMessage();
+					arabic2CurrencyName = CURRENCYNAME_2.getMessage();
+					arabic310CurrencyName = CURRENCYNAME_3.getMessage();
+					arabic1199CurrencyName = CURRENCYNAME_4.getMessage();
+					arabic1CurrencyPartName = CURRENCYNAME_5.getMessage();
+					arabic2CurrencyPartName = CURRENCYNAME_6.getMessage();
+					arabic310CurrencyPartName = CURRENCYNAME_7.getMessage();
+					arabic1199CurrencyPartName = CURRENCYNAME_8.getMessage();
                 			partPrecision = 2;
                 			isCurrencyPartNameFeminine = true;
 
@@ -635,14 +748,14 @@ public class MOLSANumberToArabic {
 					englishPluralCurrencyName = "Qatar Riyals";
 					englishCurrencyPartName = "Dirham";
 					englishPluralCurrencyPartName = " Dirhams";
-					arabic1CurrencyName = "ريال قطري";
-					arabic2CurrencyName = "ريالان قطريان";
-					arabic310CurrencyName = "ريالات قطريه";
-					arabic1199CurrencyName = "ريالاً قطرياً";
-					arabic1CurrencyPartName = "درهم";
-					arabic2CurrencyPartName = "درهمان";
-					arabic310CurrencyPartName = "دراهم";
-					arabic1199CurrencyPartName = "درهم"; 
+					arabic1CurrencyName = CURRENCYNAME_1.getMessage();
+					arabic2CurrencyName = CURRENCYNAME_2.getMessage();
+					arabic310CurrencyName = CURRENCYNAME_3.getMessage();
+					arabic1199CurrencyName = CURRENCYNAME_4.getMessage();
+					arabic1CurrencyPartName = CURRENCYNAME_5.getMessage();
+					arabic2CurrencyPartName = CURRENCYNAME_6.getMessage();
+					arabic310CurrencyPartName = CURRENCYNAME_7.getMessage();
+					arabic1199CurrencyPartName = CURRENCYNAME_8.getMessage();
                 			partPrecision = 2;
                 			isCurrencyPartNameFeminine = true;
 					break;

@@ -85,6 +85,21 @@ public class MOLSAGenerateEFTHelper {
   }
   
   /**
+   * Generates the Exel Sheet.
+   * 
+   * @param generateEFTDetailList MOLSAGenerateEFTDetailList
+   * @param generateEFTParam MOLSAGenerateEFTParam
+   * @param exelName String
+   */
+  public void generateExelForFinance(MOLSAGenerateEFTDetailList generateEFTDetailList, 
+		  MOLSAGenerateEFTDetailList unprocessedGenerateEFTDetailList,
+      MOLSAGenerateEFTParam generateEFTParam, String exelName) throws AppException, InformationalException {
+    XSSFWorkbook workbook = populateExel(generateEFTDetailList, generateEFTParam);
+    workbook = populateExelForUnprocessed(workbook, unprocessedGenerateEFTDetailList, generateEFTParam);
+    createExel(workbook, exelName);
+  }
+  
+  /**
    * Helper method to return the msword name.
    * @param monthYearDetails MonthYearDetails
    * @return The exel Name
@@ -491,7 +506,293 @@ public class MOLSAGenerateEFTHelper {
     return workbook;
   }
   
+  /**
+   * Creates the Work book for creating the Exel Sheet.
+   * @param generateEFTDetailList MOLSAGenerateEFTDetailList
+   * @param generateEFTParam MOLSAGenerateEFTParam
+   * @return XSSFWorkbook
+   */  
+  private XSSFWorkbook populateExelForUnprocessed(XSSFWorkbook workbook, MOLSAGenerateEFTDetailList generateEFTDetailList, 
+      MOLSAGenerateEFTParam generateEFTParam) {
+    
 
+    List<String> headerRow = new ArrayList<String>();
+    headerRow.add(MOLSABPOGENERATEEFT.LIST_LABEL_DEPT_CODE.getMessageText());
+    headerRow.add(MOLSABPOGENERATEEFT.LIST_LABEL_STAFF_NUMBER.getMessageText());
+    headerRow.add(MOLSABPOGENERATEEFT.LIST_LABEL_BANK_SWIFT.getMessageText());
+    headerRow.add(MOLSABPOGENERATEEFT.LIST_LABEL_ACCOUNT_NUMBER.getMessageText());
+    headerRow.add(MOLSABPOGENERATEEFT.LIST_LABEL_CUR_CODE.getMessageText());
+    headerRow.add(MOLSABPOGENERATEEFT.LIST_LABEL_AMOUNT.getMessageText());
+    headerRow.add(MOLSABPOGENERATEEFT.LIST_LABEL_NAME.getMessageText());
+    
+    
+
+    List<List<String>> initialRowList = new ArrayList<List<String>>();
+    List<String> initialEachRow = new ArrayList<String>();
+
+    initialEachRow.add(MOLSABPOGENERATEEFT.LABEL_COMP_CODE.getMessageText());
+    initialEachRow.add(generateEFTDetailList.compCode);
+    initialRowList.add(initialEachRow);
+
+    initialEachRow = new ArrayList<String>();
+    initialEachRow.add(MOLSABPOGENERATEEFT.LABEL_BANK_CODE.getMessageText());
+    initialEachRow.add(generateEFTDetailList.bankCode);
+    initialRowList.add(initialEachRow);
+
+    initialEachRow = new ArrayList<String>();
+    initialEachRow.add(MOLSABPOGENERATEEFT.LABEL_FILE_DESC.getMessageText());
+    initialEachRow.add(generateEFTDetailList.fileDesc);
+    initialRowList.add(initialEachRow);
+    
+   
+    
+    initialEachRow = new ArrayList<String>();
+    initialEachRow.add(MOLSABPOGENERATEEFT.LABEL_DUE_DATE.getMessageText());
+    SimpleDateFormat dateFormat = new SimpleDateFormat(Configuration
+			.getProperty(EnvVars.EFT_DATE_FORMAT));
+    initialEachRow.add(dateFormat.format(generateEFTDetailList.dueDate.getCalendar().getTime()));    
+    initialRowList.add(initialEachRow);
+
+    initialEachRow = new ArrayList<String>();
+    initialEachRow.add(MOLSABPOGENERATEEFT.LABEL_COMP_ACCOUNT.getMessageText());
+    initialEachRow.add(generateEFTDetailList.compAccount);
+    initialRowList.add(initialEachRow);
+
+    initialEachRow = new ArrayList<String>();
+    initialEachRow.add(MOLSABPOGENERATEEFT.LABEL_REMARKS.getMessageText());
+    initialEachRow.add(generateEFTDetailList.remarks);
+    initialRowList.add(initialEachRow);
+
+    //The list should start from the next line from the normal Rows.    
+    int kLineNumberForDetailHeaderStart = initialRowList.size()+1;
+    
+    List<List<String>> rowList = new ArrayList<List<String>>();
+    List<String> eachRow;
+    
+    List<List<String>> rowSuspendedList = new ArrayList<List<String>>();
+    List<String> eachSuspendedRow;
+
+    for (MOLSAGenerateEFTDetail generateEFTDetail1 : generateEFTDetailList.dtls.items()) {
+      eachRow = new ArrayList<String>();
+      eachSuspendedRow = new ArrayList<String>();
+      if(generateEFTDetail1.isSuspended) {
+        eachSuspendedRow.add(generateEFTDetail1.deptCode);
+        eachSuspendedRow.add(generateEFTDetail1.staffNumber);
+        eachSuspendedRow.add(generateEFTDetail1.bankSwift);
+        eachSuspendedRow.add(generateEFTDetail1.accountNumber);
+        eachSuspendedRow.add(generateEFTDetail1.currencyCode);
+        eachSuspendedRow.add(generateEFTDetail1.amount+"");
+        if(generateEFTParam.inEnglishLocale) {
+          eachSuspendedRow.add(generateEFTDetail1.fullname_en);
+        } else {
+          eachSuspendedRow.add(generateEFTDetail1.fullname_ar);
+        }            
+        rowSuspendedList.add(eachSuspendedRow);
+      } else {
+        eachRow.add(generateEFTDetail1.deptCode);
+        eachRow.add(generateEFTDetail1.staffNumber);
+        eachRow.add(generateEFTDetail1.bankSwift);
+        eachRow.add(generateEFTDetail1.accountNumber);
+        eachRow.add(generateEFTDetail1.currencyCode);
+        eachRow.add(generateEFTDetail1.amount+"");
+        if(generateEFTParam.inEnglishLocale) {
+          eachRow.add(generateEFTDetail1.fullname_en);
+        } else {
+          eachRow.add(generateEFTDetail1.fullname_ar);
+        }            
+        rowList.add(eachRow);
+      }  
+    }
+
+    // Add the Last Row
+    List<List<String>> lastEOFRowList = new ArrayList<List<String>>();
+    List<String> lastEOFRow = new ArrayList<String>();
+    lastEOFRow.add(Configuration.getProperty(EnvVars.EFT_END_OF_FILE));
+    lastEOFRow.add("");
+    lastEOFRow.add("");
+    lastEOFRow.add("");
+    lastEOFRow.add("");
+    lastEOFRow.add(generateEFTDetailList.totalAmount+"");
+    lastEOFRow.add("");
+    lastEOFRowList.add(lastEOFRow);
+   
+    
+
+
+    // Create a blank sheet
+    XSSFSheet sheet = workbook.createSheet(MOLSABPOGENERATEEFT.WORK_SHEET_NAME_FOR_UNPROCESSED.getMessageText());
+
+    CellStyle style = workbook.createCellStyle();// Create style
+    Font font = workbook.createFont();// Create font
+    font.setBoldweight(Font.BOLDWEIGHT_BOLD);// Make font bold
+    style.setFont(font);// set it to bold
+    //style.setFillForegroundColor(HSSFColor.YELLOW.index);
+    //style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+    style.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+    style.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+    style.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+    style.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+
+    
+    CellStyle style1 = workbook.createCellStyle();// Create style
+    Font font1 = workbook.createFont();// Create font
+    font1.setColor(HSSFColor.BLACK.index);
+    style1.setFont(font1);
+    
+    CellStyle style2 = workbook.createCellStyle();// Create style
+    Font font2 = workbook.createFont();// Create font
+    font2.setBoldweight(Font.BOLDWEIGHT_BOLD);// Make font bold
+    style2.setFont(font);// set it to bold
+
+    CellStyle style3 = workbook.createCellStyle();// Create style
+    Font font3 = workbook.createFont();// Create font
+    font3.setColor(HSSFColor.BLACK.index);
+    style3.setFont(font3);
+    
+    
+
+    Object[] firstEachObjectValue = new Object[headerRow.size()];
+    List<Object[]> firstObjectList = new ArrayList<Object[]>();
+    int i = 0;
+
+    for (List<String> eachRowGroup : initialRowList) {
+      i = 0;
+      firstEachObjectValue = new Object[2];
+      for (String eachRowValue : eachRowGroup) {
+        firstEachObjectValue[i] = eachRowValue;
+        i++;
+      }
+      firstObjectList.add(firstEachObjectValue);
+    }
+
+    // This data needs to be written (Object[])
+    Map<String, Object[]> data = new LinkedHashMap<String, Object[]>();
+    int rowID = 0;
+    for (Object[] eachObject : firstObjectList) {
+      data.put(rowID + "", eachObject);
+      rowID++;
+    }
+
+    // Iterate over data and write to sheet
+    Set<String> keyset = data.keySet();
+    int rownum = 0;
+    for (String key : keyset) {
+      Row row = sheet.createRow(rownum++);
+
+      Object[] objArr = data.get(key);
+      int cellnum = 0;
+      for (Object obj : objArr) {
+        Cell cell = row.createCell(cellnum++);
+        if (rownum < kLineNumberForDetailHeaderStart) {
+          if (cellnum == 1) {
+            cell.setCellStyle(style2);
+          } else {
+            cell.setCellStyle(style3);
+          }
+        }
+
+        if (obj instanceof String) {
+          cell.setCellValue((String) obj);
+        } else if (obj instanceof Integer) {
+          cell.setCellValue((Integer) obj);
+        }
+      }
+    }
+
+    // Auto size all the columns
+    for (int x = 0; x < sheet.getRow(0).getPhysicalNumberOfCells(); x++) {
+      sheet.autoSizeColumn(x);
+    }
+
+    Object[] eachObjectValue = new Object[headerRow.size()];
+    List<Object[]> objectList = new ArrayList<Object[]>();
+
+    eachObjectValue = new Object[headerRow.size()];
+    i = 0;
+    for (String eachHeader : headerRow) {
+      eachObjectValue[i] = eachHeader;
+      i++;
+    }
+
+    objectList.add(eachObjectValue);
+
+    for (List<String> eachRowGroup : rowList) {
+      i = 0;
+      eachObjectValue = new Object[headerRow.size()];
+      for (String eachRowValue : eachRowGroup) {
+        eachObjectValue[i] = eachRowValue;
+        i++;
+      }
+      objectList.add(eachObjectValue);
+    }
+    
+    int rowForSuspendedCase = objectList.size()+rownum+1;
+    
+    for (List<String> eachRowGroup : rowSuspendedList) {
+      i = 0;
+      eachObjectValue = new Object[headerRow.size()];
+      for (String eachRowValue : eachRowGroup) {
+        eachObjectValue[i] = eachRowValue;
+        i++;
+      }
+      objectList.add(eachObjectValue);
+    }
+    
+    for (List<String> eachRowGroup : lastEOFRowList) {
+        i = 0;
+        eachObjectValue = new Object[headerRow.size()];
+        for (String eachRowValue : eachRowGroup) {
+          eachObjectValue[i] = eachRowValue;
+          i++;
+        }
+        objectList.add(eachObjectValue);
+      }
+
+    // This data needs to be written (Object[])
+    Map<String, Object[]> data1 = new LinkedHashMap<String, Object[]>();
+
+    for (Object[] eachObject : objectList) {
+      data1.put(rowID + "", eachObject);
+      rowID++;
+    }
+
+    // Iterate over data and write to sheet
+    Set<String> keyset1 = data1.keySet();
+    // int rownum = 0;
+    for (String key : keyset1) {
+      Row row = sheet.createRow(rownum++);
+
+      Object[] objArr = data1.get(key);
+      int cellnum = 0;
+      for (Object obj : objArr) {
+        Cell cell = row.createCell(cellnum++);
+        // Only for the First Row
+        if (rownum == kLineNumberForDetailHeaderStart) {
+          cell.setCellStyle(style);
+        } else if (rownum >= rowForSuspendedCase) {
+          cell.setCellStyle(style1);
+        } else {
+          cell.setCellStyle(style3);
+        }
+
+        if (obj instanceof String){
+          cell.setCellValue((String) obj);
+        } else if (obj instanceof Integer) {
+          cell.setCellValue((Integer) obj);
+        }
+      }
+    }
+
+    if(generateEFTDetailList.dtls.size()>0) {
+      // Auto size all the columns
+      for (int x = 0; x < sheet.getRow(kLineNumberForDetailHeaderStart).getPhysicalNumberOfCells(); x++) {
+        sheet.autoSizeColumn(x);
+      }
+    }
+    return workbook;
+  }
+  
+  
 
   /**
    * Writes the Exel to the disk
@@ -827,7 +1128,7 @@ public class MOLSAGenerateEFTHelper {
     r10.setTextPosition(20);  
     r10.setBold(true);
     LocalisableString content = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_CONTENT);
-    content.arg(" "+generateEFTMsWordDetail.compAccount);    
+    content.arg(generateEFTMsWordDetail.compAccount);    
     r10.setText(content.getMessage());
     r10.addBreak();
     

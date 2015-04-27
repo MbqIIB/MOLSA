@@ -19,6 +19,7 @@ import curam.codetable.CASETYPECODE;
 import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.FINCOMPONENTSTATUS;
 import curam.codetable.FINCOMPONENTTYPE;
+import curam.codetable.ILISTATUS;
 import curam.codetable.PMTRECONCILIATIONSTATUS;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.REASSESSMENTRESULT;
@@ -80,6 +81,9 @@ import curam.core.struct.FCstatusCodeCaseID;
 import curam.core.struct.FinancialComponentDtls;
 import curam.core.struct.FinancialComponentDtlsList;
 import curam.core.struct.FinancialComponentID;
+import curam.core.struct.ILIStatusCodeKey;
+import curam.core.struct.InstructionLineItemDtls;
+import curam.core.struct.InstructionLineItemDtlsList;
 import curam.core.struct.NomineeOverUnderPaymentDtls;
 import curam.core.struct.NomineeOverUnderPaymentDtlsList;
 import curam.core.struct.PIStatusCode;
@@ -218,6 +222,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		double totalAmount = bankGenerateEFTDetailList.totalAmount.getValue();
 		
 		Money totalMoney = bankGenerateEFTDetailList.totalAmount;
+		
 		generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
 		generateMsWord(totalMoney);
 		generateMsWordForMinistry(totalMoney);
@@ -375,7 +380,7 @@ public class MOLSAGenerateEFTBatchStream extends
 	}
 	
 	/**
-	 * Return the Open and Suspended Case Details to the output struct.
+	 * Return the UnderPayment Case Details to the output struct.
 	 * 
 	 * @return List<MOLSAGenerateEFTDetail>
 	 * @throws AppException
@@ -491,6 +496,52 @@ public class MOLSAGenerateEFTBatchStream extends
 
 			}
 
+		}
+
+		return generateEFTDetailList;
+	}
+	
+	
+	/**
+	 * Return the UnProcssed ILI Details to the output struct.
+	 * 
+	 * @return List<MOLSAGenerateEFTDetail>
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General ExceptionList
+	 */
+	private List<MOLSAGenerateEFTDetail> getUnProcessedAmountDetails()
+			throws AppException, InformationalException {
+		List<MOLSAGenerateEFTDetail> generateEFTDetailList = new ArrayList<MOLSAGenerateEFTDetail>();
+		MOLSAGenerateEFTDetail generateEFTDetail;
+
+		InstructionLineItem instructionLineItemObj = InstructionLineItemFactory
+				.newInstance();
+		ILIStatusCodeKey iliStatusCodeKey = new ILIStatusCodeKey();
+		iliStatusCodeKey.statusCode = ILISTATUS.UNPROCESSED;
+		InstructionLineItemDtlsList instructionLineItemDtlsList = instructionLineItemObj
+				.searchByStatusCode(iliStatusCodeKey);
+		for (InstructionLineItemDtls instructionLineItemDtls : instructionLineItemDtlsList.dtls
+				.items()) {
+			generateEFTDetail = new MOLSAGenerateEFTDetail();
+			generateEFTDetail.deptCode = Configuration
+					.getProperty(EnvVars.EFT_DEPT_CODE);
+
+			generateEFTDetail.staffNumber = MOLSAParticipantHelper
+					.returnConcernRoleAlternateID(
+							instructionLineItemDtls.concernRoleID,
+							CONCERNROLEALTERNATEID.INSURANCENUMBER);
+
+			generateEFTDetail.fullname_ar = MOLSAParticipantHelper
+					.returnConcernRoleName(instructionLineItemDtls.concernRoleID);
+			generateEFTDetail.fullname_en = MOLSAParticipantHelper
+					.returnAlternateName(instructionLineItemDtls.concernRoleID,
+							ALTERNATENAMETYPE.ENGLISH);
+			generateEFTDetail.currencyCode = Configuration
+					.getProperty(EnvVars.EFT_CURRENCY_CODE);
+			generateEFTDetail.amount = instructionLineItemDtls.unprocessedAmount;
+			generateEFTDetailList.add(generateEFTDetail);
 		}
 
 		return generateEFTDetailList;
@@ -995,8 +1046,30 @@ public class MOLSAGenerateEFTBatchStream extends
 		remarks.arg(new Money(totalAmount)+"");
 		generateEFTDetailList.remarks = remarks.getMessage();
 
-		MOLSAGenerateEFTHelper.newInstance().generateExel(
-				generateEFTDetailList, generateEFTParam,
+		/** Starting the UnProcessed Amount */
+		MOLSAGenerateEFTDetailList unprocessedGenerateEFTDetailList = new MOLSAGenerateEFTDetailList();
+		List<MOLSAGenerateEFTDetail> unProcessedGenerateEFTDetailList = getUnProcessedAmountDetails();
+		unprocessedGenerateEFTDetailList.bankCode= generateEFTDetailList.bankCode;
+		unprocessedGenerateEFTDetailList.compAccount=generateEFTDetailList.compAccount;
+		unprocessedGenerateEFTDetailList.compCode=generateEFTDetailList.compCode;
+		unprocessedGenerateEFTDetailList.dueDate=generateEFTDetailList.dueDate;
+		unprocessedGenerateEFTDetailList.fileDesc=generateEFTDetailList.fileDesc;
+		double unProcessedTotalAmount = 0;
+		for (MOLSAGenerateEFTDetail molsaGenerateEFTDetail : unProcessedGenerateEFTDetailList) {
+			  if(molsaGenerateEFTDetail.amount.getValue()>0) {
+				  unProcessedTotalAmount += molsaGenerateEFTDetail.amount.getValue();
+				  unprocessedGenerateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
+			  }
+			}
+		LocalisableString remarks1 = new LocalisableString(
+				MOLSABPOGENERATEEFT.REMARKS_CONTENT);
+		remarks1.arg(monthYearDetails.monthCode + "-" + monthYearDetails.year);
+		remarks1.arg(new Money(unProcessedTotalAmount)+"");
+		generateEFTDetailList.remarks = remarks1.getMessage();
+		unprocessedGenerateEFTDetailList.remarks=remarks1.getMessage();
+		
+		MOLSAGenerateEFTHelper.newInstance().generateExelForFinance(
+				generateEFTDetailList, unprocessedGenerateEFTDetailList, generateEFTParam,
 				MOLSAGenerateEFTHelper.getExelName(false, monthYearDetails));
 
 	}
