@@ -1125,7 +1125,7 @@ public class MOLSAGenerateEFTHelper {
     LocalisableString amountDetails = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_AMOUNT_DETAILS); 
     amountDetails.arg(generateEFTMsWordDetail.transferAmount+" /-");  
     r7.setText(monthDetails.getMessage()+" "+amountDetails.getMessage());
-    r7.addBreak();
+    
     
     /*
     XWPFParagraph p8 = doc.createParagraph();

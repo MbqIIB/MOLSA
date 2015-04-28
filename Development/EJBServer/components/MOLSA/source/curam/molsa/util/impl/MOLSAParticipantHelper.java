@@ -237,6 +237,7 @@ public class MOLSAParticipantHelper {
     return returnConcernRoleName(caseParticipantRoleDtls.participantRoleID);
   }
 
+  
 	/**
 	 * Return the concernrole name in the mentioned name type.
 	 * 
@@ -256,7 +257,7 @@ public class MOLSAParticipantHelper {
 		AlternateNameReadByTypeKey alternateNameReadByTypeKey = new AlternateNameReadByTypeKey();
 		alternateNameReadByTypeKey.concernRoleID = concernRoleID;
 		alternateNameReadByTypeKey.nameType = nameType;
-		alternateNameReadByTypeKey.nameStatus = ALTERNATENAMESTATUS.ACTIVE;
+		alternateNameReadByTypeKey.nameStatus = RECORDSTATUS.NORMAL;
 		NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
 		curam.core.intf.AlternateName alternateNameObj = AlternateNameFactory
 				.newInstance();
