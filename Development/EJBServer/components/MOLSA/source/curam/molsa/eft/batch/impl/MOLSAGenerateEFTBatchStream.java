@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 
 import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.BATCHPROCESSNAME;
-import curam.codetable.CASENOMINEESTATUS;
 import curam.codetable.CASERELATIONSHIPREASONCODE;
 import curam.codetable.CASERELATIONSHIPTYPECODE;
 import curam.codetable.CASESTATUS;
@@ -22,7 +21,6 @@ import curam.codetable.FINCOMPONENTTYPE;
 import curam.codetable.ILISTATUS;
 import curam.codetable.PMTRECONCILIATIONSTATUS;
 import curam.codetable.PRODUCTTYPE;
-import curam.codetable.REASSESSMENTRESULT;
 import curam.codetable.RECORDSTATUS;
 import curam.core.facade.fact.ParticipantFactory;
 import curam.core.facade.intf.Participant;
@@ -37,7 +35,6 @@ import curam.core.fact.CaseRelationshipFactory;
 import curam.core.fact.CaseStatusFactory;
 import curam.core.fact.FinancialComponentFactory;
 import curam.core.fact.InstructionLineItemFactory;
-import curam.core.fact.NomineeOverUnderPaymentFactory;
 import curam.core.fact.PaymentInstrumentFactory;
 import curam.core.fact.ProductDeliveryFactory;
 import curam.core.impl.BatchStreamHelper;
@@ -48,20 +45,13 @@ import curam.core.intf.CaseRelationship;
 import curam.core.intf.CaseStatus;
 import curam.core.intf.FinancialComponent;
 import curam.core.intf.InstructionLineItem;
-import curam.core.intf.NomineeOverUnderPayment;
 import curam.core.intf.PaymentInstrument;
 import curam.core.intf.ProductDelivery;
 import curam.core.sl.entity.fact.CaseNomineeFactory;
 import curam.core.sl.entity.intf.CaseNominee;
-import curam.core.sl.entity.struct.CaseNomineeCaseIDKey;
 import curam.core.sl.entity.struct.CaseNomineeDtls;
-import curam.core.sl.entity.struct.CaseNomineeForCaseDetails;
-import curam.core.sl.entity.struct.CaseNomineeForCaseDetailsList;
 import curam.core.sl.entity.struct.CaseNomineeKey;
-
 import curam.core.struct.BankAccountDtls;
-import curam.core.struct.BankBranchDtls;
-import curam.core.struct.BankDtls;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
@@ -69,11 +59,9 @@ import curam.core.struct.BatchProcessingSkippedRecordList;
 import curam.core.struct.CaseHeaderByStatusKey;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderDtlsList;
-import curam.core.struct.CaseNomineeOverUnderSearchKey;
 import curam.core.struct.CaseRelationshipCaseIDKey;
 import curam.core.struct.CaseRelationshipDtls;
 import curam.core.struct.CaseRelationshipDtlsList;
-import curam.core.struct.CaseStatusDtls;
 import curam.core.struct.Count;
 import curam.core.struct.CurrentCaseStatusKey;
 import curam.core.struct.EffectiveDateReconcilStatusVersionNo;
@@ -84,8 +72,6 @@ import curam.core.struct.FinancialComponentID;
 import curam.core.struct.ILIStatusCodeKey;
 import curam.core.struct.InstructionLineItemDtls;
 import curam.core.struct.InstructionLineItemDtlsList;
-import curam.core.struct.NomineeOverUnderPaymentDtls;
-import curam.core.struct.NomineeOverUnderPaymentDtlsList;
 import curam.core.struct.PIStatusCode;
 import curam.core.struct.PaymentInstrumentDtls;
 import curam.core.struct.PaymentInstrumentDtlsList;
@@ -97,7 +83,6 @@ import curam.evidence.sl.struct.MonthYearDetails;
 import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSABICCODE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
-import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetail;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetailList;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTMsWordDetail;
@@ -219,7 +204,6 @@ public class MOLSAGenerateEFTBatchStream extends
 
 		MOLSAGenerateEFTDetailList bankGenerateEFTDetailList = generateExelForBank(
 				paymentInstrumentDtlsList, generateEFTParam);
-		double totalAmount = bankGenerateEFTDetailList.totalAmount.getValue();
 		
 		Money totalMoney = bankGenerateEFTDetailList.totalAmount;
 		
@@ -471,7 +455,7 @@ public class MOLSAGenerateEFTBatchStream extends
 											CONCERNROLEALTERNATEID.INSURANCENUMBER);
 
 							generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-									.returnConcernRoleName(concernRoleID);
+							.returnAlternateName(concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 							generateEFTDetail.fullname_en = MOLSAParticipantHelper
 									.returnAlternateName(concernRoleID,
 											ALTERNATENAMETYPE.ENGLISH);
@@ -534,7 +518,7 @@ public class MOLSAGenerateEFTBatchStream extends
 							CONCERNROLEALTERNATEID.INSURANCENUMBER);
 
 			generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-					.returnConcernRoleName(instructionLineItemDtls.concernRoleID);
+			.returnAlternateName(instructionLineItemDtls.concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 			generateEFTDetail.fullname_en = MOLSAParticipantHelper
 					.returnAlternateName(instructionLineItemDtls.concernRoleID,
 							ALTERNATENAMETYPE.ENGLISH);
@@ -622,7 +606,7 @@ public class MOLSAGenerateEFTBatchStream extends
 							TransactionInfo.getProgramLocale());
 				}
 				generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-						.returnConcernRoleName(concernRoleID);
+				.returnAlternateName(concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 				generateEFTDetail.fullname_en = MOLSAParticipantHelper
 						.returnAlternateName(concernRoleID,
 								ALTERNATENAMETYPE.ENGLISH);
@@ -808,7 +792,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				}
 
 				generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-						.returnConcernRoleName(concernRoleID);
+				.returnAlternateName(concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 				generateEFTDetail.fullname_en = MOLSAParticipantHelper
 						.returnAlternateName(concernRoleID,
 								ALTERNATENAMETYPE.ENGLISH);
@@ -1065,7 +1049,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				MOLSABPOGENERATEEFT.REMARKS_CONTENT);
 		remarks1.arg(monthYearDetails.monthCode + "-" + monthYearDetails.year);
 		remarks1.arg(new Money(unProcessedTotalAmount)+"");
-		generateEFTDetailList.remarks = remarks1.getMessage();
+		unprocessedGenerateEFTDetailList.remarks = remarks1.getMessage();
 		unprocessedGenerateEFTDetailList.remarks=remarks1.getMessage();
 		
 		MOLSAGenerateEFTHelper.newInstance().generateExelForFinance(
@@ -1111,7 +1095,7 @@ public class MOLSAGenerateEFTBatchStream extends
 							CONCERNROLEALTERNATEID.INSURANCENUMBER);
 
 			generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-					.returnConcernRoleName(paymentInstrumentDtls.concernRoleID);
+			.returnAlternateName(paymentInstrumentDtls.concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 			generateEFTDetail.fullname_en = MOLSAParticipantHelper
 					.returnAlternateName(paymentInstrumentDtls.concernRoleID,
 							ALTERNATENAMETYPE.ENGLISH);

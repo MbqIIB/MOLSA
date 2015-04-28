@@ -1,11 +1,8 @@
 package curam.molsa.util.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,7 +22,6 @@ import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STOnOff;
 
@@ -57,6 +53,8 @@ import curam.util.type.DateTime;
  */
 public class MOLSAGenerateEFTHelper {
   
+	int kFontSize = 14;
+	int kSetTextPostion = 15;
 
   /**
    * Private Constructor
@@ -854,6 +852,7 @@ public class MOLSAGenerateEFTHelper {
       RTL
    }
   
+  
   /**
    * Creates the Work book for creating the MsWord Document.
    * @param generateEFTMsWordDetail MOLSAGenerateEFTMsWordDetail
@@ -862,20 +861,35 @@ public class MOLSAGenerateEFTHelper {
   private XWPFDocument populateMsWord(MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail) {
     XWPFDocument doc = new XWPFDocument();
     
+    XWPFParagraph p00 = doc.createParagraph();
+    setOrientation(p00 , TextOrientation.RTL);
+    p00.setAlignment(ParagraphAlignment.CENTER);
+    XWPFRun r00 = p00.createRun();
+    r00.setTextPosition(kSetTextPostion);
+    r00.setText("");
+    r00.addBreak();
+    
+    XWPFParagraph p01 = doc.createParagraph();
+    setOrientation(p01 , TextOrientation.RTL);
+    p00.setAlignment(ParagraphAlignment.CENTER);
+    XWPFRun r01 = p01.createRun();
+    r01.setTextPosition(kSetTextPostion);
+    r01.setText("");
+    r01.addBreak();
+    
     XWPFParagraph p1 = doc.createParagraph();
     setOrientation(p1 , TextOrientation.RTL);
     p1.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r1 = p1.createRun();
-    r1.setTextPosition(20);    
+    r1.setTextPosition(kSetTextPostion);    
     LocalisableString addLine1 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_TO_ADDRESS_LINE1); 
     LocalisableString addLine1Prefix = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_TO_ADDRESS_LINE1_PREFIX); 
-    r1.setTextPosition(20);
+    r1.setTextPosition(kSetTextPostion);
     r1.setBold(true);
+    r1.setFontSize(kFontSize);
     r1.setText(addLine1.getMessage());
     CTR ctr1 = r1.getCTR();
     ctr1.addNewTab();	
-    ctr1.addNewTab();
-    ctr1.addNewTab();
     ctr1.addNewTab();
     ctr1.addNewTab();
     ctr1.addNewTab();
@@ -886,20 +900,22 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p2 , TextOrientation.RTL);
     p2.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r2 = p2.createRun();
-    r2.setTextPosition(20);    
+    r2.setTextPosition(kSetTextPostion);    
     r2.setBold(true);
+    r2.setFontSize(kFontSize);
     LocalisableString addLine2 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_TO_ADDRESS_LINE2); 
-    r2.setTextPosition(20);
+    r2.setTextPosition(kSetTextPostion);
     r2.setText(addLine2.getMessage());
     
     XWPFParagraph p3 = doc.createParagraph();
     setOrientation(p3 , TextOrientation.RTL);
     p3.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r3 = p3.createRun();
-    r3.setTextPosition(20);    
+    r3.setTextPosition(kSetTextPostion);    
     r3.setBold(true);
+    r3.setFontSize(kFontSize);
     LocalisableString addLine3 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_TO_ADDRESS_LINE3); 
-    r3.setTextPosition(20);
+    r3.setTextPosition(kSetTextPostion);
     r3.setText(addLine3.getMessage());
     r3.addBreak();
     
@@ -907,10 +923,11 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p4 , TextOrientation.RTL);
     p4.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r4 = p4.createRun();
-    r4.setTextPosition(20);   
+    r4.setTextPosition(kSetTextPostion);   
     r4.setBold(true);
+    r4.setFontSize(kFontSize);
     LocalisableString salute = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_SALUTATION); 
-    r4.setTextPosition(20);
+    r4.setTextPosition(kSetTextPostion);
     r4.setText(salute.getMessage());
     r4.addBreak();
     
@@ -919,8 +936,9 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p5 , TextOrientation.RTL);
     p5.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r5 = p5.createRun();
-    r5.setTextPosition(20);    
+    r5.setTextPosition(kSetTextPostion);    
     r5.setBold(true);
+    r5.setFontSize(kFontSize);
     LocalisableString content = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_CONTENT);
     content.arg(generateEFTMsWordDetail.transferAmount);
     content.arg(generateEFTMsWordDetail.forMonth);
@@ -934,43 +952,48 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p6 , TextOrientation.RTL);
     p6.setAlignment(ParagraphAlignment.CENTER);
     XWPFRun r6 = p6.createRun();
-    r6.setTextPosition(20);  
+    r6.setTextPosition(kSetTextPostion);  
     r6.setBold(true);
+    r6.setFontSize(kFontSize);
     LocalisableString saluteEnd = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_SALUTATION_END);   
     r6.setText(saluteEnd.getMessage());
     r6.addBreak();
+    
+    
+    XWPFParagraph p8 = doc.createParagraph();
+    setOrientation(p8 , TextOrientation.RTL);
+    p8.setAlignment(ParagraphAlignment.LEFT);
+    XWPFRun r8 = p8.createRun();
+    r8.setTextPosition(kSetTextPostion);
+    r8.setText("");
+    r8.addBreak();
+    
     
     XWPFParagraph p7 = doc.createParagraph();
     setOrientation(p7, TextOrientation.RTL);
     p7.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r7 = p7.createRun();
-    r7.setTextPosition(20);
+    r7.setTextPosition(kSetTextPostion);
     r7.setBold(true);
+    r7.setFontSize(kFontSize);
     r7.setText(generateEFTMsWordDetail.socialAffairMinisterName);
     CTR ctr7 = r7.getCTR();
     ctr7.addNewTab();	
     ctr7.addNewTab();
     ctr7.addNewTab();	
     ctr7.addNewTab();
-    ctr7.addNewTab();
-    ctr7.addNewTab();
     r7.setText(generateEFTMsWordDetail.securityDirectorName);
-    r7.addBreak();
+   
     
-    XWPFParagraph p8 = doc.createParagraph();
-    setOrientation(p8 , TextOrientation.RTL);
-    p8.setAlignment(ParagraphAlignment.LEFT);
-    XWPFRun r8 = p8.createRun();
-    r8.setTextPosition(20);
-    r8.setText("");
-    r8.addBreak();
+
     
     XWPFParagraph p9 = doc.createParagraph();
     setOrientation(p9 , TextOrientation.RTL);
     p9.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r9 = p9.createRun();
-    r9.setTextPosition(20);    
+    r9.setTextPosition(kSetTextPostion);    
     r9.setBold(true);
+    r9.setFontSize(kFontSize);
     String signature1 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_ONE);
     String signature2 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_TWO);
     r9.setText(signature1);
@@ -994,21 +1017,36 @@ public class MOLSAGenerateEFTHelper {
   private XWPFDocument populateMsWordForMinistry(MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail) {
     XWPFDocument doc = new XWPFDocument();
     
+    XWPFParagraph p00 = doc.createParagraph();
+    setOrientation(p00 , TextOrientation.RTL);
+    p00.setAlignment(ParagraphAlignment.CENTER);
+    XWPFRun r00 = p00.createRun();
+    r00.setTextPosition(kSetTextPostion);
+    r00.setText("");
+    r00.addBreak();
+    
+    XWPFParagraph p01 = doc.createParagraph();
+    setOrientation(p01 , TextOrientation.RTL);
+    p00.setAlignment(ParagraphAlignment.CENTER);
+    XWPFRun r01 = p01.createRun();
+    r01.setTextPosition(kSetTextPostion);
+    r01.setText("");
+    r01.addBreak();
+    
     XWPFParagraph p1 = doc.createParagraph();
     setOrientation(p1 , TextOrientation.RTL);
     p1.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r1 = p1.createRun();
-    r1.setTextPosition(20);    
+    r1.setTextPosition(kSetTextPostion);    
     r1.setBold(true);
+    r1.setFontSize(kFontSize);
     LocalisableString addLine1 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE1); 
     addLine1.arg(Configuration.getProperty(EnvVars.EFT_MINISTRY_LETTER_TO_NAME));
     LocalisableString addLine1Prefix = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE1_PREFIX); 
-    r1.setTextPosition(20);
+    r1.setTextPosition(kSetTextPostion);
     r1.setText(addLine1.getMessage());
     CTR ctr1 = r1.getCTR();
     ctr1.addNewTab();	
-    ctr1.addNewTab();
-    ctr1.addNewTab();
     ctr1.addNewTab();
     ctr1.addNewTab();
     ctr1.addNewTab();
@@ -1018,11 +1056,11 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p2 = doc.createParagraph();
     setOrientation(p2 , TextOrientation.RTL);
     p2.setAlignment(ParagraphAlignment.LEFT);
-    XWPFRun r2 = p2.createRun();
-    r2.setTextPosition(20);    
+    XWPFRun r2 = p2.createRun();   
     r2.setBold(true);
+    r2.setFontSize(kFontSize);
     LocalisableString addLine2 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE2); 
-    r2.setTextPosition(20);
+    r2.setTextPosition(kSetTextPostion);
     r2.setText(addLine2.getMessage());
    
     
@@ -1030,10 +1068,10 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p3 , TextOrientation.RTL);
     p3.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r3 = p3.createRun();
-    r3.setTextPosition(20);    
+    r3.setTextPosition(kSetTextPostion);    
     r3.setBold(true);
+    r3.setFontSize(kFontSize);
     LocalisableString addLine3 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE3); 
-    r3.setTextPosition(20);
     r3.setText(addLine3.getMessage());
    
     
@@ -1041,10 +1079,11 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p4 , TextOrientation.RTL);
     p4.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r4 = p4.createRun();
-    r4.setTextPosition(20);
+    r4.setTextPosition(kSetTextPostion);
     r4.setBold(true);
+    r4.setFontSize(kFontSize);
     LocalisableString addLine4 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE4); 
-    r4.setTextPosition(20);
+    r4.setTextPosition(kSetTextPostion);
     r4.setText(addLine4.getMessage());
     r4.addBreak();
     
@@ -1052,10 +1091,11 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p5 , TextOrientation.RTL);
     p5.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r5 = p5.createRun();
-    r5.setTextPosition(20); 
+    r5.setTextPosition(kSetTextPostion); 
     r5.setBold(true);
+    r5.setFontSize(kFontSize);
     LocalisableString salute = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_SALUTATION); 
-    r5.setTextPosition(20);
+    r5.setTextPosition(kSetTextPostion);    
     r5.setText(salute.getMessage());
     r5.addBreak();
     
@@ -1063,11 +1103,12 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p6 , TextOrientation.RTL);
     p6.setAlignment(ParagraphAlignment.CENTER);
     XWPFRun r6 = p6.createRun();
-    r6.setTextPosition(20);   
+    r6.setTextPosition(kSetTextPostion);   
     r6.setBold(true);
+    r6.setFontSize(kFontSize);
     LocalisableString subject = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_SUBJECT); 
     subject.arg(generateEFTMsWordDetail.forMonth); 
-    r6.setTextPosition(20);
+    r6.setTextPosition(kSetTextPostion);
     r6.setText(subject.getMessage());
     r6.addBreak();
 
@@ -1075,25 +1116,30 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p7 , TextOrientation.RTL);
     p7.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r7 = p7.createRun();
-    r7.setTextPosition(20);
+    r7.setTextPosition(kSetTextPostion);
     r7.setBold(true);
+    r7.setFontSize(kFontSize);
     LocalisableString monthDetails = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_MONTH_DETAILS); 
     monthDetails.arg(generateEFTMsWordDetail.forMonth); 
-    r7.setTextPosition(20);
-    r7.setText(monthDetails.getMessage());
+    r7.setTextPosition(kSetTextPostion);
+    LocalisableString amountDetails = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_AMOUNT_DETAILS); 
+    amountDetails.arg(generateEFTMsWordDetail.transferAmount+" /-");  
+    r7.setText(monthDetails.getMessage()+" "+amountDetails.getMessage());
     r7.addBreak();
     
+    /*
     XWPFParagraph p8 = doc.createParagraph();
     setOrientation(p8 , TextOrientation.RTL);
     p8.setAlignment(ParagraphAlignment.CENTER);
     XWPFRun r8 = p8.createRun();
-    r8.setTextPosition(20);  
+    r8.setTextPosition(kSetTextPostion);  
     r8.setBold(true);
+    r8.setFontSize(kFontSize);
     LocalisableString amountDetails = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_AMOUNT_DETAILS); 
     amountDetails.arg(generateEFTMsWordDetail.transferAmount+" /-");  
-    r8.setTextPosition(20);
+    r8.setTextPosition(kSetTextPostion);
     r8.setText(amountDetails.getMessage());
-    
+    */
     
     if(Configuration
 			.getBooleanProperty(EnvVars.EFT_PRINT_AMOUNT_IN_WORDS)) {
@@ -1101,12 +1147,13 @@ public class MOLSAGenerateEFTHelper {
 	    setOrientation(p9 , TextOrientation.RTL);
 	    p9.setAlignment(ParagraphAlignment.CENTER);
 	    XWPFRun r9 = p9.createRun();
-	    r9.setTextPosition(20); 
+	    r9.setTextPosition(kSetTextPostion); 
 	    r9.setBold(true);
+	    r9.setFontSize(kFontSize);
 	    LocalisableString amountInWord = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_AMOUNT_IN_WORDS); 
 	    BigDecimal bigDecimal = new BigDecimal(generateEFTMsWordDetail.transferAmountMoney.getValue());
 	    amountInWord.arg(" "+MOLSANumberToArabic.convertToArabic(bigDecimal,"QAR")+" "); 
-	    r9.setTextPosition(20);
+	    r9.setTextPosition(kSetTextPostion);
 	    r9.isBold();
 	    r9.setText(amountInWord.getMessage());
     } else {
@@ -1114,9 +1161,9 @@ public class MOLSAGenerateEFTHelper {
  	    setOrientation(p9 , TextOrientation.RTL);
  	    p9.setAlignment(ParagraphAlignment.CENTER);
  	    XWPFRun r9 = p9.createRun();
- 	    r9.setTextPosition(20); 
- 	    r9.setBold(true);
- 	    r9.setTextPosition(20);
+ 	    r9.setTextPosition(kSetTextPostion); 
+ 	    r9.setBold(true);	    
+ 	    r9.setTextPosition(kSetTextPostion);
  	    r9.isBold();
  	    r9.setText("");
     }
@@ -1125,8 +1172,9 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p10 , TextOrientation.RTL);
     p10.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r10 = p10.createRun();
-    r10.setTextPosition(20);  
+    r10.setTextPosition(kSetTextPostion);  
     r10.setBold(true);
+    r10.setFontSize(kFontSize);
     LocalisableString content = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_CONTENT);
     content.arg(generateEFTMsWordDetail.compAccount);    
     r10.setText(content.getMessage());
@@ -1137,43 +1185,46 @@ public class MOLSAGenerateEFTHelper {
     setOrientation(p11 , TextOrientation.RTL);
     p11.setAlignment(ParagraphAlignment.CENTER);
     XWPFRun r11 = p11.createRun();
-    r11.setTextPosition(20); 
+    r11.setTextPosition(kSetTextPostion); 
     r11.setBold(true);
+    r11.setFontSize(kFontSize);
     LocalisableString saluteEnd = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_SALUTATION_END);   
     r11.setText(saluteEnd.getMessage());
     r11.addBreak();
+    
+    
+    XWPFParagraph p13 = doc.createParagraph();
+    setOrientation(p13 , TextOrientation.RTL);
+    p13.setAlignment(ParagraphAlignment.CENTER);
+    XWPFRun r13 = p13.createRun();
+    r13.setTextPosition(kSetTextPostion);
+    r13.setText("");
+    r13.addBreak();
     
     XWPFParagraph p12 = doc.createParagraph();
     setOrientation(p12, TextOrientation.RTL);
     p12.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r12 = p12.createRun();
-    r12.setTextPosition(20);
+    r12.setTextPosition(kSetTextPostion);
     r12.setBold(true);
+    r12.setFontSize(kFontSize);
     r12.setText(generateEFTMsWordDetail.socialAffairMinisterName);
     CTR ctr12 = r12.getCTR();
     ctr12.addNewTab();	
     ctr12.addNewTab();
     ctr12.addNewTab();	
     ctr12.addNewTab();
-    ctr12.addNewTab();
-    ctr12.addNewTab();
     r12.setText(generateEFTMsWordDetail.securityDirectorName); 
-    r12.addBreak();
-    
-    XWPFParagraph p13 = doc.createParagraph();
-    setOrientation(p13 , TextOrientation.RTL);
-    p13.setAlignment(ParagraphAlignment.CENTER);
-    XWPFRun r13 = p13.createRun();
-    r13.setTextPosition(20);
-    r13.setText("");
-    r13.addBreak();
+
+   
     
     XWPFParagraph p14 = doc.createParagraph();
     setOrientation(p14 , TextOrientation.RTL);
     p14.setAlignment(ParagraphAlignment.LEFT);
     XWPFRun r14 = p14.createRun();
-    r14.setTextPosition(20);    
+    r14.setTextPosition(kSetTextPostion);    
     r14.setBold(true);
+    r14.setFontSize(kFontSize);
     String signature1 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_ONE);
     String signature2 = Configuration.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_TITLE_TWO);
     r14.setText(signature1);
@@ -1183,7 +1234,7 @@ public class MOLSAGenerateEFTHelper {
     ctr14.addNewTab();	
     ctr14.addNewTab();
     r14.setText(signature2);
-    r14.addBreak();
+    
     
     return doc;
   }
