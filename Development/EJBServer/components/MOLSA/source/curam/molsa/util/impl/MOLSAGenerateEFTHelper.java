@@ -982,6 +982,7 @@ public class MOLSAGenerateEFTHelper {
     ctr7.addNewTab();
     ctr7.addNewTab();	
     ctr7.addNewTab();
+    ctr7.addNewTab();
     r7.setText(generateEFTMsWordDetail.securityDirectorName);
    
     
@@ -1001,6 +1002,7 @@ public class MOLSAGenerateEFTHelper {
     ctr9.addNewTab();	
     ctr9.addNewTab();
     ctr9.addNewTab();	
+    ctr9.addNewTab();
     ctr9.addNewTab();
     r9.setText(signature2);
     r9.addBreak();
@@ -1214,6 +1216,7 @@ public class MOLSAGenerateEFTHelper {
     ctr12.addNewTab();
     ctr12.addNewTab();	
     ctr12.addNewTab();
+    ctr12.addNewTab();
     r12.setText(generateEFTMsWordDetail.securityDirectorName); 
 
    
@@ -1232,6 +1235,7 @@ public class MOLSAGenerateEFTHelper {
     ctr14.addNewTab();	
     ctr14.addNewTab();
     ctr14.addNewTab();	
+    ctr14.addNewTab();
     ctr14.addNewTab();
     r14.setText(signature2);
     
