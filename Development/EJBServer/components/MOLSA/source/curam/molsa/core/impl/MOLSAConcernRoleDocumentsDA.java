@@ -5,14 +5,25 @@ import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationKey;
 import curam.molsa.core.struct.MOLSAProFormaDocumentData;
 import curam.molsa.message.MOLSABPOTRAINING;
 import curam.molsa.util.impl.MOLSACommunicationHelper;
+import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASEUNSUSPENDREASON;
+import curam.codetable.RECORDSTATUS;
+import curam.core.fact.AlternateNameFactory;
 import curam.core.fact.BankBranchFactory;
 import curam.core.fact.LocationFactory;
+import curam.core.intf.AlternateName;
 import curam.core.intf.BankBranch;
 import curam.core.intf.Location;
 import curam.core.sl.struct.ProFormaReturnDocDetails;
 import curam.core.struct.AddressKey;
+import curam.core.struct.AlternateNameDtls;
+import curam.core.struct.AlternateNameDtlsList;
+import curam.core.struct.AlternateNameKey;
+import curam.core.struct.AlternateNameReadMultiKey;
+import curam.core.struct.AlternateNameReadMultiStatusStruct;
+import curam.core.struct.AlternateNameStruct;
+import curam.core.struct.AlternateNameStructList;
 import curam.core.struct.BankBranchKey;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderKey;
@@ -32,12 +43,15 @@ import curam.core.struct.LocationDtls;
 import curam.core.struct.LocationKey;
 import curam.core.struct.LocationKeyRef;
 import curam.core.struct.LocationNameStructRef;
+import curam.core.struct.NameReadMultiDtls;
+import curam.core.struct.NameReadMultiDtlsList;
 import curam.core.struct.OtherAddressData;
 import curam.core.struct.ProFormaDocumentData;
 import curam.core.struct.ReadCaseClosureKey;
 import curam.core.struct.ReadParticipantRoleIDDetails;
 import curam.message.BPOCOMMUNICATION;
 import curam.message.GENERALCASE;
+import curam.supervisor.facade.struct.caseID;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
@@ -167,6 +181,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		molsaproFormaDocumentData.caseReferenceID=concernRoleCommunicationDtls.caseReferenceID;
 		molsaproFormaDocumentData.cardExpiryDate=concernRoleCommunicationDtls.cardExpiryDate;
 		molsaproFormaDocumentData.iban=concernRoleCommunicationDtls.IBAN;
+		molsaproFormaDocumentData.caseWorkerName=concernRoleCommunicationDtls.caseWorkerName;
 
 		//Getting the location name from location id 
 
@@ -191,8 +206,12 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		}
 
 		//New Xsl validation by document ID
+
 		if((details.documentID==45001)||(details.documentID==45002)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
 				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)||(details.documentID==45010)){
+			if(!(MOLSACommunicationHelper.getFullName(key.concernRoleID).equals(""))){
+				proFormaDocumentData.concernRoleName=MOLSACommunicationHelper.getFullName(key.concernRoleID);
+			}
 			//call generateAndPreviewXMLDocument method with new struct for the new documents with below ids
 			proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
 		}else{

@@ -19,6 +19,7 @@ import curam.codetable.impl.CMISNAMINGTYPEEntry;
 import curam.codetable.impl.CMSLINKRELATEDTYPEEntry;
 import curam.core.facade.struct.FileNameAndDataDtls;
 import curam.core.fact.AddressFactory;
+import curam.core.fact.AlternateNameFactory;
 import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.ConcernRoleAddressFactory;
 import curam.core.fact.ConcernRoleCommunicationFactory;
@@ -33,6 +34,7 @@ import curam.core.impl.CuramConst;
 import curam.core.impl.DataBasedSecurity;
 import curam.core.impl.SecurityImplementationFactory;
 import curam.core.intf.Address;
+import curam.core.intf.AlternateName;
 import curam.core.intf.CaseHeader;
 import curam.core.intf.ConcernRole;
 import curam.core.intf.ConcernRoleAddress;
@@ -63,6 +65,8 @@ import curam.core.sl.struct.ValidatePrimaryCaseParticipantDetails;
 import curam.core.struct.AddressDetails;
 import curam.core.struct.AddressDtls;
 import curam.core.struct.AddressKey;
+import curam.core.struct.AlternateNameDtls;
+import curam.core.struct.AlternateNameKey;
 import curam.core.struct.CaseHeaderKey;
 import curam.core.struct.CaseIDConcernRoleID;
 import curam.core.struct.CaseKey;
@@ -885,7 +889,10 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		concernRoleCommunicationDtls.emailAddressID = contactKey.emailAddressID;
 		concernRoleCommunicationDtls.addressID = contactKey.addressID;
 		concernRoleCommunicationDtls.phoneNumberID = contactKey.phoneNumberID;
-
+		
+		
+		
+	
 		// if attachment for a communication is present,
 		// set the attachment indicator
 		if (commDetails.newAttachmentName.length() != 0) {
@@ -926,8 +933,9 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_BANK_DETAILS_FOR_MOLSA_CARD_EMPTY);
 			}
 		}
-
-
+		//get the casewoker name
+		
+		molsaCommDtls.caseWorkerName=MOLSACommunicationHelper.getCaseWorkerName();
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
 
