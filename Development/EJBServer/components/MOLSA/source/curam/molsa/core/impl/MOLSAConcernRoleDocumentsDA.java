@@ -182,6 +182,9 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		molsaproFormaDocumentData.cardExpiryDate=concernRoleCommunicationDtls.cardExpiryDate;
 		molsaproFormaDocumentData.iban=concernRoleCommunicationDtls.IBAN;
 		molsaproFormaDocumentData.caseWorkerName=concernRoleCommunicationDtls.caseWorkerName;
+		molsaproFormaDocumentData.mainProductName=concernRoleCommunicationDtls.mainProductName;
+		molsaproFormaDocumentData.mainProductAmount=concernRoleCommunicationDtls.mainProductAmount;
+		molsaproFormaDocumentData.maidAssistanceAmount=concernRoleCommunicationDtls.maidAssistanceAmount;
 
 		//Getting the location name from location id 
 

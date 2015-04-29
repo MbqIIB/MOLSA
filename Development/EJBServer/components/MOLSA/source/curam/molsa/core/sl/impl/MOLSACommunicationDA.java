@@ -936,6 +936,9 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		//get the casewoker name
 		
 		molsaCommDtls.caseWorkerName=MOLSACommunicationHelper.getCaseWorkerName();
+		molsaCommDtls.mainProductName=MOLSACommunicationHelper.getMainProductName();
+		molsaCommDtls.mainProductAmount=MOLSACommunicationHelper.getMainProductAmount();
+		molsaCommDtls.maidAssistanceAmount=MOLSACommunicationHelper.getMaidAssistanceAmount();		
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
 

@@ -36,6 +36,7 @@ import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.type.Money;
 import curam.util.type.NotFoundIndicator;
 
 
@@ -200,5 +201,21 @@ public class MOLSACommunicationHelper {
 		userfullname=userFullname.fullname;
 		return userfullname;
 	}
+	public static String getMainProductName() throws AppException,
+	InformationalException {
+		String productName="Test Product Name";
+		return productName;
+	}
+	public static Money getMainProductAmount() throws AppException,
+	InformationalException {
+		Money money =new Money(0);
+		return money;
+	}
+	public static Money getMaidAssistanceAmount() throws AppException,
+	InformationalException {
+		Money money =new Money(0);
+		return money;
+	}
+
 
 }
