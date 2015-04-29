@@ -333,8 +333,7 @@ public class MOLSAInformationProviderBatchStream extends
 		} catch (Exception e) {
 			batchProcessingSkippedRecord.recordID = batchProcessingID.recordID;
 			batchProcessingSkippedRecord.errorMessage = e.getMessage();
-			Trace.kTopLevelLogger.info("********  Processing  Failed ==> " + batchProcessingID.recordID );
-			e.printStackTrace();
+			Trace.kTopLevelLogger.info("********  Processing  Failed ==> " + batchProcessingID.recordID + " " + e.getMessage());
 		}
 		return null;
 	}
@@ -382,8 +381,10 @@ public class MOLSAInformationProviderBatchStream extends
 
 		// parsing date string using new format
 		ParsePosition pos = new ParsePosition(0);
-		java.util.Date dateFromString = newFormatter.parse(
-				dateStringInNewFormat, pos);
+		//java.util.Date dateFromString = newFormatter.parse(
+				//dateStringInNewFormat, pos);
+		java.util.Date dateFromString= informationProviderTmpDtls.receivedDate
+		.addDays(-1).getCalendar().getTime();
 
 		// Now you have a date object and you can convert it to the original
 		// format
@@ -417,9 +418,9 @@ public class MOLSAInformationProviderBatchStream extends
 
 			// parsing date string using new format
 			ParsePosition posNew = new ParsePosition(0);
-			java.util.Date dateFromStringNew = newFormatter.parse(
-					dateStringInNewFormatNew, posNew);
-
+			//java.util.Date dateFromStringNew = newFormatter.parse(
+					//dateStringInNewFormatNew, posNew);
+			java.util.Date dateFromStringNew =informationProviderTmpDtls.receivedDate.getCalendar().getTime();
 			AppException message1 = new AppException(
 					MOLSANOTIFICATION.MARITAL_COMMENTS);
 			message1.arg(informationProviderTmpDtls.eventDate.toString());
@@ -486,8 +487,10 @@ public class MOLSAInformationProviderBatchStream extends
 
 		// parsing date string using new format
 		ParsePosition pos = new ParsePosition(0);
-		java.util.Date dateFromString = newFormatter.parse(
-				dateStringInNewFormat, pos);
+		//java.util.Date dateFromString = newFormatter.parse(
+				//dateStringInNewFormat, pos);
+		java.util.Date dateFromString = informationProviderTmpDtls.receivedDate
+		.addDays(-1).getCalendar().getTime();
 		// Now you have a date object and you can convert it to the original
 		// format
 		String dateStringInOriginalFormat = originalFormatter
@@ -521,9 +524,9 @@ public class MOLSAInformationProviderBatchStream extends
 
 			// parsing date string using new format
 			ParsePosition posNew = new ParsePosition(0);
-			java.util.Date dateFromStringNew = newFormatter.parse(
-					dateStringInNewFormatNew, posNew);
-
+			//java.util.Date dateFromStringNew = newFormatter.parse(
+					//dateStringInNewFormatNew, posNew);
+			java.util.Date dateFromStringNew = informationProviderTmpDtls.receivedDate.getCalendar().getTime();
 			AppException message1 = new AppException(
 					MOLSANOTIFICATION.EDUCATION_COMMENTS);
 
@@ -642,8 +645,11 @@ public class MOLSAInformationProviderBatchStream extends
 
 			// parsing date string using new format
 			ParsePosition posNew = new ParsePosition(0);
-			java.util.Date dateFromStringNew = newFormatter.parse(
-					dateStringInNewFormatNew, posNew);
+			
+			//java.util.Date dateFromStringNew = newFormatter.parse(
+					//dateStringInNewFormatNew, posNew);
+			
+			java.util.Date dateFromStringNew = informationProviderTmpDtls.receivedDate.getCalendar().getTime();
 
 			// Now you have a date object and you can convert it to the original
 			// format
@@ -691,10 +697,12 @@ public class MOLSAInformationProviderBatchStream extends
 		  dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
 		  dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
 		  dynamicEvidenceDetails.getDescriptor().receivedDate = Date.getCurrentDate();
+		  
 		  CpDetailsAdaptor cpDetails = new CpDetailsAdaptor();
 	    cpDetails.setCaseParticipantRoleID(caseParticipantRole.getID());
 	    cpDetails.setParticipantRoleID(caseParticipantRole.getConcernRole().getID());
 	    dynamicEvidenceDetails.addRelCp(MOLSADatastoreConst.kParticipant, cpDetails);
+	   
 			evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
 			return true;
 			
@@ -740,9 +748,9 @@ public class MOLSAInformationProviderBatchStream extends
 
 		// parsing date string using new format
 		ParsePosition pos = new ParsePosition(0);
-		java.util.Date dateFromString = newFormatter.parse(
-				dateStringInNewFormat, pos);
-
+		//java.util.Date dateFromString = newFormatter.parse(
+			//	dateStringInNewFormat, pos);
+		java.util.Date dateFromString = informationProviderTmpDtls.eventDate.getCalendar().getTime();
 		String dateCompare = informationProviderTmpDtls.eventDate.addDays(-1)
 				.toString();
 		java.util.Date ipDate = new SimpleDateFormat(propertyDateFormat)
