@@ -11,32 +11,47 @@ import org.apache.log4j.Logger;
 
 import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.BATCHPROCESSNAME;
+import curam.codetable.CASERELATIONSHIPREASONCODE;
+import curam.codetable.CASERELATIONSHIPTYPECODE;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CASETYPECODE;
 import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.FINCOMPONENTSTATUS;
 import curam.codetable.FINCOMPONENTTYPE;
+import curam.codetable.ILISTATUS;
 import curam.codetable.PMTRECONCILIATIONSTATUS;
+import curam.codetable.PRODUCTTYPE;
+import curam.codetable.RECORDSTATUS;
+import curam.core.facade.fact.ParticipantFactory;
+import curam.core.facade.intf.Participant;
+import curam.core.facade.struct.ListOverUnderPaymentKey;
+import curam.core.facade.struct.ListParticipantFinancials1;
+import curam.core.facade.struct.ListParticipantFinancialsKey;
+import curam.core.facade.struct.ParticipantFinancials1;
+import curam.core.facade.struct.ReassessmentResultDetails;
+import curam.core.facade.struct.ReassessmentResultDetailsList;
 import curam.core.fact.CaseHeaderFactory;
+import curam.core.fact.CaseRelationshipFactory;
 import curam.core.fact.CaseStatusFactory;
 import curam.core.fact.FinancialComponentFactory;
 import curam.core.fact.InstructionLineItemFactory;
 import curam.core.fact.PaymentInstrumentFactory;
+import curam.core.fact.ProductDeliveryFactory;
 import curam.core.impl.BatchStreamHelper;
 import curam.core.impl.EnvVars;
 import curam.core.impl.SecurityImplementationFactory;
 import curam.core.intf.CaseHeader;
+import curam.core.intf.CaseRelationship;
 import curam.core.intf.CaseStatus;
 import curam.core.intf.FinancialComponent;
 import curam.core.intf.InstructionLineItem;
 import curam.core.intf.PaymentInstrument;
+import curam.core.intf.ProductDelivery;
 import curam.core.sl.entity.fact.CaseNomineeFactory;
 import curam.core.sl.entity.intf.CaseNominee;
 import curam.core.sl.entity.struct.CaseNomineeDtls;
 import curam.core.sl.entity.struct.CaseNomineeKey;
 import curam.core.struct.BankAccountDtls;
-import curam.core.struct.BankBranchDtls;
-import curam.core.struct.BankDtls;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
@@ -44,7 +59,9 @@ import curam.core.struct.BatchProcessingSkippedRecordList;
 import curam.core.struct.CaseHeaderByStatusKey;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.CaseHeaderDtlsList;
-import curam.core.struct.CaseStatusDtls;
+import curam.core.struct.CaseRelationshipCaseIDKey;
+import curam.core.struct.CaseRelationshipDtls;
+import curam.core.struct.CaseRelationshipDtlsList;
 import curam.core.struct.Count;
 import curam.core.struct.CurrentCaseStatusKey;
 import curam.core.struct.EffectiveDateReconcilStatusVersionNo;
@@ -52,16 +69,20 @@ import curam.core.struct.FCstatusCodeCaseID;
 import curam.core.struct.FinancialComponentDtls;
 import curam.core.struct.FinancialComponentDtlsList;
 import curam.core.struct.FinancialComponentID;
+import curam.core.struct.ILIStatusCodeKey;
+import curam.core.struct.InstructionLineItemDtls;
+import curam.core.struct.InstructionLineItemDtlsList;
 import curam.core.struct.PIStatusCode;
 import curam.core.struct.PaymentInstrumentDtls;
 import curam.core.struct.PaymentInstrumentDtlsList;
 import curam.core.struct.PaymentInstrumentKey;
+import curam.core.struct.ProductDeliveryDtls;
+import curam.core.struct.ProductDeliveryKey;
 import curam.dynamicevidence.util.impl.DateUtil;
 import curam.evidence.sl.struct.MonthYearDetails;
 import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSABICCODE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
-import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetail;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTDetailList;
 import curam.molsa.eft.batch.struct.MOLSAGenerateEFTMsWordDetail;
@@ -183,15 +204,18 @@ public class MOLSAGenerateEFTBatchStream extends
 
 		MOLSAGenerateEFTDetailList bankGenerateEFTDetailList = generateExelForBank(
 				paymentInstrumentDtlsList, generateEFTParam);
-		double totalAmount = bankGenerateEFTDetailList.totalAmount.getValue();
+		
 		Money totalMoney = bankGenerateEFTDetailList.totalAmount;
+		
 		generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
 		generateMsWord(totalMoney);
+		generateMsWordForMinistry(totalMoney);
 		updatePaymentInstrumentStatus(paymentInstrumentDtlsList);
 
 		return batchProcessingSkippedRecord;
 	}
 
+	
 	/**
 	 * Populate the MsWord struct details.
 	 * 
@@ -231,10 +255,58 @@ public class MOLSAGenerateEFTBatchStream extends
 		generateEFTMsWordDetail.forMonth = monthYearDetails.monthCode + "-"
 				+ monthYearDetails.year;
 		generateEFTMsWordDetail.transferAmount = totalAmount + " /- ";
-
+		generateEFTMsWordDetail.transferAmountMoney=totalAmount;
+		
 		MOLSAGenerateEFTHelper.newInstance().generateMsWord(
 				generateEFTMsWordDetail,
 				MOLSAGenerateEFTHelper.getMsWordName(monthYearDetails));
+
+	}
+	
+	/**
+	 * Populate the MsWord struct details.
+	 * 
+	 * @param totalAmount
+	 *            double
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General ExceptionList
+	 */
+	private void generateMsWordForMinistry(Money totalAmount) throws AppException,
+			InformationalException {
+
+		MOLSAGenerateEFTMsWordDetail generateEFTMsWordDetail = new MOLSAGenerateEFTMsWordDetail();
+		String compBankAccountID = Configuration
+				.getProperty(EnvVars.EFT_BANKACCOUNTID);
+				
+		generateEFTMsWordDetail.compAccount = Configuration
+    .getProperty(EnvVars.EFT_COMPANY_ACCOUNT_NUMBER);
+			//CodeTable.getOneItem(MOLSABICCODE.TABLENAME, 
+				//bankAccountDtls.bic, TransactionInfo.getProgramLocale());
+		generateEFTMsWordDetail.socialAffairMinisterName = Configuration
+				.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_NAME_ONE);
+		generateEFTMsWordDetail.securityDirectorName = Configuration
+				.getProperty(EnvVars.EFT_MSWORD_SIGNATURE_NAME_TWO);
+
+		String dayOfMonth = Configuration
+				.getProperty(EnvVars.EFT_FINANCIAL_DAY);
+		MonthYearDetails monthYearDetails = MOLSAGenerateEFTHelper
+				.getMonthYearDetail(Date.getCurrentDate());
+		Date dueDate = DateUtil.getISODate(monthYearDetails.year
+				+ monthYearDetails.monthCode + dayOfMonth);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Configuration
+				.getProperty(EnvVars.EFT_DATE_FORMAT));
+		generateEFTMsWordDetail.dueDate = dateFormat.format(dueDate.getCalendar().getTime());
+		
+		generateEFTMsWordDetail.forMonth = monthYearDetails.monthCode + "-"
+				+ monthYearDetails.year;
+		generateEFTMsWordDetail.transferAmount = totalAmount+"";
+		generateEFTMsWordDetail.transferAmountMoney=totalAmount;
+
+		MOLSAGenerateEFTHelper.newInstance().generateMsWordForMinistry(
+				generateEFTMsWordDetail,
+				MOLSAGenerateEFTHelper.getMinistryMsWordName(monthYearDetails));
 
 	}
 
@@ -291,6 +363,173 @@ public class MOLSAGenerateEFTBatchStream extends
 		return financialComponentDtlsList;
 	}
 	
+	/**
+	 * Return the UnderPayment Case Details to the output struct.
+	 * 
+	 * @return List<MOLSAGenerateEFTDetail>
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General ExceptionList
+	 */
+	private List<MOLSAGenerateEFTDetail> getOpenAndSubmittedUnderPaymentCaseDetails()
+			throws AppException, InformationalException {
+		List<MOLSAGenerateEFTDetail> generateEFTDetailList = new ArrayList<MOLSAGenerateEFTDetail>();
+		MOLSAGenerateEFTDetail generateEFTDetail;
+
+		// Suspended Cases Amount
+		CaseHeader caseHeaderObj = CaseHeaderFactory.newInstance();
+		CaseHeaderByStatusKey caseHeaderByStatusKey = new CaseHeaderByStatusKey();
+		caseHeaderByStatusKey.statusCode = CASESTATUS.OPEN;
+		CaseHeaderDtlsList caseHeaderDtlsOpenList = caseHeaderObj
+				.searchByStatusCode(caseHeaderByStatusKey);
+		caseHeaderByStatusKey.statusCode = CASESTATUS.COMPLETED;
+		CaseHeaderDtlsList caseHeaderDtlsSubmittedList = caseHeaderObj
+				.searchByStatusCode(caseHeaderByStatusKey);
+		CaseHeaderDtlsList caseHeaderDtlsList = new CaseHeaderDtlsList();
+		CaseHeaderDtlsList caseHeaderDtlsListBeforeFilter = new CaseHeaderDtlsList();
+		caseHeaderDtlsListBeforeFilter.dtls.addAll(caseHeaderDtlsOpenList.dtls);
+		caseHeaderDtlsListBeforeFilter.dtls
+				.addAll(caseHeaderDtlsSubmittedList.dtls);
+		caseHeaderDtlsList = filterProductDelivery(caseHeaderDtlsListBeforeFilter);
+		ProductDelivery productDeliveryObj = ProductDeliveryFactory
+				.newInstance();
+		ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
+		ProductDeliveryDtls productDeliveryDtls;
+		CaseHeaderDtlsList caseHeaderDtlsUnderPaymentList = new CaseHeaderDtlsList();
+		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsList.dtls.items()) {
+			productDeliveryKey.caseID = caseHeaderDtls.caseID;
+			productDeliveryDtls = productDeliveryObj.read(productDeliveryKey);
+			if (productDeliveryDtls.productType
+					.equals(PRODUCTTYPE.PAYMENTCORRECTION)) {
+				caseHeaderDtlsUnderPaymentList.dtls.addRef(caseHeaderDtls);
+			}
+		}
+
+		CaseNominee caseNomineeObj = CaseNomineeFactory.newInstance();
+		CaseRelationship caseRelationShipObj = CaseRelationshipFactory
+				.newInstance();
+		CaseRelationshipCaseIDKey caseRelationshipCaseIDKey = new CaseRelationshipCaseIDKey();
+
+		curam.core.facade.intf.ProductDelivery productDeliveryFacadeObj = curam.core.facade.fact.ProductDeliveryFactory
+				.newInstance();
+		ListOverUnderPaymentKey listOverUnderPaymentKey = new ListOverUnderPaymentKey();
+		CaseNomineeKey caseNomineeKey = new CaseNomineeKey();
+		CaseNomineeDtls caseNomineeDtls;
+
+		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsUnderPaymentList.dtls
+				.items()) {
+
+			caseRelationshipCaseIDKey.caseID = caseHeaderDtls.caseID;
+			CaseRelationshipDtlsList caseRelationshipDtlsList = caseRelationShipObj
+					.searchByCaseID(caseRelationshipCaseIDKey);
+			for (CaseRelationshipDtls caseRelationshipDtls : caseRelationshipDtlsList.dtls
+					.items()) {
+				if (caseRelationshipDtls.typeCode
+						.equals(CASERELATIONSHIPTYPECODE.PRODUCTPRODUCT)
+						&& caseRelationshipDtls.reasonCode
+								.equals(CASERELATIONSHIPREASONCODE.PAYMENTCORRECTIONCASE)
+						&& caseRelationshipDtls.statusCode
+								.equals(RECORDSTATUS.NORMAL)) {
+					listOverUnderPaymentKey.getAllOverUnderPaymentsIn.caseID = caseRelationshipDtls.relatedCaseID;
+					ReassessmentResultDetailsList reassessmentResultDetailsList = productDeliveryFacadeObj
+							.listReassessmentResults(listOverUnderPaymentKey);
+					for (ReassessmentResultDetails reassessmentResultDetails : reassessmentResultDetailsList.dtlsList
+							.items()) {
+						if (reassessmentResultDetails.overUnderPaymentCaseID == caseHeaderDtls.caseID) {
+
+							generateEFTDetail = new MOLSAGenerateEFTDetail();
+							generateEFTDetail.isSuspended = true;
+							generateEFTDetail.deptCode = Configuration
+									.getProperty(EnvVars.EFT_DEPT_CODE);
+
+							caseNomineeKey.caseNomineeID = reassessmentResultDetails.caseNomineeID;
+							caseNomineeDtls = caseNomineeObj
+									.read(caseNomineeKey);
+							long concernRoleID = MOLSAParticipantHelper
+									.returnConcernRoleIDFromCaseParticipantRoleID(caseNomineeDtls.caseParticipantRoleID);
+
+							generateEFTDetail.staffNumber = MOLSAParticipantHelper
+									.returnConcernRoleAlternateID(
+											concernRoleID,
+											CONCERNROLEALTERNATEID.INSURANCENUMBER);
+
+							generateEFTDetail.fullname_ar = MOLSAParticipantHelper
+							.returnAlternateName(concernRoleID, ALTERNATENAMETYPE.REGISTERED);
+							generateEFTDetail.fullname_en = MOLSAParticipantHelper
+									.returnAlternateName(concernRoleID,
+											ALTERNATENAMETYPE.ENGLISH);
+							PaymentInstrumentDtls paymentInstrumentDtls = returnLatestPaymentDetails(concernRoleID);
+							if(paymentInstrumentDtls !=null) {
+								BankAccountDtls bankAccountDtls = MOLSAFinancialHelper
+										.returnBankAccountDetails(paymentInstrumentDtls.bankAccountID);
+								generateEFTDetail.accountNumber = bankAccountDtls.iban;
+								generateEFTDetail.bankSwift = CodeTable.getOneItem(
+										MOLSABICCODE.TABLENAME,
+										bankAccountDtls.bic,
+										TransactionInfo.getProgramLocale());
+							}
+							generateEFTDetail.currencyCode = Configuration
+									.getProperty(EnvVars.EFT_CURRENCY_CODE);
+							generateEFTDetail.amount = reassessmentResultDetails.amount;
+							generateEFTDetailList.add(generateEFTDetail);
+						}
+					}
+
+				}
+
+			}
+
+		}
+
+		return generateEFTDetailList;
+	}
+	
+	
+	/**
+	 * Return the UnProcssed ILI Details to the output struct.
+	 * 
+	 * @return List<MOLSAGenerateEFTDetail>
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General ExceptionList
+	 */
+	private List<MOLSAGenerateEFTDetail> getUnProcessedAmountDetails()
+			throws AppException, InformationalException {
+		List<MOLSAGenerateEFTDetail> generateEFTDetailList = new ArrayList<MOLSAGenerateEFTDetail>();
+		MOLSAGenerateEFTDetail generateEFTDetail;
+
+		InstructionLineItem instructionLineItemObj = InstructionLineItemFactory
+				.newInstance();
+		ILIStatusCodeKey iliStatusCodeKey = new ILIStatusCodeKey();
+		iliStatusCodeKey.statusCode = ILISTATUS.UNPROCESSED;
+		InstructionLineItemDtlsList instructionLineItemDtlsList = instructionLineItemObj
+				.searchByStatusCode(iliStatusCodeKey);
+		for (InstructionLineItemDtls instructionLineItemDtls : instructionLineItemDtlsList.dtls
+				.items()) {
+			generateEFTDetail = new MOLSAGenerateEFTDetail();
+			generateEFTDetail.deptCode = Configuration
+					.getProperty(EnvVars.EFT_DEPT_CODE);
+
+			generateEFTDetail.staffNumber = MOLSAParticipantHelper
+					.returnConcernRoleAlternateID(
+							instructionLineItemDtls.concernRoleID,
+							CONCERNROLEALTERNATEID.INSURANCENUMBER);
+
+			generateEFTDetail.fullname_ar = MOLSAParticipantHelper
+			.returnAlternateName(instructionLineItemDtls.concernRoleID, ALTERNATENAMETYPE.REGISTERED);
+			generateEFTDetail.fullname_en = MOLSAParticipantHelper
+					.returnAlternateName(instructionLineItemDtls.concernRoleID,
+							ALTERNATENAMETYPE.ENGLISH);
+			generateEFTDetail.currencyCode = Configuration
+					.getProperty(EnvVars.EFT_CURRENCY_CODE);
+			generateEFTDetail.amount = instructionLineItemDtls.unprocessedAmount;
+			generateEFTDetailList.add(generateEFTDetail);
+		}
+
+		return generateEFTDetailList;
+	}
 	
 	/**
 	 * Return the Open and Suspended Case Details to the output struct.
@@ -326,7 +565,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		CaseNomineeKey caseNomineeKey = new CaseNomineeKey();
 		CaseNomineeDtls caseNomineeDtls;
 
-		double totalSuspendedAmount = 0;
+
 		FinancialComponent financialComponentObj = FinancialComponentFactory
 				.newInstance();
 		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
@@ -356,9 +595,18 @@ public class MOLSAGenerateEFTBatchStream extends
 				caseNomineeDtls = caseNomineeObj.read(caseNomineeKey);
 				long concernRoleID = MOLSAParticipantHelper
 						.returnConcernRoleIDFromCaseParticipantRoleID(caseNomineeDtls.caseParticipantRoleID);
-
+				PaymentInstrumentDtls paymentInstrumentDtls = returnLatestPaymentDetails(concernRoleID);
+				if(paymentInstrumentDtls !=null) {
+					BankAccountDtls bankAccountDtls = MOLSAFinancialHelper
+							.returnBankAccountDetails(paymentInstrumentDtls.bankAccountID);
+					generateEFTDetail.accountNumber = bankAccountDtls.iban;
+					generateEFTDetail.bankSwift = CodeTable.getOneItem(
+							MOLSABICCODE.TABLENAME,
+							bankAccountDtls.bic,
+							TransactionInfo.getProgramLocale());
+				}
 				generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-						.returnConcernRoleName(concernRoleID);
+				.returnAlternateName(concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 				generateEFTDetail.fullname_en = MOLSAParticipantHelper
 						.returnAlternateName(concernRoleID,
 								ALTERNATENAMETYPE.ENGLISH);
@@ -368,8 +616,16 @@ public class MOLSAGenerateEFTBatchStream extends
 
 				frequencyPattern = new FrequencyPattern(
 						financialComponentDtls.frequency);
+				
+				Date calculatedEndDate=Date.kZeroDate;
+				if(financialComponentDtls.endDate.before(currentDate)) {
+					calculatedEndDate=financialComponentDtls.endDate;
+				} else {
+					calculatedEndDate=currentDate;
+				}
 				Date[] dates = frequencyPattern.getAllOccurrences(
-						financialComponentDtls.dueDate, currentDate);
+						financialComponentDtls.dueDate, calculatedEndDate);
+	
 				double amount = 0.00;
 				int numberOfMonths = dates.length+1;
 				amount = financialComponentDtls.amount.getValue()
@@ -394,6 +650,38 @@ public class MOLSAGenerateEFTBatchStream extends
 		return pdcCaseHeaderDtlsList;
 	}
 			
+	/**
+	 * Return the latest Payment Instrument.
+	 * 
+	 * @param paymentInstrumentDtls
+	 *            PaymentInstrumentDtls
+	 * @return FinancialComponentDtls
+	 * @throws AppException
+	 *             General Exception
+	 * @throws InformationalException
+	 *             General ExceptionList
+	 */
+	private PaymentInstrumentDtls returnLatestPaymentDetails(long concernRoleID)
+			throws AppException, InformationalException {
+		Participant participantObj = ParticipantFactory.newInstance();
+		long paymentInstrumentID=0;
+		PaymentInstrumentDtls paymentInstrumentDtls = null;
+		PaymentInstrument  paymentInstrumentObj = PaymentInstrumentFactory.newInstance();
+		PaymentInstrumentKey  paymentInstrumentKey = new PaymentInstrumentKey();
+		ListParticipantFinancialsKey listParticipantFinancialsKey = new ListParticipantFinancialsKey();
+		
+		 listParticipantFinancialsKey.concernRoleID=concernRoleID;
+		 ListParticipantFinancials1 listParticipantFinancials1 =participantObj.listParticipantFinancial1(listParticipantFinancialsKey);
+		 for(ParticipantFinancials1 ParticipantFinancials1 : listParticipantFinancials1.participantFinancialsList.dtls.items()) {
+			 paymentInstrumentID = ParticipantFinancials1.pmtInstrumentID;
+			 break;
+		 }
+		 if(paymentInstrumentID !=0 ) {
+			 paymentInstrumentKey.pmtInstrumentID = paymentInstrumentID;
+			 paymentInstrumentDtls = paymentInstrumentObj.read(paymentInstrumentKey);
+		 }
+		 return paymentInstrumentDtls;
+	}
 	/**
 	 * Return the latest Closed Financial Component.
 	 * 
@@ -491,9 +779,20 @@ public class MOLSAGenerateEFTBatchStream extends
 				caseNomineeDtls = caseNomineeObj.read(caseNomineeKey);
 				long concernRoleID = MOLSAParticipantHelper
 						.returnConcernRoleIDFromCaseParticipantRoleID(caseNomineeDtls.caseParticipantRoleID);
+				
+				PaymentInstrumentDtls paymentInstrumentDtls = returnLatestPaymentDetails(concernRoleID);
+				if(paymentInstrumentDtls !=null) {
+					BankAccountDtls bankAccountDtls = MOLSAFinancialHelper
+							.returnBankAccountDetails(paymentInstrumentDtls.bankAccountID);
+					generateEFTDetail.accountNumber = bankAccountDtls.iban;
+					generateEFTDetail.bankSwift = CodeTable.getOneItem(
+							MOLSABICCODE.TABLENAME,
+							bankAccountDtls.bic,
+							TransactionInfo.getProgramLocale());
+				}
 
 				generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-						.returnConcernRoleName(concernRoleID);
+				.returnAlternateName(concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 				generateEFTDetail.fullname_en = MOLSAParticipantHelper
 						.returnAlternateName(concernRoleID,
 								ALTERNATENAMETYPE.ENGLISH);
@@ -715,15 +1014,46 @@ public class MOLSAGenerateEFTBatchStream extends
   			generateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
 		  }
 		}
-
+		List<MOLSAGenerateEFTDetail> generateEFTDetailListForOpenAndSubmittedUnderPaymentCase
+		= getOpenAndSubmittedUnderPaymentCaseDetails();
+		for (MOLSAGenerateEFTDetail molsaGenerateEFTDetail : generateEFTDetailListForOpenAndSubmittedUnderPaymentCase) {
+		  if(molsaGenerateEFTDetail.amount.getValue()>0) {
+  			totalAmount += molsaGenerateEFTDetail.amount.getValue();
+  			generateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
+		  }
+		}
+		generateEFTDetailList.totalAmount=new Money(totalAmount);
+		
 		LocalisableString remarks = new LocalisableString(
 				MOLSABPOGENERATEEFT.REMARKS_CONTENT);
-		remarks.arg(monthYearDetails.monthCode + "/" + monthYearDetails.year);
+		remarks.arg(monthYearDetails.monthCode + "-" + monthYearDetails.year);
 		remarks.arg(new Money(totalAmount)+"");
 		generateEFTDetailList.remarks = remarks.getMessage();
 
-		MOLSAGenerateEFTHelper.newInstance().generateExel(
-				generateEFTDetailList, generateEFTParam,
+		/** Starting the UnProcessed Amount */
+		MOLSAGenerateEFTDetailList unprocessedGenerateEFTDetailList = new MOLSAGenerateEFTDetailList();
+		List<MOLSAGenerateEFTDetail> unProcessedGenerateEFTDetailList = getUnProcessedAmountDetails();
+		unprocessedGenerateEFTDetailList.bankCode= generateEFTDetailList.bankCode;
+		unprocessedGenerateEFTDetailList.compAccount=generateEFTDetailList.compAccount;
+		unprocessedGenerateEFTDetailList.compCode=generateEFTDetailList.compCode;
+		unprocessedGenerateEFTDetailList.dueDate=generateEFTDetailList.dueDate;
+		unprocessedGenerateEFTDetailList.fileDesc=generateEFTDetailList.fileDesc;
+		double unProcessedTotalAmount = 0;
+		for (MOLSAGenerateEFTDetail molsaGenerateEFTDetail : unProcessedGenerateEFTDetailList) {
+			  if(molsaGenerateEFTDetail.amount.getValue()>0) {
+				  unProcessedTotalAmount += molsaGenerateEFTDetail.amount.getValue();
+				  unprocessedGenerateEFTDetailList.dtls.addRef(molsaGenerateEFTDetail);
+			  }
+			}
+		LocalisableString remarks1 = new LocalisableString(
+				MOLSABPOGENERATEEFT.REMARKS_CONTENT);
+		remarks1.arg(monthYearDetails.monthCode + "-" + monthYearDetails.year);
+		remarks1.arg(new Money(unProcessedTotalAmount)+"");
+		unprocessedGenerateEFTDetailList.remarks = remarks1.getMessage();
+		unprocessedGenerateEFTDetailList.remarks=remarks1.getMessage();
+		
+		MOLSAGenerateEFTHelper.newInstance().generateExelForFinance(
+				generateEFTDetailList, unprocessedGenerateEFTDetailList, generateEFTParam,
 				MOLSAGenerateEFTHelper.getExelName(false, monthYearDetails));
 
 	}
@@ -765,15 +1095,14 @@ public class MOLSAGenerateEFTBatchStream extends
 							CONCERNROLEALTERNATEID.INSURANCENUMBER);
 
 			generateEFTDetail.fullname_ar = MOLSAParticipantHelper
-					.returnConcernRoleName(paymentInstrumentDtls.concernRoleID);
+			.returnAlternateName(paymentInstrumentDtls.concernRoleID, ALTERNATENAMETYPE.REGISTERED);
 			generateEFTDetail.fullname_en = MOLSAParticipantHelper
 					.returnAlternateName(paymentInstrumentDtls.concernRoleID,
 							ALTERNATENAMETYPE.ENGLISH);
 
 			bankAccountDtls = MOLSAFinancialHelper
 					.returnBankAccountDetails(paymentInstrumentDtls.bankAccountID);
-			generateEFTDetail.accountNumber = Configuration
-	    .getProperty(EnvVars.EFT_COMPANY_ACCOUNT_NUMBER);
+			generateEFTDetail.accountNumber = bankAccountDtls.iban;
 			generateEFTDetail.bankSwift = CodeTable.getOneItem(MOLSABICCODE.TABLENAME, bankAccountDtls.bic, TransactionInfo.getProgramLocale());
 			generateEFTDetail.currencyCode = Configuration
 					.getProperty(EnvVars.EFT_CURRENCY_CODE);
@@ -798,5 +1127,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		return generateEFTDetailList;
 
 	}
+	
+	
 
 }

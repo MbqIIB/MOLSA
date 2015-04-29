@@ -1,31 +1,31 @@
 package curam.molsa.util.impl;
 
-import curam.codetable.CASETYPECODE;
-import curam.codetable.PRODUCTTYPE;
+import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.PROGRAMTYPE;
 import curam.codetable.RECORDSTATUS;
+import curam.core.fact.AlternateNameFactory;
 import curam.core.fact.MaintainCertificationFactory;
 import curam.core.fact.MaintainConcernRoleBankAcFactory;
-import curam.core.fact.ProductDeliveryFactory;
 import curam.core.fact.UsersFactory;
+import curam.core.intf.AlternateName;
 import curam.core.intf.MaintainCertification;
 import curam.core.intf.MaintainConcernRoleBankAc;
-import curam.core.intf.ProductDelivery;
 import curam.core.intf.Users;
+import curam.core.struct.AlternateNameDtls;
+import curam.core.struct.AlternateNameKey;
+import curam.core.struct.AlternateNameReadMultiKey;
+import curam.core.struct.AlternateNameReadMultiStatusStruct;
+import curam.core.struct.AlternateNameStruct;
+import curam.core.struct.AlternateNameStructList;
 import curam.core.struct.BankAccountRMDtls;
 import curam.core.struct.BankAccountReadMultiDtlsList;
-import curam.core.struct.CaseHeaderByConcernRoleIDKey;
 import curam.core.struct.CaseHeaderKey;
-import curam.core.struct.CaseHeaderReadmultiDetails1;
-import curam.core.struct.CaseHeaderReadmultiDetails1List;
-import curam.core.struct.CaseHeaderReadmultiKey1;
 import curam.core.struct.MaintainBankAccountKey;
 import curam.core.struct.MaintainCertificationCaseIDKey;
 import curam.core.struct.MaintainCertificationDetails;
 import curam.core.struct.MaintainCertificationList;
-import curam.core.struct.ProductDeliveryKey;
-import curam.core.struct.ProductDeliveryTypeDetails;
 import curam.core.struct.ReadMultiByConcernRoleIDBankAcResult;
+import curam.core.struct.UserFullname;
 import curam.core.struct.UsersDtls;
 import curam.core.struct.UsersKey;
 import curam.molsa.communication.entity.fact.MOLSAConcernRoleCommunicationFactory;
@@ -36,6 +36,7 @@ import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.type.Money;
 import curam.util.type.NotFoundIndicator;
 
 
@@ -157,5 +158,64 @@ public class MOLSACommunicationHelper {
 
 		return bankBranchId;
 	}
+	public static String getFullName(long concernroleid) throws AppException,
+	InformationalException {
+		//Making Correspondent name same as alternate name with five level of communication
+		
+
+		AlternateNameReadMultiStatusStruct alternateNameReadMultiStatusStruct= new AlternateNameReadMultiStatusStruct();
+
+		alternateNameReadMultiStatusStruct.concernRoleID=concernroleid;
+		alternateNameReadMultiStatusStruct.nameStatus=RECORDSTATUS.NORMAL;
+
+		AlternateName alternateNameobj= AlternateNameFactory.newInstance();
+
+		AlternateNameReadMultiKey alternateNameReadMultiKey = new AlternateNameReadMultiKey();
+
+		alternateNameReadMultiKey.concernRoleID=concernroleid;
+
+		AlternateNameStructList alternateNameDtlsList=alternateNameobj.searchActiveNameByConcernRole(alternateNameReadMultiStatusStruct);
+		AlternateNameDtls alternateNameDtls = new AlternateNameDtls();
+		String fullname="";
+		for(AlternateNameStruct dtls : alternateNameDtlsList.dtls ){
+
+			AlternateNameKey alternateNameKey= new AlternateNameKey();
+			alternateNameKey.alternateNameID=dtls.alternateNameID;
+			alternateNameDtls=alternateNameobj.read(alternateNameKey);
+			if(alternateNameDtls.nameType.equals(ALTERNATENAMETYPE.REGISTERED)){
+				fullname=dtls.fullName;
+				break;
+			}
+
+		}
+
+		return fullname;
+	}
+	public static String getCaseWorkerName() throws AppException,
+	InformationalException {
+		String userfullname="";
+		Users userObj=UsersFactory.newInstance();
+		UsersKey key= new UsersKey();
+		key.userName=TransactionInfo.getProgramUser();
+		UserFullname userFullname= userObj.getFullName(key);
+		userfullname=userFullname.fullname;
+		return userfullname;
+	}
+	public static String getMainProductName() throws AppException,
+	InformationalException {
+		String productName="Test Product Name";
+		return productName;
+	}
+	public static Money getMainProductAmount() throws AppException,
+	InformationalException {
+		Money money =new Money(0);
+		return money;
+	}
+	public static Money getMaidAssistanceAmount() throws AppException,
+	InformationalException {
+		Money money =new Money(0);
+		return money;
+	}
+
 
 }

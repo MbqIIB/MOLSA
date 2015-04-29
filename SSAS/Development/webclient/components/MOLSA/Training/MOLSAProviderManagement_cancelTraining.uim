@@ -1,0 +1,85 @@
+<PAGE
+    PAGE_ID="MOLSAProviderManagement_cancelTraining"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+    >
+    
+    <PAGE_TITLE>
+        <CONNECT>
+            <SOURCE
+                NAME="TEXT"
+                PROPERTY="PageTitle.TrainingDetails"
+            />
+        </CONNECT>
+    </PAGE_TITLE> 
+    
+    <PAGE_PARAMETER NAME="trainingID"/>
+   
+
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSATrainingService"
+        NAME="DISPLAY"
+        OPERATION="readByTrainingID"
+        PHASE="DISPLAY"
+    />   
+    <CONNECT>
+        <SOURCE
+            NAME="PAGE"
+            PROPERTY="trainingID"
+        />
+        <TARGET
+            NAME="DISPLAY"
+            PROPERTY="arg1$trainingID"
+        />
+    </CONNECT>  
+    
+    
+    
+    <SERVER_INTERFACE
+        CLASS="MOLSATrainingService"
+        NAME="ACTION"
+        OPERATION="cancelTraining"
+        PHASE="ACTION"
+    />
+    <CONNECT>
+        <SOURCE
+            NAME="PAGE"
+            PROPERTY="trainingID"
+        />
+        <TARGET
+            NAME="ACTION"
+            PROPERTY="trainingDetails$trainingID"
+        />
+    </CONNECT>  
+    <SERVER_INTERFACE
+        CLASS="ServiceOffering"
+        NAME="GETSERVICEOFFERING"
+        OPERATION="listServiceOfferings"
+    />
+     <INFORMATIONAL>
+	    <CONNECT>
+	      <SOURCE
+	        NAME="ACTION"
+	        PROPERTY="informationMsgTxt"
+	      />
+	    </CONNECT>
+  </INFORMATIONAL>
+    <CLUSTER
+        LABEL_WIDTH="35"
+        NUM_COLS="1"
+        >
+         <FIELD HEIGHT="2" LABEL="Field.Label.SMS.Cancellation.Message">
+            <CONNECT>
+                <TARGET
+                    NAME="ACTION"
+                    PROPERTY="trainingDetails$trainingSMSMessage"
+                />
+            </CONNECT>
+        </FIELD>      
+     </CLUSTER>
+    <ACTION_SET>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Training.Cancel" TYPE="SUBMIT" CONFIRM="Confirm.Cancel.Training"> </ACTION_CONTROL>
+        <ACTION_CONTROL LABEL="ActionControl.Label.Cancel"> </ACTION_CONTROL>
+    </ACTION_SET>
+</PAGE>
