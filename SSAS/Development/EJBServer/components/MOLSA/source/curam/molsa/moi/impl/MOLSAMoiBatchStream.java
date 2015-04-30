@@ -289,8 +289,10 @@ public class MOLSAMoiBatchStream extends
 
 						// parsing date string using new format
 						ParsePosition pos = new ParsePosition(0);
-						java.util.Date dateFromString = newFormatter.parse(
-								dateStringInNewFormat, pos);
+						//java.util.Date dateFromString = newFormatter.parse(
+								//dateStringInNewFormat, pos);
+						java.util.Date dateFromString =
+							molsaMoiDtls.dateOfBirth.getCalendar().getTime();
 
 						String dateStringInOriginalFormat = originalFormatter
 								.format(dateFromString);
