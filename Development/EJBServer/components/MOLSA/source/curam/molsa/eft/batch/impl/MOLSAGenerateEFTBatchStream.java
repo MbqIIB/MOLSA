@@ -19,6 +19,7 @@ import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.FINCOMPONENTSTATUS;
 import curam.codetable.FINCOMPONENTTYPE;
 import curam.codetable.ILISTATUS;
+import curam.codetable.METHODOFDELIVERY;
 import curam.codetable.PMTRECONCILIATIONSTATUS;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.RECORDSTATUS;
@@ -197,9 +198,10 @@ public class MOLSAGenerateEFTBatchStream extends
 				.newInstance();
 		PIStatusCode piStatusCode = new PIStatusCode();
 		piStatusCode.reconcilStatusCode = PMTRECONCILIATIONSTATUS.PROCESSED;
-		PaymentInstrumentDtlsList paymentInstrumentDtlsList = paymentInstrumentObj
+		PaymentInstrumentDtlsList proPaymentInstrumentDtlsList = paymentInstrumentObj
 				.searchByStatusCode(piStatusCode);
-
+		PaymentInstrumentDtlsList paymentInstrumentDtlsList = filterEFTPayment(proPaymentInstrumentDtlsList);
+		
 		BatchProcessingSkippedRecord batchProcessingSkippedRecord = new BatchProcessingSkippedRecord();
 
 		MOLSAGenerateEFTDetailList bankGenerateEFTDetailList = generateExelForBank(
@@ -214,7 +216,16 @@ public class MOLSAGenerateEFTBatchStream extends
 
 		return batchProcessingSkippedRecord;
 	}
-
+    
+	private PaymentInstrumentDtlsList filterEFTPayment(PaymentInstrumentDtlsList proPaymentInstrumentDtlsList){
+		PaymentInstrumentDtlsList paymentInstrumentDtlsList = new PaymentInstrumentDtlsList();
+		for(PaymentInstrumentDtls paymentInstrumentDtls :proPaymentInstrumentDtlsList.dtls.items()) {
+			if(paymentInstrumentDtls.deliveryMethodType.equals(METHODOFDELIVERY.EFT)) {
+				paymentInstrumentDtlsList.dtls.addRef(paymentInstrumentDtls);
+			}
+		}
+		return paymentInstrumentDtlsList;
+	}
 	
 	/**
 	 * Populate the MsWord struct details.
