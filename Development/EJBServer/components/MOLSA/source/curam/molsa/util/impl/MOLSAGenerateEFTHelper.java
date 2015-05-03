@@ -56,6 +56,7 @@ public class MOLSAGenerateEFTHelper {
 	int kFontSize = 14;
 	int kSetTextPostion = 15;
 	int kAddressSetTextPostion = 10;
+	int kAddressSetSpaceAfterLine = 4;
 	
 
   /**
@@ -882,6 +883,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p1 = doc.createParagraph();
     setOrientation(p1 , TextOrientation.RTL);
     p1.setAlignment(ParagraphAlignment.LEFT);
+    p1.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r1 = p1.createRun();
     r1.setTextPosition(kSetTextPostion);    
     LocalisableString addLine1 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_TO_ADDRESS_LINE1); 
@@ -901,6 +903,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p2 = doc.createParagraph();
     setOrientation(p2 , TextOrientation.RTL);
     p2.setAlignment(ParagraphAlignment.LEFT);
+    p2.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r2 = p2.createRun();
     r2.setTextPosition(kSetTextPostion);    
     r2.setBold(true);
@@ -912,6 +915,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p3 = doc.createParagraph();
     setOrientation(p3 , TextOrientation.RTL);
     p3.setAlignment(ParagraphAlignment.LEFT);
+    p3.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r3 = p3.createRun();
     r3.setTextPosition(kSetTextPostion);    
     r3.setBold(true);
@@ -1041,6 +1045,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p1 = doc.createParagraph();
     setOrientation(p1 , TextOrientation.RTL);
     p1.setAlignment(ParagraphAlignment.LEFT);
+    p1.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r1 = p1.createRun();
     r1.setTextPosition(kAddressSetTextPostion);    
     r1.setBold(true);
@@ -1061,6 +1066,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p2 = doc.createParagraph();
     setOrientation(p2 , TextOrientation.RTL);
     p2.setAlignment(ParagraphAlignment.LEFT);
+    p2.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r2 = p2.createRun();   
     r2.setBold(true);
     r2.setFontSize(kFontSize);
@@ -1072,6 +1078,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p3 = doc.createParagraph();
     setOrientation(p3 , TextOrientation.RTL);
     p3.setAlignment(ParagraphAlignment.LEFT);
+    p3.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r3 = p3.createRun();
     r3.setTextPosition(kAddressSetTextPostion);    
     r3.setBold(true);
@@ -1083,6 +1090,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p4 = doc.createParagraph();
     setOrientation(p4 , TextOrientation.RTL);
     p4.setAlignment(ParagraphAlignment.LEFT);
+    p4.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r4 = p4.createRun();
     r4.setTextPosition(kAddressSetTextPostion);
     r4.setBold(true);
@@ -1204,7 +1212,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFRun r13 = p13.createRun();
     r13.setTextPosition(kSetTextPostion);
     r13.setText("");
-    r13.addBreak();
+    //r13.addBreak();
     
     
     XWPFParagraph p12 = doc.createParagraph();
