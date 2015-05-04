@@ -426,6 +426,13 @@ public class MOLSACommunicationHelper {
 		
 		return productMap;
 	}
+	/**
+	 * This method will return a Map with Product Type and CaseID (PDC) from the list of Active PDCs
+	 * @param caseHeaderReadmultiDetails1List
+	 * @return
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
 	public static HashMap<String, Long> getProductDetailsForMolsaProducts(CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List)
 	throws AppException,	InformationalException {
 		HashMap<String, Long> productMap = new HashMap<String, Long>();
@@ -450,6 +457,13 @@ public class MOLSACommunicationHelper {
 		
 		return productMap;
 	}
+	/** The method will return the LIV Financial COmponent of this product
+	 * 
+	 * @param productID
+	 * @return
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
 	public static Money getMainProductAmount(long productID) throws AppException,
 	InformationalException {
 		Money money =new Money(0);
@@ -468,11 +482,6 @@ public class MOLSACommunicationHelper {
 			}
 		}
 		
-		return money;
-	}
-	public static Money getMaidAssistanceAmount(long caseID) throws AppException,
-	InformationalException {
-		Money money =new Money(0);
 		return money;
 	}
 
