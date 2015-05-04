@@ -384,7 +384,7 @@ public class MOLSACommunicationHelper {
 	}
 	
 	/**
-	 * 
+	 * This method will return the Active Exception evidence details with Amount in the Map format.
 	 * @param icCaseID
 	 * @return
 	 * @throws AppException
