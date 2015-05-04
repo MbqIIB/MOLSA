@@ -155,5 +155,15 @@ public abstract class MOLSAConstants {
 	public static final String kIncomeType = "incomeType";
 	public static final String kfrequency= "frequency";
 	public static final String KMOLSAPaymentCorrectionCaseApprovalTask = "MOLSAPaymentCorrectionCaseApprovalTask";
+	
+	public static final Long kManagerPositionID=45288L;
+	public static final Long kAssistantManagerPositionID=45290L;
+	public static final Long kOrganisationStructureID=45000L;
+	public static final String KMOLSAOrganisationStructure ="MOLSA";
+	public static final String KType ="STRING";
+	public static final String kUser1 ="curam.molsa.financial.eft.nameOfAssistanceMinisterForSocialAffair";
+	public static final String kUser2="curam.molsa.financial.eft.nameOfSocialSecurityDirector";
+	public static final String kTitle1="curam.molsa.financial.eft.mswordSignatureTitleOne";
+	public static final String kTitle2="curam.molsa.financial.eft.mswordSignatureTitleTwo";
 
 }
