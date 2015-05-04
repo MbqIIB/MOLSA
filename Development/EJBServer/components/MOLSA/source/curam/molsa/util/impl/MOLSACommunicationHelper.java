@@ -1,16 +1,52 @@
 package curam.molsa.util.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import curam.codetable.ALTERNATENAMETYPE;
+import curam.codetable.CASEEVIDENCE;
+import curam.codetable.CASESTATUS;
+import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
+import curam.codetable.FINCOMPONENTSTATUS;
+import curam.codetable.FINCOMPONENTTYPE;
+import curam.codetable.MOLSAEXCEPTIONALPROGRAMTYPE;
+import curam.codetable.PRODUCTTYPE;
 import curam.codetable.PROGRAMTYPE;
 import curam.codetable.RECORDSTATUS;
+import curam.core.facade.infrastructure.assessment.fact.CaseDeterminationFactory;
+import curam.core.facade.infrastructure.assessment.intf.CaseDetermination;
+import curam.core.facade.infrastructure.assessment.struct.CaseIDDeterminationIDKey;
+import curam.core.facade.infrastructure.fact.EvidenceFactory;
+import curam.core.facade.infrastructure.intf.Evidence;
+import curam.core.facade.infrastructure.struct.ListAllActiveEVDInstanceWorkspaceDtls;
 import curam.core.fact.AlternateNameFactory;
+import curam.core.fact.CaseHeaderFactory;
+import curam.core.fact.FinancialComponentFactory;
 import curam.core.fact.MaintainCertificationFactory;
 import curam.core.fact.MaintainConcernRoleBankAcFactory;
+import curam.core.fact.ProductDeliveryFactory;
 import curam.core.fact.UsersFactory;
 import curam.core.intf.AlternateName;
+import curam.core.intf.CaseHeader;
+import curam.core.intf.FinancialComponent;
 import curam.core.intf.MaintainCertification;
 import curam.core.intf.MaintainConcernRoleBankAc;
+import curam.core.intf.ProductDelivery;
 import curam.core.intf.Users;
+import curam.core.sl.infrastructure.entity.base.EvidenceDescriptor;
+import curam.core.sl.infrastructure.entity.fact.EvidenceDescriptorFactory;
+import curam.core.sl.infrastructure.entity.struct.CaseIDStatusAndEvidenceTypeKey;
+import curam.core.sl.infrastructure.entity.struct.RelatedIDAndEvidenceTypeKey;
+import curam.core.sl.infrastructure.entity.struct.RelatedIDAndEvidenceTypeKeyList;
+import curam.core.sl.infrastructure.entity.struct.SuccessionID;
+import curam.core.sl.infrastructure.struct.BusinessObjectEvidenceTypeKey;
+import curam.core.sl.infrastructure.struct.BusinessObjectSummary;
+import curam.core.sl.infrastructure.struct.BusinessObjectSummaryList;
+import curam.core.sl.struct.CaseIDParticipantIDEvidenceTypeKey;
+import curam.core.sl.struct.EvidenceCaseKey;
+import curam.core.sl.struct.EvidenceTypeKey;
 import curam.core.struct.AlternateNameDtls;
 import curam.core.struct.AlternateNameKey;
 import curam.core.struct.AlternateNameReadMultiKey;
@@ -20,17 +56,31 @@ import curam.core.struct.AlternateNameStructList;
 import curam.core.struct.BankAccountRMDtls;
 import curam.core.struct.BankAccountReadMultiDtlsList;
 import curam.core.struct.CaseHeaderKey;
+import curam.core.struct.CaseHeaderReadmultiDetails1;
+import curam.core.struct.CaseHeaderReadmultiDetails1List;
+import curam.core.struct.CaseHeaderReadmultiKey1;
+import curam.core.struct.FCstatusCodeCaseID;
+import curam.core.struct.FinancialComponentDtls;
+import curam.core.struct.FinancialComponentDtlsList;
 import curam.core.struct.MaintainBankAccountKey;
 import curam.core.struct.MaintainCertificationCaseIDKey;
 import curam.core.struct.MaintainCertificationDetails;
 import curam.core.struct.MaintainCertificationList;
+import curam.core.struct.ProductDeliveryDtls;
+import curam.core.struct.ProductDeliveryKey;
 import curam.core.struct.ReadMultiByConcernRoleIDBankAcResult;
 import curam.core.struct.UserFullname;
 import curam.core.struct.UsersDtls;
 import curam.core.struct.UsersKey;
+import curam.dynamicevidence.impl.DynamicEvidenceDataDetails;
+import curam.dynamicevidence.sl.impl.EvidenceGenericSLFactory;
+import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
+import curam.dynamicevidence.sl.struct.impl.ReadEvidenceDetails;
+import curam.dynamicevidence.type.impl.DynamicEvidenceTypeConverter;
 import curam.molsa.communication.entity.fact.MOLSAConcernRoleCommunicationFactory;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationDtls;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationKey;
+import curam.molsa.constants.impl.MOLSAConstants;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
@@ -41,6 +91,25 @@ import curam.util.type.NotFoundIndicator;
 
 
 public class MOLSACommunicationHelper {
+	public static String kMain = "MAIN";
+	public static String kMaid = "MAID";
+	public static String kProgramType = "programType";
+	public static String kAmount = "amount";
+	
+	static ArrayList<String> molsaProduct = new ArrayList<String>(){{
+	add(PRODUCTTYPE.ANONYMOUSPARENTS);
+	add(PRODUCTTYPE.DESERTEDWIFE);
+	add(PRODUCTTYPE.DIVORCEDLADY);
+	add(PRODUCTTYPE.FAMILYINNEED);
+	add(PRODUCTTYPE.FAMILYOFMISSING);
+	add(PRODUCTTYPE.FAMILYOFPRISONER);
+	add(PRODUCTTYPE.HANDICAP);
+	add(PRODUCTTYPE.INCAPABLEOFWORKING);
+	add(PRODUCTTYPE.SENIORCITIZEN);
+	add(PRODUCTTYPE.ORPHAN);
+	add(PRODUCTTYPE.WIDOW);}};
+	
+	
 	public static void insertAdditionalCommParams(
 			MOLSAConcernRoleCommunicationDtls molsaCommDtls) throws AppException,
 			InformationalException {
@@ -201,17 +270,207 @@ public class MOLSACommunicationHelper {
 		userfullname=userFullname.fullname;
 		return userfullname;
 	}
-	public static String getMainProductName() throws AppException,
+	
+	
+	/**
+	 * This method will return the a Map.
+	 * The Map contains the details of main and maid product in the Map format.
+	 * <"MAIN", HASHMAP<ProductName, Money>>
+	 * <"MAID", HASHMAP<ProductName, Money>>
+	 * Each Map will contain the Product Description and amount as mentioned above.
+	 * @param caseID
+	 * @return
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
+	public static HashMap<String, HashMap<String, Money>> getProductMap(long caseID) throws AppException,
 	InformationalException {
-		String productName="Test Product Name";
-		return productName;
+	
+		
+		CaseHeader caseHeaderObj = CaseHeaderFactory.newInstance();
+		CaseHeaderReadmultiKey1 caseHeaderReadmultiKey1 = new CaseHeaderReadmultiKey1();
+		caseHeaderReadmultiKey1.integratedCaseID = caseID;
+		CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List =
+			caseHeaderObj.searchByIntegratedCaseID(caseHeaderReadmultiKey1);
+		ProductDelivery productDeliveryObj = ProductDeliveryFactory
+		.newInstance();
+		ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
+		ProductDeliveryDtls productDeliveryDtls;
+		boolean isExceptionProduct = false;
+		boolean isMolsaProduct = false;
+		for(CaseHeaderReadmultiDetails1 caseHeaderReadmultiDetails: caseHeaderReadmultiDetails1List.dtls.items() ) {
+			if (caseHeaderReadmultiDetails.statusCode.equals(CASESTATUS.ACTIVE)) {
+				productDeliveryKey.caseID = caseHeaderReadmultiDetails.caseID;
+				productDeliveryDtls = productDeliveryObj.read(productDeliveryKey);
+				if (productDeliveryDtls.productType
+						.equals(PRODUCTTYPE.MOLSADETERMINEPRODUCT)) {
+					isExceptionProduct = true;
+					break;
+				} else if(molsaProduct.contains(productDeliveryDtls.productType)) {
+					isMolsaProduct= true;
+					break;
+				}
+			}
+			
+		}
+		HashMap<String, Long> productMolsaMap = new HashMap<String, Long>();
+		HashMap<String, Money> productExceptionMap = new HashMap<String, Money>();
+		if(isMolsaProduct) {
+			productMolsaMap = getProductDetailsForMolsaProducts(caseHeaderReadmultiDetails1List);
+		} else if(isExceptionProduct) {
+			productExceptionMap = getProductDetailsForException(caseID);
+		}
+		
+		//The Map to convert Exception Evidence to Molsa Product
+		HashMap<String,String> productTypeExceptionalMap = new HashMap<String,String>();
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.ANONYMOUSPARENTS, PRODUCTTYPE.ANONYMOUSPARENTS);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.DESERTEDWIFE, PRODUCTTYPE.DESERTEDWIFE);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.DIVORCEDLADY, PRODUCTTYPE.DIVORCEDLADY);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.FAMILYINNEED, PRODUCTTYPE.FAMILYINNEED);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.FAMILYOFMISSING, PRODUCTTYPE.FAMILYOFMISSING);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.FAMILYOFPRISONER, PRODUCTTYPE.FAMILYOFPRISONER);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.HANDICAPPED, PRODUCTTYPE.HANDICAP);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.INCAPABLEOFWORKING, PRODUCTTYPE.INCAPABLEOFWORKING);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.SENIORCITIZEN, PRODUCTTYPE.SENIORCITIZEN);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.WIDOW, PRODUCTTYPE.WIDOW);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.ORPHAN, PRODUCTTYPE.ORPHAN);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.MAIDASSISTANCE, PRODUCTTYPE.MAIDALLOWANCE);
+		productTypeExceptionalMap.put(MOLSAEXCEPTIONALPROGRAMTYPE.EXCEPTIONAL, PRODUCTTYPE.MOLSADETERMINEPRODUCT);
+		
+		HashMap<String, HashMap<String, Money>> returnMap = new HashMap<String, HashMap<String, Money>>();
+		String programDesc="";
+		if(isMolsaProduct) {			
+			Iterator it = productMolsaMap.entrySet().iterator();
+		    while (it.hasNext()) {
+		    	programDesc="";
+		        Map.Entry pair = (Map.Entry)it.next();
+		        if(pair.getKey().equals(PRODUCTTYPE.MAIDALLOWANCE)) {
+		        	HashMap<String, Money> mainProductMap = new HashMap<String, Money>();
+		        	programDesc = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME, pair.getKey().toString(), TransactionInfo.getProgramLocale());
+		        	mainProductMap.put(programDesc, getMainProductAmount((Long) pair.getValue()));
+		        	returnMap.put(kMaid, mainProductMap);
+		        	
+		        } else {
+		        	HashMap<String, Money> mainProductMap = new HashMap<String, Money>();
+		        	programDesc = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME, pair.getKey().toString(), TransactionInfo.getProgramLocale());
+		        	mainProductMap.put(programDesc, getMainProductAmount((Long) pair.getValue()));
+		        	returnMap.put(kMain, mainProductMap);
+		        }
+		        		        
+		    }
+		}  else if(isExceptionProduct) {
+			Iterator it = productExceptionMap.entrySet().iterator();
+		    while (it.hasNext()) {
+		    	programDesc="";
+		    	 Map.Entry pair = (Map.Entry)it.next();
+			        if(pair.getKey().equals(MOLSAEXCEPTIONALPROGRAMTYPE.MAIDASSISTANCE)) {
+			        	HashMap<String, Money> mainProductMap = new HashMap<String, Money>();
+			        	String productType = productTypeExceptionalMap.get(pair.getKey());
+			        	programDesc = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME, productType, TransactionInfo.getProgramLocale());
+			        	mainProductMap.put(programDesc, (Money) pair.getValue());
+			        	returnMap.put(kMaid, mainProductMap);
+			        	
+			        } else {
+			        	HashMap<String, Money> mainProductMap = new HashMap<String, Money>();
+			        	String productType = productTypeExceptionalMap.get(pair.getKey());
+			        	programDesc = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME, productType, TransactionInfo.getProgramLocale());
+			        	mainProductMap.put(programDesc, (Money) pair.getValue());
+			        	returnMap.put(kMain, mainProductMap);
+			        }
+		    }
+		}
+		
+		return returnMap;
 	}
-	public static Money getMainProductAmount() throws AppException,
+	
+	public static HashMap<String, Money> getProductDetailsForException(long icCaseID) throws AppException,
+	InformationalException {
+		HashMap<String, Money> productMap = new HashMap<String, Money>();
+		final CaseIDStatusAndEvidenceTypeKey caseIDStatusAndEvidenceTypeKey = new CaseIDStatusAndEvidenceTypeKey();
+
+		caseIDStatusAndEvidenceTypeKey.caseID = icCaseID;
+		caseIDStatusAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.EXCEPTIONAL;
+		caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
+
+		final EvidenceDescriptor evidenceDescriptorObj = (EvidenceDescriptor) EvidenceDescriptorFactory
+				.newInstance();
+
+		// get all the evidence details for the caseID
+		final RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
+				.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
+
+		final EvidenceCaseKey evidenceCaseKey = new EvidenceCaseKey();
+		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+		evidenceTypeKey.evidenceType = CASEEVIDENCE.EXCEPTIONAL;
+
+		final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+				.instance(evidenceTypeKey, Date.getCurrentDate());
+		DynamicEvidenceDataDetails dynamicEvidenceDataDetails = null;
+		for (final RelatedIDAndEvidenceTypeKey relatedIDAndEvidenceTypeKey : relatedIDAndEvidenceTypeKeyList.dtls) {
+
+			evidenceCaseKey.caseIDKey.caseID = icCaseID;
+			evidenceCaseKey.evidenceKey.evidenceID = relatedIDAndEvidenceTypeKey.relatedID;
+			evidenceCaseKey.evidenceKey.evType = relatedIDAndEvidenceTypeKey.evidenceType;
+			final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
+					.readEvidence(evidenceCaseKey);
+			dynamicEvidenceDataDetails = evidenceDetails.dtls;
+			curam.creole.value.CodeTableItem programType= (curam.creole.value.CodeTableItem) DynamicEvidenceTypeConverter
+				.convert(dynamicEvidenceDataDetails
+						.getAttribute(kProgramType));
+			Money amount= (Money) DynamicEvidenceTypeConverter
+			.convert(dynamicEvidenceDataDetails
+					.getAttribute(kAmount));
+			
+			productMap.put(programType.code(), amount);
+		}
+		
+		return productMap;
+	}
+	public static HashMap<String, Long> getProductDetailsForMolsaProducts(CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List)
+	throws AppException,	InformationalException {
+		HashMap<String, Long> productMap = new HashMap<String, Long>();
+		ProductDelivery productDeliveryObj = ProductDeliveryFactory
+		.newInstance();
+		ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
+		ProductDeliveryDtls productDeliveryDtls;
+		for(CaseHeaderReadmultiDetails1 caseHeaderReadmultiDetails: caseHeaderReadmultiDetails1List.dtls.items() ) {
+			if (caseHeaderReadmultiDetails.statusCode.equals(CASESTATUS.ACTIVE)) {
+				productDeliveryKey.caseID = caseHeaderReadmultiDetails.caseID;
+				productDeliveryDtls = productDeliveryObj.read(productDeliveryKey);
+				 if(molsaProduct.contains(productDeliveryDtls.productType)) {
+					 productMap.put(productDeliveryDtls.productType,caseHeaderReadmultiDetails.caseID);
+				} else {
+					if(productDeliveryDtls.productType.endsWith(PRODUCTTYPE.MAIDALLOWANCE)) {
+						productMap.put(productDeliveryDtls.productType,caseHeaderReadmultiDetails.caseID);
+					}
+				}
+			}
+			
+		}
+		
+		return productMap;
+	}
+	public static Money getMainProductAmount(long productID) throws AppException,
 	InformationalException {
 		Money money =new Money(0);
+		FinancialComponent financialComponentObj = FinancialComponentFactory
+		.newInstance();
+		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
+		fcstatusCodeCaseID.caseID = productID;
+		fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.LIVE;
+		FinancialComponentDtlsList financialComponentDtlsList = financialComponentObj
+		.searchByStatusCaseID(fcstatusCodeCaseID);
+		for (FinancialComponentDtls financialComponentDtls : financialComponentDtlsList.dtls
+				.items()) {
+			if (financialComponentDtls.typeCode
+					.equals(FINCOMPONENTTYPE.MOLSA_COMP)) {
+				money = financialComponentDtls.amount;
+			}
+		}
+		
 		return money;
 	}
-	public static Money getMaidAssistanceAmount() throws AppException,
+	public static Money getMaidAssistanceAmount(long caseID) throws AppException,
 	InformationalException {
 		Money money =new Money(0);
 		return money;

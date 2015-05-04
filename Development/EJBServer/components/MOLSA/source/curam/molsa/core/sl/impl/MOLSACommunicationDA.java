@@ -1,5 +1,8 @@
 package curam.molsa.core.sl.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -118,6 +121,7 @@ import curam.util.exception.LocalisableString;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.type.Money;
 import curam.util.type.StringList;
 
 public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunicationDA{
@@ -936,9 +940,21 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		//get the casewoker name
 		
 		molsaCommDtls.caseWorkerName=MOLSACommunicationHelper.getCaseWorkerName();
-		molsaCommDtls.mainProductName=MOLSACommunicationHelper.getMainProductName();
-		molsaCommDtls.mainProductAmount=MOLSACommunicationHelper.getMainProductAmount();
-		molsaCommDtls.maidAssistanceAmount=MOLSACommunicationHelper.getMaidAssistanceAmount();		
+		HashMap<String, HashMap<String, Money>>  productMap = MOLSACommunicationHelper.getProductMap(commDetails.caseID);
+		HashMap<String, Money> mainProductMap= productMap.get(MOLSACommunicationHelper.kMain);
+		HashMap<String, Money> maidProductMap= productMap.get(MOLSACommunicationHelper.kMaid);
+		
+		if(mainProductMap != null && mainProductMap.size()>0) {
+			Map.Entry<String,Money> entry=mainProductMap.entrySet().iterator().next();
+			molsaCommDtls.mainProductName=entry.getKey();
+			molsaCommDtls.mainProductAmount=entry.getValue();
+		}
+		
+		if(maidProductMap != null && maidProductMap.size()>0) {
+			Map.Entry<String,Money> entry=mainProductMap.entrySet().iterator().next();
+			molsaCommDtls.maidAssistanceAmount=entry.getValue();
+		}
+			
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
 
