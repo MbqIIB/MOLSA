@@ -383,6 +383,13 @@ public class MOLSACommunicationHelper {
 		return returnMap;
 	}
 	
+	/**
+	 * 
+	 * @param icCaseID
+	 * @return
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
 	public static HashMap<String, Money> getProductDetailsForException(long icCaseID) throws AppException,
 	InformationalException {
 		HashMap<String, Money> productMap = new HashMap<String, Money>();
