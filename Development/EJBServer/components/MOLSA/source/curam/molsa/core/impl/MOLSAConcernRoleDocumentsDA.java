@@ -202,7 +202,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 			}
 		}
 		if((details.documentID==45001)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
-				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)||(details.documentID==45009)||
+				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)||
 				(details.documentID==45011)||(details.documentID==45012)||(details.documentID==45013)||(details.documentID==45014)||(details.documentID==45015)){
 			if(molsaproFormaDocumentData.molsaManagerName.equals("")||molsaproFormaDocumentData.molsaManagerName==null){
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_MANAGER_EMPTY);
