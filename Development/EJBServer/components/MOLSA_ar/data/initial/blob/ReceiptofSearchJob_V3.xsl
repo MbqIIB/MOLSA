@@ -55,6 +55,7 @@
       <xsl:attribute name="font-size">13.0pt</xsl:attribute>
      <xsl:attribute name="line-height">5mm</xsl:attribute>
      <xsl:attribute name="text-align">left</xsl:attribute>
+	 <xsl:attribute name="space-after">10mm</xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="Normal_9" foa:class="block">
     <xsl:attribute name="font-size">13.0pt</xsl:attribute>
@@ -76,6 +77,13 @@
      <xsl:attribute name="space-before">2mm</xsl:attribute>
      <xsl:attribute name="border-width">2mm</xsl:attribute>
      <xsl:attribute name="text-align">right</xsl:attribute>
+  </xsl:attribute-set>
+  <xsl:attribute-set name="Normal_12" foa:class="block">
+     <xsl:attribute name="font-size">13.0pt</xsl:attribute>
+     <xsl:attribute name="line-height">5mm</xsl:attribute>
+     <xsl:attribute name="space-before">5mm</xsl:attribute>
+     <xsl:attribute name="text-align">left</xsl:attribute>
+	 <xsl:attribute name="margin-left">15mm</xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="Normal_9" foa:class="block">
     <!-- START NON-TRANSLATABLE -->
@@ -101,7 +109,7 @@
   <xsl:template match="STRUCT">
     <fo:root>
       <fo:layout-master-set>
-        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="55mm" margin-bottom="30mm" margin-left="30mm" margin-right="30mm">
+        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="45mm" margin-bottom="20mm" margin-left="30mm" margin-right="30mm">
           <fo:region-body />
           <fo:region-after region-name="xsl-region-after" extent=".5in"/>
         </fo:simple-page-master>
@@ -110,14 +118,15 @@
         <!-- BEGIN, CR00352142, PB -->
         <!-- START NON-TRANSLATABLE -->
         <fo:static-content flow-name="xsl-region-after" font-family="Times New Roman" >
-          <fo:block text-align="right" font-size="9pt" margin-right="5mm">
+          <fo:block text-align="right" font-size="7pt" margin-right="5mm"  margin-top="15mm">
             <fo:inline>  الباحث</fo:inline>
             <fo:inline> : </fo:inline>
+            <xsl:apply-templates select="FIELD[FNAME='caseWorkerName']"/>
           </fo:block>
         </fo:static-content>
         <fo:flow flow-name="xsl-region-body" font-family="Times New Roman">
      <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">السيدة ملاك عبد الله الهاجري    المحترمة</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1">السيدة ملاك عبد الله الهاجري <fo:leader leader-length="40mm"/>   المحترمة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">مدير إدارة القوى العاملة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة - قطر </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2" font-weight="bold">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
@@ -132,13 +141,13 @@
 	<fo:block>
             <fo:external-graphic src="MOLSA/signature-blue.png"  content-height="scale-to-fit" height="10.96mm" />
     </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_12"><xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_7">مدير ادارة الضمان الاجتماعي</fo:block>
 	
 	
-	<fo:block xsl:use-attribute-sets="Normal_10" border-top-style="solid" ></fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_10" border-top-style="solid"></fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_9">السيد/<xsl:apply-templates select="FIELD[FNAME='molsaManagerName']"/></fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_1">مدير ادارة الضمان الاجتماعي  المحترم</fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_1">مدير ادارة الضمان الاجتماعي  <fo:leader leader-length="40mm"/> المحترم</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2" font-weight="bold">السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_3"> 
 	<fo:inline>  تقدم/تقدمت إلينا </fo:inline>

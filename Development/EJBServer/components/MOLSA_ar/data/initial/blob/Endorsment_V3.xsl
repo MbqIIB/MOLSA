@@ -7,7 +7,6 @@
     <xsl:attribute name="font-size">20.0pt</xsl:attribute>
     <xsl:attribute name="line-height">5mm</xsl:attribute>
     <xsl:attribute name="text-align">right</xsl:attribute>
-    <xsl:attribute name="text-indent">50mm</xsl:attribute>
   </xsl:attribute-set>
  <xsl:attribute-set name="Normal_2" foa:class="block">
     <xsl:attribute name="font-size">20.0pt</xsl:attribute>
@@ -48,7 +47,7 @@
   <xsl:attribute-set name="Normal_7" foa:class="block">
      <xsl:attribute name="font-size">20.0pt</xsl:attribute>
      <xsl:attribute name="line-height">5mm</xsl:attribute>
-     <xsl:attribute name="space-before">5mm</xsl:attribute>
+     <xsl:attribute name="space-before">3mm</xsl:attribute>
      <xsl:attribute name="text-align">left</xsl:attribute>
 	  <xsl:attribute name="space-after">10mm</xsl:attribute>
   </xsl:attribute-set>
@@ -62,6 +61,7 @@
      <xsl:attribute name="font-size">13.0pt</xsl:attribute>
      <xsl:attribute name="line-height">5mm</xsl:attribute>
      <xsl:attribute name="text-align">left</xsl:attribute>
+	  <xsl:attribute name="space-after">10mm</xsl:attribute>
   </xsl:attribute-set>
 <xsl:attribute-set name="Normal_10" foa:class="block">
     <xsl:attribute name="font-size">20.0pt</xsl:attribute>
@@ -84,7 +84,7 @@
   <xsl:template match="STRUCT">
     <fo:root>
       <fo:layout-master-set>
-        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="50mm" margin-bottom="30mm" margin-left="30mm" margin-right="30mm">
+        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="45mm" margin-bottom="20mm" margin-left="30mm" margin-right="30mm">
           <fo:region-body />
           <fo:region-after region-name="xsl-region-after" extent=".5in"/>
         </fo:simple-page-master>
@@ -102,6 +102,7 @@
           <fo:block text-align="right" font-size="9pt" margin-right="5mm">
             <fo:inline>  الباحث</fo:inline>
             <fo:inline> : </fo:inline>
+            <xsl:apply-templates select="FIELD[FNAME='caseWorkerName']"/>
           </fo:block>
           
           <fo:block text-align="right" font-size="9pt" margin-right="5mm">
@@ -117,7 +118,7 @@
 	
 	 <fo:block xsl:use-attribute-sets="Normal_9"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1"> 
-	السيد/ مدير ادارة الضمان الاجتماعي  المحترم
+	السيد/ مدير ادارة الضمان الاجتماعي <fo:leader leader-length="20mm"/> المحترم
 	</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_2" font-weight="bold"> السلام عليكم و رحمة الله و بركاته ... و بعد </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_8"> الموضوع : اقرار </fo:block>

@@ -7,7 +7,6 @@
     <xsl:attribute name="font-size">16.0pt</xsl:attribute>
     <xsl:attribute name="line-height">5mm</xsl:attribute>
     <xsl:attribute name="text-align">right</xsl:attribute>
-    <xsl:attribute name="text-indent">50mm</xsl:attribute>
   </xsl:attribute-set>
  <xsl:attribute-set name="Normal_2" foa:class="block">
     <xsl:attribute name="font-size">16.0pt</xsl:attribute>
@@ -65,9 +64,16 @@
   <xsl:attribute-set name="Normal_10" foa:class="block">
      <xsl:attribute name="font-size">8.0pt</xsl:attribute>
      <xsl:attribute name="line-height">2mm</xsl:attribute>
-     <xsl:attribute name="space-before">5mm</xsl:attribute>
+     <xsl:attribute name="space-before">25mm</xsl:attribute>
      <xsl:attribute name="border-width">1mm</xsl:attribute>
      <xsl:attribute name="text-align">right</xsl:attribute>
+  </xsl:attribute-set>
+   <xsl:attribute-set name="Normal_11" foa:class="block">
+     <xsl:attribute name="font-size">13.0pt</xsl:attribute>
+     <xsl:attribute name="line-height">5mm</xsl:attribute>
+     <xsl:attribute name="text-align">left</xsl:attribute>
+	 <xsl:attribute name="space-after">15mm</xsl:attribute>
+	 <xsl:attribute name="space-before">3mm</xsl:attribute>
   </xsl:attribute-set>
  
  
@@ -95,7 +101,7 @@
   <xsl:template match="STRUCT">
     <fo:root>
       <fo:layout-master-set>
-        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="50mm" margin-bottom="30mm" margin-left="30mm" margin-right="30mm">
+        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="50mm" margin-bottom="30mm" margin-left="15mm" margin-right="15mm">
           <fo:region-body />
           
         </fo:simple-page-master>
@@ -108,15 +114,13 @@
         
     <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  
 :تاريخ تقديم الطلب </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" />  :رقم الطلب </fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_11"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" />  :رقم الطلب </fo:block>
 	
 	
 	<fo:block xsl:use-attribute-sets="Normal_3"> 
 	<fo:inline font-weight="bold"> اسم مقدم الطلب </fo:inline>
 	  <fo:inline>:</fo:inline>
-	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>   
-	</fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_5">
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>  <fo:leader leader-length="22mm"/> 
       <fo:inline font-weight="bold">رقم البطاقة</fo:inline>
       <fo:inline> : </fo:inline>
       <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>
@@ -127,14 +131,11 @@
 	<xsl:apply-templates select="FIELD[FNAME='programNames']"/> 
 	</fo:block>
 	
-    <fo:block xsl:use-attribute-sets="Normal_5"> 
+    <fo:block xsl:use-attribute-sets="Normal_3"> 
       <fo:inline font-weight="bold"> اسم صاحب الطلب </fo:inline>
     <fo:inline> : </fo:inline>
-	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> 
-	</fo:block>
-	
-    <fo:block xsl:use-attribute-sets="Normal_3"> 
-      <fo:inline font-weight="bold">البطاقة</fo:inline>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> <fo:leader leader-length="20mm"/> 
+      <fo:inline font-weight="bold">رقم البطاقة</fo:inline>
       <fo:inline>:</fo:inline>
       <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>   </fo:block>
     <fo:block xsl:use-attribute-sets="Normal_5"> 
@@ -145,6 +146,7 @@
     <fo:block xsl:use-attribute-sets="Normal_5"> 
 	<fo:inline font-weight="bold">الباحث</fo:inline>
       <fo:inline>:</fo:inline>
+	<xsl:apply-templates select="FIELD[FNAME='caseWorkerName']"/>
     </fo:block>
 	
     <fo:block xsl:use-attribute-sets="Normal_7">نسخة مقدم الطلب</fo:block>
@@ -155,9 +157,7 @@
 	<fo:block xsl:use-attribute-sets="Normal_3"> 
 	<fo:inline font-weight="bold"> اسم مقدم الطلب </fo:inline>
 	  <fo:inline>:</fo:inline>
-	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>   
-	</fo:block>
-    <fo:block xsl:use-attribute-sets="Normal_5">
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>   <fo:leader leader-length="20mm"/> 
       <fo:inline font-weight="bold">رقم البطاقة</fo:inline>
       <fo:inline>:</fo:inline>
       <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>
@@ -173,11 +173,9 @@
     <fo:block xsl:use-attribute-sets="Normal_5"> 
       <fo:inline font-weight="bold"> اسم صاحب الطلب </fo:inline>
       <fo:inline>:</fo:inline>
-	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> 
-	</fo:block>
+	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/> <fo:leader leader-length="20mm"/> 
 	
-    <fo:block xsl:use-attribute-sets="Normal_3">
-      <fo:inline font-weight="bold">البطاقة</fo:inline>
+      <fo:inline font-weight="bold">رقم البطاقة</fo:inline>
       <fo:inline>:</fo:inline>
       
       <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='alternateID']"/>
@@ -191,7 +189,11 @@
 	
     <fo:block xsl:use-attribute-sets="Normal_3">   للاستفسار عن سير المعاملة يرجى الاتصال على </fo:block>
 	
-   
+   <fo:block xsl:use-attribute-sets="Normal_3"> 
+	<fo:inline font-weight="bold">الباحث</fo:inline>
+      <fo:inline>:</fo:inline>
+	<xsl:apply-templates select="FIELD[FNAME='caseWorkerName']"/>
+    </fo:block>
     <fo:block xsl:use-attribute-sets="Normal_10">
       <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" /> نسخة لملف الحالة رقم</fo:block>
 	
