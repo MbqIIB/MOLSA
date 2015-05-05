@@ -64,6 +64,7 @@ public class CustomFunctionInitializeEntities extends CustomFunctor {
 		final IEG2Context ieg2Context = (IEG2Context) rulesParameters;
 		Datastore datastore;
 	    Date applicationDate = null;
+	    Date applicationEffectiveDate = null;
 		try {
 			datastore = MOLSADatastoreUtility
 					.openDatastore(MOLSADatastoreConst.kDataStoreSchemaName);
@@ -75,14 +76,16 @@ public class CustomFunctionInitializeEntities extends CustomFunctor {
 		        if ((Boolean) personEntity
 		            .getTypedAttribute(MOLSADatastoreConst.kIsPrimaryParticipant)) {
 		          applicationDate = (Date) personEntity
-		              .getTypedAttribute(MOLSADatastoreConst.kCtrlQApplicationDate);
+		              .getTypedAttribute(MOLSADatastoreConst.kReceivedDate);
+		          applicationEffectiveDate = (Date) personEntity
+			              .getTypedAttribute(MOLSADatastoreConst.kCtrlQApplicationDate);
 		        }
 		      }
 		    application.setTypedAttribute(MOLSADatastoreConst.kSubmitDate,
 		            applicationDate);
 			application.setTypedAttribute(
 					MOLSADatastoreConst.kApplicationMonthStartDate,
-					MOLSADateUtil.shiftToStartOfMonth(applicationDate));
+					applicationEffectiveDate);
 
 		} catch (NoSuchSchemaException e) {
 
