@@ -71,9 +71,19 @@ public class MOLSAMaintainEFTUserConfiguration extends
 		searchByPositionKey.recordStatus = RECORDSTATUSEntry.NORMAL.getCode();
 		UserForOrgUnitDetailsList managerUsersList = usersObj
 				.searchByPosition(searchByPositionKey);
+		
+		
+		// read the all user details by Secretary Position
+		SearchByPositionKey searchBySecretaryPositionKey = new SearchByPositionKey();
+		searchBySecretaryPositionKey.effectiveDate = TransactionInfo.getSystemDate();
+		searchBySecretaryPositionKey.organisationStructureID = MOLSAConstants.kOrganisationStructureID;
+		searchBySecretaryPositionKey.positionID = MOLSAConstants.kGeneralSecretaryPositionID;
+		searchBySecretaryPositionKey.recordStatus = RECORDSTATUSEntry.NORMAL.getCode();
+		UserForOrgUnitDetailsList secretaryUsersList = usersObj
+				.searchByPosition(searchBySecretaryPositionKey);
 
 		minCapacity = assistantmanagerUsersList.dtls.size()
-				+ managerUsersList.dtls.size();
+				+ managerUsersList.dtls.size()+ secretaryUsersList.dtls.size();
 		detailsList.dtls.dtls.ensureCapacity(minCapacity);
 
 		for (UserForOrgUnitDetails orgUnitDetails : assistantmanagerUsersList.dtls) {
@@ -86,6 +96,15 @@ public class MOLSAMaintainEFTUserConfiguration extends
 		}
 
 		for (UserForOrgUnitDetails orgUnitDetailsForOrgUnitDetails : managerUsersList.dtls) {
+			MOLSAEFTUserDetails molsaeftUserDetails = new MOLSAEFTUserDetails();
+			molsaeftUserDetails.dtls.userName1 = orgUnitDetailsForOrgUnitDetails.userName;
+			molsaeftUserDetails.dtls.userName2 = orgUnitDetailsForOrgUnitDetails.userName;
+			molsaeftUserDetails.dtls.userFullName1 = orgUnitDetailsForOrgUnitDetails.userFullName;
+			molsaeftUserDetails.dtls.userFullName2 = orgUnitDetailsForOrgUnitDetails.userFullName;
+			detailsList.dtls.dtls.add(molsaeftUserDetails.dtls);
+		}
+		
+		for (UserForOrgUnitDetails orgUnitDetailsForOrgUnitDetails : secretaryUsersList.dtls) {
 			MOLSAEFTUserDetails molsaeftUserDetails = new MOLSAEFTUserDetails();
 			molsaeftUserDetails.dtls.userName1 = orgUnitDetailsForOrgUnitDetails.userName;
 			molsaeftUserDetails.dtls.userName2 = orgUnitDetailsForOrgUnitDetails.userName;

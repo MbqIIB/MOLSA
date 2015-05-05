@@ -158,6 +158,9 @@ public abstract class MOLSAConstants {
 	
 	public static final Long kManagerPositionID=45288L;
 	public static final Long kAssistantManagerPositionID=45290L;
+	public static final Long kGeneralSecretaryPositionID=45349L;
+	
+	
 	public static final Long kOrganisationStructureID=45000L;
 	public static final String KMOLSAOrganisationStructure ="MOLSA";
 	public static final String KType ="STRING";
