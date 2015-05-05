@@ -63,6 +63,7 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
 
     final IEG2Context ieg2Context = (IEG2Context) rulesParameters;
     Date applicationDate = null;
+    Date applicationEffectiveDate = null;
     String applicationMethod = null;
     Datastore datastore;
     try {
@@ -88,12 +89,14 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
         if ((Boolean) personEntity
             .getTypedAttribute(MOLSADatastoreConst.kIsPrimaryParticipant)) {
           applicationDate = (Date) personEntity
-              .getTypedAttribute(MOLSADatastoreConst.kCtrlQApplicationDate);
+              .getTypedAttribute(MOLSADatastoreConst.kReceivedDate);
           applicationMethod = (String) personEntity
               .getTypedAttribute(MOLSADatastoreConst.kApplicationMethod);
           // Get Primary Address and Store
           primaryParticipantAddress = personEntity.getChildEntities(datastore
               .getEntityType(MOLSADatastoreConst.kAddress));
+          applicationEffectiveDate = (Date) personEntity
+	              .getTypedAttribute(MOLSADatastoreConst.kCtrlQApplicationDate);
         }
         if (!(Boolean) personEntity
             .getTypedAttribute(MOLSADatastoreConst.kIsPrimaryParticipant)
@@ -181,7 +184,7 @@ public class CustomFunctionUpdateEntities extends CustomFunctor {
           applicationDate);
       application.setTypedAttribute(
           MOLSADatastoreConst.kApplicationMonthStartDate,
-          MOLSADateUtil.shiftToStartOfMonth(applicationDate));
+          applicationEffectiveDate);
 
       // Also Update IntakeApplication Date of Application with user entered
       // value
