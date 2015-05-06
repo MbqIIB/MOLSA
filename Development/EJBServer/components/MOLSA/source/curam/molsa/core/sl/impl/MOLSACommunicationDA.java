@@ -951,7 +951,7 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		}
 		
 		if(maidProductMap != null && maidProductMap.size()>0) {
-			Map.Entry<String,Money> entry=mainProductMap.entrySet().iterator().next();
+			Map.Entry<String,Money> entry=maidProductMap.entrySet().iterator().next();
 			molsaCommDtls.maidAssistanceAmount=entry.getValue();
 		}
 			
