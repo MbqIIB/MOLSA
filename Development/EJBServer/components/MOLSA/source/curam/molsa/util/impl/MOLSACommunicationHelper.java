@@ -86,6 +86,7 @@ import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.type.DateRange;
 import curam.util.type.Money;
 import curam.util.type.NotFoundIndicator;
 
@@ -95,6 +96,8 @@ public class MOLSACommunicationHelper {
 	public static String kMaid = "MAID";
 	public static String kProgramType = "programType";
 	public static String kAmount = "amount";
+	public static String kStartDate = "startDate";
+	public static String kEndDate = "endDate";
 	
 	static ArrayList<String> molsaProduct = new ArrayList<String>(){{
 	add(PRODUCTTYPE.ANONYMOUSPARENTS);
@@ -383,6 +386,7 @@ public class MOLSACommunicationHelper {
 		return returnMap;
 	}
 	
+	
 	/**
 	 * This method will return the Active Exception evidence details with Amount in the Map format.
 	 * @param icCaseID
@@ -392,6 +396,7 @@ public class MOLSACommunicationHelper {
 	 */
 	public static HashMap<String, Money> getProductDetailsForException(long icCaseID) throws AppException,
 	InformationalException {
+		
 		HashMap<String, Money> productMap = new HashMap<String, Money>();
 		final CaseIDStatusAndEvidenceTypeKey caseIDStatusAndEvidenceTypeKey = new CaseIDStatusAndEvidenceTypeKey();
 
@@ -428,7 +433,17 @@ public class MOLSACommunicationHelper {
 			.convert(dynamicEvidenceDataDetails
 					.getAttribute(kAmount));
 			
-			productMap.put(programType.code(), amount);
+			Date startDate= (Date) DynamicEvidenceTypeConverter
+			.convert(dynamicEvidenceDataDetails
+					.getAttribute(kStartDate));
+			Date endDate= (Date) DynamicEvidenceTypeConverter
+			.convert(dynamicEvidenceDataDetails
+					.getAttribute(kEndDate));
+			
+			DateRange dateRange = new DateRange(startDate,endDate);
+			if(dateRange.contains(Date.getCurrentDate())) {			
+				productMap.put(programType.code(), amount);
+			}
 		}
 		
 		return productMap;
