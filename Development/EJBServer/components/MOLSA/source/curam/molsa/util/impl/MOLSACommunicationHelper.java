@@ -154,7 +154,7 @@ public class MOLSACommunicationHelper {
 			return caseReference;
 		}
 	}
-	public static Date getCardExpiry(long caseID) throws AppException,
+	public static String getCardExpiry(long caseID) throws AppException,
 	InformationalException {
 
 		//	curam.core.facade.intf.CaseHeader caseHeaderObj= CaseHeaderFactory.newInstance();
@@ -170,12 +170,25 @@ public class MOLSACommunicationHelper {
 		.getCertifications(certificationCaseIDKey);
 		for(MaintainCertificationDetails certDtls : certificationList.dtls.items()) {
 			if(certDtls.statusCode.equals(RECORDSTATUS.NORMAL)) {
-				return certDtls.periodToDate;
+				return certDtls.periodToDate.toString();
 			}
 		}
 		
 		return null;
 
+	}
+	
+	public static String getNomineeName(long caseID) throws AppException,
+	InformationalException {
+		return "TEST NOMINEE";
+	}
+	public static String getCaseWorkerMobileNo() throws AppException,
+	InformationalException {
+		return "033510397";
+	}
+	public static String getNomineeAlternateID(long caseID) throws AppException,
+	InformationalException {
+		return "12345678914";
 	}
 	public static long molsaLocation() throws AppException,
 	InformationalException {

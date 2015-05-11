@@ -55,6 +55,7 @@ import curam.supervisor.facade.struct.caseID;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.transaction.TransactionInfo;
+import curam.util.type.Date;
 
 public class MOLSAConcernRoleDocumentsDA extends
 curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
@@ -185,6 +186,10 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		molsaproFormaDocumentData.mainProductName=concernRoleCommunicationDtls.mainProductName;
 		molsaproFormaDocumentData.mainProductAmount=concernRoleCommunicationDtls.mainProductAmount;
 		molsaproFormaDocumentData.maidAssistanceAmount=concernRoleCommunicationDtls.maidAssistanceAmount;
+		molsaproFormaDocumentData.benefNomineeName=concernRoleCommunicationDtls.benefNomineeName;
+		molsaproFormaDocumentData.caseWorkerMobile=concernRoleCommunicationDtls.caseWorkerMobile;
+		molsaproFormaDocumentData.nomineeAlternateID=concernRoleCommunicationDtls.nomineeAlternateID;
+		molsaproFormaDocumentData.inquiryReviewDate=Date.getCurrentDate().addDays(30).toString();
 
 		//Getting the location name from location id 
 

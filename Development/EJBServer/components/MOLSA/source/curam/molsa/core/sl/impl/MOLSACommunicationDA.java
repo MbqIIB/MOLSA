@@ -954,6 +954,9 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 			Map.Entry<String,Money> entry=maidProductMap.entrySet().iterator().next();
 			molsaCommDtls.maidAssistanceAmount=entry.getValue();
 		}
+		molsaCommDtls.nomineeAlternateID=MOLSACommunicationHelper.getNomineeAlternateID(commDetails.caseID);
+		molsaCommDtls.caseWorkerMobile=MOLSACommunicationHelper.getCaseWorkerMobileNo();
+		molsaCommDtls.benefNomineeName=MOLSACommunicationHelper.getNomineeName(commDetails.caseID);
 			
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
