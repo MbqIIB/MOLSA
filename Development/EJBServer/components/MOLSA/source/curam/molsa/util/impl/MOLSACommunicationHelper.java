@@ -8,6 +8,7 @@ import java.util.Map;
 import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.CASEEVIDENCE;
 import curam.codetable.CASESTATUS;
+import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
 import curam.codetable.FINCOMPONENTSTATUS;
 import curam.codetable.FINCOMPONENTTYPE;
@@ -26,6 +27,7 @@ import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.FinancialComponentFactory;
 import curam.core.fact.MaintainCertificationFactory;
 import curam.core.fact.MaintainConcernRoleBankAcFactory;
+import curam.core.fact.PhoneNumberFactory;
 import curam.core.fact.ProductDeliveryFactory;
 import curam.core.fact.UsersFactory;
 import curam.core.intf.AlternateName;
@@ -33,8 +35,16 @@ import curam.core.intf.CaseHeader;
 import curam.core.intf.FinancialComponent;
 import curam.core.intf.MaintainCertification;
 import curam.core.intf.MaintainConcernRoleBankAc;
+import curam.core.intf.PhoneNumber;
 import curam.core.intf.ProductDelivery;
 import curam.core.intf.Users;
+
+import curam.core.sl.entity.fact.CaseNomineeFactory;
+import curam.core.sl.entity.intf.CaseNominee;
+import curam.core.sl.entity.struct.CaseNomineeAndStatusForCaseDetails;
+import curam.core.sl.entity.struct.CaseNomineeAndStatusForCaseDetailsList;
+import curam.core.sl.entity.struct.CaseNomineeCaseIDAndStatusKey;
+import curam.core.sl.entity.struct.CaseNomineeCaseIDKey;
 import curam.core.sl.infrastructure.entity.base.EvidenceDescriptor;
 import curam.core.sl.infrastructure.entity.fact.EvidenceDescriptorFactory;
 import curam.core.sl.infrastructure.entity.struct.CaseIDStatusAndEvidenceTypeKey;
@@ -66,6 +76,8 @@ import curam.core.struct.MaintainBankAccountKey;
 import curam.core.struct.MaintainCertificationCaseIDKey;
 import curam.core.struct.MaintainCertificationDetails;
 import curam.core.struct.MaintainCertificationList;
+import curam.core.struct.PhoneNumberDtls;
+import curam.core.struct.PhoneNumberKey;
 import curam.core.struct.ProductDeliveryDtls;
 import curam.core.struct.ProductDeliveryKey;
 import curam.core.struct.ReadMultiByConcernRoleIDBankAcResult;
@@ -180,15 +192,55 @@ public class MOLSACommunicationHelper {
 	
 	public static String getNomineeName(long caseID) throws AppException,
 	InformationalException {
-		return "TEST NOMINEE";
+		String nonimeeName="";
+	    CaseNominee caseNomineeObj= CaseNomineeFactory.newInstance();
+	    CaseNomineeCaseIDAndStatusKey caseNomineeCaseIDAndStatusKey = new CaseNomineeCaseIDAndStatusKey();
+	    caseNomineeCaseIDAndStatusKey.caseID = caseID;
+	    caseNomineeCaseIDAndStatusKey.nomineeStatus=RECORDSTATUS.NORMAL;
+	    CaseNomineeAndStatusForCaseDetailsList caseNomineeAndStatusForCaseDetailsList = 
+	    	caseNomineeObj.searchByCaseIDAndCaseNomineeStatus(caseNomineeCaseIDAndStatusKey);
+	    
+	    for(CaseNomineeAndStatusForCaseDetails caseNomineeAndStatusForCaseDetails : caseNomineeAndStatusForCaseDetailsList.dtls.items()) {
+	    	nonimeeName = MOLSAParticipantHelper
+			.returnAlternateName(caseNomineeAndStatusForCaseDetails.concernRoleID, ALTERNATENAMETYPE.REGISTERED);
+	    }
+		return nonimeeName;
 	}
+	
 	public static String getCaseWorkerMobileNo() throws AppException,
 	InformationalException {
-		return "033510397";
+		String phoneNumber="";
+		Users usersObj=UsersFactory.newInstance();
+		UsersKey usersKey = new UsersKey();
+		usersKey.userName= TransactionInfo.getProgramUser();
+		UsersDtls usersDtls = usersObj.read(usersKey);
+		PhoneNumber phoneNumberObj = PhoneNumberFactory.newInstance();
+		PhoneNumberKey  phoneNumberKey = new  PhoneNumberKey();
+		phoneNumberKey.phoneNumberID = usersDtls.businessPhoneID;
+		NotFoundIndicator notFoundIndicator = new NotFoundIndicator();
+		PhoneNumberDtls  phoneNumberDtls = phoneNumberObj.read(notFoundIndicator, phoneNumberKey);
+		if(!notFoundIndicator.isNotFound()) {
+			phoneNumber = phoneNumberDtls.phoneNumber +"  "+ phoneNumberDtls.phoneExtension;
+		} 
+		return phoneNumber;
 	}
 	public static String getNomineeAlternateID(long caseID) throws AppException,
 	InformationalException {
-		return "12345678914";
+		String alternateID="";
+	    CaseNominee caseNomineeObj= CaseNomineeFactory.newInstance();
+	    CaseNomineeCaseIDAndStatusKey caseNomineeCaseIDAndStatusKey = new CaseNomineeCaseIDAndStatusKey();
+	    caseNomineeCaseIDAndStatusKey.caseID = caseID;
+	    caseNomineeCaseIDAndStatusKey.nomineeStatus=RECORDSTATUS.NORMAL;
+	    CaseNomineeAndStatusForCaseDetailsList caseNomineeAndStatusForCaseDetailsList = 
+	    	caseNomineeObj.searchByCaseIDAndCaseNomineeStatus(caseNomineeCaseIDAndStatusKey);
+	    
+	    for(CaseNomineeAndStatusForCaseDetails caseNomineeAndStatusForCaseDetails : caseNomineeAndStatusForCaseDetailsList.dtls.items()) {
+	    	alternateID = MOLSAParticipantHelper
+			.returnConcernRoleAlternateID(
+					caseNomineeAndStatusForCaseDetails.concernRoleID,
+					CONCERNROLEALTERNATEID.INSURANCENUMBER);
+	    }
+		return alternateID;
 	}
 	public static long molsaLocation() throws AppException,
 	InformationalException {
