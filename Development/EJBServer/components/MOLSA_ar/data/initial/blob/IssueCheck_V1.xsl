@@ -107,7 +107,7 @@
   <xsl:template match="DATA">
     <!--Explicitly select the STRUCT to avoid processing anything
  else.-->
-    <xsl:apply-templates select="STRUCT[SNAME='MOLSAProFormaDocumentData']" />
+    <xsl:apply-templates select="STRUCT[SNAME='MOLSAPrintChequeDetails']" />
   </xsl:template>
   <xsl:template match="STRUCT">
     <fo:root>
@@ -123,41 +123,41 @@
         
         <fo:flow flow-name="xsl-region-body" font-family="Times New Roman">
         
-    <fo:block xsl:use-attribute-sets="Normal_1"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  
+    <fo:block xsl:use-attribute-sets="Normal_1"> <xsl:apply-templates select="FIELD[FNAME='accountDateString']" />  
 </fo:block>
-	<fo:block xsl:use-attribute-sets="Normal_2"> <xsl:apply-templates select="FIELD[FNAME='caseReferenceID']" /></fo:block>
+	<fo:block xsl:use-attribute-sets="Normal_2"> <xsl:apply-templates select="FIELD[FNAME='checkAmount']" /></fo:block>
 	
 	
 	<fo:block xsl:use-attribute-sets="Normal_3">
-	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>
+	 <xsl:apply-templates select="FIELD[FNAME='beneficiaryName']" />
       </fo:block>
 
 	
     <fo:block xsl:use-attribute-sets="Normal_4"> 
       
-	ثمانية سبعة وعشرين سبعة وستون ألف 
+	<xsl:apply-templates select="FIELD[FNAME='checkAmountInWords']" />
      
    </fo:block>
     <fo:block xsl:use-attribute-sets="Normal_5"> 
       
-	12345
+	<xsl:apply-templates select="FIELD[FNAME='checkNumber']" />
      
    </fo:block>
     <fo:block xsl:use-attribute-sets="Normal_6"> 
       
-	بدل مسترجعات
+	
      
    </fo:block>
    
-    <fo:block xsl:use-attribute-sets="Normal_7"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  
+    <fo:block xsl:use-attribute-sets="Normal_7"><xsl:apply-templates select="FIELD[FNAME='accountDateString']" />  
 </fo:block>
 
 <fo:block xsl:use-attribute-sets="Normal_8">
-	<xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='concernRoleName']"/>
+	<xsl:apply-templates select="FIELD[FNAME='beneficiaryName']" />
       </fo:block>
 
 	
-    <fo:block xsl:use-attribute-sets="Normal_9" > ثما  ثمانية سبعة وعشرين سبعة وستون ألفt <fo:leader leader-length="45mm"/> 12378 </fo:block>
+    <fo:block xsl:use-attribute-sets="Normal_9" > <xsl:apply-templates select="FIELD[FNAME='checkAmountInWords']" /> <fo:leader leader-length="45mm"/> <xsl:apply-templates select="FIELD[FNAME='checkAmount']" /> </fo:block>
      <!--  <fo:block xsl:use-attribute-sets="Normal_10" margin-bottom="4pt">12378  </fo:block> -->
 
    </fo:flow>

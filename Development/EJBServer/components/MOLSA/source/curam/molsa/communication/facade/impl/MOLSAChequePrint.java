@@ -6,12 +6,15 @@ import java.text.SimpleDateFormat;
 
 import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.ILICATEGORY;
+import curam.codetable.METHODOFDELIVERY;
 import curam.core.fact.InstructionLineItemFactory;
+import curam.core.fact.MaintainXSLTemplateFactory;
 import curam.core.fact.PaymentReceivedInstructionFactory;
 import curam.core.fact.PaymentReceivedInstrumentFactory;
 import curam.core.impl.CuramConst;
 import curam.core.impl.EnvVars;
 import curam.core.intf.InstructionLineItem;
+import curam.core.intf.MaintainXSLTemplate;
 import curam.core.intf.PaymentReceivedInstruction;
 import curam.core.intf.PaymentReceivedInstrument;
 import curam.core.sl.struct.ProFormaReturnDocDetails;
@@ -24,6 +27,8 @@ import curam.core.struct.PaymentReceivedInstrumentKey;
 import curam.core.struct.PmtRecvFinInstructionID;
 import curam.core.struct.ProFormaDocumentData;
 import curam.core.struct.SystemUserDtls;
+import curam.core.struct.XSLTemplateIn;
+import curam.core.struct.XSLTemplateReadDetails;
 import curam.molsa.communication.facade.struct.MOLSAPrintChequeDetails;
 import curam.molsa.communication.facade.struct.MOLSAPrintChequeKey;
 import curam.molsa.message.MOLSABPOPRINTCHEQUE;
@@ -42,7 +47,8 @@ import curam.util.xml.impl.XMLEncodingConstants;
 import curam.util.xml.impl.XMLPrintStream;
 
 public class MOLSAChequePrint extends curam.molsa.communication.facade.base.MOLSAChequePrint{
-
+    final long checkTemplateID= 45016;
+    final int checkTemplateVersion= 1;
 	@Override
 	public ProFormaReturnDocDetails printCheque(MOLSAPrintChequeKey arg1)
 			throws AppException, InformationalException {
@@ -53,6 +59,9 @@ public class MOLSAChequePrint extends curam.molsa.communication.facade.base.MOLS
 		instructionLineItemKey.instructLineItemID = arg1.instructionLineItemID;
 		InstructionLineItemDtls instructionLineItemDtls =  instructionLineItemObj.read(instructionLineItemKey);
 		if(!instructionLineItemDtls.instructLineItemCategory.equals(ILICATEGORY.PAYMENTRECEIVEDINSTRUCTION)) {
+			throw new AppException(MOLSABPOPRINTCHEQUE.ERR_PRINT_ALLOWED_ONLY_FOR_PAYMENT_RECEIVED);
+		}
+		if(!instructionLineItemDtls.deliveryMethodType.equals(METHODOFDELIVERY.CHEQUE)) {
 			throw new AppException(MOLSABPOPRINTCHEQUE.ERR_PRINT_ALLOWED_ONLY_FOR_PAYMENT_RECEIVED);
 		}
 		
@@ -109,11 +118,24 @@ public class MOLSAChequePrint extends curam.molsa.communication.facade.base.MOLS
 	    // END, CR00306943
 	    final curam.util.administration.struct.XSLTemplateInstanceKey xslTemplateInstanceKey = new curam.util.administration.struct.XSLTemplateInstanceKey();
 
-	    // Set up XSL template instance
-	    xslTemplateInstanceKey.templateID = 1;
-	    xslTemplateInstanceKey.templateVersion = 1;
+	    final MaintainXSLTemplate maintainXSLTemplateOBJ = MaintainXSLTemplateFactory.newInstance();
+		final XSLTemplateIn xslTemplateIn = new XSLTemplateIn();
 
-	    xslTemplateInstanceKey.locale = TransactionInfo.getProgramLocale();
+		xslTemplateIn.templateID = checkTemplateID;
+
+		// BEGIN, CR00145315, SK
+		xslTemplateIn.localeIdentifier = "ar";
+		// END, CR00145315
+
+		// Read the template details number.
+		// BEGIN, CR00279987, KRK
+		XSLTemplateReadDetails xslTemplateReadDetails = maintainXSLTemplateOBJ.readXSLTemplateDetails(
+				xslTemplateIn);
+	    // Set up XSL template instance
+	    xslTemplateInstanceKey.templateID = checkTemplateID;
+	    xslTemplateInstanceKey.templateVersion = xslTemplateReadDetails.latestVersion;
+
+	    xslTemplateInstanceKey.locale = "ar";
 
 	    // BEGIN, CR00408760, KRK
 	    if (!Configuration.getBooleanProperty(
@@ -167,7 +189,7 @@ public class MOLSAChequePrint extends curam.molsa.communication.facade.base.MOLS
 	      final String generatedDate = Locale.getFormattedTime(
 	        DateTime.getCurrentDateTime());
 
-	      final String versionNo = "1";
+	      final String versionNo = xslTemplateReadDetails.latestVersion+"";
 	      final String comments = "";
 
 	      // Open document
