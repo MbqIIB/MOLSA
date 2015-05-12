@@ -168,5 +168,7 @@ public abstract class MOLSAConstants {
 	public static final String kUser2="curam.molsa.financial.eft.nameOfSocialSecurityDirector";
 	public static final String kTitle1="curam.molsa.financial.eft.mswordSignatureTitleOne";
 	public static final String kTitle2="curam.molsa.financial.eft.mswordSignatureTitleTwo";
+	
+	public static final String kMOLSAApplicationWithdrawTask = "MOLSAApplicationWithdrawTask";
 
 }
