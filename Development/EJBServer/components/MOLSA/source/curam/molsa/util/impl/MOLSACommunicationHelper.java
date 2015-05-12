@@ -7,6 +7,7 @@ import java.util.Map;
 
 import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.CASEEVIDENCE;
+import curam.codetable.CASENOMINEESTATUS;
 import curam.codetable.CASESTATUS;
 import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.EVIDENCEDESCRIPTORSTATUS;
@@ -196,7 +197,7 @@ public class MOLSACommunicationHelper {
 	    CaseNominee caseNomineeObj= CaseNomineeFactory.newInstance();
 	    CaseNomineeCaseIDAndStatusKey caseNomineeCaseIDAndStatusKey = new CaseNomineeCaseIDAndStatusKey();
 	    caseNomineeCaseIDAndStatusKey.caseID = caseID;
-	    caseNomineeCaseIDAndStatusKey.nomineeStatus=RECORDSTATUS.NORMAL;
+	    caseNomineeCaseIDAndStatusKey.nomineeStatus=CASENOMINEESTATUS.OPERATIONAL;
 	    CaseNomineeAndStatusForCaseDetailsList caseNomineeAndStatusForCaseDetailsList = 
 	    	caseNomineeObj.searchByCaseIDAndCaseNomineeStatus(caseNomineeCaseIDAndStatusKey);
 	    
@@ -230,7 +231,7 @@ public class MOLSACommunicationHelper {
 	    CaseNominee caseNomineeObj= CaseNomineeFactory.newInstance();
 	    CaseNomineeCaseIDAndStatusKey caseNomineeCaseIDAndStatusKey = new CaseNomineeCaseIDAndStatusKey();
 	    caseNomineeCaseIDAndStatusKey.caseID = caseID;
-	    caseNomineeCaseIDAndStatusKey.nomineeStatus=RECORDSTATUS.NORMAL;
+	    caseNomineeCaseIDAndStatusKey.nomineeStatus=CASENOMINEESTATUS.OPERATIONAL;
 	    CaseNomineeAndStatusForCaseDetailsList caseNomineeAndStatusForCaseDetailsList = 
 	    	caseNomineeObj.searchByCaseIDAndCaseNomineeStatus(caseNomineeCaseIDAndStatusKey);
 	    
