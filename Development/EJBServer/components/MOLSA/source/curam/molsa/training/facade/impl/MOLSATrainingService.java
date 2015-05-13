@@ -231,7 +231,7 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		trainingDtls.trainingEndDate=trainingDetails.trainingEndDate;
 		trainingDtls.trainingGoal=trainingDetails.trainingGoal;
 		trainingDtls.trainingStartDate=trainingDetails.trainingStartDate;
-		trainingDtls.trainingSubject=trainingDetails.trainingSubject;
+		trainingDtls.trainingSubject=trainingDetails.trainingSubject; 
 		trainingDtls.trainingTopic=trainingDetails.trainingTopic;
 		trainingDtls.trainingType=trainingDetails.trainingType;
 		trainingDtls.trainingLocation=trainingDetails.trainingLocation;
@@ -803,55 +803,55 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			//	System.out.println("The ReminderSMS is send to "+mapDetails.size()+" Beneficiaries");
 
 			//Send SMS to the concerned people with  Not Started status
+		}
+		if(concernRoletabbedList.length()>0){
 
-			if(concernRoletabbedList.length()>0){
-
-				MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
-				MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
-				key.dtls.concernRoleTabbedList=concernRoletabbedList;
-				key.dtls.smsMessageText=MOLSABPOTRAINING.MOLSA_TRAINING_REMINDER_SMS+" "+MOLSABPOTRAINING.TRAINING_NAME+" "+readDetails.serviceName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+readDetails.trainingStartDate
-				+" "+MOLSABPOTRAINING.TRAINING_END_DATE+readDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+readDetails.trainingLocation;
-				key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
-				//  key.dtls.caseID=instanceDtls.caseID;
-				molsasmsUtilObj.sendSMSDPMode(key);
+			MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
+			MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
+			key.dtls.concernRoleTabbedList=concernRoletabbedList;
+			key.dtls.smsMessageText=MOLSABPOTRAINING.MOLSA_TRAINING_REMINDER_SMS+" "+MOLSABPOTRAINING.TRAINING_NAME+" "+readDetails.serviceName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+readDetails.trainingStartDate
+			+" "+MOLSABPOTRAINING.TRAINING_END_DATE+readDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+readDetails.trainingLocation;
+			key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
+			//  key.dtls.caseID=instanceDtls.caseID;
+			molsasmsUtilObj.sendSMSDPMode(key);
 
 
-				//Getting the Sent SMS Count for information
+			//Getting the Sent SMS Count for information
 
-				StringList concernCount=StringUtil.delimitedText2StringList(concernRoletabbedList, CuramConst.gkTabDelimiterChar);
-				AppException app = new AppException(MOLSABPOTRAINING.MOLSA_TRAINING_SMS_SENT_INFO);
-				for(String concern:concernCount){
-					if(concern.equals("")|| concern==null ){
-						concernCount.remove(concern);
-					}
+			StringList concernCount=StringUtil.delimitedText2StringList(concernRoletabbedList, CuramConst.gkTabDelimiterChar);
+			AppException app = new AppException(MOLSABPOTRAINING.MOLSA_TRAINING_SMS_SENT_INFO);
+			for(String concern:concernCount){
+				if(concern.equals("")|| concern==null ){
+					concernCount.remove(concern);
 				}
-				app.arg(concernCount.size());
-				informationalManager = TransactionInfo.setInformationalManager();
-				informationalManager.addInformationalMsg(app,
-						GeneralConstants.kEmpty,
-						InformationalElement.InformationalType.kWarning);		
-
-			}else{
-
-				AppException app = new AppException(MOLSABPOTRAINING.MOLSA_TRAINING_SMS_SENT_INFO);
-				app.arg(0);
-				informationalManager = TransactionInfo.setInformationalManager();
-				informationalManager.addInformationalMsg(app,
-						GeneralConstants.kEmpty,
-						InformationalElement.InformationalType.kWarning);	
 			}
-			String[] infos = informationalManager.obtainInformationalAsString();
+			app.arg(concernCount.size());
+			informationalManager = TransactionInfo.setInformationalManager();
+			informationalManager.addInformationalMsg(app,
+					GeneralConstants.kEmpty,
+					InformationalElement.InformationalType.kWarning);		
 
-			infos = informationalManager.obtainInformationalAsString();
-			for (String message : infos) {
+		}else{
 
-				final InformationalMsgDtls informationalMsgDtls = new InformationalMsgDtls();
+			AppException app = new AppException(MOLSABPOTRAINING.MOLSA_TRAINING_SMS_SENT_INFO);
+			app.arg(0);
+			informationalManager = TransactionInfo.setInformationalManager();
+			informationalManager.addInformationalMsg(app,
+					GeneralConstants.kEmpty,
+					InformationalElement.InformationalType.kWarning);	
+		}
+		String[] infos = informationalManager.obtainInformationalAsString();
 
-				informationalMsgDtls.informationMsgTxt = message;
+		infos = informationalManager.obtainInformationalAsString();
+		for (String message : infos) {
 
-				informationalMsgDtlsList.dtls.addRef(
-						informationalMsgDtls);
-			}
+			final InformationalMsgDtls informationalMsgDtls = new InformationalMsgDtls();
+
+			informationalMsgDtls.informationMsgTxt = message;
+
+			informationalMsgDtlsList.dtls.addRef(
+					informationalMsgDtls);
+
 
 		}
 
