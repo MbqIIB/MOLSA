@@ -144,7 +144,7 @@
       <xsl:apply-templates select="FIELD[FNAME='inquiryReviewDate']" /> </fo:block>
     <fo:block xsl:use-attribute-sets="Normal_3">   للاستفسار عن سير المعاملة يرجى الاتصال على </fo:block>
     <fo:block xsl:use-attribute-sets="Normal_5"> 
-	 <fo:inline font-weight="bold">Mobile No</fo:inline>
+	 <fo:inline font-weight="bold">رقم الهاتف</fo:inline>
       <fo:inline>:</fo:inline>
 	<xsl:apply-templates select="FIELD[FNAME='caseWorkerMobile']"/><fo:leader leader-length="60mm"/>
 	<fo:inline font-weight="bold">الباحث</fo:inline>
@@ -192,7 +192,7 @@
     <fo:block xsl:use-attribute-sets="Normal_3">   للاستفسار عن سير المعاملة يرجى الاتصال على </fo:block>
 	
    <fo:block xsl:use-attribute-sets="Normal_3"> 
-   <fo:inline font-weight="bold">Mobile No</fo:inline>
+   <fo:inline font-weight="bold">رقم الهاتف</fo:inline>
       <fo:inline>:</fo:inline>
 	<xsl:apply-templates select="FIELD[FNAME='caseWorkerMobile']"/><fo:leader leader-length="60mm"/>
 	<fo:inline font-weight="bold">الباحث</fo:inline>
