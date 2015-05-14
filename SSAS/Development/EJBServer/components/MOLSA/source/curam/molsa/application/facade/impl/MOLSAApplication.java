@@ -1,6 +1,9 @@
 package curam.molsa.application.facade.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.inject.Inject;
@@ -14,8 +17,12 @@ import curam.application.facade.struct.SubmitApplicationDetails;
 import curam.application.impl.Application;
 import curam.application.impl.ApplicationConfiguration;
 import curam.application.impl.ApplicationDAO;
+import curam.application.impl.ApplicationRoleDAO;
+import curam.application.impl.ApplicationRoleObject;
 import curam.application.workflow.struct.ApplicationWorkflowDetails;
 import curam.codetable.PRODUCTTYPE;
+import curam.codetable.impl.APPLICATIONREASSIGNREASONEntry;
+import curam.codetable.impl.ORGOBJECTTYPEEntry;
 import curam.core.impl.CuramConst;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.datastore.impl.Datastore;
@@ -57,12 +64,15 @@ public class MOLSAApplication extends
 	protected ApplicationDAO applicationDAO;
 
 	@Inject
+	private ApplicationRoleDAO applicationRoleDAO;
+	
+	@Inject
 	private ApplicationConfiguration applicationConfiguration;
 
 	public MOLSAApplication() {
 		GuiceWrapper.getInjector().injectMembers(this);
 	}
-
+	
 	@Override
 	public ApplicationID submitApplication(SubmitApplicationDetails appDetails)
 			throws AppException, InformationalException {
@@ -117,6 +127,7 @@ public class MOLSAApplication extends
 		Application application = applicationDAO
 				.get(applicationID.applicationID);
 		application.resetToSubmitted();
+		modifyOwner(application);
 		taskCreateDetails.caseID = application.getCase().getID();
 		final LocalisableString subject = new LocalisableString(
 				MOLSANOTIFICATION.INF_REJECT_OF_APPLICATION_REVIEW);
@@ -140,6 +151,7 @@ public class MOLSAApplication extends
 		eventKey.eventKey.eventType = MOLSAApplicationNotification.APPLICATION_REJECTED.eventType;
 		eventKey.primaryEventData = applicationID.applicationID;
 		EventService.raiseEvent(eventKey);
+		
 	}
 
 	@Override
@@ -162,9 +174,43 @@ public class MOLSAApplication extends
 		}
 		return MatchClientFactory.newInstance().readParticipantDetailsForMerge(
 				key);
-
-		
 	}
 
+	private void modifyOwner(Application application) throws AppException, InformationalException {
+		
+		curam.application.impl.ApplicationRole initialApplicationOwner = null;
+		List<curam.application.impl.ApplicationRole> applicationRoles = applicationRoleDAO
+				.search(application);
+		List<curam.application.impl.ApplicationRole> modifiableApplicationRoles = new ArrayList<curam.application.impl.ApplicationRole>(
+				applicationRoles);
+		Collections.sort(modifiableApplicationRoles,
+				new Comparator<curam.application.impl.ApplicationRole>() {
+					public int compare(
+							final curam.application.impl.ApplicationRole object1,
+							final curam.application.impl.ApplicationRole object2) {
+						return object1.getDateRange().compareTo(
+								object2.getDateRange());
+					}
+				});
+		
+		for (Iterator<curam.application.impl.ApplicationRole> iterator = modifiableApplicationRoles
+				.iterator(); iterator.hasNext();) {
+			initialApplicationOwner = iterator.next();
+		
+		}
+		
+		ApplicationRoleObject initialOwner = new ApplicationRoleObject(
+				initialApplicationOwner.getOrgObjectLink());
+		
+		if(initialOwner.getObjectOrgLink().getOrgObjectType().getCode().
+				equals(ORGOBJECTTYPEEntry.WORKQUEUE.getCode())){
+			application.modifyOwner(ORGOBJECTTYPEEntry.WORKQUEUE, initialOwner.getObjectOrgLink().getOrgObjectIdentifier().toString(),
+					APPLICATIONREASSIGNREASONEntry.OTHER, "Application rejected");
+		} else {
+			application.modifyOwner(initialOwner.getName(),
+				APPLICATIONREASSIGNREASONEntry.OTHER, "Application rejected");
+		}
+	
+	}
 
 }

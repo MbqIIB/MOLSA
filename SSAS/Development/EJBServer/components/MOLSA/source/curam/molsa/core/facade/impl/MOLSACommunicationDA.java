@@ -5,6 +5,8 @@ import curam.codetable.COMMUNICATIONFORMAT;
 import curam.core.facade.fact.ParticipantFactory;
 import curam.core.facade.struct.CreateProFormaCommDetails1;
 import curam.core.facade.struct.FileNameAndDataDtls;
+import curam.core.facade.struct.ListProFormaTemplateByTypeAndParticipantKey;
+import curam.core.facade.struct.ListProFormaTemplateByTypeAndParticpant;
 import curam.core.facade.struct.ReadAttachmentKey;
 import curam.core.facade.struct.ReadCommunicationAttachmentDetails;
 import curam.core.fact.CommAttachmentLinkFactory;
@@ -16,11 +18,14 @@ import curam.core.sl.struct.CommunicationIDKey;
 import curam.core.sl.struct.PreviewProFormaKey;
 import curam.core.sl.struct.ProFormaCommKey;
 import curam.core.sl.struct.ProFormaReturnDocDetails;
+import curam.core.struct.CaseHeaderKey;
 import curam.core.struct.CaseKey;
 import curam.core.struct.CaseTypeCode;
 import curam.core.struct.CommunicationAttachmentLinkReadmultiKey;
 import curam.core.struct.ConcernRoleCommunicationDtls;
 import curam.core.struct.ConcernRoleCommunicationKey;
+import curam.core.struct.SearchTemplatesKey;
+import curam.core.struct.XSLTemplateDetails;
 import curam.molsa.core.sl.fact.MOLSACommunicationDAFactory;
 import curam.serviceplans.facade.struct.ServicePlanSecurityKey;
 import curam.serviceplans.sl.impl.ServicePlanSecurity;
@@ -165,6 +170,54 @@ curam.molsa.core.facade.base.MOLSACommunicationDA{
 		final curam.molsa.core.sl.intf.MOLSACommunicationDA molsaCommunicationObj=MOLSACommunicationDAFactory.newInstance();
 		molsaCommunicationObj.createProFormaCommunication1(
 				createProFormaCommDetails.dtls);
+	}
+
+	@Override
+	public ListProFormaTemplateByTypeAndParticpant listTemplateByTypeAndParticipant(
+			ListProFormaTemplateByTypeAndParticipantKey listProFormaTemplateByTypeAndParticipantKey)
+			throws AppException, InformationalException {
+		// TODO Auto-generated method stub
+		 // create return object
+	    final ListProFormaTemplateByTypeAndParticpant listProFormaTemplateByTypeAndParticpant = new ListProFormaTemplateByTypeAndParticpant();
+
+	    // MaintainXSLTemplate manipulation variables
+	    final curam.core.intf.MaintainXSLTemplate maintainXSLTemplateObj = curam.core.fact.MaintainXSLTemplateFactory.newInstance();
+	    final SearchTemplatesKey searchTemplatesKey = new SearchTemplatesKey();
+
+	    if ((listProFormaTemplateByTypeAndParticipantKey.participantRoleID == 0)
+	      && (listProFormaTemplateByTypeAndParticipantKey.caseID != 0)) {
+
+	      final curam.core.intf.CaseHeader caseHeaderObj = curam.core.fact.CaseHeaderFactory.newInstance();
+	      final CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+
+	      // Set key to read caseHeader to retrieve the concernRoleID
+	      caseHeaderKey.caseID = listProFormaTemplateByTypeAndParticipantKey.caseID;
+	      // BEGIN, CR00108061, GSP
+	      // Read caseHeader
+	      listProFormaTemplateByTypeAndParticipantKey.participantRoleID = caseHeaderObj.read(caseHeaderKey).concernRoleID;
+	      // END, CR00108061
+	    }
+
+	    // Set key details to retrieve the list of templates
+	    searchTemplatesKey.concernRoleID = listProFormaTemplateByTypeAndParticipantKey.participantRoleID;
+	    searchTemplatesKey.templateType = listProFormaTemplateByTypeAndParticipantKey.templateType;
+	    searchTemplatesKey.caseID = listProFormaTemplateByTypeAndParticipantKey.caseID;
+
+	    // Call MaintainXSLTemplate BPO to retrieve the list of templates
+	    listProFormaTemplateByTypeAndParticpant.searchTemplatesByConcernAndTypeResult = maintainXSLTemplateObj.searchTemplatesByConcernAndType(
+	      searchTemplatesKey);
+	
+	    for(XSLTemplateDetails xsltemplate:listProFormaTemplateByTypeAndParticpant.searchTemplatesByConcernAndTypeResult.xslTemplateDetailsListOut.dtls.items()){
+	    	
+	    	if((xsltemplate.templateID==45001)||(xsltemplate.templateID==45002)||(xsltemplate.templateID==45003)||(xsltemplate.templateID==45004)||(xsltemplate.templateID==45005)||
+					(xsltemplate.templateID==45006)||(xsltemplate.templateID==45008)||(xsltemplate.templateID==45009)||(xsltemplate.templateID==45010)||
+					(xsltemplate.templateID==45011)||(xsltemplate.templateID==45012)||(xsltemplate.templateID==45013)||(xsltemplate.templateID==45014)||(xsltemplate.templateID==45015)){
+	    		 listProFormaTemplateByTypeAndParticpant.searchTemplatesByConcernAndTypeResult.xslTemplateDetailsListOut.dtls.remove(xsltemplate);
+	    		 }
+	    	
+	    }
+
+	    return listProFormaTemplateByTypeAndParticpant;
 	}
 }
 

@@ -634,17 +634,17 @@ public abstract class MOLSAMaintainProductDelivery extends
   			Long caseID = productDeliveryDAO.get(key.caseID).getParentCase()
   					.getID();
   			
-  			
   			/** As per the discussion , for migrated case, there is no
-         *  Application. It make sense to put the PDC reference Number here.
-         */
-        /*
-        List<Application> applications = applicationDAO
-            .searchByCaseID(caseID);
-        Application application = applications.get(0);
-        String applicationID = application.getReference();
-        */
-        String applicationID = productDeliveryDAO.get(key.caseID).getCaseReference();
+  			 *  Application. It make sense to put the PDC reference Number here.
+  			 */
+  			/*
+  			List<Application> applications = applicationDAO
+  					.searchByCaseID(caseID);
+  			Application application = applications.get(0);
+  			String applicationID = application.getReference();
+  			*/
+  			String applicationID = productDeliveryDAO.get(key.caseID).getCaseReference();
+  			
   			
   			
   			AppException msg = new AppException(

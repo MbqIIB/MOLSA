@@ -17,6 +17,8 @@ import curam.molsa.moi.entity.fact.MOLSAMoiFactory;
 import curam.molsa.moi.entity.intf.MOLSAMoi;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtlsList;
+import curam.molsa.moi.entity.struct.MOLSAMoiKey;
+import curam.molsa.moi.entity.struct.MOLSAMoiKeyList;
 import curam.molsa.moi.fact.MOLSAMoiBatchStreamFactory;
 import curam.molsa.moi.intf.MOLSAMoiBatchStream;
 import curam.util.exception.AppException;
@@ -255,10 +257,15 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 		String instanceID = BATCHPROCESSNAME.MOLSA_MOI;
 
 		MOLSAMoi molsaMoi = MOLSAMoiFactory.newInstance();
-		MOLSAMoiDtlsList molsaMoiDtlsList = molsaMoi.readAllMOIDetails();
+		//MOLSAMoiDtlsList molsaMoiDtlsList = molsaMoi.readAllMOIDetails();
+		MOLSAMoiKey molsaMoiKey = new MOLSAMoiKey();
+		//No need of passing any Paremeter, since the sql contains the filtering
+		MOLSAMoiKeyList molsaMoiKeyList = molsaMoi.searchByBatchRunDateBeforeLastUpdated(molsaMoiKey);
 
 		BatchProcessingIDList batchProcessingIDList = new BatchProcessingIDList();
 		// loop through to set the batch processing details
+		
+		/*
 		for (MOLSAMoiDtls molsaMoiDtls : molsaMoiDtlsList.dtls.items()) {
 
 			if (molsaMoiDtls.batchRunDate.before(molsaMoiDtls.lastUpdated)) {
@@ -267,6 +274,14 @@ public class MOLSAMoiBatch extends curam.molsa.moi.base.MOLSAMoiBatch {
 				batchProcessingID.recordID = Long.parseLong(molsaMoiDtls.qid);
 				batchProcessingIDList.dtls.add(batchProcessingID);
 			}
+		}
+		*/
+		
+		for (MOLSAMoiKey molsaMoiKey1 : molsaMoiKeyList.dtls.items()) {
+				BatchProcessingID batchProcessingID = new BatchProcessingID();
+				batchProcessingID.recordID = Long.parseLong(molsaMoiKey1.qid);
+				batchProcessingIDList.dtls.add(batchProcessingID);
+
 		}
 
 		// set the chuncking parameters

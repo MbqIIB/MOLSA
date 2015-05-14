@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PAGE 
+  PAGE_ID="MOLSA_configureUserForEFTLetter"
+  WINDOW_OPTIONS="width=580"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="file://Curam/UIMSchema.xsd"
+>
+
+<PAGE_TITLE>
+    <CONNECT>
+      <SOURCE
+        NAME="TEXT"
+        PROPERTY="PageTitle.StaticText1"
+      />
+    </CONNECT>
+  </PAGE_TITLE>
+  
+  <ACTION_SET ALIGNMENT="CENTER">
+  
+    <ACTION_CONTROL
+      IMAGE="SaveButton"
+      LABEL="ActionControl.Label.Save"
+      TYPE="SUBMIT"
+    />
+    <ACTION_CONTROL
+      IMAGE="CancelButton"
+      LABEL="ActionControl.Label.Cancel"
+    />
+  </ACTION_SET>  
+  
+  <SERVER_INTERFACE
+    CLASS="MOLSAEFTUserConfiguration"
+    NAME="DISPLAY"
+    OPERATION="listAllUsersByPosition"
+  />
+  
+  <SERVER_INTERFACE OPERATION="configureUsersForEFTLetterConfiguration" 
+    CLASS="MOLSAEFTUserConfiguration"
+	NAME="ACTION" PHASE="ACTION" />
+ 
+ 
+	<CLUSTER 
+      NUM_COLS="2">
+		<FIELD LABEL="Field.Lable.UserName1" USE_BLANK="true">
+		<CONNECT>
+				<INITIAL HIDDEN_PROPERTY="result$dtls$userName1" PROPERTY="result$dtls$userFullName1" NAME="DISPLAY" />
+			</CONNECT>
+			<CONNECT>
+				<TARGET PROPERTY="key$userName1" NAME="ACTION" />
+			</CONNECT>
+		</FIELD>
+		
+		<FIELD LABEL="Field.Lable.UserName2" USE_BLANK="true">
+		<CONNECT>
+				<INITIAL HIDDEN_PROPERTY="result$dtls$userName2" PROPERTY="result$dtls$userFullName2" NAME="DISPLAY" />
+			</CONNECT>
+			<CONNECT>
+				<TARGET PROPERTY="key$userName2" NAME="ACTION" />
+			</CONNECT>
+		</FIELD>
+		
+	</CLUSTER>
+</PAGE>

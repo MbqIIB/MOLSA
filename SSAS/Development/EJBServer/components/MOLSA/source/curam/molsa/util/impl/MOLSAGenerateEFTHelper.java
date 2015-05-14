@@ -55,6 +55,10 @@ public class MOLSAGenerateEFTHelper {
   
 	int kFontSize = 14;
 	int kSetTextPostion = 15;
+	int kAddressSetTextPostion = 10;
+	int kAddressSetSpaceAfterLine = 4;
+	int kSetSpaceAfterLine = 8;
+	
 
   /**
    * Private Constructor
@@ -880,6 +884,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p1 = doc.createParagraph();
     setOrientation(p1 , TextOrientation.RTL);
     p1.setAlignment(ParagraphAlignment.LEFT);
+    p1.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r1 = p1.createRun();
     r1.setTextPosition(kSetTextPostion);    
     LocalisableString addLine1 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD_TO_ADDRESS_LINE1); 
@@ -899,6 +904,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p2 = doc.createParagraph();
     setOrientation(p2 , TextOrientation.RTL);
     p2.setAlignment(ParagraphAlignment.LEFT);
+    p2.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r2 = p2.createRun();
     r2.setTextPosition(kSetTextPostion);    
     r2.setBold(true);
@@ -910,6 +916,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p3 = doc.createParagraph();
     setOrientation(p3 , TextOrientation.RTL);
     p3.setAlignment(ParagraphAlignment.LEFT);
+    p3.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r3 = p3.createRun();
     r3.setTextPosition(kSetTextPostion);    
     r3.setBold(true);
@@ -1003,7 +1010,7 @@ public class MOLSAGenerateEFTHelper {
     ctr9.addNewTab();	
     ctr9.addNewTab();
     ctr9.addNewTab();	
-    ctr9.addNewTab();
+    //ctr9.addNewTab();
    
     r9.setText(signature2);
     r9.addBreak();
@@ -1039,14 +1046,15 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p1 = doc.createParagraph();
     setOrientation(p1 , TextOrientation.RTL);
     p1.setAlignment(ParagraphAlignment.LEFT);
+    p1.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r1 = p1.createRun();
-    r1.setTextPosition(kSetTextPostion);    
+    r1.setTextPosition(kAddressSetTextPostion);    
     r1.setBold(true);
     r1.setFontSize(kFontSize);
     LocalisableString addLine1 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE1); 
     addLine1.arg(Configuration.getProperty(EnvVars.EFT_MINISTRY_LETTER_TO_NAME));
     LocalisableString addLine1Prefix = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE1_PREFIX); 
-    r1.setTextPosition(kSetTextPostion);
+    r1.setTextPosition(kAddressSetTextPostion);
     r1.setText(addLine1.getMessage());
     CTR ctr1 = r1.getCTR();
     ctr1.addNewTab();	
@@ -1059,19 +1067,21 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p2 = doc.createParagraph();
     setOrientation(p2 , TextOrientation.RTL);
     p2.setAlignment(ParagraphAlignment.LEFT);
+    p2.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r2 = p2.createRun();   
     r2.setBold(true);
     r2.setFontSize(kFontSize);
     LocalisableString addLine2 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE2); 
-    r2.setTextPosition(kSetTextPostion);
+    r2.setTextPosition(kAddressSetTextPostion);
     r2.setText(addLine2.getMessage());
    
     
     XWPFParagraph p3 = doc.createParagraph();
     setOrientation(p3 , TextOrientation.RTL);
     p3.setAlignment(ParagraphAlignment.LEFT);
+    p3.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r3 = p3.createRun();
-    r3.setTextPosition(kSetTextPostion);    
+    r3.setTextPosition(kAddressSetTextPostion);    
     r3.setBold(true);
     r3.setFontSize(kFontSize);
     LocalisableString addLine3 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE3); 
@@ -1081,18 +1091,20 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p4 = doc.createParagraph();
     setOrientation(p4 , TextOrientation.RTL);
     p4.setAlignment(ParagraphAlignment.LEFT);
+    p4.setSpacingAfter(kAddressSetSpaceAfterLine);
     XWPFRun r4 = p4.createRun();
-    r4.setTextPosition(kSetTextPostion);
+    r4.setTextPosition(kAddressSetTextPostion);
     r4.setBold(true);
     r4.setFontSize(kFontSize);
     LocalisableString addLine4 = new LocalisableString(MOLSABPOGENERATEEFT.MSWORD1_TO_ADDRESS_LINE4); 
-    r4.setTextPosition(kSetTextPostion);
+    r4.setTextPosition(kAddressSetTextPostion);
     r4.setText(addLine4.getMessage());
     r4.addBreak();
     
     XWPFParagraph p5 = doc.createParagraph();
     setOrientation(p5 , TextOrientation.RTL);
-    p5.setAlignment(ParagraphAlignment.LEFT);
+    p5.setAlignment(ParagraphAlignment.LEFT); 
+    p5.setSpacingAfter(kSetSpaceAfterLine);
     XWPFRun r5 = p5.createRun();
     r5.setTextPosition(kSetTextPostion); 
     r5.setBold(true);
@@ -1105,6 +1117,7 @@ public class MOLSAGenerateEFTHelper {
     XWPFParagraph p6 = doc.createParagraph();
     setOrientation(p6 , TextOrientation.RTL);
     p6.setAlignment(ParagraphAlignment.CENTER);
+    p6.setSpacingAfter(kSetSpaceAfterLine);
     XWPFRun r6 = p6.createRun();
     r6.setTextPosition(kSetTextPostion);   
     r6.setBold(true);
@@ -1202,7 +1215,8 @@ public class MOLSAGenerateEFTHelper {
     XWPFRun r13 = p13.createRun();
     r13.setTextPosition(kSetTextPostion);
     r13.setText("");
-    r13.addBreak();
+    //r13.addBreak();
+    
     
     XWPFParagraph p12 = doc.createParagraph();
     setOrientation(p12, TextOrientation.RTL);
@@ -1237,7 +1251,7 @@ public class MOLSAGenerateEFTHelper {
     ctr14.addNewTab();	
     ctr14.addNewTab();
     ctr14.addNewTab();	
-    ctr14.addNewTab();
+    //ctr14.addNewTab();
     
     r14.setText(signature2);
     

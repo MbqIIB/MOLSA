@@ -792,6 +792,8 @@ public class MOLSADatastoreConst {
    * EducationLevel
    */
   public static final String kEducationLevel="educationLevel";
+  
+  public static final String kReceivedDate = "receivedDate";
 
   
 }
