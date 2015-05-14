@@ -211,7 +211,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		
 		generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
 		generateMsWord(totalMoney);
-		generateMsWordForMinistry(totalMoney);
+		generateMsWordForMinistry(bankGenerateEFTDetailList.totalAmount);
 		updatePaymentInstrumentStatus(paymentInstrumentDtlsList);
 
 		return batchProcessingSkippedRecord;
