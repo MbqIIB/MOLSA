@@ -1,5 +1,6 @@
 package curam.molsa.util.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import curam.core.fact.MaintainConcernRoleBankAcFactory;
 import curam.core.fact.PhoneNumberFactory;
 import curam.core.fact.ProductDeliveryFactory;
 import curam.core.fact.UsersFactory;
+import curam.core.impl.EnvVars;
 import curam.core.intf.AlternateName;
 import curam.core.intf.CaseHeader;
 import curam.core.intf.FinancialComponent;
@@ -96,6 +98,7 @@ import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationKey;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
@@ -173,7 +176,8 @@ public class MOLSACommunicationHelper {
 		//	curam.core.facade.intf.CaseHeader caseHeaderObj= CaseHeaderFactory.newInstance();
 		//caseHeader
 
-		
+		Date certEndDate = Date.kZeroDate;
+		String certEndDateToString="";
 		
 		MaintainCertification maintainCertificationObj = MaintainCertificationFactory
 		.newInstance();
@@ -183,11 +187,15 @@ public class MOLSACommunicationHelper {
 		.getCertifications(certificationCaseIDKey);
 		for(MaintainCertificationDetails certDtls : certificationList.dtls.items()) {
 			if(certDtls.statusCode.equals(RECORDSTATUS.NORMAL)) {
-				return certDtls.periodToDate.toString();
+				certEndDate =  certDtls.periodToDate;
+				break;
 			}
 		}
 		
-		return null;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		certEndDateToString = dateFormat.format(certEndDate.getCalendar().getTime());
+		
+		return certEndDateToString;
 
 	}
 	
