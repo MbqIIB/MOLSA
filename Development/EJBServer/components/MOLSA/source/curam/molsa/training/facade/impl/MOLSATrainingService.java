@@ -123,6 +123,7 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalElement;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
+import curam.util.exception.LocalisableString;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.resources.GeneralConstants;
 import curam.util.resources.StringUtil;
@@ -500,8 +501,8 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			//key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+"Training Name:"+trainingDetails.serviceOfferingID +" "+ "Start Date:"+trainingDetails.trainingStartDate
 			//+" "+"End Date:"+trainingDetails.trainingEndDate+" "+"Training Location:"+trainingDetails.trainingLocation;
 
-			key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+" "+MOLSABPOTRAINING.TRAINING_NAME+trainingDetails.serviceOfferingName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+trainingDetails.trainingStartDate
-			+" "+MOLSABPOTRAINING.TRAINING_END_DATE+trainingDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+trainingDetails.trainingLocation;
+			key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_NAME).getMessage(TransactionInfo.getProgramLocale())+trainingDetails.serviceOfferingName +" "+ new LocalisableString(MOLSABPOTRAINING.TRAINING_START_DATE).getMessage(TransactionInfo.getProgramLocale())+trainingDetails.trainingStartDate
+			+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_END_DATE).getMessage(TransactionInfo.getProgramLocale())+trainingDetails.trainingEndDate+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_LOCATION).getMessage(TransactionInfo.getProgramLocale())+trainingDetails.trainingLocation;
 			key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
 
 			//	key.dtls.caseID=instanceDtls.caseID;
@@ -722,8 +723,8 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
 		MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
 		key.dtls.concernRoleTabbedList=concernRoleTabbedValue;
-		key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+" "+MOLSABPOTRAINING.TRAINING_NAME+readDetails.serviceName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+readDetails.trainingStartDate
-		+" "+MOLSABPOTRAINING.TRAINING_END_DATE+readDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+trainingDetails.trainingLocation;
+		key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_NAME).getMessage()+readDetails.serviceName +" "+ new LocalisableString(MOLSABPOTRAINING.TRAINING_START_DATE).getMessage()+readDetails.trainingStartDate
+		+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_END_DATE).getMessage()+readDetails.trainingEndDate+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_LOCATION).getMessage()+trainingDetails.trainingLocation;
 		key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
 
 
@@ -809,8 +810,8 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 			MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
 			MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
 			key.dtls.concernRoleTabbedList=concernRoletabbedList;
-			key.dtls.smsMessageText=MOLSABPOTRAINING.MOLSA_TRAINING_REMINDER_SMS+" "+MOLSABPOTRAINING.TRAINING_NAME+" "+readDetails.serviceName +" "+ MOLSABPOTRAINING.TRAINING_START_DATE+readDetails.trainingStartDate
-			+" "+MOLSABPOTRAINING.TRAINING_END_DATE+readDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+readDetails.trainingLocation;
+			key.dtls.smsMessageText= new LocalisableString(MOLSABPOTRAINING.MOLSA_TRAINING_REMINDER_SMS).getMessage(TransactionInfo.getProgramLocale())+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_NAME).getMessage(TransactionInfo.getProgramLocale())+" "+readDetails.serviceName +" "+ new LocalisableString(MOLSABPOTRAINING.TRAINING_START_DATE).getMessage(TransactionInfo.getProgramLocale())+readDetails.trainingStartDate
+			+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_END_DATE).getMessage(TransactionInfo.getProgramLocale())+readDetails.trainingEndDate+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_LOCATION).getMessage(TransactionInfo.getProgramLocale())+readDetails.trainingLocation;
 			key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
 			//  key.dtls.caseID=instanceDtls.caseID;
 			molsasmsUtilObj.sendSMSDPMode(key);
@@ -1203,8 +1204,8 @@ curam.molsa.training.facade.base.MOLSATrainingService {
 		MOLSAConcernRoleListAndMessageTextDetails key=new MOLSAConcernRoleListAndMessageTextDetails(); 
 		MOLSASMSUtil molsasmsUtilObj=MOLSASMSUtilFactory.newInstance();
 		key.dtls.concernRoleTabbedList=concernRoleTabbedValue;
-		key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+" "+MOLSABPOTRAINING.TRAINING_NAME+readDetails.serviceName+" "+ MOLSABPOTRAINING.TRAINING_START_DATE+readDetails.trainingStartDate
-		+" "+MOLSABPOTRAINING.TRAINING_END_DATE+readDetails.trainingEndDate+" "+MOLSABPOTRAINING.TRAINING_LOCATION+readDetails.trainingLocation;
+		key.dtls.smsMessageText=trainingDetails.trainingSMSMessage+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_NAME).getMessage(TransactionInfo.getProgramLocale())+readDetails.serviceName+" "+ new LocalisableString(MOLSABPOTRAINING.TRAINING_START_DATE).getMessage(TransactionInfo.getProgramLocale())+readDetails.trainingStartDate
+		+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_END_DATE).getMessage(TransactionInfo.getProgramLocale())+readDetails.trainingEndDate+" "+new LocalisableString(MOLSABPOTRAINING.TRAINING_LOCATION).getMessage(TransactionInfo.getProgramLocale())+readDetails.trainingLocation;
 		key.dtls.smsMessageType=curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE.TRAININGMESSAGETEXT;
 		molsasmsUtilObj.sendSMSDPMode(key);
 
