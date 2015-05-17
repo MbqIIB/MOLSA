@@ -254,6 +254,7 @@ public class MOLSAParticipantHelper {
 	public static String returnAlternateName(long concernRoleID, String nameType)
 			throws AppException, InformationalException {
 		String concernRoleName = CuramConst.gkEmpty;
+		
 		AlternateNameReadByTypeKey alternateNameReadByTypeKey = new AlternateNameReadByTypeKey();
 		alternateNameReadByTypeKey.concernRoleID = concernRoleID;
 		alternateNameReadByTypeKey.nameType = nameType;
@@ -263,7 +264,18 @@ public class MOLSAParticipantHelper {
 				.newInstance();
 		AlternateNameDtls alternateNameDtls = alternateNameObj.readByType(
 				notFoundIndicator, alternateNameReadByTypeKey);
-		if (!notFoundIndicator.isNotFound()) {
+		
+		AlternateIDRMDtls alternateIDRMDtls = returnPreferredConcernRoleAlternateID(concernRoleID);
+		curam.molsa.moi.entity.intf.MOLSAMoi moiObj = curam.molsa.moi.entity.fact.MOLSAMoiFactory.newInstance();
+		curam.molsa.moi.entity.struct.MOLSAMoiKey moiKey = new curam.molsa.moi.entity.struct.MOLSAMoiKey();
+		moiKey.qid = alternateIDRMDtls.alternateID;
+		NotFoundIndicator moiNotFoundIndicator = new NotFoundIndicator();
+		// get moi details from MOI entity based in QID
+		MOLSAMoiDtls moiDtls = moiObj.read(notFoundIndicator,moiKey);
+		
+		if (!moiNotFoundIndicator.isNotFound()) {
+			concernRoleName = moiDtls.fullName_ar;
+		} else if (!notFoundIndicator.isNotFound()) {
 			concernRoleName = alternateNameDtls.fullName;
 		} else {
 			concernRoleName = returnConcernRoleName(concernRoleID);
