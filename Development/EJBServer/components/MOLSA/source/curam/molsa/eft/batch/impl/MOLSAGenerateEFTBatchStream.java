@@ -771,8 +771,7 @@ public class MOLSAGenerateEFTBatchStream extends
 			instructionLineItemKey.instructLineItemID = iliTabDetail.instructLineItemID;
 			instructionLineItemDtls = instructionLineItemObj.read(instructionLineItemKey);
 			DateRange coverPeriodDateRange = new DateRange(instructionLineItemDtls.coverPeriodFrom,instructionLineItemDtls.coverPeriodTo);
-			if(finComponentIDs.contains(instructionLineItemDtls.financialCompID)
-					&& coverPeriodDateRange.contains(currentDate) 
+			if(coverPeriodDateRange.contains(currentDate) 
 					&& instructionLineItemDtls.statusCode.equals(ILISTATUS.PROCESSED)
 					&& instructionLineItemDtls.instructLineItemCategory.equals(ILICATEGORY.PAYMENTINSTRUCTION)
 					&& instructionLineItemDtls.instructionLineItemType.equals(ILITYPE.MOLSA_AMOUNT)) {
