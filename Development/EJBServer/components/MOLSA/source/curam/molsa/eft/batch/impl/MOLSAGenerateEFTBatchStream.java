@@ -18,7 +18,9 @@ import curam.codetable.CASETYPECODE;
 import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.FINCOMPONENTSTATUS;
 import curam.codetable.FINCOMPONENTTYPE;
+import curam.codetable.ILICATEGORY;
 import curam.codetable.ILISTATUS;
+import curam.codetable.ILITYPE;
 import curam.codetable.METHODOFDELIVERY;
 import curam.codetable.PMTRECONCILIATIONSTATUS;
 import curam.codetable.PRODUCTTYPE;
@@ -70,9 +72,13 @@ import curam.core.struct.FCstatusCodeCaseID;
 import curam.core.struct.FinancialComponentDtls;
 import curam.core.struct.FinancialComponentDtlsList;
 import curam.core.struct.FinancialComponentID;
+import curam.core.struct.ILICaseID;
 import curam.core.struct.ILIStatusCodeKey;
+import curam.core.struct.ILITabDetail;
+import curam.core.struct.ILITabDetailList;
 import curam.core.struct.InstructionLineItemDtls;
 import curam.core.struct.InstructionLineItemDtlsList;
+import curam.core.struct.InstructionLineItemKey;
 import curam.core.struct.PIStatusCode;
 import curam.core.struct.PaymentInstrumentDtls;
 import curam.core.struct.PaymentInstrumentDtlsList;
@@ -101,6 +107,7 @@ import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.type.DateRange;
 import curam.util.type.FrequencyPattern;
 import curam.util.type.Money;
 
@@ -732,6 +739,52 @@ public class MOLSAGenerateEFTBatchStream extends
 		return outFinancialComponentDtls;
 	}
 	
+	private boolean isSuspendedPaidForMonth(long caseID) throws AppException, InformationalException {
+		boolean isPaid = false;
+		FinancialComponent financialComponentObj = FinancialComponentFactory
+		.newInstance();
+		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
+		fcstatusCodeCaseID.caseID = caseID;
+		fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.LIVE;
+		FinancialComponentDtlsList livFinancialComponentDtlsList = financialComponentObj
+				.searchByStatusCaseID(fcstatusCodeCaseID);
+		InstructionLineItem instructionLineItemObj = InstructionLineItemFactory
+		.newInstance();
+		InstructionLineItemKey  instructionLineItemKey = new InstructionLineItemKey();
+		InstructionLineItemDtls  instructionLineItemDtls;
+		ILICaseID iliCaseID = new ILICaseID();
+		iliCaseID.caseID = caseID;
+		ILITabDetailList iliTabDetailList = instructionLineItemObj.searchByCaseID(iliCaseID);
+		FinancialComponentID financialComponentID = new FinancialComponentID();
+		
+		ArrayList<Long> finComponentIDs = new ArrayList<Long>();
+		Date currentDate = Date.getCurrentDate();
+		for (FinancialComponentDtls financialComponentDtls : livFinancialComponentDtlsList.dtls
+				.items()) {
+			if (financialComponentDtls.typeCode.equals(FINCOMPONENTTYPE.MOLSA_COMP)) {
+				finComponentIDs.add(financialComponentDtls.financialCompID);
+			}
+			
+			
+		}
+		for (ILITabDetail iliTabDetail : iliTabDetailList.dtls.items()) {
+			instructionLineItemKey.instructLineItemID = iliTabDetail.instructLineItemID;
+			instructionLineItemDtls = instructionLineItemObj.read(instructionLineItemKey);
+			DateRange coverPeriodDateRange = new DateRange(instructionLineItemDtls.coverPeriodFrom,instructionLineItemDtls.coverPeriodTo);
+			if(finComponentIDs.contains(instructionLineItemDtls.financialCompID)
+					&& coverPeriodDateRange.contains(currentDate) 
+					&& instructionLineItemDtls.statusCode.equals(ILISTATUS.PROCESSED)
+					&& instructionLineItemDtls.instructLineItemCategory.equals(ILICATEGORY.PAYMENTINSTRUCTION)
+					&& instructionLineItemDtls.instructionLineItemType.equals(ILITYPE.MOLSA_AMOUNT)) {
+				isPaid = true;
+			}
+			
+			
+		}
+		
+		
+		return isPaid;
+	}
 
 	/**
 	 * Return the suspended Case Details to the output struct.
@@ -778,7 +831,7 @@ public class MOLSAGenerateEFTBatchStream extends
 			FinancialComponentDtlsList financialComponentDtlsList = financialComponentObj
 					.searchByStatusCaseID(fcstatusCodeCaseID);
 			FinancialComponentDtls financialComponentDtls = returnLastFinancialComponentForSuspendedCase(financialComponentDtlsList);
-			if (financialComponentDtls != null) {
+			if (financialComponentDtls != null && ! isSuspendedPaidForMonth(caseHeaderDtls.caseID)) {
 				generateEFTDetail = new MOLSAGenerateEFTDetail();
 				generateEFTDetail.isSuspended = true;
 				generateEFTDetail.deptCode = Configuration
