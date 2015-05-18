@@ -29,15 +29,18 @@ import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.FinancialComponentFactory;
 import curam.core.fact.MaintainCertificationFactory;
 import curam.core.fact.MaintainConcernRoleBankAcFactory;
+import curam.core.fact.MaintainConcernRoleDetailsFactory;
 import curam.core.fact.PhoneNumberFactory;
 import curam.core.fact.ProductDeliveryFactory;
 import curam.core.fact.UsersFactory;
+import curam.core.impl.CuramConst;
 import curam.core.impl.EnvVars;
 import curam.core.intf.AlternateName;
 import curam.core.intf.CaseHeader;
 import curam.core.intf.FinancialComponent;
 import curam.core.intf.MaintainCertification;
 import curam.core.intf.MaintainConcernRoleBankAc;
+import curam.core.intf.MaintainConcernRoleDetails;
 import curam.core.intf.PhoneNumber;
 import curam.core.intf.ProductDelivery;
 import curam.core.intf.Users;
@@ -62,6 +65,7 @@ import curam.core.sl.struct.EvidenceCaseKey;
 import curam.core.sl.struct.EvidenceTypeKey;
 import curam.core.struct.AlternateNameDtls;
 import curam.core.struct.AlternateNameKey;
+import curam.core.struct.AlternateNameReadByTypeKey;
 import curam.core.struct.AlternateNameReadMultiKey;
 import curam.core.struct.AlternateNameReadMultiStatusStruct;
 import curam.core.struct.AlternateNameStruct;
@@ -83,6 +87,8 @@ import curam.core.struct.PhoneNumberDtls;
 import curam.core.struct.PhoneNumberKey;
 import curam.core.struct.ProductDeliveryDtls;
 import curam.core.struct.ProductDeliveryKey;
+import curam.core.struct.ReadConcernRoleDetails;
+import curam.core.struct.ReadConcernRoleKey;
 import curam.core.struct.ReadMultiByConcernRoleIDBankAcResult;
 import curam.core.struct.UserFullname;
 import curam.core.struct.UsersDtls;
@@ -304,39 +310,33 @@ public class MOLSACommunicationHelper {
 
 		return bankBranchId;
 	}
-	public static String getFullName(long concernroleid) throws AppException,
-	InformationalException {
-		//Making Correspondent name same as alternate name with five level of communication
-		
 
-		AlternateNameReadMultiStatusStruct alternateNameReadMultiStatusStruct= new AlternateNameReadMultiStatusStruct();
-
-		alternateNameReadMultiStatusStruct.concernRoleID=concernroleid;
-		alternateNameReadMultiStatusStruct.nameStatus=RECORDSTATUS.NORMAL;
-
-		AlternateName alternateNameobj= AlternateNameFactory.newInstance();
-
-		AlternateNameReadMultiKey alternateNameReadMultiKey = new AlternateNameReadMultiKey();
-
-		alternateNameReadMultiKey.concernRoleID=concernroleid;
-
-		AlternateNameStructList alternateNameDtlsList=alternateNameobj.searchActiveNameByConcernRole(alternateNameReadMultiStatusStruct);
-		AlternateNameDtls alternateNameDtls = new AlternateNameDtls();
-		String fullname="";
-		for(AlternateNameStruct dtls : alternateNameDtlsList.dtls ){
-
-			AlternateNameKey alternateNameKey= new AlternateNameKey();
-			alternateNameKey.alternateNameID=dtls.alternateNameID;
-			alternateNameDtls=alternateNameobj.read(alternateNameKey);
-			if(alternateNameDtls.nameType.equals(ALTERNATENAMETYPE.REGISTERED)){
-				fullname=dtls.fullName;
-				break;
-			}
-
-		}
-
-		return fullname;
+	
+	
+	/**
+	 * Return the concernrole name in the mentioned name type.
+	 * 
+	 * @param concernRoleID
+	 *            Long
+	 * @param nameType
+	 *            String
+	 * @return Name in English
+	 * @throws InformationalException
+	 *             General Exception
+	 * @throws AppException
+	 *             General Exception
+	 */
+	public static String getFullName(long concernRoleID)
+			throws AppException, InformationalException {
+		String concernRoleName = CuramConst.gkEmpty;
+		String nameType=ALTERNATENAMETYPE.REGISTERED;
+		concernRoleName=MOLSAParticipantHelper.returnAlternateName(concernRoleID, nameType);
+		return concernRoleName;
 	}
+	
+	
+	
+	
 	public static String getCaseWorkerName() throws AppException,
 	InformationalException {
 		String userfullname="";
