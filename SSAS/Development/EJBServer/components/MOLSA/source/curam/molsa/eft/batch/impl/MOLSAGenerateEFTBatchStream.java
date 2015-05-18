@@ -345,6 +345,16 @@ public class MOLSAGenerateEFTBatchStream extends
 			FinancialComponentDtls financialComponentDtls) throws AppException,
 			InformationalException {
 		boolean isFinancialGenerated = false;
+		
+		//** Need to checked for closed LIV
+		FinancialComponent financialComponentObj = FinancialComponentFactory
+		.newInstance();		
+		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
+		fcstatusCodeCaseID.caseID = financialComponentDtls.caseID;
+		fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.CLOSED_OUTOFDATE;
+		FinancialComponentDtlsList financialComponentDtlsList = financialComponentObj
+				.searchByStatusCaseID(fcstatusCodeCaseID);
+		
 		InstructionLineItem instructionLineItemObj = InstructionLineItemFactory
 				.newInstance();
 		FinancialComponentID financialComponentID = new FinancialComponentID();
@@ -354,6 +364,18 @@ public class MOLSAGenerateEFTBatchStream extends
 		if (count.numberOfRecords > 0) {
 			isFinancialGenerated = true;
 		}
+		if(!isFinancialGenerated) {
+			for (FinancialComponentDtls closedFinancialComponentDtls : financialComponentDtlsList.dtls
+					.items()) {
+				financialComponentID.financialCompID = closedFinancialComponentDtls.financialCompID;
+				count = instructionLineItemObj
+						.countByFinancialCompID(financialComponentID);
+				if (count.numberOfRecords > 0) {
+					isFinancialGenerated = true;
+				}
+			}
+		}
+		
 		return isFinancialGenerated;
 	}
 
