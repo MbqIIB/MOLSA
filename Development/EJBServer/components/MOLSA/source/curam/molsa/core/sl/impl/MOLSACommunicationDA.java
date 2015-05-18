@@ -957,7 +957,7 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		molsaCommDtls.nomineeAlternateID=MOLSACommunicationHelper.getNomineeAlternateID(commDetails.caseID);
 		molsaCommDtls.caseWorkerMobile=MOLSACommunicationHelper.getCaseWorkerMobileNo();
 		molsaCommDtls.benefNomineeName=MOLSACommunicationHelper.getNomineeName(commDetails.caseID);
-			
+		molsaCommDtls.inquiryReviewDate=Date.getCurrentDate().addDays(30).toString();
 		//Calling method to save additional parameters to the new entity dtls struct as per the requirement	
 		MOLSACommunicationHelper.insertAdditionalCommParams(molsaCommDtls);
 
