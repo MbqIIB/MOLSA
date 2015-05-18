@@ -216,9 +216,9 @@ public class MOLSAGenerateEFTBatchStream extends
 		
 		Money totalMoney = bankGenerateEFTDetailList.totalAmount;
 		
-		generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
+		double totalUnProcessedAmount = generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
 		generateMsWord(totalMoney);
-		Money totalMoneyForMinistry = bankGenerateEFTDetailList.totalAmount;
+		Money totalMoneyForMinistry = new Money(bankGenerateEFTDetailList.totalAmount.getValue()+totalUnProcessedAmount);
 		generateMsWordForMinistry(totalMoneyForMinistry);
 		updatePaymentInstrumentStatus(paymentInstrumentDtlsList);
 
@@ -1113,7 +1113,7 @@ public class MOLSAGenerateEFTBatchStream extends
 	 *             General ExceptionList
 	 */
 
-	private void generateExelForFinance(
+	private double generateExelForFinance(
 			MOLSAGenerateEFTDetailList generateEFTDetailList,
 			MOLSAGenerateEFTParam generateEFTParam) throws AppException,
 			InformationalException {
@@ -1177,6 +1177,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				generateEFTDetailList, unprocessedGenerateEFTDetailList, generateEFTParam,
 				MOLSAGenerateEFTHelper.getExelName(false, monthYearDetails));
 
+		return unProcessedTotalAmount;
 	}
 
 	/**
