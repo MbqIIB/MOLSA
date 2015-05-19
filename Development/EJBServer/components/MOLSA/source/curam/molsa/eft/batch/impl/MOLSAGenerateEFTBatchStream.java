@@ -787,6 +787,7 @@ public class MOLSAGenerateEFTBatchStream extends
 			if (financialComponentDtls.typeCode.equals(FINCOMPONENTTYPE.MOLSA_COMP)) {
 				if(financialComponentDtls.amount.getValue()>0) {
 					amount = financialComponentDtls.amount;
+					break;
 				}
 			}
 			
