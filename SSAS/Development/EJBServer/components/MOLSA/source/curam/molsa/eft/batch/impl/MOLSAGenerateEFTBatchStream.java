@@ -216,9 +216,9 @@ public class MOLSAGenerateEFTBatchStream extends
 		
 		Money totalMoney = bankGenerateEFTDetailList.totalAmount;
 		
-		generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
+		double totalUnProcessedAmount = generateExelForFinance(bankGenerateEFTDetailList, generateEFTParam);
 		generateMsWord(totalMoney);
-		Money totalMoneyForMinistry = bankGenerateEFTDetailList.totalAmount;
+		Money totalMoneyForMinistry = new Money(bankGenerateEFTDetailList.totalAmount.getValue()+totalUnProcessedAmount);
 		generateMsWordForMinistry(totalMoneyForMinistry);
 		updatePaymentInstrumentStatus(paymentInstrumentDtlsList);
 
@@ -758,7 +758,43 @@ public class MOLSAGenerateEFTBatchStream extends
 				break;
 			}
 		}
+		
+		if(outFinancialComponentDtls!=null && outFinancialComponentDtls.amount.isZero()) {
+			outFinancialComponentDtls.amount = getTheLastPaidNonZeroAmount(outFinancialComponentDtls.caseID);
+		}
 		return outFinancialComponentDtls;
+	}
+	
+	private Money getTheLastPaidNonZeroAmount(long caseID) throws AppException, InformationalException {
+		Money amount = new Money(0);
+		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
+		fcstatusCodeCaseID.caseID = caseID;
+		fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.CLOSED_OUTOFDATE;
+		FinancialComponent financialComponentObj = FinancialComponentFactory
+		.newInstance();
+		FinancialComponentDtlsList financialComponentDtlsList = financialComponentObj
+				.searchByStatusCaseID(fcstatusCodeCaseID);
+		// Sort with respect to Next Processing Date Date
+		Collections.sort(financialComponentDtlsList.dtls,
+				new Comparator<FinancialComponentDtls>() {
+					public int compare(FinancialComponentDtls o1,
+							FinancialComponentDtls o2) {
+						return o2.dueDate.compareTo(o1.dueDate);
+					}
+				});
+		for (FinancialComponentDtls financialComponentDtls : financialComponentDtlsList.dtls
+				.items()) {
+			if (financialComponentDtls.typeCode.equals(FINCOMPONENTTYPE.MOLSA_COMP)) {
+				if(financialComponentDtls.amount.getValue()>0) {
+					amount = financialComponentDtls.amount;
+					break;
+				}
+			}
+			
+			
+		}
+		
+		return amount;
 	}
 	
 	private boolean isSuspendedPaidForMonth(long caseID) throws AppException, InformationalException {
@@ -1078,7 +1114,7 @@ public class MOLSAGenerateEFTBatchStream extends
 	 *             General ExceptionList
 	 */
 
-	private void generateExelForFinance(
+	private double generateExelForFinance(
 			MOLSAGenerateEFTDetailList generateEFTDetailList,
 			MOLSAGenerateEFTParam generateEFTParam) throws AppException,
 			InformationalException {
@@ -1142,6 +1178,7 @@ public class MOLSAGenerateEFTBatchStream extends
 				generateEFTDetailList, unprocessedGenerateEFTDetailList, generateEFTParam,
 				MOLSAGenerateEFTHelper.getExelName(false, monthYearDetails));
 
+		return unProcessedTotalAmount;
 	}
 
 	/**

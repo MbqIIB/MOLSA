@@ -189,7 +189,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		molsaproFormaDocumentData.benefNomineeName=concernRoleCommunicationDtls.benefNomineeName;
 		molsaproFormaDocumentData.caseWorkerMobile=concernRoleCommunicationDtls.caseWorkerMobile;
 		molsaproFormaDocumentData.nomineeAlternateID=concernRoleCommunicationDtls.nomineeAlternateID;
-		molsaproFormaDocumentData.inquiryReviewDate=Date.getCurrentDate().addDays(30).toString();
+		molsaproFormaDocumentData.inquiryReviewDate=concernRoleCommunicationDtls.inquiryReviewDate;
 
 		//Getting the location name from location id 
 
