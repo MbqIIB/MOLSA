@@ -34,7 +34,7 @@ import curam.util.type.Date;
 import curam.util.type.DeepCloneable;
 import curam.util.workflow.impl.EnactmentService;
 
-public class MOLSAApplicationDenialHandler implements EventHandler, EventFilter {
+public class MOLSAApplicationDenialHandler implements EventHandler {
 
 	@Inject
 	private CaseHeaderDAO caseHeaderDAO;
@@ -48,11 +48,18 @@ public class MOLSAApplicationDenialHandler implements EventHandler, EventFilter 
 	public MOLSAApplicationDenialHandler() {
 		GuiceWrapper.getInjector().injectMembers(this);
 	}
-
+	
 	@Override
 	public void eventRaised(Event event) throws AppException,
 			InformationalException {
 
+		if (event.eventKey.eventClass
+				.equals(MOLSAApplicationNotification.APPLICATION_AUTO_DENIAL.eventClass)
+				&& (!event.eventKey.eventType
+						.equals(MOLSAApplicationNotification.APPLICATION_AUTO_DENIAL.eventType))) {
+			return;
+		}
+		
 		MilestoneDelivery deliveryObj = MilestoneDeliveryFactory.newInstance();
 
 		MilestoneDeliveryKey deliveryKey = new MilestoneDeliveryKey();
@@ -129,12 +136,5 @@ public class MOLSAApplicationDenialHandler implements EventHandler, EventFilter 
 		milestoneDeliveryObj.modify(modifyMilestoneDeliveryDtls);
 	}
 
-	@Override
-	public boolean accept(Event event) throws AppException,
-			InformationalException {
-		return (event.eventKey.eventClass
-		.equals(MOLSAApplicationNotification.APPLICATION_AUTO_DENIAL.eventClass) && (event.eventKey.eventType
-	.equals(MOLSAApplicationNotification.APPLICATION_AUTO_DENIAL.eventType)));
-	}
 
 }
