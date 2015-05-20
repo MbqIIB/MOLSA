@@ -96,7 +96,7 @@
     <xsl:attribute name="line-height">6mm</xsl:attribute>
     <!-- END NON-TRANSLATABLE -->
     <!-- START NON-TRANSLATABLE -->
-    <xsl:attribute name="space-before.optimum">8mm</xsl:attribute>
+    <xsl:attribute name="space-before.optimum">9mm</xsl:attribute>
     <!-- END NON-TRANSLATABLE -->
   </xsl:attribute-set>
   <!-- END, CR00352142 -->
@@ -112,7 +112,7 @@
   <xsl:template match="STRUCT">
     <fo:root>
       <fo:layout-master-set>
-        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="68mm" margin-bottom="15mm" margin-left="15mm" margin-right="15mm">
+        <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin-top="63mm" margin-bottom="15mm" margin-left="15mm" margin-right="15mm">
           <fo:region-body />
           
         </fo:simple-page-master>
