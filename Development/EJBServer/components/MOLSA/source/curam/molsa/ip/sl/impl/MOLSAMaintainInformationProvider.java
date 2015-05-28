@@ -2,15 +2,13 @@ package curam.molsa.ip.sl.impl;
 
 import com.google.inject.Inject;
 
-import curam.application.impl.Application;
 import curam.application.impl.ApplicationDAO;
-import curam.application.impl.IntakeApplicantDAO;
 import curam.core.facade.fact.IntegratedCaseFactory;
 import curam.core.facade.intf.IntegratedCase;
-import curam.core.facade.struct.ListICClientKey;
-import curam.core.facade.struct.ListICClientRoleDetails1;
+import curam.core.facade.struct.ListMemberDetails;
+import curam.core.facade.struct.ListMemberDetailsKey;
+import curam.core.facade.struct.MemberDetails;
 import curam.core.sl.entity.struct.CaseParticipantRoleKey;
-import curam.core.sl.entity.struct.CaseParticipantRole_eoFullDetails;
 import curam.core.sl.entity.struct.ParticipantRoleIDAndNameDetails;
 import curam.core.sl.fact.CaseParticipantRoleFactory;
 import curam.core.sl.intf.CaseParticipantRole;
@@ -35,7 +33,6 @@ import curam.molsa.ip.entity.struct.MOLSARequestIDAndStatus;
 import curam.molsa.ip.facade.struct.MOLSARequestDetails;
 import curam.molsa.ip.facade.struct.MOLSARequestDetailsList;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
-import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.persistence.GuiceWrapper;
@@ -86,22 +83,22 @@ public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl
     }
     // get all the case participants record associated with this case ID.
     IntegratedCase integratedCase = IntegratedCaseFactory.newInstance();
-    ListICClientKey paramListICClientKey = new ListICClientKey();
-    paramListICClientKey.caseID = caseID.caseID;
-    ListICClientRoleDetails1 listICDetails = integratedCase.listCaseMembers1(paramListICClientKey);
+    ListMemberDetailsKey detailsKey = new ListMemberDetailsKey();
+    detailsKey.caseID =  caseID.caseID;
+    ListMemberDetails memberDetails = integratedCase.listCaseParticipantsDetails(detailsKey);
 
     // loop through the participants record to get list of requests for each participant
     MOLSARequestDetailsList requestDetailsList = new MOLSARequestDetailsList();
-    for (CaseParticipantRole_eoFullDetails caseParticipantRole : listICDetails.participantList.items()) {
+    for (MemberDetails details : memberDetails.memberDetailsList.dtls.items()) {
       MOLSAInformationRequestKeyStruct1 key = new MOLSAInformationRequestKeyStruct1();
-      key.caseParticipantRoleID = caseParticipantRole.caseParticipantRoleID;
+      key.caseParticipantRoleID = details.caseParticipantRoleID;
       MOLSAInformationRequestDtlsList requestDtlsList = MOLSAInformationRequestFactory.newInstance().listResquestByCaseParticipantRoleID(key);
 
       // loop through the request to add case member name and request details
 
       for (MOLSAInformationRequestDtls requestDtls : requestDtlsList.dtls.items()) {
         MOLSARequestDetails requestDetails = new MOLSARequestDetails();
-        requestDetails.caseMemberName = caseParticipantRole.name;
+        requestDetails.caseMemberName = details.name;
         requestDetails.dtls.assign(requestDtls);
         requestDetailsList.dtls.add(requestDetails);
       }
