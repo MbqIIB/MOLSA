@@ -51,6 +51,7 @@ import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.core.sl.fact.MOLSAMaintainProductDeliveryFactory;
 import curam.molsa.core.sl.impl.MOLSAMilestoneDeliveryCreator;
 import curam.molsa.core.sl.intf.MOLSAMaintainProductDelivery;
+import curam.molsa.message.MOLSABPOPRODUCTDELIVERY;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
@@ -340,6 +341,12 @@ public abstract class MOLSAProductDelivery extends
 	@Override
 	public void close(CloseCaseDetails details) throws AppException,
 			InformationalException {
+		
+		Date currentDate = Date.getCurrentDate();
+		if(details.closureDate.before(currentDate) || details.closureDate.equals(currentDate)) {
+			throw new AppException(MOLSABPOPRODUCTDELIVERY.ERR_CASE_CLOSURE_DATE_FUTURE_ONLY);
+		}
+		
 		ProductDelivery PDObj = ProductDeliveryFactory.newInstance();
 		CaseHeader caseHeader = caseHeaderDAO.get(details.caseID);
 		PDObj.close(details);
