@@ -344,7 +344,7 @@ public abstract class MOLSAProductDelivery extends
 		
 		Date currentDate = Date.getCurrentDate();
 		if(details.closureDate.before(currentDate) || details.closureDate.equals(currentDate)) {
-			throw new AppException(MOLSABPOPRODUCTDELIVERY.ERR_CASE_CLOSURE_DATE_FUTURE_ONLY);
+			//throw new AppException(MOLSABPOPRODUCTDELIVERY.ERR_CASE_CLOSURE_DATE_FUTURE_ONLY);
 		}
 		
 		ProductDelivery PDObj = ProductDeliveryFactory.newInstance();
