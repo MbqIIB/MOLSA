@@ -49,7 +49,10 @@ import curam.core.sl.struct.EvidenceCaseKey;
 import curam.core.sl.struct.EvidenceTypeKey;
 import curam.core.struct.CaseHeaderDtls;
 import curam.core.struct.ConcernRoleID;
+import curam.core.struct.PersonKey;
 import curam.dynamicevidence.impl.DynamicEvidenceDataDetails;
+import curam.dynamicevidence.impl.DynamicEvidenceDataDetailsFactory;
+import curam.dynamicevidence.sl.impl.CpDetailsAdaptor;
 import curam.dynamicevidence.sl.impl.EvidenceGenericSLFactory;
 import curam.dynamicevidence.sl.impl.EvidenceServiceInterface;
 import curam.dynamicevidence.sl.struct.impl.GenericSLDataDetails;
@@ -58,6 +61,7 @@ import curam.dynamicevidence.type.impl.DynamicEvidenceTypeConverter;
 import curam.message.MOLSANOTIFICATION;
 import curam.message.MOLSASMSSERVICE;
 import curam.molsa.constants.impl.MOLSAConstants;
+import curam.molsa.constants.impl.MOLSADatastoreConst;
 import curam.molsa.moi.entity.fact.MOLSAMoiFactory;
 import curam.molsa.moi.entity.struct.MOLSAMoiDtls;
 import curam.molsa.moi.entity.struct.MOLSAMoiKey;
@@ -66,6 +70,10 @@ import curam.molsa.moi.sl.fact.MOLSAMaintainMoiFactory;
 import curam.molsa.moi.sl.intf.MOLSAMaintainMoi;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.participant.impl.ConcernRoleDAO;
+import curam.pdc.facade.fact.PDCPersonFactory;
+import curam.pdc.facade.intf.PDCPerson;
+import curam.pdc.facade.struct.PDCEvidenceDetails;
+import curam.pdc.facade.struct.PDCEvidenceDetailsList;
 import curam.piwrapper.casemanager.impl.CaseParticipantRoleDAO;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
@@ -152,7 +160,12 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
         // loop through the cases and iterate through integrated case and
         // update the evidence
         for (final curam.piwrapper.casemanager.impl.CaseParticipantRole caseParticipantRole : caseParticipantRoleList){
-         if( caseParticipantRole.getCase().getCaseType().getCode().equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)){
+         if( caseParticipantRole.getCase().getCaseType().getCode().equalsIgnoreCase(CASETYPECODE.INTEGRATEDCASE)
+        		 && 
+        		 (caseParticipantRole.getType().getCode().equalsIgnoreCase(CASEPARTICIPANTROLETYPE.MEMBER)
+        				 || caseParticipantRole.getType().getCode().equalsIgnoreCase(CASEPARTICIPANTROLETYPE.PRIMARY)
+        		  )
+        	){
            
 	
 		long integratedCaseID = 0;
@@ -197,31 +210,24 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 				readNameEvidence = readNameEvidenceDetails(integratedCaseID,
 						CASEEVIDENCEEntry.NAME, Long.parseLong(concernRoleID),
 						 caseParticipantRole.getConcernRole().getName());
-
+				
 				// Compare the person DOB details with MOI date of birth details
 				if (!(readBirthDeathDetails.dtls == null)) {
 
 					final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
 					evidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;
 
-					String dateStringInNewFormat = molsaMoiDtls.dateOfBirth
-							.toString();
+					
   
 					java.text.SimpleDateFormat originalFormatter = new java.text.SimpleDateFormat(
 							MOLSAConstants.kdateRequired);
 					
-					String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
-					
-					java.text.SimpleDateFormat newFormatter = new java.text.SimpleDateFormat(
-							propertyDateFormat);
-
-					// parsing date string using new format
-					ParsePosition pos = new ParsePosition(0);
-					java.util.Date dateFromString = newFormatter.parse(
-							dateStringInNewFormat, pos);
-
+				
+					java.util.Date dateFromString = molsaMoiDtls.dateOfBirth.getCalendar().getTime();
+						
 					String dateStringInOriginalFormat = originalFormatter
 							.format(dateFromString);
+					
 
 					if (!(readBirthDeathDetails.dtls
 							.getAttribute(MOLSAConstants.dateOfBirth)
@@ -229,8 +235,8 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 							.equals(dateStringInOriginalFormat))) {
 
 						final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
-								.instance(evidenceTypeKey,
-										Date.getCurrentDate());
+						.instance(evidenceTypeKey,
+								Date.getCurrentDate());
 						final DynamicEvidenceDataDetails dynamicEvidenceDataDetails = readBirthDeathDetails.dtls;
 						final GenericSLDataDetails dynamicEvidenceDetails = new GenericSLDataDetails();
 						dynamicEvidenceDataDetails.getAttribute(
@@ -247,6 +253,43 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 						evidenceServiceInterface
 								.modifyEvidence(dynamicEvidenceDetails);
 					}
+				} else {
+					
+					// Create a new One..
+					final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+					evidenceTypeKey.evidenceType = CASEEVIDENCE.BIRTHDEATHDETAILS;				
+  
+					java.text.SimpleDateFormat originalFormatter = new java.text.SimpleDateFormat(
+							MOLSAConstants.kdateRequired);					
+					java.util.Date dateFromString = molsaMoiDtls.dateOfBirth.getCalendar().getTime();						
+					String dateStringInOriginalFormat = originalFormatter
+							.format(dateFromString);
+				
+					
+					final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+					.instance(evidenceTypeKey,
+							Date.getCurrentDate());
+					final DynamicEvidenceDataDetails  dynamicEvidenceDataDetails = 
+						DynamicEvidenceDataDetailsFactory.newInstance(CASEEVIDENCE.BIRTHDEATHDETAILS, Date.getCurrentDate());
+					
+					final GenericSLDataDetails dynamicEvidenceDetails = new GenericSLDataDetails();
+					
+					
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.dateOfBirth)
+							.setValue(dateStringInOriginalFormat);
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
+							.setValue(updatedComments.getMessage());
+					dynamicEvidenceDetails.getCaseIdKey().caseID = integratedCaseID;
+					dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+					//dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
+					dynamicEvidenceDetails.getDescriptor().receivedDate = Date.getCurrentDate();
+					
+					 CpDetailsAdaptor cpDetails = new CpDetailsAdaptor();
+					 cpDetails.setCaseParticipantRoleID(caseParticipantRole.getID());
+					 cpDetails.setParticipantRoleID(caseParticipantRole.getConcernRole().getID());
+					dynamicEvidenceDetails.addRelCp("person", cpDetails);
+					   					
+					evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
 				}
 				// Check if the gender evidence details is same as details in
 				// the MOI.
@@ -284,35 +327,67 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 						evidenceServiceInterface
 								.modifyEvidence(dynamicEvidenceDetails2);
 					}
+				} else {
+					// Create a new One..
+					final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+					evidenceTypeKey.evidenceType = CASEEVIDENCE.GENDER;				
+  
+					// Convert the gender code in MOI to the standard curam
+					// format like SX1, SX2 ..
+					String genderCode = new String();
+					if ((molsaMoiDtls.sexCode == MOLSAConstants.kOne)) {
+						genderCode = GENDER.MALE;
+					} else if ((molsaMoiDtls.sexCode == MOLSAConstants.kTwo)) {
+						genderCode = GENDER.FEMALE;
+					}
+				
+					
+					final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+					.instance(evidenceTypeKey,
+							Date.getCurrentDate());
+					final DynamicEvidenceDataDetails  dynamicEvidenceDataDetails = 
+						DynamicEvidenceDataDetailsFactory.newInstance(CASEEVIDENCE.GENDER, Date.getCurrentDate());
+					
+					final GenericSLDataDetails dynamicEvidenceDetails = new GenericSLDataDetails();
+					
+					
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.gender)
+							.setValue(genderCode);
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
+							.setValue(updatedComments.getMessage());
+					dynamicEvidenceDetails.getCaseIdKey().caseID = integratedCaseID;
+					dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+					//dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
+					dynamicEvidenceDetails.getDescriptor().receivedDate = Date.getCurrentDate();
+					
+					 CpDetailsAdaptor cpDetails = new CpDetailsAdaptor();
+					 cpDetails.setCaseParticipantRoleID(caseParticipantRole.getID());
+					 cpDetails.setParticipantRoleID(caseParticipantRole.getConcernRole().getID());
+					dynamicEvidenceDetails.addRelCp("person", cpDetails);
+					   					
+					evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
 				}
 				// Check if the name evidence details is same as name details in
 				// MOI else update the same.
 				if (!(readNameEvidence.dtls == null)) {
 					final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
 					evidenceTypeKey.evidenceType = CASEEVIDENCE.NAME;
-					String middleName = new String();
+					StringBuffer middleName = new StringBuffer("");
 					if (!molsaMoiDtls.secondName_ar.isEmpty()) {
-						middleName = molsaMoiDtls.secondName_ar + " ";
+						middleName.append(molsaMoiDtls.secondName_ar + " ");
 					}
 					if (!molsaMoiDtls.thirdName_ar.isEmpty()) {
-						middleName = middleName + molsaMoiDtls.thirdName_ar
-								+ " ";
+						middleName.append(molsaMoiDtls.thirdName_ar+ " ");
 					}
 					if (!molsaMoiDtls.fourthName_ar.isEmpty()) {
-						middleName = middleName + molsaMoiDtls.fourthName_ar;
+						middleName.append(molsaMoiDtls.fourthName_ar);
 					}
+					
 					// Compare first name, last name and middle name with the
 					// MOI name details.
-					if (!(readNameEvidence.dtls
-							.getAttribute(MOLSAConstants.firstName).getValue()
-							.toString().equals(molsaMoiDtls.firstName_ar))
-							|| (!(readNameEvidence.dtls
-									.getAttribute(MOLSAConstants.lastName)
-									.getValue().toString()
-									.equals(molsaMoiDtls.fifthName_ar)))
-							|| (!(readNameEvidence.dtls
-									.getAttribute(MOLSAConstants.middleName)
-									.getValue().toString().equals(middleName)))) {
+					if (!readNameEvidence.dtls.getAttribute(MOLSAConstants.firstName).getValue().toString().equals(molsaMoiDtls.firstName_ar)
+							|| !readNameEvidence.dtls.getAttribute(MOLSAConstants.lastName).getValue().toString().equals(molsaMoiDtls.fifthName_ar)
+							|| !readNameEvidence.dtls.getAttribute(MOLSAConstants.middleName).getValue().toString().equals(middleName.toString().trim())) {
 						final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
 								.instance(evidenceTypeKey,
 										Date.getCurrentDate());
@@ -322,14 +397,14 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 								MOLSAConstants.firstName).setValue(
 								molsaMoiDtls.firstName_ar);
 						dynamicEvidenceDataDetails3.getAttribute(
-								MOLSAConstants.middleName).setValue(middleName);
+								MOLSAConstants.middleName).setValue(middleName.toString().trim());
 						dynamicEvidenceDataDetails3.getAttribute(
 								MOLSAConstants.lastName).setValue(
 								molsaMoiDtls.fifthName_ar);
 						dynamicEvidenceDataDetails3.getAttribute(
 								MOLSAConstants.comments).setValue(
 								updatedComments.getMessage());
-						dynamicEvidenceDetails3.getCaseIdKey().caseID = integratedCaseID;
+						dynamicEvidenceDetails3.getCaseIdKey().caseID = readNameEvidence.descriptor.caseID;
 						dynamicEvidenceDetails3
 								.setDescriptor(readNameEvidence.descriptor);
 						dynamicEvidenceDetails3
@@ -447,31 +522,51 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 			final String participant) throws AppException,
 			InformationalException {
 
-		final EvidenceDescriptor evidenceDescriptorObj = (EvidenceDescriptor) EvidenceDescriptorFactory
-				.newInstance();
+		
+		PDCPerson pdcPersonObj =  PDCPersonFactory.newInstance();
+		PersonKey personKey = new PersonKey();
+		personKey.concernRoleID = concernRole;
+		PDCEvidenceDetailsList pdcEvidenceDetailsList = pdcPersonObj.listEvidenceForParticipant(personKey);
+	
+		
 		// Set the evidence type codes to name evidence
+		/*
 		EvidenceTypeAndStatus key = new EvidenceTypeAndStatus();
 		key.evidenceType = caseEvidence.getCode();
 		key.statusCode = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
 		final EvidenceDescriptorDtlsList evidenceDescriptorDtlsList = evidenceDescriptorObj
 				.searchByEvidenceTypeAndStatusCode(key);
-
+        */
 		final EvidenceCaseKey evidenceCaseKey = new EvidenceCaseKey();
 		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
 		evidenceTypeKey.evidenceType = caseEvidence.getCode();
+		
+		
 		// Read the evidence data
 		final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
 				.instance(evidenceTypeKey, Date.getCurrentDate());
+		
 		DynamicEvidenceDataDetails dynamicEvidenceDataDetails = null;
-		for (final EvidenceDescriptorDtls evidenceDescriptorDtlsKey : evidenceDescriptorDtlsList.dtls) {
-			evidenceCaseKey.caseIDKey.caseID = caseID;
-			evidenceCaseKey.evidenceKey.evidenceID = evidenceDescriptorDtlsKey.relatedID;
-			evidenceCaseKey.evidenceKey.evType = evidenceDescriptorDtlsKey.evidenceType;
+		//for (final EvidenceDescriptorDtls evidenceDescriptorDtlsKey : evidenceDescriptorDtlsList.dtls) {
+		for (final PDCEvidenceDetails pdcEvidenceDetails : pdcEvidenceDetailsList.list) {
+			//evidenceCaseKey.caseIDKey.caseID = caseID;
+			//evidenceCaseKey.evidenceKey.evidenceID = evidenceDescriptorDtlsKey.relatedID;
+			//evidenceCaseKey.evidenceKey.evType = evidenceDescriptorDtlsKey.evidenceType;
+			evidenceCaseKey.caseIDKey.caseID = pdcEvidenceDetails.caseID;
+			evidenceCaseKey.evidenceKey.evidenceID = pdcEvidenceDetails.evidenceID;
+			
+			if(!pdcEvidenceDetails.evidenceType.equals(caseEvidence.getCode())) {
+				continue;
+			}
+			evidenceCaseKey.evidenceKey.evType = caseEvidence.getCode();			
 			final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
 					.readEvidence(evidenceCaseKey);
 			dynamicEvidenceDataDetails = evidenceDetails.dtls;
+			//System.out.println(pdcEvidenceDetails.caseID+" "+ pdcEvidenceDetails.evidenceID+" "+ caseEvidence.getCode());
 			// Check if the evidence details returned in not null
 			if (null != dynamicEvidenceDataDetails) {
+				return evidenceDetails;
+				/*
 				final Long caseparticipantRoleID;
 				caseparticipantRoleID = (Long) DynamicEvidenceTypeConverter
 						.convert(dynamicEvidenceDataDetails
@@ -484,6 +579,7 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 				if (concernRole.equals(concernRoleId)) {
 					return evidenceDetails;
 				}
+				*/
 			}
 
 		}
