@@ -204,6 +204,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
           SendSms sendSms = null;
           for (String concernRoleID : concernRoleIDList) {
             phNumber = getPersonPreferredPhoneNumber(concernRoleID);
+            molsasmsLogDtls = new MOLSASMSLogDtls();
             molsasmsLogDtls.deliveryStatus = COMMUNICATIONSTATUS.FAILED;
             if(!phNumber.equals("")){
               sendSms = new SendSms();
@@ -300,6 +301,22 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
         }
       } else {
         final AppException appException = new AppException(MOLSASMSSERVICE.ERR_AUTH_FAILED);
+        StringList concernRoleIDList = StringUtil.delimitedText2StringList(key.dtls.concernRoleTabbedList, CuramConst.gkTabDelimiterChar);
+        MOLSASMSLog molsaSMSLogObj = MOLSASMSLogFactory.newInstance();
+        for (String concernRoleID : concernRoleIDList) {
+        	 molsasmsLogDtls = new MOLSASMSLogDtls();
+        	 molsasmsLogDtls.deliveryStatus = COMMUNICATIONSTATUS.FAILED;
+        	 molsasmsLogDtls.concernRoleID = Long.parseLong(concernRoleID);
+             molsasmsLogDtls.createdBy = TransactionInfo.getProgramUser();
+             molsasmsLogDtls.messageLoggedID = UniqueIDFactory.newInstance().getNextID();
+             molsasmsLogDtls.messsageText = key.dtls.smsMessageText;
+             molsasmsLogDtls.errorCode="603.3";
+             molsasmsLogDtls.smsTemplate = key.dtls.smsMessageType;
+             molsasmsLogDtls.smsCategory = CodeTable.getParentCode(MOLSASMSMESSAGETEMPLATE.TABLENAME, key.dtls.smsMessageType);
+             molsasmsLogDtls.createdDateTime = TransactionInfo.getSystemDateTime();
+             molsaSMSLogObj.insert(molsasmsLogDtls);
+        }
+        
         curam.core.sl.infrastructure.impl.ValidationManagerFactory.getManager().addInfoMgrExceptionWithLookup(appException, CuramConst.gkEmpty,
             InformationalElement.InformationalType.kError, curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree, 0);
         return;
