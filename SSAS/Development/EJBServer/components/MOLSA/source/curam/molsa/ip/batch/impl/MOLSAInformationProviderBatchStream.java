@@ -1,7 +1,6 @@
 package curam.molsa.ip.batch.impl;
 
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -377,10 +376,10 @@ public class MOLSAInformationProviderBatchStream extends
 		
 		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
 		
-		SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
+		//SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
 
 		// parsing date string using new format
-		ParsePosition pos = new ParsePosition(0);
+		// pos = new ParsePosition(0);
 		//java.util.Date dateFromString = newFormatter.parse(
 				//dateStringInNewFormat, pos);
 		java.util.Date dateFromString= informationProviderTmpDtls.receivedDate
@@ -413,11 +412,11 @@ public class MOLSAInformationProviderBatchStream extends
 			dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
 			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
 
-			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
-					.toString();
+			//String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
+			//		.toString();
 
 			// parsing date string using new format
-			ParsePosition posNew = new ParsePosition(0);
+			//ParsePosition posNew = new ParsePosition(0);
 			//java.util.Date dateFromStringNew = newFormatter.parse(
 					//dateStringInNewFormatNew, posNew);
 			java.util.Date dateFromStringNew =informationProviderTmpDtls.receivedDate.getCalendar().getTime();
@@ -482,11 +481,11 @@ public class MOLSAInformationProviderBatchStream extends
 		SimpleDateFormat originalFormatter = new SimpleDateFormat(
 				MOLSAConstants.kdateRequired);
 		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
-		SimpleDateFormat newFormatter = new SimpleDateFormat(
-				propertyDateFormat);
+		//SimpleDateFormat newFormatter = new SimpleDateFormat(
+				//propertyDateFormat);
 
 		// parsing date string using new format
-		ParsePosition pos = new ParsePosition(0);
+		//ParsePosition pos = new ParsePosition(0);
 		//java.util.Date dateFromString = newFormatter.parse(
 				//dateStringInNewFormat, pos);
 		java.util.Date dateFromString = informationProviderTmpDtls.receivedDate
@@ -519,11 +518,11 @@ public class MOLSAInformationProviderBatchStream extends
 			dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
 			evidenceServiceInterface.modifyEvidence(dynamicEvidenceDetails);
 
-			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
-					.toString();
+			//String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
+			//		.toString();
 
 			// parsing date string using new format
-			ParsePosition posNew = new ParsePosition(0);
+			//ParsePosition posNew = new ParsePosition(0);
 			//java.util.Date dateFromStringNew = newFormatter.parse(
 					//dateStringInNewFormatNew, posNew);
 			java.util.Date dateFromStringNew = informationProviderTmpDtls.receivedDate.getCalendar().getTime();
@@ -588,12 +587,16 @@ public class MOLSAInformationProviderBatchStream extends
 		SimpleDateFormat originalFormatter = new SimpleDateFormat(
 				MOLSAConstants.kdateRequired);
 		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
-		SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
+		//SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
 
 		// parsing date string using new format
-		ParsePosition pos = new ParsePosition(0);
-		java.util.Date dateFromString = newFormatter.parse(
-				dateStringInNewFormat, pos);
+		//ParsePosition pos = new ParsePosition(0);
+		//java.util.Date dateFromString = newFormatter.parse(
+			//	dateStringInNewFormat, pos);
+		
+		java.util.Date dateFromString = informationProviderTmpDtls.receivedDate
+		.addDays(-1).getCalendar().getTime();
+		
 		// Now you have a date object and you can convert it to the original
 		// format
 		String dateStringInOriginalFormat = originalFormatter
@@ -640,11 +643,11 @@ public class MOLSAInformationProviderBatchStream extends
 		AppException message1 = new AppException(
         MOLSANOTIFICATION.INCOME_COMMENTS );
     message1.arg(informationProviderTmpDtls.amount);
-			String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
-					.toString();
+			//String dateStringInNewFormatNew = informationProviderTmpDtls.receivedDate
+					//.toString();
 
 			// parsing date string using new format
-			ParsePosition posNew = new ParsePosition(0);
+			//ParsePosition posNew = new ParsePosition(0);
 			
 			//java.util.Date dateFromStringNew = newFormatter.parse(
 					//dateStringInNewFormatNew, posNew);
@@ -744,10 +747,10 @@ public class MOLSAInformationProviderBatchStream extends
 		SimpleDateFormat originalFormatter = new SimpleDateFormat(
 				MOLSAConstants.kdateRequired);
 		String propertyDateFormat =Configuration.getProperty(EnvVars.ENV_IPMOI_DATE_FORMAT);
-		SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
+		//SimpleDateFormat newFormatter = new SimpleDateFormat(propertyDateFormat);
 
 		// parsing date string using new format
-		ParsePosition pos = new ParsePosition(0);
+		//ParsePosition pos = new ParsePosition(0);
 		//java.util.Date dateFromString = newFormatter.parse(
 			//	dateStringInNewFormat, pos);
 		java.util.Date dateFromString = informationProviderTmpDtls.eventDate.getCalendar().getTime();

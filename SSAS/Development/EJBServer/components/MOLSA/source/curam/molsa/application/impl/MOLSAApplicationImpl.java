@@ -571,7 +571,7 @@ public class MOLSAApplicationImpl extends ApplicationImpl {
 		}
 
 		if (!StringHelper.isEmpty(preferredCommunicationMethod)) {
-			if (null != contactPreferences) {
+			if (null == contactPreferences) {
 				contactPreferences = dataStore
 						.newEntity(MOLSADatastoreConst.kContactPreferences);
 			}

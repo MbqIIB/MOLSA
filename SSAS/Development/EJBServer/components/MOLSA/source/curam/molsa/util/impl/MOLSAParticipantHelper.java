@@ -3,6 +3,7 @@ package curam.molsa.util.impl;
 import java.util.ArrayList;
 
 import curam.codetable.ALTERNATENAMESTATUS;
+import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.CONCERNROLEALTERNATEID;
 import curam.codetable.GENDER;
 import curam.codetable.RECORDSTATUS;
@@ -268,18 +269,35 @@ public class MOLSAParticipantHelper {
 		AlternateIDRMDtls alternateIDRMDtls = returnPreferredConcernRoleAlternateID(concernRoleID);
 		curam.molsa.moi.entity.intf.MOLSAMoi moiObj = curam.molsa.moi.entity.fact.MOLSAMoiFactory.newInstance();
 		curam.molsa.moi.entity.struct.MOLSAMoiKey moiKey = new curam.molsa.moi.entity.struct.MOLSAMoiKey();
-		moiKey.qid = alternateIDRMDtls.alternateID;
-		NotFoundIndicator moiNotFoundIndicator = new NotFoundIndicator();
-		// get moi details from MOI entity based in QID
-		MOLSAMoiDtls moiDtls = moiObj.read(notFoundIndicator,moiKey);
 		
-		if (!moiNotFoundIndicator.isNotFound()) {
-			concernRoleName = moiDtls.fullName_ar;
-		} else if (!notFoundIndicator.isNotFound()) {
-			concernRoleName = alternateNameDtls.fullName;
+		if(alternateIDRMDtls != null) {
+			
+			moiKey.qid = alternateIDRMDtls.alternateID;
+			NotFoundIndicator moiNotFoundIndicator = new NotFoundIndicator();
+			// get moi details from MOI entity based in QID
+			MOLSAMoiDtls moiDtls = moiObj.read(notFoundIndicator,moiKey);
+			
+			if (!moiNotFoundIndicator.isNotFound()) {
+				if(nameType.equals(ALTERNATENAMETYPE.ENGLISH)) {
+					concernRoleName = moiDtls.fullName_en;
+				} else {
+					concernRoleName = moiDtls.fullName_ar;
+				}
+			} else if (!notFoundIndicator.isNotFound()) {
+				concernRoleName = alternateNameDtls.fullName;
+			} else {
+				concernRoleName = returnConcernRoleName(concernRoleID);
+			}
+			
 		} else {
-			concernRoleName = returnConcernRoleName(concernRoleID);
+			if (!notFoundIndicator.isNotFound()) {
+				concernRoleName = alternateNameDtls.fullName;
+			} else {
+				concernRoleName = returnConcernRoleName(concernRoleID);
+			}
 		}
+		
+		
 		return concernRoleName;
 	}
 
