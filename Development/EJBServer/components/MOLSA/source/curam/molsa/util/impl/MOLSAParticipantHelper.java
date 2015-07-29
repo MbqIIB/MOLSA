@@ -275,7 +275,7 @@ public class MOLSAParticipantHelper {
 			moiKey.qid = alternateIDRMDtls.alternateID;
 			NotFoundIndicator moiNotFoundIndicator = new NotFoundIndicator();
 			// get moi details from MOI entity based in QID
-			MOLSAMoiDtls moiDtls = moiObj.read(notFoundIndicator,moiKey);
+			MOLSAMoiDtls moiDtls = moiObj.read(moiNotFoundIndicator,moiKey);
 			
 			if (!moiNotFoundIndicator.isNotFound()) {
 				if(nameType.equals(ALTERNATENAMETYPE.ENGLISH)) {
