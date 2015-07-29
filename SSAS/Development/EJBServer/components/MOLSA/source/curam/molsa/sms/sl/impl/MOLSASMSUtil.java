@@ -61,6 +61,7 @@ import curam.core.sl.struct.RecordedCommKey;
 import curam.core.sl.struct.SQLStatement;
 import curam.core.struct.AddressDtls;
 import curam.core.struct.AddressKey;
+import curam.core.struct.CaseIDList;
 import curam.core.struct.CaseStatusConcernRoleIDICType;
 import curam.core.struct.ConcernRoleKey;
 import curam.core.struct.ConcernRolePhoneNumberDtls;
@@ -282,7 +283,11 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
               caseStatusConcernRoleIDICType.concernRoleID = Long.parseLong(concernRoleID);
               caseStatusConcernRoleIDICType.integratedCaseType = PRODUCTCATEGORY.SOCIAL_ASSITANCE;
               caseStatusConcernRoleIDICType.statusCode = CASESTATUS.OPEN;
-              long caseID = CaseHeaderFactory.newInstance().searchICByStatusParticipantIDICType(caseStatusConcernRoleIDICType).dtls.get(0).caseID;
+              CaseIDList caseIDList = CaseHeaderFactory.newInstance().searchICByStatusParticipantIDICType(caseStatusConcernRoleIDICType);
+              long caseID=0;
+              if(caseIDList.dtls.size() > 0 ) {
+            	  caseID = caseIDList.dtls.get(0).caseID;
+              }
               smsDetails.caseID = caseID;
             }
             
