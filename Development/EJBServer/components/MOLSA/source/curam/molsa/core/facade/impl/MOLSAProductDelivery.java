@@ -269,7 +269,9 @@ public abstract class MOLSAProductDelivery extends
 		milestoneDeliveryDtls.dtls.createdBySystem = true;
 		milestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.INPROGRESS
 				.getCode();
-		milestoneDeliveryObj.create(milestoneDeliveryDtls);
+		if(milestoneDeliveryDtls.dtls.expectedEndDate.after(milestoneDeliveryDtls.dtls.expectedStartDate)) {
+			milestoneDeliveryObj.create(milestoneDeliveryDtls);
+		}
 	}
 
 	/**
