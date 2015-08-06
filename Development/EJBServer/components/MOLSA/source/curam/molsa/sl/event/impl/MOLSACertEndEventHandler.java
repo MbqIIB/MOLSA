@@ -5,10 +5,12 @@ import java.util.List;
 
 import com.google.inject.Inject;
 
+import curam.codetable.CASESTATUS;
 import curam.codetable.CASETYPECODE;
 import curam.codetable.TARGETITEMTYPE;
 import curam.codetable.TASKPRIORITY;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
+import curam.core.fact.CaseHeaderFactory;
 import curam.core.sl.entity.struct.MilestoneDeliveryKey;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
 import curam.core.sl.fact.TaskManagementUtilityFactory;
@@ -19,6 +21,8 @@ import curam.core.sl.struct.DeadlineDuration;
 import curam.core.sl.struct.MilestoneDeliveryDtls;
 import curam.core.sl.struct.ReadMilestoneDeliveryDetails;
 import curam.core.sl.struct.TaskCreateDetails;
+import curam.core.struct.CaseHeaderKey;
+import curam.core.struct.CaseStatusCode;
 import curam.message.MOLSABPORECERTIFICATION;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
@@ -62,63 +66,69 @@ public class MOLSACertEndEventHandler implements EventHandler {
 		key.milestoneDeliveryID = event.primaryEventData;
 		ReadMilestoneDeliveryDetails readMilestoneDeliveryDetails = deliveryObj
 				.read(key);
-		if (!readMilestoneDeliveryDetails.readDetails.status
-				.equals(MILESTONESTATUSCODEEntry.COMPLETED.getCode())) {
-			CaseHeader caseHeader = caseHeaderDAO.get(event.secondaryEventData);
-			TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
-			taskCreateDetails.caseID = event.secondaryEventData;
-			taskCreateDetails.assigneeType = TARGETITEMTYPE.WORKQUEUE;
-			taskCreateDetails.priority = TASKPRIORITY.HIGH;
-			taskCreateDetails.participantRoleID = caseHeader.getConcernRole()
-					.getID();
-
-			final LocalisableString description = new LocalisableString(
-					MOLSABPORECERTIFICATION.INF_RECERTIFY_TASK_SUBJECT);
-			description.arg(caseHeader.getCaseReference());
-			description.arg(CodeTable.getOneItem(CASETYPECODE.TABLENAME,
-					caseHeader.getCaseType().getCode(),
-					TransactionInfo.getProgramLocale()));
-			description.arg(caseHeader.getConcernRole().getName());
-
-			taskCreateDetails.subject = description.getMessage(TransactionInfo
-					.getProgramLocale());
-
-			taskCreateDetails.assignedTo = String.valueOf(45007);
-
-			final TaskManagementUtility taskManagementUtilityObj = TaskManagementUtilityFactory
-					.newInstance();
-			final DeadlineDuration deadlineDuration = new DeadlineDuration();
-			final DateTimeInSecondsKey dateTimeInSecondsKey = new DateTimeInSecondsKey();
-			dateTimeInSecondsKey.dateTime = DateTime.kZeroDateTime;
-
-			deadlineDuration.deadlineDuration = taskManagementUtilityObj
-					.convertDateTimeToSeconds(dateTimeInSecondsKey).seconds;
-
-			final List<Object> enactmentStructs = new ArrayList<Object>();
-			enactmentStructs.add(taskCreateDetails);
-			enactmentStructs.add(deadlineDuration);
-
-			curam.util.workflow.impl.EnactmentService
-					.startProcessInV3CompatibilityMode(
-							MOLSAConstants.kmanualCase, enactmentStructs);
-
-			curam.molsa.sms.sl.intf.MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory
-					.newInstance();
-			curam.molsa.sms.sl.struct.MOLSAMessageTextKey molsaMessageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
-			molsaMessageTextKey.dtls.category = MOLSASMSMessageType.FOLLOWUP;
-			molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
-			curam.molsa.sms.sl.struct.MOLSAMessageText messageText = molsasmsUtilObj
-					.getSMSMessageText(molsaMessageTextKey);
-			MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
-			// Set the message details.
-			concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
-			concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
-					.valueOf(caseHeader.getConcernRole().getID());
-			// Pointing to the message template.
-			concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
-			molsasmsUtilObj.sendSMSDPMode(concernRoleListAndMessageTextDetails);
-			completeMilestone(readMilestoneDeliveryDetails, event);
-
+		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+		caseHeaderKey.caseID = readMilestoneDeliveryDetails.readDetails.caseID;
+		 CaseStatusCode caseStatusCode = CaseHeaderFactory.newInstance().readStatus(
+				 caseHeaderKey);
+		if (!caseStatusCode.statusCode.equals(CASESTATUS.CLOSED)) {
+			if (!readMilestoneDeliveryDetails.readDetails.status
+					.equals(MILESTONESTATUSCODEEntry.COMPLETED.getCode())) {
+				CaseHeader caseHeader = caseHeaderDAO.get(event.secondaryEventData);
+				TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
+				taskCreateDetails.caseID = event.secondaryEventData;
+				taskCreateDetails.assigneeType = TARGETITEMTYPE.WORKQUEUE;
+				taskCreateDetails.priority = TASKPRIORITY.HIGH;
+				taskCreateDetails.participantRoleID = caseHeader.getConcernRole()
+						.getID();
+	
+				final LocalisableString description = new LocalisableString(
+						MOLSABPORECERTIFICATION.INF_RECERTIFY_TASK_SUBJECT);
+				description.arg(caseHeader.getCaseReference());
+				description.arg(CodeTable.getOneItem(CASETYPECODE.TABLENAME,
+						caseHeader.getCaseType().getCode(),
+						TransactionInfo.getProgramLocale()));
+				description.arg(caseHeader.getConcernRole().getName());
+	
+				taskCreateDetails.subject = description.getMessage(TransactionInfo
+						.getProgramLocale());
+	
+				taskCreateDetails.assignedTo = String.valueOf(45007);
+	
+				final TaskManagementUtility taskManagementUtilityObj = TaskManagementUtilityFactory
+						.newInstance();
+				final DeadlineDuration deadlineDuration = new DeadlineDuration();
+				final DateTimeInSecondsKey dateTimeInSecondsKey = new DateTimeInSecondsKey();
+				dateTimeInSecondsKey.dateTime = DateTime.kZeroDateTime;
+	
+				deadlineDuration.deadlineDuration = taskManagementUtilityObj
+						.convertDateTimeToSeconds(dateTimeInSecondsKey).seconds;
+	
+				final List<Object> enactmentStructs = new ArrayList<Object>();
+				enactmentStructs.add(taskCreateDetails);
+				enactmentStructs.add(deadlineDuration);
+	
+				curam.util.workflow.impl.EnactmentService
+						.startProcessInV3CompatibilityMode(
+								MOLSAConstants.kmanualCase, enactmentStructs);
+	
+				curam.molsa.sms.sl.intf.MOLSASMSUtil molsasmsUtilObj = MOLSASMSUtilFactory
+						.newInstance();
+				curam.molsa.sms.sl.struct.MOLSAMessageTextKey molsaMessageTextKey = new curam.molsa.sms.sl.struct.MOLSAMessageTextKey();
+				molsaMessageTextKey.dtls.category = MOLSASMSMessageType.FOLLOWUP;
+				molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
+				curam.molsa.sms.sl.struct.MOLSAMessageText messageText = molsasmsUtilObj
+						.getSMSMessageText(molsaMessageTextKey);
+				MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
+				// Set the message details.
+				concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
+				concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
+						.valueOf(caseHeader.getConcernRole().getID());
+				// Pointing to the message template.
+				concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.RENEWALOFMOLSABENEFIT;
+				molsasmsUtilObj.sendSMSDPMode(concernRoleListAndMessageTextDetails);
+				completeMilestone(readMilestoneDeliveryDetails, event);
+	
+			}
 		}
 	}
 
