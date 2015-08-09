@@ -152,21 +152,21 @@ public abstract class MOLSAMaintainProductDelivery extends
 
 	private EvidenceDescriptor evidenceDescriptorObj;
 
-	private static Map<PRODUCTTYPEEntry, Long> certEndMSConfig = new HashMap<PRODUCTTYPEEntry, Long>();
+	public static Map<String, Long> certEndMSConfig = new HashMap<String, Long>();
 	static {
-		certEndMSConfig.put(PRODUCTTYPEEntry.ANONYMOUSPARENTS, 45019L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.DESERTEDWIFE, 45013L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.DIVORCEDLADY, 45010L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.FAMILYINNEED, 45014L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.FAMILYOFMISSING, 45015L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.FAMILYOFPRISONER, 45011L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.HANDICAP, 45009L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.INCAPABLEOFWORKING, 45005L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.MAIDALLOWANCE, 45012L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.ORPHAN, 45018L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.SENIORCITIZEN, 45017l);
-		certEndMSConfig.put(PRODUCTTYPEEntry.WIDOW, 45016L);
-		certEndMSConfig.put(PRODUCTTYPEEntry.MOLSADETERMINEPRODUCT, 45020l);
+		certEndMSConfig.put(PRODUCTTYPE.ANONYMOUSPARENTS, 45019L);
+		certEndMSConfig.put(PRODUCTTYPE.DESERTEDWIFE, 45013L);
+		certEndMSConfig.put(PRODUCTTYPE.DIVORCEDLADY, 45010L);
+		certEndMSConfig.put(PRODUCTTYPE.FAMILYINNEED, 45014L);
+		certEndMSConfig.put(PRODUCTTYPE.FAMILYOFMISSING, 45015L);
+		certEndMSConfig.put(PRODUCTTYPE.FAMILYOFPRISONER, 45011L);
+		certEndMSConfig.put(PRODUCTTYPE.HANDICAP, 45009L);
+		certEndMSConfig.put(PRODUCTTYPE.INCAPABLEOFWORKING, 45005L);
+		certEndMSConfig.put(PRODUCTTYPE.MAIDALLOWANCE, 45012L);
+		certEndMSConfig.put(PRODUCTTYPE.ORPHAN, 45018L);
+		certEndMSConfig.put(PRODUCTTYPE.SENIORCITIZEN, 45017l);
+		certEndMSConfig.put(PRODUCTTYPE.WIDOW, 45016L);
+		certEndMSConfig.put(PRODUCTTYPE.MOLSADETERMINEPRODUCT, 45020l);
 
 	}
 
@@ -855,9 +855,13 @@ public abstract class MOLSAMaintainProductDelivery extends
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
-	private void createCertificationEndPriorMilestone(Date certStartDate,
+	public static void createCertificationEndPriorMilestone(Date certStartDate,
 			Date certEndDate, long caseID) throws AppException,
 			InformationalException {
+		ProductDelivery productDeliveryObj = ProductDeliveryFactory.newInstance();
+		ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
+		productDeliveryKey.caseID = caseID;
+		ProductDeliveryTypeDetails productDeliveryTypeDetails = productDeliveryObj.readProductType(productDeliveryKey);
 		// Create milestone for Certification End date prior
 		// notification
 		Calendar cal2 = certEndDate.getCalendar();
@@ -868,7 +872,7 @@ public abstract class MOLSAMaintainProductDelivery extends
 		MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
 		milestoneDeliveryDtls.dtls.caseID = caseID;
 		milestoneDeliveryDtls.dtls.milestoneConfigurationID = certEndMSConfig
-				.get(productDeliveryDAO.get(caseID).getProductType());
+				.get(productDeliveryTypeDetails.productType);
 
 		milestoneDeliveryDtls.dtls.expectedEndDate = certPriorEndDate;
 		milestoneDeliveryDtls.dtls.ownerUserName = TransactionInfo

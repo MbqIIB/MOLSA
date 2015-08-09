@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 
 import curam.codetable.CASECLOSEREASON;
 import curam.codetable.CASESTATUS;
+import curam.codetable.MILESTONESTATUSCODE;
 import curam.codetable.PRODUCTTYPE;
 import curam.codetable.impl.CASECLOSEREASONEntry;
 import curam.codetable.impl.MILESTONESTATUSCODEEntry;
@@ -29,8 +30,11 @@ import curam.core.intf.CaseStatus;
 import curam.core.intf.SystemUser;
 import curam.core.intf.UniqueID;
 import curam.core.sl.entity.struct.CaseKeyStruct;
+import curam.core.sl.entity.struct.MilestoneDeliveryDetails;
+import curam.core.sl.entity.struct.MilestoneDeliveryKey;
 import curam.core.sl.fact.MilestoneDeliveryFactory;
 import curam.core.sl.intf.MilestoneDelivery;
+import curam.core.sl.struct.MilestoneDeliveryDetailsList;
 import curam.core.sl.struct.MilestoneDeliveryDtls;
 import curam.core.sl.struct.TaskCreateDetails;
 import curam.core.struct.CaseHeaderDtls;
@@ -215,7 +219,7 @@ public abstract class MOLSAProductDelivery extends
 			deliveryCreator.createMilestoneDelivery(details.caseID);
 		}
 
-		createCertificationEndPriorMilestone(details.periodToDate,
+		createCertificationEndPriorMilestone(details.periodFromDate, details.periodToDate,
 				details.caseID);
 
 		
@@ -249,29 +253,12 @@ public abstract class MOLSAProductDelivery extends
 	 * @throws AppException
 	 * @throws InformationalException
 	 */
-	private void createCertificationEndPriorMilestone(Date certEndDate,
+	private void createCertificationEndPriorMilestone(Date certStartDate, Date certEndDate,
 			long caseID) throws AppException, InformationalException {
 		// Create milestone for Certification End date prior
 		// notification
-		Calendar cal2 = certEndDate.getCalendar();
-		cal2.add(Calendar.MONTH, -1);
-		Date certPriorEndDate = new Date(cal2);
-		final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
-				.newInstance();
-		MilestoneDeliveryDtls milestoneDeliveryDtls = new MilestoneDeliveryDtls();
-		milestoneDeliveryDtls.dtls.caseID = caseID;
-		milestoneDeliveryDtls.dtls.milestoneConfigurationID = 45005L;
-		milestoneDeliveryDtls.dtls.expectedStartDate = Date.getCurrentDate();
-		milestoneDeliveryDtls.dtls.actualStartDate = Date.getCurrentDate();
-		milestoneDeliveryDtls.dtls.expectedEndDate = certPriorEndDate;
-		milestoneDeliveryDtls.dtls.ownerUserName = TransactionInfo
-				.getProgramUser();
-		milestoneDeliveryDtls.dtls.createdBySystem = true;
-		milestoneDeliveryDtls.dtls.status = MILESTONESTATUSCODEEntry.INPROGRESS
-				.getCode();
-		if(milestoneDeliveryDtls.dtls.expectedEndDate.after(milestoneDeliveryDtls.dtls.expectedStartDate)) {
-			milestoneDeliveryObj.create(milestoneDeliveryDtls);
-		}
+		curam.molsa.core.sl.impl.MOLSAMaintainProductDelivery.createCertificationEndPriorMilestone(certStartDate, certEndDate, caseID);
+		
 	}
 
 	/**
@@ -559,6 +546,11 @@ public abstract class MOLSAProductDelivery extends
 		maintainCertificationObj
 				.modifyCertification(maintainCertificationDetails);
 		
+		//Update MileStone
+		completeCertMileStone(maintainCertificationDetails.caseID);
+		createCertificationEndPriorMilestone(maintainCertificationDetails.periodFromDate, maintainCertificationDetails.periodToDate,
+				maintainCertificationDetails.caseID);
+		
 		final curam.util.exception.InformationalManager informationalManager = curam.util.transaction.TransactionInfo
 				.getInformationalManager();
 
@@ -576,6 +568,30 @@ public abstract class MOLSAProductDelivery extends
 		}
 
 		return informationMsgDtlsList;
+	}
+	
+	private void completeCertMileStone(long caseID) throws AppException,
+	InformationalException {
+		//Update MileStone
+		final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
+		.newInstance();
+		curam.core.sl.entity.intf.MilestoneDelivery milestoneDeliveryENObj= curam.core.sl.entity.fact.MilestoneDeliveryFactory.newInstance();
+		MilestoneDeliveryKey milestoneDeliveryKey = new MilestoneDeliveryKey();
+		CaseHeaderKey caseHeaderKeyMS = new CaseHeaderKey();
+		caseHeaderKeyMS.caseID = caseID;
+		MilestoneDeliveryDetailsList milestoneDeliveryDetailsList = milestoneDeliveryObj.listUncompletedMilestoneDeliveries(caseHeaderKeyMS);
+		for(MilestoneDeliveryDetails milestoneDeliveryDetails : milestoneDeliveryDetailsList.dtlsList.dtls.items()) {
+			milestoneDeliveryKey.milestoneDeliveryID = milestoneDeliveryDetails.milestoneDeliveryID;
+			curam.core.sl.entity.struct.MilestoneDeliveryDtls  milestoneDeliveryENDtls = milestoneDeliveryENObj.read(milestoneDeliveryKey);
+			if(!milestoneDeliveryENDtls.status.equals(MILESTONESTATUSCODE.COMPLETED)) {
+				if(curam.molsa.core.sl.impl.MOLSAMaintainProductDelivery.certEndMSConfig.containsValue(milestoneDeliveryENDtls.milestoneConfigurationID)) {
+					milestoneDeliveryENDtls.actualEndDate = Date.getCurrentDate();
+					milestoneDeliveryENDtls.status = MILESTONESTATUSCODE.COMPLETED;
+					milestoneDeliveryENObj.modify(milestoneDeliveryKey,milestoneDeliveryENDtls);
+				}
+			}
+		}
+		
 	}
 
 }
