@@ -43,6 +43,7 @@ import curam.core.struct.CaseStatusDtls;
 import curam.core.struct.CaseStatusKey;
 import curam.core.struct.CurrentCaseStatusKey;
 import curam.core.struct.InformationalMsgDtls;
+import curam.core.struct.MaintainCertificationKey;
 import curam.core.struct.ProductDeliveryApprovalKey1;
 import curam.core.struct.ReactivationDtls;
 import curam.events.MOLSAAPPROVALTASK;
@@ -76,6 +77,7 @@ import curam.util.persistence.GuiceWrapper;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
+import curam.util.type.DateRange;
 import curam.util.workflow.impl.EnactmentService;
 import curam.verification.sl.infrastructure.fact.VerificationFactory;
 
@@ -541,13 +543,20 @@ public abstract class MOLSAProductDelivery extends
 
 		// Assign certification details
 		maintainCertificationDetails.assign(details);
-
+		
+		// To Complete the existsing milestone
+		MaintainCertificationKey maintainCertificationKey = new MaintainCertificationKey();
+		maintainCertificationKey.certificationDiaryID = details.certificationDiaryID; 
+		curam.core.struct.MaintainCertificationDetails oldMaintainCertificationDetails = maintainCertificationObj.readCertification(maintainCertificationKey);
+		//Update MileStone
+		completeCertMileStone(maintainCertificationDetails.caseID, oldMaintainCertificationDetails.periodFromDate, oldMaintainCertificationDetails.periodToDate);
+		
 		// Call MaintainCertification BPO to modify the certification
 		maintainCertificationObj
 				.modifyCertification(maintainCertificationDetails);
 		
-		//Update MileStone
-		completeCertMileStone(maintainCertificationDetails.caseID);
+		
+		//Creates a new milestone
 		createCertificationEndPriorMilestone(maintainCertificationDetails.periodFromDate, maintainCertificationDetails.periodToDate,
 				maintainCertificationDetails.caseID);
 		
@@ -570,7 +579,7 @@ public abstract class MOLSAProductDelivery extends
 		return informationMsgDtlsList;
 	}
 	
-	private void completeCertMileStone(long caseID) throws AppException,
+	private void completeCertMileStone(long caseID,Date originalPeriodFromDate,Date originalPeriodToDate ) throws AppException,
 	InformationalException {
 		//Update MileStone
 		final MilestoneDelivery milestoneDeliveryObj = MilestoneDeliveryFactory
@@ -583,11 +592,14 @@ public abstract class MOLSAProductDelivery extends
 		for(MilestoneDeliveryDetails milestoneDeliveryDetails : milestoneDeliveryDetailsList.dtlsList.dtls.items()) {
 			milestoneDeliveryKey.milestoneDeliveryID = milestoneDeliveryDetails.milestoneDeliveryID;
 			curam.core.sl.entity.struct.MilestoneDeliveryDtls  milestoneDeliveryENDtls = milestoneDeliveryENObj.read(milestoneDeliveryKey);
+			DateRange dateRange = new DateRange(originalPeriodFromDate,originalPeriodToDate);
 			if(!milestoneDeliveryENDtls.status.equals(MILESTONESTATUSCODE.COMPLETED)) {
 				if(curam.molsa.core.sl.impl.MOLSAMaintainProductDelivery.certEndMSConfig.containsValue(milestoneDeliveryENDtls.milestoneConfigurationID)) {
-					milestoneDeliveryENDtls.actualEndDate = Date.getCurrentDate();
-					milestoneDeliveryENDtls.status = MILESTONESTATUSCODE.COMPLETED;
-					milestoneDeliveryENObj.modify(milestoneDeliveryKey,milestoneDeliveryENDtls);
+					if(dateRange.contains(milestoneDeliveryENDtls.expectedEndDate)){
+						milestoneDeliveryENDtls.actualEndDate = Date.getCurrentDate();
+						milestoneDeliveryENDtls.status = MILESTONESTATUSCODE.COMPLETED;
+						milestoneDeliveryENObj.modify(milestoneDeliveryKey,milestoneDeliveryENDtls);
+					}
 				}
 			}
 		}
