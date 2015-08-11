@@ -306,6 +306,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
         }
       } else {
         final AppException appException = new AppException(MOLSASMSSERVICE.ERR_AUTH_FAILED);
+        /* No Need to logging in in case of authenication failure.
         StringList concernRoleIDList = StringUtil.delimitedText2StringList(key.dtls.concernRoleTabbedList, CuramConst.gkTabDelimiterChar);
         MOLSASMSLog molsaSMSLogObj = MOLSASMSLogFactory.newInstance();
         for (String concernRoleID : concernRoleIDList) {
@@ -321,7 +322,7 @@ public class MOLSASMSUtil extends curam.molsa.sms.sl.base.MOLSASMSUtil {
              molsasmsLogDtls.createdDateTime = TransactionInfo.getSystemDateTime();
              molsaSMSLogObj.insert(molsasmsLogDtls);
         }
-        
+        */
         curam.core.sl.infrastructure.impl.ValidationManagerFactory.getManager().addInfoMgrExceptionWithLookup(appException, CuramConst.gkEmpty,
             InformationalElement.InformationalType.kError, curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree, 0);
         return;
