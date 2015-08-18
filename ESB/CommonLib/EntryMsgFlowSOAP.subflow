@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmSOAPExtract.msgnode="ComIbmSOAPExtract.msgnode" xmlns:ComIbmWSInput.msgnode="ComIbmWSInput.msgnode" xmlns:ESBTrace.subflow="ESBTrace.subflow" xmlns:ExitMsgFlowSOAP.subflow="ExitMsgFlowSOAP.subflow" xmlns:SOAPHandleExceptions.subflow="SOAPHandleExceptions.subflow" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="EntryMsgFlowSOAP.subflow"
+    nsPrefix="EntryMsgFlowSOAP.subflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.ServiceName" name="ServiceName" lowerBound="1">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.URLSpecifier" name="URLSpecifier" lowerBound="1" defaultValueLiteral="/SAPService1">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.useHTTPS" name="useHTTPS" lowerBound="1" defaultValueLiteral="false">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.useHTTPS.internal_npcompiler" name="useHTTPS.internal_npcompiler">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <translation xmi:type="utility:TranslatableString" key="EntryMsgFlowSOAP" bundleName="EntryMsgFlowSOAP" pluginId="CommonLib"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CommonLib/icons/full/obj16/EntryMsgFlowSOAP.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CommonLib/icons/full/obj30/EntryMsgFlowSOAP.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmSOAPExtract.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="562,185">
+        <translation xmi:type="utility:ConstantString" string="SOAP Extract"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="201,261" URLSpecifier="/SAPService1" messageDomainProperty="XMLNSC" timeoutForClient="120" identityType="usernameAndPassword">
+        <translation xmi:type="utility:ConstantString" string="SOAP_GateWay"/>
+      </nodes>
+      <nodes xmi:type="ESBTrace.subflow:FCMComposite_1" xmi:id="FCMComposite_1_1" location="437,200">
+        <translation xmi:type="utility:ConstantString" string="TraceIn"/>
+      </nodes>
+      <nodes xmi:type="eflow:FCMSink" xmi:id="OutTerminal.Output" location="761,165">
+        <translation xmi:type="utility:TranslatableString" key="OutTerminal.Output" bundleName="EntryMsgFlowSOAP" pluginId="CommonLib"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="316,190" computeExpression="esql://routine/#EntryMsgFlow_InitiateSOAP.Main">
+        <translation xmi:type="utility:ConstantString" string="initiateProperties"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="336,312" computeExpression="esql://routine/#EntryMsgFlow_InitiateSOAP.Main">
+        <translation xmi:type="utility:ConstantString" string="initiateProperties1"/>
+      </nodes>
+      <nodes xmi:type="ExitMsgFlowSOAP.subflow:FCMComposite_1" xmi:id="FCMComposite_1_2" location="684,319">
+        <translation xmi:type="utility:ConstantString" string="ExitMsgFlowSOAP"/>
+      </nodes>
+      <nodes xmi:type="SOAPHandleExceptions.subflow:FCMComposite_1" xmi:id="FCMComposite_1_6" location="463,332">
+        <translation xmi:type="utility:ConstantString" string="SOAPHandleExceptions"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.Output1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="OutTerminal.Output" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.timeout" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.Input"/>
+    </composition>
+    <propertyOrganizer>
+      <propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.ServiceName">
+        <propertyName xmi:type="utility:TranslatableString" key="Property.ServiceName" bundleName="EntryMsgFlowSOAP" pluginId="CommonLib"/>
+        <propertyDescriptor groupName="Group.Basic" propertyEditor="com.ibm.etools.mft.ibmnodes.editors.URLPropertyEditor" configurable="true" describedAttribute="Property.URLSpecifier">
+          <propertyName xmi:type="utility:TranslatableString" key="Property.URLSpecifier" bundleName="ComIbmWSInput" pluginId="com.ibm.etools.mft.ibmnodes"/>
+          <propertyDescriptor groupName="Group.Basic" compiler="com.ibm.etools.mft.ibmnodes.compilers.BooleanPropertyCompiler" configurable="true" describedAttribute="Property.useHTTPS">
+            <propertyName xmi:type="utility:TranslatableString" key="Property.useHTTPS" bundleName="ComIbmWSInput" pluginId="com.ibm.etools.mft.ibmnodes"/>
+            <propertyDescriptor groupName="Group.InternalRuntimeGroup" readOnly="true" hidden="true" userDefined="true" describedAttribute="Property.useHTTPS.internal_npcompiler">
+              <propertyName xmi:type="utility:TranslatableString" key="Property.useHTTPS.internal_npcompiler" bundleName="EntryMsgFlowSOAP" pluginId="CommonLib"/>
+            </propertyDescriptor>
+          </propertyDescriptor>
+        </propertyDescriptor>
+      </propertyDescriptor>
+    </propertyOrganizer>
+    <attributeLinks promotedAttribute="Property.URLSpecifier" overriddenNodes="FCMComposite_1_7">
+      <overriddenAttribute href="ComIbmWSInput.msgnode#Property.URLSpecifier"/>
+    </attributeLinks>
+    <attributeLinks promotedAttribute="Property.useHTTPS" overriddenNodes="FCMComposite_1_7">
+      <overriddenAttribute href="ComIbmWSInput.msgnode#Property.useHTTPS"/>
+    </attributeLinks>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

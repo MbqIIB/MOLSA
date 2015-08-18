@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="urn:esb.com/gbo/xml/schemas/v1_0/" version="1.0"
+	xmlns:esbgbo="urn:esb.com/gbo/xml/schemas/v1_0/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:complexType name="EAI_HEADER">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="referenceNum"
+				type="esbgbo:ReferenceNum" />
+			<xsd:element minOccurs="1" name="clientChannel"
+				type="esbgbo:ClientChannel" />
+			<xsd:element minOccurs="1" name="requestTime" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="EAI_STATUS">
+		<xsd:annotation>
+			<xsd:documentation>
+				in case of Successfully message processing :
+				Return Status Code
+				Provider Should be 000000 and the desc is Success
+				in case of Failure message processing :
+				Return Status Code Provider
+				Should be the actual back end system error code and its description
+
+			</xsd:documentation>
+		</xsd:annotation>
+
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="returnStatus"
+				type="esbgbo:ReturnStatus" />
+			<xsd:element maxOccurs="1" minOccurs="0"
+				name="returnStatusProvider" type="esbgbo:ReturnStatusProvider" />
+			<!-- <xsd:element maxOccurs="1" minOccurs="1" name="returnStatusProvider" 
+				type="esbgbo:ReturnStatusProvider" /> -->
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="ReturnStatus">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="returnCode"
+				type="esbgbo:ReturnCode" />
+			<xsd:element maxOccurs="1" minOccurs="0" name="returnCodeDesc"
+				type="esbgbo:ReturnCodeDesc" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ReturnStatusProvider">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="returnCodeProvider"
+				type="esbgbo:ReturnCodeProvider" />
+			<xsd:element maxOccurs="1" minOccurs="0"
+				name="returnCodeDescProvider" type="esbgbo:ReturnCodeDesc" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="SecurityInfo">
+		<xsd:sequence>
+			<xsd:element name="authentication" type="esbgbo:Authentication" />
+			<xsd:element minOccurs="0" name="authorization"
+				type="esbgbo:Authorization" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Authentication">
+		<xsd:sequence>
+			<xsd:element name="UserId" type="xsd:string" />
+			<xsd:element name="Password" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Authorization">
+		<xsd:sequence>
+			<xsd:element name="UserId" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="NameValue">
+		<xsd:attribute name="Name" type="xsd:string" />
+		<xsd:attribute name="Value" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="SnapIns" mixed="true">
+		<xsd:sequence>
+
+			<xsd:element name="nameValue" type="esbgbo:NameValue"
+				maxOccurs="unbounded" minOccurs="1"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+	<xsd:simpleType name="ClientChannel">
+		<xsd:annotation>
+			<xsd:documentation>
+				MOB = Mobile
+				IVR = IVR
+				CIB = Corporate Banking
+				RIB =
+				Retail Banking
+				ATM =
+				ATM Switch
+				TF = Trade Finance
+				TR = Tressury
+				ECC =
+				Electronic Cheque Clearing
+				BKR = Internal Call or
+				for Testing
+				SAL =
+				Salary Processing
+				IB = Inter Blocks
+				CBS = Core Banking system
+				CRM =Customer relation managment
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+<!-- 
+			<xsd:enumeration value="NA" />
+			<xsd:enumeration value="MOB" />
+			<xsd:enumeration value="IVR" />
+			<xsd:enumeration value="CIB" />
+			<xsd:enumeration value="RIB" />
+			<xsd:enumeration value="ATM" />
+			<xsd:enumeration value="SAL" />
+			<xsd:enumeration value="TF" />
+			<xsd:enumeration value="TR" />
+			<xsd:enumeration value="ECC" />
+			<xsd:enumeration value="BKR" />
+			<xsd:enumeration value="IB" />
+			<xsd:enumeration value="CBS" />
+			<xsd:enumeration value="CMS" />
+ -->
+ 		</xsd:restriction>
+		
+	</xsd:simpleType>
+
+	
+	<xsd:simpleType name="ReturnCode">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"></xsd:minLength>
+			<xsd:maxLength value="6"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ReferenceNum">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1" />
+			<xsd:maxLength value="24" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	
+
+	<xsd:simpleType name="ReturnCodeDesc">
+		<xsd:restriction base="xsd:string">
+<!-- 
+			<xsd:minLength value="0" />
+			<xsd:maxLength value="128" />
+ -->				
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ReturnCodeProvider">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1" />
+			<xsd:maxLength value="24" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	
+
+
+</xsd:schema>	
+

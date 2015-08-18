@@ -1,0 +1,99 @@
+
+
+CREATE COMPUTE MODULE MOIServicesLib_SetMOIHeader
+	DECLARE ns_ws_sec NAMESPACE 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd';
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CALL CopyMessageHeaders();
+		SET OutputLocalEnvironment=InputLocalEnvironment;
+		set OutputRoot=InputRoot;	
+		SET Environment.Variables.BACKENDSYSTEM[]= 
+					   PASSTHRU('SELECT * FROM BACKENDSYSTEM WHERE SYSTEMID=? ', 'MOI');
+
+		IF Environment.Variables.BACKENDSYSTEM[1].URL is NOT NULL 
+		THEN
+			SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL   = Environment.Variables.BACKENDSYSTEM[1].URL;	
+--			SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.Timeout   = CAST (Environment.Variables.BACKENDSYSTEM[1].TIMEOUT AS INTEGER);	
+			SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.TimeoutMillis   = CAST (Environment.Variables.BACKENDSYSTEM[1].TIMEOUT AS INTEGER) * 1000;	
+			SET OutputLocalEnvironment.Destination.HTTP.RequestURL   = Environment.Variables.BACKENDSYSTEM[1].URL;	
+			SET OutputLocalEnvironment.Destination.HTTP.TimeoutMillis    = CAST (Environment.Variables.BACKENDSYSTEM[1].TIMEOUT AS INTEGER) * 1000;	
+			
+--			SET	Environment.Variables.BACKENDSYSTEM=NULL;		   		
+		ELSE
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;			
+		END IF;
+		
+	
+		SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName=FIELDNAME(InputRoot.XMLNSC.*[<1]);	
+		SET OutputRoot.XMLNSC= NULL;
+		CREATE FIRSTCHILD OF OutputRoot.SOAP TYPE XMLNSC.XmlDeclaration; 
+		SET OutputRoot.SOAP.(XMLNSC.XmlDeclaration)*.(XMLNSC.Attribute)Version = '1.0'; 
+		SET OutputRoot.SOAP.(XMLNSC.XmlDeclaration)*.(XMLNSC.Attribute)Encoding = 'UTF-8'; 			
+		
+		-- Header
+		-- Setting Username and Password
+		SET OutputRoot.SOAP.Header.ns_ws_sec:Security.ns_ws_sec:UsernameToken.ns_ws_sec:Username = Environment.Variables.BACKENDSYSTEM.USERID;
+		SET OutputRoot.SOAP.Header.ns_ws_sec:Security.ns_ws_sec:UsernameToken.ns_ws_sec:Password.(XMLNSC.Attribute)Type = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText';
+		SET OutputRoot.SOAP.Header.ns_ws_sec:Security.ns_ws_sec:UsernameToken.ns_ws_sec:Password = Environment.Variables.BACKENDSYSTEM.PASSWRD;				
+		SET OutputRoot.SOAP.Body=InputRoot.XMLNSC;
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
+
+
+
+
+
+CREATE COMPUTE MODULE MOIServicesLib_checkResponseStatus
+DECLARE moi NAMESPACE 'http://ejb.sas.moi.gov.qa/';
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment=InputLocalEnvironment;
+--		 IF NOT EXISTS(InputRoot.XMLNSC.*:Fault.*:detail.moi:WSException[])  THEN
+		 IF NOT EXISTS(InputRoot.XMLNSC.*:Fault[])  THEN
+			SET OutputLocalEnvironment.Variables.retCode.ESBERRORCODE    = '000000';
+			SET OutputLocalEnvironment.Variables.retCode.ESBERRORCODEMSG = 'Success';
+			SET OutputLocalEnvironment.Variables.retCode.PROVIDERERRORCODE    = '0';
+			SET OutputLocalEnvironment.Variables.retCode.PROVIDERERRORCODEMSG = 'Success';	
+		ELSE
+        	SET OutputLocalEnvironment.Variables.retCode.ESBERRORCODE    = '000002';
+			SET OutputLocalEnvironment.Variables.retCode.ESBERRORCODEMSG = COALESCE(InputRoot.XMLNSC.*:Fault.*:detail.moi:WSException.exceptionArabicMessage,InputRoot.XMLNSC.*:Fault.*:faultcode);
+			SET OutputLocalEnvironment.Variables.retCode.PROVIDERERRORCODE    = COALESCE(InputRoot.XMLNSC.*:Fault.*:detail.moi:WSException.exceptionCode,'SAS' ||OutputLocalEnvironment.Variables.retCode.ESBERRORCODEMSG);
+			SET OutputLocalEnvironment.Variables.retCode.PROVIDERERRORCODEMSG = COALESCE(InputRoot.XMLNSC.*:Fault.*:detail.moi:WSException.exceptionEnglishMessage,InputRoot.XMLNSC.*:Fault.*:faultstring);
+        END IF;
+		
+
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
+
+

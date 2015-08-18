@@ -1,0 +1,133 @@
+
+
+CREATE COMPUTE MODULE SendEmail_updateVariables
+	DECLARE Subject EXTERNAL CHARACTER '';
+	DECLARE Body EXTERNAL CHARACTER '';
+	DECLARE ContentType EXTERNAL CHARACTER 'text/plain';
+	DECLARE attachmentName1 EXTERNAL CHARACTER ;
+	DECLARE attachmentPath1 EXTERNAL CHARACTER ;
+	DECLARE attachmentName2 EXTERNAL CHARACTER ;
+	DECLARE attachmentPath2 EXTERNAL CHARACTER ;
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment= InputLocalEnvironment;
+		-- Set Local envrioment data
+		SET OutputLocalEnvironment.Varaibles.EmailData.Subject= EvaluatePath(Subject);
+		SET OutputLocalEnvironment.Varaibles.EmailData.Body= EvaluatePath(Body);
+		SET OutputLocalEnvironment.Varaibles.EmailData.ContentType= TRIM(ContentType);
+		SET OutputLocalEnvironment.Varaibles.EmailData.Attachment[1].Name= EvaluatePath(attachmentName1);
+		SET OutputLocalEnvironment.Varaibles.EmailData.Attachment[1].Path= GetAttachmentXPath(attachmentPath1);
+		SET OutputLocalEnvironment.Varaibles.EmailData.Attachment[2].Name= EvaluatePath(attachmentName2);
+		SET OutputLocalEnvironment.Varaibles.EmailData.Attachment[2].Path= GetAttachmentXPath(attachmentPath2);
+
+--- broker data
+
+		SET OutputLocalEnvironment.Varaibles.EmailData.subt.brokername= BrokerName;
+
+		SET OutputLocalEnvironment.Varaibles.EmailData.subt.exegname = ExecutionGroupLabel;
+
+		SET OutputLocalEnvironment.Varaibles.EmailData.subt.flowname= MessageFlowLabel;
+			
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+	
+			CREATE FUNCTION GetAttachmentXPath(IN  XPath CHARACTER) RETURNS CHARACTER
+	BEGIN
+		DECLARE xpath CHARACTER  XPath;
+		IF STARTSWITH(xpath,'$') THEN
+			SET xpath=SUBSTRING(xpath AFTER '$'); 
+		END IF;	
+		IF STARTSWITH(xpath,'Input') THEN
+			SET xpath=SUBSTRING(xpath AFTER 'Input'); 
+		END IF;	
+		IF STARTSWITH(xpath,'Output') THEN
+			SET xpath=SUBSTRING(xpath AFTER 'Output'); 
+		END IF;	
+		IF STARTSWITH(xpath,'Root/') THEN			
+			SET xpath=SUBSTRING(xpath AFTER 'Root/'); 
+		ELSEIF	STARTSWITH(xpath,'LocalEnvironment/') THEN
+			SET xpath=SUBSTRING(xpath AFTER 'LocalEnvironment/'); 
+		ELSEIF	STARTSWITH(xpath,'ExceptionList/') THEN
+			SET xpath=SUBSTRING(xpath AFTER 'ExceptionList/'); 
+		ELSEIF	STARTSWITH(xpath,'Environment/') THEN
+			SET xpath=SUBSTRING(xpath AFTER 'Environment/'); 
+		ELSE
+			RETURN NULL;
+		END IF;			 		
+	
+		RETURN xpath;
+	END;
+
+	CREATE FUNCTION EvaluatePath(IN  XPath CHARACTER) RETURNS CHARACTER
+	BEGIN
+		Declare xpath CHARACTER  GetXPath(XPath);
+		IF xpath IS NULL THEN
+			RETURN	XPath;
+		END IF;
+		RETURN CAST (EVAL (xpath) AS CHARACTER);	
+	END;
+
+		CREATE FUNCTION GetXPath(IN  XPath CHARACTER) RETURNS CHARACTER
+	BEGIN
+		DECLARE xpath CHARACTER  XPath;
+		IF STARTSWITH(xpath,'$') THEN
+			SET xpath=SUBSTRING(xpath AFTER '$'); 
+		END IF;	
+		IF STARTSWITH(xpath,'Input') THEN
+			SET xpath=SUBSTRING(xpath AFTER 'Input'); 
+		END IF;	
+		IF STARTSWITH(xpath,'Output') THEN
+			SET xpath=SUBSTRING(xpath AFTER 'Output'); 
+		END IF;	
+		IF STARTSWITH(xpath,'Root/') OR 
+			STARTSWITH(xpath,'Body/') OR
+			STARTSWITH(xpath,'LocalEnvironment/') OR
+			STARTSWITH(xpath,'ExceptionList/') THEN
+			SET xpath='Input' || xpath;
+		ELSEIF	STARTSWITH(xpath,'Environment/') THEN
+			SET xpath= xpath;
+		ELSE
+			RETURN NULL;
+		END IF;			 		
+	
+		RETURN REPLACE(xpath,'/','.');
+	END;
+		
+END MODULE;
+
+CREATE COMPUTE MODULE SendEmail_SetMIME
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot=InputRoot;
+		SET OutputRoot.MIME."Content-Type"='multipart/mixed; boundary=myBoundary';
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
