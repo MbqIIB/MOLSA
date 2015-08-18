@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This is the ant build file for moving obselete files.
+
+-->
+<project
+  basedir="."
+  default="all"
+  name="CuramMoveFiles"
+>
+  <property environment="sysenv."/>
+
+
+  <!-- Ant Settings -->
+  <property
+    name="ANT_HOME"
+    value="${sysenv.ANT_HOME}"
+  />
+  <property
+    name="CURAM_DIR"
+    value="${sysenv.CURAM_DIR}"
+  />
+  <target name="all">
+    <mkdir dir="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFiles"/>
+
+
+    <move
+      todir="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFiles/"
+      verbose="true"
+    >
+      <fileset dir="${CURAM_DIR}">
+        <includesfile name="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFilesList.txt"/>
+      </fileset>
+    </move>
+  </target>
+
+
+</project>
