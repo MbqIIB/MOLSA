@@ -596,7 +596,12 @@ public abstract class MOLSAProductDelivery extends
 			if(!milestoneDeliveryENDtls.status.equals(MILESTONESTATUSCODE.COMPLETED)) {
 				if(curam.molsa.core.sl.impl.MOLSAMaintainProductDelivery.certEndMSConfig.containsValue(milestoneDeliveryENDtls.milestoneConfigurationID)) {
 					if(dateRange.contains(milestoneDeliveryENDtls.expectedEndDate)){
-						milestoneDeliveryENDtls.actualEndDate = Date.getCurrentDate();
+						if(Date.getCurrentDate().after(milestoneDeliveryENDtls.actualStartDate)) {
+							milestoneDeliveryENDtls.actualEndDate = Date.getCurrentDate();
+						} else {
+							milestoneDeliveryENDtls.actualStartDate= Date.getCurrentDate();
+							milestoneDeliveryENDtls.actualEndDate = Date.getCurrentDate();
+						}						
 						milestoneDeliveryENDtls.status = MILESTONESTATUSCODE.COMPLETED;
 						milestoneDeliveryENObj.modify(milestoneDeliveryKey,milestoneDeliveryENDtls);
 					}
