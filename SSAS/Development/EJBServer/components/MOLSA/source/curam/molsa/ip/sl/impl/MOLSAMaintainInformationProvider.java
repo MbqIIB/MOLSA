@@ -152,7 +152,7 @@ public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl
     AlternateIDRMDtls alternateIDRMDtls = molsaParticipantHelper
         .returnPreferredConcernRoleAlternateID(idAndNameDetails.participantRoleID);
     requestDetails.qid = alternateIDRMDtls.alternateID;
-    
+    requestDetails.createdBy=TransactionInfo.getProgramUser();
     MOLSAInformationRequestFactory.newInstance().insert(requestDetails);
     MOLSAInformationRequestKey requestKey = new MOLSAInformationRequestKey();
     requestKey.informationRequestID = requestDetails.informationRequestID;
