@@ -21,18 +21,43 @@
     name="CURAM_DIR"
     value="${sysenv.CURAM_DIR}"
   />
-  <target name="all">
-    <mkdir dir="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFiles"/>
 
 
+  <property
+    name="BACKUP_FOLDER"
+    value="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFiles"
+  />
+
+
+  <property
+    name="OBSOLETE_FILES_LIST_FILE"
+    value="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFilesList.txt"
+  />
+
+
+  <available
+    file="${OBSOLETE_FILES_LIST_FILE}"
+    property="obsolete.file.exists"
+  />
+
+
+  <target
+    if="obsolete.file.exists"
+    name="all"
+  >
+
+
+    <mkdir dir="${BACKUP_FOLDER}"/>
     <move
-      todir="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFiles/"
+      todir="${BACKUP_FOLDER}"
       verbose="true"
     >
       <fileset dir="${CURAM_DIR}">
-        <includesfile name="${CURAM_DIR}/${baseversion} ${label}-ObsoleteFilesList.txt"/>
+        <includesfile name="${OBSOLETE_FILES_LIST_FILE}"/>
       </fileset>
     </move>
+
+
   </target>
 
 
