@@ -26,6 +26,10 @@ import curam.core.intf.MaintainCertification;
 
 import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.entity.struct.CaseParticipantRoleDtls;
+import curam.core.sl.fact.TabDetailFormatterFactory;
+import curam.core.sl.struct.AgeDetails;
+import curam.core.sl.struct.CalculationEndDate;
+import curam.core.sl.struct.CalculationStartDate;
 import curam.core.struct.AdminPDPIByProdIDAndDateKey;
 import curam.core.struct.GetProductProviderDetailsResult;
 import curam.core.struct.GetProductProviderKey;
@@ -147,8 +151,13 @@ public class MOLSASeniorCitizenRegisterPDKey implements
 		ReadPersonDetails person = PersonFactory.newInstance().readPerson(
 				personKey);
 		Date dob = person.personFurtherDetails.dateOfBirth;
-		ageInDays = Date.getCurrentDate().subtract(dob);
-		return ageInDays;
+		 CalculationStartDate startdate= new CalculationStartDate();
+		   CalculationEndDate enddate= new CalculationEndDate();
+		   startdate.startDate=dob;
+		   enddate.endDate=Date.getCurrentDate();
+		AgeDetails agedetails=TabDetailFormatterFactory.newInstance().calculateAge(startdate, enddate);
+		//ageInDays = Date.getCurrentDate().subtract(dob);
+		return agedetails.ageYears;
 	}
 	/**
 	 * Returns the Product Delivery pattern information based on the simulated
