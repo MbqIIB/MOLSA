@@ -47,6 +47,11 @@ public abstract class MOLSAConstants {
 	 * Participant attribute.
 	 */
 	public static final String participant = "participant";
+	
+	/**
+	 * Participant attribute.
+	 */
+	public static final String nameType = "nameType";
 	/**
 	 * Person attribute.
 	 */
