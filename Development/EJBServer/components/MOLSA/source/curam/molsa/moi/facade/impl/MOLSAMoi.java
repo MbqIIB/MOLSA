@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 import com.pmmsoapmessenger.MessengerStub;
 import com.pmmsoapmessenger.MessengerStub.SendSms;
 
+import curam.codetable.ALTERNATENAMETYPE;
 import curam.codetable.CASEEVIDENCE;
 import curam.codetable.CASEPARTICIPANTROLETYPE;
 import curam.codetable.CASESTATUS;
@@ -196,7 +197,8 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 				ReadEvidenceDetails readInEditBirthDeathDetails = new ReadEvidenceDetails();
 				ReadEvidenceDetails readGenderEvidence = new ReadEvidenceDetails();
 				ReadEvidenceDetails readInEditGenderEvidence = new ReadEvidenceDetails();
-				ReadEvidenceDetails readNameEvidence = new ReadEvidenceDetails();
+				ReadEvidenceDetails readRegisteredNameEvidence = new ReadEvidenceDetails();
+				ReadEvidenceDetails readEnglishNameEvidence = new ReadEvidenceDetails();
 
 				// Read date of birth from birth and death evidence
 				readBirthDeathDetails = readCaseEvidenceDetails(
@@ -223,9 +225,13 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
             caseParticipantRole.getConcernRole().getName());
 				
 				// Read the name details from names evidence
-				readNameEvidence = readNameEvidenceDetails(integratedCaseID,
+				readRegisteredNameEvidence = readNameEvidenceDetails(integratedCaseID,
 						CASEEVIDENCEEntry.NAME, Long.parseLong(concernRoleID),
-						 caseParticipantRole.getConcernRole().getName());
+						 caseParticipantRole.getConcernRole().getName(), ALTERNATENAMETYPE.REGISTERED);
+				
+				readEnglishNameEvidence = readNameEvidenceDetails(integratedCaseID,
+						CASEEVIDENCEEntry.NAME, Long.parseLong(concernRoleID),
+						 caseParticipantRole.getConcernRole().getName(), ALTERNATENAMETYPE.ENGLISH);
 				
 				// Compare the person DOB details with MOI date of birth details
 				if (!(readBirthDeathDetails.dtls == null)) {
@@ -383,14 +389,14 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 						 CpDetailsAdaptor cpDetails = new CpDetailsAdaptor();
 						 cpDetails.setCaseParticipantRoleID(caseParticipantRole.getID());
 						 cpDetails.setParticipantRoleID(caseParticipantRole.getConcernRole().getID());
-						dynamicEvidenceDetails.addRelCp("person", cpDetails);
+						dynamicEvidenceDetails.addRelCp(MOLSAConstants.person, cpDetails);
 						   					
 						evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
 					}
 				}
 				// Check if the name evidence details is same as name details in
 				// MOI else update the same.
-				if (!(readNameEvidence.dtls == null)) {
+				if (!(readRegisteredNameEvidence.dtls == null)) {
 					final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
 					evidenceTypeKey.evidenceType = CASEEVIDENCE.NAME;
 					StringBuffer middleName = new StringBuffer("");
@@ -406,13 +412,13 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 					
 					// Compare first name, last name and middle name with the
 					// MOI name details.
-					if (!readNameEvidence.dtls.getAttribute(MOLSAConstants.firstName).getValue().toString().equals(molsaMoiDtls.firstName_ar)
-							|| !readNameEvidence.dtls.getAttribute(MOLSAConstants.lastName).getValue().toString().equals(molsaMoiDtls.fifthName_ar)
-							|| !readNameEvidence.dtls.getAttribute(MOLSAConstants.middleName).getValue().toString().equals(middleName.toString().trim())) {
+					if (!readRegisteredNameEvidence.dtls.getAttribute(MOLSAConstants.firstName).getValue().toString().equals(molsaMoiDtls.firstName_ar)
+							|| !readRegisteredNameEvidence.dtls.getAttribute(MOLSAConstants.lastName).getValue().toString().equals(molsaMoiDtls.fifthName_ar)
+							|| !readRegisteredNameEvidence.dtls.getAttribute(MOLSAConstants.middleName).getValue().toString().equals(middleName.toString().trim())) {
 						final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
 								.instance(evidenceTypeKey,
 										Date.getCurrentDate());
-						final DynamicEvidenceDataDetails dynamicEvidenceDataDetails3 = readNameEvidence.dtls;
+						final DynamicEvidenceDataDetails dynamicEvidenceDataDetails3 = readRegisteredNameEvidence.dtls;
 						final GenericSLDataDetails dynamicEvidenceDetails3 = new GenericSLDataDetails();
 						dynamicEvidenceDataDetails3.getAttribute(
 								MOLSAConstants.firstName).setValue(
@@ -425,14 +431,116 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 						dynamicEvidenceDataDetails3.getAttribute(
 								MOLSAConstants.comments).setValue(
 								updatedComments.getMessage());
-						dynamicEvidenceDetails3.getCaseIdKey().caseID = readNameEvidence.descriptor.caseID;
+						dynamicEvidenceDetails3.getCaseIdKey().caseID = readRegisteredNameEvidence.descriptor.caseID;
 						dynamicEvidenceDetails3
-								.setDescriptor(readNameEvidence.descriptor);
+								.setDescriptor(readRegisteredNameEvidence.descriptor);
 						dynamicEvidenceDetails3
 								.setData(dynamicEvidenceDataDetails3);
 						evidenceServiceInterface
 								.modifyEvidence(dynamicEvidenceDetails3);
 					}
+				}
+				
+				
+				// Check if the name evidence details is same as name details in
+				// MOI else update the same.
+				if (!(readEnglishNameEvidence.dtls == null)) {
+					final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+					evidenceTypeKey.evidenceType = CASEEVIDENCE.NAME;
+					StringBuffer middleName = new StringBuffer("");
+					if (!molsaMoiDtls.secondName_en.isEmpty()) {
+						middleName.append(molsaMoiDtls.secondName_en + " ");
+					}
+					if (!molsaMoiDtls.thirdName_en.isEmpty()) {
+						middleName.append(molsaMoiDtls.thirdName_en+ " ");
+					}
+					if (!molsaMoiDtls.fourthName_en.isEmpty()) {
+						middleName.append(molsaMoiDtls.fourthName_en);
+					}
+					
+					// Compare first name, last name and middle name with the
+					// MOI name details.
+					if (!readEnglishNameEvidence.dtls.getAttribute(MOLSAConstants.firstName).getValue().toString().equals(molsaMoiDtls.firstName_en)
+							|| !readEnglishNameEvidence.dtls.getAttribute(MOLSAConstants.lastName).getValue().toString().equals(molsaMoiDtls.fifthName_en)
+							|| !readEnglishNameEvidence.dtls.getAttribute(MOLSAConstants.middleName).getValue().toString().equals(middleName.toString().trim())) {
+						final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+								.instance(evidenceTypeKey,
+										Date.getCurrentDate());
+						final DynamicEvidenceDataDetails dynamicEvidenceDataDetails3 = readEnglishNameEvidence.dtls;
+						final GenericSLDataDetails dynamicEvidenceDetails3 = new GenericSLDataDetails();
+						dynamicEvidenceDataDetails3.getAttribute(
+								MOLSAConstants.firstName).setValue(
+								molsaMoiDtls.firstName_en);
+						dynamicEvidenceDataDetails3.getAttribute(
+								MOLSAConstants.middleName).setValue(middleName.toString().trim());
+						dynamicEvidenceDataDetails3.getAttribute(
+								MOLSAConstants.lastName).setValue(
+								molsaMoiDtls.fifthName_en);
+						dynamicEvidenceDataDetails3.getAttribute(
+								MOLSAConstants.comments).setValue(
+								updatedComments.getMessage());
+						dynamicEvidenceDetails3.getCaseIdKey().caseID = readEnglishNameEvidence.descriptor.caseID;
+						dynamicEvidenceDetails3
+								.setDescriptor(readEnglishNameEvidence.descriptor);
+						dynamicEvidenceDetails3
+								.setData(dynamicEvidenceDataDetails3);
+						evidenceServiceInterface
+								.modifyEvidence(dynamicEvidenceDetails3);
+						
+					}
+				} else {
+					// Create a new One..
+					
+					long participantCaseParticipantID = Long.parseLong(readRegisteredNameEvidence.dtls.getAttribute("participant").getValue());
+					long participantCaseID = readRegisteredNameEvidence.descriptor.caseID;
+					
+					final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
+					evidenceTypeKey.evidenceType = CASEEVIDENCE.NAME;			
+					// Read the evidence data
+					final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
+							.instance(evidenceTypeKey, Date.getCurrentDate());
+					
+					
+					
+					
+					
+					final DynamicEvidenceDataDetails  dynamicEvidenceDataDetails = 
+						DynamicEvidenceDataDetailsFactory.newInstance(CASEEVIDENCE.NAME, Date.getCurrentDate());
+					
+					StringBuffer middleName = new StringBuffer("");
+					if (!molsaMoiDtls.secondName_en.isEmpty()) {
+						middleName.append(molsaMoiDtls.secondName_en + " ");
+					}
+					if (!molsaMoiDtls.thirdName_en.isEmpty()) {
+						middleName.append(molsaMoiDtls.thirdName_en+ " ");
+					}
+					if (!molsaMoiDtls.fourthName_en.isEmpty()) {
+						middleName.append(molsaMoiDtls.fourthName_en);
+					}
+					final GenericSLDataDetails dynamicEvidenceDetails = new GenericSLDataDetails();
+					
+					
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.firstName)
+							.setValue(molsaMoiDtls.firstName_en);
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.lastName)
+					.setValue(molsaMoiDtls.firstName_en);
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.middleName)
+					.setValue(middleName.toString());
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.nameType)
+					.setValue(ALTERNATENAMETYPE.ENGLISH);
+					dynamicEvidenceDataDetails.getAttribute(MOLSAConstants.comments)
+							.setValue(updatedComments.getMessage());
+					dynamicEvidenceDetails.getCaseIdKey().caseID = participantCaseID;
+					dynamicEvidenceDetails.setData(dynamicEvidenceDataDetails);
+					//dynamicEvidenceDetails.setDescriptor(readEvidenceDetails.descriptor);
+					dynamicEvidenceDetails.getDescriptor().receivedDate = Date.getCurrentDate();
+					
+					 CpDetailsAdaptor cpDetails = new CpDetailsAdaptor();
+					 cpDetails.setCaseParticipantRoleID(participantCaseParticipantID);
+					 cpDetails.setParticipantRoleID(caseParticipantRole.getConcernRole().getID());
+					dynamicEvidenceDetails.addRelCp(MOLSAConstants.participant, cpDetails);
+					   					
+					evidenceServiceInterface.createEvidence(dynamicEvidenceDetails);
 				}
 
 			}
@@ -618,7 +726,7 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 	@SuppressWarnings("static-access")
 	private ReadEvidenceDetails readNameEvidenceDetails(final Long caseID,
 			final CASEEVIDENCEEntry caseEvidence, final Long concernRole,
-			final String participant) throws AppException,
+			final String participant, final String nameType) throws AppException,
 			InformationalException {
 
 		
@@ -661,9 +769,13 @@ public abstract class MOLSAMoi extends curam.molsa.moi.facade.base.MOLSAMoi {
 			final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
 					.readEvidence(evidenceCaseKey);
 			dynamicEvidenceDataDetails = evidenceDetails.dtls;
+			
+			
+			
 			//System.out.println(pdcEvidenceDetails.caseID+" "+ pdcEvidenceDetails.evidenceID+" "+ caseEvidence.getCode());
 			// Check if the evidence details returned in not null
-			if (null != dynamicEvidenceDataDetails) {
+			if (null != dynamicEvidenceDataDetails 
+					&& dynamicEvidenceDataDetails.getAttribute("nameType").getValue().equals(nameType)) {
 				return evidenceDetails;
 				/*
 				final Long caseparticipantRoleID;
