@@ -22,22 +22,28 @@ public class MOLSACognosReportHelperBatch extends curam.molsa.cognos.reporting.b
    */
   @Override
   public void process(BooleanIndicator isMidRun) throws AppException, InformationalException {
-    String midRunSql1 = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS" ; 
-    String midRunSql2 = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS" ; 
-    String normalRunSql1 = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS" ; 
-    String normalRunSql2 = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS" ; 
+    String midRunSql1 = " INSERT INTO MOLSAPAYMENTFLAG SELECT MAX(EFFECTIVEDATE) , 2 FROM PAYMENTINSTRUMENT" ; 
+    //String midRunSql2 = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS" ; 
+    
+    String normalRunSql1 = " INSERT INTO MOLSAPAYMENTFLAG SELECT MAX(EFFECTIVEDATE) , 1 FROM PAYMENTINSTRUMENT" ; 
+    String normalRunSql2 = " INSERT INTO MOLSACOGNOSPAYMENTDETAILS SELECT * FROM VW_MOLSAPAYMENT_OTHER" ; 
     try {
       PreparedStatement stmt1 = null;
       PreparedStatement stmt2 = null;
       if(isMidRun.flag) {
+    	  System.out.println("For Mid Run Batch -flag is set to true");
     	  stmt1 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(midRunSql1);
-    	  stmt2 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(midRunSql2);
+    	  //stmt2 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(midRunSql2);
+    	  stmt1.executeQuery();
       } else {
+    	  System.out.println("For Main Run Batch - flag is Not set");
     	  stmt1 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(normalRunSql1);
     	  stmt2 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(normalRunSql2);
+    	  stmt1.executeQuery();
+    	  stmt2.executeQuery();
       }
-      stmt1.executeQuery();
-      stmt2.executeQuery();
+      
+      
     } catch (SQLException e) {
       Trace.kTopLevelLogger.error(
           "Error Occurred while inseting the records to MOLSACognosPaymentDetails . " + e, e.getCause());
