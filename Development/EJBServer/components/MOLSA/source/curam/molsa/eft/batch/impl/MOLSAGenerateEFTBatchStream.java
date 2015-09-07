@@ -613,6 +613,9 @@ public class MOLSAGenerateEFTBatchStream extends
 		Date currentDate = Date.getCurrentDate();
 		FrequencyPattern frequencyPattern = new FrequencyPattern();
 		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsList.dtls.items()) {
+			if(caseHeaderDtls.caseID==-229134151599521792L) {
+				System.out.println ("inside");
+			}
 			currentCaseStatusKey = new CurrentCaseStatusKey();
 			currentCaseStatusKey.caseID = caseHeaderDtls.caseID;
 			
@@ -754,19 +757,21 @@ public class MOLSAGenerateEFTBatchStream extends
 			if ( financialComponentDtls.nextProcessingDate.before(Date
 							.getCurrentDate()) || financialComponentDtls.nextProcessingDate
 							.equals(Date.getCurrentDate())) {
+				
 				outFinancialComponentDtls = financialComponentDtls;
 				break;
 			}
 		}
 		
 		if(outFinancialComponentDtls!=null && outFinancialComponentDtls.amount.isZero()) {
-			outFinancialComponentDtls.amount = getTheLastPaidNonZeroAmount(outFinancialComponentDtls.caseID);
+			outFinancialComponentDtls = getTheLastPaidNonZeroAmount(outFinancialComponentDtls.caseID);
 		}
 		return outFinancialComponentDtls;
 	}
 	
-	private Money getTheLastPaidNonZeroAmount(long caseID) throws AppException, InformationalException {
-		Money amount = new Money(0);
+	private FinancialComponentDtls getTheLastPaidNonZeroAmount(long caseID) throws AppException, InformationalException {
+		FinancialComponentDtls outFinancialComponentDtls = null;
+		
 		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
 		fcstatusCodeCaseID.caseID = caseID;
 		fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.CLOSED_OUTOFDATE;
@@ -779,14 +784,18 @@ public class MOLSAGenerateEFTBatchStream extends
 				new Comparator<FinancialComponentDtls>() {
 					public int compare(FinancialComponentDtls o1,
 							FinancialComponentDtls o2) {
-						return o2.dueDate.compareTo(o1.dueDate);
+						int sort = o2.dueDate.compareTo(o1.dueDate);
+						if(sort==0) {
+							sort = o2.expiryDate.compareTo(o1.expiryDate);
+						}
+						return sort;
 					}
 				});
 		for (FinancialComponentDtls financialComponentDtls : financialComponentDtlsList.dtls
 				.items()) {
 			if (financialComponentDtls.typeCode.equals(FINCOMPONENTTYPE.MOLSA_COMP)) {
 				if(financialComponentDtls.amount.getValue()>0) {
-					amount = financialComponentDtls.amount;
+					outFinancialComponentDtls = financialComponentDtls;
 					break;
 				}
 			}
@@ -794,7 +803,7 @@ public class MOLSAGenerateEFTBatchStream extends
 			
 		}
 		
-		return amount;
+		return outFinancialComponentDtls;
 	}
 	
 	private boolean isSuspendedPaidForMonth(long caseID) throws AppException, InformationalException {
@@ -973,8 +982,10 @@ public class MOLSAGenerateEFTBatchStream extends
 					&& (financialComponentDtls.nextProcessingDate.before(Date
 							.getCurrentDate()) || financialComponentDtls.nextProcessingDate
 							.equals(Date.getCurrentDate()))) {
-				outFinancialComponentDtls = financialComponentDtls;
-				break;
+				if(financialComponentDtls.amount.getValue()>0) {
+					outFinancialComponentDtls = financialComponentDtls;
+					break;
+				}
 			}
 		}
 		return outFinancialComponentDtls;
