@@ -418,6 +418,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		List<MOLSAGenerateEFTDetail> generateEFTDetailList = new ArrayList<MOLSAGenerateEFTDetail>();
 		MOLSAGenerateEFTDetail generateEFTDetail;
 
+		
 		// Suspended Cases Amount
 		CaseHeader caseHeaderObj = CaseHeaderFactory.newInstance();
 		CaseHeaderByStatusKey caseHeaderByStatusKey = new CaseHeaderByStatusKey();
@@ -461,6 +462,8 @@ public class MOLSAGenerateEFTBatchStream extends
 		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsUnderPaymentList.dtls
 				.items()) {
 
+			
+					
 			caseRelationshipCaseIDKey.caseID = caseHeaderDtls.caseID;
 			CaseRelationshipDtlsList caseRelationshipDtlsList = caseRelationShipObj
 					.searchByCaseID(caseRelationshipCaseIDKey);
@@ -613,9 +616,8 @@ public class MOLSAGenerateEFTBatchStream extends
 		Date currentDate = Date.getCurrentDate();
 		FrequencyPattern frequencyPattern = new FrequencyPattern();
 		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsList.dtls.items()) {
-			if(caseHeaderDtls.caseID==-229134151599521792L) {
-				System.out.println ("inside");
-			}
+			
+			
 			currentCaseStatusKey = new CurrentCaseStatusKey();
 			currentCaseStatusKey.caseID = caseHeaderDtls.caseID;
 			
@@ -625,7 +627,7 @@ public class MOLSAGenerateEFTBatchStream extends
 			fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.LIVE;
 			FinancialComponentDtlsList financialComponentDtlsList = financialComponentObj
 					.searchByStatusCaseID(fcstatusCodeCaseID);
-			FinancialComponentDtls financialComponentDtls = returnLastFinancialComponentForOpenAndSubmittedCase(financialComponentDtlsList);
+			FinancialComponentDtls financialComponentDtls = returnLastFinancialComponentForOpenAndSubmittedCase(financialComponentDtlsList, caseHeaderDtls.caseID);
 			if (financialComponentDtls != null) {
 				generateEFTDetail = new MOLSAGenerateEFTDetail();
 				generateEFTDetail.isSuspended = true;
@@ -738,7 +740,7 @@ public class MOLSAGenerateEFTBatchStream extends
 	 *             General ExceptionList
 	 */
 	private FinancialComponentDtls returnLastFinancialComponentForOpenAndSubmittedCase(
-			FinancialComponentDtlsList financialComponentDtlsList)
+			FinancialComponentDtlsList financialComponentDtlsList, long caseID)
 			throws AppException, InformationalException {
 		FinancialComponentDtls outFinancialComponentDtls = null;
 		filterFinancialComponent(financialComponentDtlsList);
@@ -763,8 +765,8 @@ public class MOLSAGenerateEFTBatchStream extends
 			}
 		}
 		
-		if(outFinancialComponentDtls!=null && outFinancialComponentDtls.amount.isZero()) {
-			outFinancialComponentDtls = getTheLastPaidNonZeroAmount(outFinancialComponentDtls.caseID);
+		if(outFinancialComponentDtls==null || outFinancialComponentDtls.amount.isZero()) {
+			outFinancialComponentDtls = getTheLastPaidNonZeroAmount(caseID);
 		}
 		return outFinancialComponentDtls;
 	}
