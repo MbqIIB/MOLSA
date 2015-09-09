@@ -616,7 +616,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		Date currentDate = Date.getCurrentDate();
 		FrequencyPattern frequencyPattern = new FrequencyPattern();
 		for (CaseHeaderDtls caseHeaderDtls : caseHeaderDtlsList.dtls.items()) {
-			
+		
 			
 			currentCaseStatusKey = new CurrentCaseStatusKey();
 			currentCaseStatusKey.caseID = caseHeaderDtls.caseID;
@@ -754,26 +754,69 @@ public class MOLSAGenerateEFTBatchStream extends
 					}
 				});
 
+		
+		
 		for (FinancialComponentDtls financialComponentDtls : financialComponentDtlsList.dtls
 				.items()) {
 			if ( financialComponentDtls.nextProcessingDate.before(Date
 							.getCurrentDate()) || financialComponentDtls.nextProcessingDate
-							.equals(Date.getCurrentDate())) {
-				
-				outFinancialComponentDtls = financialComponentDtls;
-				break;
+							.equals(Date.getCurrentDate())) {				
+					outFinancialComponentDtls = financialComponentDtls;
+					break;				
 			}
 		}
 		
-		if(outFinancialComponentDtls==null || outFinancialComponentDtls.amount.isZero()) {
-			outFinancialComponentDtls = getTheLastPaidNonZeroAmount(caseID);
+		
+		/*
+		boolean isPaidOutForCurrentMonth=false;
+		for (FinancialComponentDtls financialComponentDtls : financialComponentDtlsList.dtls
+				.items()) {
+			if ( financialComponentDtls.nextProcessingDate.after(Date
+							.getCurrentDate())) {				
+						if(financialComponentDtls.amount.getValue()>0)	{
+							isPaidOutForCurrentMonth=true;
+						}
+			}
 		}
+		
+		if(!isPaidOutForCurrentMonth) {
+			if(outFinancialComponentDtls==null || outFinancialComponentDtls.amount.isZero()) {
+				outFinancialComponentDtls = getTheLastPaidNonZeroAmount(caseID);
+			}
+		}
+		*/
+		
+		boolean isAllLiveRecordZero = true;
+		if(outFinancialComponentDtls==null) {
+			for (FinancialComponentDtls financialComponentDtls : financialComponentDtlsList.dtls
+					.items()) {
+				if (!financialComponentDtls.amount.isZero()) {				
+					isAllLiveRecordZero=false;				
+				}
+			}
+			
+			if(isAllLiveRecordZero && financialComponentDtlsList.dtls
+					.items().length>0) {
+				outFinancialComponentDtls = financialComponentDtlsList.dtls.item(0);
+			}
+		}
+		
+		
+		FinancialComponentDtls closedFinancialComponentDtls = getTheLastPaidNonZeroAmount(caseID);
+		if(outFinancialComponentDtls!=null && outFinancialComponentDtls.amount.isZero()) {
+			if(closedFinancialComponentDtls!=null) {
+				outFinancialComponentDtls.amount = getTheLastPaidNonZeroAmount(caseID).amount;
+			}
+		} else if (outFinancialComponentDtls==null && financialComponentDtlsList.dtls.isEmpty()){
+			outFinancialComponentDtls = closedFinancialComponentDtls;
+		}
+		
 		return outFinancialComponentDtls;
 	}
 	
 	private FinancialComponentDtls getTheLastPaidNonZeroAmount(long caseID) throws AppException, InformationalException {
 		FinancialComponentDtls outFinancialComponentDtls = null;
-		
+		Money amount = new Money(0);
 		FCstatusCodeCaseID fcstatusCodeCaseID = new FCstatusCodeCaseID();
 		fcstatusCodeCaseID.caseID = caseID;
 		fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.CLOSED_OUTOFDATE;
