@@ -85,8 +85,13 @@ import curam.core.struct.PaymentInstrumentDtlsList;
 import curam.core.struct.PaymentInstrumentKey;
 import curam.core.struct.ProductDeliveryDtls;
 import curam.core.struct.ProductDeliveryKey;
+import curam.dynamicevidence.sl.struct.impl.MonthCodeDetails;
+import curam.dynamicevidence.sl.struct.impl.MonthCodeKey;
+import curam.dynamicevidence.sl.struct.impl.YearValueKey;
 import curam.dynamicevidence.util.impl.DateUtil;
+import curam.evidence.sl.struct.DateDetails;
 import curam.evidence.sl.struct.MonthYearDetails;
+import curam.evidence.sl.struct.YearValueDetails;
 import curam.message.MOLSASMSSERVICE;
 import curam.molsa.codetable.MOLSABICCODE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
@@ -764,6 +769,14 @@ public class MOLSAGenerateEFTBatchStream extends
 					outFinancialComponentDtls = financialComponentDtls;
 					break;				
 			}
+			if(financialComponentDtls.nextProcessingDate.after(Date
+					.getCurrentDate())) {
+				boolean isPaidForThisMonth = isAlreadyPaidForCurrentOrFuture(caseID);
+				if(!isPaidForThisMonth) {
+					outFinancialComponentDtls = financialComponentDtls;
+					break;
+				}
+			}
 		}
 		
 		
@@ -879,6 +892,16 @@ public class MOLSAGenerateEFTBatchStream extends
 			
 			
 		}
+		MonthYearDetails monthYearDetails = new MonthYearDetails();
+		MonthCodeKey monthCodeKey = new MonthCodeKey();
+		monthCodeKey.date = currentDate;
+		MonthCodeDetails monthCodeDetails = DateUtil.getMonthCode(monthCodeKey);
+		YearValueKey yearValueKey = new YearValueKey();
+		yearValueKey.date = currentDate;
+		YearValueDetails yearValueDetails = DateUtil.getYearCode(yearValueKey);
+		monthYearDetails.monthCode = monthCodeDetails.monthCode;
+		monthYearDetails.year=Integer.parseInt(yearValueDetails.yearValue);
+		DateDetails dateDetails = DateUtil.getStartDateOfMonth(monthYearDetails);
 		for (ILITabDetail iliTabDetail : iliTabDetailList.dtls.items()) {
 			instructionLineItemKey.instructLineItemID = iliTabDetail.instructLineItemID;
 			instructionLineItemDtls = instructionLineItemObj.read(instructionLineItemKey);
@@ -887,6 +910,11 @@ public class MOLSAGenerateEFTBatchStream extends
 					&& instructionLineItemDtls.statusCode.equals(ILISTATUS.PROCESSED)
 					&& instructionLineItemDtls.instructLineItemCategory.equals(ILICATEGORY.PAYMENTINSTRUCTION)
 					&& instructionLineItemDtls.instructionLineItemType.equals(ILITYPE.MOLSA_AMOUNT)) {
+				isPaid = true;
+			} else if(instructionLineItemDtls.coverPeriodFrom.after(currentDate)) {
+					isPaid = true;
+				
+			}  else if(dateDetails.date.equals(instructionLineItemDtls.coverPeriodFrom)) {
 				isPaid = true;
 			}
 			
@@ -941,7 +969,8 @@ public class MOLSAGenerateEFTBatchStream extends
 			fcstatusCodeCaseID.statusCode = FINCOMPONENTSTATUS.CLOSED_OUTOFDATE;
 			FinancialComponentDtlsList financialComponentDtlsList = financialComponentObj
 					.searchByStatusCaseID(fcstatusCodeCaseID);
-			FinancialComponentDtls financialComponentDtls = returnLastFinancialComponentForSuspendedCase(financialComponentDtlsList);
+			FinancialComponentDtls financialComponentDtls = 
+				returnLastFinancialComponentForSuspendedCase(financialComponentDtlsList,caseHeaderDtls.caseID);
 			if (financialComponentDtls != null && ! isSuspendedPaidForMonth(caseHeaderDtls.caseID)) {
 				generateEFTDetail = new MOLSAGenerateEFTDetail();
 				generateEFTDetail.isSuspended = true;
@@ -1007,7 +1036,7 @@ public class MOLSAGenerateEFTBatchStream extends
 	 *             General ExceptionList
 	 */
 	private FinancialComponentDtls returnLastFinancialComponentForSuspendedCase(
-			FinancialComponentDtlsList financialComponentDtlsList)
+			FinancialComponentDtlsList financialComponentDtlsList, long caseID)
 			throws AppException, InformationalException {
 		FinancialComponentDtls outFinancialComponentDtls = null;
 		filterFinancialComponent(financialComponentDtlsList);
@@ -1028,6 +1057,14 @@ public class MOLSAGenerateEFTBatchStream extends
 							.getCurrentDate()) || financialComponentDtls.nextProcessingDate
 							.equals(Date.getCurrentDate()))) {
 				if(financialComponentDtls.amount.getValue()>0) {
+					outFinancialComponentDtls = financialComponentDtls;
+					break;
+				}
+			}
+			if(financialComponentDtls.nextProcessingDate.after(Date
+					.getCurrentDate())) {
+				boolean isPaidForThisMonth = isAlreadyPaidForCurrentOrFuture(caseID);
+				if(!isPaidForThisMonth) {
 					outFinancialComponentDtls = financialComponentDtls;
 					break;
 				}
@@ -1307,6 +1344,54 @@ public class MOLSAGenerateEFTBatchStream extends
 
 	}
 	
+	private boolean isAlreadyPaidForCurrentOrFuture(long caseID) throws AppException, InformationalException {
+		boolean isPaid = false;
+		
+		InstructionLineItem instructionLineItemObj = InstructionLineItemFactory
+		.newInstance();
+		InstructionLineItemKey  instructionLineItemKey = new InstructionLineItemKey();
+		InstructionLineItemDtls  instructionLineItemDtls;
+		ILICaseID iliCaseID = new ILICaseID();
+		iliCaseID.caseID = caseID;
+		ILITabDetailList iliTabDetailList = instructionLineItemObj.searchByCaseID(iliCaseID);
+		FinancialComponentID financialComponentID = new FinancialComponentID();
+		
+		ArrayList<Long> finComponentIDs = new ArrayList<Long>();
+		Date currentDate = Date.getCurrentDate();
+		
+		MonthYearDetails monthYearDetails = new MonthYearDetails();
+		MonthCodeKey monthCodeKey = new MonthCodeKey();
+		monthCodeKey.date = currentDate;
+		MonthCodeDetails monthCodeDetails = DateUtil.getMonthCode(monthCodeKey);
+		YearValueKey yearValueKey = new YearValueKey();
+		yearValueKey.date = currentDate;
+		YearValueDetails yearValueDetails = DateUtil.getYearCode(yearValueKey);
+		monthYearDetails.monthCode = monthCodeDetails.monthCode;
+		monthYearDetails.year=Integer.parseInt(yearValueDetails.yearValue);
+		DateDetails dateDetails = DateUtil.getStartDateOfMonth(monthYearDetails);
+		
+		for (ILITabDetail iliTabDetail : iliTabDetailList.dtls.items()) {
+			instructionLineItemKey.instructLineItemID = iliTabDetail.instructLineItemID;
+			instructionLineItemDtls = instructionLineItemObj.read(instructionLineItemKey);
+			DateRange coverPeriodDateRange = new DateRange(instructionLineItemDtls.coverPeriodFrom,instructionLineItemDtls.coverPeriodTo);
+			if(coverPeriodDateRange.contains(currentDate) 
+					&& instructionLineItemDtls.statusCode.equals(ILISTATUS.PROCESSED)
+					&& instructionLineItemDtls.instructLineItemCategory.equals(ILICATEGORY.PAYMENTINSTRUCTION)
+					&& instructionLineItemDtls.instructionLineItemType.equals(ILITYPE.MOLSA_AMOUNT)) {
+				isPaid = true;
+			}
+			else if(instructionLineItemDtls.coverPeriodFrom.after(currentDate)) {
+				isPaid = true;
+			}
+			 else if(dateDetails.date.equals(instructionLineItemDtls.coverPeriodFrom)) {
+					isPaid = true;
+			}
+			
+		}
+		
+		
+		return isPaid;
+	}
 	
 
 }
