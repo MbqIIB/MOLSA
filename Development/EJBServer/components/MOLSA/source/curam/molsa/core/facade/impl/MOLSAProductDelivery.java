@@ -1,5 +1,8 @@
 package curam.molsa.core.facade.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -47,6 +50,7 @@ import curam.core.struct.MaintainCertificationKey;
 import curam.core.struct.ProductDeliveryApprovalKey1;
 import curam.core.struct.ReactivationDtls;
 import curam.events.MOLSAAPPROVALTASK;
+import curam.message.BPOAPPROVALCRITERIA;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.MOLSANOTIFICATION;
 import curam.message.MOLSAPROGRAMRECOMMENDATIONCHECKELIGIBILITY;
@@ -86,7 +90,7 @@ import curam.verification.sl.infrastructure.fact.VerificationFactory;
  * approval process.
  */
 public abstract class MOLSAProductDelivery extends
-		curam.molsa.core.facade.base.MOLSAProductDelivery {
+curam.molsa.core.facade.base.MOLSAProductDelivery {
 
 	@Inject
 	protected ProductDeliveryDAO productDeliveryDAO;
@@ -118,23 +122,23 @@ public abstract class MOLSAProductDelivery extends
 	 */
 
 	public void submitPDCForApproval(SubmitForApprovalKey submitForApprovalKey)
-			throws AppException, InformationalException {
+	throws AppException, InformationalException {
 
 		curam.core.struct.SubmitForApprovalKey submitForApprovalKeyStruct = new curam.core.struct.SubmitForApprovalKey();
 		submitForApprovalKeyStruct.caseID = submitForApprovalKey.caseID;
 		MOLSAMaintainProductDelivery productDeliveryFactoryObj = MOLSAMaintainProductDeliveryFactory
-				.newInstance();
+		.newInstance();
 		productDeliveryFactoryObj
-				.submitPDCForApproval(submitForApprovalKeyStruct);
+		.submitPDCForApproval(submitForApprovalKeyStruct);
 	}
 
 	@Override
 	public InformationMsgDtlsList createCertification(
 			CreateCertificationDetails details) throws AppException,
 			InformationalException {
-		
+
 		curam.core.intf.CaseHeader caseHeaderObj = CaseHeaderFactory
-				.newInstance();
+		.newInstance();
 		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
 		caseHeaderKey.caseID = details.caseID;
 
@@ -154,7 +158,7 @@ public abstract class MOLSAProductDelivery extends
 			currentCaseStatusKey.caseID = details.caseID;
 			currentCaseStatusKey.nullDate = Date.kZeroDate;
 			CaseStatusDtls caseStatusDtls = caseStatusObj
-					.readCurrentStatusByCaseID1(currentCaseStatusKey);
+			.readCurrentStatusByCaseID1(currentCaseStatusKey);
 			mdfCaseStatusDtls.assign(caseStatusDtls);
 			mdfCaseStatusDtls.endDate = TransactionInfo.getSystemDate();
 			mdfCaseStatusDtls.endDateTime = TransactionInfo.getSystemDateTime();
@@ -169,13 +173,13 @@ public abstract class MOLSAProductDelivery extends
 			insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
 			insCaseStatusDtls.comments = "";
 			caseStatusObj.insert(insCaseStatusDtls);
-			
+
 			//Invoke the workflow which generates the task to financial auditor.
 			final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
 			TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
 			taskCreateDetails.caseID = details.caseID;
 			IntegratedCase integratedCase = integratedCaseDAO
-					.get(taskCreateDetails.caseID);
+			.get(taskCreateDetails.caseID);
 
 			LocalisableString subject = null;
 
@@ -185,7 +189,7 @@ public abstract class MOLSAProductDelivery extends
 
 			String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
 					productDeliveryDAO.get(taskCreateDetails.caseID)
-							.getProductType().getCode(),
+					.getProductType().getCode(),
 					TransactionInfo.getProgramLocale());
 			subject.arg(productName);
 			subject.arg(integratedCase.getConcernRole().getName());
@@ -196,14 +200,14 @@ public abstract class MOLSAProductDelivery extends
 			enactmentStructs.add(taskCreateDetails);
 			EnactmentService.startProcessInV3CompatibilityMode(
 					MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
-			
+
 		}
 		// create return object.
 		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
 
 		// MaintainCertification manipulation variables
 		final curam.core.intf.MaintainCertification maintainCertificationObj = curam.core.fact.MaintainCertificationFactory
-				.newInstance();
+		.newInstance();
 		final curam.core.struct.MaintainCertificationDetails maintainCertificationDetails = new curam.core.struct.MaintainCertificationDetails();
 
 		// Assign certification details
@@ -211,12 +215,12 @@ public abstract class MOLSAProductDelivery extends
 
 		// Call MaintainCertification BPO to create the certification
 		maintainCertificationObj
-				.createCertification(maintainCertificationDetails);
+		.createCertification(maintainCertificationDetails);
 
 		curam.piwrapper.caseheader.impl.ProductDelivery productDelivery = productDeliveryDAO
-				.get(details.caseID);
+		.get(details.caseID);
 		MOLSAMilestoneDeliveryCreator deliveryCreator = milestoneDeliveryCreator
-				.get(productDelivery.getProductType());
+		.get(productDelivery.getProductType());
 		if (null != deliveryCreator) {
 			deliveryCreator.createMilestoneDelivery(details.caseID);
 		}
@@ -224,12 +228,12 @@ public abstract class MOLSAProductDelivery extends
 		createCertificationEndPriorMilestone(details.periodFromDate, details.periodToDate,
 				details.caseID);
 
-		
+
 		final curam.util.exception.InformationalManager informationalManager = curam.util.transaction.TransactionInfo
-				.getInformationalManager();
+		.getInformationalManager();
 
 		final String[] warnings = informationalManager
-				.obtainInformationalAsString();
+		.obtainInformationalAsString();
 
 		for (int i = 0; i < warnings.length; i++) {
 
@@ -237,7 +241,7 @@ public abstract class MOLSAProductDelivery extends
 
 			informationalMsgDtls.informationMsgTxt = warnings[i];
 			informationMsgDtlsList.informationalMsgDtlsList.dtls
-					.addRef(informationalMsgDtls);
+			.addRef(informationalMsgDtls);
 		}
 
 		// return all informational messages
@@ -260,7 +264,7 @@ public abstract class MOLSAProductDelivery extends
 		// Create milestone for Certification End date prior
 		// notification
 		curam.molsa.core.sl.impl.MOLSAMaintainProductDelivery.createCertificationEndPriorMilestone(certStartDate, certEndDate, caseID);
-		
+
 	}
 
 	/**
@@ -278,13 +282,13 @@ public abstract class MOLSAProductDelivery extends
 	 */
 
 	public void rejectPDCApprovalTask(SubmitForApprovalKey submitForApprovalKey)
-			throws AppException, InformationalException {
+	throws AppException, InformationalException {
 		curam.core.struct.SubmitForApprovalKey submitForApprovalKeyStruct = new curam.core.struct.SubmitForApprovalKey();
 		submitForApprovalKeyStruct.caseID = submitForApprovalKey.caseID;
 		MOLSAMaintainProductDelivery productDeliveryFactoryObj = MOLSAMaintainProductDeliveryFactory
-				.newInstance();
+		.newInstance();
 		productDeliveryFactoryObj
-				.rejectPDCApprovalTask(submitForApprovalKeyStruct);
+		.rejectPDCApprovalTask(submitForApprovalKeyStruct);
 
 	}
 
@@ -302,27 +306,96 @@ public abstract class MOLSAProductDelivery extends
 	 */
 
 	public void approve(SubmitForApprovalKey submitForApprovalKey)
-			throws AppException, InformationalException {
+	throws AppException, InformationalException {
 
 		MOLSAMaintainProductDelivery productDeliveryFactoryObj = MOLSAMaintainProductDeliveryFactory
-				.newInstance();
+		.newInstance();
 		ProductDeliveryApprovalKey1 key = new ProductDeliveryApprovalKey1();
 		key.caseID = submitForApprovalKey.caseID;
 		CaseKeyStruct caseKeyStruct = new CaseKeyStruct();
 		caseKeyStruct.caseID = submitForApprovalKey.caseID;
+
+
+
+		//getting the current day,month and year
+		java.util.Date currentDate= new java.util.Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(currentDate);
+		int currentDay=cal.get(Calendar.DAY_OF_MONTH);
+		int currentMonth = cal.get(Calendar.MONTH);
+		int currentYear = cal.get(Calendar.YEAR);
+
+		currentMonth=currentMonth+1;
+
+		/*		
+			//getting MainDFinancial Dates
+
+			String mainRunDate = "01/17/2016";
+			DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
+			java.util.Date date = new java.util.Date();
+			try {
+				date = df.parse(mainRunDate);
+				cal.setTime(date);
+				int mainRunDay=cal.get(Calendar.DAY_OF_MONTH);
+				int mainRunMonth = cal.get(Calendar.MONTH);
+				int mainRunYear = cal.get(Calendar.YEAR);
+
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		 */	
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		curam.core.intf.CaseHeader caseHeaderObj = curam.core.fact.CaseHeaderFactory.newInstance();    
+		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+		caseHeaderKey.caseID = submitForApprovalKey.caseID;
+
+		//Approval Cut off date is set as 16th of current Month.
+
+		Date caseRegistrationDate=caseHeaderObj.read(caseHeaderKey).registrationDate; 
+		String cutOffDate="16"+"/"+currentMonth+"/"+currentYear;
+		java.util.Date javacutOffDate = new java.util.Date();
+		try {
+			javacutOffDate = df.parse(cutOffDate);
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Date curamCutOffDate= new Date();
+		curamCutOffDate=curamCutOffDate.getFromJavaUtilDate(javacutOffDate);
+
+		//checking whether the registration date is after 16th of the month
+
+		if(caseRegistrationDate.after(curamCutOffDate)){
+			final AppException appException = new AppException(
+					BPOAPPROVALCRITERIA.ERR_DETAILS_APPROVAL_CRITERIA_NAME_INVALID);
+			curam.core.sl.infrastructure.impl.ValidationManagerFactory
+			.getManager()
+			.addInfoMgrExceptionWithLookup(
+					appException,
+					CuramConst.gkEmpty,
+					InformationalElement.InformationalType.kError,
+					curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
+					0);
+			TransactionInfo.getInformationalManager().failOperation();
+		}
+
 		if (VerificationFactory.newInstance()
 				.listPDOutstandingCaseVerificationDetails(caseKeyStruct).dtls
 				.size() > 0) {
 			final AppException appException = new AppException(
 					MOLSAPROGRAMRECOMMENDATIONCHECKELIGIBILITY.ERR_CLEAR_OUTSTANDING_VERIFICATION);
 			curam.core.sl.infrastructure.impl.ValidationManagerFactory
-					.getManager()
-					.addInfoMgrExceptionWithLookup(
-							appException,
-							CuramConst.gkEmpty,
-							InformationalElement.InformationalType.kError,
-							curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
-							0);
+			.getManager()
+			.addInfoMgrExceptionWithLookup(
+					appException,
+					CuramConst.gkEmpty,
+					InformationalElement.InformationalType.kError,
+					curam.core.sl.infrastructure.impl.ValidationManagerConst.kSetThree,
+					0);
 			TransactionInfo.getInformationalManager().failOperation();
 		}
 
@@ -331,13 +404,13 @@ public abstract class MOLSAProductDelivery extends
 
 	@Override
 	public void close(CloseCaseDetails details) throws AppException,
-			InformationalException {
-		
+	InformationalException {
+
 		Date currentDate = Date.getCurrentDate();
 		if(details.closureDate.before(currentDate) || details.closureDate.equals(currentDate)) {
 			//throw new AppException(MOLSABPOPRODUCTDELIVERY.ERR_CASE_CLOSURE_DATE_FUTURE_ONLY);
 		}
-		
+
 		ProductDelivery PDObj = ProductDeliveryFactory.newInstance();
 		CaseHeader caseHeader = caseHeaderDAO.get(details.caseID);
 		PDObj.close(details);
@@ -347,12 +420,12 @@ public abstract class MOLSAProductDelivery extends
 		molsaMessageTextKey.dtls.category = MOLSASMSMessageType.NOTIFICATION;
 		molsaMessageTextKey.dtls.template = MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
 		MOLSAMessageText messageText = molsasmsUtilObj
-				.getSMSMessageText(molsaMessageTextKey);
+		.getSMSMessageText(molsaMessageTextKey);
 		MOLSAConcernRoleListAndMessageTextDetails concernRoleListAndMessageTextDetails = new MOLSAConcernRoleListAndMessageTextDetails();
 		// Construct the input details
 		concernRoleListAndMessageTextDetails.dtls.smsMessageText = messageText.dtls.smsMessageText;
 		concernRoleListAndMessageTextDetails.dtls.concernRoleTabbedList = String
-				.valueOf(caseHeader.getConcernRole().getID());
+		.valueOf(caseHeader.getConcernRole().getID());
 		// Need to point to the right template
 		concernRoleListAndMessageTextDetails.dtls.smsMessageType = MOLSASMSMESSAGETEMPLATE.APPLICATIONREJECTION;
 		if (details.reasonCode.equals(CASECLOSEREASON.MANAGERREJECTION))
@@ -361,10 +434,10 @@ public abstract class MOLSAProductDelivery extends
 	}
 
 	public void rejectPDCApproval(RejectCaseKey_fo1 key) throws AppException,
-			InformationalException {
+	InformationalException {
 
 		final curam.core.intf.ProductDeliveryApproval productDeliveryApprovalObj = curam.core.fact.ProductDeliveryApprovalFactory
-				.newInstance();
+		.newInstance();
 		final curam.core.struct.ProductDeliveryApprovalKey1 productDeliveryApprovalKey = new curam.core.struct.ProductDeliveryApprovalKey1();
 
 		// Set key to reject product delivery
@@ -380,7 +453,7 @@ public abstract class MOLSAProductDelivery extends
 		final LocalisableString subject = new LocalisableString(
 				BPOPRODUCTDELIVERYAPPROVAL.INF_CASE_APPROVAL_REJECTED_TICKET);
 		curam.piwrapper.caseheader.impl.CaseHeader caseHeader = caseHeaderDAO
-				.get(key.caseID);
+		.get(key.caseID);
 
 		subject.arg(caseHeader.getCaseReference());
 
@@ -406,12 +479,12 @@ public abstract class MOLSAProductDelivery extends
 	}
 
 	public void approveCOCPDC(SubmitForApprovalKey submitForApprovalKey)
-			throws AppException, InformationalException {
+	throws AppException, InformationalException {
 		final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
 		TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
 		taskCreateDetails.caseID = submitForApprovalKey.caseID;
 		IntegratedCase integratedCase = integratedCaseDAO
-				.get(taskCreateDetails.caseID);
+		.get(taskCreateDetails.caseID);
 
 		LocalisableString subject = null;
 
@@ -421,7 +494,7 @@ public abstract class MOLSAProductDelivery extends
 
 		String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
 				productDeliveryDAO.get(taskCreateDetails.caseID)
-						.getProductType().getCode(),
+				.getProductType().getCode(),
 				TransactionInfo.getProgramLocale());
 		subject.arg(productName);
 		subject.arg(integratedCase.getConcernRole().getName());
@@ -443,10 +516,10 @@ public abstract class MOLSAProductDelivery extends
 
 	@Override
 	public void reactivate(ReactivationDetails details) throws AppException,
-			InformationalException {
+	InformationalException {
 		// MaintainCaseClosure manipulation variables
 		final curam.core.intf.MaintainCaseClosure maintainCaseClosureObj = curam.core.fact.MaintainCaseClosureFactory
-				.newInstance();
+		.newInstance();
 		final ReactivationDtls reactivationDtls = new ReactivationDtls();
 
 		// Assign reactivation details
@@ -466,9 +539,9 @@ public abstract class MOLSAProductDelivery extends
 	public InformationMsgDtlsList modifyCertification(
 			MaintainCertificationDetails details) throws AppException,
 			InformationalException {
-		
+
 		curam.core.intf.CaseHeader caseHeaderObj = CaseHeaderFactory
-				.newInstance();
+		.newInstance();
 		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
 		caseHeaderKey.caseID = details.caseID;
 
@@ -488,7 +561,7 @@ public abstract class MOLSAProductDelivery extends
 			currentCaseStatusKey.caseID = details.caseID;
 			currentCaseStatusKey.nullDate = Date.kZeroDate;
 			CaseStatusDtls caseStatusDtls = caseStatusObj
-					.readCurrentStatusByCaseID1(currentCaseStatusKey);
+			.readCurrentStatusByCaseID1(currentCaseStatusKey);
 			mdfCaseStatusDtls.assign(caseStatusDtls);
 			mdfCaseStatusDtls.endDate = TransactionInfo.getSystemDate();
 			mdfCaseStatusDtls.endDateTime = TransactionInfo.getSystemDateTime();
@@ -503,13 +576,13 @@ public abstract class MOLSAProductDelivery extends
 			insCaseStatusDtls.userName = systemUserObj.getUserDetails().userName;
 			insCaseStatusDtls.comments = "";
 			caseStatusObj.insert(insCaseStatusDtls);
-			
+
 			//Invoke the workflow which generates the task to financial auditor.
 			final java.util.List<TaskCreateDetails> enactmentStructs = new java.util.ArrayList<TaskCreateDetails>();
 			TaskCreateDetails taskCreateDetails = new TaskCreateDetails();
 			taskCreateDetails.caseID = details.caseID;
 			IntegratedCase integratedCase = integratedCaseDAO
-					.get(taskCreateDetails.caseID);
+			.get(taskCreateDetails.caseID);
 
 			LocalisableString subject = null;
 
@@ -519,7 +592,7 @@ public abstract class MOLSAProductDelivery extends
 
 			String productName = CodeTable.getOneItem(PRODUCTTYPE.TABLENAME,
 					productDeliveryDAO.get(taskCreateDetails.caseID)
-							.getProductType().getCode(),
+					.getProductType().getCode(),
 					TransactionInfo.getProgramLocale());
 			subject.arg(productName);
 			subject.arg(integratedCase.getConcernRole().getName());
@@ -530,41 +603,41 @@ public abstract class MOLSAProductDelivery extends
 			enactmentStructs.add(taskCreateDetails);
 			EnactmentService.startProcessInV3CompatibilityMode(
 					MOLSAConstants.kMOLSAProductDeliveryOpenTask, enactmentStructs);
-			
-			
+
+
 		}
 		// Return object
 		final InformationMsgDtlsList informationMsgDtlsList = new InformationMsgDtlsList();
 
 		// MaintainCertification manipulation variables
 		final curam.core.intf.MaintainCertification maintainCertificationObj = curam.core.fact.MaintainCertificationFactory
-				.newInstance();
+		.newInstance();
 		final curam.core.struct.MaintainCertificationDetails maintainCertificationDetails = new curam.core.struct.MaintainCertificationDetails();
 
 		// Assign certification details
 		maintainCertificationDetails.assign(details);
-		
+
 		// To Complete the existsing milestone
 		MaintainCertificationKey maintainCertificationKey = new MaintainCertificationKey();
 		maintainCertificationKey.certificationDiaryID = details.certificationDiaryID; 
 		curam.core.struct.MaintainCertificationDetails oldMaintainCertificationDetails = maintainCertificationObj.readCertification(maintainCertificationKey);
 		//Update MileStone
 		completeCertMileStone(maintainCertificationDetails.caseID, oldMaintainCertificationDetails.periodFromDate, oldMaintainCertificationDetails.periodToDate);
-		
+
 		// Call MaintainCertification BPO to modify the certification
 		maintainCertificationObj
-				.modifyCertification(maintainCertificationDetails);
-		
-		
+		.modifyCertification(maintainCertificationDetails);
+
+
 		//Creates a new milestone
 		createCertificationEndPriorMilestone(maintainCertificationDetails.periodFromDate, maintainCertificationDetails.periodToDate,
 				maintainCertificationDetails.caseID);
-		
+
 		final curam.util.exception.InformationalManager informationalManager = curam.util.transaction.TransactionInfo
-				.getInformationalManager();
+		.getInformationalManager();
 
 		final String[] warnings = informationalManager
-				.obtainInformationalAsString();
+		.obtainInformationalAsString();
 
 		for (int i = 0; i < warnings.length; i++) {
 
@@ -572,13 +645,13 @@ public abstract class MOLSAProductDelivery extends
 
 			informationalMsgDtls.informationMsgTxt = warnings[i];
 			informationMsgDtlsList.informationalMsgDtlsList.dtls
-					.addRef(informationalMsgDtls);
+			.addRef(informationalMsgDtls);
 
 		}
 
 		return informationMsgDtlsList;
 	}
-	
+
 	private void completeCertMileStone(long caseID,Date originalPeriodFromDate,Date originalPeriodToDate ) throws AppException,
 	InformationalException {
 		//Update MileStone
@@ -608,7 +681,7 @@ public abstract class MOLSAProductDelivery extends
 				}
 			}
 		}
-		
+
 	}
 
 }
