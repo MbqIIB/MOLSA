@@ -22,14 +22,16 @@ public class MOLSACognosReportHelperBatch extends curam.molsa.cognos.reporting.b
    */
   @Override
   public void process(BooleanIndicator isMidRun) throws AppException, InformationalException {
-    String midRunSql1 = " INSERT INTO MOLSAPAYMENTFLAG SELECT MAX(EFFECTIVEDATE) , 2 FROM PAYMENTINSTRUMENT" ; 
+    String midRunSql1 = " INSERT INTO MOLSAPAYMENTFLAG SELECT MAX(EFFECTIVEDATE) , 2 ,'ملحق الرواتب' FROM PAYMENTINSTRUMENT" ; 
     //String midRunSql2 = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS" ; 
     
-    String normalRunSql1 = " INSERT INTO MOLSAPAYMENTFLAG SELECT MAX(EFFECTIVEDATE) , 1 FROM PAYMENTINSTRUMENT" ; 
-    String normalRunSql2 = " INSERT INTO MOLSACOGNOSPAYMENTDETAILS SELECT * FROM VW_MOLSAPAYMENT_OTHER" ; 
+    String normalRunSql1 = " INSERT INTO MOLSAPAYMENTFLAG SELECT MAX(EFFECTIVEDATE) , 1,'Main Financials' FROM PAYMENTINSTRUMENT" ; 
+    String normalRunSql2 = " INSERT INTO MOLSACOGNOSPAYMENTDETAILS_OTH SELECT * FROM VW_MOLSAPAYMENT_OTHER" ; 
+    String normalRunSql3 = " INSERT INTO MOLSACognosPaymentDetails SELECT * FROM VW_MOLSAPAYMENTDETAILS";
     try {
       PreparedStatement stmt1 = null;
       PreparedStatement stmt2 = null;
+      PreparedStatement stmt3 = null;
       if(isMidRun.flag) {
     	  System.out.println("For Mid Run Batch -flag is set to true");
     	  stmt1 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(midRunSql1);
@@ -39,8 +41,10 @@ public class MOLSACognosReportHelperBatch extends curam.molsa.cognos.reporting.b
     	  System.out.println("For Main Run Batch - flag is Not set");
     	  stmt1 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(normalRunSql1);
     	  stmt2 = TransactionInfo.getInfo().getInfoConnection().prepareStatement(normalRunSql2);
+    	  stmt3=TransactionInfo.getInfo().getInfoConnection().prepareStatement(normalRunSql3);
     	  stmt1.executeQuery();
     	  stmt2.executeQuery();
+    	  stmt3.executeQuery();
       }
       
       
