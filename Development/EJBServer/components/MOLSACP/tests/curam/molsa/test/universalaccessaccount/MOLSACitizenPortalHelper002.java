@@ -25,7 +25,7 @@ import curam.util.security.EncryptionAdmin;
 import curam.util.type.Date;
 import curam.util.type.NotFoundIndicator;
 
-public class MOLSACitizenPortalHelper002 extends CuramServerTest {
+public class MOLSACitizenPortalHelper002 extends CuramServerTest {/*
 
 	@Inject
 	private CWPasswordGenerationStrategy cwPasswordGenerator;
@@ -35,14 +35,14 @@ public class MOLSACitizenPortalHelper002 extends CuramServerTest {
 		GuiceWrapper.getInjector().injectMembers(this);
 	}
 
-	/**
+	*//**
 	 * This method populates the values required for the external user table for
 	 * an account.
 	 * 
 	 * @return ExternalUserDtls
 	 * @throws AppException
 	 * @throws InformationalException
-	 */
+	 *//*
 
 	private ExternalUserDtls getExternalUserDetails() throws AppException,
 			InformationalException {
@@ -96,14 +96,14 @@ public class MOLSACitizenPortalHelper002 extends CuramServerTest {
 		assertEquals(actualValue, expectedValue);
 	}
 
-	/**
+	*//**
 	 * This method is used to encrypt a string value to set as password.
 	 * 
 	 * @param password
 	 *            String
 	 * @return String
 	 * @throws AppException
-	 */
+	 *//*
 	private String getEncryptedPasswordValue(String password)
 			throws AppException {
 		String encryptedEnteredPassword;
@@ -117,4 +117,4 @@ public class MOLSACitizenPortalHelper002 extends CuramServerTest {
 		return encryptedEnteredPassword;
 	}
 
-}
+*/}
