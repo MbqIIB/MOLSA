@@ -1,5 +1,7 @@
 package curam.molsa.core.sl.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -893,10 +895,10 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		concernRoleCommunicationDtls.emailAddressID = contactKey.emailAddressID;
 		concernRoleCommunicationDtls.addressID = contactKey.addressID;
 		concernRoleCommunicationDtls.phoneNumberID = contactKey.phoneNumberID;
-		
-		
-		
-	
+
+
+
+
 		// if attachment for a communication is present,
 		// set the attachment indicator
 		if (commDetails.newAttachmentName.length() != 0) {
@@ -925,10 +927,21 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 		molsaCommDtls.IBAN=MOLSACommunicationHelper.getIBAN(commDetails.correspondentConcernRoleID);
 
 		if(commDetails.proFormaID==45010){
+			//As per the new MOLSA requirement card expiry date should be 3 years from the date of printing
+			//if(MOLSACommunicationHelper.getCardExpiry(commDetails.caseID)!=null){
+				java.util.Date javaDate=new java.util.Date();
+				String certEndDateToString="";
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.YEAR, 3);
+				javaDate=cal.getTime();
+				Date curamDate= new Date();
+				curamDate.getFromJavaUtilDate(javaDate);
+				certEndDateToString = dateFormat.format(cal.getTime());
+				molsaCommDtls.cardExpiryDate=certEndDateToString;
+				//molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
 
-			if(MOLSACommunicationHelper.getCardExpiry(commDetails.caseID)!=null){
-				molsaCommDtls.cardExpiryDate=MOLSACommunicationHelper.getCardExpiry(commDetails.caseID);
-			}	
+			//}	
 			if(molsaCommDtls.cardExpiryDate.equals(Date.kZeroDate)){
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_CARDEXPIRY_FOR_MOLSA_CARD_EMPTY);	
 			}
@@ -938,18 +951,18 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 			}
 		}
 		//get the casewoker name
-		
+
 		molsaCommDtls.caseWorkerName=MOLSACommunicationHelper.getCaseWorkerName();
 		HashMap<String, HashMap<String, Money>>  productMap = MOLSACommunicationHelper.getProductMap(commDetails.caseID);
 		HashMap<String, Money> mainProductMap= productMap.get(MOLSACommunicationHelper.kMain);
 		HashMap<String, Money> maidProductMap= productMap.get(MOLSACommunicationHelper.kMaid);
-		
+
 		if(mainProductMap != null && mainProductMap.size()>0) {
 			Map.Entry<String,Money> entry=mainProductMap.entrySet().iterator().next();
 			molsaCommDtls.mainProductName=entry.getKey();
 			molsaCommDtls.mainProductAmount=entry.getValue();
 		}
-		
+
 		if(maidProductMap != null && maidProductMap.size()>0) {
 			Map.Entry<String,Money> entry=maidProductMap.entrySet().iterator().next();
 			molsaCommDtls.maidAssistanceAmount=entry.getValue();
