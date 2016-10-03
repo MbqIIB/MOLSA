@@ -2,12 +2,16 @@ package curam.molsa.util.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 
 import javax.activation.DataHandler;
 import javax.activation.MimetypesFileTypeMap;
 
 import org.apache.commons.io.IOUtils;
+import org.tempuri.AdoxSrvcStub;
+import org.tempuri.AdoxSrvcStub.GetFolderID;
+import org.tempuri.AdoxSrvcStub.GetFolderIDResponse;
 import org.tempuri.ArabdoxRemoteServiceStub;
 import org.tempuri.ArabdoxRemoteServiceStub.ArabdoxConatinerGetResponse;
 import org.tempuri.ArabdoxRemoteServiceStub.ArabdoxContainer;
@@ -72,7 +76,6 @@ import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.Blob;
 import curam.util.type.CodeTable;
-import curam.util.type.DateTime;
 import curam.util.type.NotFoundIndicator;
 
 /**
@@ -97,6 +100,7 @@ public class MOLSAArabdoxUtil {
 
 	private String documentIndexNotUsedTextIDs = Configuration.getProperty(EnvVars.ARABDOX_DOCUMENT_INDEX_DEFAULTED_TEXT_IDS);
 	private String documentIndexNotUsedDateIDs = Configuration.getProperty(EnvVars.ARABDOX_DOCUMENT_INDEX_DEFAULTED_DATE_IDS);
+	private String targetEndpoint=Configuration.getProperty(EnvVars.ADOXSRVC_TARGET_ENDPOINT);
 
 	private static MOLSAArabdoxUtil instance = null;
 
@@ -591,14 +595,16 @@ public class MOLSAArabdoxUtil {
 			LoginResponse loginResponse,
 			long caseID, String folderName) throws AppException, InformationalException {
 
-		int caseFolderID = 0;
+		int caseFolderID = -1;
+		int processFolderID=0;
+		long verificationFolderID=0;
 
 		MOLSAArabDoxCaseLink arabDoxCaseLinkObj = MOLSAArabDoxCaseLinkFactory.newInstance();
 		MOLSAArabDoxCaseLinkKey molsaArabDoxCaseLinkKey = new MOLSAArabDoxCaseLinkKey();
 		molsaArabDoxCaseLinkKey.caseID = caseID;
 		NotFoundIndicator firstTimeNotFoundIndicator = new NotFoundIndicator();
 		MOLSAArabDoxCaseLinkDtls arabDoxCaseLinkDtls = arabDoxCaseLinkObj.read(firstTimeNotFoundIndicator, molsaArabDoxCaseLinkKey);
-		
+
 		/*
 		 * Previous code always retrieve all the folder info from Arabdox to check whether the folder exists ,which leads to the performance issue
 		 * This has been changed and now Curam tries to create folder if it doesn't find the info in the molsaarabdoxcaselink table.
@@ -606,8 +612,10 @@ public class MOLSAArabdoxUtil {
 		 * 
 		 */
 
-	//	  MOLSAArabDoxContainerExists arabDoxContainerExists = 
-	//	   isFolderExists(arabdoxRemoteServiceStub, arabdoxHelper, loginResponse, baseFolderID, ContainerType.Folder, folderName);
+
+
+		//	  MOLSAArabDoxContainerExists arabDoxContainerExists = 
+		//	   isFolderExists(arabdoxRemoteServiceStub, arabdoxHelper, loginResponse, baseFolderID, ContainerType.Folder, folderName);
 
 		MOLSAArabDoxCaseLinkKey arabDoxCaseLinkKey = new MOLSAArabDoxCaseLinkKey();
 		arabDoxCaseLinkKey.caseID = caseID;
@@ -619,43 +627,87 @@ public class MOLSAArabdoxUtil {
 		 * So Intermediate Commit ie required
 		 */
 		if (firstTimeNotFoundIndicator.isNotFound()) {
-
+			//New service added by MOAD to check a folder exist if so it will retuen the folderid,documentid(Verification and Process)
 			CreateFolderResponse createFolderResponse = null;
+
+			GetFolderIDResponse getFolderIDResponse = new GetFolderIDResponse();
+
+			try {
+
+				AdoxSrvcStub adoxSrvcStub = new AdoxSrvcStub(targetEndpoint);
+				GetFolderID getFolderID= new GetFolderID();
+				getFolderID.setParentID(baseFolderID);
+				getFolderID.setFolderName(folderName);
+				getFolderIDResponse=adoxSrvcStub.getFolderID(getFolderID);
+				if(getFolderIDResponse.getGetFolderIDResult().getFolderID()>0){ //Folder exists //Save Folder ID (will be a positive value)
+					caseFolderID = (int) getFolderIDResponse.getGetFolderIDResult().getFolderID();
+					if(getFolderIDResponse.getGetFolderIDResult().getVerificationID()<0){ //Check Verification  Exists(if exists a negative value will be returned)
+						verificationFolderID=getFolderIDResponse.getGetFolderIDResult().getVerificationID(); //Save Verification ID
+					}
+					if(getFolderIDResponse.getGetFolderIDResult().getProcessID()<0){ //Check Process Exists (will be a negative value)
+						processFolderID=getFolderIDResponse.getGetFolderIDResult().getProcessID(); //Save Process ID
+						if(getFolderIDResponse.getGetFolderIDResult().getVerificationID()<0){ //Verification Exist (will be a negative value)
+							arabDoxCaseLinkDtls = new MOLSAArabDoxCaseLinkDtls();
+							arabDoxCaseLinkDtls.caseID = caseID;
+							arabDoxCaseLinkDtls.arabDoxFolderID = getFolderIDResponse.getGetFolderIDResult().getFolderID();
+							arabDoxCaseLinkDtls.arabDoxVerDocID = getFolderIDResponse.getGetFolderIDResult().getVerificationID();
+							arabDoxCaseLinkDtls.arabDoxProDocID = getFolderIDResponse.getGetFolderIDResult().getProcessID();
+							arabDoxCaseLinkObj.insert(arabDoxCaseLinkDtls);
+							return arabDoxCaseLinkDtls;
+						}
+
+					}
+				}
+
+			} catch (RemoteException remoteExcep) {
+				throwRemoteException(remoteExcep, "GetFolderID");
+			}catch(AppException appExcep){
+				throw appExcep;
+			}
+
+
 			//   if (!arabDoxContainerExists.isExists) {
-			try{
-				createFolderResponse = arabdoxHelper.createFolder(arabdoxRemoteServiceStub, loginResponse, 
-						folderName, baseFolderID, ContainerType.Folder, baseFolderName);
-				FolderCreateResponse folderCreateResponse = createFolderResponse.getCreateFolderResult();
-				ArabdoxContainer arabdoxContainer = folderCreateResponse.getCreatedFolder();
-				caseFolderID = arabdoxContainer.getContainerId();
-			}catch(AppException appException){
-				throw (appException);
+			if((caseFolderID<0)){ //create folder only if folder is not existing -1
+				try{
+					createFolderResponse = arabdoxHelper.createFolder(arabdoxRemoteServiceStub, loginResponse, 
+							folderName, baseFolderID, ContainerType.Folder, baseFolderName);
+					FolderCreateResponse folderCreateResponse = createFolderResponse.getCreateFolderResult();
+					ArabdoxContainer arabdoxContainer = folderCreateResponse.getCreatedFolder();
+					caseFolderID = arabdoxContainer.getContainerId();
+				}catch(AppException appException){
+					throw (appException);
+				}
 			}
 			// } else {
-			//   caseFolderID = (int) arabDoxContainerExists.containerID;
+			// caseFolderID = (int) arabDoxContainerExists.containerID;
 
 			// }
-
-			CreateDocumentExResponse processCreateDocumentResponse = arabdoxHelper.createDocumentEx(arabdoxRemoteServiceStub, 
-					loginResponse, processFolderName, caseFolderID, caseID);
-			processDocumentCreateResponse = processCreateDocumentResponse.getCreateDocumentExResult();
-
+			if(processFolderID ==0){ //create document only if process folder is not existing 0
+				CreateDocumentExResponse processCreateDocumentResponse = arabdoxHelper.createDocumentEx(arabdoxRemoteServiceStub, 
+						loginResponse, processFolderName, caseFolderID, caseID);
+				processDocumentCreateResponse = processCreateDocumentResponse.getCreateDocumentExResult();
+				processFolderID=processDocumentCreateResponse.getCreatedDocumentId();
+			}
 			// Till this we do care about throwing the error from ArabDox.We can check whether the folder exists or not.
 			// But cannot check whether the Document is created or not. Once Created, we cannot revert back from ArabDox.
 			// So if any failure occur in creation of second document, we need to write the details to the table.
 
 			try {
-				CreateDocumentExResponse verificationCreateDocumentResponse = 
-					arabdoxHelper.createDocumentEx(arabdoxRemoteServiceStub, loginResponse, verificatonFolderName, caseFolderID,
-							caseID);
-				verificationDocumentCreateResponse = verificationCreateDocumentResponse.getCreateDocumentExResult();
+				if(verificationFolderID ==0){
+					CreateDocumentExResponse verificationCreateDocumentResponse = 
+						arabdoxHelper.createDocumentEx(arabdoxRemoteServiceStub, loginResponse, verificatonFolderName, caseFolderID,
+								caseID);
+					verificationDocumentCreateResponse = verificationCreateDocumentResponse.getCreateDocumentExResult();
+					verificationFolderID=verificationDocumentCreateResponse.getCreatedDocumentId();
+				}
 			} catch (AppException appException) {
 				TransactionInfo.getInfo().rollback();
 				TransactionInfo.getInfo().begin();
 				arabDoxCaseLinkDtls = new MOLSAArabDoxCaseLinkDtls();
 				arabDoxCaseLinkDtls.caseID = caseID;
 				arabDoxCaseLinkDtls.arabDoxFolderID = caseFolderID;
-				arabDoxCaseLinkDtls.arabDoxProDocID = processDocumentCreateResponse.getCreatedDocumentId();
+				//arabDoxCaseLinkDtls.arabDoxProDocID = processDocumentCreateResponse.getCreatedDocumentId();
+				arabDoxCaseLinkDtls.arabDoxProDocID=processFolderID;
 				arabDoxCaseLinkObj.insert(arabDoxCaseLinkDtls);
 				TransactionInfo.getInfo().commit();
 				throw (appException);
@@ -669,8 +721,10 @@ public class MOLSAArabdoxUtil {
 			arabDoxCaseLinkDtls = new MOLSAArabDoxCaseLinkDtls();
 			arabDoxCaseLinkDtls.caseID = caseID;
 			arabDoxCaseLinkDtls.arabDoxFolderID = caseFolderID;
-			arabDoxCaseLinkDtls.arabDoxProDocID = processDocumentCreateResponse.getCreatedDocumentId();
-			arabDoxCaseLinkDtls.arabDoxVerDocID = verificationDocumentCreateResponse.getCreatedDocumentId();
+			//arabDoxCaseLinkDtls.arabDoxProDocID = processDocumentCreateResponse.getCreatedDocumentId();
+			//arabDoxCaseLinkDtls.arabDoxVerDocID = verificationDocumentCreateResponse.getCreatedDocumentId();
+			arabDoxCaseLinkDtls.arabDoxProDocID = processFolderID;
+			arabDoxCaseLinkDtls.arabDoxVerDocID = verificationFolderID;
 			arabDoxCaseLinkObj.insert(arabDoxCaseLinkDtls);
 		}
 		// If Verification is not created
@@ -690,6 +744,20 @@ public class MOLSAArabdoxUtil {
 		/** End: Complex Logic. */
 
 		return arabDoxCaseLinkDtls;
+	}
+	/**
+	 * Throws the AppException.
+	 * @param errorCode ErrorCode
+	 * @param methodName String
+	 * @throws AppException General Exception
+	 * @throws InformationalException General Exception
+	 */
+	private void throwRemoteException(RemoteException remoteExcep, String methodName) 
+	throws AppException, InformationalException {
+		AppException appException = new AppException(MOLSABPOARABDOX.ERR_REMOTE_EXCEPTION);
+		appException.arg(methodName);
+		appException.arg(remoteExcep.getMessage());
+		throw appException;
 	}
 
 }
