@@ -1,5 +1,7 @@
 package curam.molsa.core.impl;
 
+import java.nio.charset.Charset;
+
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationDtls;
 import curam.molsa.communication.entity.struct.MOLSAConcernRoleCommunicationKey;
 import curam.molsa.core.struct.MOLSAProFormaDocumentData;
@@ -177,6 +179,8 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 			BankBranchKey bankKey= new BankBranchKey();
 			bankKey.bankBranchID=concernRoleCommunicationDtls.bankBranchID;
 			molsaproFormaDocumentData.bankName=bankBranch.read(bankKey).name;
+		}else{
+			molsaproFormaDocumentData.bankName="Invalid Bank";
 		}
 		molsaproFormaDocumentData.molsaManagerName=concernRoleCommunicationDtls.molsaManager;
 		molsaproFormaDocumentData.caseReferenceID=concernRoleCommunicationDtls.caseReferenceID;
@@ -190,6 +194,8 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 		molsaproFormaDocumentData.caseWorkerMobile=concernRoleCommunicationDtls.caseWorkerMobile;
 		molsaproFormaDocumentData.nomineeAlternateID=concernRoleCommunicationDtls.nomineeAlternateID;
 		molsaproFormaDocumentData.inquiryReviewDate=concernRoleCommunicationDtls.inquiryReviewDate;
+
+
 
 		//Getting the location name from location id 
 
@@ -206,14 +212,14 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_MANAGER_BANKACCOUNT_EMPTY);
 			}
 		}
-		
+
 		if((details.documentID==45001)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
 				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)||
 				(details.documentID==45011)||(details.documentID==45012)||(details.documentID==45013)||(details.documentID==45014)||(details.documentID==45015)){
 			if(molsaproFormaDocumentData.molsaManagerName.equals("")||molsaproFormaDocumentData.molsaManagerName==null){
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_MANAGER_EMPTY);
 			}
-			
+
 		}
 
 		//New Xsl validation by document ID
@@ -224,7 +230,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 			if(!(MOLSACommunicationHelper.getFullName(key.concernRoleID).equals(""))){
 				proFormaDocumentData.concernRoleName=MOLSACommunicationHelper.getFullName(key.concernRoleID);
 			}
-			
+
 			if(details.documentID==45009){
 				if(molsaproFormaDocumentData.benefNomineeName.equals("")||molsaproFormaDocumentData.benefNomineeName==null){
 					molsaproFormaDocumentData.benefNomineeName=proFormaDocumentData.concernRoleName;
@@ -232,6 +238,23 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 				}	
 			}
 			//call generateAndPreviewXMLDocument method with new struct for the new documents with below ids
+			System.out.println("**"+molsaproFormaDocumentData.caseWorkerName+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.caseReferenceID+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.dtls.concernRoleName+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.molsaManagerName+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.dtls.currentDate+"*****");
+			System.out.println("**"+(molsaproFormaDocumentData.mainProductName).length()+"*****");
+			System.out.println("----------------------------------------------------------------");
+			System.out.println("**"+proFormaDocumentData.currentDate+"*****");
+			System.out.println("**"+proFormaDocumentData.concernRoleName+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.dtls.alternateID+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.mainProductAmount+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.mainProductName+"*****");
+			System.out.println("**"+molsaproFormaDocumentData.programNames+"*****");
+
+
+
+
 			proFormaReturnDocDetails = concernRoleDocumentGenerationObj.generateAndPreviewXMLDocument(details,molsaproFormaDocumentData); 
 		}else{
 			//else call with OOTB struct
