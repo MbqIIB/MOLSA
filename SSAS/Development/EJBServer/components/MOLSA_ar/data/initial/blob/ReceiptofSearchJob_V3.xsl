@@ -125,7 +125,7 @@
           </fo:block>
         </fo:static-content>
         <fo:flow flow-name="xsl-region-body" font-family="Times New Roman">
-     <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate']"/>  :التاريخ </fo:block>
+     <fo:block xsl:use-attribute-sets="Normal_8"> <xsl:apply-templates select="format-dateTime(./FIELD[FNAME='dtls']/STRUCT[SNAME='ProFormaDocumentData']/FIELD[FNAME='currentDate'], '[D01]/[M01]/[Y0001]')"/>  :التاريخ </fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">السيدة ملاك عبد الله الهاجري <fo:leader leader-length="40mm"/>   المحترمة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">مدير إدارة القوى العاملة</fo:block>
 	<fo:block xsl:use-attribute-sets="Normal_1">الدوحة - قطر </fo:block>
