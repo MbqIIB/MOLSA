@@ -132,7 +132,8 @@ public class MOLSACommunicationHelper {
 	add(PRODUCTTYPE.INCAPABLEOFWORKING);
 	add(PRODUCTTYPE.SENIORCITIZEN);
 	add(PRODUCTTYPE.ORPHAN);
-	add(PRODUCTTYPE.WIDOW);}};
+	add(PRODUCTTYPE.WIDOW);
+	add(PRODUCTTYPE.MAIDALLOWANCE);}};
 	
 	
 	public static void insertAdditionalCommParams(
