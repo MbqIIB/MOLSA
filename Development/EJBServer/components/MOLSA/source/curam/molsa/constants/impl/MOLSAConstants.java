@@ -175,5 +175,9 @@ public abstract class MOLSAConstants {
 	public static final String kTitle2="curam.molsa.financial.eft.mswordSignatureTitleTwo";
 	
 	public static final String kMOLSAApplicationWithdrawTask = "MOLSAApplicationWithdrawTask";
+	/**
+	 * For disabling CloseCase button for CaseWorker's MOLSA-2017-CR5.4
+	 */
+	public static final String kMOLSACloseCase = "CloseCase";
 
 }
