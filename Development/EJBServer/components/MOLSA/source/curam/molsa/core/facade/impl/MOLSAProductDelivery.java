@@ -28,10 +28,13 @@ import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.CaseStatusFactory;
 import curam.core.fact.SystemUserFactory;
 import curam.core.fact.UniqueIDFactory;
+import curam.core.fact.UsersFactory;
 import curam.core.impl.CuramConst;
+import curam.core.impl.EnvVars;
 import curam.core.intf.CaseStatus;
 import curam.core.intf.SystemUser;
 import curam.core.intf.UniqueID;
+import curam.core.intf.Users;
 import curam.core.sl.entity.struct.CaseKeyStruct;
 import curam.core.sl.entity.struct.MilestoneDeliveryDetails;
 import curam.core.sl.entity.struct.MilestoneDeliveryKey;
@@ -49,17 +52,21 @@ import curam.core.struct.InformationalMsgDtls;
 import curam.core.struct.MaintainCertificationKey;
 import curam.core.struct.ProductDeliveryApprovalKey1;
 import curam.core.struct.ReactivationDtls;
+import curam.core.struct.UsersDtls;
+import curam.core.struct.UsersKey;
 import curam.events.MOLSAAPPROVALTASK;
 import curam.message.BPOAPPROVALCRITERIA;
 import curam.message.BPOPRODUCTDELIVERYAPPROVAL;
 import curam.message.MOLSANOTIFICATION;
 import curam.message.MOLSAPROGRAMRECOMMENDATIONCHECKELIGIBILITY;
+import curam.molsa.codetable.MOLSACERTPERIODCODE;
 import curam.molsa.codetable.MOLSASMSMESSAGETEMPLATE;
 import curam.molsa.codetable.MOLSASMSMessageType;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.core.sl.fact.MOLSAMaintainProductDeliveryFactory;
 import curam.molsa.core.sl.impl.MOLSAMilestoneDeliveryCreator;
 import curam.molsa.core.sl.intf.MOLSAMaintainProductDelivery;
+import curam.molsa.core.struct.MOLSACreateCertificationDetails;
 import curam.molsa.message.MOLSABPOPRODUCTDELIVERY;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.intf.MOLSASMSUtil;
@@ -78,6 +85,7 @@ import curam.util.exception.InformationalElement;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
 import curam.util.persistence.GuiceWrapper;
+import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
 import curam.util.type.Date;
@@ -134,11 +142,15 @@ curam.molsa.core.facade.base.MOLSAProductDelivery {
 
 	@Override
 	public InformationMsgDtlsList createCertification(
-			CreateCertificationDetails details) throws AppException,
+			MOLSACreateCertificationDetails molsaDetails) throws AppException,
 			InformationalException {
+
+		CreateCertificationDetails details = new CreateCertificationDetails();
+		details = molsaDetails.dtls;
 
 		curam.core.intf.CaseHeader caseHeaderObj = CaseHeaderFactory
 		.newInstance();
+
 		CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
 		caseHeaderKey.caseID = details.caseID;
 
