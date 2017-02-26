@@ -30,15 +30,10 @@
 
   <PAGE_PARAMETER NAME="communicationID"/>
   <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="DISPLAY" OPERATION="readAllBankBranch"/>
-  <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="DISPLAY1" OPERATION="readCommunicationDetails"/>
-  <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="DISPLAY2" OPERATION="readAllMolsaManagers"/>
   <SERVER_INTERFACE CLASS="MOLSACommunication" NAME="ACTION" OPERATION="saveCommunicationDetails"
     PHASE="ACTION"/>
 
-  <CONNECT>
-    <SOURCE NAME="PAGE" PROPERTY="communicationID"/>
-    <TARGET NAME="DISPLAY1" PROPERTY="arg1$communicationID"/>
-  </CONNECT>
+ 
   <CONNECT>
     <SOURCE NAME="PAGE" PROPERTY="communicationID"/>
     <TARGET NAME="ACTION" PROPERTY="arg1$communicationID"/>
@@ -47,12 +42,6 @@
   <CLUSTER LABEL_WIDTH="30">
     <FIELD LABEL="Field.Label.Bank.name" USE_BLANK="true">
       <CONNECT>
-      <SOURCE
-          NAME="DISPLAY1"
-          PROPERTY="bankBranchID"
-        />
-      </CONNECT>
-      <CONNECT>
         <INITIAL NAME="DISPLAY" PROPERTY="name"
           HIDDEN_PROPERTY="bankBranchID"/>
       </CONNECT>
@@ -60,24 +49,6 @@
         <TARGET
           NAME="ACTION"
           PROPERTY="bankBranchID"
-        />
-      </CONNECT>
-    </FIELD>
-     <FIELD LABEL="Field.Manager.Name" USE_BLANK="true">
-     <CONNECT>
-      <SOURCE
-          NAME="DISPLAY1"
-          PROPERTY="molsaManager"
-        />
-      </CONNECT>
-      <CONNECT>
-        <INITIAL NAME="DISPLAY2" PROPERTY="userFullName"
-          HIDDEN_PROPERTY="userFullName"/>
-      </CONNECT>
-      <CONNECT>
-        <TARGET
-          NAME="ACTION"
-          PROPERTY="molsaManager"
         />
       </CONNECT>
     </FIELD>
