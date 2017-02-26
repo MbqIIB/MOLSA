@@ -180,7 +180,7 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 			bankKey.bankBranchID=concernRoleCommunicationDtls.bankBranchID;
 			molsaproFormaDocumentData.bankName=bankBranch.read(bankKey).name;
 		}else{
-			molsaproFormaDocumentData.bankName="Invalid Bank";
+			molsaproFormaDocumentData.bankName="";
 		}
 		molsaproFormaDocumentData.molsaManagerName=concernRoleCommunicationDtls.molsaManager;
 		molsaproFormaDocumentData.caseReferenceID=concernRoleCommunicationDtls.caseReferenceID;
@@ -208,18 +208,23 @@ curam.molsa.core.base.MOLSAConcernRoleDocumentsDA {
 			molsaproFormaDocumentData.locationName=locDtls.name;	
 		}
 		if(details.documentID==45002){
-			if(molsaproFormaDocumentData.molsaManagerName.equals("")||molsaproFormaDocumentData.bankName.equals("")){
+			if(molsaproFormaDocumentData.bankName.equals("")){
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_MANAGER_BANKACCOUNT_EMPTY);
 			}
 		}
+		
+		//CR 1.1 - No managers will be selected.The letter will have only Designation Name
 
-		if((details.documentID==45001)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
+	/*	if((details.documentID==45001)||(details.documentID==45003)||(details.documentID==45004)||(details.documentID==45005)||
 				(details.documentID==45006)||(details.documentID==45008)||(details.documentID==45009)||
 				(details.documentID==45011)||(details.documentID==45012)||(details.documentID==45013)||(details.documentID==45014)||(details.documentID==45015)){
 			if(molsaproFormaDocumentData.molsaManagerName.equals("")||molsaproFormaDocumentData.molsaManagerName==null){
 				throw new AppException(MOLSABPOTRAINING.ERR_COMMUNICATION_MANAGER_EMPTY);
 			}
 
+		}*/
+		if(molsaproFormaDocumentData.molsaManagerName==null){
+			molsaproFormaDocumentData.molsaManagerName="";
 		}
 
 		//New Xsl validation by document ID
