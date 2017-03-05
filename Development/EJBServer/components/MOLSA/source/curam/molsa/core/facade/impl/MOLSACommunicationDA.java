@@ -219,6 +219,43 @@ curam.molsa.core.facade.base.MOLSACommunicationDA{
 
 	    return listProFormaTemplateByTypeAndParticpant;
 	}
+
+	@Override
+	public ListProFormaTemplateByTypeAndParticpant listTemplateByTypeAndParticipantAutoDisplay(
+			ListProFormaTemplateByTypeAndParticipantKey listProFormaTemplateByTypeAndParticipantKey)
+			throws AppException, InformationalException {
+		// TODO Auto-generated method stub
+		 // create return object
+	    final ListProFormaTemplateByTypeAndParticpant listProFormaTemplateByTypeAndParticpant = new ListProFormaTemplateByTypeAndParticpant();
+
+	    // MaintainXSLTemplate manipulation variables
+	    final curam.core.intf.MaintainXSLTemplate maintainXSLTemplateObj = curam.core.fact.MaintainXSLTemplateFactory.newInstance();
+	    final SearchTemplatesKey searchTemplatesKey = new SearchTemplatesKey();
+
+	    if ((listProFormaTemplateByTypeAndParticipantKey.participantRoleID == 0)
+	      && (listProFormaTemplateByTypeAndParticipantKey.caseID != 0)) {
+
+	      final curam.core.intf.CaseHeader caseHeaderObj = curam.core.fact.CaseHeaderFactory.newInstance();
+	      final CaseHeaderKey caseHeaderKey = new CaseHeaderKey();
+
+	      // Set key to read caseHeader to retrieve the concernRoleID
+	      caseHeaderKey.caseID = listProFormaTemplateByTypeAndParticipantKey.caseID;
+	      // BEGIN, CR00108061, GSP
+	      // Read caseHeader
+	      listProFormaTemplateByTypeAndParticipantKey.participantRoleID = caseHeaderObj.read(caseHeaderKey).concernRoleID;
+	      // END, CR00108061
+	    }
+
+	    // Set key details to retrieve the list of templates
+	    searchTemplatesKey.concernRoleID = listProFormaTemplateByTypeAndParticipantKey.participantRoleID;
+	    searchTemplatesKey.templateType = "CT1";
+	    searchTemplatesKey.caseID = listProFormaTemplateByTypeAndParticipantKey.caseID;
+
+	    // Call MaintainXSLTemplate BPO to retrieve the list of templates
+	    listProFormaTemplateByTypeAndParticpant.searchTemplatesByConcernAndTypeResult = maintainXSLTemplateObj.searchTemplatesByConcernAndType(
+	      searchTemplatesKey);
+	   return listProFormaTemplateByTypeAndParticpant;
+	}
 }
 
 
