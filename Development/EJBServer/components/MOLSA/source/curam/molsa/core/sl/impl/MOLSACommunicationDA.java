@@ -364,6 +364,7 @@ public class MOLSACommunicationDA extends curam.molsa.core.sl.base.MOLSACommunic
 			communicationDetails.communicationDate = TransactionInfo.getSystemDate();
 		} else {
 			communicationDetails.communicationStatus = COMMUNICATIONSTATUS.DRAFT;
+			communicationDetails.communicationDate = TransactionInfo.getSystemDate();
 		}
 		// END, CR00223331
 
