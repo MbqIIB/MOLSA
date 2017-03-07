@@ -3,15 +3,23 @@ package curam.molsa.ip.sl.impl;
 import com.google.inject.Inject;
 
 import curam.application.impl.ApplicationDAO;
+import curam.codetable.TASKPRIORITY;
 import curam.core.facade.fact.IntegratedCaseFactory;
 import curam.core.facade.intf.IntegratedCase;
 import curam.core.facade.struct.ListMemberDetails;
 import curam.core.facade.struct.ListMemberDetailsKey;
 import curam.core.facade.struct.MemberDetails;
+import curam.core.sl.entity.struct.CaseIDAndParticipantRoleIDDetails;
 import curam.core.sl.entity.struct.CaseParticipantRoleKey;
 import curam.core.sl.entity.struct.ParticipantRoleIDAndNameDetails;
 import curam.core.sl.fact.CaseParticipantRoleFactory;
+import curam.core.sl.fact.TaskManagementUtilityFactory;
 import curam.core.sl.intf.CaseParticipantRole;
+import curam.core.sl.intf.TaskManagementUtility;
+import curam.core.sl.struct.CaseParticipantRoleFullDetails1;
+import curam.core.sl.struct.DateTimeInSecondsKey;
+import curam.core.sl.struct.DeadlineDuration;
+import curam.core.sl.struct.TaskCreateDetails;
 import curam.core.struct.AlternateIDRMDtls;
 import curam.core.struct.CaseSearchKey;
 import curam.message.BPOMOLSAINFORMATIONPROVIDERBATCH;
@@ -35,6 +43,7 @@ import curam.molsa.ip.facade.struct.MOLSARequestDetailsList;
 import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
+import curam.util.exception.RecordNotFoundException;
 import curam.util.persistence.GuiceWrapper;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
@@ -216,5 +225,6 @@ public abstract class MOLSAMaintainInformationProvider extends curam.molsa.ip.sl
     MOLSAInformationResponseDtlsList responseDtlsList = MOLSAInformationResponseFactory.newInstance().listResponseByRequestID(requestKey);
     return responseDtlsList;
   }
-
+  
+    
 }
