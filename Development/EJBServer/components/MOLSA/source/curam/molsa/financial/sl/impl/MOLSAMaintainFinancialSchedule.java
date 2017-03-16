@@ -30,6 +30,7 @@ import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.resources.Configuration;
 import curam.util.resources.Trace;
+import curam.util.transaction.TransactionInfo;
 import curam.util.type.Date;
 import curam.util.type.NotFoundIndicator;
 import curam.wizard.util.impl.CodetableUtil;
@@ -225,7 +226,7 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 			public boolean operation(MOLSAFinancialScheduleDtls dtls)
 					throws AppException, InformationalException {
 
-				if (dtls.runDate.after(Date.getCurrentDate().addDays(-365))) {
+				if (dtls.runDate.after(TransactionInfo.getSystemDate().addDays(-365))) {
 					list.dtls.add(dtls);
 					//return true;
 				}
@@ -255,12 +256,13 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 		Boolean isRunDay = false;
 
 		MOLSAFinancialScheduleDetails details = null;
+		
+		Date processingDate = TransactionInfo.getSystemDate();
 
 		MOLSAFinancialSchedule entityObj = MOLSAFinancialScheduleFactory
 				.newInstance();
 
-		NotFoundIndicator nfIndicator = new NotFoundIndicator();
-		Calendar currentCalendar = Date.getCurrentDate().getCalendar();
+		Calendar currentCalendar = processingDate.getCalendar();
 
 		MOLSAFinancialScheduleYearMonthTypeStatus yearMonthTypeStatusKey = new MOLSAFinancialScheduleYearMonthTypeStatus();
 
@@ -269,47 +271,51 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 		yearMonthTypeStatusKey.runMonth = currentCalendar.get(Calendar.MONTH);
 		yearMonthTypeStatusKey.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_ACTIVE;
 
-		details = entityObj.readByYearMonthTypeAndStatus(nfIndicator,
+		MOLSAFinancialScheduleDetailsList detailsList = entityObj.readByYearMonthTypeAndStatus(
 				yearMonthTypeStatusKey);
+		
+		for (MOLSAFinancialScheduleDetails financialScheduleDetails: detailsList.dtls) {
+			
+			if (financialScheduleDetails.runDate.equals(processingDate)) {
+				details = financialScheduleDetails;
+				break;
+			}
+		}
 
 		if (key.batchType.equals(MOLSAFINANCIALBATCHTYPE.FINANCIALBATCH_MAIN)) {
 
-			Date defaultDate = getDefaultDate(Date.getCurrentDate());
+			Date defaultDate = getDefaultDate(processingDate);
 
-			if (!nfIndicator.isNotFound()) {
+			if (details != null) {
 				// Active Record Found
-				if (details.runDate.equals(Date.getCurrentDate())) {
-					// Execute Job
-					isRunDay = true;
-					Trace.kTopLevelLogger
-							.info("Financial Schedule Main Batch record exist for current date.");
-				}
+				// Execute Job
+				isRunDay = true;
+				Trace.kTopLevelLogger
+						.info("Financial Schedule Main Batch record exist for current date.");
 			} else {
 				// If Active Record Not Found then check for Executed
-				if (nfIndicator.isNotFound()) {
-					yearMonthTypeStatusKey.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_EXECUTED;
-					details = entityObj.readByYearMonthTypeAndStatus(
-							nfIndicator, yearMonthTypeStatusKey);
+				yearMonthTypeStatusKey.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_EXECUTED;
+				detailsList = entityObj
+						.readByYearMonthTypeAndStatus(yearMonthTypeStatusKey);
 
-					if (nfIndicator.isNotFound()
-							&& Date.getCurrentDate().equals(defaultDate)) {
-						details = new MOLSAFinancialScheduleDetails();
-						details.batchType = key.batchType;
-						details.runDate = Date.getCurrentDate();
-						details.runYear = currentCalendar.get(Calendar.YEAR);
-						details.runMonth = currentCalendar.get(Calendar.MONTH);
+				if (detailsList.dtls.isEmpty()
+						&& TransactionInfo.getSystemDate().equals(defaultDate)) {
+					details = new MOLSAFinancialScheduleDetails();
+					details.batchType = key.batchType;
+					details.runDate = TransactionInfo.getSystemDate();
+					details.runYear = currentCalendar.get(Calendar.YEAR);
+					details.runMonth = currentCalendar.get(Calendar.MONTH);
 
-						isRunDay = true;
-						Trace.kTopLevelLogger
-								.info("Financial Schedule Main Batch record not exist and today is default date.");
-					}
+					isRunDay = true;
+					Trace.kTopLevelLogger
+							.info("Financial Schedule Main Batch record not exist and today is default date.");
 				}
 			}
 
 		} else { // MID batch
-			if (!nfIndicator.isNotFound()) {
+			if (details != null) {
 				// Active Record Found
-				if (details.runDate.equals(Date.getCurrentDate())) {
+				if (details.runDate.equals(processingDate)) {
 					// Execute Job
 					isRunDay = true;
 					Trace.kTopLevelLogger
@@ -325,7 +331,7 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 					+ " - "
 					+ CodetableUtil.getCodetableDescription(
 							MOLSAFINANCIALBATCHTYPEEntry.TABLENAME,
-							key.batchType) + " Batch to execute today.");
+							key.batchType) + " to execute today.");
 		}
 
 		return details;
