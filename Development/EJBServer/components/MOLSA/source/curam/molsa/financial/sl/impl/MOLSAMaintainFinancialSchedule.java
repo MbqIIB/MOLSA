@@ -70,25 +70,13 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 		if (details.batchType
 				.equals(MOLSAFINANCIALBATCHTYPE.FINANCIALBATCH_MAIN)) {
 
-			Date exclusionToDate = getDefaultDate(details.runDate).addDays(2);
-
-			// Add Financial Schedule Exclusion
-			AddExclusionDateKey addExclusionDateKey = new AddExclusionDateKey();
-			addExclusionDateKey.exclusionDatesSummary.dateFrom = details.runDate
-					.addDays(1);
-			addExclusionDateKey.exclusionDatesSummary.dateTo = exclusionToDate;
-			addExclusionDateKey.exclusionDatesSummary.deliveryMethodType = METHODOFDELIVERY.EFT;
-			addExclusionDateKey.exclusionDatesSummary.reasonCode = FINCALENDAREXCLUSIONREASON.OFFICECLOSED;
-			addExclusionDateKey.prePaymentIndicator.prePmtIndicator = true;
-
-			Organization organizationObj = OrganizationFactory.newInstance();
-
-			organizationObj.addEFTExclusionDate(addExclusionDateKey);
+			addFinancialExclusion(details.runDate);
 
 		}
 
 		entityObj.insert(createDtls);
 	}
+
 
 	/**
 	 * This method will create new entry in MOLSAFinancialSchedule table with
@@ -154,9 +142,6 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 			Date exclusionToDate = getDefaultDate(cancelDtls.runDate)
 					.addDays(2);
 
-			MaintainExclusionDate maintainExclusionDateObj = MaintainExclusionDateFactory
-					.newInstance();
-
 			ExclusionDatesSummary exclusionDatesSummary = new ExclusionDatesSummary();
 
 			exclusionDatesSummary.dateFrom = cancelDtls.runDate.addDays(1);
@@ -164,7 +149,12 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 			exclusionDatesSummary.deliveryMethodType = METHODOFDELIVERY.EFT;
 			exclusionDatesSummary.reasonCode = FINCALENDAREXCLUSIONREASON.OFFICECLOSED;
 
-			maintainExclusionDateObj.removeExclusionDate(exclusionDatesSummary);
+			if (exclusionDatesSummary.dateTo.after(exclusionDatesSummary.dateFrom)) {
+				MaintainExclusionDate maintainExclusionDateObj = MaintainExclusionDateFactory
+						.newInstance();
+				maintainExclusionDateObj.removeExclusionDate(exclusionDatesSummary);
+			}
+			
 		}
 
 		entityObj.modify(key, cancelDtls);
@@ -254,10 +244,28 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 			InformationalException {
 
 		Boolean isRunDay = false;
+		
+		Boolean defaultMainBatchExecutionDay = false;
+		Boolean defaultMidBatchExecutionDay = false;
 
 		MOLSAFinancialScheduleDetails details = null;
 		
+		Integer midBatchDefaultRunDay = Configuration
+				.getIntProperty(EnvVars.ENV_MOLSA_FINANCIAL_SCHEDULER_MIDBATCH_DEFAULTRUNDAY);
+		
+		Integer mainBatchDefaultRunDay = Configuration
+				.getIntProperty(EnvVars.ENV_MOLSA_FINANCIAL_SCHEDULER_MAINBATCH_DEFAULTRUNDAY);
+		
 		Date processingDate = TransactionInfo.getSystemDate();
+		
+		if (processingDate.getCalendar().get(Calendar.DAY_OF_MONTH) == mainBatchDefaultRunDay ) {
+			defaultMainBatchExecutionDay = true;
+		}
+		
+		if (processingDate.getCalendar().get(Calendar.DAY_OF_MONTH) == midBatchDefaultRunDay ) {
+			defaultMidBatchExecutionDay = true;
+		}
+		
 
 		MOLSAFinancialSchedule entityObj = MOLSAFinancialScheduleFactory
 				.newInstance();
@@ -284,7 +292,7 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 
 		if (key.batchType.equals(MOLSAFINANCIALBATCHTYPE.FINANCIALBATCH_MAIN)) {
 
-			Date defaultDate = getDefaultDate(processingDate);
+			//Date defaultDate = getDefaultDate(processingDate);
 
 			if (details != null) {
 				// Active Record Found
@@ -295,11 +303,17 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 			} else {
 				// If Active Record Not Found then check for Executed
 				yearMonthTypeStatusKey.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_EXECUTED;
-				detailsList = entityObj
+				MOLSAFinancialScheduleDetailsList executedDetailsList = entityObj
 						.readByYearMonthTypeAndStatus(yearMonthTypeStatusKey);
 
-				if (detailsList.dtls.isEmpty()
-						&& TransactionInfo.getSystemDate().equals(defaultDate)) {
+				yearMonthTypeStatusKey.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_ACTIVE;
+				MOLSAFinancialScheduleDetailsList activeDetailsList = entityObj
+						.readByYearMonthTypeAndStatus(yearMonthTypeStatusKey);
+				
+				
+				if (executedDetailsList.dtls.isEmpty() && activeDetailsList.dtls.isEmpty()
+						&& defaultMainBatchExecutionDay) {
+
 					details = new MOLSAFinancialScheduleDetails();
 					details.batchType = key.batchType;
 					details.runDate = TransactionInfo.getSystemDate();
@@ -307,6 +321,10 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 					details.runMonth = currentCalendar.get(Calendar.MONTH);
 
 					isRunDay = true;
+					
+					// Add Financial Exclusion
+					addFinancialExclusion(details.runDate);
+					
 					Trace.kTopLevelLogger
 							.info("Financial Schedule Main Batch record not exist and today is default date.");
 				}
@@ -320,6 +338,24 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 					isRunDay = true;
 					Trace.kTopLevelLogger
 							.info("Financial Schedule Mid Batch record exist for current date.");
+				} 
+			} else {
+				// If Active Record Not Found then check for Executed
+				yearMonthTypeStatusKey.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_ACTIVE;
+				detailsList = entityObj
+						.readByYearMonthTypeAndStatus(yearMonthTypeStatusKey);
+
+				if (detailsList.dtls.isEmpty()
+						&& defaultMidBatchExecutionDay) {
+					details = new MOLSAFinancialScheduleDetails();
+					details.batchType = key.batchType;
+					details.runDate = TransactionInfo.getSystemDate();
+					details.runYear = currentCalendar.get(Calendar.YEAR);
+					details.runMonth = currentCalendar.get(Calendar.MONTH);
+
+					isRunDay = true;
+					Trace.kTopLevelLogger
+							.info("Financial Schedule Mid Batch record not exist and today is default date.");
 				}
 			}
 		}
@@ -386,8 +422,7 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 		return dtls;
 	}
 
-	// The default date will be calculated by subtracting the end of the current
-	// month with offset days (16).
+	// The default date will be calculated by subtracting the off set(16) from Delivery date 
 	private Date getDefaultDate(Date runDate) throws AppException,
 			InformationalException {
 
@@ -401,7 +436,9 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 		Trace.kTopLevelLogger.info("Financial Schedule off set days ==> "
 				+ offSetDays);
 
-		numDays = runCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		// Add one day for the First day of every month (next month) 
+		//  which is the delivery date as per Delivery Frequency pattern.
+		numDays = runCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 1;
 
 		int runDay = numDays - offSetDays.intValue();
 
@@ -415,4 +452,37 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 
 		return Date.getFromJavaUtilDate(defaultDate);
 	}
+	
+	/**
+	 * @param details
+	 * @throws AppException
+	 * @throws InformationalException
+	 */
+	private void addFinancialExclusion(Date runDate) throws AppException,
+			InformationalException {
+
+		Date exclusionToDate = getDefaultDate(runDate); // .addDays(2);
+
+		if (exclusionToDate.after(runDate)) {
+
+			// Add Financial Schedule Exclusion
+			AddExclusionDateKey addExclusionDateKey = new AddExclusionDateKey();
+			addExclusionDateKey.exclusionDatesSummary.dateFrom = runDate
+					.addDays(1);
+			addExclusionDateKey.exclusionDatesSummary.dateTo = exclusionToDate
+					.addDays(2);
+			addExclusionDateKey.exclusionDatesSummary.deliveryMethodType = METHODOFDELIVERY.EFT;
+			addExclusionDateKey.exclusionDatesSummary.reasonCode = FINCALENDAREXCLUSIONREASON.OFFICECLOSED;
+			addExclusionDateKey.prePaymentIndicator.prePmtIndicator = true;
+
+			if (addExclusionDateKey.exclusionDatesSummary.dateTo
+					.after(addExclusionDateKey.exclusionDatesSummary.dateFrom)) {
+				Organization organizationObj = OrganizationFactory
+						.newInstance();
+				organizationObj.addEFTExclusionDate(addExclusionDateKey);
+			}
+
+		}
+	}
+
 }

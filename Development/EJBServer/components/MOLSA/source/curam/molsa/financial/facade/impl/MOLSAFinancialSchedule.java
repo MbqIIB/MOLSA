@@ -32,9 +32,11 @@ public abstract class MOLSAFinancialSchedule extends
 		MOLSAMaintainFinancialSchedule slObj = MOLSAMaintainFinancialScheduleFactory
 				.newInstance();
 
+		Date processingDate = TransactionInfo.getSystemDate();
+		
 		// run date must be in future
-		if (details.runDate.equals(Date.getCurrentDate())
-				|| details.runDate.before(Date.getCurrentDate())) {
+		if (details.runDate.equals(processingDate)
+				|| details.runDate.before(processingDate)) {
 			// throw exception
 			final AppException appException = new AppException(
 					MOLSABPOFINANCIALSCHEDULE.ERR_FIN_SCHEDULE_RUNDATE_MUST_INFUTURE);
