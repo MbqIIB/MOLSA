@@ -133,31 +133,35 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 
 		cancelDtls = entityObj.read(nfIndicator, key);
 
-		cancelDtls.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_CANCEL;
+		if (!nfIndicator.isNotFound()) {
+			cancelDtls.batchScheduleStatus = MOLSAFINSCHEDULESTATUS.FINSCHEDULE_CANCEL;
 
-		if (cancelDtls.batchType
-				.equals(MOLSAFINANCIALBATCHTYPE.FINANCIALBATCH_MAIN)) {
+			if (cancelDtls.batchType
+					.equals(MOLSAFINANCIALBATCHTYPE.FINANCIALBATCH_MAIN)) {
 
-			// Remove Financial Schedule Exclusion
-			Date exclusionToDate = getDefaultDate(cancelDtls.runDate)
-					.addDays(2);
+				// Remove Financial Schedule Exclusion
+				Date exclusionToDate = getDefaultDate(cancelDtls.runDate)
+						.addDays(2);
 
-			ExclusionDatesSummary exclusionDatesSummary = new ExclusionDatesSummary();
+				ExclusionDatesSummary exclusionDatesSummary = new ExclusionDatesSummary();
 
-			exclusionDatesSummary.dateFrom = cancelDtls.runDate.addDays(1);
-			exclusionDatesSummary.dateTo = exclusionToDate;
-			exclusionDatesSummary.deliveryMethodType = METHODOFDELIVERY.EFT;
-			exclusionDatesSummary.reasonCode = FINCALENDAREXCLUSIONREASON.OFFICECLOSED;
+				exclusionDatesSummary.dateFrom = cancelDtls.runDate.addDays(1);
+				exclusionDatesSummary.dateTo = exclusionToDate;
+				exclusionDatesSummary.deliveryMethodType = METHODOFDELIVERY.EFT;
+				exclusionDatesSummary.reasonCode = FINCALENDAREXCLUSIONREASON.OFFICECLOSED;
 
-			if (exclusionDatesSummary.dateTo.after(exclusionDatesSummary.dateFrom)) {
-				MaintainExclusionDate maintainExclusionDateObj = MaintainExclusionDateFactory
-						.newInstance();
-				maintainExclusionDateObj.removeExclusionDate(exclusionDatesSummary);
+				if (exclusionDatesSummary.dateTo
+						.after(exclusionDatesSummary.dateFrom)) {
+					MaintainExclusionDate maintainExclusionDateObj = MaintainExclusionDateFactory
+							.newInstance();
+					maintainExclusionDateObj
+							.removeExclusionDate(exclusionDatesSummary);
+				}
+
 			}
-			
-		}
 
-		entityObj.modify(key, cancelDtls);
+			entityObj.modify(key, cancelDtls);
+		}
 
 	}
 
@@ -461,7 +465,7 @@ public abstract class MOLSAMaintainFinancialSchedule extends
 	private void addFinancialExclusion(Date runDate) throws AppException,
 			InformationalException {
 
-		Date exclusionToDate = getDefaultDate(runDate); // .addDays(2);
+		Date exclusionToDate = getDefaultDate(runDate);
 
 		if (exclusionToDate.after(runDate)) {
 

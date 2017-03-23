@@ -164,7 +164,7 @@ public abstract class MOLSAFinancialSchedule extends
 		Calendar rubCalendar = details.runDate.getCalendar();
 
 		key.runYear = rubCalendar.get(Calendar.YEAR);
-		key.runYear = rubCalendar.get(Calendar.MONTH);
+		key.runMonth = rubCalendar.get(Calendar.MONTH);
 		key.batchType = details.batchType;
 
 		MOLSAFinancialScheduleDetailsList list = slObj
