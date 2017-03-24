@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 
 import curam.application.impl.ApplicationEvents;
+import curam.molsa.evidence.impl.MOLSAEvidenceActivationEvents;
 import curam.molsa.intake.impl.MOLSAIntakeApplicationListener;
 
 /**
@@ -37,6 +38,9 @@ public class Module extends AbstractModule {
     applicationEventBinder.addBinding().to(
         MOLSAIntakeApplicationListener.class);
 
+    // CR 4.1 - 
+    Multibinder<curam.core.sl.infrastructure.impl.EvidenceControllerInterface.EvidenceActivationEvents> evidenceActivationEvents = Multibinder.newSetBinder(binder(), curam.core.sl.infrastructure.impl.EvidenceControllerInterface.EvidenceActivationEvents.class);
+    evidenceActivationEvents.addBinding().to(MOLSAEvidenceActivationEvents.class);
   }
 
 }

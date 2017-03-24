@@ -51,6 +51,11 @@ import curam.message.MOLSANOTIFICATION;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetails;
 import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetailsList;
+import curam.molsa.evidence.auditinfo.entity.struct.MOLSACaseKey;
+import curam.molsa.evidence.auditinfo.entity.struct.MOLSAEVDAuditInfoDtls;
+import curam.molsa.evidence.auditinfo.entity.struct.MOLSAEVDAuditInfoDtlsList;
+import curam.molsa.evidence.auditinfo.facade.fact.MOLSAEVDAuditInfoFactory;
+import curam.molsa.evidence.auditinfo.facade.intf.MOLSAEVDAuditInfo;
 import curam.molsa.message.MOLSABPOPRODUCTDELIVERY;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.util.exception.AppException;
@@ -223,6 +228,27 @@ extends curam.molsa.creoleprogramrecommendation.facade.base.MOLSACREOLEProgramRe
 			throw appException;
 		}
 		validateSimulatedDeterminationState(key);
+		
+		// Start: CR 4.1 
+		
+		MOLSAEVDAuditInfo MOLSAEVDAuditInfoObj = MOLSAEVDAuditInfoFactory.newInstance();
+		MOLSACaseKey molsaCaseKey = new MOLSACaseKey();
+		molsaCaseKey.caseID = caseID;
+		Boolean allEvidencesAudited = true;
+		MOLSAEVDAuditInfoDtlsList list = MOLSAEVDAuditInfoObj.listAllEVDAuditInfoBycaseID(molsaCaseKey);
+		for (MOLSAEVDAuditInfoDtls dtls: list.dtls) {
+			if (!dtls.auditedInd ) {
+				allEvidencesAudited = false;
+			    break;
+			}
+		}
+		
+		if (!allEvidencesAudited){
+			AppException appException = new AppException(MOLSABPOPRODUCTDELIVERY.ERR_AUTHORIZE_ALL_EVIDENCES_NOT_AUDITED);
+			throw appException;
+		}
+		// End: CR 4.1 
+		
 		curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendation creoleProgramRecommendation = (curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendation)creoleProgramRecommendationDAO.get(Long.valueOf(key.creoleProgramRecommendationID));
 		SimulatedDetermination simulatedDetermination = creoleProgramRecommendation.getSimulatedDetermination(key.simulatedDeterminationID);
 		CaseHeader delivery = simulatedDeterminationManager.authorize(creoleProgramRecommendation, simulatedDetermination);
