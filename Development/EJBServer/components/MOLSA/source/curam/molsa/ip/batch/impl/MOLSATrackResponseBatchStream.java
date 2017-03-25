@@ -21,16 +21,17 @@ import curam.codetable.TARGETITEMTYPE;
 import curam.codetable.TASKPRIORITY;
 import curam.codetable.TASKTYPE;
 import curam.codetable.impl.CASEEVIDENCEEntry;
-import curam.core.facade.fact.CaseHeaderFactory;
 import curam.core.facade.fact.PersonFactory;
 import curam.core.facade.intf.CaseHeader;
 import curam.core.facade.intf.Person;
 import curam.core.facade.struct.CaseIDDetails;
 import curam.core.facade.struct.CaseOwnerAndTypeDetails;
 import curam.core.facade.struct.ConcernRoleIDStatusCodeKey;
+import curam.core.facade.struct.PersonDetails;
 import curam.core.facade.struct.PersonSearchDetailsResult;
 import curam.core.facade.struct.PersonSearchKey1;
 import curam.core.facade.struct.TaskCreateDetails;
+import curam.core.fact.CaseHeaderFactory;
 import curam.core.fact.ConcernRoleFactory;
 import curam.core.impl.BatchStreamHelper;
 import curam.core.impl.EnvVars;
@@ -45,7 +46,10 @@ import curam.core.sl.fact.CaseParticipantRoleFactory;
 import curam.core.sl.fact.TaskManagementUtilityFactory;
 import curam.core.sl.infrastructure.entity.base.EvidenceDescriptor;
 import curam.core.sl.infrastructure.entity.fact.EvidenceDescriptorFactory;
+import curam.core.sl.infrastructure.entity.struct.CaseIDAndEvidenceTypeKey;
 import curam.core.sl.infrastructure.entity.struct.CaseIDStatusAndEvidenceTypeKey;
+import curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorDtls;
+import curam.core.sl.infrastructure.entity.struct.EvidenceDescriptorDtlsList;
 import curam.core.sl.infrastructure.entity.struct.RelatedIDAndEvidenceTypeKey;
 import curam.core.sl.infrastructure.entity.struct.RelatedIDAndEvidenceTypeKeyList;
 import curam.core.sl.intf.CaseParticipantRole;
@@ -62,6 +66,9 @@ import curam.core.struct.BatchProcessingID;
 import curam.core.struct.BatchProcessingSkippedRecord;
 import curam.core.struct.BatchProcessingSkippedRecordList;
 import curam.core.struct.CaseHeaderDtls;
+import curam.core.struct.CaseHeaderReadmultiDetails1;
+import curam.core.struct.CaseHeaderReadmultiDetails1List;
+import curam.core.struct.CaseHeaderReadmultiKey1;
 import curam.core.struct.ConcernRoleDtls;
 import curam.core.struct.ConcernRoleKey;
 import curam.core.struct.PersonSearchDetails;
@@ -94,7 +101,9 @@ import curam.molsa.ip.entity.struct.MOLSAInformationResponseKeyStruct1;
 import curam.molsa.sms.sl.fact.MOLSASMSUtilFactory;
 import curam.molsa.sms.sl.struct.MOLSAConcernRoleListAndMessageTextDetails;
 import curam.participant.impl.ConcernRoleDAO;
+import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
 import curam.piwrapper.casemanager.impl.CaseParticipantRoleDAO;
+import curam.struct.ConcernRoleIDKey;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.InformationalManager;
@@ -120,7 +129,8 @@ public class MOLSATrackResponseBatchStream extends
 	  
 	  @Inject
 	  private ConcernRoleDAO concernRoleDAO;
-	 
+	  
+	  
 
   
   /**
@@ -206,53 +216,53 @@ public class MOLSATrackResponseBatchStream extends
 		Date sysDate = TransactionInfo.getSystemDate();
 		
 		try {
+			informationRequestDtls = molsaInformationRequest.read(informationRequestKey);
 			CaseParticipantRoleKey caseParticipantRoleKey = new CaseParticipantRoleKey();
 			caseParticipantRoleKey.caseParticipantRoleID = informationRequestDtls.caseParticipantRoleID;
 			CaseIDAndParticipantRoleIDDetails caseIDAndParticipantRoleIDDetails = CaseParticipantRoleFactory.newInstance().readCaseIDandParticipantID(caseParticipantRoleKey);
 			ConcernRoleKey concernRoleKey = new ConcernRoleKey();
 			concernRoleKey.concernRoleID = caseIDAndParticipantRoleIDDetails.participantRoleID;
 			ConcernRoleDtls concernRoleDtls = ConcernRoleFactory.newInstance().read(concernRoleKey);
-			informationRequestDtls = molsaInformationRequest.read(informationRequestKey);
+						
 			int noOfDaysPassedAfterRequest = informationRequestDtls.requestDate.subtract(sysDate);
 			if(informationRequestDtls.requestStatus.equals(MOLSAREQUESTSTATUS.COMPLETED)){
-				sendTask(caseIDAndParticipantRoleIDDetails.caseID, 45009);
-			}else{				
-				ReadEvidenceDetails readEvidenceDetails = new ReadEvidenceDetails();				
-				readEvidenceDetails = readCaseEvidenceDetails(
-						caseIDAndParticipantRoleIDDetails.caseID,
-							CASEEVIDENCEEntry.BIRTHDEATHDETAILS,
-							informationRequestDtls.caseParticipantRoleID,
-							concernRoleDtls.concernRoleName);
-				if (readEvidenceDetails.dtls != null) {
-					String trDate = readEvidenceDetails.dtls.getAttribute("dateOfBirth").getValue().toString();
-					Date birthDate = Date.getDate(trDate);
-					if(sysDate.subtract(birthDate)/365 > 65){
-						if(noOfDaysPassedAfterRequest == 76){
-							sendTask(caseIDAndParticipantRoleIDDetails.caseID, 45013);
-						}else if (noOfDaysPassedAfterRequest == 90){
-							sendSMS(concernRoleDtls.concernRoleID);
-						}
-					}else {
-						readEvidenceDetails = readCaseEvidenceDetails(
-								caseIDAndParticipantRoleIDDetails.caseID,
-									CASEEVIDENCEEntry.HANDICAPPED,
-									informationRequestDtls.caseParticipantRoleID,
-									concernRoleDtls.concernRoleName);
-						if (readEvidenceDetails.dtls != null){
-							if(noOfDaysPassedAfterRequest == 76){
-								sendTask(caseIDAndParticipantRoleIDDetails.caseID, 45013);
-							}else if (noOfDaysPassedAfterRequest == 90){
-								sendSMS(concernRoleDtls.concernRoleID);
-							}
-						} else if(noOfDaysPassedAfterRequest == 41){
-							sendTask(caseIDAndParticipantRoleIDDetails.caseID, 45013);
-						}else if (noOfDaysPassedAfterRequest == 45){
-							sendSMS(concernRoleDtls.concernRoleID);
-						}
+				sendTask(caseIDAndParticipantRoleIDDetails.caseID, 45009, concernRoleDtls.concernRoleID, informationRequestDtls.createdBy);
+			}else{		
+				curam.core.facade.struct.ConcernRoleIDKey key = new curam.core.facade.struct.ConcernRoleIDKey();
+				key.concernRoleID = concernRoleDtls.concernRoleID;
+				PersonDetails personDetails = PersonFactory.newInstance().readPersonDetails(key);
+					
+				if (personDetails.dtls != null) {
+					//String trDate = readEvidenceDetails.dtls.getAttribute("dateOfBirth").getValue().toString();					
+					Date birthDate = personDetails.dtls.dateOfBirth;					
+					CaseIDAndEvidenceTypeKey caseIDAndEvidenceTypeKey = new CaseIDAndEvidenceTypeKey();
+					boolean disabled = false;
+			        caseIDAndEvidenceTypeKey.caseID = caseIDAndParticipantRoleIDDetails.caseID;
+			        caseIDAndEvidenceTypeKey.evidenceType = CASEEVIDENCE.HANDICAPPED;
+
+			        EvidenceDescriptorDtlsList evidenceDescriptorDtlsList = EvidenceDescriptorFactory.newInstance().readByCaseIDAndEvidenceType(caseIDAndEvidenceTypeKey);
+			        for (EvidenceDescriptorDtls dtls : evidenceDescriptorDtlsList.dtls){
+			        	if(dtls.statusCode == "EDS1"){
+			        		disabled = true;
+			        	}
+			        }
+
+					if(sysDate.subtract(birthDate)/365 > 60 || disabled){
+					if(noOfDaysPassedAfterRequest == 76){
+						sendTask(caseIDAndParticipantRoleIDDetails.caseID, 45013, concernRoleDtls.concernRoleID, informationRequestDtls.createdBy);
+					}else if (noOfDaysPassedAfterRequest == 90){
+						sendSMS(concernRoleDtls.concernRoleID);
+					}								
+					
+					}else if(noOfDaysPassedAfterRequest == 31){
+						sendTask(caseIDAndParticipantRoleIDDetails.caseID, 45013, concernRoleDtls.concernRoleID, informationRequestDtls.createdBy);
+					}else if (noOfDaysPassedAfterRequest == 45){
+						sendSMS(concernRoleDtls.concernRoleID);
+					}
+							
 					}
 				}
 				
-			}
 			} catch (Exception e) {
 			batchProcessingSkippedRecord.recordID = batchProcessingID.recordID;
 			batchProcessingSkippedRecord.errorMessage = e.getMessage();
@@ -263,80 +273,7 @@ public class MOLSATrackResponseBatchStream extends
 
 	
 
-	/**
-	 * This method updates Education evidence based on the input from
-	 * information provider table.
-	 * 
-	 * @param caseID
-	 *            Long
-	 * @param caseEvidence
-	 *            CASEEVIDENCEEntry
-	 * @param caseParticipantRoleID
-	 *            Long
-	 * @param participant
-	 *            String
-	 * @return list of request
-	 * @throws AppException
-	 *             General Exception
-	 * @throws InformationalException
-	 *             General Exception
-	 */
-	private ReadEvidenceDetails readCaseEvidenceDetails(final Long caseID,
-			final CASEEVIDENCEEntry caseEvidence,
-			final Long caseParticipantRoleID, final String participant)
-			throws AppException, InformationalException {
-
-		final CaseIDStatusAndEvidenceTypeKey caseIDStatusAndEvidenceTypeKey = new CaseIDStatusAndEvidenceTypeKey();
-
-		caseIDStatusAndEvidenceTypeKey.caseID = caseID;
-		caseIDStatusAndEvidenceTypeKey.evidenceType = caseEvidence.getCode();
-		caseIDStatusAndEvidenceTypeKey.statusCode = EVIDENCEDESCRIPTORSTATUS.ACTIVE;
-
-		final EvidenceDescriptor evidenceDescriptorObj = (EvidenceDescriptor) EvidenceDescriptorFactory
-				.newInstance();
-
-		// get all the evidence details for the caseID
-		final RelatedIDAndEvidenceTypeKeyList relatedIDAndEvidenceTypeKeyList = evidenceDescriptorObj
-				.searchByCaseIDTypeAndStatus(caseIDStatusAndEvidenceTypeKey);
-
-		final EvidenceCaseKey evidenceCaseKey = new EvidenceCaseKey();
-		final EvidenceTypeKey evidenceTypeKey = new EvidenceTypeKey();
-		evidenceTypeKey.evidenceType = caseEvidence.getCode();
-
-		final EvidenceServiceInterface evidenceServiceInterface = EvidenceGenericSLFactory
-				.instance(evidenceTypeKey, Date.getCurrentDate());
-		DynamicEvidenceDataDetails dynamicEvidenceDataDetails = null;
-		for (final RelatedIDAndEvidenceTypeKey relatedIDAndEvidenceTypeKey : relatedIDAndEvidenceTypeKeyList.dtls) {
-
-			evidenceCaseKey.caseIDKey.caseID = caseID;
-			evidenceCaseKey.evidenceKey.evidenceID = relatedIDAndEvidenceTypeKey.relatedID;
-			evidenceCaseKey.evidenceKey.evType = relatedIDAndEvidenceTypeKey.evidenceType;
-			final ReadEvidenceDetails evidenceDetails = evidenceServiceInterface
-					.readEvidence(evidenceCaseKey);
-			dynamicEvidenceDataDetails = evidenceDetails.dtls;
-
-			// get the caseparticipantroleID and compare to get the matching
-			// evidence
-			if (null != dynamicEvidenceDataDetails) {
-				final Long caseparticipantRoleID;
-				if (caseEvidence.equals(CASEEVIDENCEEntry.BIRTHDEATHDETAILS) || caseEvidence.equals(CASEEVIDENCEEntry.GENDER)) {
-					caseparticipantRoleID = (Long) DynamicEvidenceTypeConverter
-							.convert(dynamicEvidenceDataDetails
-									.getAttribute(MOLSAConstants.person));
-				} else {
-					caseparticipantRoleID = (Long) DynamicEvidenceTypeConverter
-							.convert(dynamicEvidenceDataDetails
-									.getAttribute(MOLSAConstants.participant));
-				}
-
-				if (caseParticipantRoleID.equals(caseparticipantRoleID)) {
-					return evidenceDetails;
-				}
-			}
-		}
-		return new ReadEvidenceDetails();
-	}
-
+	
 	
 	/**
 	 * This method sends task to respective workqueue
@@ -348,7 +285,7 @@ public class MOLSATrackResponseBatchStream extends
 	 * @throws InformationalException
 	 *             General Exception
 	 */
-	public void sendTask(long caseID, long workQueueID)
+	public void sendTask(long caseID, long workQueueID, long concernRoleID, String comments)
 			throws AppException, InformationalException {
 
 		// Code to send task if evidence is modified
@@ -361,6 +298,8 @@ public class MOLSATrackResponseBatchStream extends
 		taskCreateDetail.taskDetails.caseID = caseID;
 		taskCreateDetail.taskDetails.assignedTo = String.valueOf(workQueueID);
 		taskCreateDetail.taskDetails.assigneeType = TARGETITEMTYPE.WORKQUEUE;
+		taskCreateDetail.taskDetails.participantRoleID = concernRoleID;
+		taskCreateDetail.taskDetails.comments = comments;
 		
 		
 		AppException message1 = null;
