@@ -52,8 +52,12 @@ import curam.core.intf.PaymentInstrument;
 import curam.core.intf.ProductDelivery;
 import curam.core.sl.entity.fact.CaseNomineeFactory;
 import curam.core.sl.entity.intf.CaseNominee;
+import curam.core.sl.entity.struct.CaseIDAndFromDateDtls;
+import curam.core.sl.entity.struct.CaseNomineeCaseIDKey;
 import curam.core.sl.entity.struct.CaseNomineeDtls;
 import curam.core.sl.entity.struct.CaseNomineeKey;
+import curam.core.sl.entity.struct.DefaultCaseNomineeDetails;
+import curam.core.sl.entity.struct.DefaultCaseNomineeKey;
 import curam.core.struct.BankAccountDtls;
 import curam.core.struct.BatchProcessStreamKey;
 import curam.core.struct.BatchProcessingID;
@@ -108,6 +112,7 @@ import curam.molsa.util.impl.MOLSAParticipantHelper;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
 import curam.util.exception.LocalisableString;
+import curam.util.exception.RecordNotFoundException;
 import curam.util.resources.Configuration;
 import curam.util.transaction.TransactionInfo;
 import curam.util.type.CodeTable;
@@ -212,6 +217,7 @@ public class MOLSAGenerateEFTBatchStream extends
 		piStatusCode.reconcilStatusCode = PMTRECONCILIATIONSTATUS.PROCESSED;
 		PaymentInstrumentDtlsList proPaymentInstrumentDtlsList = paymentInstrumentObj
 				.searchByStatusCode(piStatusCode);
+		
 		PaymentInstrumentDtlsList paymentInstrumentDtlsList = filterEFTPayment(proPaymentInstrumentDtlsList);
 		
 		BatchProcessingSkippedRecord batchProcessingSkippedRecord = new BatchProcessingSkippedRecord();
@@ -230,10 +236,14 @@ public class MOLSAGenerateEFTBatchStream extends
 		return batchProcessingSkippedRecord;
 	}
     
-	private PaymentInstrumentDtlsList filterEFTPayment(PaymentInstrumentDtlsList proPaymentInstrumentDtlsList){
+	private PaymentInstrumentDtlsList filterEFTPayment(PaymentInstrumentDtlsList proPaymentInstrumentDtlsList) throws AppException,
+	InformationalException{
 		PaymentInstrumentDtlsList paymentInstrumentDtlsList = new PaymentInstrumentDtlsList();
 		for(PaymentInstrumentDtls paymentInstrumentDtls :proPaymentInstrumentDtlsList.dtls.items()) {
 			if(paymentInstrumentDtls.deliveryMethodType.equals(METHODOFDELIVERY.EFT)) {
+				//Start CR6.3
+				paymentInstrumentDtls = updateCorrectNomineeDetails(paymentInstrumentDtls);
+				//End CR6.3
 				paymentInstrumentDtlsList.dtls.addRef(paymentInstrumentDtls);
 			}
 		}
@@ -1393,5 +1403,32 @@ public class MOLSAGenerateEFTBatchStream extends
 		return isPaid;
 	}
 	
+	/**
+	 * This method will fetch default nominee and update payment instrument details
+	 * 
+	 */
+	
+	PaymentInstrumentDtls updateCorrectNomineeDetails(PaymentInstrumentDtls paymentInstrumentDtls) throws AppException, InformationalException{
+		CaseNomineeKey paramCaseNomineeKey = new CaseNomineeKey();
+		DefaultCaseNomineeKey paramDefaultCaseNomineeKey = new DefaultCaseNomineeKey();
+		paramCaseNomineeKey.caseNomineeID = paymentInstrumentDtls.caseNomineeID;
+		try{
+			CaseIDAndFromDateDtls details = CaseNomineeFactory.newInstance().readCaseID(paramCaseNomineeKey);
+			if (details != null || details.caseID != 0){
+				paramDefaultCaseNomineeKey.caseID = details.caseID;
+				paramDefaultCaseNomineeKey.defaultNomInd = true;
+				DefaultCaseNomineeDetails dtls = CaseNomineeFactory.newInstance().readDefaultCaseNominee(paramDefaultCaseNomineeKey);
+				if(dtls != null || dtls.concernRoleID != 0){
+					if(paymentInstrumentDtls.concernRoleID != dtls.concernRoleID){
+						paymentInstrumentDtls.concernRoleID = dtls.concernRoleID;
+					}
+				}
+			}
+		}catch(RecordNotFoundException rnf){
+			
+		}
+		return paymentInstrumentDtls;
+		
+	}
 
 }
