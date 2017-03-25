@@ -1408,7 +1408,7 @@ public class MOLSAGenerateEFTBatchStream extends
 	 * 
 	 */
 	
-	PaymentInstrumentDtls updateCorrectNomineeDetails(PaymentInstrumentDtls paymentInstrumentDtls) throws AppException, InformationalException{
+	private PaymentInstrumentDtls updateCorrectNomineeDetails(PaymentInstrumentDtls paymentInstrumentDtls) throws AppException, InformationalException{
 		CaseNomineeKey paramCaseNomineeKey = new CaseNomineeKey();
 		DefaultCaseNomineeKey paramDefaultCaseNomineeKey = new DefaultCaseNomineeKey();
 		paramCaseNomineeKey.caseNomineeID = paymentInstrumentDtls.caseNomineeID;
