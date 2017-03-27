@@ -32,16 +32,12 @@
     </CONNECT>
   </PAGE_TITLE>
 
-
-  <SERVER_INTERFACE
-    CLASS="Communication"
-    NAME="ACTION"
-    OPERATION="listTemplateByTypeAndParticipant"
-    PHASE="ACTION"
+ <SERVER_INTERFACE
+    CLASS="MOLSACommunicationDA"
+    NAME="DISPLAY"
+    OPERATION="listTemplateByTypeAndParticipantAutoDisplay"
   />
-
-
-  <PAGE_PARAMETER NAME="caseID"/>
+   <PAGE_PARAMETER NAME="caseID"/>
   <PAGE_PARAMETER NAME="pageDescription"/>
   <PAGE_PARAMETER NAME="concernRoleID"/>
   <PAGE_PARAMETER NAME="correspondentParticipantRoleID"/>
@@ -56,11 +52,10 @@
       PROPERTY="caseID"
     />
     <TARGET
-      NAME="ACTION"
+      NAME="DISPLAY"
       PROPERTY="caseID"
     />
   </CONNECT>
-
 
   <ACTION_SET
     ALIGNMENT="CENTER"
@@ -71,42 +66,7 @@
       LABEL="ActionControl.Label.Cancel"
     />
   </ACTION_SET>
-
-
-  <CLUSTER
-    LABEL_WIDTH="20"
-    NUM_COLS="2"
-  >
-    <ACTION_SET
-      ALIGNMENT="CENTER"
-      TOP="false"
-    >
-      <ACTION_CONTROL
-        DEFAULT="true"
-        IMAGE="SearchButton"
-        LABEL="ActionControl.Label.Search"
-        TYPE="SUBMIT"
-      >
-        <LINK PAGE_ID="THIS"/>
-      </ACTION_CONTROL>
-    </ACTION_SET>
-
-
-    <FIELD
-      LABEL="Field.Label.Type"
-      WIDTH="65"
-    >
-      <CONNECT>
-        <TARGET
-          NAME="ACTION"
-          PROPERTY="templateType"
-        />
-      </CONNECT>
-    </FIELD>
-  </CLUSTER>
-
-
-  <LIST
+   <LIST
     SCROLL_HEIGHT="270"
     TITLE="List.Title.ProformaTypes"
   >
@@ -123,7 +83,7 @@
         >
           <CONNECT>
             <SOURCE
-              NAME="ACTION"
+              NAME="DISPLAY"
               PROPERTY="templateID"
             />
             <TARGET
@@ -134,7 +94,7 @@
           <!-- BEGIN, CR00145755, SK -->
           <CONNECT>
             <SOURCE
-              NAME="ACTION"
+              NAME="DISPLAY"
               PROPERTY="localeIdentifier"
             />
             <TARGET
@@ -145,7 +105,7 @@
           <!-- END, CR00145755 -->
           <CONNECT>
             <SOURCE
-              NAME="ACTION"
+              NAME="DISPLAY"
               PROPERTY="templateType"
             />
             <TARGET
@@ -215,7 +175,7 @@
           </CONNECT>
           <CONNECT>
             <SOURCE
-              NAME="ACTION"
+              NAME="DISPLAY"
               PROPERTY="templateName"
             />
             <TARGET
@@ -225,7 +185,7 @@
           </CONNECT>
           <CONNECT>
             <SOURCE
-              NAME="ACTION"
+              NAME="DISPLAY"
               PROPERTY="latestVersion"
             />
             <TARGET
@@ -254,7 +214,7 @@
     >
       <CONNECT>
         <SOURCE
-          NAME="ACTION"
+          NAME="DISPLAY"
           PROPERTY="templateName"
         />
       </CONNECT>
@@ -268,7 +228,7 @@
     >
       <CONNECT>
         <SOURCE
-          NAME="ACTION"
+          NAME="DISPLAY"
           PROPERTY="result$searchTemplatesByConcernAndTypeResult$xslTemplateDetailsListOut$dtls$localeIdentifier"
         />
 

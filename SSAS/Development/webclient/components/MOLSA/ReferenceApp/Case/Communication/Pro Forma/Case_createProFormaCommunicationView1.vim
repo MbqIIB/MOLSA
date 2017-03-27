@@ -343,7 +343,6 @@
 
       <FIELD
         LABEL="Field.Label.Address"
-        USE_BLANK="true"
       >
         <CONNECT>
           <INITIAL
