@@ -14,6 +14,7 @@ import curam.core.sl.struct.CountCaseBookmarkKey;
 import curam.core.sl.tab.impl.TabLoaderConst;
 import curam.core.struct.CaseID;
 import curam.core.struct.Count;
+import curam.molsa.codetable.MOLSACERTPERIODCODE;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.piwrapper.caseheader.impl.CaseHeaderDAO;
@@ -64,6 +65,8 @@ public class MOLSACaseMenuLoader implements DynamicMenuStateLoader {
 		MenuState returnState = menuState;
 
 		String caseIdParam = pageParameters.get(TabLoaderConst.kCaseID);
+		
+		pageParameters.put("certPeriod", MOLSACERTPERIODCODE.CERTPERIOD_12MONTHS);
 
 		CaseHeader caseHeader = caseHeaderDAO.get(Long.parseLong(caseIdParam));
 		CASESTATUSEntry statusCode = caseHeader.getStatus();

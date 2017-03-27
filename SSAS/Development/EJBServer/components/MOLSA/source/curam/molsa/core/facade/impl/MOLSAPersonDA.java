@@ -2,6 +2,7 @@ package curam.molsa.core.facade.impl;
 
 import curam.core.facade.struct.PersonSearchDetailsResult;
 import curam.core.facade.struct.PersonSearchKey1;
+import curam.molsa.core.facade.struct.MOLSAPersonSearchKey1;
 import curam.molsa.core.fact.MOLSAPersonSearchRouterDAFactory;
 import curam.molsa.core.intf.MOLSAPersonSearchRouterDA;
 import curam.util.exception.AppException;
@@ -23,10 +24,10 @@ public class MOLSAPersonDA extends curam.molsa.core.facade.base.MOLSAPersonDA{
    * @throws AppException General Exception
    */
   @Override
-  public PersonSearchDetailsResult searchPerson(PersonSearchKey1 personSearchKey1) throws AppException, InformationalException {
+  public PersonSearchDetailsResult searchPerson(MOLSAPersonSearchKey1 personSearchKey1) throws AppException, InformationalException {
     MOLSAPersonSearchRouterDA personSearchRouterObj = MOLSAPersonSearchRouterDAFactory.newInstance();
     PersonSearchDetailsResult personSearchResult = new PersonSearchDetailsResult();
-    personSearchResult.personSearchResult = personSearchRouterObj.search1(personSearchKey1.personSearchKey);
+    personSearchResult.personSearchResult = personSearchRouterObj.search1(personSearchKey1);
     collectInformationalMsgs(personSearchResult.informationalMsgDtls);
     return personSearchResult;
   }

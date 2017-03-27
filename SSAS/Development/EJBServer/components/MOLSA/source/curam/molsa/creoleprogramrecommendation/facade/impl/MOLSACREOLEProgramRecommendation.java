@@ -6,12 +6,17 @@ import java.text.SimpleDateFormat;
 import com.google.inject.Inject;
 
 import curam.application.entity.struct.ApplicationKey;
+import curam.codetable.CASESTATUS;
 import curam.codetable.DESTINATIONTYPECODE;
+import curam.codetable.PRODUCTTYPE;
 import curam.codetable.RECORDSTATUS;
 import curam.codetable.TARGETITEMTYPE;
 import curam.codetable.TASKPRIORITY;
 import curam.core.base.Users;
+import curam.core.facade.fact.CaseHeaderFactory;
+import curam.core.facade.intf.ProductDelivery;
 import curam.core.facade.struct.TaskCreateDetails;
+import curam.core.fact.ProductDeliveryFactory;
 import curam.core.fact.UsersFactory;
 import curam.core.sl.entity.fact.CaseNomineeDestinationFactory;
 import curam.core.sl.entity.intf.CaseNomineeDestination;
@@ -22,7 +27,13 @@ import curam.core.sl.entity.struct.CaseNomineeForCaseDetails;
 import curam.core.sl.entity.struct.CaseNomineeForCaseDetailsList;
 import curam.core.sl.entity.struct.CaseNomineeKey;
 import curam.core.sl.intf.CaseNominee;
+import curam.core.struct.CaseHeaderReadmultiDetails1;
+import curam.core.struct.CaseHeaderReadmultiDetails1List;
+import curam.core.struct.CaseHeaderReadmultiKey1;
+import curam.core.struct.ProductDeliveryDtls;
 import curam.core.struct.ProductDeliveryKey;
+import curam.core.struct.ProductDtls;
+import curam.core.struct.ProductKey;
 import curam.core.struct.UsersDtls;
 import curam.core.struct.UsersKey;
 import curam.creoleprogramrecommendation.codetable.impl.SIMULATEDDETERMINATIONSTATEEntry;
@@ -40,6 +51,12 @@ import curam.message.MOLSANOTIFICATION;
 import curam.molsa.constants.impl.MOLSAConstants;
 import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetails;
 import curam.molsa.creoleprogramrecommendation.facade.struct.MolsaSimulatedDeterminationDetailsList;
+import curam.molsa.evidence.auditinfo.entity.struct.MOLSACaseKey;
+import curam.molsa.evidence.auditinfo.entity.struct.MOLSAEVDAuditInfoDtls;
+import curam.molsa.evidence.auditinfo.entity.struct.MOLSAEVDAuditInfoDtlsList;
+import curam.molsa.evidence.auditinfo.facade.fact.MOLSAEVDAuditInfoFactory;
+import curam.molsa.evidence.auditinfo.facade.intf.MOLSAEVDAuditInfo;
+import curam.molsa.message.MOLSABPOPRODUCTDELIVERY;
 import curam.piwrapper.caseheader.impl.CaseHeader;
 import curam.util.exception.AppException;
 import curam.util.exception.InformationalException;
@@ -180,7 +197,58 @@ extends curam.molsa.creoleprogramrecommendation.facade.base.MOLSACREOLEProgramRe
 	@Override
 	public ProductDeliveryKey authorize(SimulatedDeterminationKey key)
 	throws AppException, InformationalException {
+		
+	/*  CR 5.3
+	 *   Check whether the same program exist which is not in closed state
+	 *   Get the details about the new product going to authorize 1)Productid 2)Integrated case
+	 */
+
+
+		CREOLEProgramRecommendation CreoleProgramRecommendationObj = CREOLEProgramRecommendationFactory
+		.newInstance();
+
+		CREOLEProgramRecommendationKey creoleKey=new CREOLEProgramRecommendationKey();
+		creoleKey.creoleProgramRecommendationID=key.creoleProgramRecommendationID;
+		SimulatedDeterminationDetailsList SimulatedDeterminationDtlsList = new SimulatedDeterminationDetailsList();
+		SimulatedDeterminationDtlsList = CreoleProgramRecommendationObj.listEligibleSimulatedDeterminations(creoleKey);
+		String productName="";
+		for (SimulatedDeterminationDetails dtls : SimulatedDeterminationDtlsList.list) {
+			productName=dtls.productName;
+			System.out.println("Product ID:"+dtls.productName);
+			break;
+		}
+
+		//Get the products from integrated caseid and check the same product exist which is not in closed status
+
+		Long caseID=creoleProgramRecommendationDAO.get(key.creoleProgramRecommendationID).getIntegratedCase().getID();		
+		//CREOLEProgramRecSummaryDAO CREOLEProgramRecSummaryDAO;
+		boolean productExists=checkProductExists(productName,caseID);
+		if(productExists){
+			AppException appException = new AppException(MOLSABPOPRODUCTDELIVERY.ERR_AUTHORIZE_SAME_PRODUCT_EXISTS);
+			throw appException;
+		}
 		validateSimulatedDeterminationState(key);
+		
+		// Start: CR 4.1 
+		
+		MOLSAEVDAuditInfo MOLSAEVDAuditInfoObj = MOLSAEVDAuditInfoFactory.newInstance();
+		MOLSACaseKey molsaCaseKey = new MOLSACaseKey();
+		molsaCaseKey.caseID = caseID;
+		Boolean allEvidencesAudited = true;
+		MOLSAEVDAuditInfoDtlsList list = MOLSAEVDAuditInfoObj.listAllEVDAuditInfoBycaseID(molsaCaseKey);
+		for (MOLSAEVDAuditInfoDtls dtls: list.dtls) {
+			if (!dtls.auditedInd ) {
+				allEvidencesAudited = false;
+			    break;
+			}
+		}
+		
+		if (!allEvidencesAudited){
+			AppException appException = new AppException(MOLSABPOPRODUCTDELIVERY.ERR_AUTHORIZE_ALL_EVIDENCES_NOT_AUDITED);
+			throw appException;
+		}
+		// End: CR 4.1 
+		
 		curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendation creoleProgramRecommendation = (curam.creoleprogramrecommendation.impl.CREOLEProgramRecommendation)creoleProgramRecommendationDAO.get(Long.valueOf(key.creoleProgramRecommendationID));
 		SimulatedDetermination simulatedDetermination = creoleProgramRecommendation.getSimulatedDetermination(key.simulatedDeterminationID);
 		CaseHeader delivery = simulatedDeterminationManager.authorize(creoleProgramRecommendation, simulatedDetermination);
@@ -258,6 +326,61 @@ extends curam.molsa.creoleprogramrecommendation.facade.base.MOLSACREOLEProgramRe
 			taskManagementObj.create(taskCreateDetails.taskDetails);
 		}
 
+
+	}
+	
+	public boolean checkProductExists(String productName,Long caseID){
+		boolean productexists = false;
+		curam.core.intf.CaseHeader caseHeaderObj = curam.core.fact.CaseHeaderFactory.newInstance();
+		CaseHeaderReadmultiKey1 caseHeaderReadmultiKey1 = new CaseHeaderReadmultiKey1();
+		caseHeaderReadmultiKey1.integratedCaseID = caseID;
+		CaseHeaderReadmultiDetails1List caseHeaderReadmultiDetails1List;
+		try {
+			caseHeaderReadmultiDetails1List = caseHeaderObj.searchByIntegratedCaseID(caseHeaderReadmultiKey1);
+
+			curam.core.intf.ProductDelivery productDeliveryObj = ProductDeliveryFactory
+			.newInstance();
+			ProductDeliveryKey productDeliveryKey = new ProductDeliveryKey();
+			ProductDeliveryDtls productDeliveryDtls;
+
+
+			for(CaseHeaderReadmultiDetails1 caseHeaderReadmultiDetails: caseHeaderReadmultiDetails1List.dtls.items() ) {
+				if (!(caseHeaderReadmultiDetails.statusCode.equals(CASESTATUS.CLOSED))) {
+					productDeliveryKey.caseID = caseHeaderReadmultiDetails.caseID;
+					productDeliveryDtls = productDeliveryObj.read(productDeliveryKey);
+					curam.core.intf.Product productObj = curam.core.fact.ProductFactory.newInstance();
+					ProductKey productKey = new ProductKey();
+					productKey.productID = productDeliveryDtls.productID;
+					ProductDtls productDtls = productObj.read(productKey);
+
+
+					//	Product product=ProductFactory.newInstance();
+					//	product
+					if(productDtls.typeCode.equals(PRODUCTTYPE.HANDICAP)||productDtls.typeCode.equals(PRODUCTTYPE.DIVORCEDLADY)||
+							productDtls.typeCode.equals(PRODUCTTYPE.FAMILYOFPRISONER)||productDtls.typeCode.equals(PRODUCTTYPE.MAIDALLOWANCE)||
+							productDtls.typeCode.equals(PRODUCTTYPE.DESERTEDWIFE)||productDtls.typeCode.equals(PRODUCTTYPE.FAMILYINNEED)||
+							productDtls.typeCode.equals(PRODUCTTYPE.FAMILYOFMISSING)||productDtls.typeCode.equals(PRODUCTTYPE.WIDOW)||
+							productDtls.typeCode.equals(PRODUCTTYPE.SENIORCITIZEN)||productDtls.typeCode.equals(PRODUCTTYPE.ORPHAN)||
+							productDtls.typeCode.equals(PRODUCTTYPE.ANONYMOUSPARENTS)||productDtls.typeCode.equals(PRODUCTTYPE.MOLSADETERMINEPRODUCT)||
+							productDtls.typeCode.equals(PRODUCTTYPE.INCAPABLEOFWORKING)){
+							if (productDtls.name
+									.equals(productName)) {
+								productexists = true;
+								break;
+							}
+					}
+				}
+
+			}
+
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InformationalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return productexists;
 
 	}
 }

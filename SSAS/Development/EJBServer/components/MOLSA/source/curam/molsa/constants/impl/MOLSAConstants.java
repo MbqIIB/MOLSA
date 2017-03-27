@@ -179,5 +179,10 @@ public abstract class MOLSAConstants {
 	 * For disabling CloseCase button for CaseWorker's MOLSA-2017-CR5.4
 	 */
 	public static final String kMOLSACloseCase = "CloseCase";
+	
+	/**
+	 * Molsa Certification Expiry Task workflow.
+	 */
+	public static final String kMOLSACertificationExpiryTask = "MOLSACertificationExpiryTask";
 
 }
